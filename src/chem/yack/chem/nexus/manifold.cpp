@@ -17,11 +17,11 @@
 namespace yack
 {
     using namespace math;
-
+    
     namespace chemical
     {
-
-
+        
+        
         
         namespace
         {
@@ -62,8 +62,8 @@ namespace yack
                 }
             };
         }
-
-
+        
+        
         const equilibrium &nexus:: promote_mixed(const readable<int> &weight)
         {
             cxx_array<int> gcoef(M);
@@ -79,7 +79,7 @@ namespace yack
                     gcoef[j] += ew * Nu[ei][j];
                 }
             }
-
+            
             //----------------------------------------------------------
             // create a mixed equilibrium
             //----------------------------------------------------------
@@ -92,36 +92,36 @@ namespace yack
                 const int f = gcoef[j];
                 if(f) mxeq( worklib[j], f);
             }
-
+            
             assert(mxeq.neutral());
-
+            
             //----------------------------------------------------------
             // to register in this related group
             //----------------------------------------------------------
             return mxeq;
-
+            
         }
-
-
+        
+        
         size_t make_clan(sp_list                       &clan,
                          const readable<equilibrium *> &esub)
         {
             const size_t k = esub.size();
-
+            
             {
                 //--------------------------------------------------------------
                 // populate tribe of species
                 //--------------------------------------------------------------
                 addrbook tribe;
                 for(size_t i=k;i>0;--i) esub[i]->update(tribe);
-
+                
                 //--------------------------------------------------------------
                 // populate cache of species
                 //--------------------------------------------------------------
                 for(addrbook::const_iterator it=tribe.begin();it!=tribe.end();++it)
                     clan << static_cast<const species *>( *it );
             }
-
+            
             //------------------------------------------------------------------
             // sort cache by increasing species index
             //------------------------------------------------------------------
@@ -130,13 +130,13 @@ namespace yack
             if(m<k) throw imported::exception("nexus::make_clan","not enough species!!");
             return m;
         }
-
+        
         void select_rows(imatrix       &w,
-                           const imatrix &mu)
+                         const imatrix &mu)
         {
             const size_t   m = mu.rows;
             vector<size_t> jrow(m,as_capacity);
-
+            
             // find non proportional rows
             for(size_t j=1;j<=m;++j)
             {
@@ -152,7 +152,7 @@ namespace yack
                 if(isOk)
                     jrow << j;
             }
-
+            
             // build sub-matrix
             const size_t dims = jrow.size();
             if(dims>0)
@@ -161,9 +161,9 @@ namespace yack
                 for(size_t k=dims;k>0;--k)
                     iota::load(w[k],mu[ jrow[k] ]);
             }
-
+            
         }
-
+        
         static inline size_t count_valid(const readable<int> &coef) throw()
         {
             size_t count = 0;
@@ -173,8 +173,8 @@ namespace yack
             }
             return count;
         }
-
-
+        
+        
         static inline bool whole_valid(const readable<int> &arr) throw()
         {
             for(size_t i=arr.size();i>0;--i)
@@ -183,8 +183,8 @@ namespace yack
             }
             return true;
         }
-
-
+        
+        
         static inline void q2i(writable<int>       &cof,
                                const readable<apq> &q)
         {
@@ -195,7 +195,7 @@ namespace yack
                 cof[i] = q[i].num.cast_to<int>();
             }
         }
-
+        
         static inline void fill_topo(imatrix                      &nu,
                                      const imatrix                &Nu,
                                      const readable<equilibrium*> &esub,
@@ -212,7 +212,7 @@ namespace yack
                 }
             }
         }
-
+        
         typedef worthy::qfamily           qFamily_;
         typedef small_list<size_t>        iList;
         typedef typename iList::node_type iNode;
@@ -229,7 +229,7 @@ namespace yack
             {
                 
             }
-          
+            
             
             
             virtual ~qFamily() throw() {}
@@ -241,13 +241,25 @@ namespace yack
             iList     indx; //!< indices of next vector to choose
             qFamily  *next; //!< for list
             qFamily  *prev; //!< for list
-
+            
             inline friend std::ostream & operator<<(std::ostream &os, const qFamily &self)
             {
                 const qFamily_ &from = self;
                 os << from << "+" << self.indx;
                 return os;
             }
+            
+            inline void ensure(const size_t j)
+            {
+                for(const iNode *node=indx.head;node;node=node->next)
+                {
+                    if ( **node == j ) return ;
+                }
+                indx << j;
+            }
+            
+            
+            
             
         private:
             YACK_DISABLE_ASSIGN(qFamily);
@@ -262,7 +274,7 @@ namespace yack
             const size_t m = mu.rows;
             const size_t n = mu.cols;
             assert(coeff.width==n);
-
+            
             //------------------------------------------------------------------
             //
             //
@@ -274,7 +286,7 @@ namespace yack
             assert(n>1);
             cxx_array<size_t>        pool(m);        // indices reservoir
             for(size_t j=1;j<=m;++j) pool[j] = j;    // initial reservoir
-
+            
             
             //------------------------------------------------------------------
             //
@@ -284,21 +296,16 @@ namespace yack
             //
             //------------------------------------------------------------------
             
-            //cxx_array<qBranch> qTree(m); assert(m==qTree.size());
-            //qBranch           &qRoot = qTree[1];
-            
-            qBranch A,B;
-            
             for(size_t j=1;j<=m;++j)
             {
-
+                
                 //--------------------------------------------------------------
                 //
                 // prepare reservoir of other index
                 //
                 //--------------------------------------------------------------
                 rolling::down(pool); assert(j==pool[m]);
-
+                
                 //--------------------------------------------------------------
                 //
                 // the species must appear at least twice
@@ -306,18 +313,21 @@ namespace yack
                 //--------------------------------------------------------------
                 if(count_valid(mu[j]) < 2 ) continue;
                 std::cerr << std::endl << "nullify species@" << j << " pool=" << pool << std::endl;
-                
+
                 //--------------------------------------------------------------
                 //
-                // initialize tree with first row and indices to try
+                // creating workspace
                 //
                 //--------------------------------------------------------------
-               // for(size_t i=m;i>0;--i) qTree[i].release();
-                A.release();
-                B.release();
+                qBranch  A,B;
                 qBranch *qRoot = &A;
-                qBranch *qNext = &B;
+                qBranch *qHeir = &B;
                 
+                //--------------------------------------------------------------
+                //
+                // initialize root with first row and indices to try
+                //
+                //--------------------------------------------------------------
                 {
                     qFamily *root = qRoot->push_back( new qFamily(n) );
                     if(!root->grow(mu[j])) {
@@ -328,64 +338,77 @@ namespace yack
                 
                 std::cerr << "qRoot=" << *qRoot << std::endl;
                 
+                //--------------------------------------------------------------
+                //
                 // making levels
-                for(size_t level=2;level<=m;++level)
+                //
+                //--------------------------------------------------------------
+                for(size_t cycle=1;;++cycle)
                 {
                     assert(NULL != qRoot);
-                    //assert(0<qRoot->size);
-                    assert(NULL != qNext);
-                    assert(0==qNext->size);
+                    assert(NULL != qHeir);
+                    assert(0==qHeir->size);
+                    
+                    std::cerr << "-------- at cycle #" << cycle << " --------" << std::endl;
                     
                     // try to grow all the roots with their indices
                     while(qRoot->size)
                     {
                         auto_ptr<qFamily> root( qRoot->pop_front() );
                         std::cerr << "\tprocessing " << *root << std::endl;
+                        assert( (*root)->size<n );
+                        
+                        
                         for(const iNode *node=root->indx.head;node;node=node->next)
                         {
                             const readable<int> &mu_r = mu[**node];
                             std::cerr << "\t\twith " << mu_r << " @" << **node << std::endl;
+                            
+                            // duplicate without indices
                             auto_ptr<qFamily> chld( new qFamily(*root) );
-                            if(chld->grow(mu_r))
+                            
+                            if(!chld->grow(mu_r) || (*chld)->size >= n)
                             {
-                                std::cerr << "\t\t\tchld=" << *chld << std::endl;
+                                std:: cerr << "\t\t\tdone with " << *chld << std::endl;
+                            }
+                            else
+                            {
                                 
-                                // check
-                                
-                                // append remaining indices
+                                // append remaining indices to this new child
                                 for(const iNode *scan=node->prev;scan;scan=scan->prev)
                                     chld->indx.push_front( new iNode(**scan) );
                                 
                                 for(const iNode *scan=node->next;scan;scan=scan->next)
                                     chld->indx.push_back( new iNode(**scan) );
+                                
                                 std::cerr << "\t\t\tchld=" << *chld << std::endl;
-
+                                qHeir->push_back( chld.yield() );
                             }
-                            else
-                            {
-                                std::cerr << "\t\t\tsingular" << std::endl;
-                            }
+                            
                         }
-                        
                         
                     }
                     
+                    assert(qRoot->size<=0);
+                    if(qHeir->size<=0)
+                        break;
+                    cswap(qHeir,qRoot);
                 }
                 
-
                 
-
+                
+                
             }
-
-
+            
+            
         }
-
+        
         void nexus:: make_manifold_(cluster &source, const xmlog &xml)
         {
             static const char * const fn = "sub_manifold";
             YACK_XMLSUB(xml, "sub_manifold");
             YACK_XMLOG(xml,source);
-
+            
             //------------------------------------------------------------------
             //
             // get equilibria within this cluster
@@ -396,14 +419,14 @@ namespace yack
                 YACK_XMLOG(xml, "<standalone>");
                 return;
             }
-
+            
             cxx_array<equilibrium *> edb(n);
             {
                 size_t i=1;
                 for(const eq_node *en=source.head;en;en=en->next,++i)
                     edb[i] = &coerce(**en);
             }
-
+            
             //------------------------------------------------------------------
             //
             //
@@ -424,7 +447,7 @@ namespace yack
                     //
                     //----------------------------------------------------------
                     comb.designate(esub,edb);
-
+                    
                     //----------------------------------------------------------
                     //
                     // create local species from equilibria
@@ -432,7 +455,7 @@ namespace yack
                     //----------------------------------------------------------
                     sp_list      clan;
                     const size_t m = make_clan(clan,esub);
-
+                    
                     //----------------------------------------------------------
                     //
                     // extract local topology
@@ -440,17 +463,17 @@ namespace yack
                     //----------------------------------------------------------
                     const imatrix nu(k,m); fill_topo( coerce(nu), Nu, esub, clan);
                     const imatrix mu(nu,transposed);
-
-
+                    
+                    
                     *xml << "-- [";
                     for(size_t i=1;i<=k;++i)
                         std::cerr << ' '  << esub[i]->name;
                     std::cerr << " ] / " << k << std::endl;
                     std::cerr << "\tnu=" << nu << std::endl;
                     std::cerr << "\tmu=" << mu << std::endl;
-
+                    
                     if( k != apk::rank_of(mu) ) throw imported::exception(fn,"invalid sub-system topology!");
-
+                    
                     //----------------------------------------------------------
                     //
                     // compress rows
@@ -459,31 +482,31 @@ namespace yack
                     imatrix     w;
                     select_rows(w,mu);
                     std::cerr << "\tw =" << w << std::endl;
-
+                    
                     bunch<int> coeff(k);
                     process(coeff,w);
-
-
+                    
+                    
                 } while(comb.next());
             }
-
-
-
-
+            
+            
+            
+            
         }
-
-
+        
+        
         void nexus:: make_manifold(const xmlog &xml)
         {
             static const char * const fn = "make_manifold";
             YACK_XMLSUB(xml,fn);
-
+            
             for(cluster *sharing=related.head;sharing;sharing=sharing->next)
                 make_manifold_(*sharing,xml);
-
+            
         }
-
+        
     }
-
+    
 }
 

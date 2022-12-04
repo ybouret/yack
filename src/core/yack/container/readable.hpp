@@ -50,7 +50,7 @@ namespace yack
             return os;
         }
 
-        //! helper to test that two containers are different
+        //! helper to test that two containers are item-wise different
         inline friend bool operator != (const readable &lhs, const readable &rhs) throw()
         {
             if(lhs.size() != rhs.size())
@@ -66,6 +66,25 @@ namespace yack
                 return false;
             }
         }
+        
+        //! helper to test that two containers are item-wise equals
+        inline friend bool operator == (const readable &lhs, const readable &rhs) throw()
+        {
+            if(lhs.size() != rhs.size())
+            {
+                return false;
+            }
+            else
+            {
+                for(size_t n=lhs.size();n>0;--n)
+                {
+                    if(lhs[n]!=rhs[n]) return false;
+                }
+                return true;
+            }
+        }
+        
+        
         
         //______________________________________________________________________
         //

@@ -66,6 +66,34 @@ namespace yack
                 return os;
             }
             
+            friend bool operator==(const qarray &lhs, const qarray &rhs)
+            {
+                if(lhs.coef==rhs.coef)
+                {
+                    assert(lhs.nrm2==rhs.nrm2);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            
+            friend bool operator!=(const qarray &lhs, const qarray &rhs)
+            {
+                if(lhs.coef!=rhs.coef)
+                {
+                    return true;
+                }
+                else
+                {
+                    assert(lhs.nrm2==rhs.nrm2);
+                    return false;
+                }
+            }
+            
+            
+            
             //__________________________________________________________________
             //
             // members
@@ -126,6 +154,25 @@ namespace yack
                 os << self.U;
                 return os;
             }
+            
+            friend bool operator==(const qfamily &lhs, const qfamily &rhs)
+            {
+                const list_of<qarray> &L = lhs.U;
+                const list_of<qarray> &R = rhs.U;
+                if(L.size==R.size)
+                {
+                    for(const qarray *l=L.head, *r=R.head;l;l=l->next,r=r->next)
+                    {
+                        if( *l != *r) return false;
+                    }
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            
             //__________________________________________________________________
             //
             // members
