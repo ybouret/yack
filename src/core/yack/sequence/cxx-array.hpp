@@ -134,6 +134,7 @@ namespace yack
         
         //! copy
         inline cxx_array(const cxx_array &other) :
+        collection(),
         cxx_array_<T,ALLOCATOR>(other.size()),
         memIO(this->basis,this->count)
         {

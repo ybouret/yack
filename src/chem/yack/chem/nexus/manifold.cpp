@@ -10,6 +10,7 @@
 #include "yack/data/small/repo.hpp"
 #include "yack/sequence/roll.hpp"
 #include "yack/sequence/bunch.hpp"
+#include "yack/apex/worthy.hpp"
 
 #include <iomanip>
 
@@ -43,7 +44,7 @@ namespace yack
                 equilibrium(uid,idx),
                 Ktab(myK),
                 xmul(ops),
-                coef(arr)
+                coef(arr,transmogrify)
                 {
                     
                 }
@@ -212,6 +213,47 @@ namespace yack
             }
         }
 
+        typedef worthy::qfamily      qFamily_;
+        typedef small_list<size_t>   qIndices;
+        
+        class qFamily : public object, public qFamily_
+        {
+        public:
+            explicit qFamily(const size_t dims) :
+            qFamily_(dims),
+            indx(),
+            next(0),
+            prev(0)
+            {
+                
+            }
+          
+            
+            
+            virtual ~qFamily() throw() {}
+            
+            qFamily(const qFamily &other) :
+            qFamily_(other), indx(other.indx), next(0), prev(0) {}
+            
+            qIndices  indx;
+            qFamily  *next;
+            qFamily  *prev;
+
+            inline friend std::ostream & operator<<(std::ostream &os, const qFamily &self)
+            {
+                const qFamily_ &from = self;
+                os << from << "+" << self.indx;
+                return os;
+            }
+            
+        private:
+            YACK_DISABLE_ASSIGN(qFamily);
+            
+        };
+        
+        typedef cxx_list_of<qFamily> qBranch;
+        
+        
         void process(bunch<int>   &coeff, const imatrix &mu)
         {
             const size_t m = mu.rows;
@@ -236,13 +278,18 @@ namespace yack
             cxx_array<size_t>        pool(m);        // indices reservoir
             for(size_t j=1;j<=m;++j) pool[j] = j;
 
+            
             //------------------------------------------------------------------
             //
             //
-            // trying to suppress each species
+            // trying to suppress each species in turn
             //
             //
             //------------------------------------------------------------------
+            
+            cxx_array<qBranch> qTree(m); assert(m==qTree.size());
+            qBranch           &qRoot = qTree[1];
+            
             for(size_t j=1;j<=m;++j)
             {
 
@@ -258,89 +305,45 @@ namespace yack
                 // the species must appear at least twice
                 //
                 //--------------------------------------------------------------
-                std::cerr << "species@" << j << " pool=" << pool << std::endl;
                 if(count_valid(mu[j]) < 2 ) continue;
-
-
-                //--------------------------------------------------------------
-                //
-                // loop over all possible complement space
-                //
-                //--------------------------------------------------------------
-                pick.boot();
-                do
+                std::cerr << "nullify species@" << j << " pool=" << pool << std::endl;
+                
+                // initialize tree with first row and indices to try
+                for(size_t i=m;i>0;--i) qTree[i].release();
+                
                 {
-                    pick.designate(jndx,pool);
-                    std::cerr << "\tpick=" << pick << " => " << jndx << std::endl;
-                    continue;;
-                    ptry.boot();
-                    do
-                    {
-                        std::cerr << "\t\t" << ptry << std::endl;
+                    qFamily *root =qRoot.push_back( new qFamily(n) );
+                    if(!root->grow(mu[j])) {
+                        throw exception("couldn't start ortho!!!");
                     }
-                    while(ptry.next());
-
-
-                } while(pick.next());
-
-            }
-
-#if 0
-
-            std::cerr << "processing work=" << mu << std::endl;
-            vector<size_t> pad(m-1);
-            matrix<apq>    sub(n,n);
-            cxx_array<int> cof(n);
-
-            for(size_t j=1;j<=m;++j)
-            {
-                if(count_valid(mu[j]) < 2 ) continue;
-
-                pad.free();
-                for(size_t jj=1;jj<j;++jj)    pad << jj;
-                for(size_t jj=j+1;jj<=m;++jj) pad << jj;
-                assert(m-1==pad.size());
-                std::cerr << "  -> " << mu[j] << "  -> amongst jrow=" << pad << std::endl;
-
-                //combination go(m-1,n-1);
-                permutation go(m-1);
-                size_t      ok=0;
-                do
-                {
-                    iota::load(sub[1],mu[j]);
-                    for(size_t j=2,i=1;j<=n;++j,++i)
-                    {
-                        iota::load(sub[j],mu[ pad[ go[i] ] ]);
-                    }
-                    std::cerr << "\tgo=" << go << " sub=" << sub;
-
-                    if(!apk::gs_ortho(sub)) {
-                        std:: cerr << " singular" << std::endl;
-                        continue;
-                    }
-
-                    std::cerr << "\t  -> " << sub << std::endl;
-                    for(size_t j=2;j<=n;++j)
-                    {
-                        ++ok;
-                        q2i(cof,sub[j]);
-                        std::cerr << "    -> try " << ok << " : " << cof;
-                        if(whole_valid(cof))
-                        {
-                            std::cerr << " [*]" << std::endl;
-                            coeff.ensure(cof);
-                        }
-                        else
-                        {
-                            std::cerr << " [-]" << std::endl;
-                        }
-                    }
+                    for(size_t i=1;i<m;++i) root->indx << pool[i];
                 }
-                while(go.next());
-                std::cerr << std::endl;
-            }
-            std::cerr << *coeff << std::endl;
+                
+                
+                std::cerr << "qRoot=" << qRoot << std::endl;
+                
+#if 0
+                for(size_t level=2;level<=m;++level)
+                {
+                    const qBranch &prev = qTree[level-1];
+                    qBranch       &curr = qTree[level];
+                    std::cerr << "level " << level-1 << " => " << level << std::endl;
+                    for(size_t k=1;k<m;++k)
+                    {
+                        const readable<int> &go = mu[ pool[k] ];
+                        std::cerr << "\ttrying " << go << std::endl;
+                    }
+                    
+                }
 #endif
+                
+                
+
+                
+
+            }
+
+
         }
 
         void nexus:: make_manifold_(cluster &source, const xmlog &xml)

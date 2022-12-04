@@ -85,7 +85,7 @@ namespace yack
         //
         //! family of simplified, univocal vectors
         //______________________________________________________________________
-        class qfamily : public object
+        class qfamily  
         {
         public:
             //__________________________________________________________________
@@ -121,6 +121,11 @@ namespace yack
             const list_of<qarray> * operator->() const throw() { return &U; } //!< access
             const list_of<qarray> & operator*()  const throw() { return  U; } //!< access
             
+            inline friend std::ostream & operator<<(std::ostream &os, const qfamily &self)
+            {
+                os << self.U;
+                return os;
+            }
             //__________________________________________________________________
             //
             // members
@@ -135,6 +140,9 @@ namespace yack
             cxx_list_of<qarray> U;         //!< current list of vectors
             
             bool try_grow();
+            
+            
+
             
         };
         

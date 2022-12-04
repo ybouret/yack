@@ -51,7 +51,6 @@ namespace yack
 {
     
     worthy:: qfamily:: qfamily(const size_t dims)  :
-    object(),
     dimension(dims),
     u_k(dimension),
     v_k(dimension),
@@ -65,11 +64,10 @@ namespace yack
     }
     
     worthy:: qfamily:: qfamily(const qfamily &_) :
-    object(),
     dimension(_.dimension),
     u_k(dimension),
     v_k(dimension),
-    U(_.U)
+    U(_.U) 
     {
     }
 
