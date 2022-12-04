@@ -52,7 +52,7 @@ namespace yack
         
         //! setup empty
         inline explicit bunch(const size_t w) throw() :
-        width(w), alive(), zpool()
+        width(w), alive(), zpool(), work(w)
         {
         }
 
@@ -151,6 +151,8 @@ namespace yack
             }
             return true;
         }
+    public:
+        array_type work;
     };
 
 }

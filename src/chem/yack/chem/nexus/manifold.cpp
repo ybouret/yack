@@ -185,8 +185,9 @@ namespace yack
         }
         
         
-        static inline void q2i(writable<int>       &cof,
-                               const readable<apq> &q)
+        static inline
+        const readable<int> &q2i(writable<int>       &cof,
+                                 const readable<apq> &q)
         {
             assert(cof.size()==q.size());
             for(size_t i=cof.size();i>0;--i)
@@ -194,6 +195,7 @@ namespace yack
                 assert(1==q[i].den);
                 cof[i] = q[i].num.cast_to<int>();
             }
+            return cof;
         }
         
         static inline void fill_topo(imatrix                      &nu,
@@ -258,7 +260,15 @@ namespace yack
                 indx << j;
             }
             
-            
+            void to(bunch<int> &coeff)
+            {
+                for(const worthy::qarray *node=(**this).head;node;node=node->next)
+                {
+                    const readable<int> &arr = q2i(coeff.work,node->coef);
+                    if(whole_valid(arr))
+                        coeff.ensure(arr);
+                }
+            }
             
             
         private:
@@ -267,6 +277,7 @@ namespace yack
         };
         
         typedef cxx_list_of<qFamily> qBranch;
+        
         
         
         void process(bunch<int>   &coeff, const imatrix &mu)
@@ -370,6 +381,7 @@ namespace yack
                             if(!chld->grow(mu_r) || (*chld)->size >= n)
                             {
                                 std:: cerr << "\t\t\tdone with " << *chld << std::endl;
+                                chld->to(coeff);
                             }
                             else
                             {
@@ -395,7 +407,7 @@ namespace yack
                     cswap(qHeir,qRoot);
                 }
                 
-                
+                std::cerr << "coeff=" << *coeff << std::endl;
                 
                 
             }
