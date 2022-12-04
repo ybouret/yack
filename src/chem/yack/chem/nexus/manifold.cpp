@@ -213,8 +213,10 @@ namespace yack
             }
         }
 
-        typedef worthy::qfamily      qFamily_;
-        typedef small_list<size_t>   qIndices;
+        typedef worthy::qfamily           qFamily_;
+        typedef small_list<size_t>        iList;
+        typedef typename iList::node_type iNode;
+        
         
         class qFamily : public object, public qFamily_
         {
@@ -232,12 +234,13 @@ namespace yack
             
             virtual ~qFamily() throw() {}
             
+            // copy WITHOUT indices
             qFamily(const qFamily &other) :
-            qFamily_(other), indx(other.indx), next(0), prev(0) {}
+            qFamily_(other), indx(), next(0), prev(0) {}
             
-            qIndices  indx;
-            qFamily  *next;
-            qFamily  *prev;
+            iList     indx; //!< indices of next vector to choose
+            qFamily  *next; //!< for list
+            qFamily  *prev; //!< for list
 
             inline friend std::ostream & operator<<(std::ostream &os, const qFamily &self)
             {
@@ -269,14 +272,8 @@ namespace yack
             //------------------------------------------------------------------
             assert(m>1);
             assert(n>1);
-            const size_t mm1 = m-1;
-            const size_t nm1 = n-1;
-            matrix<apq>              Q(n,n);         // workspace matrix
-            cxx_array<size_t>        jndx(nm1);      // j-index
-            combination              pick(mm1,nm1);  // helper
-            permutation              ptry(nm1);
             cxx_array<size_t>        pool(m);        // indices reservoir
-            for(size_t j=1;j<=m;++j) pool[j] = j;
+            for(size_t j=1;j<=m;++j) pool[j] = j;    // initial reservoir
 
             
             //------------------------------------------------------------------
@@ -287,8 +284,10 @@ namespace yack
             //
             //------------------------------------------------------------------
             
-            cxx_array<qBranch> qTree(m); assert(m==qTree.size());
-            qBranch           &qRoot = qTree[1];
+            //cxx_array<qBranch> qTree(m); assert(m==qTree.size());
+            //qBranch           &qRoot = qTree[1];
+            
+            qBranch A,B;
             
             for(size_t j=1;j<=m;++j)
             {
@@ -306,37 +305,72 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 if(count_valid(mu[j]) < 2 ) continue;
-                std::cerr << "nullify species@" << j << " pool=" << pool << std::endl;
+                std::cerr << std::endl << "nullify species@" << j << " pool=" << pool << std::endl;
                 
+                //--------------------------------------------------------------
+                //
                 // initialize tree with first row and indices to try
-                for(size_t i=m;i>0;--i) qTree[i].release();
+                //
+                //--------------------------------------------------------------
+               // for(size_t i=m;i>0;--i) qTree[i].release();
+                A.release();
+                B.release();
+                qBranch *qRoot = &A;
+                qBranch *qNext = &B;
                 
                 {
-                    qFamily *root =qRoot.push_back( new qFamily(n) );
+                    qFamily *root = qRoot->push_back( new qFamily(n) );
                     if(!root->grow(mu[j])) {
                         throw exception("couldn't start ortho!!!");
                     }
                     for(size_t i=1;i<m;++i) root->indx << pool[i];
                 }
                 
+                std::cerr << "qRoot=" << *qRoot << std::endl;
                 
-                std::cerr << "qRoot=" << qRoot << std::endl;
-                
-#if 0
+                // making levels
                 for(size_t level=2;level<=m;++level)
                 {
-                    const qBranch &prev = qTree[level-1];
-                    qBranch       &curr = qTree[level];
-                    std::cerr << "level " << level-1 << " => " << level << std::endl;
-                    for(size_t k=1;k<m;++k)
+                    assert(NULL != qRoot);
+                    //assert(0<qRoot->size);
+                    assert(NULL != qNext);
+                    assert(0==qNext->size);
+                    
+                    // try to grow all the roots with their indices
+                    while(qRoot->size)
                     {
-                        const readable<int> &go = mu[ pool[k] ];
-                        std::cerr << "\ttrying " << go << std::endl;
+                        auto_ptr<qFamily> root( qRoot->pop_front() );
+                        std::cerr << "\tprocessing " << *root << std::endl;
+                        for(const iNode *node=root->indx.head;node;node=node->next)
+                        {
+                            const readable<int> &mu_r = mu[**node];
+                            std::cerr << "\t\twith " << mu_r << " @" << **node << std::endl;
+                            auto_ptr<qFamily> chld( new qFamily(*root) );
+                            if(chld->grow(mu_r))
+                            {
+                                std::cerr << "\t\t\tchld=" << *chld << std::endl;
+                                
+                                // check
+                                
+                                // append remaining indices
+                                for(const iNode *scan=node->prev;scan;scan=scan->prev)
+                                    chld->indx.push_front( new iNode(**scan) );
+                                
+                                for(const iNode *scan=node->next;scan;scan=scan->next)
+                                    chld->indx.push_back( new iNode(**scan) );
+                                std::cerr << "\t\t\tchld=" << *chld << std::endl;
+
+                            }
+                            else
+                            {
+                                std::cerr << "\t\t\tsingular" << std::endl;
+                            }
+                        }
+                        
+                        
                     }
                     
                 }
-#endif
-                
                 
 
                 
