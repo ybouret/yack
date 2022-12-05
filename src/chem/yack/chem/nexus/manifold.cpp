@@ -215,9 +215,9 @@ namespace yack
             }
         }
         
-        typedef worthy::qfamily           qFamily_;
-        typedef small_list<size_t>        iList;
-        typedef typename iList::node_type iNode;
+        typedef worthy::qfamily    qFamily_;
+        typedef small_list<size_t> iList;
+        typedef iList::node_type   iNode;
         
         
         class qFamily : public object, public qFamily_
@@ -265,8 +265,8 @@ namespace yack
                 for(const worthy::qarray *node=(**this).head;node;node=node->next)
                 {
                     const readable<int> &arr = q2i(coeff.work,node->coef);
-                    if(whole_valid(arr))
-                        coeff.ensure(arr);
+                    //if(whole_valid(arr))
+                    coeff.ensure(arr);
                 }
             }
             
@@ -446,7 +446,7 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            for(size_t k_=2;k_<=n;++k_)
+            for(size_t k_=n;k_<=n;++k_)
             {
                 const size_t             k = k_;
                 combination              comb(n,k);  // possible combination
@@ -497,7 +497,7 @@ namespace yack
                     
                     bunch<int> coeff(k);
                     process(coeff,w);
-                    
+                    std::cerr << "nu=" << nu  << std::endl;
                     
                 } while(comb.next());
             }
