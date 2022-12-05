@@ -34,7 +34,31 @@ namespace yack
         inline virtual ~small_list() throw() {}               //!< cleanup
         inline          small_list(const small_list &other) : self_type(other) {} //!< hard copy
 
-        
+
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+
+        //! find whose args is this
+        node_type *whose(param_type args) {
+            for(node_type *node=this->head;node;node=node->next)
+            {
+                if(args == **node) return node;
+            }
+            return NULL;
+        }
+
+        //! find whose args is this, const
+        const node_type *whose(param_type args) const {
+            for(const node_type *node=this->head;node;node=node->next)
+            {
+                if(args == **node) return node;
+            }
+            return NULL;
+        }
+
+
     private:
         YACK_DISABLE_ASSIGN(small_list);
     };

@@ -75,6 +75,11 @@ namespace yack
     {
         U.release();
     }
+
+    bool worthy::qfamily:: fully_grown() const throw()
+    {
+        return U.size>=dimension;
+    }
     
     bool worthy::qfamily:: try_grow()
     {

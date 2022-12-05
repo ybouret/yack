@@ -194,8 +194,8 @@ namespace yack
             
 
             virtual ~qFamily() throw() {}
-            
-            // copy WITHOUT the ready indices
+
+            // copy without indices
             qFamily(const qFamily &other) :
             qFamily_(other),
             basis(other.basis),
@@ -234,7 +234,8 @@ namespace yack
                 {
                     const readable<int> &arr = q2i(coeff.work,node->coef);
                     //if(whole_valid(arr))
-                    coeff.ensure(arr);
+                    if(count_valid(arr)>1)
+                        coeff.ensure(arr);
                 }
             }
             
@@ -246,7 +247,7 @@ namespace yack
         
         typedef cxx_list_of<qFamily> qBranch;
         
-        
+
         
         void process(bunch<int>    &coeff,
                      const imatrix &mu)
@@ -292,9 +293,8 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 if(count_valid(mu[j]) < 2 ) continue;
-                std::cerr << std::endl << "nullify species@" << j << " pool=" << pool << std::endl;
+                std::cerr << std::endl << "nullify species@" << j << " pool=" << pool << " (but " << pool[m] << ")" << std::endl;
 
-                qBranch qRoot;
 
 
                 //--------------------------------------------------------------
@@ -302,207 +302,91 @@ namespace yack
                 // initialize root with first row and indices to try
                 //
                 //--------------------------------------------------------------
+                qBranch parents;
                 {
-                    qFamily *root = qRoot.push_back( new qFamily(n) );
+                    qFamily *root = parents.push_back( new qFamily(n) );
                     if(!root->grow(mu[j])) {
                         throw exception("couldn't start ortho!!!");
                     }
                     root->basis << j;
                     for(size_t i=1;i<m;++i) root->ready << pool[i];
+                    std::cerr << " with root=" << *root << std::endl;
                 }
 
-                std::cerr << "qRoot=" << qRoot << std::endl;
-
-                //--------------------------------------------------------------
-                //
-                //
-                //
-                //--------------------------------------------------------------
-                for(size_t cycle=1;;++cycle)
+                // iterative components
+                while(parents.size>0)
                 {
-                    std::cerr << "\t#cycle " << cycle << std::endl;
-                    qBranch qHeir;
-                    while(qRoot.size)
+
+                    qBranch lineage;
+
+                    // outer loop
+                    while(parents.size>0)
                     {
-                        auto_ptr<qFamily> root( qRoot.pop_front() );
-                        std::cerr << "\tprocessing " << root << std::endl;
+                        auto_ptr<qFamily> root( parents.pop_front() );
+                        std::cerr << "\troot=" << root << std::endl;
 
-                        assert((*root)->size<n);
-                        assert(root->ready.size>0);
-                        assert(root->basis.size+root->ready.size == m);
+                        bool    inherited = false;
+                        iList   reject;
+                        qBranch branch;
 
+
+                        // initialize local branch
                         for(const iNode *node=root->ready.head;node;node=node->next)
                         {
-                            const size_t         j_r  = **node;
-                            const readable<int> &v_r = mu[**node];
-                            auto_ptr<qFamily> chld( new qFamily(*root) );
-
-                            if(chld->grow(v_r))
-                            {
-                                if( (*chld)->size >= n)
+                            auto_ptr<qFamily>    chld( new qFamily(*root) );
+                            const size_t         jr = **node;
+                            const readable<int> &cr = mu[jr];
+                            if(chld->grow(cr)) {
+                                inherited = true;
+                                chld->basis << jr;
+                                if(chld->fully_grown())
                                 {
-                                    // process and quit
-                                    std::cerr << "\tfinal with " << chld << std::endl;
-
+                                    std::cerr << "\t\t[*] guess: " << chld << std::endl;
+                                    chld->to(coeff);
                                 }
                                 else
                                 {
-                                    // update and register
-                                    chld->basis << j_r;
-                                    for(const iNode *scan=root->ready.head;scan;scan=scan->next)
-                                    {
-                                        if(scan!=node)
-                                            chld->ready << **scan;
-                                    }
-                                    std::cerr << "\tchild with " << chld << std::endl;
-                                    qHeir.push_back( chld.yield() );
+                                    std::cerr << "\t\t[+] guess: " << chld << std::endl;
+                                    branch.push_back( chld.yield() );
                                 }
-                            }
-
-                        }
-
-
-#if 0
-                        // initialize child from root
-                        auto_ptr<qFamily> chld( new qFamily(*root) );
-
-                        // try root ready indices to build a new matrix
-                        for(const iNode *node=root->ready.head;node;node=node->next)
-                        {
-                            const size_t jr =**node;
-
-                            if(chld->grow(mu[jr]))
-                            {
-                                std::cerr << "\tguess with " << chld << std::endl;
-                                if( (*chld)->size >= n)
-                                {
-                                    //------------------------------------------
-                                    // last possible child
-                                    //------------------------------------------
-
-                                    exit(0);
-                                }
-                                else
-                                {
-                                    //------------------------------------------
-                                    // update child
-                                    //------------------------------------------
-                                    chld->basis << jr;
-                                    for(const iNode *scan=node->next;scan;scan=scan->next)
-                                    {
-                                        chld->ready << **scan;
-                                    }
-                                    assert(chld->basis.size+chld->ready.size == m);
-                                    std::cerr << "\tchild with " << chld << std::endl;
-                                    qHeir.push_back( chld.yield() );
-                                    break;
-                                }
-
                             }
                             else
                             {
-                                // take next ready index
-                                std::cerr << "\t\tsingular with vector " << mu[jr] << std::endl;
+                                std::cerr << "\t\t[-] rejecting @" << jr << " = " << cr << std::endl;
+                                reject << jr;
                             }
-
                         }
-#endif
 
-                    }
-
-                    //std::cerr << "heir=" << qHeir << std::endl;
-
-
-                    break;
-                }
-
-
-#if 0
-                continue;
-
-                //--------------------------------------------------------------
-                //
-                // creating workspace
-                //
-                //--------------------------------------------------------------
-                qBranch  A,B;
-                qBranch *qRoot = &A;
-                qBranch *qHeir = &B;
-                
-                //--------------------------------------------------------------
-                //
-                // initialize root with first row and indices to try
-                //
-                //--------------------------------------------------------------
-                {
-                    qFamily *root = qRoot->push_back( new qFamily(n) );
-                    if(!root->grow(mu[j])) {
-                        throw exception("couldn't start ortho!!!");
-                    }
-                    for(size_t i=1;i<m;++i) root->indx << pool[i];
-                }
-                
-                std::cerr << "qRoot=" << *qRoot << std::endl;
-                
-                //--------------------------------------------------------------
-                //
-                // making levels
-                //
-                //--------------------------------------------------------------
-                for(size_t cycle=1;;++cycle)
-                {
-                    assert(NULL != qRoot);
-                    assert(NULL != qHeir);
-                    assert(0==qHeir->size);
-                    
-                    std::cerr << "-------- at cycle #" << cycle << " --------" << std::endl;
-                    
-                    // try to grow all the roots with their indices
-                    while(qRoot->size)
-                    {
-                        auto_ptr<qFamily> root( qRoot->pop_front() );
-                        std::cerr << "\tprocessing " << *root << std::endl;
-                        assert( (*root)->size<n );
-                        
-                        
-                        for(const iNode *node=root->indx.head;node;node=node->next)
+                        if(!inherited)
                         {
-                            const readable<int> &mu_r = mu[**node];
-                            std::cerr << "\t\twith " << mu_r << " @" << **node << std::endl;
-                            
-                            // duplicate without indices
-                            auto_ptr<qFamily> chld( new qFamily(*root) );
-                            
-                            if(!chld->grow(mu_r) || (*chld)->size >= n)
-                            {
-                                std:: cerr << "\t\t\tdone with " << *chld << std::endl;
-                                chld->to(coeff);
-                            }
-                            else
-                            {
-                                
-                                // append remaining indices to this new child
-                                for(const iNode *scan=node->prev;scan;scan=scan->prev)
-                                    chld->indx.push_front( new iNode(**scan) );
-                                
-                                for(const iNode *scan=node->next;scan;scan=scan->next)
-                                    chld->indx.push_back( new iNode(**scan) );
-                                
-                                std::cerr << "\t\t\tchld=" << *chld << std::endl;
-                                qHeir->push_back( chld.yield() );
-                            }
-                            
+                            std::cerr << "Not Inherited!!!!" << std::endl;
+                            exit(0);
                         }
-                        
+
+                        // finalize local branch
+                        for(qFamily *chld=branch.head;chld;chld=chld->next)
+                        {
+                            for(const iNode *node=root->ready.head;node;node=node->next)
+                            {
+                                const size_t j = **node;
+                                if(chld->basis.whose(j)) continue; // removed used in basis
+                                if(reject.whose(j))      continue; // remove rejected
+                                chld->ready << j;
+                            }
+                            std::cerr << "\t\t--> child: " << *chld << std::endl;
+                        }
+
+
+                        lineage.merge_back(branch);
                     }
-                    
-                    assert(qRoot->size<=0);
-                    if(qHeir->size<=0)
-                        break;
-                    cswap(qHeir,qRoot);
+
+                    assert(parents.size<=0);
+                    parents.swap_with(lineage);
                 }
 
-#endif
+
+
+
                 std::cerr << "coeff=" << *coeff << std::endl;
                 
                 
@@ -514,7 +398,7 @@ namespace yack
         void nexus:: make_manifold_(cluster &source, const xmlog &xml)
         {
             static const char * const fn = "sub_manifold";
-            YACK_XMLSUB(xml, "sub_manifold");
+            YACK_XMLSUB(xml,fn);
             YACK_XMLOG(xml,source);
 
             if(N<=1)

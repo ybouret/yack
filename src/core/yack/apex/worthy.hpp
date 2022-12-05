@@ -144,10 +144,10 @@ namespace yack
                      u_k[i] = v_k[i] = arr[i];
                 return try_grow();
             }
-            
-            
-            const list_of<qarray> * operator->() const throw() { return &U; } //!< access
-            const list_of<qarray> & operator*()  const throw() { return  U; } //!< access
+
+            bool                    fully_grown() const throw(); //!< size >= dims
+            const list_of<qarray> * operator->()  const throw() { return &U; } //!< access
+            const list_of<qarray> & operator*()   const throw() { return  U; } //!< access
             
             inline friend std::ostream & operator<<(std::ostream &os, const qfamily &self)
             {
