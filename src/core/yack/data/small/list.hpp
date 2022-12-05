@@ -57,7 +57,61 @@ namespace yack
             }
             return NULL;
         }
-
+        
+        //! exclude all nodes whoe value matches args
+        void exclude(param_type args)  {
+            self_type  keep;
+            self_type  drop;
+            self_type &source = *this;
+            while(source.size)
+            {
+                if( args == * source.head) {
+                    drop.push_back( source.pop_front() );
+                }
+                else
+                {
+                    keep.push_back( source.pop_front() );
+                }
+            }
+            source.swap_with(keep);
+        }
+        
+        //! exclude all nodes whose value is found in other
+        void exclude(const small_list &other)
+        {
+            self_type  keep;
+            self_type  drop;
+            self_type &source = *this;
+            while(source.size)
+            {
+                if( other.whose(*source.head))
+                {
+                    drop.push_back( source.pop_front() );
+                }
+                else
+                {
+                    keep.push_back( source.pop_front() );
+                }
+            }
+        }
+        
+        void include(param_type args)
+        {
+            if(!whose(args)) (*this)<<args;
+        }
+        
+        void include(const small_list &other)
+        {
+            self_type grow;
+            for(const node_type *node=other.head;node;node=node->next)
+            {
+                const_type &value = **node;
+                if(!whose(value)) grow << value;
+            }
+            this->merge_back(grow);
+        }
+        
+        
 
     private:
         YACK_DISABLE_ASSIGN(small_list);
