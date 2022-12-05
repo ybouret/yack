@@ -177,7 +177,49 @@ namespace yack
         typedef worthy::qfamily    qFamily_;
         typedef small_list<size_t> iList;
         typedef iList::node_type   iNode;
-        
+
+#if 0
+        static inline void erase_from(iList &indx, const size_t j) throw()
+        {
+            iList tmp;
+            while(indx.size)
+            {
+                iNode *node = indx.pop_front();
+                if(j==**node)
+                {
+                    delete node;
+                }
+                else
+                {
+                    tmp.push_back(node);
+                }
+            }
+            tmp.swap_with(indx);
+        }
+#endif
+
+        static inline void erase_from(iList &indx, const iList &ibad) throw()
+        {
+            iList tmp;
+            while(indx.size)
+            {
+                iNode *node = indx.pop_front();
+                if( ibad.whose(**node) ) delete node;
+                else  tmp.push_back(node);
+            }
+            tmp.swap_with(indx);
+        }
+
+        static inline void insert_into(iList       &indx,
+                                       const iList &inew)
+        {
+            for(const iNode *node=inew.head;node;node=node->next)
+            {
+                const size_t j = **node;
+                if(!indx.whose(j)) indx << j;
+            }
+        }
+
         
         class qFamily : public object, public qFamily_
         {
@@ -322,62 +364,106 @@ namespace yack
                     // outer loop
                     while(parents.size>0)
                     {
-                        auto_ptr<qFamily> root( parents.pop_front() );
-                        std::cerr << "\troot=" << root << std::endl;
-
-                        bool    inherited = false;
-                        iList   reject;
-                        qBranch branch;
-
-
-                        // initialize local branch
-                        for(const iNode *node=root->ready.head;node;node=node->next)
+                        qBranch           narrow;
                         {
-                            auto_ptr<qFamily>    chld( new qFamily(*root) );
-                            const size_t         jr = **node;
-                            const readable<int> &cr = mu[jr];
-                            if(chld->grow(cr)) {
-                                inherited = true;
-                                chld->basis << jr;
-                                if(chld->fully_grown())
-                                {
-                                    std::cerr << "\t\t[*] guess: " << chld << std::endl;
-                                    chld->to(coeff);
+                            auto_ptr<qFamily> root( parents.pop_front() );
+                            std::cerr << "\troot=" << root << std::endl;
+
+                            bool    inherited = false;
+                            iList   reject;
+                            qBranch branch;
+
+
+                            // initialize local branch
+                            for(const iNode *node=root->ready.head;node;node=node->next)
+                            {
+                                auto_ptr<qFamily>    chld( new qFamily(*root) );
+                                const size_t         jr = **node;
+                                const readable<int> &cr = mu[jr];
+                                if(chld->grow(cr)) {
+                                    inherited = true;
+                                    chld->basis << jr;
+                                    if(chld->fully_grown())
+                                    {
+                                        std::cerr << "\t\t[*] guess: " << chld << std::endl;
+                                        chld->to(coeff);
+                                    }
+                                    else
+                                    {
+                                        std::cerr << "\t\t[+] guess: " << chld << std::endl;
+                                        branch.push_back( chld.yield() );
+                                    }
                                 }
                                 else
                                 {
-                                    std::cerr << "\t\t[+] guess: " << chld << std::endl;
-                                    branch.push_back( chld.yield() );
+                                    std::cerr << "\t\t[-] rejecting @" << jr << " = " << cr << std::endl;
+                                    reject << jr;
                                 }
                             }
-                            else
+
+                            if(!inherited)
                             {
-                                std::cerr << "\t\t[-] rejecting @" << jr << " = " << cr << std::endl;
-                                reject << jr;
+                                std::cerr << "Not Inherited!!!!" << std::endl;
+                                exit(0);
                             }
-                        }
 
-                        if(!inherited)
-                        {
-                            std::cerr << "Not Inherited!!!!" << std::endl;
-                            exit(0);
-                        }
 
-                        // finalize local branch
-                        for(qFamily *chld=branch.head;chld;chld=chld->next)
-                        {
-                            for(const iNode *node=root->ready.head;node;node=node->next)
+
+                            while(branch.size)
                             {
-                                const size_t j = **node;
-                                if(chld->basis.whose(j)) continue; // removed used in basis
-                                if(reject.whose(j))      continue; // remove rejected
-                                chld->ready << j;
+                                auto_ptr<qFamily> chld( branch.pop_front() );
+                                for(const iNode *node=root->ready.head;node;node=node->next)
+                                {
+                                    const size_t j = **node;
+                                    if(chld->basis.whose(j)) continue; // removed used in basis
+                                    if(reject.whose(j))      continue; // remove rejected
+                                    chld->ready << j;
+                                }
+                                std::cerr << "\t\t--> child: " << *chld;
+
+                                qFamily *twin = false;
+                                for(qFamily *sibl=narrow.head;sibl;sibl=sibl->next)
+                                {
+                                    if(*sibl==*chld)
+                                    {
+                                        twin = sibl;
+                                        break;
+                                    }
+                                }
+
+                                if(twin) {
+                                    std::cerr << " twin: " << *twin << std::endl;
+                                    for(const iNode *node=chld->basis.head;node;node=node->next)
+                                    {
+                                        if(twin->grow(mu[**node]))
+                                        {
+                                            std::cerr << "not consistent" << std::endl;
+                                            exit(0);
+                                        }
+                                    }
+                                    erase_from(twin->ready,chld->basis);
+                                    if(twin->ready.size<=0)
+                                    {
+                                        std::cerr << "finished twin!!" << std::endl;
+                                        exit(0);
+                                    }
+                                    else
+                                    {
+                                        insert_into(twin->basis,chld->basis);
+                                        std::cerr << "\t\t+-> child: " << *twin << std::endl;
+                                    }
+
+                                }
+                                else
+                                {
+                                    std::cerr << std::endl;
+                                    narrow.push_back( chld.yield() );
+                                }
                             }
-                            std::cerr << "\t\t--> child: " << *chld << std::endl;
+
                         }
 
-
-                        lineage.merge_back(branch);
+                        lineage.merge_back(narrow);
                     }
 
                     assert(parents.size<=0);
