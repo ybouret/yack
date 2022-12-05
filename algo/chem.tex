@@ -30,7 +30,7 @@ We define a phase state vector:
 \end{equation}
 
 \subsection{Equilibrium}
-\subsection{Definition}
+\subsubsection{Definition}
 Let $E_i$ be an equilibrium defined with integer coefficient $\nu_{i,j}$:
 \begin{equation}
 	(E_i) :  \sum_{j=1}^M \nu_{i,j} A_j = 0
@@ -52,7 +52,7 @@ We define:
 	\end{bmatrix}
 \end{equation}
 
-\subsection{Gradient}
+\subsubsection{Gradient}
 
 We express the derivative of a product w.r.t. one term:
 \begin{equation}
@@ -101,6 +101,31 @@ We define the Jacobian matrix:
 	\end{bmatrix}
 	\in \mathbb{M}_{N,M} = 
 	\lbrack \partial_{A_j}\Gamma_i \rbrack
+\end{equation}
+
+\section{Manifold}
+\subsection{Purpose}
+Initially, we are given of set of $N$ independent equilibria $\mathcal{E}$:
+\begin{equation}
+	\mathrm{rank}(\bm{\nu}) = \mathrm{rank}(\bm{\nu}^t) = N
+\end{equation}
+We want to build a manifold of equilibria by finding
+all the combinations that make one or more species disappear from
+the result: this is how two species can interact directly by
+the internal exchange of the removed species.
+\subsection{Look Up}
+Let us a species $A_j$. Its coefficients across the
+primary system are
+\begin{equation}
+	\vec{w}_j = \vec{\bm{\nu}^t_{j}}
+\end{equation}
+
+If the count of non-zero coefficients in  $\vec{w}_j$ if greater than one,
+then there is at least one possibility to find a vector $\vec{\alpha}$ \emph{with matching coefficients} such
+that:
+
+\begin{equation}
+	\vec{\alpha}.\vec{w}_j=0 \Leftrightarrow \vec{\alpha} \in \vec{w}_j^\perp
 \end{equation}
 
 \section{Conservation}

@@ -103,33 +103,7 @@ namespace yack
         }
         
         
-        size_t make_clan(sp_list                       &clan,
-                         const readable<equilibrium *> &esub)
-        {
-            const size_t k = esub.size();
-            
-            {
-                //--------------------------------------------------------------
-                // populate tribe of species
-                //--------------------------------------------------------------
-                addrbook tribe;
-                for(size_t i=k;i>0;--i) esub[i]->update(tribe);
-                
-                //--------------------------------------------------------------
-                // populate cache of species
-                //--------------------------------------------------------------
-                for(addrbook::const_iterator it=tribe.begin();it!=tribe.end();++it)
-                    clan << static_cast<const species *>( *it );
-            }
-            
-            //------------------------------------------------------------------
-            // sort cache by increasing species index
-            //------------------------------------------------------------------
-            merge_list_of<sp_node>::sort(clan,sp_node_compare);
-            const size_t m = clan.size;
-            if(m<k) throw imported::exception("nexus::make_clan","not enough species!!");
-            return m;
-        }
+
         
         void select_rows(imatrix       &w,
                          const imatrix &mu)
@@ -198,22 +172,7 @@ namespace yack
             return cof;
         }
         
-        static inline void fill_topo(imatrix                      &nu,
-                                     const imatrix                &Nu,
-                                     const readable<equilibrium*> &esub,
-                                     const sp_list                &clan) throw()
-        {
-            for(size_t i=esub.size();i>0;--i)
-            {
-                const size_t ei = **esub[i];
-                size_t       j  = 1;
-                for(const sp_node *sp=clan.head;sp;sp=sp->next,++j)
-                {
-                    const size_t sj = ***sp;
-                    nu[i][j] = Nu[ei][sj];
-                }
-            }
-        }
+
         
         typedef worthy::qfamily    qFamily_;
         typedef small_list<size_t> iList;
@@ -225,32 +184,40 @@ namespace yack
         public:
             explicit qFamily(const size_t dims) :
             qFamily_(dims),
-            indx(),
+            basis(),
+            ready(),
             next(0),
             prev(0)
             {
                 
             }
             
-            
-            
+
             virtual ~qFamily() throw() {}
             
-            // copy WITHOUT indices
+            // copy WITHOUT the ready indices
             qFamily(const qFamily &other) :
-            qFamily_(other), indx(), next(0), prev(0) {}
-            
-            iList     indx; //!< indices of next vector to choose
+            qFamily_(other),
+            basis(other.basis),
+            ready(),
+            next(0),
+            prev(0)
+            {}
+
+            iList    basis; //!< indices used to construct familiy
+            iList    ready; //!< indices ready to grow family
+
             qFamily  *next; //!< for list
             qFamily  *prev; //!< for list
             
             inline friend std::ostream & operator<<(std::ostream &os, const qFamily &self)
             {
                 const qFamily_ &from = self;
-                os << from << "+" << self.indx;
+                os << "@" << self.basis << "->" << from << "+" << self.ready;
                 return os;
             }
-            
+
+#if 0
             inline void ensure(const size_t j)
             {
                 for(const iNode *node=indx.head;node;node=node->next)
@@ -259,7 +226,8 @@ namespace yack
                 }
                 indx << j;
             }
-            
+#endif
+
             void to(bunch<int> &coeff)
             {
                 for(const worthy::qarray *node=(**this).head;node;node=node->next)
@@ -280,12 +248,14 @@ namespace yack
         
         
         
-        void process(bunch<int>   &coeff, const imatrix &mu)
+        void process(bunch<int>    &coeff,
+                     const imatrix &mu)
         {
             const size_t m = mu.rows;
             const size_t n = mu.cols;
             assert(coeff.width==n);
-            
+            assert(apk::rank_of(mu)==n);
+
             //------------------------------------------------------------------
             //
             //
@@ -306,7 +276,6 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            
             for(size_t j=1;j<=m;++j)
             {
                 
@@ -324,6 +293,132 @@ namespace yack
                 //--------------------------------------------------------------
                 if(count_valid(mu[j]) < 2 ) continue;
                 std::cerr << std::endl << "nullify species@" << j << " pool=" << pool << std::endl;
+
+                qBranch qRoot;
+
+
+                //--------------------------------------------------------------
+                //
+                // initialize root with first row and indices to try
+                //
+                //--------------------------------------------------------------
+                {
+                    qFamily *root = qRoot.push_back( new qFamily(n) );
+                    if(!root->grow(mu[j])) {
+                        throw exception("couldn't start ortho!!!");
+                    }
+                    root->basis << j;
+                    for(size_t i=1;i<m;++i) root->ready << pool[i];
+                }
+
+                std::cerr << "qRoot=" << qRoot << std::endl;
+
+                //--------------------------------------------------------------
+                //
+                //
+                //
+                //--------------------------------------------------------------
+                for(size_t cycle=1;;++cycle)
+                {
+                    std::cerr << "\t#cycle " << cycle << std::endl;
+                    qBranch qHeir;
+                    while(qRoot.size)
+                    {
+                        auto_ptr<qFamily> root( qRoot.pop_front() );
+                        std::cerr << "\tprocessing " << root << std::endl;
+
+                        assert((*root)->size<n);
+                        assert(root->ready.size>0);
+                        assert(root->basis.size+root->ready.size == m);
+
+                        for(const iNode *node=root->ready.head;node;node=node->next)
+                        {
+                            const size_t         j_r  = **node;
+                            const readable<int> &v_r = mu[**node];
+                            auto_ptr<qFamily> chld( new qFamily(*root) );
+
+                            if(chld->grow(v_r))
+                            {
+                                if( (*chld)->size >= n)
+                                {
+                                    // process and quit
+                                    std::cerr << "\tfinal with " << chld << std::endl;
+
+                                }
+                                else
+                                {
+                                    // update and register
+                                    chld->basis << j_r;
+                                    for(const iNode *scan=root->ready.head;scan;scan=scan->next)
+                                    {
+                                        if(scan!=node)
+                                            chld->ready << **scan;
+                                    }
+                                    std::cerr << "\tchild with " << chld << std::endl;
+
+                                }
+                            }
+
+                        }
+
+
+#if 0
+                        // initialize child from root
+                        auto_ptr<qFamily> chld( new qFamily(*root) );
+
+                        // try root ready indices to build a new matrix
+                        for(const iNode *node=root->ready.head;node;node=node->next)
+                        {
+                            const size_t jr =**node;
+
+                            if(chld->grow(mu[jr]))
+                            {
+                                std::cerr << "\tguess with " << chld << std::endl;
+                                if( (*chld)->size >= n)
+                                {
+                                    //------------------------------------------
+                                    // last possible child
+                                    //------------------------------------------
+
+                                    exit(0);
+                                }
+                                else
+                                {
+                                    //------------------------------------------
+                                    // update child
+                                    //------------------------------------------
+                                    chld->basis << jr;
+                                    for(const iNode *scan=node->next;scan;scan=scan->next)
+                                    {
+                                        chld->ready << **scan;
+                                    }
+                                    assert(chld->basis.size+chld->ready.size == m);
+                                    std::cerr << "\tchild with " << chld << std::endl;
+                                    qHeir.push_back( chld.yield() );
+                                    break;
+                                }
+
+                            }
+                            else
+                            {
+                                // take next ready index
+                                std::cerr << "\t\tsingular with vector " << mu[jr] << std::endl;
+                            }
+
+                        }
+#endif
+
+                    }
+
+                    //std::cerr << "heir=" << qHeir << std::endl;
+
+
+                    break;
+                }
+
+
+#if 0
+                continue;
 
                 //--------------------------------------------------------------
                 //
@@ -406,7 +501,8 @@ namespace yack
                         break;
                     cswap(qHeir,qRoot);
                 }
-                
+
+#endif
                 std::cerr << "coeff=" << *coeff << std::endl;
                 
                 
@@ -420,90 +516,30 @@ namespace yack
             static const char * const fn = "sub_manifold";
             YACK_XMLSUB(xml, "sub_manifold");
             YACK_XMLOG(xml,source);
-            
-            //------------------------------------------------------------------
-            //
-            // get equilibria within this cluster
-            //
-            //------------------------------------------------------------------
-            const size_t n = source.size;
-            if(n<=1) {
+
+            if(N<=1)
+            {
                 YACK_XMLOG(xml, "<standalone>");
                 return;
             }
-            
-            cxx_array<equilibrium *> edb(n);
+
+#if 1
+            const imatrix Mu;
             {
-                size_t i=1;
-                for(const eq_node *en=source.head;en;en=en->next,++i)
-                    edb[i] = &coerce(**en);
+                const imatrix NuT(Nu,transposed);
+                select_rows(coerce(Mu),NuT);
             }
-            
-            //------------------------------------------------------------------
-            //
-            //
-            // loop over all k-uplets from 2 to n
-            //
-            //
-            //------------------------------------------------------------------
-            for(size_t k_=n;k_<=n;++k_)
-            {
-                const size_t             k = k_;
-                combination              comb(n,k);  // possible combination
-                cxx_array<equilibrium *> esub(k);    // of selected equilibria
-                do
-                {
-                    //----------------------------------------------------------
-                    //
-                    // create local equilibria subset
-                    //
-                    //----------------------------------------------------------
-                    comb.designate(esub,edb);
-                    
-                    //----------------------------------------------------------
-                    //
-                    // create local species from equilibria
-                    //
-                    //----------------------------------------------------------
-                    sp_list      clan;
-                    const size_t m = make_clan(clan,esub);
-                    
-                    //----------------------------------------------------------
-                    //
-                    // extract local topology
-                    //
-                    //----------------------------------------------------------
-                    const imatrix nu(k,m); fill_topo( coerce(nu), Nu, esub, clan);
-                    const imatrix mu(nu,transposed);
-                    
-                    
-                    *xml << "-- [";
-                    for(size_t i=1;i<=k;++i)
-                        std::cerr << ' '  << esub[i]->name;
-                    std::cerr << " ] / " << k << std::endl;
-                    std::cerr << "\tnu=" << nu << std::endl;
-                    std::cerr << "\tmu=" << mu << std::endl;
-                    
-                    if( k != apk::rank_of(mu) ) throw imported::exception(fn,"invalid sub-system topology!");
-                    
-                    //----------------------------------------------------------
-                    //
-                    // compress rows
-                    //
-                    //----------------------------------------------------------
-                    imatrix     w;
-                    select_rows(w,mu);
-                    std::cerr << "\tw =" << w << std::endl;
-                    
-                    bunch<int> coeff(k);
-                    process(coeff,w);
-                    std::cerr << "nu=" << nu  << std::endl;
-                    
-                } while(comb.next());
-            }
-            
-            
-            
+#else
+            const imatrix Mu(Nu,transposed);
+#endif
+
+
+            bunch<int> coeff(N);
+            process(coeff,Mu);
+
+            std::cerr << "#Coeff=" << coeff->size << std::endl;
+            std::cerr << "Nu=" << Nu << std::endl;
+            std::cerr << "Mu=" << Mu << std::endl;
             
         }
         
