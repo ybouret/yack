@@ -355,7 +355,7 @@ namespace yack
                                             chld->ready << **scan;
                                     }
                                     std::cerr << "\tchild with " << chld << std::endl;
-
+                                    qHeir.push_back( chld.yield() );
                                 }
                             }
 
