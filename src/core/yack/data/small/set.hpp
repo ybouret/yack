@@ -95,6 +95,16 @@ namespace yack
             return NULL != content.whose(args);
         }
 
+        //! check overlaps with an other set
+        inline bool overlaps(const small_set &other) const
+        {
+            for(const node_type *node=other->head;node;node=node->next)
+            {
+                if(contains(**node)) return true;
+            }
+            return false;
+        }
+        
         //! compact current set if needed
         inline void compact()
         {
@@ -207,8 +217,13 @@ namespace yack
         //! syntax helper
         inline small_set & operator-= (const small_set &other) { exclude(other); return *this; }
 
+        
+        
+        //! get access to memory I/O
         inline const bank_ptr & io() const throw() { return deposit; }
 
+        
+        
     private:
         bank_ptr  deposit;
         list_type content;

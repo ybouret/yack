@@ -21,89 +21,6 @@ namespace yack
     {
         
         
-        
-        namespace
-        {
-            class mixed_equilibrium : public equilibrium
-            {
-            public:
-                virtual ~mixed_equilibrium() throw()
-                {
-                }
-                
-                const readable<double> &Ktab;
-                rmulops                &xmul;
-                const cxx_array<int>    coef;
-                
-                explicit mixed_equilibrium(const string           &uid,
-                                           const size_t            idx,
-                                           const readable<double> &myK,
-                                           rmulops                &ops,
-                                           const readable<int>    &arr) :
-                equilibrium(uid,idx),
-                Ktab(myK),
-                xmul(ops),
-                coef(arr,transmogrify)
-                {
-                    
-                }
-                
-            private:
-                YACK_DISABLE_COPY_AND_ASSIGN(mixed_equilibrium);
-                virtual double getK(double) const
-                {
-                    xmul.ld1();
-                    for(size_t j=coef.size();j>0;--j)
-                    {
-                        xmul.ipower(Ktab[j],coef[j]);
-                    }
-                    return xmul.query();
-                }
-            };
-        }
-        
-        
-        const equilibrium &nexus:: promote_mixed(const readable<int> &weight)
-        {
-            cxx_array<int> gcoef(M);
-            for(const enode *en=singles.head();en;en=en->next)
-            {
-                const equilibrium &eq = ***en;
-                const size_t       ei = *eq;
-                const int          ew = weight[ei];
-                if(!ew) continue;
-                for(const cnode *cn=eq.head();cn;cn=cn->next)
-                {
-                    const size_t j = *****cn;
-                    gcoef[j] += ew * Nu[ei][j];
-                }
-            }
-            
-            //----------------------------------------------------------
-            // create a mixed equilibrium
-            //----------------------------------------------------------
-            equilibria  &target = coerce(lattice);
-            const string name   = singles.make_name(weight);
-            const size_t mxid   = target.size()+1;
-            equilibrium &mxeq   = target.use( new mixed_equilibrium(name,mxid,K,xmul,weight) );
-            for(size_t j=1;j<=M;++j)
-            {
-                const int f = gcoef[j];
-                if(f) mxeq( worklib[j], f);
-            }
-            
-            assert(mxeq.neutral());
-            
-            //----------------------------------------------------------
-            // to register in this related group
-            //----------------------------------------------------------
-            return mxeq;
-            
-        }
-        
-        
-
-
         static inline size_t count_valid(const readable<int> &coef) throw()
         {
             size_t count = 0;
@@ -113,7 +30,7 @@ namespace yack
             }
             return count;
         }
-
+        
         void select_rows(imatrix       &w,
                          const imatrix &mu)
         {
@@ -125,7 +42,7 @@ namespace yack
             {
                 const readable<int> &curr = mu[j];
                 if(count_valid(curr)<=0) continue;
-
+                
                 bool                 isOk = true;
                 for(size_t k=jrow.size();k>0;--k)
                 {
@@ -149,7 +66,7 @@ namespace yack
             }
             
         }
-
+        
         
         static inline bool whole_valid(const readable<int> &arr) throw()
         {
@@ -173,19 +90,24 @@ namespace yack
             }
             return cof;
         }
-
+        
         typedef worthy::qfamily qFamily_;
         typedef small_bank<size_t> iBank;
         typedef iBank::pointer     iSharedBank;
         typedef small_set<size_t>  iList;
         typedef small_node<size_t> iNode;
-
-
+        
+        
         static const char * const fn = "sub_manifold";
-
+        
+        // orthogonal family, with
+        // indices of used in basis and
+        // indices of still not used a.k.a ready :)
         class qFamily : public object, public qFamily_
         {
         public:
+            
+            // full setup
             explicit qFamily(const imatrix          &mu,
                              const readable<size_t> &id,
                              const iSharedBank      &io) :
@@ -195,22 +117,22 @@ namespace yack
             basis(io),
             ready(io)
             {
-
+                
                 assert(id.size()==mu.rows);
-                size_t       i  = mu.rows;
-                const size_t ir = id[i];
+                size_t       i  = mu.rows; // last index
+                const size_t ir = id[i];   // gives major index
                 if(!grow(mu[ir])) {
                     throw imported::exception(fn,"invalid first sub-space");
                 }
-
+                
                 // info
-                basis << ir;
-                while(--i>0) ready.pre(id[i]);
-
-
+                basis << ir;                     // store major row
+                while(--i>0) ready.pre(id[i]);   // store remaining
+                
+                
             }
-
-
+            
+            
             //! duplicate all
             inline qFamily(const qFamily &parent) :
             qFamily_(parent),
@@ -218,26 +140,25 @@ namespace yack
             prev(0),
             basis(parent.basis),
             ready(parent.ready)
-            //ready(parent.ready.io())
             {
             }
-
-
+            
+            
             virtual ~qFamily() throw() {}
-
+            
             inline friend std::ostream & operator<<(std::ostream &os, const qFamily &self)
             {
                 const qFamily_ &from = self;
                 os << "@" << *self.basis << " : " << from << " +" << *self.ready;
                 return os;
             }
-
-            qFamily *next;
-            qFamily *prev;
-            iList    basis;
-            iList    ready;
-
-
+            
+            qFamily *next;  //!< for list
+            qFamily *prev;  //!< for list
+            iList    basis; //!< used to build basis
+            iList    ready; //!< candidate
+            
+            
             inline void to(bunch<int> &coeff) const
             {
                 std::cerr << *this << " to coeff..." << std::endl;
@@ -246,39 +167,259 @@ namespace yack
                     coeff.ensure( q2i(coeff.work,arr->coef) );
                 }
             }
-
+            
         private:
             YACK_DISABLE_ASSIGN(qFamily);
         };
-
-        typedef cxx_list_of<qFamily> qBranch;;
-
-
-
-
         
-        void process(bunch<int>    &coeff,
-                     const imatrix &mu)
+        typedef cxx_list_of<qFamily> qBranch;;
+        
+        
+        static inline
+        void next_generation(qBranch       &target,
+                             const qFamily &source,
+                             iList         &reject,
+                             const imatrix &mu)
+        {
+            auto_ptr<qFamily> chld( new qFamily(source) );
+            const iNode      *node = source.ready->head;
+            
+        NEXT_CHILD:
+            const size_t         ir = **node;
+            const readable<int> &cr = mu[ir];
+            if(chld->grow(cr))
+            {
+                //--------------------------------------------------------------
+                //
+                // valid index!
+                //
+                //----------------------------------------------
+                chld->basis << ir;                // register in basis
+                std::cerr << "\t\t|_guess = " << chld << std::endl;
+                target.push_back( chld.yield() ); // register as possible child
+                node=node->next;
+                if(node)
+                {
+                    chld = new qFamily(source);
+                    goto NEXT_CHILD;
+                }
+            }
+            else
+            {
+                //----------------------------------------------
+                //
+                // invalid index :
+                // in parent's span for the rest of the cycle
+                //
+                //----------------------------------------------
+                reject << ir;
+                node=node->next;
+                if(node)
+                    goto NEXT_CHILD;
+            }
+            
+            assert(NULL==node);
+        }
+        
+        static inline
+        void process_one(bunch<int>             &coeff,
+                         const readable<size_t> &pool,
+                         const imatrix          &mu,
+                         iSharedBank            &io)
+        {
+            // initialize top-level parents
+            const size_t rank = mu.cols;
+            qBranch      parents;
+            parents.push_back( new qFamily(mu,pool,io) );
+            std::cerr << "\troot=" << *parents.head << std::endl;
+            
+            //--------------------------------------------------------------
+            //
+            // iterative cycles from current parents
+            //
+            //--------------------------------------------------------------
+            for(size_t cycle=1,grown=2;parents.size>0;++cycle,++grown)
+            {
+                std::cerr << "\t@cycle #" << cycle << " with |parents| = " << parents.size << std::endl;
+                
+                qBranch lineage;
+                
+                //----------------------------------------------------------
+                //
+                // try to populate the lineage with valid, partial children
+                //
+                //----------------------------------------------------------
+                while(parents.size>0)
+                {
+                    auto_ptr<qFamily> source( parents.pop_front() ); // get the current parent
+                    qBranch           target;                        // created children
+                    iList             reject( io );                  // index within parent's span
+                    
+                    assert( (*source)->size == cycle );
+                    assert( source->ready->size>0     );
+                    
+                    std::cerr << "\t\tsource  = " << source << std::endl;
+                    next_generation(target,*source,reject,mu);
+                    
+                    
+                    
+                    //------------------------------------------------------
+                    //
+                    // end of loop over parent's indices:
+                    // take care of current children
+                    //
+                    //------------------------------------------------------
+                    
+                    if(!target.size)
+                    {
+                        std::cerr << "End Of Parent!!" << std::endl;
+                        exit(0);
+                    }
+                    
+                    const bool achieved = grown>=rank;
+                    if(achieved)
+                    {
+                        std::cerr << "\t\t|_achieved!!" << std::endl;
+                        
+                    }
+                    else
+                    {
+                        // clean up list of ready indices
+                        qBranch cleanup;
+                        while(target.size)
+                        {
+                            auto_ptr<qFamily> chld( target.pop_front() );
+                            chld->ready -= chld->basis; // used to build child
+                            chld->ready -= reject;      // in familiy span
+                            std::cerr << "\t\t|_child = " << chld << std::endl;
+                            
+                            if(chld->ready->size<=0)
+                            {
+                                std::cerr << "finished!" << std::endl;
+                                exit(0);
+                            }
+                            
+                            // check
+                            qFamily *mirror = NULL;
+                            for(qFamily *scan=cleanup.head;scan;scan=scan->next)
+                            {
+                                if( *scan == *chld)
+                                {
+                                    mirror = scan;
+                                    break;
+                                }
+                            }
+                            
+                            if(mirror)
+                            {
+                                std::cerr << "\t\t |_twin = " << *mirror << std::endl;
+                                mirror->basis << chld->basis;
+                                mirror->ready << chld->ready;
+                                mirror->ready -= mirror->basis;
+                                assert(!mirror->ready.overlaps(reject));
+                                std::cerr << "\t\t |_both = " << *mirror << std::endl;
+                            }
+                            else
+                            {
+                                // only child
+                                cleanup.push_back( chld.yield() );
+                            }
+                        }
+                        lineage.merge_back(cleanup);
+                    }
+                    
+                    
+                    
+#if 0
+                    const bool achieved = grown>=rank;
+                    if(achieved)
+                    {
+                        std::cerr << "\t\t|_Achieved!!" << std::endl;
+                        qBranch reduced;
+                        while(children.size)
+                        {
+                            auto_ptr<qFamily> chld( children.pop_front() );
+                            assert(chld->fully_grown());
+                            
+                            // verbose
+                            chld->ready.free();
+                            
+                            bool only_child = true;
+                            for(const qFamily *other=reduced.head;other;other=other->next)
+                            {
+                                if( *other == *chld)
+                                {
+                                    //std::cerr << "\t\t\talready exists" << std::endl;
+                                    only_child = false;
+                                    break;
+                                }
+                            }
+                            if(only_child)
+                            {
+                                std::cerr << "\t\t|_child = " << chld << std::endl;
+                                reduced.push_back( chld.yield() );
+                            }
+                        }
+                        
+                        for(const qFamily *sub=reduced.head;sub;sub=sub->next)
+                        {
+                            sub->to(coeff);
+                        }
+                        
+                        
+                        
+                    }
+                    else
+                    {
+                        // clean up list of ready indices
+                        qBranch cleanup;
+                        while(children.size)
+                        {
+                            auto_ptr<qFamily> chld( children.pop_front() );
+                            chld->ready -= chld->basis; // used to build child
+                            chld->ready -= rejected;    // in familiy span
+                            std::cerr << "\t\t|_child = " << chld << std::endl;
+                            
+                            // check
+                            cleanup.push_back( chld.yield() );
+                        }
+                        lineage.merge_back(cleanup);
+                    }
+#endif
+                }
+                
+                parents.swap_with(lineage);
+                
+                
+            } // end of cycles for one top-level parent
+            
+            
+        }
+        
+        
+        static inline
+        void process_all(bunch<int>    &coeff,
+                         const imatrix &mu)
         {
             const size_t m = mu.rows;
             const size_t n = mu.cols;
             assert(coeff.width==n);
             assert(apk::rank_of(mu)==n);
-
+            
             //------------------------------------------------------------------
             //
             //
-            // initialize
+            // initialize memory
             //
             //
             //------------------------------------------------------------------
             assert(m>1);
             assert(n>1);
-            cxx_array<size_t>        pool(m);        // indices reservoir
-            for(size_t j=1;j<=m;++j) pool[j] = j;    // initial reservoir
+            iSharedBank              io = new iBank(); // I/O for indices
+            cxx_array<size_t>        pool(m);          // indices reservoir
+            for(size_t j=1;j<=m;++j) pool[j] = j;      // initial reservoir
             
-            iSharedBank io = new iBank();
-
+            
             //------------------------------------------------------------------
             //
             //
@@ -291,7 +432,7 @@ namespace yack
                 
                 //--------------------------------------------------------------
                 //
-                // prepare reservoir of other index
+                // prepare pool of indices
                 //
                 //--------------------------------------------------------------
                 rolling::down(pool); assert(j==pool[m]);
@@ -303,186 +444,38 @@ namespace yack
                 //--------------------------------------------------------------
                 if(count_valid(mu[j]) < 2 ) continue;
                 std::cerr << std::endl << "nullify species@" << j << " pool=" << pool << " (root=" << pool[m] << ")" << std::endl;
-
-
-                //--------------------------------------------------------------
-                //
-                // create the top-level parents
-                //
-                //--------------------------------------------------------------
-                qBranch parents;
-                parents.push_back( new qFamily(mu,pool,io) );
-                std::cerr << "\troot=" << *parents.head << std::endl;
-
-
-                //--------------------------------------------------------------
-                //
-                // iterative cycles from current parents
-                //
-                //--------------------------------------------------------------
-                for(size_t cycle=1,grown=2;parents.size>0;++cycle,++grown)
-                {
-                    std::cerr << "\t@cycle #" << cycle << " with |parents| = " << parents.size << std::endl;
-
-                    qBranch lineage;
-
-                    //----------------------------------------------------------
-                    //
-                    // try to populate the lineage with valid, partial children
-                    //
-                    //----------------------------------------------------------
-                    while(parents.size>0)
-                    {
-                        auto_ptr<qFamily> parent( parents.pop_front() ); // get the current parent
-                        qBranch           children;                      // created children
-                        iList             rejected( io );                // index within parent's span
-
-                        assert( (*parent)->size == cycle );
-                        assert( parent->ready->size>0);
-
-                        std::cerr << "\t\tparent  = " << parent << std::endl;
-
-                        //------------------------------------------------------
-                        //
-                        // loop over next index
-                        //
-                        //------------------------------------------------------
-                        {
-                            auto_ptr<qFamily> chld( new qFamily(*parent) );
-                            const iNode      *node = parent->ready->head;
-
-                        NEXT_CHILD:
-                            const size_t         ir = **node;
-                            const readable<int> &cr = mu[ir];
-                            if(chld->grow(cr))
-                            {
-                                //----------------------------------------------
-                                // valid index!
-                                //----------------------------------------------
-                                chld->basis << ir;                  // register in basis
-                                children.push_back( chld.yield() ); // register as possible child
-                                node=node->next;
-                                if(node)
-                                {
-                                    chld = new qFamily(*parent);
-                                    goto NEXT_CHILD;
-                                }
-                            }
-                            else
-                            {
-                                //----------------------------------------------
-                                // invalid index :
-                                // in parent's span for the rest of the cycle
-                                //----------------------------------------------
-                                rejected << ir;
-                                node=node->next;
-                                if(node)
-                                    goto NEXT_CHILD;
-                            }
-
-                            assert(NULL==node);
-                        }
-
-                        //------------------------------------------------------
-                        //
-                        // end of loop over parent's indices:
-                        // take care of current children
-                        //
-                        //------------------------------------------------------
-
-                        if(!children.size)
-                        {
-                            std::cerr << "End Of Parent!!" << std::endl;
-                            exit(0);
-                        }
-
-                        const bool achieved = grown>=n;
-                        if(achieved)
-                        {
-                            std::cerr << "\t\t|_Achieved!!" << std::endl;
-                            qBranch reduced;
-                            while(children.size)
-                            {
-                                auto_ptr<qFamily> chld( children.pop_front() );
-                                assert(chld->fully_grown());
-
-                                // verbose
-                                chld->ready.free();
-
-                                bool only_child = true;
-                                for(const qFamily *other=reduced.head;other;other=other->next)
-                                {
-                                    if( *other == *chld)
-                                    {
-                                        //std::cerr << "\t\t\talready exists" << std::endl;
-                                        only_child = false;
-                                        break;
-                                    }
-                                }
-                                if(only_child)
-                                {
-                                    std::cerr << "\t\t|_child = " << chld << std::endl;
-                                    reduced.push_back( chld.yield() );
-                                }
-                            }
-
-                            for(const qFamily *sub=reduced.head;sub;sub=sub->next)
-                            {
-                                sub->to(coeff);
-                            }
-
-
-
-                        }
-                        else
-                        {
-                            // clean up list of ready indices
-                            qBranch cleanup;
-                            while(children.size)
-                            {
-                                auto_ptr<qFamily> chld( children.pop_front() );
-                                chld->ready -= chld->basis; // used to build child
-                                chld->ready -= rejected;    // in familiy span
-                                std::cerr << "\t\t|_child = " << chld << std::endl;
-
-                                // check
-                                cleanup.push_back( chld.yield() );
-                            }
-                            lineage.merge_back(cleanup);
-                        }
-                    }
-
-                    parents.swap_with(lineage);
-
-
-                } // end of cycles for one top-level parent
-
-
-
-
-                std::cerr << "coeff=" << *coeff << std::endl;
                 
+                //--------------------------------------------------------------
+                //
+                // process the species
+                //
+                //--------------------------------------------------------------
+                process_one(coeff,pool,mu,io);
                 
             }
             
             
+            std::cerr << "coeff=" << *coeff << std::endl;
+            
         }
+        
+        
         
         void nexus:: make_manifold_(cluster &source, const xmlog &xml)
         {
             YACK_XMLSUB(xml,fn);
             YACK_XMLOG(xml,source);
             const size_t n = source.size;
-
+            
             if(n<=1)
             {
                 YACK_XMLOG(xml, "<standalone>");
                 return;
             }
-
+            
             const imatrix mu;
             imatrix       nu(n,M);
-
+            
             {
                 size_t  i=1;
                 for(const eq_node *node=source.head;node;node=node->next,++i)
@@ -491,16 +484,16 @@ namespace yack
                     iota::load(nu[i],Nu[ei]);
                 }
             }
-
+            
             {
                 const imatrix nut(nu,transposed);
                 select_rows(coerce(mu),nut);
             }
-
-
+            
+            
             bunch<int> coeff(n);
-            process(coeff,mu);
-
+            process_all(coeff,mu);
+            
             std::cerr << "#Coeff=" << coeff->size << std::endl;
             std::cerr << "nu=" << nu << std::endl;
             std::cerr << "mu=" << mu << std::endl;
