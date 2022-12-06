@@ -260,30 +260,38 @@ namespace yack
             static const char * const fn = "sub_manifold";
             YACK_XMLSUB(xml,fn);
             YACK_XMLOG(xml,source);
+            const size_t n = source.size;
 
-            if(N<=1)
+            if(n<=1)
             {
                 YACK_XMLOG(xml, "<standalone>");
                 return;
             }
 
-#if 1
-            const imatrix Mu;
+            const imatrix mu;
+            imatrix       nu(n,M);
+
             {
-                const imatrix NuT(Nu,transposed);
-                select_rows(coerce(Mu),NuT);
+                size_t  i=1;
+                for(const eq_node *node=source.head;node;node=node->next,++i)
+                {
+                    const size_t ei = ***node;
+                    iota::load(nu[i],Nu[ei]);
+                }
             }
-#else
-            const imatrix Mu(Nu,transposed);
-#endif
+
+            {
+                const imatrix nut(nu,transposed);
+                select_rows(coerce(mu),nut);
+            }
 
 
-            bunch<int> coeff(N);
-            process(coeff,Mu);
+            bunch<int> coeff(n);
+            process(coeff,mu);
 
             std::cerr << "#Coeff=" << coeff->size << std::endl;
-            std::cerr << "Nu=" << Nu << std::endl;
-            std::cerr << "Mu=" << Mu << std::endl;
+            std::cerr << "nu=" << nu << std::endl;
+            std::cerr << "mu=" << mu << std::endl;
             
         }
         
