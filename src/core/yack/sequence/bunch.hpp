@@ -152,7 +152,7 @@ namespace yack
             return true;
         }
     public:
-        array_type work;
+        array_type work; //!< worksapce
     };
 
 }

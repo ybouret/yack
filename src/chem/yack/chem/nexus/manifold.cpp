@@ -421,7 +421,7 @@ namespace yack
                                 }
                                 std::cerr << "\t\t--> child: " << *chld;
 
-                                qFamily *twin = false;
+                                qFamily *twin = NULL;
                                 for(qFamily *sibl=narrow.head;sibl;sibl=sibl->next)
                                 {
                                     if(*sibl==*chld)

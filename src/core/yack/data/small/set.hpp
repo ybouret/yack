@@ -10,22 +10,40 @@
 namespace yack
 {
 
-    //! small set
+    //__________________________________________________________________________
+    //
+    //
+    //! set of items with shared bank for memory I/O
+    //
+    //__________________________________________________________________________
     template <typename T>
     class small_set
     {
     public:
-        YACK_DECL_ARGS(T,type);
-        typedef small_node<T> node_type;
-        typedef small_bank<T> bank_type;
-        typedef small_list<T> list_type;
+        //______________________________________________________________________
+        //
+        // types and definitions
+        //______________________________________________________________________
+        YACK_DECL_ARGS(T,type);                         //!< aliases
+        typedef small_node<T>               node_type;  //!< alias
+        typedef small_bank<T>               bank_type;  //!< alias
+        typedef small_list<T>               list_type;  //!< alias
+        typedef typename bank_type::pointer bank_ptr;   //!< alias
 
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
 
-        typedef typename bank_type::pointer bank_ptr;
+        //! setup with a shared bank of items
+        explicit small_set(const bank_ptr &bptr) throw() :
+        deposit(bptr),
+        content() {}
 
-        explicit small_set(const bank_ptr &bptr) throw() : deposit(bptr), content() {}
-        virtual ~small_set() throw() {}
+        //! cleanup, returning used items
+        virtual ~small_set() throw() { free(); }
 
+        //! copy content, sharing the same bank
         inline   small_set(const small_set &other) :
         deposit(other.deposit),
         content()
@@ -34,6 +52,7 @@ namespace yack
                 content.push_back( get( **node ) );
         }
 
+        //! assign by copy/swap
         inline small_set & operator=(const small_set &other)
         {
             small_set temp(other);
@@ -41,24 +60,28 @@ namespace yack
             return *this;
         }
 
+        //______________________________________________________________________
+        //
+        // access methods
+        //______________________________________________________________________
+        inline const list_type * operator->() const throw() { return &content; } //!< access
+        inline const list_type & operator* () const throw() { return  content; } //!< access
 
-        inline const list_type * operator->() const throw() { return &content; }
-        inline const list_type & operator* () const throw() { return  content; }
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
 
         //! force push back
-        inline void add(param_type args) {
-            content.push_back( get(args) );
-        }
+        inline void add(param_type args) { content.push_back( get(args) ); }
 
         //! force push front
-        inline void pre(param_type args) {
-            content.push_front( get(args) );
-        }
+        inline void pre(param_type args) { content.push_front( get(args) ); }
 
-        inline void free() throw() {
-            while(content.size) deposit->store( content.pop_back() );
-        }
+        //! return content to the bank
+        inline void free() throw() { deposit->collect(content); }
 
+        //! test ownership
         inline bool contains(param_type args) const
         {
             return NULL != content.whose(args);
@@ -81,6 +104,7 @@ namespace yack
         //! syntax helper
         inline small_set & operator <<(param_type args) { include(args); return *this; }
 
+        //! include another set
         inline void include(const small_set &other)
         {
             if(this != &other)

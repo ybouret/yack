@@ -1,6 +1,7 @@
 #include "yack/apex/worthy.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/sequence/vector.hpp"
+#include "yack/data/small/set.hpp"
 #include "../main.hpp"
 
 using namespace yack;
@@ -32,7 +33,10 @@ YACK_UTEST(apex_worthy)
         bring::fill(vec,ran);
         YACK_CHECK(!U.grow(vec));
     }
+
     
+
+
     
     
 }
