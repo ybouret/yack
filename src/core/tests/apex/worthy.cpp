@@ -34,7 +34,7 @@ YACK_UTEST(apex_worthy)
         YACK_CHECK(!U.grow(vec));
     }
 
-    
+    small_bank< cxx_array<apq> >::pointer shbnk( new small_bank< cxx_array<apq> >() );
 
 
     

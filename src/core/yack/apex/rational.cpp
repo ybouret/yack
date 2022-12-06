@@ -34,6 +34,14 @@ namespace yack
             return tmp;
         }
 
+        void rational:: ldz()
+        {
+            integer _n=0;
+            natural _d=1;
+            coerce(num).xch(_n);
+            coerce(den).xch(_d);
+        }
+
         rational rational:: mod2() const
         {
             const  integer num2 = num.mod2();

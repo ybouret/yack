@@ -5,6 +5,8 @@ using namespace yack;
 
 YACK_UTEST(data_bank)
 {
+    randomized::rand_ ran;
+
     small_bank<int>::pointer sharedBank( new small_bank<int>() );
     small_set<int>           iSet( sharedBank );
 
@@ -49,6 +51,19 @@ YACK_UTEST(data_bank)
         iSet2 = iSet;
         std::cerr << *iSet2 << std::endl;
     }
+
+    iSet.free();
+
+    for(size_t i=0;i<20;++i)
+    {
+        iSet.add( static_cast<int>(ran.in(-5,5)) );
+    }
+    std::cerr << *iSet << std::endl;
+    iSet.compact();
+    std::cerr << *iSet << std::endl;
+
+    iSet.sort(comparison::increasing<int>);
+    std::cerr << *iSet << std::endl;
 
 
 

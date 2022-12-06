@@ -6,6 +6,8 @@
 
 #include "yack/data/small/bank.hpp"
 #include "yack/data/small/list.hpp"
+#include "yack/data/nodes-comparison.hpp"
+#include "yack/data/list/sort.hpp"
 
 namespace yack
 {
@@ -85,6 +87,27 @@ namespace yack
         inline bool contains(param_type args) const
         {
             return NULL != content.whose(args);
+        }
+
+        //! compact current set if needed
+        inline void compact()
+        {
+            list_type temp;
+            while(content.size)
+            {
+                if(temp.whose(**content.head))
+                    deposit->store( content.pop_front() );
+                else
+                    temp.push_back( content.pop_front() );
+            }
+            content.swap_with(temp);
+        }
+
+        template <typename FUNC> inline
+        void sort(FUNC &comparison)
+        {
+            nodes_comparison<node_type,FUNC> call = { comparison };
+            merge_list_of<node_type>::sort(content,call);
         }
 
 
@@ -176,7 +199,7 @@ namespace yack
         //! syntax helper
         inline small_set & operator-= (const small_set &other) { exclude(other); return *this; }
 
-        
+
     private:
         bank_ptr  deposit;
         list_type content;
