@@ -1,4 +1,4 @@
-#include "yack/data/small/bank.hpp"
+#include "yack/data/small/set.hpp"
 #include "yack/utest/run.hpp"
 
 using namespace yack;
