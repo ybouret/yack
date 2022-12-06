@@ -9,30 +9,40 @@ using namespace yack;
 YACK_UTEST(apex_worthy)
 {
     worthy::qfamily U(3);
-    
-    U.reset();
-    vector<int> vec(3);
-    vec[1] = 1; vec[2] = 1; vec[3] = 1;
-    YACK_CHECK(U.grow(vec));
+    worthy::qfamily V(3);
+
+
+    matrix<int> vec(3,3);
+    vec[1][1] = 1;  vec[1][2] = 2;  vec[1][3] = 3;
+    vec[2][1] = 0;  vec[2][2] = 5;  vec[2][3] = 7;
+    vec[3][1] = 11; vec[3][2] = 13; vec[3][3] = 0;
+
+    YACK_CHECK(U.grow(vec[1]));
+    YACK_CHECK(U.grow(vec[2]));
+    YACK_CHECK(U.grow(vec[3]));
+
     std::cerr << U << std::endl;
 
-    
-    vec.ld(0);
-    vec[1] = 1;
-    YACK_CHECK(U.grow(vec));
-    std::cerr << U << std::endl;
-    
-    vec.ld(0);
-    vec[2] = 1;
-    YACK_CHECK(U.grow(vec));
-    std::cerr << U << std::endl;
-    
+    YACK_CHECK(V.grow(vec[3]));
+    YACK_CHECK(V.grow(vec[2]));
+    YACK_CHECK(V.grow(vec[1]));
+
+    std::cerr << V << std::endl;
+
+    V.reset();
+    YACK_CHECK(V.grow(vec[1])); YACK_CHECK(!(V==U));
+    YACK_CHECK(V.grow(vec[2])); YACK_CHECK(!(V==U));
+    YACK_CHECK(V.grow(vec[3])); YACK_CHECK( (V==U));
+
+
+#if 0
     randomized::rand_ ran;
     for(size_t iter=0;iter<8;++iter)
     {
         bring::fill(vec,ran);
         YACK_CHECK(!U.grow(vec));
     }
+#endif
     
 
 
