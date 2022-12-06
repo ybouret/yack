@@ -80,6 +80,11 @@ namespace yack
         //! force push front
         inline void pre(param_type args) { content.push_front( get(args) ); }
 
+        template <typename U> inline
+        type & add(const U &args, const transmogrify_t &) {
+            return **content.push_back( get(args) );
+        }
+
         //! return content to the bank
         inline void free() throw() { deposit->collect(content); }
 
@@ -113,7 +118,7 @@ namespace yack
 
         //! insert single args
         inline bool insert(param_type args) {
-            if(content.whose(args)) return false; else { add(args); return true; }
+            if(content.whose(args)) return false; else {  add(args); return true; }
         }
 
         //! ensure single args
@@ -205,7 +210,8 @@ namespace yack
         list_type content;
 
 
-        inline node_type *get(const_type &args) {
+        template <typename U>
+        inline node_type *get(const U &args) {
             if(deposit->size)
             {
                 node_type *node = deposit->query();
@@ -217,6 +223,9 @@ namespace yack
                 return new node_type(args);
             }
         }
+
+
+
 
     };
 

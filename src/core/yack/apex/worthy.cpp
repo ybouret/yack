@@ -23,7 +23,50 @@ namespace yack
     nrm2(_.nrm2)
     {
     }
-    
+
+    std::ostream & operator<<(std::ostream &os, const worthy::qarray &self)
+    {
+        os << '|' << self.coef << '|' << '=' << self.nrm2;
+        return os;
+    }
+
+    bool operator==(const worthy::qarray &lhs, const worthy::qarray &rhs) throw()
+    {
+        const readable<apq> &l = lhs.coef;
+        const readable<apq> &r = rhs.coef;  assert(l.size()==r.size());
+        const size_t         n = l.size();
+        for(size_t i=1;i<=n;++i)
+        {
+            assert(1==l[i].den);
+            assert(1==r[i].den);
+
+            if( l[i].num != r[i].num ) return false;
+        }
+
+        assert(lhs.nrm2==rhs.nrm2);
+        return true;
+    }
+
+    bool operator!=(const  worthy::qarray &lhs, const  worthy::qarray &rhs) throw()
+    {
+        const readable<apq> &l = lhs.coef;
+        const readable<apq> &r = rhs.coef;  assert(l.size()==r.size());
+        const size_t         n = l.size();
+        for(size_t i=1;i<=n;++i)
+        {
+            assert(1==l[i].den);
+            assert(1==r[i].den);
+
+            if( l[i].num != r[i].num )
+            {
+                return true;
+            }
+        }
+
+        assert(lhs.nrm2==rhs.nrm2);
+        return false;
+    }
+
     static inline apq apq_dot(const readable<apq> &lhs, const readable<apq> &rhs)
     {
         assert( lhs.size() == rhs.size() );
@@ -34,6 +77,7 @@ namespace yack
         }
         return res;
     }
+
     apq worthy:: qarray:: weight(const readable<apq> &v) const
     {
         assert( v.size() == coef.size() );
@@ -41,11 +85,13 @@ namespace yack
     }
 
     
+
+    
 }
 
 
 #include "yack/ptr/auto.hpp"
-#include "yack/system/imported.hpp"
+#include "yack/sort/indexing.hpp"
 
 namespace yack
 {
@@ -54,7 +100,9 @@ namespace yack
     dimension(dims),
     u_k(dimension),
     v_k(dimension),
-    U()
+    U(),
+    Q(dimension),
+    I(dimension)
     {
     }
     
@@ -67,19 +115,77 @@ namespace yack
     dimension(_.dimension),
     u_k(dimension),
     v_k(dimension),
-    U(_.U) 
+    U(_.U),
+    Q(dimension),
+    I(dimension)
     {
+        assert(U.size==_.U.size);
+        for(qarray *q=U.head;q;q=q->next)
+        {
+            Q << q;
+        }
+        assert(Q.size()==U.size);
+
+        const size_t n=Q.size();
+        for(size_t i=1;i<=n;++i)
+        {
+            I << _.I[i];
+        }
+        
+        assert(I.size()==Q.size());
+        assert(I == _.I);
     }
 
-    void worthy:: qfamily:: release() throw()
+    void worthy:: qfamily:: reset() throw()
     {
         U.release();
+        Q.free();
+        I.free();
     }
 
     bool worthy::qfamily:: fully_grown() const throw()
     {
+        assert(Q.size()==U.size);
+        assert(I.size()==U.size);
         return U.size>=dimension;
     }
+
+    std::ostream & operator<<(std::ostream &os, const worthy::qfamily &self)
+    {
+        os << self.U << " #" << self.I;
+        return os;
+    }
+
+
+    static inline
+    int compare_qarrays(const worthy::qarray *lhs, const worthy::qarray *rhs) throw()
+    {
+        assert(lhs);
+        assert(rhs);
+
+        const readable<apq> &l = lhs->coef;
+        const readable<apq> &r = rhs->coef; assert(l.size()==r.size());
+        const size_t         n = l.size();
+
+        for(size_t i=1;i<=n;++i)
+        {
+            switch( __sign::of(l[i].num,r[i].num) )
+            {
+                case negative: assert(l[i].num<r[i].num);
+                    return -1;
+
+                case __zero__:
+                    continue;
+
+                case positive: assert(r[i].num<l[i].num);
+                    return 1;
+            }
+        }
+
+        // shouldn't happen
+        return 0;
+    }
+
     
     bool worthy::qfamily:: try_grow()
     {
@@ -110,7 +216,13 @@ namespace yack
         if( 0 != pq->nrm2 )
         {
             apk::set_univocal( coerce(pq->coef) );
-            U.push_back( pq.yield() );
+            Q << U.push_back( pq.yield() ); // no-throw
+            I << 0;                         // no-throw
+            assert(Q.size()==U.size);
+            assert(I.size()==U.size);
+
+            indexing::make(I, compare_qarrays, Q);
+
             return true;
         }
         else

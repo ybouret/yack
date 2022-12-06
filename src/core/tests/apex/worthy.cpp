@@ -10,22 +10,22 @@ YACK_UTEST(apex_worthy)
 {
     worthy::qfamily U(3);
     
-    U.release();
+    U.reset();
     vector<int> vec(3);
     vec[1] = 1; vec[2] = 1; vec[3] = 1;
     YACK_CHECK(U.grow(vec));
-    std::cerr << *U << std::endl;
+    std::cerr << U << std::endl;
 
     
     vec.ld(0);
     vec[1] = 1;
     YACK_CHECK(U.grow(vec));
-    std::cerr << *U << std::endl;
+    std::cerr << U << std::endl;
     
     vec.ld(0);
     vec[2] = 1;
     YACK_CHECK(U.grow(vec));
-    std::cerr << *U << std::endl;
+    std::cerr << U << std::endl;
     
     randomized::rand_ ran;
     for(size_t iter=0;iter<8;++iter)
@@ -33,8 +33,7 @@ YACK_UTEST(apex_worthy)
         bring::fill(vec,ran);
         YACK_CHECK(!U.grow(vec));
     }
-
-    small_bank< cxx_array<apq> >::pointer shbnk( new small_bank< cxx_array<apq> >() );
+    
 
 
     

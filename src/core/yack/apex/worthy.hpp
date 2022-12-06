@@ -6,6 +6,7 @@
 
 #include "yack/apex.hpp"
 #include "yack/sequence/cxx-array.hpp"
+#include "yack/sequence/cxx-series.hpp"
 #include "yack/data/list/cxx.hpp"
 
 namespace yack
@@ -24,7 +25,9 @@ namespace yack
         //! array of rational coefficients
         //______________________________________________________________________
         typedef cxx_array<apq> qcoeffs;
-        
+
+
+
         //______________________________________________________________________
         //
         //! array of coefficients with its norm
@@ -60,43 +63,15 @@ namespace yack
             apq weight(const readable<apq> &v) const;
             
             //! display
-            friend std::ostream & operator<<(std::ostream &os, const qarray &self)
-            {
-                os << '|' << self.coef << '|' << '=' << self.nrm2;
-                return os;
-            }
-
+            friend std::ostream & operator<<(std::ostream &, const qarray &);
 
             //! test all coefficients equality
-            friend bool operator==(const qarray &lhs, const qarray &rhs)
-            {
-                if(lhs.coef==rhs.coef)
-                {
-                    assert(lhs.nrm2==rhs.nrm2);
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
+            friend bool operator==(const qarray &lhs, const qarray &rhs) throw();
 
             //! test coefficients difference
-            friend bool operator!=(const qarray &lhs, const qarray &rhs)
-            {
-                if(lhs.coef!=rhs.coef)
-                {
-                    return true;
-                }
-                else
-                {
-                    assert(lhs.nrm2==rhs.nrm2);
-                    return false;
-                }
-            }
-            
-            
-            
+            friend bool operator!=(const qarray &lhs, const qarray &rhs) throw();
+
+
             //__________________________________________________________________
             //
             // members
@@ -105,12 +80,15 @@ namespace yack
             qarray       *prev;  //!< for list
             const qcoeffs coef;  //!< coefficients, should be simplified
             const apn     nrm2;  //!< |coef|^2
-            
-            
+
+
+
         private:
             YACK_DISABLE_ASSIGN(qarray);
             void setup();
         };
+
+
         
         //______________________________________________________________________
         //
@@ -131,7 +109,7 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            void release() throw(); //!< release all memory
+            void reset() throw(); //!< release/free all memory
 
             
             //! grow algorithm
@@ -153,11 +131,7 @@ namespace yack
             const list_of<qarray> & operator*()   const throw() { return  U; } //!< access
 
             //! display
-            inline friend std::ostream & operator<<(std::ostream &os, const qfamily &self)
-            {
-                os << self.U;
-                return os;
-            }
+            friend std::ostream & operator<<(std::ostream &, const qfamily &);
 
             //! check same families
             friend bool operator==(const qfamily &lhs, const qfamily &rhs)
@@ -182,15 +156,16 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const size_t dimension; //!< space dimension
+            const size_t       dimension; //!< space dimension
 
-            
         private:
             YACK_DISABLE_ASSIGN(qfamily);
             qcoeffs             u_k;       //!< workspace
             qcoeffs             v_k;       //!< workspace
             cxx_list_of<qarray> U;         //!< current list of vectors
-            
+            cxx_series<qarray*> Q;         //!< pointer to vectors
+            cxx_series<size_t>  I;         //!< current indices
+
             bool try_grow();
             
             

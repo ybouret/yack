@@ -140,17 +140,31 @@ namespace yack
         {
             duplicate(other);
         }
-        
-        //! assign
+
+        //! assign operator
+        inline cxx_array & operator=( const cxx_array &other )
+        {
+            duplicate(other);
+            return *this;
+        }
+
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+
+        //! assign function
         template <typename U> inline
         void assign( const readable<U> &arr )
         {
             duplicate(arr);
         }
         
-        
+
+
+
+
     private:
-        YACK_DISABLE_ASSIGN(cxx_array);
         const memory::operative_of<mutable_type> memIO;
         
         template <typename U>
