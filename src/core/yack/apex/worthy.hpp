@@ -134,23 +134,7 @@ namespace yack
             friend std::ostream & operator<<(std::ostream &, const qfamily &);
 
             //! check same families
-            friend bool operator==(const qfamily &lhs, const qfamily &rhs)
-            {
-                const list_of<qarray> &L = lhs.U;
-                const list_of<qarray> &R = rhs.U;
-                if(L.size==R.size)
-                {
-                    for(const qarray *l=L.head, *r=R.head;l;l=l->next,r=r->next)
-                    {
-                        if( *l != *r) return false;
-                    }
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
+            friend bool operator==(const qfamily &lhs, const qfamily &rhs) throw();
             
             //__________________________________________________________________
             //
@@ -160,11 +144,11 @@ namespace yack
 
         private:
             YACK_DISABLE_ASSIGN(qfamily);
-            qcoeffs             u_k;       //!< workspace
-            qcoeffs             v_k;       //!< workspace
-            cxx_list_of<qarray> U;         //!< current list of vectors
-            cxx_series<qarray*> Q;         //!< pointer to vectors
-            cxx_series<size_t>  I;         //!< current indices
+            qcoeffs              u_k;       //!< workspace
+            qcoeffs              v_k;       //!< workspace
+            cxx_list_of<qarray>  U;         //!< current list of vectors
+            cxx_series<qcoeffs*> Q;         //!< pointer to vectors
+            cxx_series<size_t>   I;         //!< current indices
 
             bool try_grow();
             

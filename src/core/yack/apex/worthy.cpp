@@ -30,41 +30,59 @@ namespace yack
         return os;
     }
 
-    bool operator==(const worthy::qarray &lhs, const worthy::qarray &rhs) throw()
+    static inline bool are_same_simplified(const readable<apq> &l,
+                                           const readable<apq> &r) throw()
     {
-        const readable<apq> &l = lhs.coef;
-        const readable<apq> &r = rhs.coef;  assert(l.size()==r.size());
-        const size_t         n = l.size();
+        assert(l.size()==r.size());
+        const size_t n = l.size();
         for(size_t i=1;i<=n;++i)
         {
             assert(1==l[i].den);
             assert(1==r[i].den);
-
             if( l[i].num != r[i].num ) return false;
         }
-
-        assert(lhs.nrm2==rhs.nrm2);
         return true;
     }
 
-    bool operator!=(const  worthy::qarray &lhs, const  worthy::qarray &rhs) throw()
+    static inline bool are_diff_simplified(const readable<apq> &l,
+                                           const readable<apq> &r) throw()
     {
-        const readable<apq> &l = lhs.coef;
-        const readable<apq> &r = rhs.coef;  assert(l.size()==r.size());
-        const size_t         n = l.size();
+        assert(l.size()==r.size());
+        const size_t n = l.size();
         for(size_t i=1;i<=n;++i)
         {
             assert(1==l[i].den);
             assert(1==r[i].den);
-
-            if( l[i].num != r[i].num )
-            {
-                return true;
-            }
+            if( l[i].num != r[i].num ) return true;
         }
-
-        assert(lhs.nrm2==rhs.nrm2);
         return false;
+    }
+
+
+    bool operator==(const worthy::qarray &lhs, const worthy::qarray &rhs) throw()
+    {
+        if(are_same_simplified(lhs.coef,rhs.coef))
+        {
+            assert(lhs.nrm2==rhs.nrm2);
+            return true;
+        }
+        else
+            return false;
+    }
+
+
+
+    bool operator!=(const worthy::qarray &lhs, const  worthy::qarray &rhs) throw()
+    {
+        if(are_diff_simplified(lhs.coef,rhs.coef))
+        {
+            return true;
+        }
+        else
+        {
+            assert(lhs.nrm2==rhs.nrm2);
+            return false;
+        }
     }
 
     static inline apq apq_dot(const readable<apq> &lhs, const readable<apq> &rhs)
@@ -120,17 +138,15 @@ namespace yack
     I(dimension)
     {
         assert(U.size==_.U.size);
+        // rebuild Q from new arrays
         for(qarray *q=U.head;q;q=q->next)
-        {
-            Q << q;
-        }
+            Q << &coerce(q->coef);
         assert(Q.size()==U.size);
 
         const size_t n=Q.size();
         for(size_t i=1;i<=n;++i)
-        {
             I << _.I[i];
-        }
+
         
         assert(I.size()==Q.size());
         assert(I == _.I);
@@ -152,19 +168,19 @@ namespace yack
 
     std::ostream & operator<<(std::ostream &os, const worthy::qfamily &self)
     {
-        os << self.U << " #" << self.I;
+        os << self.U << " <" << self.I << ">";
         return os;
     }
 
 
     static inline
-    int compare_qarrays(const worthy::qarray *lhs, const worthy::qarray *rhs) throw()
+    int compare_coeffs(const readable<apq> *lhs, const readable<apq> *rhs) throw()
     {
         assert(lhs);
         assert(rhs);
 
-        const readable<apq> &l = lhs->coef;
-        const readable<apq> &r = rhs->coef; assert(l.size()==r.size());
+        const readable<apq> &l = *lhs;
+        const readable<apq> &r = *rhs; assert(l.size()==r.size());
         const size_t         n = l.size();
 
         for(size_t i=1;i<=n;++i)
@@ -216,12 +232,12 @@ namespace yack
         if( 0 != pq->nrm2 )
         {
             apk::set_univocal( coerce(pq->coef) );
-            Q << U.push_back( pq.yield() ); // no-throw
+            Q << &coerce(U.push_back( pq.yield() )->coef); // no-throw
             I << 0;                         // no-throw
             assert(Q.size()==U.size);
             assert(I.size()==U.size);
 
-            indexing::make(I, compare_qarrays, Q);
+            indexing::make(I, compare_coeffs, Q);
 
             return true;
         }
@@ -230,6 +246,35 @@ namespace yack
             return false;
         }
         
+    }
+
+    bool operator==(const worthy::qfamily &lhs, const worthy::qfamily &rhs) throw()
+    {
+        const list_of<worthy::qarray> &L = lhs.U;
+        const list_of<worthy::qarray> &R = rhs.U;
+        if(L.size==R.size)
+        {
+            const size_t                      nn = L.size;
+            const readable<size_t>           &li = lhs.I; assert(li.size()==nn);
+            const readable<size_t>           &ri = rhs.I; assert(ri.size()==nn);
+            const readable<worthy::qcoeffs*> &lq = lhs.Q; assert(lq.size()==nn);
+            const readable<worthy::qcoeffs*> &rq = rhs.Q; assert(rq.size()==nn);
+
+            for(size_t k=1;k<=nn;++k)
+            {
+                const readable<apq> &l = *lq[li[k]]; // lhs coefficients #rank=k
+                const readable<apq> &r = *rq[ri[k]]; // rhs coefficients #rank=k
+                if(are_diff_simplified(l,r)) return false;
+            }
+
+            // all the same
+            return true;
+        }
+        else
+        {
+            // different sizes
+            return false;
+        }
     }
 
     
