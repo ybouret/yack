@@ -238,6 +238,15 @@ namespace yack
             iList    ready;
 
 
+            inline void to(bunch<int> &coeff) const
+            {
+                std::cerr << *this << " to coeff..." << std::endl;
+                for(const worthy::qarray *arr=(*this)->head->next;arr;arr=arr->next)
+                {
+                    coeff.ensure( q2i(coeff.work,arr->coef) );
+                }
+            }
+
         private:
             YACK_DISABLE_ASSIGN(qFamily);
         };
@@ -311,7 +320,7 @@ namespace yack
                 // iterative cycles from current parents
                 //
                 //--------------------------------------------------------------
-                for(size_t cycle=1;parents.size>0;++cycle)
+                for(size_t cycle=1,grown=2;parents.size>0;++cycle,++grown)
                 {
                     std::cerr << "\t@cycle #" << cycle << " with |parents| = " << parents.size << std::endl;
 
@@ -387,20 +396,60 @@ namespace yack
                             exit(0);
                         }
 
-                        // clean up list of ready indices
-                        qBranch cleanup;
-                        while(children.size)
+                        const bool achieved = grown>=n;
+                        if(achieved)
                         {
-                            auto_ptr<qFamily> chld( children.pop_front() );
-                            chld->ready -= chld->basis; // used to build child
-                            chld->ready -= rejected;    // in familiy span
-                            std::cerr << "\t\t|_child = " << chld << std::endl;
+                            std::cerr << "\t\t|_Achieved!!" << std::endl;
+                            qBranch reduced;
+                            while(children.size)
+                            {
+                                auto_ptr<qFamily> chld( children.pop_front() );
+                                assert(chld->fully_grown());
 
-                            // check
-                            cleanup.push_back( chld.yield() );
+                                // verbose
+                                chld->ready.free();
+
+                                bool only_child = true;
+                                for(const qFamily *other=reduced.head;other;other=other->next)
+                                {
+                                    if( *other == *chld)
+                                    {
+                                        //std::cerr << "\t\t\talready exists" << std::endl;
+                                        only_child = false;
+                                        break;
+                                    }
+                                }
+                                if(only_child)
+                                {
+                                    std::cerr << "\t\t|_child = " << chld << std::endl;
+                                    reduced.push_back( chld.yield() );
+                                }
+                            }
+
+                            for(const qFamily *sub=reduced.head;sub;sub=sub->next)
+                            {
+                                sub->to(coeff);
+                            }
+
+
+
                         }
+                        else
+                        {
+                            // clean up list of ready indices
+                            qBranch cleanup;
+                            while(children.size)
+                            {
+                                auto_ptr<qFamily> chld( children.pop_front() );
+                                chld->ready -= chld->basis; // used to build child
+                                chld->ready -= rejected;    // in familiy span
+                                std::cerr << "\t\t|_child = " << chld << std::endl;
 
-                        lineage.merge_back(cleanup);
+                                // check
+                                cleanup.push_back( chld.yield() );
+                            }
+                            lineage.merge_back(cleanup);
+                        }
                     }
 
                     parents.swap_with(lineage);
