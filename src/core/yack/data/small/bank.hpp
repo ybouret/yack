@@ -5,7 +5,7 @@
 #ifndef YACK_DATA_SMALL_BANK_INCLUDED
 #define YACK_DATA_SMALL_BANK_INCLUDED 1
 
-#include "yack/data/small/node.hpp"
+#include "yack/data/small/list.hpp"
 #include "yack/data/pool/cxx.hpp"
 #include "yack/counted.hpp"
 #include "yack/ptr/arc.hpp"
@@ -29,6 +29,11 @@ namespace yack
 
         inline explicit small_bank() throw() : object(), counted(), self_type()  {}
         inline virtual ~small_bank() throw() {}
+
+        inline void collect(small_list<type> &debt) throw() {
+            while(debt.size) store(debt.pop_back());
+        }
+
 
 
     private:

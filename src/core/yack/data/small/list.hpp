@@ -42,8 +42,7 @@ namespace yack
 
         //! find whose args is this
         node_type *whose(param_type args) {
-            for(node_type *node=this->head;node;node=node->next)
-            {
+            for(node_type *node=this->head;node;node=node->next) {
                 if(args == **node) return node;
             }
             return NULL;
@@ -51,13 +50,14 @@ namespace yack
 
         //! find whose args is this, const
         const node_type *whose(param_type args) const {
-            for(const node_type *node=this->head;node;node=node->next)
-            {
+            for(const node_type *node=this->head;node;node=node->next) {
                 if(args == **node) return node;
             }
             return NULL;
         }
+
         
+
         
         
 
