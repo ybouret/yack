@@ -207,6 +207,7 @@ namespace yack
         //! syntax helper
         inline small_set & operator-= (const small_set &other) { exclude(other); return *this; }
 
+        inline const bank_ptr & io() const throw() { return deposit; }
 
     private:
         bank_ptr  deposit;
