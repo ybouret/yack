@@ -65,7 +65,9 @@ namespace yack
                 os << '|' << self.coef << '|' << '=' << self.nrm2;
                 return os;
             }
-            
+
+
+            //! test all coefficients equality
             friend bool operator==(const qarray &lhs, const qarray &rhs)
             {
                 if(lhs.coef==rhs.coef)
@@ -78,7 +80,8 @@ namespace yack
                     return false;
                 }
             }
-            
+
+            //! test coefficients difference
             friend bool operator!=(const qarray &lhs, const qarray &rhs)
             {
                 if(lhs.coef!=rhs.coef)
@@ -148,13 +151,15 @@ namespace yack
             bool                    fully_grown() const throw(); //!< size >= dims
             const list_of<qarray> * operator->()  const throw() { return &U; } //!< access
             const list_of<qarray> & operator*()   const throw() { return  U; } //!< access
-            
+
+            //! display
             inline friend std::ostream & operator<<(std::ostream &os, const qfamily &self)
             {
                 os << self.U;
                 return os;
             }
-            
+
+            //! check same families
             friend bool operator==(const qfamily &lhs, const qfamily &rhs)
             {
                 const list_of<qarray> &L = lhs.U;
