@@ -277,6 +277,21 @@ namespace yack
         }
     }
 
+    const readable<apq> & worthy:: qfamily:: project()
+    {
+        for(const qarray *node=U.head;node;node=node->next)
+        {
+            const readable<apq> &u = node->coef;
+            const apq            f = apq_dot(v_k,u)/node->nrm2;
+            for(size_t i=dimension;i>0;--i)
+            {
+                u_k[i] += f * u[i];
+            }
+        }
+        apk::simplify(u_k);
+        return u_k;
+    }
+
     
 }
 

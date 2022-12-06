@@ -135,7 +135,24 @@ namespace yack
 
             //! check same families
             friend bool operator==(const qfamily &lhs, const qfamily &rhs) throw();
-            
+
+            //! return simplified projected vector
+            /**
+             should be the identity for any vector
+             in the span of the current basis
+             */
+            template <typename T>
+            const readable<apq> &project(const readable<T> &vec)
+            {
+                assert(vec.size()==dimension);
+                for(size_t i=dimension;i>0;--i)
+                {
+                    v_k[i] = vec[i];
+                    u_k[i].ldz();
+                }
+                return project();
+            }
+
             //__________________________________________________________________
             //
             // members
@@ -151,7 +168,7 @@ namespace yack
             cxx_series<size_t>   I;         //!< current indices
 
             bool try_grow();
-            
+            const readable<apq> &project();
             
 
             

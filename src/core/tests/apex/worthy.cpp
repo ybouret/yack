@@ -18,8 +18,14 @@ YACK_UTEST(apex_worthy)
     vec[3][1] = 11; vec[3][2] = 13; vec[3][3] = 0;
 
     YACK_CHECK(U.grow(vec[1]));
+    std::cerr << U.project(vec[1]) << std::endl;
     YACK_CHECK(U.grow(vec[2]));
+    std::cerr << U.project(vec[1]) << std::endl;
+    std::cerr << U.project(vec[2]) << std::endl;
     YACK_CHECK(U.grow(vec[3]));
+    std::cerr << U.project(vec[1]) << std::endl;
+    std::cerr << U.project(vec[2]) << std::endl;
+    std::cerr << U.project(vec[3]) << std::endl;
 
     std::cerr << U << std::endl;
 
@@ -35,14 +41,14 @@ YACK_UTEST(apex_worthy)
     YACK_CHECK(V.grow(vec[3])); YACK_CHECK( (V==U));
 
 
-#if 0
+
+
     randomized::rand_ ran;
     for(size_t iter=0;iter<8;++iter)
     {
-        bring::fill(vec,ran);
-        YACK_CHECK(!U.grow(vec));
+        bring::fill(vec[1],ran);
+        YACK_CHECK(!U.grow(vec[1]));
     }
-#endif
     
 
 

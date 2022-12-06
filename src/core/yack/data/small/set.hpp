@@ -80,6 +80,7 @@ namespace yack
         //! force push front
         inline void pre(param_type args) { content.push_front( get(args) ); }
 
+        //! force push back with any argument for constructor
         template <typename U> inline
         type & add(const U &args, const transmogrify_t &) {
             return **content.push_back( get(args) );
@@ -108,6 +109,8 @@ namespace yack
             content.swap_with(temp);
         }
 
+
+        //! sort data thru sorting of nodes
         template <typename FUNC> inline
         void sort(FUNC &comparison)
         {
