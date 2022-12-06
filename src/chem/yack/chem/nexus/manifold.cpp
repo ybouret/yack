@@ -296,19 +296,34 @@ namespace yack
                 std::cerr << std::endl << "nullify species@" << j << " pool=" << pool << " (root=" << pool[m] << ")" << std::endl;
 
 
+                //--------------------------------------------------------------
+                //
+                // create the top-level parents
+                //
+                //--------------------------------------------------------------
                 qBranch parents;
                 parents.push_back( new qFamily(mu,pool,io) );
                 std::cerr << "\troot=" << *parents.head << std::endl;
 
 
+                //--------------------------------------------------------------
+                //
+                // iterative cycles from current parents
+                //
+                //--------------------------------------------------------------
                 for(size_t cycle=1;parents.size>0;++cycle)
                 {
                     std::cerr << "\t@cycle #" << cycle << " with |parents| = " << parents.size << std::endl;
+
                     qBranch lineage;
 
+                    //----------------------------------------------------------
+                    //
+                    // try to populate the lineage with valid, partial children
+                    //
+                    //----------------------------------------------------------
                     while(parents.size>0)
                     {
-
                         auto_ptr<qFamily> parent( parents.pop_front() ); // get the current parent
                         qBranch           children;                      // created children
                         iList             rejected( io );                // index within parent's span
@@ -318,38 +333,53 @@ namespace yack
 
                         std::cerr << "\t\tparent  = " << parent << std::endl;
 
+                        //------------------------------------------------------
+                        //
                         // loop over next index
-                        auto_ptr<qFamily> chld( new qFamily(*parent) );
-                        const iNode      *node = parent->ready->head;
-
-                    NEXT_CHILD:
-                        const size_t         ir = **node;
-                        const readable<int> &cr = mu[ir];
-                        if(chld->grow(cr))
+                        //
+                        //------------------------------------------------------
                         {
-                            chld->basis << ir;
-                           // std::cerr << "\t\t|_guess = " << chld << std::endl;
+                            auto_ptr<qFamily> chld( new qFamily(*parent) );
+                            const iNode      *node = parent->ready->head;
 
-                            children.push_back( chld.yield() );
-                            node=node->next;
-                            if(node)
+                        NEXT_CHILD:
+                            const size_t         ir = **node;
+                            const readable<int> &cr = mu[ir];
+                            if(chld->grow(cr))
                             {
-                                chld = new qFamily(*parent);
-                                goto NEXT_CHILD;
+                                //----------------------------------------------
+                                // valid index!
+                                //----------------------------------------------
+                                chld->basis << ir;                  // register in basis
+                                children.push_back( chld.yield() ); // register as possible child
+                                node=node->next;
+                                if(node)
+                                {
+                                    chld = new qFamily(*parent);
+                                    goto NEXT_CHILD;
+                                }
                             }
-                        }
-                        else
-                        {
-                            std::cerr << "bad!" << std::endl;
-                            rejected << ir; // in parent's span
-                            node=node->next;
-                            if(node)
-                                goto NEXT_CHILD;
+                            else
+                            {
+                                //----------------------------------------------
+                                // invalid index :
+                                // in parent's span for the rest of the cycle
+                                //----------------------------------------------
+                                rejected << ir;
+                                node=node->next;
+                                if(node)
+                                    goto NEXT_CHILD;
+                            }
+
+                            assert(NULL==node);
                         }
 
-                        assert(NULL==node);
-
-                        // end of loop: take care of current children
+                        //------------------------------------------------------
+                        //
+                        // end of loop over parent's indices:
+                        // take care of current children
+                        //
+                        //------------------------------------------------------
 
                         if(!children.size)
                         {
