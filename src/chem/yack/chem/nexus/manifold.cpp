@@ -116,8 +116,8 @@ namespace yack
             //! full setup
             //
             //------------------------------------------------------------------
-            explicit qFamily(const imatrix          &mu,
-                             const readable<size_t> &id,
+            explicit qFamily(const readable<size_t> &id,
+                             const imatrix          &mu,
                              const iSharedBank      &io) :
             qFamily_(mu.cols),
             next(0),
@@ -239,23 +239,26 @@ namespace yack
             
             assert(NULL==node);
         }
-        
+
+
+
         static inline
-        void process_one(bunch<int>             &coeff,
-                         const readable<size_t> &pool,
-                         const imatrix          &mu,
-                         iSharedBank            &io)
+        void process_one_species(bunch<int>             &coef,
+                                 const readable<size_t> &jndx,
+                                 const imatrix          &mu,
+                                 iSharedBank            &io)
         {
             //------------------------------------------------------------------
             //
-            // initialize top-level parents
+            // initialize top-level source
             //
             //------------------------------------------------------------------
-            const size_t rank = mu.cols;
-            qBranch      parents;
-            parents.push_back( new qFamily(mu,pool,io) );
-            std::cerr << "\troot=" << *parents.head << std::endl;
-            
+            qBranch      source;
+            source.push_back( new qFamily(jndx,mu,io) );
+            std::cerr << "\troot=" << *source.head << std::endl;
+
+
+#if 0
             //------------------------------------------------------------------
             //
             // iterative cycles from current parents
@@ -357,19 +360,20 @@ namespace yack
                 
                 
             } // end of cycles for one top-level parent
-            
+#endif
             
         }
         
         
         static inline
-        void process_all(bunch<int>    &coeff,
-                         const imatrix &mu)
+        void process_all_species(bunch<int>    &coef,
+                                 const imatrix &mu)
         {
             const size_t m = mu.rows;
-            const size_t n = mu.cols;
-            assert(coeff.width==n);
-            assert(apk::rank_of(mu)==n);
+            assert(mu.cols>1);
+            assert(mu.rows>1);
+            assert(coef.width==mu.cols);
+            assert(apk::rank_of(mu)==mu.cols);
             
             //------------------------------------------------------------------
             //
@@ -379,10 +383,9 @@ namespace yack
             //
             //------------------------------------------------------------------
             assert(m>1);
-            assert(n>1);
             iSharedBank              io = new iBank(); // I/O for indices
-            cxx_array<size_t>        pool(m);          // indices reservoir
-            for(size_t j=1;j<=m;++j) pool[j] = j;      // initial reservoir
+            cxx_array<size_t>        jndx(m);          // indices reservoir
+            for(size_t j=1;j<=m;++j) jndx[j] = j;      // initial reservoir
             
             
             //------------------------------------------------------------------
@@ -397,10 +400,10 @@ namespace yack
                 
                 //--------------------------------------------------------------
                 //
-                // prepare pool of indices
+                // prepare pool of indices, last one will be the leading index
                 //
                 //--------------------------------------------------------------
-                rolling::down(pool); assert(j==pool[m]);
+                rolling::down(jndx); assert(j==jndx[m]);
                 
                 //--------------------------------------------------------------
                 //
@@ -408,19 +411,18 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 if(count_valid(mu[j]) < 2 ) continue;
-                std::cerr << std::endl << "nullify species@" << j << " pool=" << pool << " (root=" << pool[m] << ")" << std::endl;
+                std::cerr << std::endl << "nullify species@" << j << " jndx=" << jndx << " (root=" << jndx[m] << ")" << std::endl;
                 
                 //--------------------------------------------------------------
                 //
                 // process the species
                 //
                 //--------------------------------------------------------------
-                process_one(coeff,pool,mu,io);
-                
+                process_one_species(coef,jndx,mu,io);
             }
             
             
-            std::cerr << "coeff=" << *coeff << std::endl;
+            std::cerr << "coef=" << *coef << std::endl;
             
         }
         
@@ -457,7 +459,7 @@ namespace yack
             
             
             bunch<int> coeff(n);
-            process_all(coeff,mu);
+            process_all_species(coeff,mu);
             
             std::cerr << "#Coeff=" << coeff->size << std::endl;
             std::cerr << "nu=" << nu << std::endl;
