@@ -181,7 +181,8 @@ namespace yack
                 assert(self->head);
                 assert(self->head->next);
 
-                std::cerr << "\tupload = " << self << std::endl;
+                std::cerr << "\t |_parse = " << self << std::endl;
+
                 for(const worthy::qarray *arr=self->head->next;arr;arr=arr->next)
                 {
                     coef.ensure( q2i(coef.work,arr->coef) );
@@ -273,7 +274,7 @@ namespace yack
             //------------------------------------------------------------------
             qBranch      genitors;
             genitors.push_back( new qFamily(jndx,mu,io) );
-            std::cerr << "\tgenitors=" << *genitors.head << std::endl;
+            std::cerr << "\tgenitors = " << *genitors.head << std::endl;
 
             //------------------------------------------------------------------
             //
@@ -300,7 +301,7 @@ namespace yack
                             // so we take the fist that matches
                             complete(*source,mu);
                             assert(worthy::fully_grown==source->situation);
-                            std::cerr << "\t==> " << source << std::endl;
+                            std::cerr << "\t|_child1 = " << source << std::endl;
 
                             // process and discard this source
                             source->to(coef);
