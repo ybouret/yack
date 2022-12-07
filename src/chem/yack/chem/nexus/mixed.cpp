@@ -50,11 +50,12 @@ namespace yack
         
         const equilibrium &nexus:: promote_mixed(const readable<int> &weight)
         {
+            assert(N==weight.size());
             cxx_array<int> gcoef(M);
             for(const enode *en=singles.head();en;en=en->next)
             {
                 const equilibrium &eq = ***en;
-                const size_t       ei = *eq;
+                const size_t       ei = *eq;        assert(ei>0); assert(ei<=N);
                 const int          ew = weight[ei];
                 if(!ew) continue;
                 for(const cnode *cn=eq.head();cn;cn=cn->next)
@@ -63,7 +64,8 @@ namespace yack
                     gcoef[j] += ew * Nu[ei][j];
                 }
             }
-            
+
+
             //----------------------------------------------------------
             // create a mixed equilibrium
             //----------------------------------------------------------
@@ -71,14 +73,15 @@ namespace yack
             const string name   = singles.make_name(weight);
             const size_t mxid   = target.size()+1;
             equilibrium &mxeq   = target.use( new mixed_equilibrium(name,mxid,K,xmul,weight) );
+
             for(size_t j=1;j<=M;++j)
             {
                 const int f = gcoef[j];
                 if(f) mxeq( worklib[j], f);
             }
-            
+
             assert(mxeq.neutral());
-            
+
             //----------------------------------------------------------
             // to register in this related group
             //----------------------------------------------------------

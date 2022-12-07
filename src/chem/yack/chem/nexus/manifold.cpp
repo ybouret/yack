@@ -181,13 +181,13 @@ namespace yack
                 assert(self->head);
                 assert(self->head->next);
 
-                std::cerr << "\t |_parse = " << self << std::endl;
+                //std::cerr << "\t |_parse = " << self << std::endl;
                 for(const worthy::qarray *arr=self->head->next;arr;arr=arr->next)
                 {
                     const readable<int> &host = q2i(coef.work,arr->coef);
                     if(count_valid(host)<2) continue;
-                    const bool           good = coef.insert(host);
-                    std::cerr << "\t  |_coef = " << host << (good ? " [+]" : " [-]") << std::endl;
+                    coef.ensure(host);
+                    //const bool           good = coef.insert(host); std::cerr << "\t  |_coef = " << host << (good ? " [+]" : " [-]") << std::endl;
                 }
             }
             
@@ -400,6 +400,7 @@ namespace yack
             throw imported::exception(fn,"unable to complete family");
         }
 
+        // try to vanish one species
         static inline
         void process_one_species(bunch<int>             &coef,
                                  const readable<size_t> &jndx,
@@ -495,6 +496,8 @@ namespace yack
                     std::cerr << "\t\t using:  " << chld << std::endl;
                     if(chld->ready->size<=0)
                     {
+                        // shouldn't happen since we can always extract
+                        // matrix
                         std::cerr << "\t\tcheck child" << std::endl;
                         exit(0);
                     }
@@ -507,7 +510,8 @@ namespace yack
             
         }
         
-        
+
+        // will try to vanish every possible species
         static inline
         void process_all_species(bunch<int>    &coef,
                                  const imatrix &mu)
@@ -515,8 +519,8 @@ namespace yack
             const size_t m = mu.rows;
             assert(mu.cols>1);
             assert(mu.rows>1);
-            assert(coef.width==mu.cols);
-            assert(apk::rank_of(mu)==mu.cols);
+            assert(coef.width       == mu.cols);
+            assert(apk::rank_of(mu) == mu.cols);
             
             //------------------------------------------------------------------
             //
@@ -564,18 +568,17 @@ namespace yack
                 process_one_species(coef,jndx,mu,io);
             }
             
-            
-            std::cerr << "coef=" << *coef << std::endl;
-            
+
         }
         
         
         
-        void nexus:: make_manifold_(cluster &source, const xmlog &xml)
+        void nexus:: make_manifold_(cluster     &cls,
+                                    const xmlog &xml)
         {
             YACK_XMLSUB(xml,fn);
-            YACK_XMLOG(xml,source);
-            const size_t n = source.size;
+            YACK_XMLOG(xml,cls);
+            const size_t n = cls.size;
             
             if(n<=1)
             {
@@ -585,16 +588,18 @@ namespace yack
             
             const imatrix mu;
             imatrix       nu(n,M);
-            
+
+            // select local topology
             {
                 size_t  i=1;
-                for(const eq_node *node=source.head;node;node=node->next,++i)
+                for(const eq_node *node=cls.head;node;node=node->next,++i)
                 {
                     const size_t ei = ***node;
                     iota::load(nu[i],Nu[ei]);
                 }
             }
-            
+
+            // select local vectors
             {
                 const imatrix nut(nu,transposed);
                 select_rows(coerce(mu),nut);
@@ -603,13 +608,37 @@ namespace yack
             std::cerr << "nu=" << nu << std::endl;
             std::cerr << "mu=" << mu << std::endl;
 
-            bunch<int> coeff(n);
-            process_all_species(coeff,mu);
+            // build all possible weights
+            bunch<int> coef(n);
+            process_all_species(coef,mu);
             
-            std::cerr << "#Coeff=" << coeff->size << std::endl;
+            std::cerr << "#coef=" << coef->size << std::endl;
             std::cerr << "nu=" << nu << std::endl;
             std::cerr << "mu=" << mu << std::endl;
-            
+
+            // expanding
+            cluster        repo;
+            {
+                cxx_array<int> gcof(N);
+                for(const bunch<int>::entry *ep=coef->head;ep;ep=ep->next)
+                {
+                    const readable<int> &lcof = *ep;
+                    gcof.ld(0);
+                    size_t  i=1;
+                    for(const eq_node *node=cls.head;node;node=node->next,++i)
+                    {
+                        const size_t ei = ***node;
+                        gcof[ei] = lcof[i];
+                    }
+                    //std::cerr << lcof << " -> " << gcof << std::endl;
+                    repo << &promote_mixed(gcof);
+                }
+            }
+
+            std::cerr << "adding #" << repo.size << std::endl;
+            cls.merge_back(repo);
+
+
         }
         
         
@@ -620,7 +649,9 @@ namespace yack
             
             for(cluster *sharing=related.head;sharing;sharing=sharing->next)
                 make_manifold_(*sharing,xml);
-            
+
+            std::cerr << lattice << std::endl;
+            std::cerr << singles.size() << " -> " << lattice.size() << std::endl;
         }
         
     }
