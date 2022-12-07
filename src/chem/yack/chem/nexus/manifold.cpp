@@ -378,10 +378,10 @@ namespace yack
             consolidate(target,mu,consolidate_fast);
 
 
-            //verbose
+            // verbose
             for(qFamily *member=target.head;member;member=member->next)
             {
-                std::cerr << "\t|_child  = " << *member << std::endl;
+                //std::cerr << "\t|_child  = " << *member << std::endl;
                 assert(member->ready.excludes(span));
             }
 
@@ -405,7 +405,8 @@ namespace yack
         void process_one_species(bunch<int>             &coef,
                                  const readable<size_t> &jndx,
                                  const imatrix          &mu,
-                                 iSharedBank            &io)
+                                 iSharedBank            &io,
+                                 const xmlog            &xml)
         {
 
             //------------------------------------------------------------------
@@ -415,7 +416,7 @@ namespace yack
             //------------------------------------------------------------------
             qBranch      genitors;
             genitors.push_back( new qFamily(jndx,mu,io) );
-            std::cerr << "\tgenitors = " << *genitors.head << std::endl;
+            //YACK_XMLOG(xml,"genitors = " << *genitors.head);
 
             //------------------------------------------------------------------
             //
@@ -425,7 +426,7 @@ namespace yack
             for(size_t cycle=1;genitors.size;++cycle)
             {
                 const size_t degree = genitors.size; assert(degree>0);
-                std::cerr << "\t-------- #cycle " << std::setw(3) << cycle << " | #genitors " << std::setw(6) << degree << " --------" << std::endl;
+                YACK_XMLOG(xml,"\t-------- #cycle " << std::setw(3) << cycle << " | #genitors " << std::setw(6) << degree << " --------" );
                 qBranch children;
 
                 //--------------------------------------------------------------
@@ -443,7 +444,7 @@ namespace yack
                     auto_ptr<qFamily> source( genitors.pop_front() ); // get the current parent
                     assert( (*source)->size == cycle );               // sanity check
                     assert( source->ready->size>0    );               // sanity check
-                    std::cerr << "\tsource: " << source << std::endl;
+                    //std::cerr << "\tsource: " << source << std::endl;
                     switch(source->situation)
                     {
                         case worthy::fully_grown:
@@ -454,7 +455,7 @@ namespace yack
                             // all children will produce the same last vector
                             // so we take the first that matches by completing
                             complete_family(*source,mu); assert(worthy::fully_grown==source->situation);
-                            std::cerr << "\t|_child1 = " << source << std::endl;
+                            //std::cerr << "\t|_child1 = " << source << std::endl;
 
                             // process and discard this source
                             source->to(coef);
@@ -493,7 +494,7 @@ namespace yack
                 while(children.size>0)
                 {
                     auto_ptr<qFamily> chld = children.pop_front();
-                    std::cerr << "\t\t using:  " << chld << std::endl;
+                    //std::cerr << "\t\t using:  " << chld << std::endl;
                     if(chld->ready->size<=0)
                     {
                         // shouldn't happen since we can always extract
@@ -568,7 +569,6 @@ namespace yack
                 {
                     const species &sp = lib[j];
                     *xml << "nullify [" << sp.name << "] @" << jndx << std::endl;
-                    //std::cerr << std::endl << "nullify species@" << j << " jndx=" << jndx << " (root=" << jndx[m] << ")" << std::endl;
                 }
                 
                 //--------------------------------------------------------------
@@ -576,7 +576,7 @@ namespace yack
                 // process the species
                 //
                 //--------------------------------------------------------------
-                process_one_species(coef,jndx,mu,io);
+                process_one_species(coef,jndx,mu,io,xml);
             }
             
 
