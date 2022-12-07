@@ -514,14 +514,20 @@ namespace yack
         // will try to vanish every possible species
         static inline
         void process_all_species(bunch<int>    &coef,
-                                 const imatrix &mu)
+                                 const imatrix &mu,
+                                 const xmlog   &xml,
+                                 const library &lib)
         {
+            static const char * const here = "processing_cluster";
+            YACK_XMLSUB(xml,here);
+
             const size_t m = mu.rows;
             assert(mu.cols>1);
             assert(mu.rows>1);
             assert(coef.width       == mu.cols);
             assert(apk::rank_of(mu) == mu.cols);
-            
+
+
             //------------------------------------------------------------------
             //
             //
@@ -558,7 +564,12 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 if(count_valid(mu[j]) < 2 ) continue;
-                std::cerr << std::endl << "nullify species@" << j << " jndx=" << jndx << " (root=" << jndx[m] << ")" << std::endl;
+                if(xml.verbose)
+                {
+                    const species &sp = lib[j];
+                    *xml << "nullify [" << sp.name << "] @" << jndx << std::endl;
+                    //std::cerr << std::endl << "nullify species@" << j << " jndx=" << jndx << " (root=" << jndx[m] << ")" << std::endl;
+                }
                 
                 //--------------------------------------------------------------
                 //
@@ -578,6 +589,12 @@ namespace yack
         {
             YACK_XMLSUB(xml,fn);
             YACK_XMLOG(xml,cls);
+
+            //------------------------------------------------------------------
+            //
+            // check local size
+            //
+            //------------------------------------------------------------------
             const size_t n = cls.size;
             
             if(n<=1)
@@ -586,10 +603,15 @@ namespace yack
                 return;
             }
             
+
+
+            //------------------------------------------------------------------
+            //
+            // select local topology
+            //
+            //------------------------------------------------------------------
             const imatrix mu;
             imatrix       nu(n,M);
-
-            // select local topology
             {
                 size_t  i=1;
                 for(const eq_node *node=cls.head;node;node=node->next,++i)
@@ -599,24 +621,37 @@ namespace yack
                 }
             }
 
+            //------------------------------------------------------------------
+            //
             // select local vectors
+            //
+            //------------------------------------------------------------------
             {
                 const imatrix nut(nu,transposed);
                 select_rows(coerce(mu),nut);
             }
-            
-            std::cerr << "nu=" << nu << std::endl;
-            std::cerr << "mu=" << mu << std::endl;
 
+            if(verbose)
+            {
+                YACK_XMLOG(xml,"-- local topogy");
+                std::cerr << "\tnu=" << nu << std::endl;
+                std::cerr << "\tmu=" << mu << std::endl;
+            }
+
+            //------------------------------------------------------------------
+            //
             // build all possible weights
+            //
+            //------------------------------------------------------------------
             bunch<int> coef(n);
-            process_all_species(coef,mu);
-            
-            std::cerr << "#coef=" << coef->size << std::endl;
-            std::cerr << "nu=" << nu << std::endl;
-            std::cerr << "mu=" << mu << std::endl;
+            process_all_species(coef,mu,xml,corelib);
 
+
+            //------------------------------------------------------------------
+            //
             // expanding
+            //
+            //------------------------------------------------------------------
             cluster        repo;
             {
                 cxx_array<int> gcof(N);
@@ -630,14 +665,12 @@ namespace yack
                         const size_t ei = ***node;
                         gcof[ei] = lcof[i];
                     }
-                    //std::cerr << lcof << " -> " << gcof << std::endl;
                     repo << &promote_mixed(gcof);
                 }
             }
 
-            std::cerr << "adding #" << repo.size << std::endl;
+            YACK_XMLOG(xml,"-- added #" << repo.size << " to local cluster");
             cls.merge_back(repo);
-
 
         }
         
