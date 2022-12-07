@@ -151,8 +151,9 @@ namespace yack
             }
             return true;
         }
+
     public:
-        array_type work; //!< worksapce
+        array_type work; //!< workspace for possible conversions
     };
 
 }

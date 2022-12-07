@@ -174,12 +174,17 @@ namespace yack
             iList    ready; //!< candidate
             
             
-            inline void to(bunch<int> &coeff) const
+            inline void to(bunch<int> &coef) const
             {
-                std::cerr << *this << " to coeff..." << std::endl;
-                for(const worthy::qarray *arr=(*this)->head->next;arr;arr=arr->next)
+                const qFamily_ &self = *this;
+                assert(self->size>1);
+                assert(self->head);
+                assert(self->head->next);
+
+                std::cerr << "\tupload = " << self << std::endl;
+                for(const worthy::qarray *arr=self->head->next;arr;arr=arr->next)
                 {
-                    coeff.ensure( q2i(coeff.work,arr->coef) );
+                    coef.ensure( q2i(coef.work,arr->coef) );
                 }
             }
             
@@ -241,6 +246,18 @@ namespace yack
         }
 
 
+        static inline
+        void complete(qFamily &source, const imatrix &mu)
+        {
+            assert(worthy::almost_done==source.situation);
+            assert(source.ready->size>0);
+            for(const iNode *node=source.ready->head;node;node=node->next)
+            {
+                if(source.grow(mu[**node])) return;
+            }
+
+            throw imported::exception(fn,"unable to complete family");
+        }
 
         static inline
         void process_one_species(bunch<int>             &coef,
@@ -248,119 +265,59 @@ namespace yack
                                  const imatrix          &mu,
                                  iSharedBank            &io)
         {
+
             //------------------------------------------------------------------
             //
             // initialize top-level source
             //
             //------------------------------------------------------------------
-            qBranch      source;
-            source.push_back( new qFamily(jndx,mu,io) );
-            std::cerr << "\troot=" << *source.head << std::endl;
+            qBranch      genitors;
+            genitors.push_back( new qFamily(jndx,mu,io) );
+            std::cerr << "\tgenitors=" << *genitors.head << std::endl;
 
-
-#if 0
             //------------------------------------------------------------------
             //
-            // iterative cycles from current parents
+            // iterative cycles from genitors
             //
             //------------------------------------------------------------------
-            for(size_t cycle=1,grown=2;parents.size>0;++cycle,++grown)
+            for(size_t cycle=1;genitors.size;++cycle)
             {
-                std::cerr << "\t@cycle #" << cycle << " with |parents| = " << parents.size << std::endl;
-                
-                qBranch lineage;
-                
-                //--------------------------------------------------------------
-                //
-                // try to populate the lineage with valid, partial children
-                //
-                //--------------------------------------------------------------
-                while(parents.size>0)
+
+                while(genitors.size)
                 {
-                    auto_ptr<qFamily> source( parents.pop_front() ); // get the current parent
-                    qBranch           target;                        // created children
-                    iList             reject( io );                  // index within parent's span
-                    
-                    assert( (*source)->size == cycle );
-                    assert( source->ready->size>0     );
-                    
-                    std::cerr << "\t\tsource  = " << source << std::endl;
-                    create_next_gen(target,*source,reject,mu);
-                    
-                    
-                    
-                    //------------------------------------------------------
-                    //
-                    // end of loop over parent's indices:
-                    // take care of current children
-                    //
-                    //------------------------------------------------------
-                    
-                    if(!target.size)
+                    auto_ptr<qFamily> source( genitors.pop_front() ); // get the current parent
+                    assert( (*source)->size == cycle );               // sanity check
+                    assert( source->ready->size>0    );               // sanity check
+
+                    switch(source->situation)
                     {
-                        std::cerr << "End Of Parent!!" << std::endl;
-                        exit(0);
+                        case worthy::fully_grown:
+                            throw imported::exception(fn,"fully grown shouldn't happen here");
+
+
+                        case worthy::almost_done:
+                            // all children will produce the same last vector
+                            // so we take the fist that matches
+                            complete(*source,mu);
+                            assert(worthy::fully_grown==source->situation);
+                            std::cerr << "\t==> " << source << std::endl;
+
+                            // process and discard this source
+                            source->to(coef);
+                            continue;
+
+                        case worthy::in_progress:
+                            std::cerr << "todo..." << std::endl;
+                            break;
                     }
-                    
-                    const bool achieved = grown>=rank;
-                    if(achieved)
-                    {
-                        std::cerr << "\t\t|_achieved!!" << std::endl;
-                        
-                    }
-                    else
-                    {
-                        // clean up list of ready indices
-                        qBranch cleanup;
-                        while(target.size)
-                        {
-                            auto_ptr<qFamily> chld( target.pop_front() );
-                            chld->ready -= chld->basis; // used to build child
-                            chld->ready -= reject;      // in familiy span
-                            std::cerr << "\t\t|_child = " << chld << std::endl;
-                            
-                            if(chld->ready->size<=0)
-                            {
-                                std::cerr << "finished!" << std::endl;
-                                exit(0);
-                            }
-                            
-                            // check
-                            qFamily *mirror = NULL;
-                            for(qFamily *scan=cleanup.head;scan;scan=scan->next)
-                            {
-                                if( *scan == *chld)
-                                {
-                                    mirror = scan;
-                                    break;
-                                }
-                            }
-                            
-                            if(mirror)
-                            {
-                                std::cerr << "\t\t |_twin = " << *mirror << std::endl;
-                                mirror->basis << chld->basis;
-                                mirror->ready << chld->ready;
-                                mirror->ready -= mirror->basis;
-                                assert(!mirror->ready.overlaps(reject));
-                                std::cerr << "\t\t |_both = " << *mirror << std::endl;
-                            }
-                            else
-                            {
-                                // only child
-                                cleanup.push_back( chld.yield() );
-                            }
-                        }
-                        lineage.merge_back(cleanup);
-                    }
+
+                    exit(0);
 
                 }
-                
-                parents.swap_with(lineage);
-                
-                
-            } // end of cycles for one top-level parent
-#endif
+
+            }
+
+
             
         }
         
@@ -457,7 +414,9 @@ namespace yack
                 select_rows(coerce(mu),nut);
             }
             
-            
+            std::cerr << "nu=" << nu << std::endl;
+            std::cerr << "mu=" << mu << std::endl;
+
             bunch<int> coeff(n);
             process_all_species(coeff,mu);
             
