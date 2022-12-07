@@ -16,6 +16,7 @@ static inline void create_vec(writable<int> &v, randomized::bits &ran)
 
 static inline void create_end(writable<apq> &v, const worthy::qfamily &U, randomized::bits &ran)
 {
+    YACK_ASSERT(worthy::almost_done==U.situation);
     cxx_array<int>  any(v.size());
     worthy::qfamily V(U);
     do

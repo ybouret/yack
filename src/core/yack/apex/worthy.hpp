@@ -40,18 +40,17 @@ namespace yack
             // C++
             //__________________________________________________________________
            
-            //! setup 
+            //! setup : load and simplify coefficients, compute nrm2
             template <typename T>
             explicit qarray(const readable<T> &cof) :
-            object(), next(0), prev(0), coef(cof,transmogrify), nrm2(0)
-            {
+            object(), next(0), prev(0), coef(cof,transmogrify), nrm2(0) {
                 setup( );
             }
             
             //! cleanup
             virtual ~qarray() throw();
 
-            //! copy (for list copy)
+            //! hard copy (for list copy constructor)
             qarray(const qarray &other);
             
             //__________________________________________________________________
@@ -59,7 +58,7 @@ namespace yack
             // methods
             //__________________________________________________________________
             
-            //! compute Gram-Schmidt weight
+            //! compute Gram-Schmidt weight = <coef|v>/nrm2
             apq weight(const readable<apq> &v) const;
             
             //! display
@@ -71,7 +70,6 @@ namespace yack
             //! test coefficients difference
             friend bool operator!=(const qarray &lhs, const qarray &rhs) throw();
 
-
             //__________________________________________________________________
             //
             // members
@@ -81,15 +79,22 @@ namespace yack
             const qcoeffs coef;  //!< coefficients, should be simplified
             const apn     nrm2;  //!< |coef|^2
 
-
-
         private:
             YACK_DISABLE_ASSIGN(qarray);
             void setup();
         };
 
 
-        
+        //! family maturity
+        enum maturity
+        {
+            in_progress, //! size < dims-1
+            almost_done, //! size == dims-1, next vector is unique!
+            fully_grown  //! size == dims
+        };
+
+        static maturity maturity_of(const size_t dims, const size_t size) throw();
+
         //______________________________________________________________________
         //
         //! family of simplified, univocal vectors
@@ -126,7 +131,6 @@ namespace yack
                 return try_grow();
             }
 
-            bool                    fully_grown() const throw(); //!< size >= dims
             const list_of<qarray> * operator->()  const throw() { return &U; } //!< access
             const list_of<qarray> & operator*()   const throw() { return  U; } //!< access
 
@@ -158,6 +162,7 @@ namespace yack
             // members
             //__________________________________________________________________
             const size_t       dimension; //!< space dimension
+            const maturity     situation; //!< current maturity
 
         private:
             YACK_DISABLE_ASSIGN(qfamily);
@@ -169,7 +174,9 @@ namespace yack
 
             bool try_grow();
             const readable<apq> &project();
-            
+
+
+
 
             
         };

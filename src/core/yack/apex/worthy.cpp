@@ -110,12 +110,53 @@ namespace yack
 
 #include "yack/ptr/auto.hpp"
 #include "yack/sort/indexing.hpp"
+#include "yack/system/imported.hpp"
 
 namespace yack
 {
-    
+
+    static worthy::maturity initial_situation(const size_t dims)
+    {
+        switch(dims)
+        {
+            case 0: throw  imported::exception("Gram-Schmidt algorithm","null dimension");
+            case 1: return worthy::fully_grown;
+            case 2: return worthy::almost_done;
+            default:
+                break;
+        }
+        return worthy::in_progress;
+    }
+
+    worthy::maturity worthy::maturity_of(const size_t dims, const size_t size) throw()
+    {
+        assert(dims>0);
+        if(size>=dims)
+        {
+            assert(dims==size);
+            return worthy::fully_grown;
+        }
+        else
+        {
+            const size_t mark = dims-1;
+            if(size<mark)
+            {
+                return worthy::in_progress;
+            }
+            else
+            {
+                assert(dims-1==size);
+                return worthy::almost_done;
+            }
+        }
+    }
+
+
+
+
     worthy:: qfamily:: qfamily(const size_t dims)  :
-    dimension(dims),
+    dimension( dims ),
+    situation( initial_situation(dimension) ),
     u_k(dimension),
     v_k(dimension),
     U(),
@@ -131,6 +172,7 @@ namespace yack
     
     worthy:: qfamily:: qfamily(const qfamily &_) :
     dimension(_.dimension),
+    situation(_.situation),
     u_k(dimension),
     v_k(dimension),
     U(_.U),
@@ -138,16 +180,17 @@ namespace yack
     I(dimension)
     {
         assert(U.size==_.U.size);
+
         // rebuild Q from new arrays
         for(qarray *q=U.head;q;q=q->next)
             Q << &coerce(q->coef);
         assert(Q.size()==U.size);
 
+        // copy series
         const size_t n=Q.size();
         for(size_t i=1;i<=n;++i)
             I << _.I[i];
 
-        
         assert(I.size()==Q.size());
         assert(I == _.I);
     }
@@ -157,14 +200,9 @@ namespace yack
         U.release();
         Q.free();
         I.free();
+        coerce(situation) = initial_situation(dimension);
     }
 
-    bool worthy::qfamily:: fully_grown() const throw()
-    {
-        assert(Q.size()==U.size);
-        assert(I.size()==U.size);
-        return U.size>=dimension;
-    }
 
     std::ostream & operator<<(std::ostream &os, const worthy::qfamily &self)
     {
@@ -220,7 +258,7 @@ namespace yack
                 sum += (u_k[i] -= cof * u_j[i]).num.n;
             }
             assert(0==apq_dot(u_k,u_j));
-            if(sum<=0) return false;
+            if(sum<=0) return false;       // early return
         }
         
         //----------------------------------------------------------------------
@@ -231,13 +269,17 @@ namespace yack
         auto_ptr<qarray> pq( new qarray(u_k) );
         if( 0 != pq->nrm2 )
         {
-            apk::set_univocal( coerce(pq->coef) );
-            Q << &coerce(U.push_back( pq.yield() )->coef); // no-throw
-            I << 0;                         // no-throw
+            apk::set_univocal( coerce(pq->coef) );         // univocal setup
+            Q << &coerce(U.push_back( pq.yield() )->coef); // no-throw update
+            I << 0;                                        // no-throw update
             assert(Q.size()==U.size);
             assert(I.size()==U.size);
 
+            // upgrading indices
             indexing::make(I, compare_coeffs, Q);
+
+            // upgrading situation
+            coerce(situation) = maturity_of(dimension,U.size);
 
             return true;
         }

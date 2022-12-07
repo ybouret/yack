@@ -191,7 +191,8 @@ namespace yack
         //----------------------------------------------------------------------
         typedef cxx_list_of<qFamily> qBranch;
         
-        
+
+        // create next generation
         static inline
         void create_next_gen(qBranch       &target,
                              const qFamily &source,
@@ -348,65 +349,7 @@ namespace yack
                         }
                         lineage.merge_back(cleanup);
                     }
-                    
-                    
-                    
-#if 0
-                    const bool achieved = grown>=rank;
-                    if(achieved)
-                    {
-                        std::cerr << "\t\t|_Achieved!!" << std::endl;
-                        qBranch reduced;
-                        while(children.size)
-                        {
-                            auto_ptr<qFamily> chld( children.pop_front() );
-                            assert(chld->fully_grown());
-                            
-                            // verbose
-                            chld->ready.free();
-                            
-                            bool only_child = true;
-                            for(const qFamily *other=reduced.head;other;other=other->next)
-                            {
-                                if( *other == *chld)
-                                {
-                                    //std::cerr << "\t\t\talready exists" << std::endl;
-                                    only_child = false;
-                                    break;
-                                }
-                            }
-                            if(only_child)
-                            {
-                                std::cerr << "\t\t|_child = " << chld << std::endl;
-                                reduced.push_back( chld.yield() );
-                            }
-                        }
-                        
-                        for(const qFamily *sub=reduced.head;sub;sub=sub->next)
-                        {
-                            sub->to(coeff);
-                        }
-                        
-                        
-                        
-                    }
-                    else
-                    {
-                        // clean up list of ready indices
-                        qBranch cleanup;
-                        while(children.size)
-                        {
-                            auto_ptr<qFamily> chld( children.pop_front() );
-                            chld->ready -= chld->basis; // used to build child
-                            chld->ready -= rejected;    // in familiy span
-                            std::cerr << "\t\t|_child = " << chld << std::endl;
-                            
-                            // check
-                            cleanup.push_back( chld.yield() );
-                        }
-                        lineage.merge_back(cleanup);
-                    }
-#endif
+
                 }
                 
                 parents.swap_with(lineage);
