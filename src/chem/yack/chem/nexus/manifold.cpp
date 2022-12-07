@@ -199,9 +199,20 @@ namespace yack
         // list of orthogonal families
         //----------------------------------------------------------------------
         typedef cxx_list_of<qFamily> qBranch;
-        
 
+        //----------------------------------------------------------------------
+        //
+        // reduce complexity
+        //
+        //----------------------------------------------------------------------
+
+
+
+        //----------------------------------------------------------------------
+        //
         // create next generation
+        //
+        //----------------------------------------------------------------------
         static inline
         void create_next_gen(qBranch       &target,
                              const qFamily &source,
@@ -307,7 +318,7 @@ namespace yack
 
 
         static inline
-        void complete(qFamily &source, const imatrix &mu)
+        void complete_family(qFamily &source, const imatrix &mu)
         {
             assert(worthy::almost_done==source.situation);
             assert(source.ready->size>0);
@@ -369,7 +380,7 @@ namespace yack
                         case worthy::almost_done:
                             // all children will produce the same last vector
                             // so we take the first that matches by completing
-                            complete(*source,mu); assert(worthy::fully_grown==source->situation);
+                            complete_family(*source,mu); assert(worthy::fully_grown==source->situation);
                             std::cerr << "\t|_child1 = " << source << std::endl;
 
                             // process and discard this source
@@ -387,7 +398,6 @@ namespace yack
                     //----------------------------------------------------------
                     qBranch target;     // new generation
                     create_next_gen(target,*source,mu,io);
-
                     children.merge_back(target);
                 }
 
