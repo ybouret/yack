@@ -90,24 +90,32 @@ namespace yack
             }
             return cof;
         }
-        
-        typedef worthy::qfamily qFamily_;
+
+        static const char * const fn = "sub_manifold";
+
+        typedef worthy::qfamily    qFamily_;
         typedef small_bank<size_t> iBank;
         typedef iBank::pointer     iSharedBank;
         typedef small_set<size_t>  iList;
         typedef small_node<size_t> iNode;
         
         
-        static const char * const fn = "sub_manifold";
-        
+        //----------------------------------------------------------------------
+        //
         // orthogonal family, with
         // indices of used in basis and
         // indices of still not used a.k.a ready :)
+        //
+        //----------------------------------------------------------------------
         class qFamily : public object, public qFamily_
         {
         public:
-            
-            // full setup
+
+            //------------------------------------------------------------------
+            //
+            //! full setup
+            //
+            //------------------------------------------------------------------
             explicit qFamily(const imatrix          &mu,
                              const readable<size_t> &id,
                              const iSharedBank      &io) :
@@ -117,23 +125,29 @@ namespace yack
             basis(io),
             ready(io)
             {
-                
-                assert(id.size()==mu.rows);
-                size_t       i  = mu.rows; // last index
-                const size_t ir = id[i];   // gives major index
-                if(!grow(mu[ir])) {
+
+                // initialize indices
+                assert(id.size()==mu.rows); // check sanity
+                size_t       i  = mu.rows;  // last index...
+                const size_t ir = id[i];    // ...gives major index
+                assert(count_valid(mu[ir])>1);
+
+                // build first vector
+                if(!grow(mu[ir]))
                     throw imported::exception(fn,"invalid first sub-space");
-                }
+
                 
-                // info
+                // load initial info
                 basis << ir;                     // store major row
                 while(--i>0) ready.pre(id[i]);   // store remaining
-                
-                
+
             }
             
-            
+            //------------------------------------------------------------------
+            //
             //! duplicate all
+            //
+            //------------------------------------------------------------------
             inline qFamily(const qFamily &parent) :
             qFamily_(parent),
             next(0),
@@ -171,12 +185,15 @@ namespace yack
         private:
             YACK_DISABLE_ASSIGN(qFamily);
         };
-        
-        typedef cxx_list_of<qFamily> qBranch;;
+
+        //----------------------------------------------------------------------
+        // list of orthogonal families
+        //----------------------------------------------------------------------
+        typedef cxx_list_of<qFamily> qBranch;
         
         
         static inline
-        void next_generation(qBranch       &target,
+        void create_next_gen(qBranch       &target,
                              const qFamily &source,
                              iList         &reject,
                              const imatrix &mu)
@@ -193,7 +210,7 @@ namespace yack
                 //
                 // valid index!
                 //
-                //----------------------------------------------
+                //--------------------------------------------------------------
                 chld->basis << ir;                // register in basis
                 std::cerr << "\t\t|_guess = " << chld << std::endl;
                 target.push_back( chld.yield() ); // register as possible child
@@ -227,28 +244,32 @@ namespace yack
                          const imatrix          &mu,
                          iSharedBank            &io)
         {
+            //------------------------------------------------------------------
+            //
             // initialize top-level parents
+            //
+            //------------------------------------------------------------------
             const size_t rank = mu.cols;
             qBranch      parents;
             parents.push_back( new qFamily(mu,pool,io) );
             std::cerr << "\troot=" << *parents.head << std::endl;
             
-            //--------------------------------------------------------------
+            //------------------------------------------------------------------
             //
             // iterative cycles from current parents
             //
-            //--------------------------------------------------------------
+            //------------------------------------------------------------------
             for(size_t cycle=1,grown=2;parents.size>0;++cycle,++grown)
             {
                 std::cerr << "\t@cycle #" << cycle << " with |parents| = " << parents.size << std::endl;
                 
                 qBranch lineage;
                 
-                //----------------------------------------------------------
+                //--------------------------------------------------------------
                 //
                 // try to populate the lineage with valid, partial children
                 //
-                //----------------------------------------------------------
+                //--------------------------------------------------------------
                 while(parents.size>0)
                 {
                     auto_ptr<qFamily> source( parents.pop_front() ); // get the current parent
@@ -259,7 +280,7 @@ namespace yack
                     assert( source->ready->size>0     );
                     
                     std::cerr << "\t\tsource  = " << source << std::endl;
-                    next_generation(target,*source,reject,mu);
+                    create_next_gen(target,*source,reject,mu);
                     
                     
                     

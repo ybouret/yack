@@ -44,13 +44,32 @@ YACK_UTEST(apex_worthy)
 
 
     randomized::rand_ ran;
+    vector<int>       any(3);
     for(size_t iter=0;iter<8;++iter)
     {
-        bring::fill(vec[1],ran);
-        YACK_CHECK(!U.grow(vec[1]));
+        bring::fill(any,ran);
+        YACK_CHECK(!U.grow(any));
     }
-    
 
+    std::cerr << "Making Last Line" << std::endl;
+    matrix<apq> res(10,3);
+    for(size_t i=1;i<=res.rows;++i)
+    {
+        U.reset();
+        YACK_ASSERT(U.grow(vec[1]));
+        YACK_ASSERT(U.grow(vec[2]));
+
+        do
+        {
+            bring::fill(any,ran);
+        } while(!U.grow(any));
+
+        for(size_t j=res.cols;j>0;--j)
+        {
+            res[i][j] = U->tail->coef[j];
+        }
+    }
+    std::cerr << res << std::endl;
 
     
     
