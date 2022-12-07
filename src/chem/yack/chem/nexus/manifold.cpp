@@ -296,6 +296,8 @@ namespace yack
             target.swap_with(source);
             const size_t now = source.size;
 
+
+#if 0
             std::cerr << "\t--> consolidated ";
             switch(ct)
             {
@@ -303,7 +305,8 @@ namespace yack
                 case consolidate_fast: std::cerr << "FAST"; break;
             }
             std::cerr << " : " << old << " -> " << now << std::endl;
-
+#endif
+            
         }
 
 
@@ -516,8 +519,7 @@ namespace yack
         static inline
         void process_all_species(bunch<int>    &coef,
                                  const imatrix &mu,
-                                 const xmlog   &xml,
-                                 const library &lib)
+                                 const xmlog   &xml)
         {
             static const char * const here = "processing_cluster";
             YACK_XMLSUB(xml,here);
@@ -567,8 +569,7 @@ namespace yack
                 if(count_valid(mu[j]) < 2 ) continue;
                 if(xml.verbose)
                 {
-                    const species &sp = lib[j];
-                    *xml << "nullify [" << sp.name << "] @" << jndx << std::endl;
+                    *xml << "nullify  @" << jndx << std::endl;
                 }
                 
                 //--------------------------------------------------------------
@@ -644,7 +645,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             bunch<int> coef(n);
-            process_all_species(coef,mu,xml,corelib);
+            process_all_species(coef,mu,xml);
 
 
             //------------------------------------------------------------------
@@ -665,6 +666,7 @@ namespace yack
                         const size_t ei = ***node;
                         gcof[ei] = lcof[i];
                     }
+                    YACK_XMLOG(xml, "--> " << gcof);
                     repo << &promote_mixed(gcof);
                 }
             }

@@ -66,6 +66,8 @@ namespace yack
             }
 
 
+
+
             //----------------------------------------------------------
             // create a mixed equilibrium
             //----------------------------------------------------------
@@ -73,6 +75,8 @@ namespace yack
             const string name   = singles.make_name(weight);
             const size_t mxid   = target.size()+1;
             equilibrium &mxeq   = target.use( new mixed_equilibrium(name,mxid,K,xmul,weight) );
+
+            //std::cerr << name << " : " << gcoef << std::endl;
 
             for(size_t j=1;j<=M;++j)
             {
