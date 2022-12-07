@@ -205,7 +205,44 @@ namespace yack
         // reduce complexity
         //
         //----------------------------------------------------------------------
+        static inline
+        void consolidate(qBranch &source, const imatrix &mu)
+        {
 
+            qBranch target;
+            while(source.size)
+            {
+                auto_ptr<qFamily> chld = source.pop_front();
+                qFamily          *twin = NULL;
+                for(qFamily *scan=target.head;scan;scan=scan->next)
+                {
+                    if( *scan == *chld )
+                    {
+                        twin = scan;
+                        break;
+                    }
+                }
+
+                if(twin)
+                {
+                    // merge info into twin
+                    twin->basis += chld->basis;
+                    twin->ready += chld->ready;
+                    twin->ready -= twin->basis;
+                    //std::cerr << "\t|_twin   = " << *twin << std::endl;
+                    for(const iNode *node=twin->basis->head;node;node=node->next)
+                    {
+                        assert(!twin->grow(mu[**node]));
+                    }
+                }
+                else
+                {
+                    target.push_back( chld.yield());
+                }
+            }
+
+            target.swap_with(source);
+        }
 
 
         //----------------------------------------------------------------------
@@ -220,9 +257,9 @@ namespace yack
                              iSharedBank   &io)
         {
             assert(worthy::in_progress==source.situation);
+            assert(0==target.size);
 
             iList             span(io);
-            qBranch           rise;
 
             {
                 auto_ptr<qFamily> chld( new qFamily(source) );
@@ -240,7 +277,7 @@ namespace yack
                     //----------------------------------------------------------
                     chld->basis << ir;                // register in basis
                     //std::cerr << "\t\t|_guess = " << chld << std::endl;
-                    rise.push_back( chld.yield() ); // register as possible child
+                    target.push_back( chld.yield() ); // register as possible child
                     node=node->next;
                     if(node)
                     {
@@ -264,54 +301,26 @@ namespace yack
                 assert(NULL==node);
             }
 
+
+            //----------------------------------------------------------
+            //
             // first pass: cleaning up indices
-            for(qFamily *member=rise.head;member;member=member->next)
+            //
+            //----------------------------------------------------------
+            for(qFamily *member=target.head;member;member=member->next)
             {
                 member->ready -= member->basis;
                 member->ready -= span;
             }
 
-            // second pass: removing twins
-            while(rise.size)
-            {
-                auto_ptr<qFamily> chld = rise.pop_front();
+            consolidate(target,mu);
 
-                qFamily *twin = NULL;
-                for(qFamily *scan=target.head;scan;scan=scan->next)
-                {
-                    if( *chld == *scan )
-                    {
-                        twin = scan;
-                        //std::cerr << "\t |_match : " << *scan << std::endl;
-                        break;
-                    }
-                }
-
-                if(twin)
-                {
-                    assert(twin->ready.excludes(span));
-                    assert(chld->ready.excludes(span));
-                    twin->basis += chld->basis;
-                    twin->ready += chld->ready;
-                    twin->ready -= twin->basis;
-                    //std::cerr << "\t|_twin   = " << *twin << std::endl;
-
-                    for(const iNode *node=twin->basis->head;node;node=node->next)
-                    {
-                        assert(!twin->grow(mu[**node]));
-                    }
-
-                }
-                else
-                {
-                    target.push_back( chld.yield() );
-                }
-            }
 
             //verbose
             for(qFamily *member=target.head;member;member=member->next)
             {
                 std::cerr << "\t|_child  = " << *member << std::endl;
+                assert(member->ready.excludes(span));
             }
 
         }
@@ -352,7 +361,8 @@ namespace yack
             //------------------------------------------------------------------
             for(size_t cycle=1;genitors.size;++cycle)
             {
-                std::cerr << "\t-------- #cycle " << std::setw(3) << cycle << " | #genitors=" << genitors.size << " --------" << std::endl;
+                const size_t degree = genitors.size; assert(degree>0);
+                std::cerr << "\t-------- #cycle " << std::setw(3) << cycle << " | #genitors " << std::setw(6) << degree << " --------" << std::endl;
                 qBranch children;
 
                 //--------------------------------------------------------------
@@ -360,7 +370,7 @@ namespace yack
                 // process all current genitors
                 //
                 //--------------------------------------------------------------
-                while(genitors.size)
+                 while(genitors.size)
                 {
                     //----------------------------------------------------------
                     //
@@ -396,12 +406,31 @@ namespace yack
                     // source is still in progress => new generation
                     //
                     //----------------------------------------------------------
-                    qBranch target;     // new generation
-                    create_next_gen(target,*source,mu,io);
-                    children.merge_back(target);
+                    qBranch target;                         // local new generation
+                    create_next_gen(target,*source,mu,io);  // create it
+                    children.merge_back(target);            // assemble in children
                 }
 
+                //--------------------------------------------------------------
+                //
+                // consolidating
+                //
+                //--------------------------------------------------------------
+                if(degree>1 && children.size>1)
+                {
+                    const size_t old = children.size; consolidate(children,mu);
+                    const size_t now = children.size;
+                    if(now<old)
+                    {
+                        std::cerr << "\t--> consolidating new generation : " << old << " -> " << now << std::endl;
+                    }
+                }
+
+                //--------------------------------------------------------------
+                //
                 // global processing
+                //
+                //--------------------------------------------------------------
                 assert(genitors.size<=0);
                 while(children.size>0)
                 {
@@ -410,6 +439,7 @@ namespace yack
                     std::cerr << "\t\t using: " << sub << " / " << *(chld->basis) << "+" << *(chld->ready) << std::endl;
                     genitors.push_back( chld.yield() );
                 }
+
             }
 
 
