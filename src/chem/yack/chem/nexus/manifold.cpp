@@ -203,9 +203,12 @@ namespace yack
         static inline
         void create_next_gen(qBranch       &target,
                              const qFamily &source,
-                             iList         &reject,
-                             const imatrix &mu)
+                             const imatrix &mu,
+                             iSharedBank   &io)
         {
+            assert(worthy::in_progress==source.situation);
+
+            iList             span(io);
             auto_ptr<qFamily> chld( new qFamily(source) );
             const iNode      *node = source.ready->head;
             
@@ -220,7 +223,7 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 chld->basis << ir;                // register in basis
-                std::cerr << "\t\t|_guess = " << chld << std::endl;
+                //std::cerr << "\t\t|_guess = " << chld << std::endl;
                 target.push_back( chld.yield() ); // register as possible child
                 node=node->next;
                 if(node)
@@ -231,19 +234,26 @@ namespace yack
             }
             else
             {
-                //----------------------------------------------
+                //--------------------------------------------------------------
                 //
                 // invalid index :
-                // in parent's span for the rest of the cycle
+                // in parent's span for the rest of the cycles
                 //
-                //----------------------------------------------
-                reject << ir;
+                //--------------------------------------------------------------
+                span << ir;
                 node=node->next;
                 if(node)
                     goto NEXT_CHILD;
             }
-            
             assert(NULL==node);
+
+            // first pass: cleaning up indices
+            for(qFamily *member=target.head;member;member=member->next)
+            {
+                member->ready -= member->basis;
+                member->ready -= span;
+                std::cerr << "\t|_child  = " << *member << std::endl;
+            }
         }
 
 
@@ -256,7 +266,6 @@ namespace yack
             {
                 if(source.grow(mu[**node])) return;
             }
-
             throw imported::exception(fn,"unable to complete family");
         }
 
@@ -283,9 +292,20 @@ namespace yack
             //------------------------------------------------------------------
             for(size_t cycle=1;genitors.size;++cycle)
             {
+                qBranch children;
 
+                //--------------------------------------------------------------
+                //
+                // process all current genitors
+                //
+                //--------------------------------------------------------------
                 while(genitors.size)
                 {
+                    //----------------------------------------------------------
+                    //
+                    // extract next genitor => source
+                    //
+                    //----------------------------------------------------------
                     auto_ptr<qFamily> source( genitors.pop_front() ); // get the current parent
                     assert( (*source)->size == cycle );               // sanity check
                     assert( source->ready->size>0    );               // sanity check
@@ -293,14 +313,13 @@ namespace yack
                     switch(source->situation)
                     {
                         case worthy::fully_grown:
-                            throw imported::exception(fn,"fully grown shouldn't happen here");
+                            throw imported::exception(fn,"fully grown family shouldn't happen here");
 
 
                         case worthy::almost_done:
                             // all children will produce the same last vector
-                            // so we take the fist that matches
-                            complete(*source,mu);
-                            assert(worthy::fully_grown==source->situation);
+                            // so we take the first that matches by completing
+                            complete(*source,mu); assert(worthy::fully_grown==source->situation);
                             std::cerr << "\t|_child1 = " << source << std::endl;
 
                             // process and discard this source
@@ -308,14 +327,21 @@ namespace yack
                             continue;
 
                         case worthy::in_progress:
-                            std::cerr << "todo..." << std::endl;
                             break;
                     }
 
-                    exit(0);
+                    //----------------------------------------------------------
+                    //
+                    // source is still in progress => new generation
+                    //
+                    //----------------------------------------------------------
+                    qBranch target;     // new generation
+                    create_next_gen(target,*source,mu,io);
 
+                    children.merge_back(target);
                 }
 
+                children.swap_with(genitors);
             }
 
 
