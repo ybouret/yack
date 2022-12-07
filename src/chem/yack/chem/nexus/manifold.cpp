@@ -149,6 +149,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             inline qFamily(const qFamily &parent) :
+            object(),
             qFamily_(parent),
             next(0),
             prev(0),
