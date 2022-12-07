@@ -164,7 +164,7 @@ namespace yack
             inline friend std::ostream & operator<<(std::ostream &os, const qFamily &self)
             {
                 const qFamily_ &from = self;
-                os << "@" << *self.basis << " : " << from << " +" << *self.ready;
+                std::cerr << from << " / " << *self.basis << "+" << *self.ready;
                 return os;
             }
             
@@ -205,23 +205,75 @@ namespace yack
         // reduce complexity
         //
         //----------------------------------------------------------------------
+        enum consolidate_type
+        {
+            consolidate_fast,
+            consolidate_full
+        };
+
+        // find by comparing only last coefficients
         static inline
-        void consolidate(qBranch &source, const imatrix &mu)
+        qFamily *find_fast_twin_of(const qFamily &chld,
+                                   const qBranch &target)
         {
 
-            qBranch target;
+            const qFamily_      &rhs = chld; assert(rhs->tail);
+            const readable<apq> &R   = rhs->tail->coef;
+            for(qFamily *scan=target.head;scan;scan=scan->next)
+            {
+                const qFamily_ &lhs = *scan;
+
+                assert( lhs->size == rhs->size );
+                assert( lhs->tail != NULL);
+
+#ifndef NDEBUG
+                for(const worthy::qarray *l=lhs->head, *r=rhs->head;l!=lhs->tail;r=r->next,l=l->next)
+                {
+                    assert( l->coef == r->coef );
+                }
+#endif
+
+                if( lhs->tail->coef == R )
+                {
+                    return scan;
+                }
+            }
+            return NULL;
+        }
+
+        //find by comparing full family
+        static inline
+        qFamily *find_full_twin_of(const qFamily &chld,
+                                   const qBranch &target)
+        {
+            for(qFamily *scan=target.head;scan;scan=scan->next)
+            {
+                assert((*scan)->size == chld->size);
+                if( *scan == chld )
+                {
+                    return scan;
+                }
+            }
+            return NULL;
+        }
+
+        static inline
+        void consolidate(qBranch                &source,
+                         const imatrix          &mu,
+                         const consolidate_type  ct)
+        {
+            const size_t old = source.size;
+            qBranch      target;
             while(source.size)
             {
                 auto_ptr<qFamily> chld = source.pop_front();
                 qFamily          *twin = NULL;
-                for(qFamily *scan=target.head;scan;scan=scan->next)
+                switch(ct)
                 {
-                    if( *scan == *chld )
-                    {
-                        twin = scan;
-                        break;
-                    }
+                    case consolidate_full: twin = find_full_twin_of(*chld,target); break;
+                    case consolidate_fast: twin = find_fast_twin_of(*chld,target); break;
                 }
+
 
                 if(twin)
                 {
@@ -242,6 +294,16 @@ namespace yack
             }
 
             target.swap_with(source);
+            const size_t now = source.size;
+
+            std::cerr << "\t--> consolidated ";
+            switch(ct)
+            {
+                case consolidate_full: std::cerr << "FULL"; break;
+                case consolidate_fast: std::cerr << "FAST"; break;
+            }
+            std::cerr << " : " << old << " -> " << now << std::endl;
+
         }
 
 
@@ -313,7 +375,7 @@ namespace yack
                 member->ready -= span;
             }
 
-            consolidate(target,mu);
+            consolidate(target,mu,consolidate_fast);
 
 
             //verbose
@@ -418,12 +480,7 @@ namespace yack
                 //--------------------------------------------------------------
                 if(degree>1 && children.size>1)
                 {
-                    const size_t old = children.size; consolidate(children,mu);
-                    const size_t now = children.size;
-                    if(now<old)
-                    {
-                        std::cerr << "\t--> consolidating new generation : " << old << " -> " << now << std::endl;
-                    }
+                    consolidate(children,mu,consolidate_full);
                 }
 
                 //--------------------------------------------------------------
@@ -435,8 +492,12 @@ namespace yack
                 while(children.size>0)
                 {
                     auto_ptr<qFamily> chld = children.pop_front();
-                    const qFamily_   &sub  = *chld;
-                    std::cerr << "\t\t using: " << sub << " / " << *(chld->basis) << "+" << *(chld->ready) << std::endl;
+                    std::cerr << "\t\t using:  " << chld << std::endl;
+                    if(chld->ready->size<=0)
+                    {
+                        std::cerr << "\t\tcheck child" << std::endl;
+                        exit(0);
+                    }
                     genitors.push_back( chld.yield() );
                 }
 
