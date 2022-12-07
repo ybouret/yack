@@ -104,6 +104,17 @@ namespace yack
             }
             return false;
         }
+
+        //! check exclusion with another set
+        inline bool excludes(const small_set &other) const
+        {
+            for(const node_type *node=other->head;node;node=node->next)
+            {
+                if(contains(**node)) return false;
+            }
+            return true;
+        }
+
         
         //! compact current set if needed
         inline void compact()

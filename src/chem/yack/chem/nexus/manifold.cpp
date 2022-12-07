@@ -182,10 +182,12 @@ namespace yack
                 assert(self->head->next);
 
                 std::cerr << "\t |_parse = " << self << std::endl;
-
                 for(const worthy::qarray *arr=self->head->next;arr;arr=arr->next)
                 {
-                    coef.ensure( q2i(coef.work,arr->coef) );
+                    const readable<int> &host = q2i(coef.work,arr->coef);
+                    if(count_valid(host)<2) continue;
+                    const bool           good = coef.insert(host);
+                    std::cerr << "\t  |_coef = " << host << (good ? " [+]" : " [-]") << std::endl;
                 }
             }
             
@@ -209,51 +211,98 @@ namespace yack
             assert(worthy::in_progress==source.situation);
 
             iList             span(io);
-            auto_ptr<qFamily> chld( new qFamily(source) );
-            const iNode      *node = source.ready->head;
-            
-        NEXT_CHILD:
-            const size_t         ir = **node;
-            const readable<int> &cr = mu[ir];
-            if(chld->grow(cr))
+            qBranch           rise;
+
             {
-                //--------------------------------------------------------------
-                //
-                // valid index!
-                //
-                //--------------------------------------------------------------
-                chld->basis << ir;                // register in basis
-                //std::cerr << "\t\t|_guess = " << chld << std::endl;
-                target.push_back( chld.yield() ); // register as possible child
-                node=node->next;
-                if(node)
+                auto_ptr<qFamily> chld( new qFamily(source) );
+                const iNode      *node = source.ready->head;
+
+            NEXT_CHILD:
+                const size_t         ir = **node;
+                const readable<int> &cr = mu[ir];
+                if(chld->grow(cr))
                 {
-                    chld = new qFamily(source);
-                    goto NEXT_CHILD;
+                    //----------------------------------------------------------
+                    //
+                    // valid index!
+                    //
+                    //----------------------------------------------------------
+                    chld->basis << ir;                // register in basis
+                    //std::cerr << "\t\t|_guess = " << chld << std::endl;
+                    rise.push_back( chld.yield() ); // register as possible child
+                    node=node->next;
+                    if(node)
+                    {
+                        chld = new qFamily(source);
+                        goto NEXT_CHILD;
+                    }
                 }
+                else
+                {
+                    //----------------------------------------------------------
+                    //
+                    // invalid index :
+                    // in parent's span for the rest of the cycles
+                    //
+                    //----------------------------------------------------------
+                    span << ir;
+                    node=node->next;
+                    if(node)
+                        goto NEXT_CHILD;
+                }
+                assert(NULL==node);
             }
-            else
-            {
-                //--------------------------------------------------------------
-                //
-                // invalid index :
-                // in parent's span for the rest of the cycles
-                //
-                //--------------------------------------------------------------
-                span << ir;
-                node=node->next;
-                if(node)
-                    goto NEXT_CHILD;
-            }
-            assert(NULL==node);
 
             // first pass: cleaning up indices
-            for(qFamily *member=target.head;member;member=member->next)
+            for(qFamily *member=rise.head;member;member=member->next)
             {
                 member->ready -= member->basis;
                 member->ready -= span;
+            }
+
+            // second pass: removing twins
+            while(rise.size)
+            {
+                auto_ptr<qFamily> chld = rise.pop_front();
+
+                qFamily *twin = NULL;
+                for(qFamily *scan=target.head;scan;scan=scan->next)
+                {
+                    if( *chld == *scan )
+                    {
+                        twin = scan;
+                        //std::cerr << "\t |_match : " << *scan << std::endl;
+                        break;
+                    }
+                }
+
+                if(twin)
+                {
+                    assert(twin->ready.excludes(span));
+                    assert(chld->ready.excludes(span));
+                    twin->basis += chld->basis;
+                    twin->ready += chld->ready;
+                    twin->ready -= twin->basis;
+                    //std::cerr << "\t|_twin   = " << *twin << std::endl;
+
+                    for(const iNode *node=twin->basis->head;node;node=node->next)
+                    {
+                        assert(!twin->grow(mu[**node]));
+                    }
+
+                }
+                else
+                {
+                    target.push_back( chld.yield() );
+                }
+            }
+
+            //verbose
+            for(qFamily *member=target.head;member;member=member->next)
+            {
                 std::cerr << "\t|_child  = " << *member << std::endl;
             }
+
         }
 
 
@@ -292,6 +341,7 @@ namespace yack
             //------------------------------------------------------------------
             for(size_t cycle=1;genitors.size;++cycle)
             {
+                std::cerr << "\t-------- #cycle " << std::setw(3) << cycle << " | #genitors=" << genitors.size << " --------" << std::endl;
                 qBranch children;
 
                 //--------------------------------------------------------------
@@ -309,7 +359,7 @@ namespace yack
                     auto_ptr<qFamily> source( genitors.pop_front() ); // get the current parent
                     assert( (*source)->size == cycle );               // sanity check
                     assert( source->ready->size>0    );               // sanity check
-
+                    std::cerr << "\tsource: " << source << std::endl;
                     switch(source->situation)
                     {
                         case worthy::fully_grown:
@@ -341,7 +391,15 @@ namespace yack
                     children.merge_back(target);
                 }
 
-                children.swap_with(genitors);
+                // global processing
+                assert(genitors.size<=0);
+                while(children.size>0)
+                {
+                    auto_ptr<qFamily> chld = children.pop_front();
+                    const qFamily_   &sub  = *chld;
+                    std::cerr << "\t\t using: " << sub << " / " << *(chld->basis) << "+" << *(chld->ready) << std::endl;
+                    genitors.push_back( chld.yield() );
+                }
             }
 
 
