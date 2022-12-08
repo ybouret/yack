@@ -308,12 +308,11 @@ namespace yack
                     target.push_back( chld.yield());
                 }
             }
-
             target.swap_with(source);
+
+#if 0
             const size_t newCount = source.size;
 
-
-#if 1
             std::cerr << "\t--> consolidated ";
             switch(ct)
             {
