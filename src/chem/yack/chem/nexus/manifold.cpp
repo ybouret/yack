@@ -319,16 +319,22 @@ namespace yack
         static inline
         void update_twin(qFamily       &twin,
                          const qFamily &chld,
-                         const imatrix &mu)
+                         const imatrix &
+#ifndef NDEBUG
+                         mu
+#endif
+                         )
         {
             twin.basis += chld.basis;
             twin.ready += chld.ready;
             twin.ready -= twin.basis;
+#if 0
 #ifndef NDEBUG
             for(const iNode *node=twin.basis->head;node;node=node->next)
             {
                 assert(!twin.grow(mu[**node]));
             }
+#endif
 #endif
         }
 
