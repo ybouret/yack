@@ -404,6 +404,8 @@ namespace yack
         const qarray &qa = U.push_back(u_k);
         if( 0 != qa.nrm2 )
         {
+
+            apk::set_univocal( coerce(qa.coef) );
             // register new coef and dummy index
             Q << &coerce(qa.coef); assert(Q.size()==U->size);
             I << 0;                assert(I.size()==U->size);
