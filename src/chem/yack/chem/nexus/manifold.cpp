@@ -163,14 +163,20 @@ namespace yack
 
                 //--------------------------------------------------------------
                 //
-                // load initial info
+                // load primary info
                 //
                 //--------------------------------------------------------------
                 basis << ip;
+
+                //--------------------------------------------------------------
+                //
+                // load other
+                //
+                //--------------------------------------------------------------
                 while(--i>0)
                 {
                     const size_t          ir      = id[i];
-                    const readable<int> & replica = mu[ id[i] ];
+                    //const readable<int> & replica = mu[ id[i] ];
                     ready.pre(ir);   // store remaining
                 }
 
@@ -220,7 +226,6 @@ namespace yack
                     const readable<int> &host = q2i(coef.work,arr->coef);
                     if(count_valid(host)<2) continue;
                     coef.ensure(host);
-                    //const bool           good = coef.insert(host); std::cerr << "\t  |_coef = " << host << (good ? " [+]" : " [-]") << std::endl;
                 }
             }
             
@@ -469,14 +474,14 @@ namespace yack
                         // all children will produce the same last vector
                         // so we take the first that matches by completing
                         complete_family(*source,mu); assert(worthy::fully_grown==source->situation);
-                        //YACK_XMLOG(xml, "[*] " << source);
+                        YACK_XMLOG(xml, "[*] " << source);
 
                         // process and discard this source
                         source->to(coef);
                         continue;
 
                     case worthy::in_progress:
-                        //YACK_XMLOG(xml, "[+] " << source);
+                        YACK_XMLOG(xml, "[+] " << source);
                         qBranch target;                         // local new generation
                         create_next_gen(target,*source,mu,io);  // create it
                         children.merge_back(target);            // assemble in children
