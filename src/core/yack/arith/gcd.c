@@ -1,8 +1,7 @@
 
 #include "yack/arith/gcd.h"
 
-static
-uint64_t yack_gcd_(uint64_t a, uint64_t b)
+uint64_t yack_gcd64_(uint64_t a, uint64_t b)
 {
     assert(a>0);
     assert(b>0);
@@ -46,7 +45,7 @@ uint64_t yack_gcd64(uint64_t a, uint64_t b)
         else
         {
             assert(b>0);
-            return yack_gcd_(a,b);
+            return yack_gcd64_(a,b);
         }
     }
 }
@@ -65,7 +64,7 @@ void yack_simplify64(uint64_t *A, uint64_t *B)
         }
         else
         {
-            const uint64_t g = yack_gcd_(a,b);
+            const uint64_t g = yack_gcd64_(a,b);
             *A = a/g;
             *B = b/g;
         }
@@ -98,7 +97,7 @@ uint64_t yack_lcm64(uint64_t a, uint64_t b)
             /* b > 0 */
             if(a<b) { const uint64_t t = b; b=a; a=t; }
             assert(a>=b);
-            return b*(a/yack_gcd_(a,b));
+            return b*(a/yack_gcd64_(a,b));
         }
     }
 

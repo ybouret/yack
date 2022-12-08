@@ -1,6 +1,7 @@
 #include "yack/apex/kernel.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/sequence/vector.hpp"
+#include "yack/sequence/cxx-array.hpp"
 #include "../main.hpp"
 
 using namespace yack;
@@ -182,6 +183,15 @@ YACK_UTEST(apk)
         bring::fill(M,ran);
         std::cerr << "rank(" << M << ")=" << apk::rank_of(M) << std::endl;
     }
+
+    {
+        cxx_array<int64_t> z(4);
+        z[1] = 8; z[3] = -2;
+        std::cerr << "int64_t: " << z;
+        apk::simplify(z);
+        std::cerr << " -> " << z << std::endl;
+    }
+
 
 }
 YACK_UDONE()

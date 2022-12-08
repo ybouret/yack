@@ -39,11 +39,13 @@ namespace yack
     
     void worthy:: qarray:: setup()
     {
+#if 1
         apk::simplify( coerce(coef) );
         for(size_t i=coef.size();i>0;--i) {
             assert(1==coef[i].den);
             coerce(nrm2) += apn::squared(coef[i].num.n);
         }
+#endif
     }
     
     worthy:: qarray:: qarray(const qarray &_) :
@@ -142,7 +144,6 @@ namespace yack
     worthy:: qcache::  qcache(const size_t dims) : qmetrics(dims), used() {}
     worthy:: qcache:: ~qcache() throw()
     {
-        std::cerr << "--- CLEANING Cache=" << used.size << " ----" << std::endl;
     }
 
     const pool_of<worthy::qarray> & worthy:: qcache:: operator*()   const throw() { return used; }

@@ -34,7 +34,7 @@ namespace yack
 
         //______________________________________________________________________
         //
-        //! array of rational coefficients
+        //! array of coefficients
         //______________________________________________________________________
         typedef cxx_array<apq,memory_model> coefficients;
 
