@@ -141,6 +141,8 @@ namespace yack
             //! display
             friend std::ostream & operator<<(std::ostream &, const qfamily &);
 
+            static bool eq(const qfamily &lhs, const qfamily &rhs) throw();
+
             //! check same families
             friend bool operator==(const qfamily &lhs, const qfamily &rhs) throw();
 

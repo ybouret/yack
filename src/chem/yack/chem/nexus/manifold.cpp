@@ -176,7 +176,6 @@ namespace yack
                 while(--i>0)
                 {
                     const size_t          ir      = id[i];
-                    //const readable<int> & replica = mu[ id[i] ];
                     ready.pre(ir);   // store remaining
                 }
 
@@ -236,18 +235,37 @@ namespace yack
         //----------------------------------------------------------------------
         // list of orthogonal families
         //----------------------------------------------------------------------
-        typedef cxx_list_of<qFamily> qBranch;
+        typedef cxx_list_of<qFamily> qBranch_;
+
+        class qBranch : public qBranch_
+        {
+        public:
+            inline explicit qBranch() throw() : qBranch_() {}
+            inline virtual ~qBranch() throw() {}
+
+            inline bool has_no_duplicate() const
+            {
+                for(const qFamily *lhs=head;lhs;lhs=lhs->next)
+                {
+                    for(const qFamily *rhs=lhs->next;rhs;rhs=rhs->next)
+                    {
+                        if( qFamily::eq(*lhs,*rhs) ) return false;
+                    }
+                }
+                return true;
+            }
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(qBranch);
+        };
+
 
         //----------------------------------------------------------------------
         //
         // reduce complexity
         //
         //----------------------------------------------------------------------
-        enum consolidate_type
-        {
-            consolidate_fast,
-            consolidate_full
-        };
+
 
         // find by comparing only last coefficients
         static inline
@@ -295,57 +313,54 @@ namespace yack
             return NULL;
         }
 
+
+
         static inline
-        void consolidate(qBranch                &source,
-                         const imatrix          &mu,
-                         const consolidate_type  ct)
+        void update_twin(qFamily       &twin,
+                         const qFamily &chld,
+                         const imatrix &mu)
         {
-            const size_t oldCount = source.size;
-            if(oldCount<=0) return;
-            qBranch      target;
-            while(source.size)
+            twin.basis += chld.basis;
+            twin.ready += chld.ready;
+            twin.ready -= twin.basis;
+            for(const iNode *node=twin.basis->head;node;node=node->next)
             {
-                auto_ptr<qFamily> chld = source.pop_front();
-                qFamily          *twin = NULL;
-                switch(ct)
-                {
-                    case consolidate_full: twin = find_full_twin_of(*chld,target); break;
-                    case consolidate_fast: twin = find_fast_twin_of(*chld,target); break;
-                }
+                assert(!twin.grow(mu[**node]));
+            }
+        }
 
+        //----------------------------------------------------------------------
+        //
+        // try to grow the branch with a family that differs
+        // only by the last array
+        //
+        //----------------------------------------------------------------------
 
-                if(twin)
+        static inline
+        void incremental_prune(qBranch                &source,
+                               const imatrix          &mu)
+        {
+            {
+                qBranch      target;
+                while(source.size)
                 {
-                    // merge info into twin
-                    twin->basis += chld->basis;
-                    twin->ready += chld->ready;
-                    twin->ready -= twin->basis;
-                    //std::cerr << "\t|_twin   = " << *twin << std::endl;
-                    for(const iNode *node=twin->basis->head;node;node=node->next)
+                    auto_ptr<qFamily> chld = source.pop_front();
+                    qFamily          *twin = find_fast_twin_of(*chld,target);
+
+                    if(twin)
                     {
-                        assert(!twin->grow(mu[**node]));
+                        update_twin(*twin,*chld,mu);
+                    }
+                    else
+                    {
+                        target.push_back( chld.yield() );
                     }
                 }
-                else
-                {
-                    target.push_back( chld.yield());
-                }
+                target.swap_with(source);
             }
-            target.swap_with(source);
-
-#if 0
-            const size_t newCount = source.size;
-
-            std::cerr << "\t--> consolidated ";
-            switch(ct)
-            {
-                case consolidate_full: std::cerr << "FULL"; break;
-                case consolidate_fast: std::cerr << "FAST"; break;
-            }
-            std::cerr << " : " << oldCount << " -> " << newCount << std::endl;
-#endif
-            
+            //assert(source.has_no_duplicate());
         }
+
 
 
         //----------------------------------------------------------------------
@@ -379,11 +394,13 @@ namespace yack
                     //
                     //----------------------------------------------------------
                     chld->basis << ir;                // register in basis
-                    //std::cerr << "\t\t|_guess = " << chld << std::endl;
                     target.push_back( chld.yield() ); // register as possible child
+
+                    // prepare next node
                     node=node->next;
                     if(node)
                     {
+                        // prepare next child
                         chld = new qFamily(source);
                         goto NEXT_CHILD;
                     }
@@ -416,14 +433,30 @@ namespace yack
                 member->ready -= span;
             }
 
-            consolidate(target,mu,consolidate_fast);
+            incremental_prune(target,mu);
+        }
 
+        static inline
+        void incremental_merge(qBranch       &target,
+                                qBranch       &source,
+                                const imatrix &mu)
+        {
+            assert(target.has_no_duplicate());
+            assert(source.has_no_duplicate());
 
-            // verbose
-            for(qFamily *member=target.head;member;member=member->next)
+            while(source.size)
             {
-                //std::cerr << "\t|_child  = " << *member << std::endl;
-                assert(member->ready.excludes(span));
+                auto_ptr<qFamily> chld = source.pop_front();
+                qFamily          *twin = find_full_twin_of(*chld,target);
+
+                if(twin)
+                {
+                    update_twin(*twin,*chld,mu);
+                }
+                else
+                {
+                    target.push_back( chld.yield() );
+                }
             }
 
         }
@@ -480,22 +513,15 @@ namespace yack
                         source->to(coef);
                         continue;
 
-                    case worthy::in_progress:
+                    case worthy::in_progress: {
                         YACK_XMLOG(xml, "[+] " << source);
-                        qBranch target;                         // local new generation
-                        create_next_gen(target,*source,mu,io);  // create it
-                        children.merge_back(target);            // assemble in children
-                        break;
+                        qBranch target;                        // local new generation
+                        create_next_gen(target,*source,mu,io); // create it
+                        incremental_merge(children,target,mu); // fusion
+                    } break;
                 }
             }
             assert(0==genitors.size);
-
-            //------------------------------------------------------------------
-            //
-            // remove all duplicates, full span
-            //
-            //------------------------------------------------------------------
-            consolidate(children,mu,consolidate_full);
 
             //------------------------------------------------------------------
             //
@@ -514,10 +540,10 @@ namespace yack
 
         static inline
         void create_all_combinations(bunch<int>    &coef,
-                                       const sp_list &sl,
-                                       const imatrix &mu,
-                                       const xmlog   &xml,
-                                       const library &lib)
+                                     const sp_list &sl,
+                                     const imatrix &mu,
+                                     const xmlog   &xml,
+                                     const library &lib)
         {
             static const char * const here = "create_all_combinations";
             YACK_XMLSUB(xml,here);

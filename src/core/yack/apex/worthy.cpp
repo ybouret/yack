@@ -290,17 +290,18 @@ namespace yack
         
     }
 
-    bool operator==(const worthy::qfamily &lhs, const worthy::qfamily &rhs) throw()
+
+    bool worthy:: qfamily:: eq(const qfamily &lhs, const qfamily &rhs) throw()
     {
-        const list_of<worthy::qarray> &L = lhs.U;
-        const list_of<worthy::qarray> &R = rhs.U;
+        const list_of<qarray> &L = lhs.U;
+        const list_of<qarray> &R = rhs.U;
         if(L.size==R.size)
         {
-            const size_t                           nn = L.size;
-            const readable<size_t>                &li = lhs.I; assert(li.size()==nn);
-            const readable<size_t>                &ri = rhs.I; assert(ri.size()==nn);
-            const readable<worthy::coefficients*> &lq = lhs.Q; assert(lq.size()==nn);
-            const readable<worthy::coefficients*> &rq = rhs.Q; assert(rq.size()==nn);
+            const size_t                   nn = L.size;
+            const readable<size_t>        &li = lhs.I; assert(li.size()==nn);
+            const readable<size_t>        &ri = rhs.I; assert(ri.size()==nn);
+            const readable<coefficients*> &lq = lhs.Q; assert(lq.size()==nn);
+            const readable<coefficients*> &rq = rhs.Q; assert(rq.size()==nn);
 
             for(size_t k=1;k<=nn;++k)
             {
@@ -317,6 +318,12 @@ namespace yack
             // different sizes
             return false;
         }
+    }
+
+
+    bool operator==(const worthy::qfamily &lhs, const worthy::qfamily &rhs) throw()
+    {
+        return worthy::qfamily::eq(lhs,rhs);
     }
 
     const readable<apq> & worthy:: qfamily:: project()
