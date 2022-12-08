@@ -277,7 +277,8 @@ namespace yack
                          const imatrix          &mu,
                          const consolidate_type  ct)
         {
-            const size_t old = source.size;
+            const size_t oldCount = source.size;
+            if(oldCount<=0) return;
             qBranch      target;
             while(source.size)
             {
@@ -309,7 +310,7 @@ namespace yack
             }
 
             target.swap_with(source);
-            const size_t now = source.size;
+            const size_t newCount = source.size;
 
 
 #if 1
@@ -319,7 +320,7 @@ namespace yack
                 case consolidate_full: std::cerr << "FULL"; break;
                 case consolidate_fast: std::cerr << "FAST"; break;
             }
-            std::cerr << " : " << old << " -> " << now << std::endl;
+            std::cerr << " : " << oldCount << " -> " << newCount << std::endl;
 #endif
             
         }
@@ -419,114 +420,6 @@ namespace yack
             throw imported::exception(fn,"unable to complete family");
         }
 
-        // try to vanish one species
-        static inline
-        void process_one_species(bunch<int>             &coef,
-                                 const readable<size_t> &jndx,
-                                 const imatrix          &mu,
-                                 iSharedBank            &io,
-                                 const xmlog            &xml)
-        {
-
-            //------------------------------------------------------------------
-            //
-            // initialize top-level source
-            //
-            //------------------------------------------------------------------
-            qBranch      genitors;
-            genitors.push_back( new qFamily(jndx,mu,io) );
-            //YACK_XMLOG(xml,"genitors = " << *genitors.head);
-
-            //------------------------------------------------------------------
-            //
-            // iterative cycles from genitors
-            //
-            //------------------------------------------------------------------
-            for(size_t cycle=1;genitors.size;++cycle)
-            {
-                const size_t degree = genitors.size; assert(degree>0);
-                YACK_XMLOG(xml,"\t-------- #cycle " << std::setw(3) << cycle << " | #genitors " << std::setw(6) << degree << " --------" );
-                qBranch children;
-
-                //--------------------------------------------------------------
-                //
-                // process all current genitors
-                //
-                //--------------------------------------------------------------
-                while(genitors.size)
-                {
-                    //----------------------------------------------------------
-                    //
-                    // extract next genitor => source
-                    //
-                    //----------------------------------------------------------
-                    auto_ptr<qFamily> source( genitors.pop_front() ); // get the current parent
-                    assert( (*source)->size == cycle );               // sanity check
-                    assert( source->ready->size>0    );               // sanity check
-                    //std::cerr << "\tsource: " << source << std::endl;
-                    switch(source->situation)
-                    {
-                        case worthy::fully_grown:
-                            throw imported::exception(fn,"fully grown family shouldn't happen here");
-
-
-                        case worthy::almost_done:
-                            // all children will produce the same last vector
-                            // so we take the first that matches by completing
-                            complete_family(*source,mu); assert(worthy::fully_grown==source->situation);
-                            //std::cerr << "\t|_child1 = " << source << std::endl;
-
-                            // process and discard this source
-                            source->to(coef);
-                            continue;
-
-                        case worthy::in_progress:
-                            break;
-                    }
-
-                    //----------------------------------------------------------
-                    //
-                    // source is still in progress => new generation
-                    //
-                    //----------------------------------------------------------
-                    qBranch target;                         // local new generation
-                    create_next_gen(target,*source,mu,io);  // create it
-                    children.merge_back(target);            // assemble in children
-                }
-
-                //--------------------------------------------------------------
-                //
-                // consolidating
-                //
-                //--------------------------------------------------------------
-                if(degree>1 && children.size>1)
-                {
-                    consolidate(children,mu,consolidate_full);
-                }
-
-                //--------------------------------------------------------------
-                //
-                // global processing
-                //
-                //--------------------------------------------------------------
-                assert(genitors.size<=0);
-                while(children.size>0)
-                {
-                    auto_ptr<qFamily> chld = children.pop_front();
-                    //std::cerr << "\t\t using:  " << chld << std::endl;
-                    if(chld->ready->size<=0)
-                    {
-                        // shouldn't happen since we can always extract
-                        // matrix
-                        std::cerr << "\t\tcheck child" << std::endl;
-                        exit(0);
-                    }
-                    genitors.push_back( chld.yield() );
-                }
-
-            }
-
-        }
 
         void update_all_combinations(bunch<int>             &coef,
                                      qBranch                &genitors,
@@ -535,15 +428,20 @@ namespace yack
                                      const xmlog            &xml)
 
         {
-            static const char * const here = "updae_all_combinations";
+            static const char * const here = "nexus::update_all_combinations";
 
             qBranch children;
 
-
+            //------------------------------------------------------------------
+            //
+            // make a new generation for each present genitor
+            //
+            //------------------------------------------------------------------
+            YACK_XMLOG(xml, "-- |genitors| = " << genitors.size );
             while(genitors.size)
             {
                 auto_ptr<qFamily> source = genitors.pop_front();
-                std::cerr << "\tgenitor= " << source << std::endl;
+                std::cerr << "\tgenitor  = " << source << std::endl;
                 assert(source->ready->size>0);
 
                 switch(source->situation)
@@ -561,13 +459,33 @@ namespace yack
                         continue;
 
                     case worthy::in_progress:
-                        std::cerr << "\t|_in progress" << std::endl;
+                        qBranch target;                         // local new generation
+                        create_next_gen(target,*source,mu,io);  // create it
+                        children.merge_back(target);            // assemble in children
                         break;
                 }
-
-
             }
+            assert(0==genitors.size);
 
+            //------------------------------------------------------------------
+            //
+            // remove all duplicates, full span
+            //
+            //------------------------------------------------------------------
+            consolidate(children,mu,consolidate_full);
+            YACK_XMLOG(xml, "-- |children| = " << children.size );
+
+            //------------------------------------------------------------------
+            //
+            // replace genitors content
+            //
+            //------------------------------------------------------------------
+            while(children.size)
+            {
+                auto_ptr<qFamily> chld = children.pop_front();
+                std::cerr << "\t\t" << chld << std::endl;
+                genitors.push_back(chld.yield());
+            }
 
         }
 
@@ -658,7 +576,10 @@ namespace yack
             //
             //------------------------------------------------------------------
             YACK_XMLOG(xml, "-- evolving");
-            update_all_combinations(coef,genitors,mu,io,xml);
+            while(genitors.size)
+            {
+                update_all_combinations(coef,genitors,mu,io,xml);
+            }
         }
         
         
