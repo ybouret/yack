@@ -31,19 +31,35 @@ namespace yack
             return count;
         }
         
-        void select_rows(imatrix       &w,
-                         const imatrix &mu)
+        void select_clan(sp_list       &clan,
+                         imatrix       &work,
+                         const imatrix &mu,
+                         const library &lib)
         {
+            //------------------------------------------------------------------
+            //
+            // initialize indices
+            //
+            //------------------------------------------------------------------
+            assert(mu.rows==lib.size());
+            assert(0==clan.size);
             const size_t   m = mu.rows;
             vector<size_t> jrow(m,as_capacity);
-            
-            // find non proportional rows
-            for(size_t j=1;j<=m;++j)
+
+            //------------------------------------------------------------------
+            //
+            // find not zero and not propto previously selected
+            //
+            //------------------------------------------------------------------
+            for(const snode *sn=lib.head();sn;sn=sn->next)
             {
+                const species &s = ***sn;
+                const size_t   j = *s;
                 const readable<int> &curr = mu[j];
                 if(count_valid(curr)<=0) continue;
-                
+
                 bool                 isOk = true;
+
                 for(size_t k=jrow.size();k>0;--k)
                 {
                     if( apk::are_prop(mu[ jrow[k] ],curr,NULL) )
@@ -52,31 +68,30 @@ namespace yack
                         break;
                     }
                 }
+
                 if(isOk)
+                {
                     jrow << j;
+                    clan << &s;
+                }
             }
-            
+
+            //------------------------------------------------------------------
+            //
             // build sub-matrix
-            const size_t dims = jrow.size();
-            if(dims>0)
-            {
-                w.make(dims,mu.cols);
-                for(size_t k=dims;k>0;--k)
-                    iota::load(w[k],mu[ jrow[k] ]);
-            }
-            
+            //
+            //------------------------------------------------------------------
+            const size_t dims = jrow.size(); assert(dims==clan.size);
+            if(dims<=0) throw imported::exception("select sub-manifold species","unexpected zero match!!");
+
+            work.make(dims,mu.cols);
+            for(size_t k=dims;k>0;--k)
+                iota::load(work[k],mu[ jrow[k] ]);
+
         }
         
         
-        static inline bool whole_valid(const readable<int> &arr) throw()
-        {
-            for(size_t i=arr.size();i>0;--i)
-            {
-                if( 0 == arr[i] ) return false;
-            }
-            return true;
-        }
-        
+
         
         static inline
         const readable<int> &q2i(writable<int>       &cof,
@@ -297,7 +312,7 @@ namespace yack
             const size_t now = source.size;
 
 
-#if 0
+#if 1
             std::cerr << "\t--> consolidated ";
             switch(ct)
             {
@@ -392,7 +407,8 @@ namespace yack
 
 
         static inline
-        void complete_family(qFamily &source, const imatrix &mu)
+        void complete_family(qFamily       &source,
+                             const imatrix &mu)
         {
             assert(worthy::almost_done==source.situation);
             assert(source.ready->size>0);
@@ -514,7 +530,7 @@ namespace yack
             
         }
         
-
+#if 0
         // will try to vanish every possible species
         static inline
         void process_all_species(bunch<int>    &coef,
@@ -579,8 +595,75 @@ namespace yack
                 //--------------------------------------------------------------
                 process_one_species(coef,jndx,mu,io,xml);
             }
-            
+        }
+#endif
 
+
+        static inline
+        void generate_all_combinations(bunch<int>    &coef,
+                                       const sp_list &sl,
+                                       const imatrix &mu,
+                                       const xmlog   &xml)
+        {
+            static const char * const here = "generate_all_combinations";
+            YACK_XMLSUB(xml,here);
+
+            const size_t m = mu.rows;
+            assert(mu.cols>1);
+            assert(mu.rows>1);
+            assert(sl.size==m);
+            assert(coef.width       == mu.cols);
+            assert(apk::rank_of(mu) == mu.cols);
+
+
+            //------------------------------------------------------------------
+            //
+            //
+            // initialize memory
+            //
+            //
+            //------------------------------------------------------------------
+            assert(m>1);
+            iSharedBank              io = new iBank(); // I/O for indices
+            cxx_array<size_t>        jndx(m);          // indices reservoir
+            for(size_t j=1;j<=m;++j) jndx[j] = j;      // initial reservoir
+            qBranch                  genitors;         // top-level genitors
+
+
+            //------------------------------------------------------------------
+            //
+            //
+            // trying to suppress each species in list
+            //
+            //
+            //------------------------------------------------------------------
+            for(const sp_node *sn=sl.head;sn;sn=sn->next)
+            {
+
+                //--------------------------------------------------------------
+                //
+                // prepare pool of indices, last one will be the leading index
+                //
+                //--------------------------------------------------------------
+                rolling::down(jndx);
+                const species &s = **sn;
+                const size_t   j = jndx[m];
+                //--------------------------------------------------------------
+                //
+                // the species must appear at least twice
+                //
+                //--------------------------------------------------------------
+                if(count_valid(mu[j]) < 2 ) continue;
+                YACK_XMLOG(xml,"nullify " << s << " @" << mu[j]);
+
+
+                //--------------------------------------------------------------
+                //
+                // process the species
+                //
+                //--------------------------------------------------------------
+                //process_one_species(coef,jndx,mu,io,xml);
+            }
         }
         
         
@@ -598,13 +681,11 @@ namespace yack
             //------------------------------------------------------------------
             const size_t n = cls.size;
             
-            if(n<=1)
-            {
+            if(n<=1) {
                 YACK_XMLOG(xml, "<standalone>");
                 return;
             }
             
-
 
             //------------------------------------------------------------------
             //
@@ -612,31 +693,39 @@ namespace yack
             //
             //------------------------------------------------------------------
             const imatrix mu;
-            imatrix       nu(n,M);
+            const sp_list sl;
             {
-                size_t  i=1;
-                for(const eq_node *node=cls.head;node;node=node->next,++i)
+                //--------------------------------------------------------------
+                //
+                // build local topology
+                //
+                //--------------------------------------------------------------
+                imatrix       nu(n,M);
                 {
-                    const size_t ei = ***node;
-                    iota::load(nu[i],Nu[ei]);
+                    size_t  i=1;
+                    for(const eq_node *node=cls.head;node;node=node->next,++i)
+                    {
+                        const size_t ei = ***node;
+                        iota::load(nu[i],Nu[ei]);
+                    }
                 }
-            }
 
-            //------------------------------------------------------------------
-            //
-            // select local vectors
-            //
-            //------------------------------------------------------------------
-            {
-                const imatrix nut(nu,transposed);
-                select_rows(coerce(mu),nut);
-            }
+                //--------------------------------------------------------------
+                //
+                // select local vectors: the problem becomes abstract
+                //
+                //--------------------------------------------------------------
+                {
+                    const imatrix nut(nu,transposed);
+                    select_clan(coerce(sl),coerce(mu),nut,corelib);
+                }
 
-            if(verbose)
-            {
-                YACK_XMLOG(xml,"-- local topogy");
-                std::cerr << "\tnu=" << nu << std::endl;
-                std::cerr << "\tmu=" << mu << std::endl;
+                if(verbose)
+                {
+                    YACK_XMLOG(xml,"-- local topogy");
+                    std::cerr << "\tnu=" << nu << std::endl;
+                    std::cerr << "\tmu=" << mu << std::endl;
+                }
             }
 
             //------------------------------------------------------------------
@@ -645,8 +734,14 @@ namespace yack
             //
             //------------------------------------------------------------------
             bunch<int> coef(n);
-            process_all_species(coef,mu,xml);
-
+            //process_all_species(coef,mu,xml);
+            generate_all_combinations(coef,sl,mu,xml);
+            std::cerr << "Listing: " << std::endl;
+            for(const bunch<int>::entry *ep=coef->head;ep;ep=ep->next)
+            {
+                std::cerr << " --> " << *ep << std::endl;
+            }
+            return;
 
             //------------------------------------------------------------------
             //
@@ -685,8 +780,8 @@ namespace yack
             for(cluster *sharing=related.head;sharing;sharing=sharing->next)
                 make_manifold_(*sharing,xml);
 
-            std::cerr << lattice << std::endl;
-            std::cerr << singles.size() << " -> " << lattice.size() << std::endl;
+            //std::cerr << lattice << std::endl;
+            //std::cerr << singles.size() << " -> " << lattice.size() << std::endl;
         }
         
     }
