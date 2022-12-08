@@ -530,74 +530,7 @@ namespace yack
             
         }
         
-#if 0
-        // will try to vanish every possible species
-        static inline
-        void process_all_species(bunch<int>    &coef,
-                                 const imatrix &mu,
-                                 const xmlog   &xml)
-        {
-            static const char * const here = "processing_cluster";
-            YACK_XMLSUB(xml,here);
-
-            const size_t m = mu.rows;
-            assert(mu.cols>1);
-            assert(mu.rows>1);
-            assert(coef.width       == mu.cols);
-            assert(apk::rank_of(mu) == mu.cols);
-
-
-            //------------------------------------------------------------------
-            //
-            //
-            // initialize memory
-            //
-            //
-            //------------------------------------------------------------------
-            assert(m>1);
-            iSharedBank              io = new iBank(); // I/O for indices
-            cxx_array<size_t>        jndx(m);          // indices reservoir
-            for(size_t j=1;j<=m;++j) jndx[j] = j;      // initial reservoir
-            
-            
-            //------------------------------------------------------------------
-            //
-            //
-            // trying to suppress each species in turn
-            //
-            //
-            //------------------------------------------------------------------
-            for(size_t j=1;j<=m;++j)
-            {
-                
-                //--------------------------------------------------------------
-                //
-                // prepare pool of indices, last one will be the leading index
-                //
-                //--------------------------------------------------------------
-                rolling::down(jndx); assert(j==jndx[m]);
-                
-                //--------------------------------------------------------------
-                //
-                // the species must appear at least twice
-                //
-                //--------------------------------------------------------------
-                if(count_valid(mu[j]) < 2 ) continue;
-                if(xml.verbose)
-                {
-                    *xml << "nullify  @" << jndx << std::endl;
-                }
-                
-                //--------------------------------------------------------------
-                //
-                // process the species
-                //
-                //--------------------------------------------------------------
-                process_one_species(coef,jndx,mu,io,xml);
-            }
-        }
-#endif
-
+        
 
         static inline
         void generate_all_combinations(bunch<int>    &coef,
