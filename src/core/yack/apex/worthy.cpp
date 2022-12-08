@@ -296,11 +296,11 @@ namespace yack
         const list_of<worthy::qarray> &R = rhs.U;
         if(L.size==R.size)
         {
-            const size_t                      nn = L.size;
-            const readable<size_t>           &li = lhs.I; assert(li.size()==nn);
-            const readable<size_t>           &ri = rhs.I; assert(ri.size()==nn);
-            const readable<worthy::qcoeffs*> &lq = lhs.Q; assert(lq.size()==nn);
-            const readable<worthy::qcoeffs*> &rq = rhs.Q; assert(rq.size()==nn);
+            const size_t                           nn = L.size;
+            const readable<size_t>                &li = lhs.I; assert(li.size()==nn);
+            const readable<size_t>                &ri = rhs.I; assert(ri.size()==nn);
+            const readable<worthy::coefficients*> &lq = lhs.Q; assert(lq.size()==nn);
+            const readable<worthy::coefficients*> &rq = rhs.Q; assert(rq.size()==nn);
 
             for(size_t k=1;k<=nn;++k)
             {

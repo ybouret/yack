@@ -8,6 +8,7 @@
 #include "yack/sequence/cxx-array.hpp"
 #include "yack/sequence/cxx-series.hpp"
 #include "yack/data/list/cxx.hpp"
+#include "yack/memory/allocator/dyadic.hpp"
 
 namespace yack
 {
@@ -19,12 +20,15 @@ namespace yack
     //__________________________________________________________________________
     struct worthy
     {
-        
+
+
+        typedef memory::dyadic memory_model;
+
         //______________________________________________________________________
         //
-        //! array of rational coefficients
+        //! tableau of rational
         //______________________________________________________________________
-        typedef cxx_array<apq> qcoeffs;
+        typedef cxx_array<apq,memory_model> coefficients;
 
 
 
@@ -74,10 +78,10 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            qarray       *next;  //!< for list
-            qarray       *prev;  //!< for list
-            const qcoeffs coef;  //!< coefficients, should be simplified
-            const apn     nrm2;  //!< |coef|^2
+            qarray            *next;  //!< for list
+            qarray            *prev;  //!< for list
+            const coefficients coef;  //!< coefficients, simplified
+            const apn          nrm2;  //!< |coef|^2
 
         private:
             YACK_DISABLE_ASSIGN(qarray);
@@ -166,18 +170,14 @@ namespace yack
 
         private:
             YACK_DISABLE_ASSIGN(qfamily);
-            qcoeffs              u_k;       //!< workspace
-            qcoeffs              v_k;       //!< workspace
-            cxx_list_of<qarray>  U;         //!< current list of vectors
-            cxx_series<qcoeffs*> Q;         //!< pointer to vectors
-            cxx_series<size_t>   I;         //!< current indices
+            coefficients              u_k;       //!< workspace
+            coefficients              v_k;       //!< workspace
+            cxx_list_of<qarray>       U;         //!< current list of vectors
+            cxx_series<coefficients*> Q;         //!< pointer to vectors
+            cxx_series<size_t>        I;         //!< current indices
 
             bool try_grow();
             const readable<apq> &project();
-
-
-
-
             
         };
         

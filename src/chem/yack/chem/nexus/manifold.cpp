@@ -141,20 +141,38 @@ namespace yack
             ready(io)
             {
 
+                //--------------------------------------------------------------
+                //
                 // initialize indices
+                //
+                //--------------------------------------------------------------
                 assert(id.size()==mu.rows); // check sanity
                 size_t       i  = mu.rows;  // last index...
-                const size_t ir = id[i];    // ...gives major index
-                assert(count_valid(mu[ir])>1);
+                const size_t ip = id[i];    // ...gives major index
+                const readable<int> &primary = mu[ip];
+                assert(count_valid(primary)>1);
 
+                //--------------------------------------------------------------
+                //
                 // build first vector
-                if(!grow(mu[ir]))
-                    throw imported::exception(fn,"invalid first sub-space");
+                //
+                //--------------------------------------------------------------
+                if(!grow(primary))
+                    throw imported::exception(fn,"invalid primary sub-space");
 
-                
+
+                //--------------------------------------------------------------
+                //
                 // load initial info
-                basis << ir;                     // store major row
-                while(--i>0) ready.pre(id[i]);   // store remaining
+                //
+                //--------------------------------------------------------------
+                basis << ip;
+                while(--i>0)
+                {
+                    const size_t          ir      = id[i];
+                    const readable<int> & replica = mu[ id[i] ];
+                    ready.pre(ir);   // store remaining
+                }
 
             }
             
@@ -451,14 +469,14 @@ namespace yack
                         // all children will produce the same last vector
                         // so we take the first that matches by completing
                         complete_family(*source,mu); assert(worthy::fully_grown==source->situation);
-                        YACK_XMLOG(xml, "[*] " << source);
+                        //YACK_XMLOG(xml, "[*] " << source);
 
                         // process and discard this source
                         source->to(coef);
                         continue;
 
                     case worthy::in_progress:
-                        YACK_XMLOG(xml, "[+] " << source);
+                        //YACK_XMLOG(xml, "[+] " << source);
                         qBranch target;                         // local new generation
                         create_next_gen(target,*source,mu,io);  // create it
                         children.merge_back(target);            // assemble in children
@@ -673,7 +691,7 @@ namespace yack
                         const size_t ei = ***node;
                         gcof[ei] = lcof[i];
                     }
-                    YACK_XMLOG(xml, "--> " << gcof);
+                    //YACK_XMLOG(xml, "--> " << gcof);
                     repo << &promote_mixed(gcof);
                 }
             }
