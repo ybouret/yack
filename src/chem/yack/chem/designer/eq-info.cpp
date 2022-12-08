@@ -13,6 +13,9 @@ namespace yack
 
                 { "acetic",   "[H+]-[EtCOOH]+[EtCOO-]", "10^(-4.78)" },
 
+                { "formic",   "[H+]-[MeCOOH]+[MeCOO-]", "10^(-3.751)" },
+
+
                 { "ammoniac", "[H+]-[NH4+]+[NH3]",      "10^(-9.25)" },
 
                 { "oxalic1",  "[H+]-[OxH2]+[OxH-]",     "10^(-1.20)" },
