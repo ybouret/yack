@@ -603,7 +603,8 @@ namespace yack
         void generate_all_combinations(bunch<int>    &coef,
                                        const sp_list &sl,
                                        const imatrix &mu,
-                                       const xmlog   &xml)
+                                       const xmlog   &xml,
+                                       const library &lib)
         {
             static const char * const here = "generate_all_combinations";
             YACK_XMLSUB(xml,here);
@@ -626,12 +627,12 @@ namespace yack
             iSharedBank              io = new iBank();   // I/O for indices
             cxx_array<size_t>        jndx(m);            // indices reservoir
             qBranch                  genitors;           // top-level genitors
-            jndx.ld_increasing(1);   assert(m==jndx[m]); // initial indices
+            jndx.ld_incr<size_t>(1); assert(m==jndx[m]); // initial indices
 
             //------------------------------------------------------------------
             //
             //
-            // trying to suppress each species in list
+            // loading all genitors for vanishing species
             //
             //
             //------------------------------------------------------------------
@@ -653,7 +654,6 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 if(count_valid(mu[j]) < 2 ) continue;
-                YACK_XMLOG(xml,"nullify " << s << " @" << mu[j]);
 
                 //--------------------------------------------------------------
                 //
@@ -661,7 +661,10 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 genitors.push_back( new qFamily(jndx,mu,io) );
-                //process_one_species(coef,jndx,mu,io,xml);
+                if(xml.verbose)
+                {
+                    lib.pad(*xml << "[" << s.name << "]",s) << " with "<< *(genitors.tail) << std::endl;
+                }
             }
         }
         
@@ -703,10 +706,7 @@ namespace yack
                 {
                     size_t  i=1;
                     for(const eq_node *node=cls.head;node;node=node->next,++i)
-                    {
-                        const size_t ei = ***node;
-                        iota::load(nu[i],Nu[ei]);
-                    }
+                        iota::load(nu[i],Nu[***node]);
                 }
 
                 //--------------------------------------------------------------
@@ -733,8 +733,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             bunch<int> coef(n);
-            //process_all_species(coef,mu,xml);
-            generate_all_combinations(coef,sl,mu,xml);
+            generate_all_combinations(coef,sl,mu,xml,corelib);
             std::cerr << "Listing: " << std::endl;
             for(const bunch<int>::entry *ep=coef->head;ep;ep=ep->next)
             {

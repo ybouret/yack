@@ -44,7 +44,7 @@ namespace yack
 
         //! load increasing
         template <typename U>
-        inline void ld_increasing(U value) {
+        inline void ld_incr(U value) {
             writable<T> &self = *this;
             const size_t n = self.size();
             for(size_t i=1;i<=n;++i,++value) self[i] = value;
