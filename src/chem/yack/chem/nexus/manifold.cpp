@@ -90,7 +90,6 @@ namespace yack
 
         }
         
-        
 
         
         static inline
@@ -122,7 +121,7 @@ namespace yack
         // indices of still not used a.k.a ready :)
         //
         //----------------------------------------------------------------------
-        class qFamily : public object, public qFamily_
+        class qFamily : public qFamily_
         {
         public:
 
@@ -187,7 +186,6 @@ namespace yack
             //
             //------------------------------------------------------------------
             inline qFamily(const qFamily &parent) :
-            object(),
             qFamily_(parent),
             next(0),
             prev(0),
@@ -323,10 +321,12 @@ namespace yack
             twin.basis += chld.basis;
             twin.ready += chld.ready;
             twin.ready -= twin.basis;
+#ifndef NDEBUG
             for(const iNode *node=twin.basis->head;node;node=node->next)
             {
                 assert(!twin.grow(mu[**node]));
             }
+#endif
         }
 
         //----------------------------------------------------------------------
@@ -340,25 +340,22 @@ namespace yack
         void incremental_prune(qBranch                &source,
                                const imatrix          &mu)
         {
+            qBranch      target;
+            while(source.size)
             {
-                qBranch      target;
-                while(source.size)
-                {
-                    auto_ptr<qFamily> chld = source.pop_front();
-                    qFamily          *twin = find_fast_twin_of(*chld,target);
+                auto_ptr<qFamily> chld = source.pop_front();
+                qFamily          *twin = find_fast_twin_of(*chld,target);
 
-                    if(twin)
-                    {
-                        update_twin(*twin,*chld,mu);
-                    }
-                    else
-                    {
-                        target.push_back( chld.yield() );
-                    }
+                if(twin)
+                {
+                    update_twin(*twin,*chld,mu);
                 }
-                target.swap_with(source);
+                else
+                {
+                    target.push_back( chld.yield() );
+                }
             }
-            //assert(source.has_no_duplicate());
+            target.swap_with(source);
         }
 
 
@@ -438,8 +435,8 @@ namespace yack
 
         static inline
         void incremental_merge(qBranch       &target,
-                                qBranch       &source,
-                                const imatrix &mu)
+                               qBranch       &source,
+                               const imatrix &mu)
         {
             assert(target.has_no_duplicate());
             assert(source.has_no_duplicate());
@@ -466,13 +463,14 @@ namespace yack
         void complete_family(qFamily       &source,
                              const imatrix &mu)
         {
+            static const char * const here = "nexus::complete_family";
             assert(worthy::almost_done==source.situation);
             assert(source.ready->size>0);
             for(const iNode *node=source.ready->head;node;node=node->next)
             {
                 if(source.grow(mu[**node])) return;
             }
-            throw imported::exception(fn,"unable to complete family");
+            throw imported::exception(here,"unable to complete family");
         }
 
 
@@ -499,10 +497,16 @@ namespace yack
                 assert(source->ready->size>0);
                 switch(source->situation)
                 {
+                        //------------------------------------------------------
+                        //
                     case worthy::fully_grown:
                         YACK_XMLOG(xml, "[!] " << source);
                         throw imported::exception(here,"unexpected fully grown family!");
+                        //
+                        //------------------------------------------------------
 
+                        //------------------------------------------------------
+                        //
                     case worthy::almost_done:
                         // all children will produce the same last vector
                         // so we take the first that matches by completing
@@ -512,13 +516,19 @@ namespace yack
                         // process and discard this source
                         source->to(coef);
                         continue;
+                        //
+                        //------------------------------------------------------
 
+                        //------------------------------------------------------
+                        //
                     case worthy::in_progress: {
                         YACK_XMLOG(xml, "[+] " << source);
                         qBranch target;                        // local new generation
                         create_next_gen(target,*source,mu,io); // create it
                         incremental_merge(children,target,mu); // fusion
                     } break;
+                        //
+                        //------------------------------------------------------
                 }
             }
             assert(0==genitors.size);

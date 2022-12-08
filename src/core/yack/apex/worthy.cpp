@@ -1,6 +1,38 @@
 #include "yack/apex/worthy.hpp"
 #include "yack/apex/kernel.hpp"
 #include "yack/type/utils.hpp"
+#include "yack/system/imported.hpp"
+
+
+namespace yack
+{
+
+    static inline
+    size_t checked_dims(const size_t dims)
+    {
+        if(dims<=0) throw imported::exception("worthy::qmetrics","null dimension");
+        return dims;
+    }
+
+    worthy:: qmetrics:: qmetrics(const size_t dims) :
+    dimension( checked_dims(dims) )
+    {
+
+    }
+
+    worthy:: qmetrics::qmetrics(const qmetrics &_) throw() :
+    large_object(),
+    dimension(_.dimension)
+    {
+    }
+
+
+
+    worthy:: qmetrics:: ~qmetrics() throw()
+    {
+        coerce(dimension) = 0;
+    }
+}
 
 namespace yack
 {
@@ -16,7 +48,7 @@ namespace yack
     }
     
     worthy:: qarray:: qarray(const qarray &_) :
-    object(),
+    qmetrics(_),
     next(0),
     prev(0),
     coef(_.coef),
@@ -102,15 +134,105 @@ namespace yack
         return apq_dot(v,coef)/nrm2;
     }
 
-    
+}
 
-    
+
+
+namespace yack
+{
+    worthy:: qcache::  qcache(const size_t dims) : qmetrics(dims), used() {}
+    worthy:: qcache:: ~qcache() throw() {}
+
+    const pool_of<worthy::qarray> & worthy:: qcache:: operator*()   const throw() { return used; }
+    const pool_of<worthy::qarray> * worthy:: qcache:: operator->()  const throw() { return &used; }
+
+
+    void  worthy:: qcache:: keep(qarray *q) throw()
+    {
+        assert(NULL!=q);
+        assert(dimension==q->dimension);
+        assert(dimension==q->coef.size());
+        used.store(q);
+        writable<apq> &cf = coerce(q->coef);
+        for(size_t i=dimension;i>0;--i) cf[i].ldz();
+        coerce(q->nrm2).ldz();
+    }
+
+    void worthy:: qcache:: release() throw()
+    {
+        used.release();
+    }
+
+
+    worthy::qarray * worthy:: qcache:: copy(const qarray &other)
+    {
+        assert(other.dimension == dimension);
+        if(used.size<=0)
+        {
+            return new qarray(other);
+        }
+        else
+        {
+            qarray        &qa = *used.head; assert(dimension==qa.dimension);
+            writable<apq> &cf = coerce(qa.coef);
+            for(size_t i=dimension;i>0;--i) cf[i] = other.coef[i];
+            coerce(qa.nrm2) = other.nrm2;
+            return used.query();
+        }
+    }
+
+}
+
+
+namespace yack
+{
+    worthy:: qarrays:: qarrays(const qshared &cache) throw() :
+     repo(cache)
+    {
+    }
+
+    worthy:: qarrays:: ~qarrays() throw()
+    {
+        quit();
+    }
+
+    void  worthy:: qarrays:: pop_back() throw()
+    {
+        assert(base.size);
+        assert(base.tail);
+        repo->keep( base.pop_back() );
+    }
+
+
+    void worthy:: qarrays:: release() throw()
+    {
+        quit();
+    }
+
+
+    void worthy:: qarrays:: quit() throw()
+    {
+        while(base.size) repo->keep( base.pop_back() );
+    }
+
+    worthy:: qarrays:: qarrays(const qarrays &other) :
+    base(),
+    repo(other.repo)
+    {
+        for(const qarray *node=other.base.head;node;node=node->next)
+            base.push_back( repo->copy(*node) );
+    }
+
+    const list_of<worthy::qarray> & worthy:: qarrays:: operator*() const throw() { return base; }
+
+    const list_of<worthy::qarray> * worthy:: qarrays:: operator->() const throw() { return &base; }
+
+
 }
 
 
 #include "yack/ptr/auto.hpp"
 #include "yack/sort/indexing.hpp"
-#include "yack/system/imported.hpp"
 
 namespace yack
 {
@@ -154,12 +276,12 @@ namespace yack
 
 
 
-    worthy:: qfamily:: qfamily(const size_t dims)  :
-    dimension( dims ),
+    worthy:: qfamily:: qfamily(const qshared &cache)  :
+    qmetrics( *cache ),
     situation( initial_situation(dimension) ),
     u_k(dimension),
     v_k(dimension),
-    U(),
+    U(cache),
     Q(dimension),
     I(dimension)
     {
@@ -171,7 +293,7 @@ namespace yack
     }
     
     worthy:: qfamily:: qfamily(const qfamily &_) :
-    dimension(_.dimension),
+    qmetrics(_),
     situation(_.situation),
     u_k(dimension),
     v_k(dimension),
@@ -179,12 +301,12 @@ namespace yack
     Q(dimension),
     I(dimension)
     {
-        assert(U.size==_.U.size);
+        assert(U->size==_.U->size);
 
         // rebuild Q from new arrays
-        for(qarray *q=U.head;q;q=q->next)
+        for(qarray *q=U->head;q;q=q->next)
             Q << &coerce(q->coef);
-        assert(Q.size()==U.size);
+        assert(Q.size()==U->size);
 
         // copy series
         const size_t n=Q.size();
@@ -203,10 +325,20 @@ namespace yack
         coerce(situation) = initial_situation(dimension);
     }
 
+    const list_of<worthy::qarray> * worthy:: qfamily:: operator->()  const throw()
+    {
+        return & *U;
+    }
+
+
+    const list_of<worthy::qarray> & worthy:: qfamily:: operator*()  const throw()
+    {
+        return *U;
+    }
 
     std::ostream & operator<<(std::ostream &os, const worthy::qfamily &self)
     {
-        os << self.U << " <" << self.I << ">";
+        os << *(self.U) << " <" << self.I << ">";
         return os;
     }
 
@@ -240,7 +372,9 @@ namespace yack
         return 0;
     }
 
-    
+
+
+
     bool worthy::qfamily:: try_grow()
     {
         //----------------------------------------------------------------------
@@ -248,7 +382,7 @@ namespace yack
         // u_k = v_k is loaded : apply Gram-Schmidt
         //
         //----------------------------------------------------------------------
-        for(const qarray *node=U.head;node;node=node->next)
+        for(const qarray *node=U->head;node;node=node->next)
         {
             const readable<apq> &u_j = node->coef; assert(node->nrm2>0);
             const apq            cof = node->weight(v_k);
@@ -266,20 +400,43 @@ namespace yack
         // create a new simplified array
         //
         //----------------------------------------------------------------------
-        auto_ptr<qarray> pq( new qarray(u_k) );
-        if( 0 != pq->nrm2 )
+        assert(U->size<dimension);
+        const qarray &qa = U.push_back(u_k);
+        if( 0 != qa.nrm2 )
         {
-            apk::set_univocal( coerce(pq->coef) );         // univocal setup
-            Q << &coerce(U.push_back( pq.yield() )->coef); // no-throw update
-            I << 0;                                        // no-throw update
-            assert(Q.size()==U.size);
-            assert(I.size()==U.size);
+            // register new coef and dummy index
+            Q << &coerce(qa.coef); assert(Q.size()==U->size);
+            I << 0;                assert(I.size()==U->size);
 
             // upgrading indices
             indexing::make(I, compare_coeffs, Q);
 
             // upgrading situation
-            coerce(situation) = maturity_of(dimension,U.size);
+            coerce(situation) = maturity_of(dimension,U->size);
+
+            return true;
+        }
+        else
+        {
+            U.pop_back();
+            return false;
+        }
+
+#if 0
+        auto_ptr<qarray> pq( new qarray(u_k) );
+        if( 0 != pq->nrm2 )
+        {
+            apk::set_univocal( coerce(pq->coef) );         // univocal setup
+            //Q << &coerce(U->push_back( pq.yield() )->coef); // no-throw update
+            I << 0;                                        // no-throw update
+            assert(Q.size()==U->size);
+            assert(I.size()==U->size);
+
+            // upgrading indices
+            indexing::make(I, compare_coeffs, Q);
+
+            // upgrading situation
+            coerce(situation) = maturity_of(dimension,U->size);
 
             return true;
         }
@@ -287,14 +444,15 @@ namespace yack
         {
             return false;
         }
+#endif
         
     }
 
 
     bool worthy:: qfamily:: eq(const qfamily &lhs, const qfamily &rhs) throw()
     {
-        const list_of<qarray> &L = lhs.U;
-        const list_of<qarray> &R = rhs.U;
+        const list_of<qarray> &L = *lhs.U;
+        const list_of<qarray> &R = *rhs.U;
         if(L.size==R.size)
         {
             const size_t                   nn = L.size;
@@ -326,9 +484,9 @@ namespace yack
         return worthy::qfamily::eq(lhs,rhs);
     }
 
-    const readable<apq> & worthy:: qfamily:: project()
+    const readable<apq> & worthy:: qfamily:: project_()
     {
-        for(const qarray *node=U.head;node;node=node->next)
+        for(const qarray *node=U->head;node;node=node->next)
         {
             const readable<apq> &u = node->coef;
             const apq            f = apq_dot(v_k,u)/node->nrm2;
