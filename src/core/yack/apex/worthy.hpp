@@ -39,14 +39,26 @@ namespace yack
         typedef cxx_array<apq,memory_model> coefficients;
 
 
+        //______________________________________________________________________
+        //
+        //! metrics to share same dimension and dynamic base class
+        //______________________________________________________________________
         class qmetrics : public large_object
         {
         public:
-            explicit qmetrics(const size_t dims);
-            qmetrics(const qmetrics &) throw();
-            virtual ~qmetrics() throw();
-            
-            const size_t dimension;
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit qmetrics(const size_t dims); //!< setup dimensions > 0
+            virtual ~qmetrics() throw();          //!< cleanup
+            qmetrics(const qmetrics &) throw();   //!< no-throw copy
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const size_t dimension; //!< const dimension
 
         private:
             YACK_DISABLE_ASSIGN(qmetrics);
@@ -93,7 +105,7 @@ namespace yack
             //! test all coefficients equality
             friend bool operator==(const qarray &lhs, const qarray &rhs) throw();
 
-            //! test coefficients difference
+            //! test for a difference between coefficients
             friend bool operator!=(const qarray &lhs, const qarray &rhs) throw();
 
             //__________________________________________________________________
@@ -111,20 +123,37 @@ namespace yack
             void setup();
         };
 
-
-        //! cache of qarrays with same dims
+        //______________________________________________________________________
+        //
+        //! cache of qarrays with same dimension
+        //______________________________________________________________________
         class qcache : public qmetrics, public counted
         {
         public:
-            explicit qcache(const size_t dims);
-            virtual ~qcache() throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit qcache(const size_t dims); //!< initialize with dimension
+            virtual ~qcache() throw();          //!< cleanup
 
-            const pool_of<qarray> & operator*()  const throw();
-            const pool_of<qarray> * operator->() const throw();
 
+            //__________________________________________________________________
+            //
+            // access methods
+            //__________________________________________________________________
+            const pool_of<qarray> & operator*()  const throw(); //!< access to pool
+            const pool_of<qarray> * operator->() const throw(); //!< access to pool
+
+            //__________________________________________________________________
+            //
+            // I/O methods
+            //__________________________________________________________________
+
+            //! return to pool and set all values to zero
             void    keep(qarray *q) throw();
 
-            //! return a setup qarray
+            //! return a setup qarray, NOT univocal
             template <typename T> inline
             qarray *make(const readable<T> &cof)
             {
@@ -143,8 +172,10 @@ namespace yack
                 }
             }
 
+            //! copy of qarray using cache
             qarray *copy(const qarray &);
 
+            //! release memory
             void release() throw();
 
         private:
@@ -152,36 +183,61 @@ namespace yack
             cxx_pool_of<qarray> used;
         };
 
+        //______________________________________________________________________
+        //
+        //! shared cache for qarrays
+        //______________________________________________________________________
         typedef arc_ptr<qcache> qshared;
 
 
+        //______________________________________________________________________
+        //
+        //! list of qarray sharing the same cache
+        //______________________________________________________________________
         class qarrays
         {
         public:
-            explicit qarrays(const qshared &cache) throw();
-            virtual ~qarrays() throw();
-            qarrays(const qarrays &other);
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit qarrays(const qshared &cache) throw(); //!< setup with cache/dimension
+            virtual ~qarrays() throw();                     //!< cleanup, return arrays to cache
+            qarrays(const qarrays &other);                  //!< copy using cache.copy
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
+            //! release content
             void release() throw();  
 
+            //! make a new qarray from given coefficient and cache
             template <typename T> inline
             const qarray &push_back(const readable<T> &cof)
             {
                 return * base.push_back( repo->make(cof) );
             }
 
+
+            //! remove last array (to cache)
             void pop_back() throw();
 
 
-            const list_of<qarray> & operator*()  const throw();
-            const list_of<qarray> * operator->() const throw();
+            //__________________________________________________________________
+            //
+            // access
+            //__________________________________________________________________
+            const list_of<qarray> & operator*()  const throw(); //!< access
+            const list_of<qarray> * operator->() const throw(); //!< access
 
 
         private:
             cxx_list_of<qarray> base;
 
         public:
-            qshared             repo;
+            qshared             repo; //!< shared cache
 
         private:
             YACK_DISABLE_ASSIGN(qarrays);
@@ -211,8 +267,12 @@ namespace yack
         class qfamily  : public qmetrics
         {
         public:
-            typedef cxx_series<coefficients*,memory_model> coeffs_ptr;
-            typedef cxx_series<size_t,memory_model>        indexing_t;
+            //__________________________________________________________________
+            //
+            // types and definitions
+            //__________________________________________________________________
+            typedef cxx_series<coefficients*,memory_model> coeffs_ptr; //!< alias
+            typedef cxx_series<size_t,memory_model>        indexing_t; //!< alias
 
             //__________________________________________________________________
             //

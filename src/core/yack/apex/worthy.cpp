@@ -187,7 +187,8 @@ namespace yack
 namespace yack
 {
     worthy:: qarrays:: qarrays(const qshared &cache) throw() :
-     repo(cache)
+    base(),
+    repo(cache)
     {
     }
 
