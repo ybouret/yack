@@ -440,24 +440,25 @@ namespace yack
             while(genitors.size)
             {
                 auto_ptr<qFamily> source = genitors.pop_front();
-                std::cerr << "\tgenitor  = " << source << std::endl;
                 assert(source->ready->size>0);
-
                 switch(source->situation)
                 {
-                    case worthy::fully_grown: throw imported::exception(here,"unexpected fully grown family!");
+                    case worthy::fully_grown:
+                        YACK_XMLOG(xml, "[!] " << source);
+                        throw imported::exception(here,"unexpected fully grown family!");
 
                     case worthy::almost_done:
                         // all children will produce the same last vector
                         // so we take the first that matches by completing
                         complete_family(*source,mu); assert(worthy::fully_grown==source->situation);
-                        std::cerr << "\t|_child1 = " << source << std::endl;
+                        YACK_XMLOG(xml, "[*] " << source);
 
                         // process and discard this source
                         source->to(coef);
                         continue;
 
                     case worthy::in_progress:
+                        YACK_XMLOG(xml, "[+] " << source);
                         qBranch target;                         // local new generation
                         create_next_gen(target,*source,mu,io);  // create it
                         children.merge_back(target);            // assemble in children
@@ -472,7 +473,6 @@ namespace yack
             //
             //------------------------------------------------------------------
             consolidate(children,mu,consolidate_full);
-            YACK_XMLOG(xml, "-- |children| = " << children.size );
 
             //------------------------------------------------------------------
             //
@@ -482,7 +482,6 @@ namespace yack
             while(children.size)
             {
                 auto_ptr<qFamily> chld = children.pop_front();
-                std::cerr << "\t\t" << chld << std::endl;
                 genitors.push_back(chld.yield());
             }
 
@@ -574,7 +573,6 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            YACK_XMLOG(xml, "-- evolving");
             while(genitors.size)
             {
                 update_all_combinations(coef,genitors,mu,io,xml);
@@ -647,12 +645,15 @@ namespace yack
             //------------------------------------------------------------------
             bunch<int> coef(n);
             create_all_combinations(coef,sl,mu,xml,corelib);
-            std::cerr << "Listing: " << std::endl;
+
+#if 0
+            std::cerr << "Listing: #" << coef->size << std::endl;
             for(const bunch<int>::entry *ep=coef->head;ep;ep=ep->next)
             {
                 std::cerr << " --> " << *ep << std::endl;
             }
             return;
+#endif
 
             //------------------------------------------------------------------
             //
@@ -692,7 +693,7 @@ namespace yack
                 make_manifold_(*sharing,xml);
 
             //std::cerr << lattice << std::endl;
-            //std::cerr << singles.size() << " -> " << lattice.size() << std::endl;
+            std::cerr << singles.size() << " -> " << lattice.size() << std::endl;
         }
         
     }
