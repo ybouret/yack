@@ -108,6 +108,8 @@ namespace yack
         static const char * const fn = "sub_manifold";
 
         typedef worthy::qfamily    qFamily_;
+        typedef worthy::qcache     qCache;
+        typedef worthy::qshared    qShared;
         typedef small_bank<size_t> iBank;
         typedef iBank::pointer     iSharedBank;
         typedef small_set<size_t>  iList;
@@ -130,10 +132,11 @@ namespace yack
             //! full setup
             //
             //------------------------------------------------------------------
-            explicit qFamily(const readable<size_t> &id,
+            explicit qFamily(const readable<size_t> &jx,
                              const imatrix          &mu,
-                             const iSharedBank      &io) :
-            qFamily_(mu.cols),
+                             const iSharedBank      &io,
+                             const qShared          &qs) :
+            qFamily_(qs),
             next(0),
             prev(0),
             basis(io),
@@ -145,9 +148,9 @@ namespace yack
                 // initialize indices
                 //
                 //--------------------------------------------------------------
-                assert(id.size()==mu.rows); // check sanity
+                assert(jx.size()==mu.rows); // check sanity
                 size_t       i  = mu.rows;  // last index...
-                const size_t ip = id[i];    // ...gives major index
+                const size_t ip = jx[i];    // ...gives major index
                 const readable<int> &primary = mu[ip];
                 assert(count_valid(primary)>1);
 
@@ -174,8 +177,8 @@ namespace yack
                 //--------------------------------------------------------------
                 while(--i>0)
                 {
-                    const size_t          ir      = id[i];
-                    ready.pre(ir);   // store remaining
+                    const size_t ir = jx[i]; // remaining index
+                    ready.pre(ir);           // store remaining
                 }
 
             }
@@ -574,9 +577,10 @@ namespace yack
             //------------------------------------------------------------------
             const size_t             m  = mu.rows;
             iSharedBank              io = new iBank();   // I/O for indices
-            cxx_array<size_t>        jndx(m);            // indices reservoir
+            cxx_array<size_t>        jx(m);             // indices reservoir
+            qShared                  qs = new qCache(coef.width);
             qBranch                  genitors;           // top-level genitors
-            jndx.ld_incr<size_t>(1); assert(m==jndx[m]); // initial indices
+            jx.ld_incr<size_t>(1); assert(m==jx[m]); // initial indices
 
             //------------------------------------------------------------------
             //
@@ -594,9 +598,9 @@ namespace yack
                 // prepare pool of indices, last one will be the leading index
                 //
                 //--------------------------------------------------------------
-                rolling::down(jndx);
+                rolling::down(jx);
                 const species &s = **sn;
-                const size_t   j = jndx[m];
+                const size_t   j = jx[m];
 
                 //--------------------------------------------------------------
                 //
@@ -610,7 +614,7 @@ namespace yack
                 // initialize a genitor
                 //
                 //--------------------------------------------------------------
-                genitors.push_back( new qFamily(jndx,mu,io) );
+                genitors.push_back( new qFamily(jx,mu,io,qs) );
                 if(xml.verbose)
                 {
                     lib.pad(*xml << "[" << s.name << "]",s) << " with "<< *(genitors.tail) << std::endl;
