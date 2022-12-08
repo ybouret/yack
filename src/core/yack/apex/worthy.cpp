@@ -21,7 +21,6 @@ namespace yack
     }
 
     worthy:: qmetrics::qmetrics(const qmetrics &_) throw() :
-    large_object(),
     dimension(_.dimension)
     {
     }
@@ -141,7 +140,10 @@ namespace yack
 namespace yack
 {
     worthy:: qcache::  qcache(const size_t dims) : qmetrics(dims), used() {}
-    worthy:: qcache:: ~qcache() throw() {}
+    worthy:: qcache:: ~qcache() throw()
+    {
+        std::cerr << "--- CLEANING Cache=" << used.size << " ----" << std::endl;
+    }
 
     const pool_of<worthy::qarray> & worthy:: qcache:: operator*()   const throw() { return used; }
     const pool_of<worthy::qarray> * worthy:: qcache:: operator->()  const throw() { return &used; }

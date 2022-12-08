@@ -20,7 +20,14 @@ namespace yack
     namespace chemical
     {
         
-        
+
+        //----------------------------------------------------------------------
+        //
+        //
+        // counting coef != 0
+        //
+        //
+        //----------------------------------------------------------------------
         static inline size_t count_valid(const readable<int> &coef) throw()
         {
             size_t count = 0;
@@ -30,7 +37,16 @@ namespace yack
             }
             return count;
         }
-        
+
+
+        //----------------------------------------------------------------------
+        //
+        //
+        // select species and build matrix from significant rows
+        //
+        //
+        //----------------------------------------------------------------------
+
         void select_clan(sp_list       &clan,
                          imatrix       &work,
                          const imatrix &mu,
@@ -53,8 +69,8 @@ namespace yack
             //------------------------------------------------------------------
             for(const snode *sn=lib.head();sn;sn=sn->next)
             {
-                const species &s = ***sn;
-                const size_t   j = *s;
+                const species       &s = ***sn;
+                const size_t         j = *s;
                 const readable<int> &curr = mu[j];
                 if(count_valid(curr)<=0) continue;
 
@@ -91,7 +107,13 @@ namespace yack
         }
         
 
-        
+        //----------------------------------------------------------------------
+        //
+        //
+        // convert coefficients
+        //
+        //
+        //----------------------------------------------------------------------
         static inline
         const readable<int> &q2i(writable<int>       &cof,
                                  const readable<apq> &q)
@@ -119,8 +141,8 @@ namespace yack
         //----------------------------------------------------------------------
         //
         // orthogonal family, with
-        // indices of used in basis and
-        // indices of still not used a.k.a ready :)
+        // - indices of used in              .basis
+        // - indices of still not used a.k.a .ready
         //
         //----------------------------------------------------------------------
         class qFamily : public qFamily_
@@ -148,11 +170,11 @@ namespace yack
                 // initialize indices
                 //
                 //--------------------------------------------------------------
-                assert(jx.size()==mu.rows); // check sanity
-                size_t       i  = mu.rows;  // last index...
-                const size_t ip = jx[i];    // ...gives major index
-                const readable<int> &primary = mu[ip];
-                assert(count_valid(primary)>1);
+                assert(jx.size()==mu.rows);            // check sanity
+                size_t               i  = mu.rows;     // last index...
+                const size_t         ip = jx[i];       // ...gives primary index
+                const readable<int> &primary = mu[ip]; // and primary vector
+                assert(count_valid(primary)>1);        // sanity check
 
                 //--------------------------------------------------------------
                 //
@@ -197,16 +219,34 @@ namespace yack
             {
             }
             
-            
+
+            //------------------------------------------------------------------
+            //
+            //! cleanup...
+            //
+            //------------------------------------------------------------------
             virtual ~qFamily() throw() {}
-            
+
+
+
+            //------------------------------------------------------------------
+            //
+            //! verbosity
+            //
+            //------------------------------------------------------------------
             inline friend std::ostream & operator<<(std::ostream &os, const qFamily &self)
             {
                 const qFamily_ &from = self;
                 std::cerr << from << " / " << *self.basis << "+" << *self.ready;
                 return os;
             }
-            
+
+
+            //------------------------------------------------------------------
+            //
+            // members
+            //
+            //------------------------------------------------------------------
             qFamily *next;  //!< for list
             qFamily *prev;  //!< for list
             iList    basis; //!< used to build basis
@@ -234,16 +274,29 @@ namespace yack
         };
 
         //----------------------------------------------------------------------
-        // list of orthogonal families
+        //
+        //! list of qFamilies forms a  qBranch
+        //
         //----------------------------------------------------------------------
         typedef cxx_list_of<qFamily> qBranch_;
 
+
+        //----------------------------------------------------------------------
+        //
+        //! branch of families, from the same genitors
+        //
+        //----------------------------------------------------------------------
         class qBranch : public qBranch_
         {
         public:
+            //! initialize
             inline explicit qBranch() throw() : qBranch_() {}
+
+            //! cleanup
             inline virtual ~qBranch() throw() {}
 
+
+            //! full sanity check
             inline bool has_no_duplicate() const
             {
                 for(const qFamily *lhs=head;lhs;lhs=lhs->next)
@@ -263,12 +316,11 @@ namespace yack
 
         //----------------------------------------------------------------------
         //
-        // reduce complexity
+        //
+        // find twin by comparing only last coefficients
+        //
         //
         //----------------------------------------------------------------------
-
-
-        // find by comparing only last coefficients
         static inline
         qFamily *find_fast_twin_of(const qFamily &chld,
                                    const qBranch &target)
@@ -283,13 +335,6 @@ namespace yack
                 assert( lhs->size == rhs->size );
                 assert( lhs->tail != NULL);
 
-#ifndef NDEBUG
-                for(const worthy::qarray *l=lhs->head, *r=rhs->head;l!=lhs->tail;r=r->next,l=l->next)
-                {
-                    assert( l->coef == r->coef );
-                }
-#endif
-
                 if( lhs->tail->coef == R )
                 {
                     return scan;
@@ -298,7 +343,13 @@ namespace yack
             return NULL;
         }
 
-        //find by comparing full family
+        //----------------------------------------------------------------------
+        //
+        //
+        // find twin by comparing full family
+        //
+        //
+        //----------------------------------------------------------------------
         static inline
         qFamily *find_full_twin_of(const qFamily &chld,
                                    const qBranch &target)
@@ -307,35 +358,26 @@ namespace yack
             {
                 assert((*scan)->size == chld->size);
                 if( *scan == chld )
-                {
                     return scan;
-                }
             }
             return NULL;
         }
 
 
-
+        //----------------------------------------------------------------------
+        //
+        //
+        // update twin by merging basis and ready, and removing new basis
+        // from ready
+        //
+        //----------------------------------------------------------------------
         static inline
         void update_twin(qFamily       &twin,
-                         const qFamily &chld,
-                         const imatrix &
-#ifndef NDEBUG
-                         mu
-#endif
-                         )
+                         const qFamily &chld)
         {
             twin.basis += chld.basis;
             twin.ready += chld.ready;
             twin.ready -= twin.basis;
-#if 0
-#ifndef NDEBUG
-            for(const iNode *node=twin.basis->head;node;node=node->next)
-            {
-                assert(!twin.grow(mu[**node]));
-            }
-#endif
-#endif
         }
 
         //----------------------------------------------------------------------
@@ -344,10 +386,8 @@ namespace yack
         // only by the last array
         //
         //----------------------------------------------------------------------
-
         static inline
-        void incremental_prune(qBranch                &source,
-                               const imatrix          &mu)
+        void incremental_prune(qBranch                &source)
         {
             qBranch      target;
             while(source.size)
@@ -357,7 +397,7 @@ namespace yack
 
                 if(twin)
                 {
-                    update_twin(*twin,*chld,mu);
+                    update_twin(*twin,*chld);
                 }
                 else
                 {
@@ -439,13 +479,17 @@ namespace yack
                 member->ready -= span;
             }
 
-            incremental_prune(target,mu);
+            incremental_prune(target);
         }
 
+        //----------------------------------------------------------------------
+        //
+        // transfert to target only branches that are different
+        //
+        //----------------------------------------------------------------------
         static inline
         void incremental_merge(qBranch       &target,
-                               qBranch       &source,
-                               const imatrix &mu)
+                               qBranch       &source)
         {
             assert(target.has_no_duplicate());
             assert(source.has_no_duplicate());
@@ -457,7 +501,7 @@ namespace yack
 
                 if(twin)
                 {
-                    update_twin(*twin,*chld,mu);
+                    update_twin(*twin,*chld);
                 }
                 else
                 {
@@ -467,7 +511,12 @@ namespace yack
 
         }
 
-
+        //----------------------------------------------------------------------
+        //
+        //
+        // find any completing vector for family
+        //
+        //----------------------------------------------------------------------
         static inline
         void complete_family(qFamily       &source,
                              const imatrix &mu)
@@ -483,10 +532,12 @@ namespace yack
         }
 
 
-        void update_all_combinations(bunch<int>             &coef,
+        void update_all_combinations(const size_t            degree,
+                                     bunch<int>             &coef,
                                      qBranch                &genitors,
                                      const imatrix          &mu,
                                      iSharedBank            &io,
+                                     qShared                &qs,
                                      const xmlog            &xml)
 
         {
@@ -499,7 +550,7 @@ namespace yack
             // make a new generation for each present genitor
             //
             //------------------------------------------------------------------
-            YACK_XMLOG(xml, "-- |genitors| = " << genitors.size );
+            YACK_XMLOG(xml, "-- |genitors| = " << genitors.size << " @degree=" << degree << ", |cache|=" << (*qs)->size );
             while(genitors.size)
             {
                 auto_ptr<qFamily> source = genitors.pop_front();
@@ -520,10 +571,13 @@ namespace yack
                         // all children will produce the same last vector
                         // so we take the first that matches by completing
                         complete_family(*source,mu); assert(worthy::fully_grown==source->situation);
-                        YACK_XMLOG(xml, "[*] " << source);
+                        //YACK_XMLOG(xml, "[*] " << source);
 
                         // process and discard this source
                         source->to(coef);
+                        source = NULL;
+                        std::cerr << " done@cache=" << (*qs)->size << std::endl;
+                        qs->release();
                         continue;
                         //
                         //------------------------------------------------------
@@ -531,10 +585,10 @@ namespace yack
                         //------------------------------------------------------
                         //
                     case worthy::in_progress: {
-                        YACK_XMLOG(xml, "[+] " << source);
+                        //YACK_XMLOG(xml, "[+] " << source);
                         qBranch target;                        // local new generation
                         create_next_gen(target,*source,mu,io); // create it
-                        incremental_merge(children,target,mu); // fusion
+                        incremental_merge(children,target);    // fusion
                     } break;
                         //
                         //------------------------------------------------------
@@ -550,6 +604,7 @@ namespace yack
             while(children.size)
             {
                 auto_ptr<qFamily> chld = children.pop_front();
+                // todo: check
                 genitors.push_back(chld.yield());
             }
 
@@ -583,10 +638,10 @@ namespace yack
             //------------------------------------------------------------------
             const size_t             m  = mu.rows;
             iSharedBank              io = new iBank();   // I/O for indices
-            cxx_array<size_t>        jx(m);             // indices reservoir
+            cxx_array<size_t>        jx(m);              // indices reservoir
             qShared                  qs = new qCache(coef.width);
             qBranch                  genitors;           // top-level genitors
-            jx.ld_incr<size_t>(1); assert(m==jx[m]); // initial indices
+            jx.ld_incr<size_t>(1); assert(m==jx[m]);     // initial indices
 
             //------------------------------------------------------------------
             //
@@ -642,10 +697,14 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
+            size_t degree=0;
             while(genitors.size)
             {
-                update_all_combinations(coef,genitors,mu,io,xml);
+                ++degree;
+                update_all_combinations(degree,coef,genitors,mu,io,qs,xml);
+                YACK_XMLOG(xml, "-- |_|genitors| = " << genitors.size << " |cache| = " << (*qs)->size  );
             }
+            YACK_XMLOG(xml,"-- DONE: #cache=" << (*qs)->size << " degree=" << degree );
         }
         
         
