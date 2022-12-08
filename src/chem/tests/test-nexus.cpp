@@ -34,6 +34,8 @@ YACK_UTEST(nexus)
 
     //cs.lattice.graphviz("lattice.dot",cs.corelib);
 
+    
+
 }
 YACK_UDONE()
 
