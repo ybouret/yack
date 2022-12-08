@@ -41,7 +41,15 @@ namespace yack
         inline void ld(param_type args) {
             for(size_t i=this->size();i>0;--i) (*this)[i] = args;
         }
-        
+
+        //! load increasing
+        template <typename U>
+        inline void ld_increasing(U value) {
+            writable<T> &self = *this;
+            const size_t n = self.size();
+            for(size_t i=1;i<=n;++i,++value) self[i] = value;
+        }
+
         //______________________________________________________________________
         //
         // C++

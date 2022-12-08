@@ -608,10 +608,9 @@ namespace yack
             static const char * const here = "generate_all_combinations";
             YACK_XMLSUB(xml,here);
 
-            const size_t m = mu.rows;
             assert(mu.cols>1);
             assert(mu.rows>1);
-            assert(sl.size==m);
+            assert(sl.size==mu.rows);
             assert(coef.width       == mu.cols);
             assert(apk::rank_of(mu) == mu.cols);
 
@@ -623,12 +622,11 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            assert(m>1);
-            iSharedBank              io = new iBank(); // I/O for indices
-            cxx_array<size_t>        jndx(m);          // indices reservoir
-            for(size_t j=1;j<=m;++j) jndx[j] = j;      // initial reservoir
-            qBranch                  genitors;         // top-level genitors
-
+            const size_t             m  = mu.rows;
+            iSharedBank              io = new iBank();   // I/O for indices
+            cxx_array<size_t>        jndx(m);            // indices reservoir
+            qBranch                  genitors;           // top-level genitors
+            jndx.ld_increasing(1);   assert(m==jndx[m]); // initial indices
 
             //------------------------------------------------------------------
             //
@@ -648,6 +646,7 @@ namespace yack
                 rolling::down(jndx);
                 const species &s = **sn;
                 const size_t   j = jndx[m];
+
                 //--------------------------------------------------------------
                 //
                 // the species must appear at least twice
@@ -656,12 +655,12 @@ namespace yack
                 if(count_valid(mu[j]) < 2 ) continue;
                 YACK_XMLOG(xml,"nullify " << s << " @" << mu[j]);
 
-
                 //--------------------------------------------------------------
                 //
-                // process the species
+                // initialize a genitor
                 //
                 //--------------------------------------------------------------
+                genitors.push_back( new qFamily(jndx,mu,io) );
                 //process_one_species(coef,jndx,mu,io,xml);
             }
         }
