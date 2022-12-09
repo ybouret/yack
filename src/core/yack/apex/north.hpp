@@ -160,7 +160,7 @@ namespace yack
 
             //__________________________________________________________________
             //
-            // methods
+            // readable interface
             //__________________________________________________________________
             inline virtual size_t       size()                        const throw() { return evaluated; }
             inline virtual const_qrow & operator[](const size_t indx) const throw()
@@ -168,6 +168,14 @@ namespace yack
                 assert(indx>=1); assert(indx<=evaluated);
                 return row[indx];
             }
+
+            template <typename U> inline
+            bool grow( const readable<U> &user )
+            {
+
+                return false;
+            }
+
 
             //__________________________________________________________________
             //
