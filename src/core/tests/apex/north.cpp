@@ -10,7 +10,7 @@ YACK_UTEST(apex_north)
     YACK_SIZEOF(north::qvector<apq>);
 
 
-    //north::qvector<apq> toto(NULL);
+    north::qvector<apq> toto(NULL,0);
     
 
 }

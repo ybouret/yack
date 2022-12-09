@@ -30,9 +30,9 @@ namespace yack
         template <typename T> class qvector : public readable<T>
         {
         public:
-            typedef classify<T>            info;    //!< alias
-            typedef typename info::type    type;    //!< alias
-            typedef typename info::l2_type l2_type; //!< alias
+            typedef typename classify<T>::l2_type    l2_type;    //!< alias
+            typedef typename readable<T>::type       type;       //!< alias
+            typedef typename readable<T>::const_type const_type; //!< alias
 
             inline explicit qvector(type *ptr, const size_t num) :
             cf(ptr), sz(num), n2(0)
@@ -41,9 +41,14 @@ namespace yack
                 --cf;
             }
 
-            inline virtual ~qvector() throw();
+            inline virtual ~qvector() throw() {}
 
             inline virtual size_t size() const throw() { return sz; }
+
+            inline virtual const_type & operator[](size_t indx) const throw()
+            {
+                assert(indx>=1); assert(indx<=sz); return cf[indx];
+            }
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(qvector);
