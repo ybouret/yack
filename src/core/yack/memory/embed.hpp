@@ -88,6 +88,10 @@ namespace yack
 
         //! embedding for static arrays of embed[]
 #define YACK_MEMORY_EMBED(EMB,MEM,BS) memory::embed::zalloc(EMB,sizeof(EMB)/sizeof(EMB[0]),MEM,BS)
+
+        //! transforming to cxx
+#define YACK_MEMORY_EMBED_TO_CXX(EMB)    memory::embed::cxx(EMB,sizeof(EMB)/sizeof(EMB[0]))
+
     }
 }
 

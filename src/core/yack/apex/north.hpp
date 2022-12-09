@@ -7,12 +7,20 @@
 #include "yack/apex.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
 #include "yack/sequence/thin-array.hpp"
+#include "yack/memory/embed.hpp"
+#include "yack/container/dynamic.hpp"
 
 namespace yack
 {
 
     namespace north
     {
+
+        struct constellation
+        {
+            static size_t checked_dimension(const size_t d);
+        };
+
         template <typename T> struct classify;
 
         template < > struct classify<apq>
@@ -27,13 +35,22 @@ namespace yack
             typedef uint64_t l2_type;
         };
 
+
         template <typename T> class qvector : public readable<T>
         {
         public:
+            //__________________________________________________________________
+            //
+            // types and definitions
+            //__________________________________________________________________
             typedef typename classify<T>::l2_type    l2_type;    //!< alias
             typedef typename readable<T>::type       type;       //!< alias
             typedef typename readable<T>::const_type const_type; //!< alias
 
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
             inline explicit qvector(type *ptr, const size_t num) :
             cf(ptr), sz(num), n2(0)
             {
@@ -43,6 +60,10 @@ namespace yack
 
             inline virtual ~qvector() throw() {}
 
+            //__________________________________________________________________
+            //
+            // readable interface
+            //__________________________________________________________________
             inline virtual size_t size() const throw() { return sz; }
 
             inline virtual const_type & operator[](size_t indx) const throw()
@@ -50,6 +71,15 @@ namespace yack
                 assert(indx>=1); assert(indx<=sz); return cf[indx];
             }
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(qvector);
             type        *cf;
@@ -57,6 +87,88 @@ namespace yack
 
         public:
             const type n2;
+        };
+
+        template <typename T, typename ALLOCATOR = memory::dyadic> class qmatrix :
+        public readable< qvector<T> >,
+        public dynamic
+        {
+        public:
+            //__________________________________________________________________
+            //
+            // types and definition
+            //__________________________________________________________________
+            YACK_DECL_ARGS(T,type);
+            typedef qvector<T>     qrow;
+            typedef readable<qrow> rd_t;
+            typedef typename rd_t::const_type const_qrow;
+
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            inline explicit qmatrix(const size_t dims) :
+            dimension( constellation::checked_dimension(dims) ),
+            evaluated(0),
+            row(0)
+            {
+                setup();
+            }
+
+            inline virtual ~qmatrix() throw() {}
+
+            //__________________________________________________________________
+            //
+            // dynamic interface
+            //__________________________________________________________________
+            inline virtual  size_t granted() const throw() { return wlen; }
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            inline virtual size_t       size()                        const throw() { return evaluated; }
+            inline virtual const_qrow & operator[](const size_t indx) const throw()
+            {
+                assert(indx>=1); assert(indx<=evaluated);
+                return row[indx];
+            }
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const size_t dimension;
+            const size_t evaluated;
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(qmatrix);
+            qrow   *row; // row[1:dimension]
+            size_t *idx; // idx[dimension]
+            type   *obj; // obj[dimension^2]
+            void  *wksp;
+            size_t wlen;
+
+            inline void setup()
+            {
+                allocate();
+            }
+
+            inline void allocate()
+            {
+                static memory::allocator &mem = ALLOCATOR::instance();
+                {
+                    memory::embed emb[] =
+                    {
+                        memory::embed(row,dimension),
+                        memory::embed(idx,dimension),
+                        memory::embed(obj,dimension*dimension)
+                    };
+                    wksp = YACK_MEMORY_EMBED(emb,mem,wlen);
+                    --row;
+                }
+            }
+
         };
 
 
