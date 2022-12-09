@@ -51,11 +51,14 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
+
+            //! setup concerned area
             inline explicit qvector(type *ptr, const size_t num) :
             cf(ptr), sz(num), n2(0)
             {
                 assert( yack_good(cf,sz) );
                 --cf;
+                setup();
             }
 
             inline virtual ~qvector() throw() {}
@@ -87,6 +90,23 @@ namespace yack
 
         public:
             const type n2;
+
+        private:
+            inline void cleanup(size_t done) throw()
+            {
+                type  *addr = cf+1;
+                while(done-- > 0) out_of_reach::naught( destructed(addr+done) );
+            }
+
+            inline void setup() {
+                size_t done = 0;
+                type  *addr = cf+1; assert(out_of_reach::is0(addr,sz*sizeof(type)));
+                try {
+                    while(done<sz) new(addr+done) type();
+                    ++done;
+                }
+                catch(...) { cleanup(done); throw; }
+            }
         };
 
         template <typename T, typename ALLOCATOR = memory::dyadic> class qmatrix :
@@ -109,8 +129,7 @@ namespace yack
             //__________________________________________________________________
             inline explicit qmatrix(const size_t dims) :
             dimension( constellation::checked_dimension(dims) ),
-            evaluated(0),
-            row(0)
+            evaluated(0), row(0), idx(0), obj(0), wksp(0), wlen(0)
             {
                 setup();
             }
@@ -146,8 +165,8 @@ namespace yack
             qrow   *row; // row[1:dimension]
             size_t *idx; // idx[dimension]
             type   *obj; // obj[dimension^2]
-            void  *wksp;
-            size_t wlen;
+            void   *wksp;
+            size_t  wlen;
 
             inline void setup()
             {
