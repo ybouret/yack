@@ -1,6 +1,7 @@
 #include "yack/apex/north.hpp"
 #include "yack/system/imported.hpp"
 #include "yack/memory/allocator/global.hpp"
+#include "yack/apex/kernel.hpp"
 
 namespace yack
 {
@@ -52,6 +53,70 @@ namespace yack
                 }
             }
         }
+
+        template <>
+        apq qvector<apq>:: weight(const readable<apq> &v) const
+        {
+            assert(v.size()==dimension);
+            apq sum = 0;
+            const readable<apq> &self = *this;
+            for(size_t i=dimension;i>0;--i)
+            {
+                sum += v[i] * self[i];
+            }
+            return sum/norm2;
+        }
+
+        template <>
+        apq qvector<int64_t>:: weight(const readable<apq> &v) const
+        {
+            assert(v.size()==dimension);
+            apq sum = 0;
+            const readable<int64_t> &self = *this;
+            for(size_t i=dimension;i>0;--i)
+            {
+                const apq rhs(self[i]);
+                sum += v[i] * rhs;
+            }
+            return sum/norm2;
+        }
+
+        bool constellation:: are_orthogonal(const readable<apq> &lhs,
+                                            const readable<apq> &rhs)
+        {
+            assert( lhs.size() == rhs.size() );
+            apq sum = 0;
+            for(size_t i=lhs.size();i>0;--i) sum += lhs[i] * rhs[i];
+            return 0 == sum;
+        }
+
+        bool constellation:: prepare_vector(writable<apq> &target,
+                                            writable<apq> &source,
+                                            apn           &normSq)
+        {
+            assert(source.size()==target.size());
+            normSq.ldz();
+            apk::simplify(source);
+            for(size_t i=source.size();i>0;--i)
+            {
+                assert(1==source[i].den);
+                const apz &num = source[i].num;
+                target[i] = num;
+                normSq   += apn::squared(num.n);
+            }
+
+            if(normSq<=0)
+            {
+                return false;
+            }
+            else
+            {
+                apk::univocal(target);
+                return true;
+            }
+        }
+        
+        
 
     }
 

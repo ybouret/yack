@@ -416,7 +416,7 @@ namespace yack
         }
     }
 
-    void apk:: set_univocal(writable<apq> &v) throw()
+    void apk:: univocal(writable<apq> &v) throw()
     {
         assert(v.size()>0);
         size_t    np = 0;        // number of positive
@@ -481,7 +481,7 @@ namespace yack
         }
     }
 
-    void apk:: set_univocal(writable<int64_t> &v) throw()
+    void apk:: univocal(writable<int64_t> &v) throw()
     {
         assert(v.size()>0);
         size_t    np = 0;        // number of positive
@@ -551,7 +551,7 @@ namespace yack
                 }
                 apk::simplify(u_k);
                 if( (u2[k] = apq_norm2(u_k)) <= 0) return false;
-                set_univocal(u_k);
+                univocal(u_k);
             }
         }
         V.assign(U);

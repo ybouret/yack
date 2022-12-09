@@ -2,6 +2,7 @@
 #include "yack/utest/run.hpp"
 #include "yack/memory/allocator/global.hpp"
 #include "yack/memory/allocator/pooled.hpp"
+#include "yack/container/matrix.hpp"
 
 using namespace yack;
 
@@ -28,6 +29,23 @@ YACK_UTEST(apex_north)
         << std::setw(8) << qd.granted()
         << std::endl;
     }
+
+    {
+        north:: qmatrix<apq,memory::global> U(3);
+
+        matrix<int> vec(3,3);
+        vec[1][1] = 1;  vec[1][2] = 2;  vec[1][3] = 3;
+        vec[2][1] = 0;  vec[2][2] = 5;  vec[2][3] = 7;
+        vec[3][1] = 11; vec[3][2] = 13; vec[3][3] = 0;
+
+        YACK_CHECK(U.grow(vec[1])); std::cerr << U << std::endl;
+        YACK_CHECK(U.grow(vec[2])); std::cerr << U << std::endl;
+        YACK_CHECK(U.grow(vec[3])); std::cerr << U << std::endl;
+
+
+
+    }
+
 
 }
 YACK_UDONE()

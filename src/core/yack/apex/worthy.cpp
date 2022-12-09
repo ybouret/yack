@@ -409,7 +409,7 @@ namespace yack
         if( 0 != qa.nrm2 )
         {
 
-            apk::set_univocal( coerce(qa.coef) );
+            apk::univocal( coerce(qa.coef) );
             // register new coef and dummy index
             Q << &coerce(qa.coef); assert(Q.size()==U->size);
             I << 0;                assert(I.size()==U->size);
