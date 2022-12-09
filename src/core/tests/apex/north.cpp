@@ -49,14 +49,15 @@ YACK_UTEST(apex_north)
         vec[2][1] = 0;  vec[2][2] = 5;  vec[2][3] = 7;
         vec[3][1] = 11; vec[3][2] = 13; vec[3][3] = 0;
 
-        YACK_CHECK(U.grow(vec[1])); std::cerr << U << std::endl;
-        YACK_CHECK(U.grow(vec[2])); std::cerr << U << std::endl;
-        YACK_CHECK(U.grow(vec[3])); std::cerr << U << std::endl;
-
-        YACK_CHECK(V.grow(vec[1])); std::cerr << V << std::endl;
-        YACK_CHECK(V.grow(vec[2])); std::cerr << V << std::endl;
-        YACK_CHECK(V.grow(vec[3])); std::cerr << V << std::endl;
-
+        for(size_t i=1;i<=vec.rows;++i)
+        {
+            YACK_CHECK(U.grow(vec[i])); std::cerr << U << std::endl;
+            YACK_CHECK(V.grow(vec[i])); std::cerr << V << std::endl;
+            YACK_CHECK(V.eq(U));
+            YACK_CHECK(U.eq(V));
+            YACK_CHECK(U.has_same_last_than(V));
+            YACK_CHECK(V.has_same_last_than(U));
+        }
 
 
     }

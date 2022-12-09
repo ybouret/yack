@@ -14,7 +14,12 @@ namespace yack
     namespace north
     {
 
-        
+        //______________________________________________________________________
+        //
+        //
+        //! component of an orthogonal family
+        //
+        //______________________________________________________________________
         template <typename T> class qvector : public readable<T>
         {
         public:
@@ -64,7 +69,13 @@ namespace yack
             apq  weight(const readable<apq> &v) const;
 
 
-
+            //__________________________________________________________________
+            //
+            //! construct in u_k the orthogonal version of v_k
+            /**
+             using Gram-Schmidt direct algorithm
+             */
+            //__________________________________________________________________
             static inline
             bool grow(writable<apq>                &u_k,
                       const readable<apq>          &v_k,
@@ -89,27 +100,36 @@ namespace yack
                 return true;
             }
 
+            //__________________________________________________________________
+            //
+            //! human friendly display
+            //__________________________________________________________________
             inline friend std::ostream & operator<<( std::ostream &os, const qvector &self )
             {
                 os << static_cast<const readable<T> &>(self) << '#' << self.norm2;
                 return os;
             }
 
-            static inline bool eq(const qvector &lhs, const qvector &rhs)
+            //__________________________________________________________________
+            //
+            //! test component wise equality
+            //__________________________________________________________________
+            template <typename U>
+            inline bool eq(const qvector<U> &rhs) const
             {
-                assert(lhs.size()==rhs.size());
-                const size_t n=lhs.size();
+                const qvector &lhs = *this; assert(lhs.size()==rhs.size());
+                const size_t   n   = lhs.size();
                 for(size_t i=n;i>0;--i)
                 {
                     if(lhs[i]!=rhs[i]) return false;
                 }
-
                 return true;
             }
 
-
-
-            //! lexicographic comparison
+            //__________________________________________________________________
+            //
+            //! lexicographic comparison for indexing
+            //__________________________________________________________________
             static inline int compare(const qvector &lhs, const qvector &rhs) throw()
             {
                 assert(lhs.size()==rhs.size());
@@ -130,13 +150,14 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const size_t dimension;
+            const size_t dimension; //!< space dimension
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(qvector);
             type         *coeff;
 
         public:
-            const l2_type norm2;
+            const l2_type norm2; //!< current squared norm
 
         private:
             inline void quit(size_t done) throw()

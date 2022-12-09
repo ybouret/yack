@@ -30,28 +30,31 @@ namespace yack
             //
             // types and definition
             //__________________________________________________________________
-            YACK_DECL_ARGS(T,type);                       //!< aliases
-            typedef qvector<T>                qrow;       //!< alias
-            typedef typename qrow::l2_type    l2_type;    //!< alias
-            typedef readable<qrow>            rd_t;       //!< alias
-            typedef typename rd_t::const_type const_qrow; //!< alias
+            YACK_DECL_ARGS(T,type);                           //!< aliases
+            typedef qvector<T>                qrow;           //!< alias
+            typedef typename qrow::l2_type    l2_type;        //!< alias
+            typedef readable<qrow>            rd_t;           //!< alias
+            typedef typename rd_t::const_type const_qrow;     //!< alias
+            static  const size_t              extra_apqv = 2; //!<  extra arrays
 
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
+
+            //! default construction based on positive dimensions
             inline explicit qmatrix(const size_t dims) :
             dimension( constellation::checked_dimension(dims) ),
             situation( constellation::initial_situation(dims) ),
             evaluated(0),
-            row(0), idx(0), obj(0), block_addr(0), block_size(0),
+            row(0), idx(0), obj(0), qgs(0), ngs(0), block_addr(0), block_size(0),
             u_k(dimension),
             v_k(dimension)
             {
                 init();
             }
 
-            inline virtual ~qmatrix() throw() { quit(); }
+            inline virtual ~qmatrix() throw() { quit(dimension); }
 
             //__________________________________________________________________
             //
@@ -137,7 +140,10 @@ namespace yack
                 }
             }
 
-            //! humand friendly display
+            //__________________________________________________________________
+            //
+            //! human friendly display
+            //__________________________________________________________________
             inline friend std::ostream & operator<<( std::ostream &os, const qmatrix &self)
             {
                 const size_t             dims = self.evaluated;
@@ -151,6 +157,51 @@ namespace yack
                 }
                 os << '}';
                 return os;
+            }
+
+            //__________________________________________________________________
+            //
+            //! test exact same last vector, assuming all previous are the same
+            //__________________________________________________________________
+            template<typename U, typename ANOTHER> inline
+            bool has_same_last_than(const qmatrix<U,ANOTHER> &user) const
+            {
+                const qmatrix &self = *this;
+                assert(self.dimension==user.dimension);
+                assert(self.evaluated==user.evaluated);
+                assert(self.evaluated>0);
+#ifndef NDEBUG
+                for(size_t i=1;i<evaluated;++i) {
+                    assert( self[i].eq(user[i]) );
+                }
+#endif
+                return self[evaluated].eq(user[evaluated]);
+            }
+
+
+            //! helper to create indices
+            const size_t &first_index() const throw() { return *idx; }
+
+            //__________________________________________________________________
+            //
+            //! test exact matrix up to a permutation, same dimension/evaluated
+            //__________________________________________________________________
+            template <typename U,typename ANOTHER> inline
+            bool eq(const qmatrix<U,ANOTHER> &user) const
+            {
+                const qmatrix &self = *this;
+                assert(self.dimension==user.dimension);
+                assert(self.evaluated==user.evaluated);
+                const size_t             n = evaluated;
+                const thin_array<size_t> self_indx(self.idx,n);
+                const thin_array<size_t> user_indx( &coerce(first_index()),n);
+
+                for(size_t i=n;i>0;--i)
+                {
+                    if( !self[ self_indx[i] ].eq(user[ user_indx[i] ]) )  return false;
+                }
+
+                return true;
             }
 
 
@@ -167,6 +218,8 @@ namespace yack
             qrow   *row;        //!< row[1:dimension]
             size_t *idx;        //!< idx[dimension]
             type   *obj;        //!< obj[dimension^2]
+            apq    *qgs;        //!< qgs[extra*dimension] for G-S algo
+            size_t  ngs;        //!< extra*dimension
             void   *block_addr; //!< memory address
             size_t  block_size; //!< memory length
             vector<apq> u_k;
@@ -179,17 +232,19 @@ namespace yack
             }
 
 
-            inline void quit() throw()
+            inline void quit(const size_t n) throw()
             {
                 static memory::allocator &mem = ALLOCATOR::location();
-                kill_rows(dimension);
+                //kill_wksp();
+                kill_rows(n);
                 mem.release(block_addr,block_size);
             }
 
             inline void init()
             {
                 allocate();
-                make_rows();
+                try { make_rows(); } catch(...) { assert(dimension<=0); quit(0); throw; }
+                try { make_wskp(); } catch(...) { quit(dimension); }
             }
 
             inline void allocate()
@@ -200,7 +255,8 @@ namespace yack
                     {
                         memory::embed(row,dimension),
                         memory::embed(idx,dimension),
-                        memory::embed(obj,dimension*dimension)
+                        memory::embed(obj,dimension*dimension),
+                        memory::embed(qgs,extra_apqv*dimension)
                     };
                     block_addr = YACK_MEMORY_EMBED(emb,mem,block_size);
                     --row;
@@ -211,6 +267,7 @@ namespace yack
             {
                 qrow  *r   = row+1;
                 while(num-- > 0) destruct( &r[num] );
+                coerce(dimension) = 0;
             }
 
             inline void make_rows()
@@ -226,8 +283,32 @@ namespace yack
                     }
                 }
                 catch(...) { kill_rows(n); throw; }
+            }
+
+            inline void kill_wksp(size_t ngs) throw()
+            {
+                while(ngs-- > 0) destruct(qgs+ngs);
+            }
+
+            inline void make_wskp()
+            {
+                assert(qgs!=NULL);
+                const size_t nmax = extra_apqv*dimension;
+                size_t       ngs  = 0;
+                try {
+                    while(ngs<nmax)
+                    {
+                        new (qgs+ngs) apq();
+                        ++ngs;
+                    }
+                }
+                catch(...) {
+                    kill_wksp(ngs);
+                    throw;
+                }
 
             }
+
 
         };
 

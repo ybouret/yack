@@ -60,6 +60,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(memory_operative);
     YACK_UTEST(memory_ptr);
     YACK_UTEST(memory_sentry);
+    YACK_UTEST(memory_contractor);
 
     YACK_UTEST(data_list);
     YACK_UTEST(data_list_sort);
