@@ -458,6 +458,73 @@ namespace yack
         }
     }
 
+
+    static inline sign_type  first_sign(const readable<int64_t> &v) throw()
+    {
+        const size_t n = v.size();
+        for(size_t i=1;i<=n;++i)
+        {
+            switch(__sign::of(v[i]) )
+            {
+                case __zero__: continue;
+                case positive: return positive;
+                case negative: return negative;
+            }
+        }
+        return __zero__;
+    }
+
+    static inline void       change_signs(writable<int64_t> &v) throw() {
+        for(size_t i=v.size();i>0;--i)
+        {
+            v[i] = -v[i];
+        }
+    }
+
+    void apk:: set_univocal(writable<int64_t> &v) throw()
+    {
+        assert(v.size()>0);
+        size_t    np = 0;        // number of positive
+        size_t    nn = 0;        // number of negative
+        for(size_t i=v.size();i>0;--i)
+        {
+            switch(  __sign::of(v[i]) )
+            {
+                case __zero__:
+                    break;
+
+                case positive:
+                    ++np;
+                    break;
+
+                case negative:
+                    ++nn;
+
+                    break;
+            }
+        }
+
+        assert(nn>0||np>0);
+        switch( __sign::of(np,nn) )
+        {
+            case positive: // do nothing
+                assert(np>nn);
+                break;
+
+            case negative: // change signs
+                assert(np<nn);
+                change_signs(v);
+                break;
+
+            case __zero__: // change only if first sign is negative
+                assert(nn==np);
+                if(negative==first_sign(v)) change_signs(v);
+                break;
+        }
+    }
+
+
+
     bool apk:: ortho(matrix<apq> &V)
     {
         const size_t n = V.rows;

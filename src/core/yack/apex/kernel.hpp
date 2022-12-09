@@ -226,13 +226,20 @@ namespace yack
             return  rank(Q);
         }
 
-        //! make univocal
+        //! make univocal rationals
         /**
          - make more positive than negative signs
          - in case of equality, first not null is positive
          */
         static void set_univocal(writable<apq> &) throw();
-        
+
+        //! make univocal integers
+        /**
+         - make more positive than negative signs
+         - in case of equality, first not null is positive
+         */
+        static void set_univocal(writable<int64_t> &) throw();
+
         //______________________________________________________________________
         //
         //! build a simplified, univocal and orthogonal matrix

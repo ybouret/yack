@@ -132,6 +132,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(apr);
     YACK_UTEST(aprimes);
     YACK_UTEST(apex_worthy);
+    YACK_UTEST(apex_north);
 
     YACK_UTEST(ios_c_file);
     YACK_UTEST(ios_streams);
