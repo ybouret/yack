@@ -16,7 +16,7 @@ YACK_UTEST(apex_north)
     YACK_SIZEOF(north::qmatrix<apq>);
 
 
-    for(size_t dims=1;dims<=8;++dims)
+    for(size_t dims=1;dims<=20;++dims)
     {
         north::qmatrix<apq,memory::global> qg(dims);
         north::qmatrix<apq,memory::pooled> qp(dims);

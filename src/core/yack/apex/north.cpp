@@ -8,21 +8,51 @@ namespace yack
     namespace north
     {
 
+        static const char here[] = "north";
+        static const char mesg[] = "null dimension!";
+
         size_t constellation:: checked_dimension(const size_t d)
         {
-            if(d<=0) throw imported::exception("north","null dimension");
+            if(d<=0) throw imported::exception(here,mesg);
             return d;
         }
 
-#if 0
-        void  *constellation:: map_linear_memory(memory::embed emb[],const size_t num, size_t &bs)
+        maturity constellation:: initial_situation(const size_t dims)
         {
-            //static memory::allocator &mem = memory::dyadic::instance();
-            static memory::allocator &mem = memory::global::instance();
-
-            return memory::embed::zalloc(emb,num,mem,bs);
+            switch(dims)
+            {
+                case 0: throw  imported::exception(here,mesg);
+                case 1: return fully_grown;
+                case 2: return almost_done;
+                default:
+                    break;
+            }
+            return in_progress;
         }
-#endif
+
+        maturity constellation:: updated_situation(const size_t dims, const size_t size) throw()
+        {
+            assert(dims>0);
+            if(size>=dims)
+            {
+                assert(dims==size);
+                return fully_grown;
+            }
+            else
+            {
+                const size_t mark = dims-1;
+                if(size<mark)
+                {
+                    return  in_progress;
+                }
+                else
+                {
+                    assert(dims-1==size);
+                    return  almost_done;
+                }
+            }
+        }
+
     }
 
 }

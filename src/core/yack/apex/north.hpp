@@ -15,10 +15,20 @@ namespace yack
 
     namespace north
     {
+        //! family maturity
+        enum maturity
+        {
+            in_progress, //! size < dims-1
+            almost_done, //! size == dims-1, next vector is unique!
+            fully_grown  //! size == dims
+        };
 
+        //! initialize maturity from a dimension and a size
         struct constellation
         {
-            static size_t checked_dimension(const size_t d);
+            static size_t   checked_dimension(const size_t d);
+            static maturity initial_situation(const size_t dims);
+            static maturity updated_situation(const size_t dims, const size_t size) throw();
         };
 
         template <typename T> struct classify;
@@ -111,6 +121,8 @@ namespace yack
             }
         };
 
+
+
         template <typename T, typename ALLOCATOR = memory::dyadic> class qmatrix :
         public readable< qvector<T> >,
         public dynamic
@@ -131,7 +143,9 @@ namespace yack
             //__________________________________________________________________
             inline explicit qmatrix(const size_t dims) :
             dimension( constellation::checked_dimension(dims) ),
-            evaluated(0), row(0), idx(0), obj(0), wksp(0), wlen(0)
+            situation( constellation::initial_situation(dims) ),
+            evaluated(0),
+            row(0), idx(0), obj(0), wksp(0), wlen(0)
             {
                 init();
             }
@@ -159,8 +173,9 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const size_t dimension;
-            const size_t evaluated;
+            const size_t   dimension;
+            const maturity situation;
+            const size_t   evaluated;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(qmatrix);
@@ -173,14 +188,14 @@ namespace yack
             inline void quit() throw()
             {
                 static memory::allocator &mem = ALLOCATOR::location();
-                terminate(dimension);
+                kill_rows(dimension);
                 mem.release(wksp,wlen);
             }
 
             inline void init()
             {
                 allocate();
-                populate();
+                make_rows();
             }
 
             inline void allocate()
@@ -198,26 +213,25 @@ namespace yack
                 }
             }
 
-            inline void terminate(size_t num) throw()
+            inline void kill_rows(size_t num) throw()
             {
                 qrow  *r   = row+1;
                 while(num-- > 0) destruct( &r[num] );
             }
 
-            inline void populate() throw()
+            inline void make_rows()
             {
                 size_t n   = 0;
                 try {
                     qrow  *r   = row+1;
                     type  *p   = obj;
                     while(n<dimension) {
-                        //std::cerr << "create row " << n+1 << "/" << dimension << std::endl;
                         new (r+n) qrow(p,dimension);
                         ++n;
                         p += dimension;
                     }
                 }
-                catch(...) { terminate(n); throw; }
+                catch(...) { kill_rows(n); throw; }
 
             }
 
