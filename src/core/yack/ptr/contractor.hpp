@@ -80,6 +80,12 @@ namespace yack
             num = 0;
         }
 
+        type        * operator()(void)       throw() { return arr; }
+        const_type  * operator()(void) const throw() { return arr; }
+
+        type * operator()(const size_t shift) throw() { assert(shift<num); return arr+shift; }
+        const_type * operator()(const size_t shift) const throw() { assert(shift<num); return arr+shift; }
+
 
 
     private:

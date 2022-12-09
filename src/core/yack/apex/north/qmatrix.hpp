@@ -10,6 +10,7 @@
 #include "yack/container/dynamic.hpp"
 #include "yack/sequence/vector.hpp"
 #include "yack/sort/indexing.hpp"
+#include "yack/ptr/contractor.hpp"
 
 namespace yack
 {
@@ -47,9 +48,7 @@ namespace yack
             dimension( constellation::checked_dimension(dims) ),
             situation( constellation::initial_situation(dims) ),
             evaluated(0),
-            row(0), idx(0), obj(0), qgs(0), ngs(0), block_addr(0), block_size(0),
-            u_k(dimension),
-            v_k(dimension)
+            row(0), idx(0), obj(0), qgs(),  block_addr(0), block_size(0)
             {
                 init();
             }
@@ -85,6 +84,9 @@ namespace yack
             bool grow(const readable<U> &user)
             {
                 assert(user.size()==dimension);
+
+                thin_array<apq> u_k( qgs(),          dimension );
+                thin_array<apq> v_k( qgs(dimension), dimension );
 
                 //--------------------------------------------------------------
                 //
@@ -215,15 +217,12 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(qmatrix);
-            qrow   *row;        //!< row[1:dimension]
-            size_t *idx;        //!< idx[dimension]
-            type   *obj;        //!< obj[dimension^2]
-            apq    *qgs;        //!< qgs[extra*dimension] for G-S algo
-            size_t  ngs;        //!< extra*dimension
-            void   *block_addr; //!< memory address
-            size_t  block_size; //!< memory length
-            vector<apq> u_k;
-            vector<apq> v_k;
+            qrow   *row;          //!< row[1:dimension]
+            size_t *idx;          //!< idx[dimension]
+            type   *obj;          //!< obj[dimension^2]
+            contractor<apq> qgs;  //!< qgs[extra*dimension] for G-S algo
+            void   *block_addr;   //!< memory address
+            size_t  block_size;   //!< memory length
 
             inline void rebuild_index() throw()
             {
@@ -235,7 +234,7 @@ namespace yack
             inline void quit(const size_t n) throw()
             {
                 static memory::allocator &mem = ALLOCATOR::location();
-                //kill_wksp();
+                qgs.implode();
                 kill_rows(n);
                 mem.release(block_addr,block_size);
             }
@@ -244,23 +243,31 @@ namespace yack
             {
                 allocate();
                 try { make_rows(); } catch(...) { assert(dimension<=0); quit(0); throw; }
-                try { make_wskp(); } catch(...) { quit(dimension); }
+                //try { make_wskp(); } catch(...) { quit(dimension); }
             }
 
             inline void allocate()
             {
                 static memory::allocator &mem = ALLOCATOR::instance();
+                apq         *pxq = 0;
+                const size_t nxq = extra_apqv*dimension;
                 {
+
                     memory::embed emb[] =
                     {
                         memory::embed(row,dimension),
                         memory::embed(idx,dimension),
                         memory::embed(obj,dimension*dimension),
-                        memory::embed(qgs,extra_apqv*dimension)
+                        memory::embed(pxq,nxq)
                     };
                     block_addr = YACK_MEMORY_EMBED(emb,mem,block_size);
                     --row;
                 }
+
+                try {
+                    new( &qgs ) contractor<apq>(pxq,nxq);
+                } catch(...) { mem.release(block_addr,block_size); }
+
             }
 
             inline void kill_rows(size_t num) throw()
@@ -290,6 +297,7 @@ namespace yack
                 while(ngs-- > 0) destruct(qgs+ngs);
             }
 
+#if 0
             inline void make_wskp()
             {
                 assert(qgs!=NULL);
@@ -308,7 +316,7 @@ namespace yack
                 }
 
             }
-
+#endif
 
         };
 
