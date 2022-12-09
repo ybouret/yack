@@ -61,13 +61,13 @@ namespace yack
                 setup();
             }
 
-            inline virtual ~qvector() throw() {}
+            inline virtual ~qvector() throw() { cleanup(sz); }
 
             //__________________________________________________________________
             //
             // readable interface
             //__________________________________________________________________
-            inline virtual size_t size() const throw() { return sz; }
+            inline virtual size_t size() const throw() { return sz; } // size = matrix.dimension
 
             inline virtual const_type & operator[](size_t indx) const throw()
             {
@@ -102,8 +102,10 @@ namespace yack
                 size_t done = 0;
                 type  *addr = cf+1; assert(out_of_reach::is0(addr,sz*sizeof(type)));
                 try {
-                    while(done<sz) new(addr+done) type();
-                    ++done;
+                    while(done<sz) {
+                        new(addr+done) type();
+                        ++done;
+                    }
                 }
                 catch(...) { cleanup(done); throw; }
             }
@@ -131,10 +133,10 @@ namespace yack
             dimension( constellation::checked_dimension(dims) ),
             evaluated(0), row(0), idx(0), obj(0), wksp(0), wlen(0)
             {
-                setup();
+                init();
             }
 
-            inline virtual ~qmatrix() throw() {}
+            inline virtual ~qmatrix() throw() { quit(); }
 
             //__________________________________________________________________
             //
@@ -168,9 +170,17 @@ namespace yack
             void   *wksp;
             size_t  wlen;
 
-            inline void setup()
+            inline void quit() throw()
+            {
+                static memory::allocator &mem = ALLOCATOR::location();
+                terminate(dimension);
+                mem.release(wksp,wlen);
+            }
+
+            inline void init()
             {
                 allocate();
+                populate();
             }
 
             inline void allocate()
@@ -186,6 +196,29 @@ namespace yack
                     wksp = YACK_MEMORY_EMBED(emb,mem,wlen);
                     --row;
                 }
+            }
+
+            inline void terminate(size_t num) throw()
+            {
+                qrow  *r   = row+1;
+                while(num-- > 0) destruct( &r[num] );
+            }
+
+            inline void populate() throw()
+            {
+                size_t n   = 0;
+                try {
+                    qrow  *r   = row+1;
+                    type  *p   = obj;
+                    while(n<dimension) {
+                        //std::cerr << "create row " << n+1 << "/" << dimension << std::endl;
+                        new (r+n) qrow(p,dimension);
+                        ++n;
+                        p += dimension;
+                    }
+                }
+                catch(...) { terminate(n); throw; }
+
             }
 
         };
