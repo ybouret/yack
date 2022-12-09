@@ -23,15 +23,26 @@ YACK_UTEST(apex_north)
         north::qmatrix<apq,memory::pooled> qp(dims);
         north::qmatrix<apq,memory::dyadic> qd(dims);
 
-        std::cerr << "granted[" << std::setw(3) << dims << "] = "
+        north::qmatrix<int64_t,memory::global> qgi(dims);
+        north::qmatrix<int64_t,memory::pooled> qpi(dims);
+        north::qmatrix<int64_t,memory::dyadic> qdi(dims);
+
+
+        std::cerr << "granted[" << std::setw(3) << dims << "] = @apq : "
         << std::setw(8) << qg.granted()
         << std::setw(8) << qp.granted()
         << std::setw(8) << qd.granted()
+        << " | @int : "
+        << std::setw(8) << qgi.granted()
+        << std::setw(8) << qpi.granted()
+        << std::setw(8) << qdi.granted()
         << std::endl;
     }
 
     {
-        north:: qmatrix<apq,memory::global> U(3);
+        north:: qmatrix<apq,memory::global>     U(3);
+        north:: qmatrix<int64_t,memory::global> V(3);
+
 
         matrix<int> vec(3,3);
         vec[1][1] = 1;  vec[1][2] = 2;  vec[1][3] = 3;
@@ -41,6 +52,10 @@ YACK_UTEST(apex_north)
         YACK_CHECK(U.grow(vec[1])); std::cerr << U << std::endl;
         YACK_CHECK(U.grow(vec[2])); std::cerr << U << std::endl;
         YACK_CHECK(U.grow(vec[3])); std::cerr << U << std::endl;
+
+        YACK_CHECK(V.grow(vec[1])); std::cerr << V << std::endl;
+        YACK_CHECK(V.grow(vec[2])); std::cerr << V << std::endl;
+        YACK_CHECK(V.grow(vec[3])); std::cerr << V << std::endl;
 
 
 

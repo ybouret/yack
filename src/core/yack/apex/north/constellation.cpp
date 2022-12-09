@@ -2,6 +2,7 @@
 #include "yack/apex/north/constellation.hpp"
 #include "yack/system/imported.hpp"
 #include "yack/apex/kernel.hpp"
+#include "yack/type/utils.hpp"
 
 namespace yack
 {
@@ -62,6 +63,15 @@ namespace yack
             return 0 == sum;
         }
 
+        bool constellation:: are_orthogonal(const readable<apq>     &lhs,
+                                            const readable<int64_t> &rhs)
+        {
+            assert( lhs.size() == rhs.size() );
+            apq sum = 0;
+            for(size_t i=lhs.size();i>0;--i) sum += lhs[i] * rhs[i];
+            return 0 == sum;
+        }
+
         bool constellation:: prepare_vector(writable<apq> &target,
                                             writable<apq> &source,
                                             apn           &normSq)
@@ -75,6 +85,34 @@ namespace yack
                 const apz &num = source[i].num;
                 target[i] = num;
                 normSq   += apn::squared(num.n);
+            }
+
+            if(normSq<=0)
+            {
+                return false;
+            }
+            else
+            {
+                apk::univocal(target);
+                return true;
+            }
+        }
+
+        bool constellation:: prepare_vector(writable<int64_t> &target,
+                                            writable<apq>     &source,
+                                            uint64_t          &normSq)
+        {
+            static const char here[] = "north.prepare_vector";
+
+            assert(source.size()==target.size());
+            normSq = 0;
+            apk::simplify(source);
+            for(size_t i=source.size();i>0;--i)
+            {
+                assert(1==source[i].den);
+                const apz &num = source[i].num;
+                target[i] = num.cast_to<int64_t>(here);
+                normSq   += squared(target[i]);
             }
 
             if(normSq<=0)
