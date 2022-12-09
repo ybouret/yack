@@ -54,24 +54,24 @@ namespace yack
 
             //! setup concerned area
             inline explicit qvector(type *ptr, const size_t num) :
-            cf(ptr), sz(num), n2(0)
+            dimension(num), coeff(ptr), norm2(0)
             {
-                assert( yack_good(cf,sz) );
-                --cf;
-                setup();
+                assert( yack_good(ptr,num) );
+                --coeff;
+                init();
             }
 
-            inline virtual ~qvector() throw() { cleanup(sz); }
+            inline virtual ~qvector() throw() { quit(dimension); }
 
             //__________________________________________________________________
             //
             // readable interface
             //__________________________________________________________________
-            inline virtual size_t size() const throw() { return sz; } // size = matrix.dimension
+            inline virtual size_t size() const throw() { return dimension; } //!< size = matrix.dimension
 
             inline virtual const_type & operator[](size_t indx) const throw()
             {
-                assert(indx>=1); assert(indx<=sz); return cf[indx];
+                assert(indx>=1); assert(indx<=dimension); return coeff[indx];
             }
 
             //__________________________________________________________________
@@ -83,31 +83,31 @@ namespace yack
             //
             // members
             //__________________________________________________________________
+            const size_t dimension;
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(qvector);
-            type        *cf;
-            const size_t sz;
+            type        *coeff;
 
         public:
-            const type n2;
+            const type   norm2;
 
         private:
-            inline void cleanup(size_t done) throw()
+            inline void quit(size_t done) throw()
             {
-                type  *addr = cf+1;
+                type  *addr = coeff+1;
                 while(done-- > 0) out_of_reach::naught( destructed(addr+done) );
             }
 
-            inline void setup() {
+            inline void init() {
                 size_t done = 0;
-                type  *addr = cf+1; assert(out_of_reach::is0(addr,sz*sizeof(type)));
+                type  *addr = coeff+1; assert(out_of_reach::is0(addr,dimension*sizeof(type)));
                 try {
-                    while(done<sz) {
+                    while(done<dimension) {
                         new(addr+done) type();
                         ++done;
                     }
                 }
-                catch(...) { cleanup(done); throw; }
+                catch(...) { quit(done); throw; }
             }
         };
 
