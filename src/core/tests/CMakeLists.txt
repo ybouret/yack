@@ -156,6 +156,7 @@ add_test(memory:operative test-core memory_operative)
 add_test(memory:ptr       test-core memory_ptr)
 add_test(memory:sentry    test-core memory_sentry)
 add_test(memory:contractor test-core memory_contractor)
+add_test(memory:shelf      test-core memory_shelf)
 
 add_test(object          test-core object)
 add_test(large_object    test-core large_object)
