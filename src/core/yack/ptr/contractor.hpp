@@ -57,7 +57,7 @@ namespace yack
         template <typename U>
         inline contractor(void        *addr,
                           const size_t size,
-                          const U     *param,
+                          U           *param,
                           const size_t shift) :
         amount(0),
         item_p(0),
@@ -66,7 +66,7 @@ namespace yack
             assert( yack_good(addr,size) );
             try {
                 while(amount<size) {
-                    new (base_p+amount) mutable_type(param);
+                    new (base_p+amount) mutable_type(param,shift);
                     ++coerce(amount);
                     param+=shift;
                 }
@@ -100,7 +100,7 @@ namespace yack
         { assert(index>=1); assert(index<=amount); return item_p[index]; }
         
         inline const_type & operator[](size_t index) const throw()
-        { assert(index>=1); assert(index<=amount); return item_p[index]; }
+        { assert(base_p); assert(item_p); assert(index>=1); assert(index<=amount); return item_p[index]; }
         
 
         const size_t  amount;

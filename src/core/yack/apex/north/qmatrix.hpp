@@ -111,7 +111,7 @@ namespace yack
                     //----------------------------------------------------------
                     assert(evaluated<dimension);
                     const size_t  following = evaluated+1;
-                    const qrow   &component = row()[following];
+                    const qrow   &component = row[following];
                     thin_array<T> interface( &coerce(component[1]), dimension);
                     if(!constellation::prepare_vector(interface,u_k,coerce(component.norm2)))
                     {
@@ -260,11 +260,12 @@ namespace yack
                 // build obj
                 { contractor<type> _obj(pit,nit); _obj.swap_with(obj); }
                 
+                // build rows
+                { contractor<qrow> _row(prw,nrw,pit,dimension); _row.swap_with(row); }
+                
                 // build qgs
                 { contractor<apq> _qgs(pxq,nxq); _qgs.swap_with(qgs); }
                 
-                
-
             }
 
             
