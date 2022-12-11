@@ -20,9 +20,11 @@ namespace yack
             shelf(const void  *addr,
                   const size_t size,
                   allocator   &user) throw();
+            
+            
             ~shelf() throw();
             
-            void trade(shelf &other) throw();
+            void swap_with(shelf &other) throw();
             void empty() throw();
             void store(const void  *addr,
                        const size_t size,

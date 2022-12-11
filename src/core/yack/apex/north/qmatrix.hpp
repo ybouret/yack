@@ -11,6 +11,7 @@
 #include "yack/sequence/vector.hpp"
 #include "yack/sort/indexing.hpp"
 #include "yack/ptr/contractor.hpp"
+#include "yack/memory/shelf.hpp"
 
 namespace yack
 {
@@ -36,7 +37,7 @@ namespace yack
             typedef typename qrow::l2_type    l2_type;        //!< alias
             typedef readable<qrow>            rd_t;           //!< alias
             typedef typename rd_t::const_type const_qrow;     //!< alias
-            static  const size_t              extra_apqv = 2; //!<  extra arrays
+            static  const size_t              extra = 2;      //!<  extra arrays
 
             //__________________________________________________________________
             //
@@ -48,18 +49,18 @@ namespace yack
             dimension( constellation::checked_dimension(dims) ),
             situation( constellation::initial_situation(dims) ),
             evaluated(0),
-            row(0), idx(0), obj(0), qgs(),  block_addr(0), block_size(0)
+            idx(0), lib(), obj(), row(), qgs()
             {
                 init();
             }
 
-            inline virtual ~qmatrix() throw() { quit(dimension); }
+            inline virtual ~qmatrix() throw() { }
 
             //__________________________________________________________________
             //
             // dynamic interface
             //__________________________________________________________________
-            inline virtual  size_t granted() const throw() { return block_size; } //!< internal buffer length
+            inline virtual  size_t granted() const throw() { return lib.bytes; } //!< internal buffer length
 
             //__________________________________________________________________
             //
@@ -110,7 +111,7 @@ namespace yack
                     //----------------------------------------------------------
                     assert(evaluated<dimension);
                     const size_t  following = evaluated+1;
-                    const qrow   &component = row[following];
+                    const qrow   &component = row()[following];
                     thin_array<T> interface( &coerce(component[1]), dimension);
                     if(!constellation::prepare_vector(interface,u_k,coerce(component.norm2)))
                     {
@@ -217,13 +218,12 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(qmatrix);
-            qrow   *row;          //!< row[1:dimension]
-            size_t *idx;          //!< idx[dimension]
-            type   *obj;          //!< obj[dimension^2]
-            contractor<apq> qgs;  //!< qgs[extra*dimension] for G-S algo
-            void   *block_addr;   //!< memory address
-            size_t  block_size;   //!< memory length
-
+            size_t          *idx;          //!< idx[dimension]
+            memory::shelf    lib;
+            contractor<type> obj;
+            contractor<qrow> row;
+            contractor<apq>  qgs;  //!< qgs[extra*dimension] for G-S algo
+            
             inline void rebuild_index() throw()
             {
                 thin_array<size_t> qindex(idx,evaluated);
@@ -231,92 +231,48 @@ namespace yack
             }
 
 
-            inline void quit(const size_t n) throw()
-            {
-                static memory::allocator &mem = ALLOCATOR::location();
-                qgs.implode();
-                kill_rows(n);
-                mem.release(block_addr,block_size);
-            }
-
+            
             inline void init()
             {
-                allocate();
-                try { make_rows(); } catch(...) { assert(dimension<=0); quit(0); throw; }
-                //try { make_wskp(); } catch(...) { quit(dimension); }
-            }
-
-            inline void allocate()
-            {
                 static memory::allocator &mem = ALLOCATOR::instance();
-                apq         *pxq = 0;
-                const size_t nxq = extra_apqv*dimension;
+                
+                qrow         *prw = 0;
+                const size_t  nrw = dimension;
+                
+                mutable_type *pit = 0;
+                const size_t  nit = dimension*dimension;
+                
+                apq          *pxq = 0;
+                const size_t  nxq = extra*dimension;
+                // build top-level shelf
                 {
 
                     memory::embed emb[] =
                     {
-                        memory::embed(row,dimension),
+                        memory::embed(prw,nrw),
                         memory::embed(idx,dimension),
-                        memory::embed(obj,dimension*dimension),
+                        memory::embed(pit,nit),
                         memory::embed(pxq,nxq)
                     };
-                    block_addr = YACK_MEMORY_EMBED(emb,mem,block_size);
-                    --row;
+                    lib.build(emb, sizeof(emb)/sizeof(emb[0]),mem);
                 }
-
-                try {
-                    new( &qgs ) contractor<apq>(pxq,nxq);
-                } catch(...) { mem.release(block_addr,block_size); }
-
-            }
-
-            inline void kill_rows(size_t num) throw()
-            {
-                qrow  *r   = row+1;
-                while(num-- > 0) destruct( &r[num] );
-                coerce(dimension) = 0;
-            }
-
-            inline void make_rows()
-            {
-                size_t n   = 0;
-                try {
-                    qrow  *r   = row+1;
-                    type  *p   = obj;
-                    while(n<dimension) {
-                        new (r+n) qrow(p,dimension);
-                        ++n;
-                        p += dimension;
-                    }
-                }
-                catch(...) { kill_rows(n); throw; }
-            }
-
-            inline void kill_wksp(size_t ngs) throw()
-            {
-                while(ngs-- > 0) destruct(qgs+ngs);
-            }
-
-#if 0
-            inline void make_wskp()
-            {
-                assert(qgs!=NULL);
-                const size_t nmax = extra_apqv*dimension;
-                size_t       ngs  = 0;
-                try {
-                    while(ngs<nmax)
-                    {
-                        new (qgs+ngs) apq();
-                        ++ngs;
-                    }
-                }
-                catch(...) {
-                    kill_wksp(ngs);
-                    throw;
-                }
+                
+                // build obj
+                { contractor<type> _obj(pit,nit); _obj.swap_with(obj); }
+                
+                // build qgs
+                { contractor<apq> _qgs(pxq,nxq); _qgs.swap_with(qgs); }
+                
+                
 
             }
-#endif
+
+            
+
+            
+            
+
+
 
         };
 

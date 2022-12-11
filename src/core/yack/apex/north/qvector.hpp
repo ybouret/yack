@@ -36,17 +36,16 @@ namespace yack
             // C++
             //__________________________________________________________________
 
-            //! setup concerned area
+            //! setup from initialized ptr[num]
             inline explicit qvector(type *ptr, const size_t num) :
             dimension(num), coeff(ptr), norm2(0)
             {
                 assert( yack_good(ptr,num) );
                 --coeff;
-                init();
             }
 
             //! cleanup assigned space
-            inline virtual ~qvector() throw() { quit(dimension); }
+            inline virtual ~qvector() throw() { }
 
             //__________________________________________________________________
             //
@@ -159,24 +158,7 @@ namespace yack
         public:
             const l2_type norm2; //!< current squared norm
 
-        private:
-            inline void quit(size_t done) throw()
-            {
-                type  *addr = coeff+1;
-                while(done-- > 0) out_of_reach::naught( destructed(addr+done) );
-            }
-
-            inline void init() {
-                size_t done = 0;
-                type  *addr = coeff+1; assert(out_of_reach::is0(addr,dimension*sizeof(type)));
-                try {
-                    while(done<dimension) {
-                        new(addr+done) type();
-                        ++done;
-                    }
-                }
-                catch(...) { quit(done); throw; }
-            }
+            
         };
     }
 
