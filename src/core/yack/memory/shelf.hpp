@@ -11,30 +11,48 @@ namespace yack
     {
         class allocator;
         class embed;
-        
-        //! used to postpone resource acquisition
+
+        //______________________________________________________________________
+        //
+        //
+        //! used to postpone resource acquisition on a linear memory space
+        //
+        //______________________________________________________________________
         class shelf
         {
         public:
-            shelf()  throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            shelf()  throw(); //!< default empty constructor
+            ~shelf() throw(); //!< cleanup
+
+            //! assign allocated memory and allocator to release it
             shelf(const void  *addr,
                   const size_t size,
                   allocator   &user) throw();
             
-            
-            ~shelf() throw();
-            
-            void swap_with(shelf &other) throw();
-            void empty() throw();
+
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            void trade(shelf &other) throw(); //!< no-throw trade contents
+            void empty()             throw(); //!< release linear memory
             void store(const void  *addr,
                        const size_t size,
-                       allocator   &user) throw();
+                       allocator   &user) throw(); //!< assign by copy/tread
             void build(embed        emb[],
                        const size_t num,
-                       allocator   &user);
+                       allocator   &user); //!< store block addr/size of embedded scheme
             
-            
-            const size_t bytes;
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const size_t bytes; //!< current linear bytes
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(shelf);
             void *       entry;

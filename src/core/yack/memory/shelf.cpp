@@ -32,7 +32,7 @@ namespace yack
             owner         = &user;
         }
         
-        void shelf:: swap_with(shelf &other) throw()
+        void shelf:: trade(shelf &other) throw()
         {
             coerce_cswap(bytes,other.bytes);
             coerce_cswap(entry,other.entry);
@@ -50,15 +50,16 @@ namespace yack
                 owner->release(entry,coerce(bytes));
             }
         }
-        
+
         void shelf:: store(const void  *addr,
                            const size_t size,
                            allocator   &user) throw()
         {
-            shelf temp(addr,size,user);
-            swap_with(temp);
+            assert( yack_good(addr,size) );
+            shelf target(addr,size,user);
+            trade(target);
         }
-        
+
         void shelf:: build(embed *emb, const size_t num, allocator &user)
         {
             assert(0 != emb);
@@ -66,7 +67,7 @@ namespace yack
             
             shelf  target(0,0,user);
             target.entry = embed::zalloc(emb,num,user,coerce(target.bytes));
-            swap_with(target);
+            trade(target);
         }
         
     }
