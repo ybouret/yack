@@ -6,7 +6,6 @@
 #include "yack/apex/north/qvector.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
 #include "yack/sequence/thin-array.hpp"
-#include "yack/memory/embed.hpp"
 #include "yack/ptr/contractor.hpp"
 #include "yack/memory/shelf.hpp"
 

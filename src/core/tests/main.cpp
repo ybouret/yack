@@ -136,6 +136,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(apex_npd);
     YACK_UTEST(apex_worthy);
     YACK_UTEST(apex_north);
+    YACK_UTEST(apex_north_family);
 
     YACK_UTEST(ios_c_file);
     YACK_UTEST(ios_streams);

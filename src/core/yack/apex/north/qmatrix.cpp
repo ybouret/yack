@@ -1,6 +1,7 @@
 #include "yack/apex/north/qmatrix.hpp"
 #include "yack/randomized/bits.hpp"
 #include "yack/sort/indexing.hpp"
+#include "yack/memory/embed.hpp"
 
 namespace yack
 {
