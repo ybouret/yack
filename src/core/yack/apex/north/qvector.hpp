@@ -20,7 +20,7 @@ namespace yack
         //! component of an orthogonal family
         //
         //______________________________________________________________________
-        template <typename T> class qvector : public readable<T>
+        template <typename T> class qvector : public qmetrics, public readable<T>
         {
         public:
             //__________________________________________________________________
@@ -38,7 +38,7 @@ namespace yack
 
             //! setup from initialized ptr[num]
             inline explicit qvector(type *ptr, const size_t num) :
-            dimension(num), coeff(ptr), norm2(0)
+            qmetrics(num), coeff(ptr), norm2(0)
             {
                 assert( yack_good(ptr,num) );
                 --coeff;
@@ -95,7 +95,7 @@ namespace yack
                     assert(constellation::are_orthogonal(u_k,u_j));
                     if(sum<=0) return false;
                 }
-
+                
                 return true;
             }
 
@@ -149,8 +149,6 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const size_t dimension; //!< space dimension
-
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(qvector);
             type         *coeff;

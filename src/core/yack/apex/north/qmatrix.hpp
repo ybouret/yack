@@ -25,7 +25,7 @@ namespace yack
         //
         //______________________________________________________________________
         template <typename T, typename ALLOCATOR = memory::dyadic>
-        class qmatrix : public readable< qvector<T> >, public dynamic
+        class qmatrix : public qmetrics, public readable< qvector<T> >, public dynamic
         {
         public:
             //__________________________________________________________________
@@ -44,9 +44,9 @@ namespace yack
             // C++
             //__________________________________________________________________
 
-            //! default construction based on positive dimensions
+            //! default construction based on positive dimension
             inline explicit qmatrix(const size_t dims) :
-            dimension( constellation::checked_dimension(dims) ),
+            qmetrics( dims ),
             situation( constellation::initial_situation(dims) ),
             evaluated(0),
             idx(0), lib(), obj(), row(), qgs()
@@ -212,7 +212,6 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const size_t   dimension; //!< space dimension
             const maturity situation; //!< family situation
             const size_t   evaluated; //!< number of members in the family
 

@@ -74,6 +74,19 @@ namespace yack
             typedef uint64_t l2_type; //!< alias
         };
 
+        class qmetrics
+        {
+        public:
+            const size_t dimension;
+
+            explicit qmetrics(const size_t dims);
+            virtual ~qmetrics() throw();
+            qmetrics(const qmetrics &) throw();
+
+        private:
+            YACK_DISABLE_ASSIGN(qmetrics);
+        };
+
     }
 
 }

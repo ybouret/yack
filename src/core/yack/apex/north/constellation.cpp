@@ -102,7 +102,7 @@ namespace yack
                                             writable<apq>     &source,
                                             uint64_t          &normSq)
         {
-            static const char here[] = "north.prepare_vector";
+            static const char here[] = "north.rational->int64";
 
             assert(source.size()==target.size());
             normSq = 0;
@@ -124,6 +124,24 @@ namespace yack
                 apk::univocal(target);
                 return true;
             }
+        }
+
+
+        qmetrics:: ~qmetrics() throw()
+        {
+            coerce(dimension) = 0;
+        }
+
+        qmetrics:: qmetrics(const size_t dims) :
+        dimension( constellation::checked_dimension(dims) )
+        {
+        }
+
+
+        qmetrics:: qmetrics(const qmetrics &other) throw() :
+        dimension(other.dimension)
+        {
+            assert(dimension>0);
         }
 
     }
