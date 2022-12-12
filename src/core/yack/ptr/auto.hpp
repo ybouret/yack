@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_AUTO_PTR_INCLUDED
