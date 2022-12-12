@@ -22,10 +22,7 @@ namespace yack
 
         struct qmatrices;
 
-
-        //! initialize fields
-#define YACK_NORTH_QMATRIX_CTOR(num) evaluated(num), idx(0), lib(), obj(), row(), qgs()
-
+        
         //______________________________________________________________________
         //
         //
@@ -54,21 +51,20 @@ namespace yack
 
             //! default construction based on positive dimension
             inline explicit qmatrix(const size_t dims) :
-            qmetrics( dims ),
+            collection(), qmetrics( dims ), readable<qrow>(), dynamic(),
             situation( constellation::initial_situation(dims) ),
-            YACK_NORTH_QMATRIX_CTOR(0)
+            evaluated(0),
+            idx(NULL), lib(), obj(), row(), qgs()
             {
                 allocate();
             }
 
             //! hard copy
             qmatrix(const qmatrix &Q) :
-            collection(),
-            qmetrics(Q),
-            readable<qrow>(),
-            dynamic(),
+            collection(), qmetrics(Q), readable<qrow>(), dynamic(),
             situation(Q.situation),
-            YACK_NORTH_QMATRIX_CTOR(Q.evaluated)
+            evaluated(Q.evaluated),
+            idx(NULL), lib(), obj(), row(), qgs()
             {
                 allocate();
                 duplicate(Q);
