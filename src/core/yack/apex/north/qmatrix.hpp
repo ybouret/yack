@@ -50,7 +50,7 @@ namespace yack
             collection(), qmetrics( dims ), readable<qrow>(),
             situation( in_progress ),
             evaluated(0),
-            idx(NULL), lib(), obj(), row(), qgs()
+            idx(NULL), lib(), obj(), row()
             {
                 initialize();
             }
@@ -60,7 +60,7 @@ namespace yack
             collection(), qmetrics(Q), readable<qrow>(),
             situation(Q.situation),
             evaluated(Q.evaluated),
-            idx(NULL), lib(), obj(), row(), qgs()
+            idx(NULL), lib(), obj(), row()
             {
                 initialize();
                 build_copy(Q);
@@ -68,9 +68,7 @@ namespace yack
 
             //! cleanup
             virtual ~qmatrix() throw();
-
-
-
+            
             //__________________________________________________________________
             //
             // readable interface
@@ -91,6 +89,7 @@ namespace yack
             {
                 assert(user.size()==dimension);
 
+                apq            *qgs = obj();
                 thin_array<apq> u_k( qgs,           dimension );
                 thin_array<apq> v_k( qgs+dimension, dimension );
 
@@ -162,7 +161,6 @@ namespace yack
             memory::shelf    lib; //!< linear memory
             contractor<apq>  obj; //!< obj[dimension*dimension+exta*dimension]
             contractor<qrow> row; //!< row[dimension]
-            apq             *qgs; //!< @obj + dimension*dimension
             
             void reschedule() throw();
             bool complement(writable<apq> &u_k);

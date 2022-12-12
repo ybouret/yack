@@ -47,10 +47,11 @@ namespace yack
             // prepare all memory
             //--------------------------------------------------------------
             const size_t dsq = dimension*dimension;
+            const size_t ngs = extra    *dimension;
             qrow        *prw = 0;
             const size_t nrw = dimension;
             apq         *pit = 0;
-            const size_t nit = dsq+extra*dimension;
+            const size_t nit = dsq+ngs;
 
             //--------------------------------------------------------------
             // build top-level shelf
@@ -63,7 +64,6 @@ namespace yack
                     memory::embed(pit,nit)
                 };
                 lib.build(emb, sizeof(emb)/sizeof(emb[0]),mem);
-                qgs = pit + dsq;
             }
 
             //--------------------------------------------------------------
@@ -74,9 +74,9 @@ namespace yack
             //--------------------------------------------------------------
             // build rows
             //--------------------------------------------------------------
-            { contractor<qrow> _row(prw,nrw,pit,dimension); _row.swap_with(row); }
+            { contractor<qrow> _row(prw,nrw,pit+ngs,dimension); _row.swap_with(row); }
 
-
+            
         }
 
 
