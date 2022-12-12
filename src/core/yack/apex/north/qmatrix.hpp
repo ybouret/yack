@@ -12,6 +12,7 @@
 #include "yack/sort/indexing.hpp"
 #include "yack/ptr/contractor.hpp"
 #include "yack/memory/shelf.hpp"
+#include "yack/randomized/bits.hpp"
 
 namespace yack
 {
@@ -166,7 +167,20 @@ namespace yack
                 return os;
             }
 
-            
+            //__________________________________________________________________
+            //
+            //! Knuth shuffle, mostly to debug
+            //__________________________________________________________________
+            inline void shuffle(randomized::bits &ran) throw()
+            {
+                for(size_t i=evaluated;i>1;--i)
+                {
+                    const size_t j = 1+ran.leq(i-1); assert(j<=i);
+                    if(i==j) continue;
+                    row[i].xch(row[j]);
+                }
+                rebuild_index();
+            }
 
             
             //__________________________________________________________________

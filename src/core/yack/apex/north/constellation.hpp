@@ -65,6 +65,10 @@ namespace yack
         {
             typedef apq     type;    //!< alias
             typedef apn     l2_type; //!< alias
+
+            template <typename U> static inline
+            void xch(U &lhs, U &rhs) throw() { lhs.xch(rhs); }
+            
         };
 
         //! type selection for int64_t
@@ -72,6 +76,9 @@ namespace yack
         {
             typedef int64_t  type;    //!< alias
             typedef uint64_t l2_type; //!< alias
+
+            template <typename U> static inline
+            void xch(U &lhs, U &rhs) throw() { cswap(lhs,rhs); }
         };
 
         class qmetrics

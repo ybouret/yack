@@ -27,7 +27,8 @@ namespace yack
             //
             // types and definitions
             //__________________________________________________________________
-            typedef typename classify<T>::l2_type    l2_type;    //!< alias
+            typedef classify<T>                      class_ops;
+            typedef typename class_ops::l2_type      l2_type;    //!< alias
             typedef typename readable<T>::type       type;       //!< alias
             typedef typename readable<T>::const_type const_type; //!< alias
 
@@ -64,6 +65,14 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
+
+            inline void xch(qvector &other) throw()
+            {
+                assert(dimension==other.dimension);
+                class_ops:: xch( coerce(norm2), coerce(other.norm2) );
+                for(size_t i=dimension;i>0;--i)
+                    class_ops::xch( coerce(coeff[i]), coerce(other.coeff[i]) );
+            }
 
 
             //! compute Gram-Schmidt weight = <coef|v>/nrm2
@@ -110,46 +119,6 @@ namespace yack
                 os << static_cast<const readable<T> &>(self) << '#' << self.norm2;
                 return os;
             }
-
-#if 0
-            //__________________________________________________________________
-            //
-            //! test component wise equality
-            //__________________________________________________________________
-            template <typename U>
-            inline bool eq(const qvector<U> &rhs) const
-            {
-                const qvector &lhs = *this; assert(lhs.size()==rhs.size());
-                const size_t   n   = lhs.size();
-                for(size_t i=n;i>0;--i)
-                {
-                    if(lhs[i]!=rhs[i]) return false;
-                }
-                return true;
-            }
-
-            //__________________________________________________________________
-            //
-            //! lexicographic comparison for indexing
-            //__________________________________________________________________
-            static inline int compare(const qvector &lhs, const qvector &rhs) throw()
-            {
-                assert(lhs.size()==rhs.size());
-                const size_t n=lhs.size();
-                for(size_t i=1;i<=n;++i)
-                {
-                    switch(__sign::of(lhs[i],rhs[i]))
-                    {
-                        case __zero__: continue;
-                        case negative: return -1;
-                        case positive: return  1;
-                    }
-                }
-                return 0;
-            }
-#endif
-
-            
 
 
             //__________________________________________________________________

@@ -8,7 +8,8 @@ using namespace yack;
 
 YACK_UTEST(apex_north)
 {
-
+    randomized::rand_ ran;
+    
     YACK_SIZEOF(north::qvector<int64_t>);
     YACK_SIZEOF(north::qmatrix<int64_t>);
 
@@ -59,6 +60,14 @@ YACK_UTEST(apex_north)
             YACK_CHECK(north::qmatrices::have_same_last(V,U));
         }
 
+        std::cerr << std::endl;
+        std::cerr << U << std::endl;
+        for(size_t iter=0;iter<=3;++iter)
+        {
+            U.shuffle(ran);
+            std::cerr << U << std::endl;
+            YACK_CHECK(north::qmatrices::equality(U,V));
+        }
 
     }
 
