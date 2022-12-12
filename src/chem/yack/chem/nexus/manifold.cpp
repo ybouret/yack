@@ -10,6 +10,8 @@
 #include "yack/sequence/roll.hpp"
 #include "yack/sequence/bunch.hpp"
 #include "yack/apex/worthy.hpp"
+#include "yack/apex/north/qmatrix.hpp"
+
 
 #include <iomanip>
 
@@ -46,7 +48,6 @@ namespace yack
         //
         //
         //----------------------------------------------------------------------
-
         void select_clan(sp_list       &clan,
                          imatrix       &work,
                          const imatrix &mu,

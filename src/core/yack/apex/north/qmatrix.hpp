@@ -68,6 +68,7 @@ namespace yack
                 duplicate(Q);
             }
 
+            //! cleanup
             inline virtual ~qmatrix() throw() { }
 
             //__________________________________________________________________
