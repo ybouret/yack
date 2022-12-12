@@ -4,6 +4,7 @@
 #include "yack/memory/allocator/pooled.hpp"
 #include "yack/container/matrix.hpp"
 #include "yack/sequence/vector.hpp"
+#include "yack/ios/ascii/convert.hpp"
 
 using namespace yack;
 
@@ -16,6 +17,7 @@ namespace {
         for(size_t i=tgt.size();i>0;--i) tgt[i] = static_cast<int>( ran.in(-10,10) );
     }
 
+    // testing that the last is unique
     void test_uniq(const size_t      dims,
                    randomized::bits &ran)
     {
@@ -66,19 +68,19 @@ YACK_UTEST(apex_north)
 {
     randomized::rand_ ran;
     
-
-
-
+    
+    
+    
     {
         north:: qmatrix U(3);
         north:: qmatrix V(3);
-
-
+        
+        
         matrix<int> vec(3,3);
         vec[1][1] = 1;  vec[1][2] = 2;  vec[1][3] = 3;
         vec[2][1] = 0;  vec[2][2] = 5;  vec[2][3] = 7;
         vec[3][1] = 11; vec[3][2] = 13; vec[3][3] = 0;
-
+        
         for(size_t i=1;i<=vec.rows;++i)
         {
             YACK_CHECK(U.grow(vec[i])); std::cerr << U << std::endl;
@@ -88,7 +90,7 @@ YACK_UTEST(apex_north)
             YACK_CHECK(north::qmatrices::have_same_last(U,V));
             YACK_CHECK(north::qmatrices::have_same_last(V,U));
         }
-
+        
         std::cerr << std::endl;
         std::cerr << U << std::endl;
         for(size_t iter=0;iter<=3;++iter)
@@ -100,20 +102,26 @@ YACK_UTEST(apex_north)
             std::cerr << Q << std::endl;
             YACK_CHECK(north::qmatrices::equality(U,Q));
         }
-
+        
         for(size_t iter=0;iter<10;++iter)
         {
             writable<int> &any = vec[1];
             fillv(any,ran);
             YACK_CHECK(!U.grow(any));
             YACK_CHECK(!V.grow(any));
-
+            
         }
-
+        
     }
-
+    
     std::cerr << std::endl << "-- univocal" << std::endl;
-    for(size_t dims=2;dims<=8;++dims)
+    size_t maxDims = 8;
+    if(argc>1)
+    {
+        maxDims = ios::ascii::convert::to<size_t>(argv[1]);
+    }
+        
+    for(size_t dims=2;dims<=maxDims;++dims)
     {
         std::cerr << "-------- dims=" << dims << " --------" << std::endl;
         test_uniq (dims,ran);
@@ -121,6 +129,9 @@ YACK_UTEST(apex_north)
     }
     
     YACK_SIZEOF(north::qmatrix);
+    YACK_SIZEOF(north::qvector);
+    YACK_SIZEOF(apn);
+
 }
 YACK_UDONE()
 

@@ -28,7 +28,7 @@ namespace yack
         //! matrix of orthogonal vector(s)
         //
         //______________________________________________________________________
-        class qmatrix : public qmetrics, public readable<qvector>
+        class qmatrix : public object, public qmetrics, public readable<qvector>
         {
         public:
             //__________________________________________________________________
@@ -68,6 +68,13 @@ namespace yack
 
             //! cleanup
             virtual ~qmatrix() throw();
+            
+            
+            //__________________________________________________________________
+            //
+            // cloning
+            //__________________________________________________________________
+            qmatrix *clone() const;
             
             //__________________________________________________________________
             //

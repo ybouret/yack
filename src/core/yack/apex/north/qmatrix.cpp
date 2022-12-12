@@ -11,6 +11,12 @@ namespace yack
         {
         }
 
+        qmatrix *qmatrix:: clone() const
+        {
+            return new qmatrix(*this);
+        }
+
+        
         size_t qmatrix:: size() const throw() { return evaluated; }
 
         qmatrix::const_qrow & qmatrix:: operator[](const size_t indx) const throw()
