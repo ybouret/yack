@@ -129,7 +129,7 @@ namespace yack
 
         static const char * const fn = "sub_manifold";
 
-        typedef north::qmatrix<apq,memory::dyadic> qFamily_;
+        typedef north::qmatrix     qFamily_;
         typedef small_bank<size_t> iBank;
         typedef iBank::pointer     iSharedBank;
         typedef small_set<size_t>  iList;

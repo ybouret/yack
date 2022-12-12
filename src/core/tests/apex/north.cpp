@@ -16,14 +16,13 @@ namespace {
         for(size_t i=tgt.size();i>0;--i) tgt[i] = static_cast<int>( ran.in(-10,10) );
     }
 
-    template <typename ALLOCATOR> static inline
     void test_uniq(const size_t      dims,
                    randomized::bits &ran)
     {
         assert(dims>1);
         for(size_t cycle=0;cycle<16;++cycle)
         {
-            north::qmatrix<ALLOCATOR> U(dims);
+            north::qmatrix  U(dims);
             vector<int> tmp(dims);
             while(U.situation!=north::almost_done)
             {
@@ -34,7 +33,7 @@ namespace {
             vector<apq> last(dims);
 
             {
-                north::qmatrix<ALLOCATOR> V(U);
+                north::qmatrix  V(U);
                 while(V.situation!=north::fully_grown)
                 {
                     fillv(tmp,ran);
@@ -46,7 +45,7 @@ namespace {
 
             for(size_t iter=0;iter<16;++iter)
             {
-                north::qmatrix<ALLOCATOR> V(U);
+                north::qmatrix  V(U);
                 while(V.situation!=north::fully_grown)
                 {
                     fillv(tmp,ran);
@@ -69,23 +68,10 @@ YACK_UTEST(apex_north)
     
 
 
-    for(size_t dims=2;dims<=20;++dims)
-    {
-        north::qmatrix<memory::global> qg(dims);
-        north::qmatrix<memory::pooled> qp(dims);
-        north::qmatrix<memory::dyadic> qd(dims);
-
-
-        std::cerr << "granted[" << std::setw(3) << dims << "] = @apq : "
-        << std::setw(8) << qg.granted()
-        << std::setw(8) << qp.granted()
-        << std::setw(8) << qd.granted()
-        << std::endl;
-    }
 
     {
-        north:: qmatrix<memory::global> U(3);
-        north:: qmatrix<memory::global> V(3);
+        north:: qmatrix U(3);
+        north:: qmatrix V(3);
 
 
         matrix<int> vec(3,3);
@@ -110,7 +96,7 @@ YACK_UTEST(apex_north)
             U.shuffle(ran);
             std::cerr << U << std::endl;
             YACK_CHECK(north::qmatrices::equality(U,V));
-            north:: qmatrix<memory::global> Q(U);
+            north:: qmatrix  Q(U);
             std::cerr << Q << std::endl;
             YACK_CHECK(north::qmatrices::equality(U,Q));
         }
@@ -130,10 +116,11 @@ YACK_UTEST(apex_north)
     for(size_t dims=2;dims<=8;++dims)
     {
         std::cerr << "-------- dims=" << dims << " --------" << std::endl;
-        test_uniq<memory::dyadic>(dims,ran);
+        test_uniq (dims,ran);
         std::cerr << std::endl;
     }
-
+    
+    YACK_SIZEOF(north::qmatrix);
 }
 YACK_UDONE()
 

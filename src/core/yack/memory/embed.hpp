@@ -72,6 +72,7 @@ namespace yack
             //! decrease all addresses
             static void  cxx(embed emb[],const size_t num) throw();
 
+            
 
             //__________________________________________________________________
             //

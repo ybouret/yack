@@ -7,7 +7,6 @@
 #include "yack/memory/allocator/dyadic.hpp"
 #include "yack/sequence/thin-array.hpp"
 #include "yack/memory/embed.hpp"
-#include "yack/container/dynamic.hpp"
 #include "yack/sort/indexing.hpp"
 #include "yack/ptr/contractor.hpp"
 #include "yack/memory/shelf.hpp"
@@ -27,8 +26,7 @@ namespace yack
         //! matrix of orthogonal vector(s)
         //
         //______________________________________________________________________
-        template <typename ALLOCATOR = memory::dyadic>
-        class qmatrix : public qmetrics, public readable<qvector>, public dynamic
+        class qmatrix : public qmetrics, public readable<qvector>
         {
         public:
             //__________________________________________________________________
@@ -47,7 +45,7 @@ namespace yack
 
             //! default construction based on positive dimension
             inline explicit qmatrix(const size_t dims) :
-            collection(), qmetrics( dims ), readable<qrow>(), dynamic(),
+            collection(), qmetrics( dims ), readable<qrow>(),
             situation( in_progress ),
             evaluated(0),
             idx(NULL), lib(), obj(), row(), qgs()
@@ -57,7 +55,7 @@ namespace yack
 
             //! hard copy
             qmatrix(const qmatrix &Q) :
-            collection(), qmetrics(Q), readable<qrow>(), dynamic(),
+            collection(), qmetrics(Q), readable<qrow>(),
             situation(Q.situation),
             evaluated(Q.evaluated),
             idx(NULL), lib(), obj(), row(), qgs()
@@ -69,11 +67,7 @@ namespace yack
             //! cleanup
             inline virtual ~qmatrix() throw() { }
 
-            //__________________________________________________________________
-            //
-            // dynamic interface
-            //__________________________________________________________________
-            inline virtual  size_t granted() const throw() { return lib.bytes; } //!< internal buffer length
+
 
             //__________________________________________________________________
             //
@@ -99,8 +93,8 @@ namespace yack
             {
                 assert(user.size()==dimension);
 
-                thin_array<apq> u_k( qgs(),          dimension );
-                thin_array<apq> v_k( qgs(dimension), dimension );
+                thin_array<apq> u_k( qgs,           dimension );
+                thin_array<apq> v_k( qgs+dimension, dimension );
 
                 //--------------------------------------------------------------
                 //
@@ -209,9 +203,9 @@ namespace yack
 
             size_t          *idx; //!< idx[dimension]
             memory::shelf    lib; //!< linear memory
-            contractor<apq>  obj; //!< obj[dimension*dimension]
+            contractor<apq>  obj; //!< obj[dimension*dimension+exta*dimension]
             contractor<qrow> row; //!< row[dimension]
-            contractor<apq>  qgs; //!< qgs[extra*dimension]
+            apq             *qgs; //!< @obj + dimension*dimension
             
             inline void rebuild_index() throw()
             {
@@ -224,29 +218,29 @@ namespace yack
                 //--------------------------------------------------------------
                 // get allocator once
                 //--------------------------------------------------------------
-                static memory::allocator &mem = ALLOCATOR::instance();
+                static memory::allocator &mem = memory::dyadic::instance();
 
                 //--------------------------------------------------------------
                 // prepare all memory
                 //--------------------------------------------------------------
-
-                qrow *prw = 0; const size_t  nrw = dimension;
-                apq  *pit = 0; const size_t  nit = dimension*dimension;
-                apq  *pxq = 0; const size_t  nxq = extra*dimension;
+                const size_t dsq = dimension*dimension;
+                qrow        *prw = 0;
+                const size_t nrw = dimension;
+                apq         *pit = 0;
+                const size_t nit = dsq+extra*dimension;
 
                 //--------------------------------------------------------------
                 // build top-level shelf
                 //--------------------------------------------------------------
                 {
-
                     memory::embed emb[] =
                     {
                         memory::embed(prw,nrw),
                         memory::embed(idx,dimension),
-                        memory::embed(pit,nit),
-                        memory::embed(pxq,nxq)
+                        memory::embed(pit,nit)
                     };
                     lib.build(emb, sizeof(emb)/sizeof(emb[0]),mem);
+                    qgs = pit + dsq;
                 }
 
                 //--------------------------------------------------------------
@@ -259,10 +253,6 @@ namespace yack
                 //--------------------------------------------------------------
                 { contractor<qrow> _row(prw,nrw,pit,dimension); _row.swap_with(row); }
 
-                //--------------------------------------------------------------
-                // build qgs
-                //--------------------------------------------------------------
-                { contractor<apq> _qgs(pxq,nxq); _qgs.swap_with(qgs); }
                 
             }
 
@@ -298,9 +288,9 @@ namespace yack
         {
 
             //! test equality using indexed vectors
-            template <typename A, typename B> static inline
-            bool equality(const qmatrix<A> &lhs,
-                          const qmatrix<B> &rhs) throw()
+            static
+            bool equality(const qmatrix &lhs,
+                          const qmatrix &rhs) throw()
             {
                 if(lhs.dimension!=rhs.dimension) return false;
                 if(lhs.evaluated!=rhs.evaluated) return false;
@@ -318,9 +308,9 @@ namespace yack
             }
 
             //! test equality of last insertion
-            template <typename A, typename B> static inline
-            bool have_same_last(const qmatrix<A> &lhs,
-                                const qmatrix<B> &rhs) throw()
+            static
+            bool have_same_last(const qmatrix &lhs,
+                                const qmatrix &rhs) throw()
             {
                 assert(lhs.dimension==rhs.dimension);
                 assert(lhs.evaluated==rhs.evaluated);
