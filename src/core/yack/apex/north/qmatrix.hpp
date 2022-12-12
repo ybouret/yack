@@ -241,9 +241,16 @@ namespace yack
 
         };
 
+        //______________________________________________________________________
+        //
+        //
+        //! operations on matrices
+        //
+        //______________________________________________________________________
         struct qmatrices
         {
 
+            //! test equality using indexed vectors
             template <typename T, typename A, typename U, typename B> static inline
             bool equality(const qmatrix<T,A> &lhs,
                           const qmatrix<U,B> &rhs) throw()
@@ -263,6 +270,7 @@ namespace yack
                 return true;
             }
 
+            //! test equality of last insertion
             template <typename T, typename A, typename U, typename B> static inline
             bool have_same_last(const qmatrix<T,A> &lhs,
                                 const qmatrix<U,B> &rhs) throw()

@@ -27,7 +27,7 @@ namespace yack
             //
             // types and definitions
             //__________________________________________________________________
-            typedef classify<T>                      class_ops;
+            typedef classify<T>                      class_ops;  //!< alias
             typedef typename class_ops::l2_type      l2_type;    //!< alias
             typedef typename readable<T>::type       type;       //!< alias
             typedef typename readable<T>::const_type const_type; //!< alias
@@ -66,6 +66,8 @@ namespace yack
             // methods
             //__________________________________________________________________
 
+
+            //! no-throw exchange
             inline void xch(qvector &other) throw()
             {
                 assert(dimension==other.dimension);

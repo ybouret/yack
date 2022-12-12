@@ -66,6 +66,7 @@ namespace yack
             typedef apq     type;    //!< alias
             typedef apn     l2_type; //!< alias
 
+            //! exchaning high-level types
             template <typename U> static inline
             void xch(U &lhs, U &rhs) throw() { lhs.xch(rhs); }
             
@@ -77,18 +78,33 @@ namespace yack
             typedef int64_t  type;    //!< alias
             typedef uint64_t l2_type; //!< alias
 
+            //! exchanging low-level types
             template <typename U> static inline
             void xch(U &lhs, U &rhs) throw() { cswap(lhs,rhs); }
         };
 
+        //______________________________________________________________________
+        //
+        //
+        //! shared metrics for vectors and matrices
+        //
+        //______________________________________________________________________
         class qmetrics
         {
         public:
-            const size_t dimension;
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit qmetrics(const size_t dims); //!< setup, checked dimension
+            virtual ~qmetrics() throw();          //!< cleanup
+            qmetrics(const qmetrics &) throw();   //!< no-throw copy
 
-            explicit qmetrics(const size_t dims);
-            virtual ~qmetrics() throw();
-            qmetrics(const qmetrics &) throw();
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const size_t dimension; //!< space dimension
 
         private:
             YACK_DISABLE_ASSIGN(qmetrics);
