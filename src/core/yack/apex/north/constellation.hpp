@@ -33,7 +33,7 @@ namespace yack
         struct constellation
         {
             static size_t   checked_dimension(const size_t);               //!< check positive
-            static maturity initial_situation(const size_t);               //!< initial satus
+            //static maturity initial_situation(const size_t);               //!< initial satus
             static maturity updated_situation(const size_t dims,
                                               const size_t size) throw();  //!< update up to fully grown
 

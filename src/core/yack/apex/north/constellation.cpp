@@ -10,14 +10,15 @@ namespace yack
     namespace north
     {
         static const char here[] = "north";
-        static const char mesg[] = "null dimension!";
+        static const char mesg[] = "dimension<=1!";
 
         size_t constellation:: checked_dimension(const size_t d)
         {
-            if(d<=0) throw imported::exception(here,mesg);
+            if(d<=1) throw imported::exception(here,mesg);
             return d;
         }
 
+#if 0
         maturity constellation:: initial_situation(const size_t dims)
         {
             switch(dims)
@@ -30,10 +31,11 @@ namespace yack
             }
             return in_progress;
         }
-
+#endif
+        
         maturity constellation:: updated_situation(const size_t dims, const size_t size) throw()
         {
-            assert(dims>0);
+            assert(dims>1);
             if(size>=dims)
             {
                 assert(dims==size);

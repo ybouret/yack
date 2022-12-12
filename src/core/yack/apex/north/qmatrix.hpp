@@ -50,7 +50,7 @@ namespace yack
             //! default construction based on positive dimension
             inline explicit qmatrix(const size_t dims) :
             collection(), qmetrics( dims ), readable<qrow>(), dynamic(),
-            situation( constellation::initial_situation(dims) ),
+            situation( in_progress ),
             evaluated(0),
             idx(NULL), lib(), obj(), row(), qgs()
             {

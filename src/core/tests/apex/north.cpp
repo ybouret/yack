@@ -3,8 +3,65 @@
 #include "yack/memory/allocator/global.hpp"
 #include "yack/memory/allocator/pooled.hpp"
 #include "yack/container/matrix.hpp"
+#include "yack/sequence/vector.hpp"
 
 using namespace yack;
+
+namespace {
+
+
+    static inline
+    void fillv(writable<int> &tgt, randomized::bits &ran)
+    {
+        for(size_t i=tgt.size();i>0;--i) tgt[i] = static_cast<int>( ran.in(-10,10) );
+    }
+
+    template <typename T,typename ALLOCATOR> static inline
+    void test_uniq(const size_t      dims,
+                   randomized::bits &ran)
+    {
+        assert(dims>1);
+        for(size_t cycle=0;cycle<16;++cycle)
+        {
+            north::qmatrix<T,ALLOCATOR> U(dims);
+            vector<int> tmp(dims);
+            while(U.situation!=north::almost_done)
+            {
+                fillv(tmp,ran);
+                if(!U.grow(tmp)) continue;
+            }
+            std::cerr << "U=" << U << std::endl;
+            vector<T> last(dims);
+
+            {
+                north::qmatrix<T,ALLOCATOR> V(U);
+                while(V.situation!=north::fully_grown)
+                {
+                    fillv(tmp,ran);
+                    if(!V.grow(tmp)) continue;;
+                }
+                for(size_t i=dims;i>0;--i) last[i] = V.last()[i];
+            }
+            std::cerr << "last=" << last << "[";
+
+            for(size_t iter=0;iter<16;++iter)
+            {
+                north::qmatrix<T,ALLOCATOR> V(U);
+                while(V.situation!=north::fully_grown)
+                {
+                    fillv(tmp,ran);
+                    if(!V.grow(tmp)) continue;;
+                }
+                if( comparison::disparity(last,V.last())) throw exception("failure!!");
+                std::cerr << ".";
+            }
+            std::cerr << "]" << std::endl;
+        }
+
+
+    }
+
+}
 
 YACK_UTEST(apex_north)
 {
@@ -18,7 +75,7 @@ YACK_UTEST(apex_north)
     YACK_SIZEOF(north::qmatrix<apq>);
 
 
-    for(size_t dims=1;dims<=20;++dims)
+    for(size_t dims=2;dims<=20;++dims)
     {
         north::qmatrix<apq,memory::global> qg(dims);
         north::qmatrix<apq,memory::pooled> qp(dims);
@@ -72,8 +129,25 @@ YACK_UTEST(apex_north)
             YACK_CHECK(north::qmatrices::equality(U,Q));
         }
 
+        for(size_t iter=0;iter<10;++iter)
+        {
+            writable<int> &any = vec[1];
+            fillv(any,ran);
+            YACK_CHECK(!U.grow(any));
+            YACK_CHECK(!V.grow(any));
+
+        }
+
     }
 
+    std::cerr << std::endl << "-- univocal" << std::endl;
+    for(size_t dims=2;dims<=8;++dims)
+    {
+        std::cerr << "-------- dims=" << dims << " --------" << std::endl;
+        test_uniq<apq,memory::dyadic>(dims,ran);
+        //test_uniq<int64_t,memory::pooled>(dims,ran);
+        std::cerr << std::endl;
+    }
 
 }
 YACK_UDONE()
