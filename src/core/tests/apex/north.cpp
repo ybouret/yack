@@ -16,14 +16,14 @@ namespace {
         for(size_t i=tgt.size();i>0;--i) tgt[i] = static_cast<int>( ran.in(-10,10) );
     }
 
-    template <typename T,typename ALLOCATOR> static inline
+    template <typename ALLOCATOR> static inline
     void test_uniq(const size_t      dims,
                    randomized::bits &ran)
     {
         assert(dims>1);
         for(size_t cycle=0;cycle<16;++cycle)
         {
-            north::qmatrix<T,ALLOCATOR> U(dims);
+            north::qmatrix<ALLOCATOR> U(dims);
             vector<int> tmp(dims);
             while(U.situation!=north::almost_done)
             {
@@ -31,10 +31,10 @@ namespace {
                 if(!U.grow(tmp)) continue;
             }
             std::cerr << "U=" << U << std::endl;
-            vector<T> last(dims);
+            vector<apq> last(dims);
 
             {
-                north::qmatrix<T,ALLOCATOR> V(U);
+                north::qmatrix<ALLOCATOR> V(U);
                 while(V.situation!=north::fully_grown)
                 {
                     fillv(tmp,ran);
@@ -46,7 +46,7 @@ namespace {
 
             for(size_t iter=0;iter<16;++iter)
             {
-                north::qmatrix<T,ALLOCATOR> V(U);
+                north::qmatrix<ALLOCATOR> V(U);
                 while(V.situation!=north::fully_grown)
                 {
                     fillv(tmp,ran);
@@ -67,39 +67,25 @@ YACK_UTEST(apex_north)
 {
     randomized::rand_ ran;
     
-    YACK_SIZEOF(north::qvector<int64_t>);
-    YACK_SIZEOF(north::qmatrix<int64_t>);
-
-
-    YACK_SIZEOF(north::qvector<apq>);
-    YACK_SIZEOF(north::qmatrix<apq>);
 
 
     for(size_t dims=2;dims<=20;++dims)
     {
-        north::qmatrix<apq,memory::global> qg(dims);
-        north::qmatrix<apq,memory::pooled> qp(dims);
-        north::qmatrix<apq,memory::dyadic> qd(dims);
-
-        north::qmatrix<int64_t,memory::global> qgi(dims);
-        north::qmatrix<int64_t,memory::pooled> qpi(dims);
-        north::qmatrix<int64_t,memory::dyadic> qdi(dims);
+        north::qmatrix<memory::global> qg(dims);
+        north::qmatrix<memory::pooled> qp(dims);
+        north::qmatrix<memory::dyadic> qd(dims);
 
 
         std::cerr << "granted[" << std::setw(3) << dims << "] = @apq : "
         << std::setw(8) << qg.granted()
         << std::setw(8) << qp.granted()
         << std::setw(8) << qd.granted()
-        << " | @int : "
-        << std::setw(8) << qgi.granted()
-        << std::setw(8) << qpi.granted()
-        << std::setw(8) << qdi.granted()
         << std::endl;
     }
 
     {
-        north:: qmatrix<apq,memory::global>     U(3);
-        north:: qmatrix<int64_t,memory::global> V(3);
+        north:: qmatrix<memory::global> U(3);
+        north:: qmatrix<memory::global> V(3);
 
 
         matrix<int> vec(3,3);
@@ -124,7 +110,7 @@ YACK_UTEST(apex_north)
             U.shuffle(ran);
             std::cerr << U << std::endl;
             YACK_CHECK(north::qmatrices::equality(U,V));
-            north:: qmatrix<apq,memory::global> Q(U);
+            north:: qmatrix<memory::global> Q(U);
             std::cerr << Q << std::endl;
             YACK_CHECK(north::qmatrices::equality(U,Q));
         }
@@ -144,8 +130,7 @@ YACK_UTEST(apex_north)
     for(size_t dims=2;dims<=8;++dims)
     {
         std::cerr << "-------- dims=" << dims << " --------" << std::endl;
-        test_uniq<apq,memory::dyadic>(dims,ran);
-        //test_uniq<int64_t,memory::pooled>(dims,ran);
+        test_uniq<memory::dyadic>(dims,ran);
         std::cerr << std::endl;
     }
 

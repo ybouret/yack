@@ -27,17 +27,15 @@ namespace yack
         //! matrix of orthogonal vector(s)
         //
         //______________________________________________________________________
-        template <typename T, typename ALLOCATOR = memory::dyadic>
-        class qmatrix : public qmetrics, public readable< qvector<T> >, public dynamic
+        template <typename ALLOCATOR = memory::dyadic>
+        class qmatrix : public qmetrics, public readable<qvector>, public dynamic
         {
         public:
             //__________________________________________________________________
             //
             // types and definition
             //__________________________________________________________________
-            YACK_DECL_ARGS(T,type);                           //!< aliases
-            typedef qvector<T>                qrow;           //!< alias
-            typedef typename qrow::l2_type    l2_type;        //!< alias
+            typedef qvector                   qrow;           //!< alias
             typedef readable<qrow>            rd_t;           //!< alias
             typedef typename rd_t::const_type const_qrow;     //!< alias
             static  const size_t              extra = 2;      //!< extra arrays
@@ -125,10 +123,10 @@ namespace yack
                     //
                     //----------------------------------------------------------
                     assert(evaluated<dimension);
-                    const size_t  following = evaluated+1;
-                    const qrow   &component = row[following];
-                    thin_array<T> interface( &coerce(component[1]), dimension);
-                    if(!constellation::prepare_vector(interface,u_k,coerce(component.norm2)))
+                    const size_t    following = evaluated+1;
+                    const qrow     &component = row[following];
+                    thin_array<apq> target( &coerce(component[1]), dimension);
+                    if(!constellation::prepare_vector(target,u_k,coerce(component.norm2)))
                     {
                         //------------------------------------------------------
                         // nil vector!! shouldn't happen
@@ -192,7 +190,7 @@ namespace yack
                 rebuild_index();
             }
 
-            inline const readable<type> & last() const throw() {
+            inline const readable<apq> & last() const throw() {
                 assert(evaluated>0);
                 return row[evaluated];
             }
@@ -211,7 +209,7 @@ namespace yack
 
             size_t          *idx; //!< idx[dimension]
             memory::shelf    lib; //!< linear memory
-            contractor<type> obj; //!< obj[dimension*dimension]
+            contractor<apq>  obj; //!< obj[dimension*dimension]
             contractor<qrow> row; //!< row[dimension]
             contractor<apq>  qgs; //!< qgs[extra*dimension]
             
@@ -232,9 +230,9 @@ namespace yack
                 // prepare all memory
                 //--------------------------------------------------------------
 
-                qrow         *prw = 0; const size_t  nrw = dimension;
-                mutable_type *pit = 0; const size_t  nit = dimension*dimension;
-                apq          *pxq = 0; const size_t  nxq = extra*dimension;
+                qrow *prw = 0; const size_t  nrw = dimension;
+                apq  *pit = 0; const size_t  nit = dimension*dimension;
+                apq  *pxq = 0; const size_t  nxq = extra*dimension;
 
                 //--------------------------------------------------------------
                 // build top-level shelf
@@ -254,7 +252,7 @@ namespace yack
                 //--------------------------------------------------------------
                 // build obj
                 //--------------------------------------------------------------
-                { contractor<type> _obj(pit,nit); _obj.swap_with(obj); }
+                { contractor<apq>  _obj(pit,nit); _obj.swap_with(obj); }
 
                 //--------------------------------------------------------------
                 // build rows
@@ -300,9 +298,9 @@ namespace yack
         {
 
             //! test equality using indexed vectors
-            template <typename T, typename A, typename U, typename B> static inline
-            bool equality(const qmatrix<T,A> &lhs,
-                          const qmatrix<U,B> &rhs) throw()
+            template <typename A, typename B> static inline
+            bool equality(const qmatrix<A> &lhs,
+                          const qmatrix<B> &rhs) throw()
             {
                 if(lhs.dimension!=rhs.dimension) return false;
                 if(lhs.evaluated!=rhs.evaluated) return false;
@@ -320,9 +318,9 @@ namespace yack
             }
 
             //! test equality of last insertion
-            template <typename T, typename A, typename U, typename B> static inline
-            bool have_same_last(const qmatrix<T,A> &lhs,
-                                const qmatrix<U,B> &rhs) throw()
+            template <typename A, typename B> static inline
+            bool have_same_last(const qmatrix<A> &lhs,
+                                const qmatrix<B> &rhs) throw()
             {
                 assert(lhs.dimension==rhs.dimension);
                 assert(lhs.evaluated==rhs.evaluated);
