@@ -227,6 +227,7 @@ add_test(apfac          test-core  apfac 1 2 3 4 5 10 20)
 add_test(aprsa          test-core  aprsa)
 add_test(apr            test-core  apr 100 3)
 add_test(aprimes        test-core  aprimes)
+add_test(apex:nped      test-core  apex_npd)
 add_test(apex:worthy    test-core  apex_worthy)
 add_test(apex:north     test-croe  apex_north)
 

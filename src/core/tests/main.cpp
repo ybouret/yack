@@ -133,6 +133,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(aprsa);
     YACK_UTEST(apr);
     YACK_UTEST(aprimes);
+    YACK_UTEST(apex_npd);
     YACK_UTEST(apex_worthy);
     YACK_UTEST(apex_north);
 

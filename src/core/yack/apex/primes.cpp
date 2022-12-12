@@ -10,7 +10,10 @@ namespace yack
 
         prime_knot:: ~prime_knot() throw() {}
 
-        primes:: primes() : singleton<primes>(), plist()
+        primes:: primes() : singleton<primes>(),
+        _0(0),
+        _1(1),
+        plist()
         {
             for(size_t i=0;i<core::primes::n8;++i)
             {
