@@ -67,6 +67,9 @@ YACK_UTEST(apex_north)
             U.shuffle(ran);
             std::cerr << U << std::endl;
             YACK_CHECK(north::qmatrices::equality(U,V));
+            north:: qmatrix<apq,memory::global> Q(U);
+            std::cerr << Q << std::endl;
+            YACK_CHECK(north::qmatrices::equality(U,Q));
         }
 
     }

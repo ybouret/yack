@@ -75,7 +75,7 @@ namespace yack
                 for(size_t i=dimension;i>0;--i)
                     class_ops::xch( coerce(coeff[i]), coerce(other.coeff[i]) );
             }
-
+            
 
             //! compute Gram-Schmidt weight = <coef|v>/nrm2
             apq  weight(const readable<apq> &v) const;

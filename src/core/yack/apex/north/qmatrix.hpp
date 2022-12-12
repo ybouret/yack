@@ -23,6 +23,9 @@ namespace yack
         struct qmatrices;
 
 
+        //! initialize fields
+#define YACK_NORTH_QMATRIX_CTOR(num) evaluated(num), idx(0), lib(), obj(), row(), qgs()
+
         //______________________________________________________________________
         //
         //
@@ -42,7 +45,7 @@ namespace yack
             typedef typename qrow::l2_type    l2_type;        //!< alias
             typedef readable<qrow>            rd_t;           //!< alias
             typedef typename rd_t::const_type const_qrow;     //!< alias
-            static  const size_t              extra = 2;      //!<  extra arrays
+            static  const size_t              extra = 2;      //!< extra arrays
 
             //__________________________________________________________________
             //
@@ -53,10 +56,22 @@ namespace yack
             inline explicit qmatrix(const size_t dims) :
             qmetrics( dims ),
             situation( constellation::initial_situation(dims) ),
-            evaluated(0),
-            idx(0), lib(), obj(), row(), qgs()
+            YACK_NORTH_QMATRIX_CTOR(0)
             {
-                init();
+                allocate();
+            }
+
+            //! hard copy
+            qmatrix(const qmatrix &Q) :
+            collection(),
+            qmetrics(Q),
+            readable<qrow>(),
+            dynamic(),
+            situation(Q.situation),
+            YACK_NORTH_QMATRIX_CTOR(Q.evaluated)
+            {
+                allocate();
+                duplicate(Q);
             }
 
             inline virtual ~qmatrix() throw() { }
@@ -191,7 +206,7 @@ namespace yack
             const size_t   evaluated; //!< number of members in the family
 
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(qmatrix);
+            YACK_DISABLE_ASSIGN(qmatrix);
             friend struct qmatrices;
 
             size_t          *idx; //!< idx[dimension]
@@ -206,15 +221,24 @@ namespace yack
                 indexing::make(qindex,comparison::lexicographic<const_qrow,const_qrow>,*this);
             }
 
-            inline void init()
+            inline void allocate()
             {
+                //--------------------------------------------------------------
+                // get allocator once
+                //--------------------------------------------------------------
                 static memory::allocator &mem = ALLOCATOR::instance();
-                
+
+                //--------------------------------------------------------------
+                // prepare all memory
+                //--------------------------------------------------------------
+
                 qrow         *prw = 0; const size_t  nrw = dimension;
                 mutable_type *pit = 0; const size_t  nit = dimension*dimension;
                 apq          *pxq = 0; const size_t  nxq = extra*dimension;
 
+                //--------------------------------------------------------------
                 // build top-level shelf
+                //--------------------------------------------------------------
                 {
 
                     memory::embed emb[] =
@@ -226,16 +250,41 @@ namespace yack
                     };
                     lib.build(emb, sizeof(emb)/sizeof(emb[0]),mem);
                 }
-                
+
+                //--------------------------------------------------------------
                 // build obj
+                //--------------------------------------------------------------
                 { contractor<type> _obj(pit,nit); _obj.swap_with(obj); }
-                
+
+                //--------------------------------------------------------------
                 // build rows
+                //--------------------------------------------------------------
                 { contractor<qrow> _row(prw,nrw,pit,dimension); _row.swap_with(row); }
-                
+
+                //--------------------------------------------------------------
                 // build qgs
+                //--------------------------------------------------------------
                 { contractor<apq> _qgs(pxq,nxq); _qgs.swap_with(qgs); }
                 
+            }
+
+            inline void duplicate(const qmatrix &Q)
+            {
+                assert(Q.evaluated==evaluated);
+                assert(Q.situation==situation);
+                thin_array<size_t>       indx(idx,evaluated);
+                const thin_array<size_t> qndx(Q.idx,evaluated);
+                for(size_t i=1;i<=evaluated;++i)
+                {
+                    const qrow   &source = Q.row[i];
+                    qrow         &target = row[i];
+                    coerce(target.norm2) = source.norm2;
+                    for(size_t j=dimension;j>0;--j)
+                        coerce(target[j]) = source[j];
+                    assert( comparison::equality(source,target) );
+                    indx[i] = qndx[i];
+                }
+                assert( comparison::equality(indx,qndx) );
             }
 
 
@@ -244,7 +293,7 @@ namespace yack
         //______________________________________________________________________
         //
         //
-        //! operations on matrices
+        //! operations on qmatrices
         //
         //______________________________________________________________________
         struct qmatrices
@@ -288,7 +337,7 @@ namespace yack
                 return comparison::equality(lhs[size],rhs[size]);
 
             }
-
+            
 
 
         };
