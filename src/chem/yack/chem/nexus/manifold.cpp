@@ -9,7 +9,6 @@
 #include "yack/data/small/set.hpp"
 #include "yack/sequence/roll.hpp"
 #include "yack/sequence/bunch.hpp"
-#include "yack/apex/worthy.hpp"
 #include "yack/apex/north/qmatrix.hpp"
 
 
@@ -130,9 +129,7 @@ namespace yack
 
         static const char * const fn = "sub_manifold";
 
-        typedef worthy::qfamily    qFamily_;
-        typedef worthy::qcache     qCache;
-        typedef worthy::qshared    qShared;
+        typedef north::qmatrix<apq,memory::dyadic> qFamily_;
         typedef small_bank<size_t> iBank;
         typedef iBank::pointer     iSharedBank;
         typedef small_set<size_t>  iList;
@@ -157,9 +154,8 @@ namespace yack
             //------------------------------------------------------------------
             explicit qFamily(const readable<size_t> &jx,
                              const imatrix          &mu,
-                             const iSharedBank      &io,
-                             const qShared          &qs) :
-            qFamily_(qs),
+                             const iSharedBank      &io) :
+            qFamily_(mu.cols),
             next(0),
             prev(0),
             basis(io),
@@ -257,10 +253,9 @@ namespace yack
             inline void to(bunch<int> &coef) const
             {
                 const qFamily_ &self = *this;
-                assert(self->size>1);
-                assert(self->head);
-                assert(self->head->next);
+                assert(self.size()>1);
 
+#if 0
                 //std::cerr << "\t |_parse = " << self << std::endl;
                 for(const worthy::qarray *arr=self->head->next;arr;arr=arr->next)
                 {
@@ -268,6 +263,7 @@ namespace yack
                     if(count_valid(host)<2) continue;
                     coef.ensure(host);
                 }
+#endif
             }
             
         private:
@@ -304,7 +300,7 @@ namespace yack
                 {
                     for(const qFamily *rhs=lhs->next;rhs;rhs=rhs->next)
                     {
-                        if( qFamily::eq(*lhs,*rhs) ) return false;
+                        if( north::qmatrices::equality(*lhs,*rhs)) return false;
                     }
                 }
                 return true;
@@ -327,16 +323,14 @@ namespace yack
                                    const qBranch &target)
         {
 
-            const qFamily_      &rhs = chld; assert(rhs->tail);
-            const readable<apq> &R   = rhs->tail->coef;
+            const qFamily_      &rhs = chld; assert(rhs.size()>1);
             for(qFamily *scan=target.head;scan;scan=scan->next)
             {
                 const qFamily_ &lhs = *scan;
 
-                assert( lhs->size == rhs->size );
-                assert( lhs->tail != NULL);
+                assert( lhs.size() == rhs.size() );
 
-                if( lhs->tail->coef == R )
+                if( comparison::equality(lhs.last(),rhs.last()) )
                 {
                     return scan;
                 }
@@ -357,8 +351,8 @@ namespace yack
         {
             for(qFamily *scan=target.head;scan;scan=scan->next)
             {
-                assert((*scan)->size == chld->size);
-                if( *scan == chld )
+                assert(scan->size() == chld.size());
+                if( north::qmatrices::equality(*scan,chld) )
                     return scan;
             }
             return NULL;
@@ -421,7 +415,7 @@ namespace yack
                              const imatrix &mu,
                              iSharedBank   &io)
         {
-            assert(worthy::in_progress==source.situation);
+            assert(north::in_progress==source.situation);
             assert(0==target.size);
 
             iList             span(io);
@@ -523,7 +517,7 @@ namespace yack
                              const imatrix &mu)
         {
             static const char * const here = "nexus::complete_family";
-            assert(worthy::almost_done==source.situation);
+            assert(north::almost_done==source.situation);
             assert(source.ready->size>0);
             for(const iNode *node=source.ready->head;node;node=node->next)
             {
@@ -538,7 +532,6 @@ namespace yack
                                      qBranch                &genitors,
                                      const imatrix          &mu,
                                      iSharedBank            &io,
-                                     qShared                &qs,
                                      const xmlog            &xml)
 
         {
@@ -551,7 +544,7 @@ namespace yack
             // make a new generation for each present genitor
             //
             //------------------------------------------------------------------
-            YACK_XMLOG(xml, "-- |genitors| = " << genitors.size << " @degree=" << degree << ", |cache|=" << (*qs)->size );
+            YACK_XMLOG(xml, "-- |genitors| = " << genitors.size << " @degree=" << degree );
             while(genitors.size)
             {
                 auto_ptr<qFamily> source = genitors.pop_front();
@@ -560,7 +553,7 @@ namespace yack
                 {
                         //------------------------------------------------------
                         //
-                    case worthy::fully_grown:
+                    case north::fully_grown:
                         YACK_XMLOG(xml, "[!] " << source);
                         throw imported::exception(here,"unexpected fully grown family!");
                         //
@@ -568,24 +561,22 @@ namespace yack
 
                         //------------------------------------------------------
                         //
-                    case worthy::almost_done:
+                    case north::almost_done:
                         // all children will produce the same last vector
                         // so we take the first that matches by completing
-                        complete_family(*source,mu); assert(worthy::fully_grown==source->situation);
-                        //YACK_XMLOG(xml, "[*] " << source);
+                        complete_family(*source,mu); assert(north::fully_grown==source->situation);
+                        YACK_XMLOG(xml, "[*] " << source);
 
                         // process and discard this source
                         source->to(coef);
                         source = NULL;
-                        std::cerr << " done@cache=" << (*qs)->size << std::endl;
-                        qs->release();
                         continue;
                         //
                         //------------------------------------------------------
 
                         //------------------------------------------------------
                         //
-                    case worthy::in_progress: {
+                    case north::in_progress: {
                         //YACK_XMLOG(xml, "[+] " << source);
                         qBranch target;                        // local new generation
                         create_next_gen(target,*source,mu,io); // create it
@@ -640,7 +631,6 @@ namespace yack
             const size_t             m  = mu.rows;
             iSharedBank              io = new iBank();   // I/O for indices
             cxx_array<size_t>        jx(m);              // indices reservoir
-            qShared                  qs = new qCache(coef.width);
             qBranch                  genitors;           // top-level genitors
             jx.ld_incr<size_t>(1); assert(m==jx[m]);     // initial indices
 
@@ -676,7 +666,7 @@ namespace yack
                 // initialize a genitor
                 //
                 //--------------------------------------------------------------
-                genitors.push_back( new qFamily(jx,mu,io,qs) );
+                genitors.push_back( new qFamily(jx,mu,io) );
                 if(xml.verbose)
                 {
                     lib.pad(*xml << "[" << s.name << "]",s) << " with "<< *(genitors.tail) << std::endl;
@@ -702,10 +692,10 @@ namespace yack
             while(genitors.size)
             {
                 ++degree;
-                update_all_combinations(degree,coef,genitors,mu,io,qs,xml);
-                YACK_XMLOG(xml, "-- |_|genitors| = " << genitors.size << " |cache| = " << (*qs)->size  );
+                update_all_combinations(degree,coef,genitors,mu,io,xml);
+                YACK_XMLOG(xml, "-- |_|genitors| = " << genitors.size );
             }
-            YACK_XMLOG(xml,"-- DONE: #cache=" << (*qs)->size << " degree=" << degree );
+            YACK_XMLOG(xml,"-- DONE:  @degree=" << degree );
         }
         
         

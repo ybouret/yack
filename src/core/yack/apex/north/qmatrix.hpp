@@ -192,6 +192,11 @@ namespace yack
                 rebuild_index();
             }
 
+            inline const readable<type> & last() const throw() {
+                assert(evaluated>0);
+                return row[evaluated];
+            }
+
             
             //__________________________________________________________________
             //
