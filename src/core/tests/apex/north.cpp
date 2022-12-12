@@ -53,10 +53,10 @@ YACK_UTEST(apex_north)
         {
             YACK_CHECK(U.grow(vec[i])); std::cerr << U << std::endl;
             YACK_CHECK(V.grow(vec[i])); std::cerr << V << std::endl;
-            YACK_CHECK(V.eq(U));
-            YACK_CHECK(U.eq(V));
-            YACK_CHECK(U.has_same_last_than(V));
-            YACK_CHECK(V.has_same_last_than(U));
+            YACK_CHECK(north::qmatrices::equality(V,U));
+            YACK_CHECK(north::qmatrices::equality(U,V));
+            YACK_CHECK(north::qmatrices::have_same_last(U,V));
+            YACK_CHECK(north::qmatrices::have_same_last(V,U));
         }
 
 

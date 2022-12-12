@@ -18,6 +18,10 @@ namespace yack
 
     namespace north
     {
+
+        struct qmatrices;
+
+
         //______________________________________________________________________
         //
         //
@@ -162,52 +166,9 @@ namespace yack
                 return os;
             }
 
-            //__________________________________________________________________
-            //
-            //! test exact same last vector, assuming all previous are the same
-            //__________________________________________________________________
-            template<typename U, typename ANOTHER> inline
-            bool has_same_last_than(const qmatrix<U,ANOTHER> &user) const
-            {
-                const qmatrix &self = *this;
-                assert(self.dimension==user.dimension);
-                assert(self.evaluated==user.evaluated);
-                assert(self.evaluated>0);
-#ifndef NDEBUG
-                for(size_t i=1;i<evaluated;++i) {
-                    assert( self[i].eq(user[i]) );
-                }
-#endif
-                return self[evaluated].eq(user[evaluated]);
-            }
+            
 
-
-            //! helper to create indices
-            const size_t &first_index() const throw() { return *idx; }
-
-            //__________________________________________________________________
-            //
-            //! test exact matrix up to a permutation, same dimension/evaluated
-            //__________________________________________________________________
-            template <typename U,typename ANOTHER> inline
-            bool eq(const qmatrix<U,ANOTHER> &user) const
-            {
-                const qmatrix &self = *this;
-                assert(self.dimension==user.dimension);
-                assert(self.evaluated==user.evaluated);
-                const size_t             n = evaluated;
-                const thin_array<size_t> self_indx(self.idx,n);
-                const thin_array<size_t> user_indx( &coerce(first_index()),n);
-
-                for(size_t i=n;i>0;--i)
-                {
-                    if( !self[ self_indx[i] ].eq(user[ user_indx[i] ]) )  return false;
-                }
-
-                return true;
-            }
-
-
+            
             //__________________________________________________________________
             //
             // members
@@ -217,32 +178,28 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(qmatrix);
-            size_t          *idx;          //!< idx[dimension]
-            memory::shelf    lib;
-            contractor<type> obj;
-            contractor<qrow> row;
-            contractor<apq>  qgs;  //!< qgs[extra*dimension] for G-S algo
+            friend struct qmatrices;
+
+            size_t          *idx; //!< idx[dimension]
+            memory::shelf    lib; //!< linear memory
+            contractor<type> obj; //!< obj[dimension*dimension]
+            contractor<qrow> row; //!< row[dimension]
+            contractor<apq>  qgs; //!< qgs[extra*dimension]
             
             inline void rebuild_index() throw()
             {
                 thin_array<size_t> qindex(idx,evaluated);
-                indexing::make(qindex,qrow::compare,*this);
+                indexing::make(qindex,comparison::lexicographic<const_qrow,const_qrow>,*this);
             }
 
-
-            
             inline void init()
             {
                 static memory::allocator &mem = ALLOCATOR::instance();
                 
-                qrow         *prw = 0;
-                const size_t  nrw = dimension;
-                
-                mutable_type *pit = 0;
-                const size_t  nit = dimension*dimension;
-                
-                apq          *pxq = 0;
-                const size_t  nxq = extra*dimension;
+                qrow         *prw = 0; const size_t  nrw = dimension;
+                mutable_type *pit = 0; const size_t  nit = dimension*dimension;
+                apq          *pxq = 0; const size_t  nxq = extra*dimension;
+
                 // build top-level shelf
                 {
 
@@ -267,16 +224,52 @@ namespace yack
                 
             }
 
-            
 
-            
-            
+        };
+
+        struct qmatrices
+        {
+
+            template <typename T, typename A, typename U, typename B> static inline
+            bool equality(const qmatrix<T,A> &lhs,
+                          const qmatrix<U,B> &rhs) throw()
+            {
+                if(lhs.dimension!=rhs.dimension) return false;
+                if(lhs.evaluated!=rhs.evaluated) return false;
+                const size_t             size = lhs.evaluated;
+                const thin_array<size_t> lhsI(lhs.idx,size);
+                const thin_array<size_t> rhsI(rhs.idx,size);
+
+
+                for(size_t i=size;i>0;--i)
+                {
+                    if( comparison::disparity(lhs[ lhsI[i] ], rhs[ rhsI[i] ] ) ) return false;
+                }
+
+                return true;
+            }
+
+            template <typename T, typename A, typename U, typename B> static inline
+            bool have_same_last(const qmatrix<T,A> &lhs,
+                                const qmatrix<U,B> &rhs) throw()
+            {
+                assert(lhs.dimension==rhs.dimension);
+                assert(lhs.evaluated==rhs.evaluated);
+                assert(lhs.evaluated>0);
+                const size_t size = lhs.evaluated;
+
+#ifndef NDEBUG
+                for(size_t i=1;i<size;++i) {
+                    assert( comparison::equality(lhs[i],rhs[i]) );
+                }
+#endif
+                return comparison::equality(lhs[size],rhs[size]);
+
+            }
 
 
 
         };
-
-
 
 
 

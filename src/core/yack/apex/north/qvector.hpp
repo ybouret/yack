@@ -38,7 +38,9 @@ namespace yack
 
             //! setup from initialized ptr[num]
             inline explicit qvector(type *ptr, const size_t num) :
-            qmetrics(num), coeff(ptr), norm2(0)
+            qmetrics(num),
+            coeff(ptr),
+            norm2(0)
             {
                 assert( yack_good(ptr,num) );
                 --coeff;
@@ -109,6 +111,7 @@ namespace yack
                 return os;
             }
 
+#if 0
             //__________________________________________________________________
             //
             //! test component wise equality
@@ -144,6 +147,10 @@ namespace yack
                 }
                 return 0;
             }
+#endif
+
+            
+
 
             //__________________________________________________________________
             //
