@@ -19,7 +19,7 @@ namespace yack
             return row[indx];
         }
 
-        void qmatrix:: rebuild_index() throw()
+        void qmatrix:: reschedule() throw()
         {
             thin_array<size_t> qindex(idx,evaluated);
             indexing::make(qindex,comparison::lexicographic<const_qrow,const_qrow>,*this);
@@ -33,10 +33,10 @@ namespace yack
                 if(i==j) continue;
                 row[i].xch(row[j]);
             }
-            rebuild_index();
+            reschedule();
         }
 
-        void qmatrix:: allocate()
+        void qmatrix:: initialize()
         {
             //--------------------------------------------------------------
             // get allocator once
@@ -80,7 +80,7 @@ namespace yack
         }
 
 
-        void qmatrix:: duplicate(const qmatrix &Q)
+        void qmatrix:: build_copy(const qmatrix &Q)
         {
             assert(Q.evaluated==evaluated);
             assert(Q.situation==situation);
@@ -114,6 +114,39 @@ namespace yack
             os << '}';
             return os;
         }
+        
+        const readable<apq> & qmatrix:: last() const throw() {
+            assert(evaluated>0);
+            return row[evaluated];
+        }
+        
+        
+        bool qmatrix:: complement(writable<apq> &u_k)
+        {
+            assert(evaluated<dimension);
+            const size_t    following = evaluated+1;
+            const qrow     &component = row[following];
+            thin_array<apq> target( &coerce(component[1]), dimension);
+            if(!constellation::prepare_vector(target,u_k,coerce(component.norm2)))
+            {
+                //------------------------------------------------------
+                // nil vector!! shouldn't happen
+                //------------------------------------------------------
+                assert(0==component.norm2);
+                return false;
+            }
+            else
+            {
+                //------------------------------------------------------
+                // update all
+                //------------------------------------------------------
+                coerce(evaluated) = following;
+                coerce(situation) = constellation::updated_situation(dimension,evaluated);
+                reschedule();
+                return true;
+            }
+        }
+
     }
 
 }

@@ -52,7 +52,7 @@ namespace yack
             evaluated(0),
             idx(NULL), lib(), obj(), row(), qgs()
             {
-                allocate();
+                initialize();
             }
 
             //! hard copy
@@ -62,8 +62,8 @@ namespace yack
             evaluated(Q.evaluated),
             idx(NULL), lib(), obj(), row(), qgs()
             {
-                allocate();
-                duplicate(Q);
+                initialize();
+                build_copy(Q);
             }
 
             //! cleanup
@@ -102,6 +102,7 @@ namespace yack
                 for(size_t i=dimension;i>0;--i)
                     u_k[i] = v_k[i] = user[i];
 
+                
                 //--------------------------------------------------------------
                 //
                 // try to grow
@@ -114,28 +115,7 @@ namespace yack
                     // Gram-Schmidt succeeded
                     //
                     //----------------------------------------------------------
-                    assert(evaluated<dimension);
-                    const size_t    following = evaluated+1;
-                    const qrow     &component = row[following];
-                    thin_array<apq> target( &coerce(component[1]), dimension);
-                    if(!constellation::prepare_vector(target,u_k,coerce(component.norm2)))
-                    {
-                        //------------------------------------------------------
-                        // nil vector!! shouldn't happen
-                        //------------------------------------------------------
-                        assert(0==component.norm2);
-                        return false;
-                    }
-                    else
-                    {
-                        //------------------------------------------------------
-                        // update all
-                        //------------------------------------------------------
-                        coerce(evaluated) = following;
-                        coerce(situation) = constellation::updated_situation(dimension,evaluated);
-                        rebuild_index();
-                        return true;
-                    }
+                    return complement(u_k);
                 }
                 else
                 {
@@ -160,11 +140,11 @@ namespace yack
             //__________________________________________________________________
             void shuffle(randomized::bits &ran) throw();
 
-
-            inline const readable<apq> & last() const throw() {
-                assert(evaluated>0);
-                return row[evaluated];
-            }
+            //__________________________________________________________________
+            //
+            //! access last inserted
+            //__________________________________________________________________
+            const readable<apq> & last() const throw();
 
             
             //__________________________________________________________________
@@ -184,9 +164,11 @@ namespace yack
             contractor<qrow> row; //!< row[dimension]
             apq             *qgs; //!< @obj + dimension*dimension
             
-            void rebuild_index() throw();
-            void allocate();
-            void duplicate(const qmatrix &);
+            void reschedule() throw();
+            bool complement(writable<apq> &u_k);
+            void build_copy(const qmatrix &);
+            void initialize();
+            
         };
 
         //______________________________________________________________________
