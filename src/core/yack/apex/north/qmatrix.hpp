@@ -8,7 +8,6 @@
 #include "yack/sequence/thin-array.hpp"
 #include "yack/memory/embed.hpp"
 #include "yack/container/dynamic.hpp"
-#include "yack/sequence/vector.hpp"
 #include "yack/sort/indexing.hpp"
 #include "yack/ptr/contractor.hpp"
 #include "yack/memory/shelf.hpp"
@@ -22,7 +21,6 @@ namespace yack
 
         struct qmatrices;
 
-        
         //______________________________________________________________________
         //
         //
