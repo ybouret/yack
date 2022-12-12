@@ -57,6 +57,14 @@ namespace yack
         return int(ran.in(-100,100));
     }
 
+    // short
+    template < >
+    inline short int bring:: get<short int>(randomized::bits &ran)
+    {
+        return static_cast<short int>(ran.in(-100,100));
+    }
+
+
     // unsigned
     template < >
     inline unsigned bring:: get<unsigned>(randomized::bits &ran)

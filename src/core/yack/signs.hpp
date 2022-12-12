@@ -55,8 +55,8 @@ namespace yack
         }
 
         //! comparison to sign
-        template <typename T> static inline
-        sign_type of(const T &lhs, const T &rhs)
+        template <typename T, typename U> static inline
+        sign_type of(const T &lhs, const U &rhs)
         {
             return (lhs<rhs) ? negative : ( (rhs<lhs) ? positive : __zero__ );
         }

@@ -8,6 +8,7 @@
 #include "yack/apex.hpp"
 
 #include "yack/utest/run.hpp"
+#include "../main.hpp"
 
 using namespace yack;
 
@@ -187,7 +188,31 @@ YACK_UTEST(data_sequence)
         thin_array<uint16_t> w(dw,transmogrify);
         std::cerr << "w=" << w << std::endl;
 
+    }
 
+    {
+        for(size_t iter=0;iter<10;++iter)
+        {
+            vector<int> lhs(ran.leq(16));
+            vector<int> rhs(ran.leq(16));
+
+            const int cmp = comparison::lexicographic(lhs,rhs);
+            std::cerr << "compare: " << lhs << " / " << rhs << " => " << cmp << std::endl;
+            YACK_CHECK(cmp==comparison::increasing(lhs.size(),rhs.size()));
+        }
+
+        for(size_t iter=0;iter<10;++iter)
+        {
+            vector<int>       lhs(ran.leq(4));
+            vector<short int> rhs(ran.leq(4));
+            bring::fill(lhs,ran);
+            bring::fill(rhs,ran);
+            const int cmpLR = comparison::lexicographic(lhs,rhs);
+            const int cmpRL = comparison::lexicographic(rhs,lhs);
+
+            std::cerr << lhs << " / " << rhs << " => " << cmpLR << " | " << cmpRL << std::endl;
+
+        }
     }
 
 }

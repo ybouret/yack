@@ -5,6 +5,7 @@
 
 #include "yack/container/collection.hpp"
 #include "yack/type/args.hpp"
+#include "yack/comparison.hpp"
 #include <iostream>
 
 namespace yack
@@ -53,37 +54,14 @@ namespace yack
         //! helper to test that two containers are item-wise different
         inline friend bool operator != (const readable &lhs, const readable &rhs) throw()
         {
-            if(lhs.size() != rhs.size())
-            {
-                return true;
-            }
-            else
-            {
-                for(size_t n=lhs.size();n>0;--n)
-                {
-                    if(lhs[n]!=rhs[n]) return true;
-                }
-                return false;
-            }
+            return comparison::equality(lhs, rhs);
         }
         
         //! helper to test that two containers are item-wise equals
         inline friend bool operator == (const readable &lhs, const readable &rhs) throw()
         {
-            if(lhs.size() != rhs.size())
-            {
-                return false;
-            }
-            else
-            {
-                for(size_t n=lhs.size();n>0;--n)
-                {
-                    if(lhs[n]!=rhs[n]) return false;
-                }
-                return true;
-            }
+            return comparison::disparity(lhs, rhs);
         }
-        
         
         
         //______________________________________________________________________

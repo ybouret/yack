@@ -5,6 +5,7 @@
 
 #include "yack/type/utils.hpp"
 #include "yack/type/abs.hpp"
+#include "yack/signs.hpp"
 
 namespace yack
 {
@@ -65,7 +66,7 @@ namespace yack
 
         //______________________________________________________________________
         //
-        //! test ordered range
+        //! test that a range is ordered
         //______________________________________________________________________
         template <typename ITERATOR, typename FUNC> static inline
         bool ordered(ITERATOR iter, size_t n, FUNC &compare)
@@ -123,7 +124,79 @@ namespace yack
             }
             return 0;
         }
-        
+
+
+        //______________________________________________________________________
+        //
+        //! equality of linearly accessible space
+        //______________________________________________________________________
+        template <typename LHS, typename RHS> static inline
+        bool equality(LHS &lhs, RHS &rhs)
+        {
+            const size_t nl = lhs.size();
+            const size_t nr = rhs.size();
+            if(nl!=nr) return false;
+            else {
+                for(size_t i=nl;i>0;--i) { if(lhs[i]!=rhs[i]) return false; }
+                return true;
+            }
+        }
+
+        //______________________________________________________________________
+        //
+        //! disparity of linearly accessible space
+        //______________________________________________________________________
+        template <typename LHS, typename RHS> static inline
+        bool disparity(LHS &lhs, RHS &rhs)
+        {
+            const size_t nl = lhs.size();
+            const size_t nr = rhs.size();
+            if(nl!=nr) return true;
+            else {
+                for(size_t i=nl;i>0;--i) { if(lhs[i]!=rhs[i]) return true; }
+                return false;
+            }
+        }
+
+        //______________________________________________________________________
+        //
+        //! generic lexicographic comparison
+        //______________________________________________________________________
+        template <typename LHS, typename RHS> static inline
+        int lexicographic(LHS &lhs, RHS &rhs)
+        {
+            const size_t    nl = lhs.size();
+            const size_t    nr = rhs.size();
+            const sign_type d  = __sign::of(nl,nr);
+            const size_t    ns = (d!=positive) ? nl : nr;
+
+            assert(ns<=nl);
+            assert(ns<=nr);
+            assert(ns==nl || ns==nr);
+
+            // look up on shared size
+            for(size_t i=1;i<=ns;++i)
+            {
+                switch( __sign::of(lhs[i],rhs[i]) )
+                {
+                    case __zero__: continue;
+                    case negative: return -1;
+                    case positive: return  1;
+                }
+            }
+
+            // all equal up to now: conclude
+            switch(d)
+            {
+                case __zero__: break;
+                case negative: assert(nl<nr); return -1;
+                case positive: assert(nr<nl); return  1;
+            }
+            return 0;
+        }
+
+
+
     };
     
 }
