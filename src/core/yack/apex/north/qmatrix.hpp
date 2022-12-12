@@ -7,13 +7,15 @@
 #include "yack/memory/allocator/dyadic.hpp"
 #include "yack/sequence/thin-array.hpp"
 #include "yack/memory/embed.hpp"
-#include "yack/sort/indexing.hpp"
 #include "yack/ptr/contractor.hpp"
 #include "yack/memory/shelf.hpp"
-#include "yack/randomized/bits.hpp"
 
 namespace yack
 {
+    namespace randomized
+    {
+        class bits;
+    }
 
     namespace north
     {
@@ -65,7 +67,7 @@ namespace yack
             }
 
             //! cleanup
-            inline virtual ~qmatrix() throw() { }
+            virtual ~qmatrix() throw();
 
 
 
@@ -75,14 +77,10 @@ namespace yack
             //__________________________________________________________________
 
             //! current size = evaluated = rank of the family
-            inline virtual size_t       size()                        const throw() { return evaluated; }
+            virtual size_t size() const throw();
 
-            //! access components
-            inline virtual const_qrow & operator[](const size_t indx) const throw()
-            {
-                assert(indx>=1); assert(indx<=evaluated);
-                return row[indx];
-            }
+            //! access components [1:evaluated]
+            virtual const_qrow & operator[](const size_t) const throw();
 
             //__________________________________________________________________
             //
@@ -154,35 +152,14 @@ namespace yack
             //
             //! human friendly display
             //__________________________________________________________________
-            inline friend std::ostream & operator<<( std::ostream &os, const qmatrix &self)
-            {
-                const size_t             dims = self.evaluated;
-                os << '{';
-                if(dims)
-                {
-                    os << self[1];
-                    for(size_t i=2;i<=dims;++i) os << " | " << self[i];
-                    const thin_array<size_t> qidx(self.idx,dims);
-                    os << " @<" << qidx << ">";
-                }
-                os << '}';
-                return os;
-            }
+            friend std::ostream & operator<<( std::ostream &, const qmatrix &);
 
             //__________________________________________________________________
             //
             //! Knuth shuffle, mostly to debug
             //__________________________________________________________________
-            inline void shuffle(randomized::bits &ran) throw()
-            {
-                for(size_t i=evaluated;i>1;--i)
-                {
-                    const size_t j = 1+ran.leq(i-1); assert(j<=i);
-                    if(i==j) continue;
-                    row[i].xch(row[j]);
-                }
-                rebuild_index();
-            }
+            void shuffle(randomized::bits &ran) throw();
+
 
             inline const readable<apq> & last() const throw() {
                 assert(evaluated>0);
@@ -207,75 +184,9 @@ namespace yack
             contractor<qrow> row; //!< row[dimension]
             apq             *qgs; //!< @obj + dimension*dimension
             
-            inline void rebuild_index() throw()
-            {
-                thin_array<size_t> qindex(idx,evaluated);
-                indexing::make(qindex,comparison::lexicographic<const_qrow,const_qrow>,*this);
-            }
-
-            inline void allocate()
-            {
-                //--------------------------------------------------------------
-                // get allocator once
-                //--------------------------------------------------------------
-                static memory::allocator &mem = memory::dyadic::instance();
-
-                //--------------------------------------------------------------
-                // prepare all memory
-                //--------------------------------------------------------------
-                const size_t dsq = dimension*dimension;
-                qrow        *prw = 0;
-                const size_t nrw = dimension;
-                apq         *pit = 0;
-                const size_t nit = dsq+extra*dimension;
-
-                //--------------------------------------------------------------
-                // build top-level shelf
-                //--------------------------------------------------------------
-                {
-                    memory::embed emb[] =
-                    {
-                        memory::embed(prw,nrw),
-                        memory::embed(idx,dimension),
-                        memory::embed(pit,nit)
-                    };
-                    lib.build(emb, sizeof(emb)/sizeof(emb[0]),mem);
-                    qgs = pit + dsq;
-                }
-
-                //--------------------------------------------------------------
-                // build obj
-                //--------------------------------------------------------------
-                { contractor<apq>  _obj(pit,nit); _obj.swap_with(obj); }
-
-                //--------------------------------------------------------------
-                // build rows
-                //--------------------------------------------------------------
-                { contractor<qrow> _row(prw,nrw,pit,dimension); _row.swap_with(row); }
-
-                
-            }
-
-            inline void duplicate(const qmatrix &Q)
-            {
-                assert(Q.evaluated==evaluated);
-                assert(Q.situation==situation);
-                thin_array<size_t>       indx(idx,evaluated);
-                const thin_array<size_t> qndx(Q.idx,evaluated);
-                for(size_t i=1;i<=evaluated;++i)
-                {
-                    const qrow   &source = Q.row[i];
-                    qrow         &target = row[i];
-                    coerce(target.norm2) = source.norm2;
-                    for(size_t j=dimension;j>0;--j)
-                        coerce(target[j]) = source[j];
-                    assert( comparison::equality(source,target) );
-                    indx[i] = qndx[i];
-                }
-                assert( comparison::equality(indx,qndx) );
-            }
-
-
+            void rebuild_index() throw();
+            void allocate();
+            void duplicate(const qmatrix &);
         };
 
         //______________________________________________________________________
