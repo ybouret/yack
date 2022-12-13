@@ -34,10 +34,10 @@ namespace yack
             //
             // types and definition
             //__________________________________________________________________
-            typedef qvector                   qrow;           //!< alias
-            typedef readable<qrow>            rd_t;           //!< alias
-            typedef typename rd_t::const_type const_qrow;     //!< alias
-            static  const size_t              extra = 2;      //!< extra arrays
+            typedef qvector          qrow;           //!< alias
+            typedef readable<qrow>   rd_t;           //!< alias
+            typedef rd_t::const_type const_qrow;     //!< alias
+            static  const size_t     extra = 2;      //!< extra arrays
 
             //__________________________________________________________________
             //
