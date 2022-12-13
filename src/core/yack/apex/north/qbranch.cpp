@@ -6,7 +6,10 @@ namespace yack
 {
     namespace north
     {
-        qbranch:: qbranch() throw() : qfamily::list_type()
+        qbranch:: qbranch()   :
+        depth(0),
+        qlist(),
+        idxIO( new qidx_bank() )
         {
         }
 
@@ -16,13 +19,41 @@ namespace yack
 
         std::ostream & operator<<(std::ostream &os, const qbranch &self)
         {
-            os << "{" << std::endl;
-            for(const qfamily *f=self.head;f;f=f->next)
+            os << "|" << self.qlist.size << "| {" << std::endl;
+            for(const qfamily *f=self.qlist.head;f;f=f->next)
             {
                 os << "\t" << *f << std::endl;
             }
             os << "}";
             return os;
+        }
+
+        void qbranch::prune() throw()
+        {
+            qlist.release();
+            coerce(depth) = 0;
+        }
+
+        bool qbranch:: check_depth() const throw()
+        {
+            for(const qfamily *member=qlist.head;member;member=member->next)
+            {
+                if(depth!=member->qbase->size()) return false;
+            }
+            return true;
+        }
+
+        bool qbranch:: found_twins() const throw()
+        {
+            for(const qfamily *i=qlist.head;i;i=i->next)
+            {
+                const qmatrix &I = **i;
+                for(const qfamily *j=i->next;j;j=j->next)
+                {
+                    if(I == **j) return true;
+                }
+            }
+            return false;
         }
 
     }

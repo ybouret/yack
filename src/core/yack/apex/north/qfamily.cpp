@@ -10,6 +10,7 @@ namespace yack
         }
 
         qfamily:: qfamily(const qfamily &origin) :
+        object(),
         qbase(origin.qbase),
         basis(origin.basis),
         ready(origin.ready),
