@@ -10,9 +10,9 @@ YACK_UTEST(apex_north_family)
     YACK_SIZEOF(north::qfamily);
     
     matrix<int> vec(3,3);
-    vec[1][1] = 1;  vec[1][2] = 2;  vec[1][3] = 3;
-    vec[2][1] = 0;  vec[2][2] = 5;  vec[2][3] = 7;
-    vec[3][1] = 11; vec[3][2] = 13; vec[3][3] = 0;
+    vec[1][1] = 1;  vec[1][2] = 1;  vec[1][3] = 1;
+    vec[2][1] = 0;  vec[2][2] = 1;  vec[2][3] = 0;
+    vec[3][1] = 1;  vec[3][2] = 1; vec[3][3] = 0;
     //vec[4][1] = 17; vec[4][2] = 0;  vec[4][3] = 19;
 
     vector<size_t>   rindx(3);

@@ -48,6 +48,8 @@ namespace yack
 
             qfamily(const qfamily &);
 
+
+            //! one family to one lineage
             template <typename T>
             void generate(list_of<qfamily> &lineage,
                           const matrix<T>  &vbase) const
@@ -130,9 +132,10 @@ namespace yack
                 //
                 //--------------------------------------------------------------
 
-
-
             }
+
+
+            
 
             friend std::ostream & operator<<(std::ostream &, const qfamily &);
 
