@@ -132,7 +132,7 @@ namespace yack
                 // third pass: remove duplicates...
                 //
                 //--------------------------------------------------------------
-
+                reduce(lineage);
             }
 
             template <typename T> static inline
@@ -148,6 +148,8 @@ namespace yack
                 }
 
             }
+
+            static void reduce(list_of<qfamily> &lineage);
 
 
 
@@ -198,6 +200,7 @@ namespace yack
                     return;
                 }
             }
+
 
         };
         

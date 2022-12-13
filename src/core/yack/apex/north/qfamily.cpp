@@ -43,6 +43,18 @@ namespace yack
         }
 
 
+        void qfamily:: reduce(list_of<qfamily> &lineage)
+        {
+            std::cerr << "reducing" << std::endl;
+            list_type result;
+            while(lineage.size)
+            {
+                auto_ptr<qfamily> tribe = lineage.pop_front();
+
+                result.push_back( tribe.yield() );
+            }
+            result.swap_with(lineage);
+        }
         
 
 
