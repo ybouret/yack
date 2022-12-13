@@ -1,4 +1,5 @@
 #include "yack/apex/north/qbranch.hpp"
+#include "yack/system/exception.hpp"
 
 namespace yack
 {
@@ -13,6 +14,11 @@ namespace yack
 
         qbranch:: ~qbranch() throw()
         {
+        }
+
+        void qbranch:: throw_invalid_dimension() const
+        {
+            throw imported::exception("north::qbranch::boot","invalid new family dimension");
         }
 
         std::ostream & operator<<(std::ostream &os, const qbranch &self)
@@ -34,10 +40,8 @@ namespace yack
 
         bool qbranch:: check_depth() const throw()
         {
-            const size_t dims = qlist.head ? qlist.head->qbase->dimension : 0;
             for(const qfamily *member=qlist.head;member;member=member->next)
             {
-                assert((**member).dimension==dims);
                 if(depth!=member->qbase->size()) return false;
             }
             return true;

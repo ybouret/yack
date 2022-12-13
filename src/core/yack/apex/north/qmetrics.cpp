@@ -43,11 +43,11 @@ namespace yack
             }
         }
 
-      
+
 
         bool qmetrics:: prepare_vector(writable<apq> &target,
-                                            writable<apq> &source,
-                                            apn           &normSq)
+                                       writable<apq> &source,
+                                       apn           &normSq)
         {
             assert(source.size()==target.size());
             normSq.ldz();

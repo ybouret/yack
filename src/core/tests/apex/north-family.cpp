@@ -1,4 +1,5 @@
 #include "yack/apex/north/qbranch.hpp"
+#include "yack/apex/north/qselect.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/sequence/vector.hpp"
 #include "yack/sequence/roll.hpp"
@@ -39,13 +40,29 @@ namespace {
     {
 
         source.prune();
-        matrix<int> nu(eqs,spc);
-        do
         {
-            create_topo(nu,ran);
-        } while( apk::rank_of(nu) < eqs );
+            matrix<int> nu(eqs,spc);
+            do
+            {
+                create_topo(nu,ran);
+            } while( apk::rank_of(nu) < eqs );
 
-        std::cerr << "nu=" << nu << std::endl;
+            std::cerr << "nu=" << nu << std::endl;
+            matrix<int>  mu;
+            const size_t rk = north::qselect::compress(mu,nu);
+            std::cerr << "mu=" << mu << " #rank=" << rk << std::endl;
+
+            const size_t     m = mu.rows;
+            vector<size_t>   jx(m); jx.ld_incr(1);
+
+            for(size_t j=1;j<=m;++j)
+            {
+                rolling::down(jx); assert(jx[m]==j);
+                source.boot(jx,mu);
+            }
+            std::cerr << "boot: " << source << std::endl;
+        }
+
 
     }
 
@@ -56,7 +73,7 @@ YACK_UTEST(apex_north_family)
     YACK_SIZEOF(north::qfamily);
     
     matrix<int> vec(4,3);
-    vec[1][1] = 1;  vec[1][2] = 1;  vec[1][3] = 1;
+    vec[1][1] = 2;  vec[1][2] = 2;  vec[1][3] = 2;
     vec[2][1] = 0;  vec[2][2] = 1;  vec[2][3] = 0;
     vec[3][1] = 1;  vec[3][2] = 1;  vec[3][3] = 0;
     vec[4][1] = 0;  vec[4][2] = 0;  vec[4][3] = 1;

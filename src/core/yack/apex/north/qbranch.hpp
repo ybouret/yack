@@ -40,6 +40,7 @@ namespace yack
                       const matrix<T>        &vbase)
             {
                 assert(  check_depth() );
+                if(qlist.head && (**qlist.head).dimension != vbase.cols) throw_invalid_dimension();
                 qlist.push_back( new qfamily(rindx,vbase,idxIO) );
                 coerce(depth) = 1;
                 assert(  check_depth() );
@@ -101,7 +102,7 @@ namespace yack
 
             bool found_twins() const throw(); //!< check, mostly for debug
             bool check_depth() const throw(); //!< check, mostly for debug
-            
+            void throw_invalid_dimension() const;
         };
 
     }
