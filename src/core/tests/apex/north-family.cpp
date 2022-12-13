@@ -29,23 +29,17 @@ YACK_UTEST(apex_north_family)
     for(size_t i=1;i<=vec.rows;++i)
     {
         rolling::down(rindx);
-        source.bud(rindx,vec);
+        source.boot(rindx,vec);
     }
 
     std::cerr << source << std::endl;
 
-#if 0
-    std::cerr << std::endl << "cycle 1" << std::endl;
-    std::cerr << "source=" << source << std::endl;
-    north::qfamily::generate(target,source,vec); YACK_ASSERT(0==source.size);
-    std::cerr << "target=" << target << std::endl;
+    while( source.next(vec) )
+    {
+        std::cerr << source << std::endl;
+    }
 
-    std::cerr << std::endl << "cycle 2" << std::endl;
-    target.swap_with(source);
-    north::qfamily::generate(target,source,vec); YACK_ASSERT(0==source.size);
-    std::cerr << "target=" << target << std::endl;
-#endif
-
+    
 
 
 }

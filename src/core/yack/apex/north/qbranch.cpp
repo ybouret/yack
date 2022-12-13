@@ -19,7 +19,7 @@ namespace yack
 
         std::ostream & operator<<(std::ostream &os, const qbranch &self)
         {
-            os << "|" << self.qlist.size << "| {" << std::endl;
+            os << "|#" << self.qlist.size << "@depth=" << self.depth << "| {" << std::endl;
             for(const qfamily *f=self.qlist.head;f;f=f->next)
             {
                 os << "\t" << *f << std::endl;
@@ -56,6 +56,7 @@ namespace yack
             return false;
         }
 
+        
     }
 
 }
