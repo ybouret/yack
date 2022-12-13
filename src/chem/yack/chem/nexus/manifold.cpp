@@ -300,7 +300,7 @@ namespace yack
                 {
                     for(const qFamily *rhs=lhs->next;rhs;rhs=rhs->next)
                     {
-                        if( north::qmatrices::equality(*lhs,*rhs)) return false;
+                        if( north::qmatrix::equality(*lhs,*rhs)) return false;
                     }
                 }
                 return true;
@@ -352,7 +352,7 @@ namespace yack
             for(qFamily *scan=target.head;scan;scan=scan->next)
             {
                 assert(scan->size() == chld.size());
-                if( north::qmatrices::equality(*scan,chld) )
+                if( north::qmatrix::equality(*scan,chld) )
                     return scan;
             }
             return NULL;

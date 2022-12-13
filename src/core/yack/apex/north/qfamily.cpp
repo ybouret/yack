@@ -50,6 +50,7 @@ namespace yack
             while(lineage.size)
             {
                 auto_ptr<qfamily> tribe = lineage.pop_front();
+                bool              enjoy = true;
                 const qmatrix    &lhs   = *(tribe->qbase);
                 for(qfamily      *house = result.head;house;house=house->next)
                 {
@@ -57,10 +58,17 @@ namespace yack
                     if(lhs==rhs)
                     {
                         std::cerr << "found multiple " << lhs << std::endl;
+                        enjoy = false;
+
+                        house->basis += tribe->basis;
+                        house->ready += tribe->ready;
+                        house->ready -= house->basis;
+
                     }
                 }
 
-                result.push_back( tribe.yield() );
+                if(enjoy)
+                    result.push_back( tribe.yield() );
             }
             result.swap_with(lineage);
         }
