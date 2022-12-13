@@ -4,7 +4,7 @@
 #ifndef YACK_APEX_NORTH_QVECTOR_INCLUDED
 #define YACK_APEX_NORTH_QVECTOR_INCLUDED 1
 
-#include "yack/apex/north/constellation.hpp"
+#include "yack/apex/north/qmetrics.hpp"
 #include "yack/type/out-of-reach.hpp"
 #include "yack/type/destruct.hpp"
 

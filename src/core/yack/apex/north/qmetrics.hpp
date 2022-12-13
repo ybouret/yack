@@ -1,7 +1,7 @@
 //! \file
 
-#ifndef YACK_APEX_NORTH_CONSTELLATION_INCLUDED
-#define YACK_APEX_NORTH_CONSTELLATION_INCLUDED 1
+#ifndef YACK_APEX_NORTH_QMETRICS_INCLUDED
+#define YACK_APEX_NORTH_QMETRICS_INCLUDED 1
 
 #include "yack/apex.hpp"
 #include "yack/container/writable.hpp"

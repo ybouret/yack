@@ -6,6 +6,7 @@
 #include "yack/apex/north/qmatrix.hpp"
 #include "yack/ptr/clone.hpp"
 #include "yack/data/small/set.hpp"
+#include "yack/container/matrix.hpp"
 
 namespace yack
 {
@@ -19,6 +20,23 @@ namespace yack
         {
         public:
             virtual ~qfamily() throw();
+            
+            //!
+            /**
+             \param rinds rows index, last is active (for use with roll)
+             \param vbase base of vectors to use
+             */
+            template <typename T>
+            inline   qfamily(const readable<size_t> &rindx,
+                             const matrix<T>        &vbase,
+                             const qidx_bptr        &idxIO) :
+            qbase( new qmatrix(vbase.cols) ),
+            basis(idxIO),
+            ready(idxIO),
+            next(NULL),
+            prev(NULL)
+            {
+            }
             
             clone_ptr<qmatrix> qbase; //!< current qbase
             qidx_list          basis; //!< indices used to form qbase
