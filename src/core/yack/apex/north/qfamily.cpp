@@ -58,7 +58,6 @@ namespace yack
 
         void qfamily:: reduce_freshly_created(list_of<qfamily> &lineage)
         {
-            
             std::cerr << "\t--> reduce_freshly_created" << std::endl;
             list_type surrogate;
             while(lineage.size)
@@ -88,7 +87,7 @@ namespace yack
                                               list_of<qfamily> &source)
         {
 
-            std::cerr << "==> fusion_already_reduced" << std::endl;
+            std::cerr << "==> fusion_already_reduced #source=" << source.size << " to #target=" << target.size << std::endl;
             qfamily::list_type kept;
             while( source.size )
             {

@@ -26,14 +26,17 @@ namespace {
         {
             north::qmatrix  U(dims);
             vector<int> tmp(dims);
+
+            // create a qbase up to almost_done
             while(U.situation!=north::almost_done)
             {
                 fillv(tmp,ran);
                 if(!U.grow(tmp)) continue;
             }
             std::cerr << "U=" << U << std::endl;
-            vector<apq> last(dims);
 
+            // compute last vector from a copy a U
+            vector<apq> last(dims);
             {
                 north::qmatrix  V(U);
                 while(V.situation!=north::fully_grown)
@@ -45,14 +48,16 @@ namespace {
             }
             std::cerr << "last=" << last << "[";
 
+            // compute other last from a copy of U
             for(size_t iter=0;iter<16;++iter)
             {
                 north::qmatrix  V(U);
                 while(V.situation!=north::fully_grown)
                 {
                     fillv(tmp,ran);
-                    if(!V.grow(tmp)) continue;;
+                    if(!V.grow(tmp)) continue;
                 }
+
                 if( comparison::disparity(last,V.last())) throw exception("failure!!");
                 std::cerr << ".";
             }

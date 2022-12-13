@@ -25,17 +25,19 @@ YACK_UTEST(apex_north_family)
     north::qbranch source;
     north::qbranch target;
 
+    std::cerr << "Loading source" << std::endl;
     for(size_t i=1;i<=vec.rows;++i)
     {
         rolling::down(rindx);
         source.push_back( new north::qfamily(rindx,vec,idxIO) );
     }
 
+    std::cerr << std::endl << "cycle 1" << std::endl;
     std::cerr << "source=" << source << std::endl;
-
     north::qfamily::generate(target,source,vec); YACK_ASSERT(0==source.size);
     std::cerr << "target=" << target << std::endl;
 
+    std::cerr << std::endl << "cycle 2" << std::endl;
     target.swap_with(source);
     north::qfamily::generate(target,source,vec); YACK_ASSERT(0==source.size);
     std::cerr << "target=" << target << std::endl;

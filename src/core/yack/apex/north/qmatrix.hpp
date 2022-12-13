@@ -114,7 +114,7 @@ namespace yack
 
             //! checking
             template <typename U> inline
-            bool is_in_span(const readable<U> &user)
+            bool is_in_span(const readable<U> &user) 
             {
                 assert(user.size()==dimension);
 
@@ -130,7 +130,7 @@ namespace yack
                 for(size_t i=dimension;i>0;--i)
                     u_k[i] = v_k[i] = user[i];
 
-                return qrow::grow(u_k,v_k,*this);
+                return !qrow::grow(u_k,v_k,*this);
             }
 
 

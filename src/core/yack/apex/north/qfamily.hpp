@@ -68,13 +68,30 @@ namespace yack
 
             const qmatrix & operator*() const throw() { return *qbase; }
 
+            //! check basis is spanned by qbase
+            template <typename T> inline
+            bool check_space(const matrix<T>  &vbase) const
+            {
+                assert(basis->size>0);
+                for(const qidx_node *node=basis->head;node;node=node->next)
+                {
+                    const size_t i = **node; assert(i>=1); assert(i<=vbase.rows);
+                    if( ! coerce(*qbase).is_in_span(vbase[i]) ) return false;
+                }
+                return true;
+            }
+
+
             //! generate lineage
             template <typename T>
             void generate(list_of<qfamily> &lineage,
                           const matrix<T>  &vbase) const
             {
 
-                std::cerr << "\tfrom " << qbase << std::endl;
+                std::cerr << "\tfrom " << *this << std::endl;
+                assert( check_width()      );
+                assert( check_space(vbase) );
+
                 //--------------------------------------------------------------
                 //
                 // check situation
@@ -146,6 +163,7 @@ namespace yack
                     member->ready -= span;
                     std::cerr << "\t->   " << *member << std::endl;
                     assert(member->check_width());
+                    assert(member->qbase->size()==qbase->size()+1);
                 }
                 
                 //--------------------------------------------------------------
@@ -154,9 +172,11 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 reduce_freshly_created(lineage);
-                for(const qfamily *f=lineage.head;f;f=f->next)
+                for(const qfamily *member=lineage.head;member;member=member->next)
                 {
-                    std::cerr << "\t->   " << *f << std::endl;
+                    std::cerr << "\t->   " << *member << std::endl;
+                    assert(member->check_width());
+                    assert(member->qbase->size()==qbase->size()+1);
                 }
             }
 
@@ -206,9 +226,9 @@ namespace yack
             void try_complete(list_of<qfamily> &lineage,
                               const matrix<T>  &vbase) const
             {
-                std::cerr << "In try_complete!!" << std::endl;
-                exit(0);
+                std::cerr << "\tcmpl " << *this << std::endl;
                 assert(almost_done==qbase->situation);
+
                 if(ready->size)
                 {
                     auto_ptr<qfamily> child = new qfamily(*this);
@@ -223,12 +243,23 @@ namespace yack
                             break;
                         }
                     }
+
                     while(child->ready->size){
                         const size_t i = child->ready.pull_front();
                         assert(!child->basis.contains(i));
                         child->basis.add(i);
                     }
-                    if(found) lineage.push_back( child.yield() );
+                    assert(child->check_width());
+                    assert(child->check_space(vbase));
+                    
+                    if(found)
+                    {
+                        lineage.push_back( child.yield() );
+                    }
+                    else
+                    {
+
+                    }
                 }
                 else
                 {
