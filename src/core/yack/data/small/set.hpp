@@ -80,6 +80,23 @@ namespace yack
         //! force push front
         inline void pre(param_type args) { content.push_front( get(args) ); }
 
+        //! pull front value
+        type pull_front() {
+            const type res = **(content.head);
+            deposit->store( content.pop_front() );
+            return res;
+        }
+
+        //! pull back value
+        type pull_back() {
+            const type res = **(content.tail);
+            deposit->store( content.pop_back() );
+            return res;
+        }
+
+
+
+
         //! force push back with any argument for constructor
         template <typename U> inline
         type & add(const U &args, const transmogrify_t &) {

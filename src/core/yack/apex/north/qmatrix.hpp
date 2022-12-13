@@ -96,7 +96,7 @@ namespace yack
                 {
                     //----------------------------------------------------------
                     //
-                    // Gram-Schmidt succeeded
+                    // Gram-Schmidt succeeded, try to finalize vector
                     //
                     //----------------------------------------------------------
                     return complement(u_k);

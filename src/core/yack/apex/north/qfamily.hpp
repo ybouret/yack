@@ -7,12 +7,14 @@
 #include "yack/ptr/clone.hpp"
 #include "yack/data/small/set.hpp"
 #include "yack/container/matrix.hpp"
+#include "yack/ptr/auto.hpp"
 
 namespace yack
 {
     namespace north
     {
         typedef small_set<size_t>    qidx_list;
+        typedef qidx_list::node_type qidx_node;
         typedef qidx_list::bank_type qidx_bank;
         typedef qidx_list::bank_ptr  qidx_bptr;
         
@@ -44,8 +46,73 @@ namespace yack
                 assign_all_indices(rindx);
             }
 
-            friend std::ostream & operator<<(std::ostream &, const qfamily &);
+            qfamily(const qfamily &);
 
+            template <typename T>
+            void generate(list_of<qfamily> &lineage,
+                          const matrix<T>  &vbase) const
+            {
+                switch( qbase->situation )
+                {
+                    case fully_grown: assert(ready->size<=0);      return;
+                    case almost_done: try_complete(lineage,vbase); return;
+                    case in_progress: break;
+                }
+
+                qidx_list span(basis.io());
+                {
+                    auto_ptr<qfamily> chld =  new qfamily(*this);
+                    const qidx_node  *node =  ready->head;
+
+                NEXT_CHILD:
+                    const size_t         ir = **node;
+                    const readable<T>   &cr = vbase[ir];
+                    if(chld->qbase->grow(cr))
+                    {
+                        //----------------------------------------------------------
+                        //
+                        // valid index!
+                        //
+                        //----------------------------------------------------------
+                        chld->basis << ir;                 // register in basis
+                        lineage.push_back( chld.yield() ); // register as possible child
+
+                        // prepare next node
+                        node=node->next;
+                        if(node)
+                        {
+                            // prepare next child
+                            chld =  new qfamily(*this);
+                            goto NEXT_CHILD;
+                        }
+                    }
+                    else
+                    {
+                        //----------------------------------------------------------
+                        //
+                        // invalid index :
+                        // in parent's span for the rest of the cycles
+                        //
+                        //----------------------------------------------------------
+                        span << ir;
+                        node=node->next;
+                        if(node)
+                            goto NEXT_CHILD;
+                    }
+                    assert(NULL==node);
+                }
+
+                for(qfamily *member=lineage.head;member;member=member->next)
+                {
+                    member->ready -= member->basis;
+                    member->ready -= span;
+                }
+
+
+
+            }
+
+            friend std::ostream & operator<<(std::ostream &, const qfamily &);
 
             clone_ptr<qmatrix> qbase; //!< current qbase
             qidx_list          basis; //!< indices used to form qbase
@@ -53,11 +120,45 @@ namespace yack
             qfamily           *next;  //!< for list
             qfamily           *prev;  //!< for list
 
+
             
         private:
             YACK_DISABLE_ASSIGN(qfamily);
             static void throw_invalid_init(const size_t ir);
             void        assign_all_indices(const readable<size_t> &rindx);
+
+            template <typename T>
+            void try_complete(list_of<qfamily> &lineage,
+                              const matrix<T>  &vbase) const
+            {
+                assert(almost_done==qbase->situation);
+                if(ready->size)
+                {
+                    auto_ptr<qfamily> child = new qfamily(*this);
+                    bool              found = false;
+                    while(child->ready->size)
+                    {
+                        const size_t i = child->ready.pull_front();
+                        assert(i>0); assert(i<=vbase.rows); assert(!child->basis.contains(i));
+                        child->basis.add(i);
+                        if(child->qbase->grow(vbase[i])) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    while(child->ready->size){
+                        const size_t i = child->ready.pull_front();
+                        assert(!child->basis.contains(i));
+                        child->basis.add(i);
+                    }
+                    if(found) lineage.push_back( child.yield() );
+                }
+                else
+                {
+                    // nothing else to do
+                    return;
+                }
+            }
 
         };
         

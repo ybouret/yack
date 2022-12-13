@@ -9,6 +9,15 @@ namespace yack
         {
         }
 
+        qfamily:: qfamily(const qfamily &origin) :
+        qbase(origin.qbase),
+        basis(origin.basis),
+        ready(origin.ready),
+        next(0),
+        prev(0)
+        {
+        }
+
         const char qfamily::clid[] = "north::qfamily";
 
         void qfamily:: throw_invalid_init(const size_t ir)
@@ -22,6 +31,7 @@ namespace yack
             const size_t ir = rindx[nr];    assert(ir>0);
             basis << ir;
             for(size_t i=1;i<nr;++i) ready << rindx[i];
+            assert(basis.excludes(ready));
         }
 
         std::ostream & operator<<(std::ostream &os, const qfamily &self)
@@ -31,6 +41,10 @@ namespace yack
             << "+" << *(self.ready);
             return os;
         }
+
+
+        
+
 
     }
 }
