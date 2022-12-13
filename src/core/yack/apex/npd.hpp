@@ -11,43 +11,70 @@ namespace yack
 {
     namespace apex
     {
-
+        //______________________________________________________________________
+        //
+        //
+        //! prime node
+        //
+        //______________________________________________________________________
         class pnode : public object
         {
         public:
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit pnode(const natural &, const size_t) throw(); //!< setup
+            virtual ~pnode()     throw();                          //!< cleanup
+            pnode(const pnode &) throw();                          //!< copy
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            friend std::ostream & operator<<(std::ostream &, const pnode &); //display
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
             const natural * const p; //!< pointer to a persistent prime
             const size_t          n; //!< it's power > 0
-
-            pnode *next;
-            pnode *prev;
-
-            explicit pnode(const natural &p_, const size_t n_) throw();
-            pnode(const pnode &) throw();
-            virtual ~pnode() throw();
-
-            friend std::ostream & operator<<(std::ostream &, const pnode &);
+            pnode                *next; //!< for list
+            pnode                *prev; //!< for list
 
         private:
             YACK_DISABLE_ASSIGN(pnode);
         };
 
+        //______________________________________________________________________
+        //
+        //
         //! natural prime decomposition
+        //
+        //______________________________________________________________________
         class npd
         {
         public:
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            npd(const natural &);              //!< setup from natural
+            npd(const uint_type);              //!< setup from unsigned
+            npd() throw();                     //!< setup empty a.k.a zero
+            npd(const npd &);                  //!< copy
+            npd & operator=(const npd &other); //!< assign 
+            virtual ~npd() throw();            //!< cleanup
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            const list_of<pnode> & operator*()  const throw(); //!< access
+            const list_of<pnode> * operator->() const throw(); //!< access
 
-            npd(const natural &);
-            npd(const uint_type);
-            npd() throw();
-            npd(const npd &);
-            npd & operator=(const npd &other);
-
-            virtual ~npd() throw();
-
-            const list_of<pnode> & operator*() const throw();
-            const list_of<pnode> * operator->() const throw();
-            
+            //! display
             friend std::ostream & operator<<(std::ostream &, const npd &);
 
         private:

@@ -8,6 +8,25 @@ namespace yack
     namespace north
     {
 
+        qmatrix:: qmatrix(const size_t dims) :
+        collection(), qmetrics( dims ), readable<qrow>(),
+        situation( in_progress ),
+        evaluated(0),
+        idx(NULL), lib(), obj(), row()
+        {
+            initialize();
+        }
+
+        qmatrix:: qmatrix(const qmatrix &Q) :
+        collection(), qmetrics(Q), readable<qrow>(),
+        situation(Q.situation),
+        evaluated(Q.evaluated),
+        idx(NULL), lib(), obj(), row()
+        {
+            initialize();
+            build_copy(Q);
+        }
+        
         qmatrix:: ~qmatrix() throw()
         {
         }
@@ -153,6 +172,7 @@ namespace yack
                 return true;
             }
         }
+        
 
     }
 

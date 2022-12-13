@@ -23,7 +23,7 @@ namespace yack
             
             //!
             /**
-             \param rinds rows index, last is active (for use with roll)
+             \param rindx rows index, last is active (for use with roll)
              \param vbase base of vectors to use
              */
             template <typename T>

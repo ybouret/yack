@@ -43,37 +43,16 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-
-            //! default construction based on positive dimension
-            inline explicit qmatrix(const size_t dims) :
-            collection(), qmetrics( dims ), readable<qrow>(),
-            situation( in_progress ),
-            evaluated(0),
-            idx(NULL), lib(), obj(), row()
-            {
-                initialize();
-            }
-
-            //! hard copy
-            qmatrix(const qmatrix &Q) :
-            collection(), qmetrics(Q), readable<qrow>(),
-            situation(Q.situation),
-            evaluated(Q.evaluated),
-            idx(NULL), lib(), obj(), row()
-            {
-                initialize();
-                build_copy(Q);
-            }
-
-            //! cleanup
-            virtual ~qmatrix() throw();
+            explicit qmatrix(const size_t dims); //!< default construction based on positive dimension
+            virtual ~qmatrix()          throw(); //!< cleanup
+            qmatrix(const qmatrix &);            //!< hard copy
             
             
             //__________________________________________________________________
             //
             // cloning
             //__________________________________________________________________
-            qmatrix *clone() const;
+            qmatrix *clone() const; //!< return new(*this)
             
             //__________________________________________________________________
             //
@@ -156,8 +135,8 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const maturity situation; //!< family situation
-            const size_t   evaluated; //!< number of members in the family
+            const maturity situation; //!< current situation
+            const size_t   evaluated; //!< number of members in the matrix
 
         private:
             YACK_DISABLE_ASSIGN(qmatrix);
