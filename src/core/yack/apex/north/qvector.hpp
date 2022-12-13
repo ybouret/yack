@@ -42,10 +42,12 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            void xch(qvector &other) throw(); //!< no-throw exchange
-            apq  weight(const readable<apq> &v) const;  //! compute Gram-Schmidt weight = <coef|v>/nrm2
-            static bool are_orthogonal(const readable<apq> &lhs,
-                                       const readable<apq> &rhs);
+            void xch(qvector &other) throw();           //!< no-throw exchange
+            apq  weight(const readable<apq> &v) const;  //!<  compute Gram-Schmidt weight = <coef|v>/nrm2
+
+            //! check orthogonality
+            static bool are_orthogonal(const readable<apq> & ,
+                                       const readable<apq> & );
             
             //__________________________________________________________________
             //

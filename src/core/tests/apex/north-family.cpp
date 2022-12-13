@@ -5,6 +5,16 @@
 
 using namespace yack;
 
+namespace {
+
+    static inline
+    void display_vec(const readable<apq> &q )
+    {
+        std::cerr << "\t" << q << std::endl;
+    }
+
+}
+
 YACK_UTEST(apex_north_family)
 {
     YACK_SIZEOF(north::qfamily);
@@ -37,6 +47,7 @@ YACK_UTEST(apex_north_family)
     while( source.next(vec) )
     {
         std::cerr << source << std::endl;
+        source.for_each(display_vec);
     }
 
     

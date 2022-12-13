@@ -20,6 +20,9 @@ namespace yack
         {
         }
 
+        bool qfamily:: check_width() const throw() { return basis->size+ready->size==width; }
+
+
         const char qfamily::clid[] = "north::qfamily";
 
         void qfamily:: throw_invalid_init(const size_t ir)
@@ -59,7 +62,7 @@ namespace yack
 
         void qfamily:: reduce_freshly_created(list_of<qfamily> &lineage)
         {
-            std::cerr << "\t--> reduce_freshly_created" << std::endl;
+            //std::cerr << "\t--> reduce_freshly_created" << std::endl;
             list_type surrogate;
             while(lineage.size)
             {
@@ -71,7 +74,7 @@ namespace yack
                     const qmatrix &rhs = **house;
                     if(lhs==rhs)
                     {
-                        std::cerr << "\t(*) found multiple " << *house << " and " << *tribe << std::endl;
+                        //std::cerr << "\t(*) found multiple " << *house << " and " << *tribe << std::endl;
                         enjoy=false;
                         family_merge(*house,*tribe);
                         break;
@@ -88,7 +91,7 @@ namespace yack
                                               list_of<qfamily> &source)
         {
 
-            std::cerr << "==> fusion_already_reduced #source=" << source.size << " to #target=" << target.size << std::endl;
+            //std::cerr << "==> fusion_already_reduced #source=" << source.size << " to #target=" << target.size << std::endl;
             qfamily::list_type kept;
             while( source.size )
             {
@@ -100,7 +103,7 @@ namespace yack
                     const qmatrix &rhs = **house;
                     if(lhs==rhs)
                     {
-                        std::cerr << "\t(*) found multiple " << *house << " and " << *tribe << std::endl;
+                        //std::cerr << "\t(*) found multiple " << *house << " and " << *tribe << std::endl;
                         enjoy = false;
                         family_merge(*house,*tribe);
                         break;

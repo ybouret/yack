@@ -157,6 +157,8 @@ namespace yack
             //! testing equality using indexed vectors
             //__________________________________________________________________
             static bool equality(const qmatrix & , const qmatrix &) throw();
+
+            //! use equality function
             friend bool operator==(const qmatrix & , const qmatrix &) throw();
 
 
