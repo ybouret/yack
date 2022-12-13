@@ -32,14 +32,14 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            friend std::ostream & operator<<(std::ostream &, const pnode &); //display
+            friend std::ostream & operator<<(std::ostream &, const pnode &); //!< display
 
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
-            const natural * const p; //!< pointer to a persistent prime
-            const size_t          n; //!< it's power > 0
+            const natural * const p;    //!< pointer to a persistent prime
+            const size_t          n;    //!< it's power > 0
             pnode                *next; //!< for list
             pnode                *prev; //!< for list
 

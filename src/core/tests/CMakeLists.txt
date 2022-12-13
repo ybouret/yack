@@ -228,7 +228,6 @@ add_test(aprsa          test-core  aprsa)
 add_test(apr            test-core  apr 100 3)
 add_test(aprimes        test-core  aprimes)
 add_test(apex:nped      test-core  apex_npd)
-add_test(apex:worthy    test-core  apex_worthy)
 add_test(apex:north     test-core  apex_north)
 add_test(apex:north:family test-core apex_north_family)
 

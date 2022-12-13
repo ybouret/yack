@@ -94,8 +94,8 @@ namespace yack
 
             bool is(const natural &n); //!< check
 
-            const natural _0;
-            const natural _1;
+            const natural _0; //!< pre-computed
+            const natural _1; //!< pre-computed
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(primes);

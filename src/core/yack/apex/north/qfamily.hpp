@@ -13,19 +13,33 @@ namespace yack
 {
     namespace north
     {
-        typedef small_set<size_t>    qidx_list;
-        typedef qidx_list::node_type qidx_node;
-        typedef qidx_list::bank_type qidx_bank;
-        typedef qidx_list::bank_ptr  qidx_bptr;
-        
+        //______________________________________________________________________
+        //
+        //
+        // types to manage set of indices
+        //
+        //______________________________________________________________________
+        typedef small_set<size_t>   qidx_set;  //!< alias
+        typedef qidx_set::node_type qidx_node; //!< alias
+        typedef qidx_set::bank_type qidx_bank; //!< alias
+        typedef qidx_set::bank_ptr  qidx_bptr; //!< alias
+
+
+        //______________________________________________________________________
+        //
+        //
+        //! family of vectors forming an orthogonal matrix
+        //
+        //______________________________________________________________________
         class qfamily : public object
         {
         public:
-            typedef cxx_list_of<qfamily> list_type;
-            static const char clid[];
-            virtual ~qfamily() throw();
+            typedef cxx_list_of<qfamily> list_type; //!< alias
+            static const char            clid[];    //!< "qfamily"
+
+            virtual ~qfamily() throw(); //!< cleanup
             
-            //!
+            //! create a new family
             /**
              \param rindx rows index, last is active (for use with roll)
              \param vbase base of vectors to use
@@ -47,10 +61,11 @@ namespace yack
                 assign_all_indices(rindx);
             }
 
+            //! hard copy
             qfamily(const qfamily &);
 
 
-            //! one family to one lineage
+            //! generate lineage
             template <typename T>
             void generate(list_of<qfamily> &lineage,
                           const matrix<T>  &vbase) const
@@ -73,7 +88,7 @@ namespace yack
                 // fist pass: create children and detect indices in span
                 //
                 //--------------------------------------------------------------
-                qidx_list span(basis.io());
+                qidx_set span(basis.io());
                 {
                     auto_ptr<qfamily> chld =  new qfamily(*this);
                     const qidx_node  *node =  ready->head;
@@ -135,6 +150,8 @@ namespace yack
                 reduce(lineage);
             }
 
+
+            //! generate full lineage of source
             template <typename T> static inline
             void generate(list_of<qfamily>       &target,
                           const list_of<qfamily> &source,
@@ -156,8 +173,8 @@ namespace yack
             friend std::ostream & operator<<(std::ostream &, const qfamily &);
 
             clone_ptr<qmatrix> qbase; //!< current qbase
-            qidx_list          basis; //!< indices used to form qbase
-            qidx_list          ready; //!< indices ready to be used
+            qidx_set           basis; //!< indices used to form qbase
+            qidx_set           ready; //!< indices ready to be used
             qfamily           *next;  //!< for list
             qfamily           *prev;  //!< for list
 
