@@ -54,13 +54,13 @@ namespace yack
         //! helper to test that two containers are item-wise different
         inline friend bool operator != (const readable &lhs, const readable &rhs) throw()
         {
-            return comparison::equality(lhs, rhs);
+            return comparison::disparity(lhs, rhs);
         }
         
         //! helper to test that two containers are item-wise equals
         inline friend bool operator == (const readable &lhs, const readable &rhs) throw()
         {
-            return comparison::disparity(lhs, rhs);
+            return comparison::equality(lhs, rhs);
         }
         
         

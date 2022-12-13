@@ -8,7 +8,7 @@ namespace yack
         qbranch:: qbranch()   :
         depth(0),
         qlist(),
-        idxIO( new qidx_bank() )
+        cache( new qidx_bank() )
         {
         }
 

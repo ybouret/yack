@@ -41,7 +41,7 @@ namespace yack
             {
                 assert(  check_depth() );
                 if(qlist.head && (**qlist.head).dimension != vbase.cols) throw_invalid_dimension();
-                qlist.push_back( new qfamily(rindx,vbase,idxIO) );
+                qlist.push_back( new qfamily(rindx,vbase,cache) );
                 coerce(depth) = 1;
                 assert(  check_depth() );
                 assert( !found_twins() );
@@ -87,6 +87,9 @@ namespace yack
                 }
             }
 
+            const list_of<qfamily> * operator->() const throw() { return &qlist; }
+            const list_of<qfamily> & operator*()  const throw() { return  qlist; }
+
 
 
             //__________________________________________________________________
@@ -96,10 +99,12 @@ namespace yack
             const size_t       depth; //!< automatic depth monitoring
             
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(qbranch);
             qfamily::list_type qlist;
-            qidx_bptr          idxIO;
+        public:
+            qidx_bptr          cache;
 
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(qbranch);
             bool found_twins() const throw(); //!< check, mostly for debug
             bool check_depth() const throw(); //!< check, mostly for debug
             void throw_invalid_dimension() const;

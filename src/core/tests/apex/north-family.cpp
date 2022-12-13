@@ -3,6 +3,7 @@
 #include "yack/utest/run.hpp"
 #include "yack/sequence/vector.hpp"
 #include "yack/sequence/roll.hpp"
+#include "yack/sequence/list.hpp"
 #include "yack/apex/kernel.hpp"
 
 using namespace yack;
@@ -15,6 +16,31 @@ namespace {
         std::cerr << "\t" << q << std::endl;
     }
 
+    class vecstore : public list< vector<apq> >
+    {
+    public:
+        typedef vector<apq> vtype;
+
+        explicit vecstore() throw() {}
+        virtual ~vecstore() throw() {}
+
+        void operator()(const readable<apq> &q)
+        {
+            for(iterator it=begin();it!=end();++it)
+            {
+                if( *it == q) return;
+            }
+
+            const vtype tmp(q,transmogrify);
+            push_back(tmp);
+        }
+
+
+
+    private:
+        YACK_DISABLE_COPY_AND_ASSIGN(vecstore);
+    };
+
     static inline void create_topo(matrix<int> &nu, randomized::bits &ran)
     {
         for(size_t i=1;i<=nu.rows;++i)
@@ -22,12 +48,12 @@ namespace {
             for(size_t j=1;j<=nu.cols;++j)
             {
                 const double p = ran.to<double>();
-                if(p<0.4) {
+                if(p<0.0) {
                     nu[i][j] = 0;
                 }
                 else
                 {
-                    nu[i][j] = static_cast<int>( ran.in(-2,2) );
+                    nu[i][j] = static_cast<int>( ran.in(-3,3) );
                 }
             }
         }
@@ -39,7 +65,9 @@ namespace {
                                randomized::bits &ran)
     {
 
-        source.prune();
+        vecstore repo;
+        assert(0==source->size);
+        std::cerr << "#eqs=" << eqs << " | #spc=" << spc << std::endl;
         {
             matrix<int> nu(eqs,spc);
             do
@@ -47,10 +75,10 @@ namespace {
                 create_topo(nu,ran);
             } while( apk::rank_of(nu) < eqs );
 
-            std::cerr << "nu=" << nu << std::endl;
+            std::cerr << "\tnu=" << nu << std::endl;
             matrix<int>  mu;
             const size_t rk = north::qselect::compress(mu,nu);
-            std::cerr << "mu=" << mu << " #rank=" << rk << std::endl;
+            std::cerr << "\tmu=" << mu << " #rank=" << rk << std::endl;
 
             const size_t     m = mu.rows;
             vector<size_t>   jx(m); jx.ld_incr(1);
@@ -60,10 +88,34 @@ namespace {
                 rolling::down(jx); assert(jx[m]==j);
                 source.boot(jx,mu);
             }
-            std::cerr << "boot: " << source << std::endl;
+
+            do{
+
+                std::cerr << "\t\tdepth=" << std::setw(6) << source.depth << ": #" << std::setw(6) << source->size << std::endl;
+                //std::cerr << "\t\t" << source << std::endl;
+                if(source.depth>1)
+                {
+                    const size_t old_count = repo.size();
+                    source.for_each(repo);
+                    const size_t new_count = repo.size();
+                    std::cerr << "\t\t\trepo: " << std::setw(6) << old_count << " -> " << std::setw(6) << new_count << " | +" << std::setw(6) << new_count - old_count << std::endl;
+                }
+                if(rk==source.depth) {
+                    //std::cerr << "\t\tfinal: " << source << std::endl;
+                }
+            } while( source.next(mu) );
         }
 
-
+        std::cerr << "\t#io   = " << source.cache->size << std::endl;
+        source.cache->release();
+        std::cerr << "\t#repo = " << repo.size() << std::endl;
+        for(size_t i=1;i<=repo.size();++i)
+        {
+            //std::cerr << "\t\t" << repo[i] << std::endl;
+        }
+        (std::cerr << "\tcleaning source..." << std::endl).flush();
+        source.prune();
+        std::cerr << "\t...clean!" << std::endl;
     }
 
 }
@@ -103,14 +155,15 @@ YACK_UTEST(apex_north_family)
     }
 
     randomized::rand_ ran;
-    for(size_t eqs=2; eqs<=2; ++eqs)
+    for(size_t eqs=2; eqs<=5; ++eqs)
     {
-        for(size_t spc=eqs;spc<=eqs+1;++spc)
+        for(size_t spc=eqs;spc<=eqs+2;++spc)
         {
             test_qb(source,eqs,spc,ran);
         }
     }
 
+    YACK_SIZEOF(north::qfamily);
 
 }
 YACK_UDONE()
