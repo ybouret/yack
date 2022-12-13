@@ -33,7 +33,6 @@ YACK_UTEST(apex_north_family)
 
 
     north::qbranch source;
-    north::qbranch target;
 
     std::cerr << "Loading source" << std::endl;
     for(size_t i=1;i<=vec.rows;++i)
