@@ -19,12 +19,14 @@ namespace yack
         class qfamily : public object
         {
         public:
+            static const char clid[];
             virtual ~qfamily() throw();
             
             //!
             /**
              \param rindx rows index, last is active (for use with roll)
              \param vbase base of vectors to use
+             \param idxIO shared cache for indices
              */
             template <typename T>
             inline   qfamily(const readable<size_t> &rindx,
@@ -36,8 +38,15 @@ namespace yack
             next(NULL),
             prev(NULL)
             {
+                const size_t nr = rindx.size(); assert(nr>0);
+                const size_t ir = rindx[nr];    assert(ir<=vbase.rows);
+                if(!qbase->grow(vbase[ir])) throw_invalid_init(ir);
+                assign_all_indices(rindx);
             }
-            
+
+            friend std::ostream & operator<<(std::ostream &, const qfamily &);
+
+
             clone_ptr<qmatrix> qbase; //!< current qbase
             qidx_list          basis; //!< indices used to form qbase
             qidx_list          ready; //!< indices ready to be used
@@ -47,6 +56,9 @@ namespace yack
             
         private:
             YACK_DISABLE_ASSIGN(qfamily);
+            static void throw_invalid_init(const size_t ir);
+            void        assign_all_indices(const readable<size_t> &rindx);
+
         };
         
     }

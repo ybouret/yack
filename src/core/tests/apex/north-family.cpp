@@ -21,6 +21,8 @@ YACK_UTEST(apex_north_family)
     std::cerr << "rindx=" << rindx << std::endl;
     std::cerr << "vbase=" << vec << std::endl;
     north::qfamily f(rindx,vec,idxIO);
+    std::cerr << f << std::endl;
+
 }
 YACK_UDONE()
 
