@@ -148,7 +148,7 @@ namespace yack
                 // update all
                 //------------------------------------------------------
                 coerce(evaluated) = following;
-                coerce(situation) = constellation::updated_situation(dimension,evaluated);
+                coerce(situation) = updated_situation(dimension,evaluated);
                 reschedule();
                 return true;
             }

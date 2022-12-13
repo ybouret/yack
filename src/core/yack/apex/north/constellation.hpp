@@ -32,10 +32,6 @@ namespace yack
         //______________________________________________________________________
         struct constellation
         {
-            static size_t   checked_dimension(const size_t);               //!< check positive
-            static maturity updated_situation(const size_t dims,
-                                              const size_t size) throw();  //!< update up to fully grown
-
             
             //! prepare simplified univocal target from source and normSq = |target|^2
             static bool prepare_vector(writable<apq> &target,
@@ -63,6 +59,13 @@ namespace yack
             virtual ~qmetrics() throw();          //!< cleanup
             qmetrics(const qmetrics &) throw();   //!< no-throw copy
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            static size_t   checked_dimension(const size_t); //!< check > 1
+            static maturity updated_situation(const size_t dims,
+                                              const size_t size) throw();  //!< update up to fully grown
             //__________________________________________________________________
             //
             // members

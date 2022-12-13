@@ -12,7 +12,7 @@ namespace yack
         static const char here[] = "north";
         static const char mesg[] = "dimension<=1!";
 
-        size_t constellation:: checked_dimension(const size_t d)
+        size_t qmetrics:: checked_dimension(const size_t d)
         {
             if(d<=1) throw imported::exception(here,mesg);
             return d;
@@ -20,7 +20,7 @@ namespace yack
 
         
         
-        maturity constellation:: updated_situation(const size_t dims, const size_t size) throw()
+        maturity qmetrics:: updated_situation(const size_t dims, const size_t size) throw()
         {
             assert(dims>1);
             if(size>=dims)
@@ -78,7 +78,7 @@ namespace yack
         }
 
         qmetrics:: qmetrics(const size_t dims) :
-        dimension( constellation::checked_dimension(dims) )
+        dimension( checked_dimension(dims) )
         {
         }
 
