@@ -21,24 +21,18 @@ YACK_UTEST(apex_north_family)
     rolling::down(rindx);
     std::cerr << "rindx=" << rindx << std::endl;
     std::cerr << "vbase=" << vec << std::endl;
-    north::qfamily f(rindx,vec,idxIO);
-    std::cerr << f << std::endl;
 
-    cxx_list_of<north::qfamily> lineage;
 
-    f.generate(lineage,vec);
-    for(const north::qfamily *p=lineage.head;p;p=p->next)
-    {
-        std::cerr << "|_" << *p << std::endl;
-        cxx_list_of<north::qfamily> second;
-        p->generate(second,vec);
-        for(const north::qfamily *q=second.head;q;q=q->next)
-        {
-            std::cerr << " |_" << *q << std::endl;
+    north::qfamily::list_type source;
+    north::qfamily::list_type target;
 
-        }
-    }
+    source.push_back( new north::qfamily(rindx,vec,idxIO) );
 
+    std::cerr << "source=" << source << std::endl;
+
+    north::qfamily::generate(target,source,vec);
+
+    std::cerr << "target=" << target << std::endl;
 
 
 

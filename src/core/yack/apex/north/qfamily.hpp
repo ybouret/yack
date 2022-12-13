@@ -21,6 +21,7 @@ namespace yack
         class qfamily : public object
         {
         public:
+            typedef cxx_list_of<qfamily> list_type;
             static const char clid[];
             virtual ~qfamily() throw();
             
@@ -134,8 +135,21 @@ namespace yack
 
             }
 
+            template <typename T> static inline
+            void generate(list_of<qfamily>       &target,
+                          const list_of<qfamily> &source,
+                          const matrix<T>        &vbase)
+            {
+                for(const qfamily *origin=source.head;origin;origin=origin->next)
+                {
+                    list_type lineage;
+                    origin->generate(lineage,vbase);
+                    target.merge_back(lineage);
+                }
 
-            
+            }
+
+
 
             friend std::ostream & operator<<(std::ostream &, const qfamily &);
 
