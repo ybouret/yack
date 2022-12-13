@@ -79,6 +79,7 @@ namespace yack
                 }
                 assert(are_orthogonal(u_k,u_j));
                 if(sum<=0) return false;
+
             }
 
             return true;
