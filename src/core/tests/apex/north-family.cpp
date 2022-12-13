@@ -33,8 +33,11 @@ YACK_UTEST(apex_north_family)
 
     std::cerr << "source=" << source << std::endl;
 
-    north::qfamily::generate(target,source,vec);
+    north::qfamily::generate(target,source,vec); YACK_ASSERT(0==source.size);
+    std::cerr << "target=" << target << std::endl;
 
+    target.swap_with(source);
+    north::qfamily::generate(target,source,vec); YACK_ASSERT(0==source.size);
     std::cerr << "target=" << target << std::endl;
 
 

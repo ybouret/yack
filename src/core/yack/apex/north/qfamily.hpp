@@ -164,14 +164,17 @@ namespace yack
             //! generate full lineage of source
             template <typename T> static inline
             void generate(list_of<qfamily>       &target,
-                          const list_of<qfamily> &source,
+                          list_of<qfamily>       &source,
                           const matrix<T>        &vbase)
             {
                 assert(target.size<=0);
-                for(const qfamily *origin=source.head;origin;origin=origin->next)
+                while(source.size)
                 {
-                    list_type lineage;
-                    origin->generate(lineage,vbase);
+                    list_type         lineage;
+                    {
+                        auto_ptr<qfamily> origin = source.pop_front();
+                        origin->generate(lineage,vbase);
+                    }
                     fusion_already_reduced(target,lineage);
                 }
 
@@ -203,6 +206,8 @@ namespace yack
             void try_complete(list_of<qfamily> &lineage,
                               const matrix<T>  &vbase) const
             {
+                std::cerr << "In try_complete!!" << std::endl;
+                exit(0);
                 assert(almost_done==qbase->situation);
                 if(ready->size)
                 {
