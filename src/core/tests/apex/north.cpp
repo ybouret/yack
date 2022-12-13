@@ -85,8 +85,8 @@ YACK_UTEST(apex_north)
         {
             YACK_CHECK(U.grow(vec[i])); std::cerr << U << std::endl;
             YACK_CHECK(V.grow(vec[i])); std::cerr << V << std::endl;
-            YACK_CHECK(north::qmatrices::equality(V,U));
-            YACK_CHECK(north::qmatrices::equality(U,V));
+            YACK_CHECK(north::qmatrix::equality(V,U));
+            YACK_CHECK(north::qmatrix::equality(U,V));
             YACK_CHECK(north::qmatrices::have_same_last(U,V));
             YACK_CHECK(north::qmatrices::have_same_last(V,U));
         }
@@ -97,10 +97,10 @@ YACK_UTEST(apex_north)
         {
             U.shuffle(ran);
             std::cerr << U << std::endl;
-            YACK_CHECK(north::qmatrices::equality(U,V));
+            YACK_CHECK(north::qmatrix::equality(U,V));
             north:: qmatrix  Q(U);
             std::cerr << Q << std::endl;
-            YACK_CHECK(north::qmatrices::equality(U,Q));
+            YACK_CHECK(north::qmatrix::equality(U,Q));
         }
         
         for(size_t iter=0;iter<10;++iter)
@@ -109,7 +109,6 @@ YACK_UTEST(apex_north)
             fillv(any,ran);
             YACK_CHECK(!U.grow(any));
             YACK_CHECK(!V.grow(any));
-            
         }
         
     }

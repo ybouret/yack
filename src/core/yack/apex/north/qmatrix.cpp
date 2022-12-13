@@ -174,6 +174,28 @@ namespace yack
         }
         
 
+        bool qmatrix:: equality(const qmatrix &lhs,
+                                const qmatrix &rhs) throw()
+        {
+            if(lhs.dimension!=rhs.dimension) return false;
+            if(lhs.evaluated!=rhs.evaluated) return false;
+            const size_t             size = lhs.evaluated;
+            const thin_array<size_t> lhsI(lhs.idx,size);
+            const thin_array<size_t> rhsI(rhs.idx,size);
+
+            for(size_t i=size;i>0;--i)
+            {
+                if( comparison::disparity(lhs[ lhsI[i] ], rhs[ rhsI[i] ] ) ) return false;
+            }
+
+            return true;
+        }
+
+        bool operator==(const qmatrix &lhs , const qmatrix &rhs) throw()
+        {
+            return qmatrix::equality(lhs,rhs);
+        }
+
     }
 
 }

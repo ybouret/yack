@@ -130,7 +130,14 @@ namespace yack
             //__________________________________________________________________
             const readable<apq> & last() const throw();
 
-            
+            //__________________________________________________________________
+            //
+            //! testing equality using indexed vectors
+            //__________________________________________________________________
+            static bool equality(const qmatrix & , const qmatrix &) throw();
+            friend bool operator==(const qmatrix & , const qmatrix &) throw();
+
+
             //__________________________________________________________________
             //
             // members
@@ -163,25 +170,6 @@ namespace yack
         struct qmatrices
         {
 
-            //! test equality using indexed vectors
-            static
-            bool equality(const qmatrix &lhs,
-                          const qmatrix &rhs) throw()
-            {
-                if(lhs.dimension!=rhs.dimension) return false;
-                if(lhs.evaluated!=rhs.evaluated) return false;
-                const size_t             size = lhs.evaluated;
-                const thin_array<size_t> lhsI(lhs.idx,size);
-                const thin_array<size_t> rhsI(rhs.idx,size);
-
-
-                for(size_t i=size;i>0;--i)
-                {
-                    if( comparison::disparity(lhs[ lhsI[i] ], rhs[ rhsI[i] ] ) ) return false;
-                }
-
-                return true;
-            }
 
             //! test equality of last insertion
             static
