@@ -52,13 +52,24 @@ namespace yack
             void generate(list_of<qfamily> &lineage,
                           const matrix<T>  &vbase) const
             {
+
+                //--------------------------------------------------------------
+                //
+                // check situation
+                //
+                //--------------------------------------------------------------
                 switch( qbase->situation )
                 {
-                    case fully_grown: assert(ready->size<=0);      return;
-                    case almost_done: try_complete(lineage,vbase); return;
-                    case in_progress: break;
+                    case fully_grown: assert(ready->size<=0);      return; // no child
+                    case almost_done: try_complete(lineage,vbase); return; // at most one child
+                    case in_progress: break;                               // possible multiple children
                 }
 
+                //--------------------------------------------------------------
+                //
+                // fist pass: create children and detect indices in span
+                //
+                //--------------------------------------------------------------
                 qidx_list span(basis.io());
                 {
                     auto_ptr<qfamily> chld =  new qfamily(*this);
@@ -69,11 +80,11 @@ namespace yack
                     const readable<T>   &cr = vbase[ir];
                     if(chld->qbase->grow(cr))
                     {
-                        //----------------------------------------------------------
+                        //------------------------------------------------------
                         //
                         // valid index!
                         //
-                        //----------------------------------------------------------
+                        //------------------------------------------------------
                         chld->basis << ir;                 // register in basis
                         lineage.push_back( chld.yield() ); // register as possible child
 
@@ -88,12 +99,12 @@ namespace yack
                     }
                     else
                     {
-                        //----------------------------------------------------------
+                        //------------------------------------------------------
                         //
                         // invalid index :
                         // in parent's span for the rest of the cycles
                         //
-                        //----------------------------------------------------------
+                        //------------------------------------------------------
                         span << ir;
                         node=node->next;
                         if(node)
@@ -102,11 +113,22 @@ namespace yack
                     assert(NULL==node);
                 }
 
+                //--------------------------------------------------------------
+                //
+                // second pass: cleanup ready for each member of the lineage
+                //
+                //--------------------------------------------------------------
                 for(qfamily *member=lineage.head;member;member=member->next)
                 {
                     member->ready -= member->basis;
                     member->ready -= span;
                 }
+                
+                //--------------------------------------------------------------
+                //
+                // third pass: remove duplicates...
+                //
+                //--------------------------------------------------------------
 
 
 

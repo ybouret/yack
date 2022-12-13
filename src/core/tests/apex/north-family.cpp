@@ -9,13 +9,13 @@ YACK_UTEST(apex_north_family)
 {
     YACK_SIZEOF(north::qfamily);
     
-    matrix<int> vec(4,3);
+    matrix<int> vec(3,3);
     vec[1][1] = 1;  vec[1][2] = 2;  vec[1][3] = 3;
     vec[2][1] = 0;  vec[2][2] = 5;  vec[2][3] = 7;
     vec[3][1] = 11; vec[3][2] = 13; vec[3][3] = 0;
-    vec[4][1] = 17; vec[4][2] = 0;  vec[4][3] = 19;
+    //vec[4][1] = 17; vec[4][2] = 0;  vec[4][3] = 19;
 
-    vector<size_t>   rindx(4);
+    vector<size_t>   rindx(3);
     north::qidx_bptr idxIO = new north::qidx_bank();
     rindx.ld_incr(1);
     rolling::down(rindx);
@@ -30,7 +30,16 @@ YACK_UTEST(apex_north_family)
     for(const north::qfamily *p=lineage.head;p;p=p->next)
     {
         std::cerr << "|_" << *p << std::endl;
+        cxx_list_of<north::qfamily> second;
+        p->generate(second,vec);
+        for(const north::qfamily *q=second.head;q;q=q->next)
+        {
+            std::cerr << " |_" << *q << std::endl;
+
+        }
     }
+
+
 
 
 
