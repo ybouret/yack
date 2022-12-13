@@ -43,36 +43,74 @@ namespace yack
         }
 
 
-        void qfamily:: reduce(list_of<qfamily> &lineage)
+        static inline
+        void family_merge(qfamily       &house,
+                          const qfamily &tribe)
         {
-            std::cerr << "reducing" << std::endl;
-            list_type result;
+            house.basis += tribe.basis;
+            house.ready += tribe.ready;
+            house.ready -= house.basis;
+        }
+
+
+        void qfamily:: reduce_freshly_created(list_of<qfamily> &lineage)
+        {
+            
+            std::cerr << "\t--> reduce_freshly_created" << std::endl;
+            list_type surrogate;
             while(lineage.size)
             {
                 auto_ptr<qfamily> tribe = lineage.pop_front();
+                const qmatrix    &lhs   = **tribe;
                 bool              enjoy = true;
-                const qmatrix    &lhs   = *(tribe->qbase);
-                for(qfamily      *house = result.head;house;house=house->next)
+                for(qfamily *house=surrogate.head;house;house=house->next)
                 {
-                    const qmatrix &rhs = *(house->qbase);
+                    const qmatrix &rhs = **house;
                     if(lhs==rhs)
                     {
-                        std::cerr << "found multiple " << lhs << std::endl;
+                        std::cerr << "\t(*) found multiple " << *house << " and " << *tribe << std::endl;
+                        enjoy=false;
+                        family_merge(*house,*tribe);
+                        break;
+                    }
+                }
+
+                if(enjoy) surrogate.push_back(tribe.yield());
+
+            }
+            surrogate.swap_with(lineage);
+        }
+        
+        void qfamily:: fusion_already_reduced(list_of<qfamily> &target,
+                                              list_of<qfamily> &source)
+        {
+
+            std::cerr << "==> fusion_already_reduced" << std::endl;
+            qfamily::list_type kept;
+            while( source.size )
+            {
+                auto_ptr<qfamily> tribe = source.pop_front();
+                const qmatrix    &lhs   = **tribe;
+                bool              enjoy = true;
+                for(qfamily *house=target.head;house;house=house->next)
+                {
+                    const qmatrix &rhs = **house;
+                    if(lhs==rhs)
+                    {
+                        std::cerr << "\t(*) found multiple " << *house << " and " << *tribe << std::endl;
                         enjoy = false;
-
-                        house->basis += tribe->basis;
-                        house->ready += tribe->ready;
-                        house->ready -= house->basis;
-
+                        family_merge(*house,*tribe);
+                        break;
                     }
                 }
 
                 if(enjoy)
-                    result.push_back( tribe.yield() );
+                    kept.push_back( tribe.yield() );
             }
-            result.swap_with(lineage);
+
+            target.merge_back(kept);
+
         }
-        
 
 
     }

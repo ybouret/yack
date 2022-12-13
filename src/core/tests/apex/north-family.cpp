@@ -18,7 +18,6 @@ YACK_UTEST(apex_north_family)
     vector<size_t>   rindx(4);
     north::qidx_bptr idxIO = new north::qidx_bank();
     rindx.ld_incr(1);
-    rolling::down(rindx);
     std::cerr << "rindx=" << rindx << std::endl;
     std::cerr << "vbase=" << vec << std::endl;
 
@@ -26,7 +25,11 @@ YACK_UTEST(apex_north_family)
     north::qbranch source;
     north::qbranch target;
 
-    source.push_back( new north::qfamily(rindx,vec,idxIO) );
+    for(size_t i=1;i<=vec.rows;++i)
+    {
+        rolling::down(rindx);
+        source.push_back( new north::qfamily(rindx,vec,idxIO) );
+    }
 
     std::cerr << "source=" << source << std::endl;
 

@@ -65,12 +65,15 @@ namespace yack
             qfamily(const qfamily &);
 
 
+            const qmatrix & operator*() const throw() { return *qbase; }
+
             //! generate lineage
             template <typename T>
             void generate(list_of<qfamily> &lineage,
                           const matrix<T>  &vbase) const
             {
 
+                std::cerr << "generate from " << qbase << std::endl;
                 //--------------------------------------------------------------
                 //
                 // check situation
@@ -140,6 +143,8 @@ namespace yack
                 {
                     member->ready -= member->basis;
                     member->ready -= span;
+                    std::cerr << "\t-> " << *member << std::endl;
+
                 }
                 
                 //--------------------------------------------------------------
@@ -147,7 +152,11 @@ namespace yack
                 // third pass: remove duplicates...
                 //
                 //--------------------------------------------------------------
-                reduce(lineage);
+                reduce_freshly_created(lineage);
+                for(const qfamily *f=lineage.head;f;f=f->next)
+                {
+                    std::cerr << "\t-> " << *f << std::endl;
+                }
             }
 
 
@@ -157,18 +166,20 @@ namespace yack
                           const list_of<qfamily> &source,
                           const matrix<T>        &vbase)
             {
+                assert(target.size<=0);
                 for(const qfamily *origin=source.head;origin;origin=origin->next)
                 {
                     list_type lineage;
                     origin->generate(lineage,vbase);
-                    target.merge_back(lineage);
+                    fusion_already_reduced(target,lineage);
                 }
 
             }
 
-            static void reduce(list_of<qfamily> &lineage);
 
-
+            static void reduce_freshly_created(list_of<qfamily> &lineage);                           //!< reduce fresh lineage
+            static void fusion_already_reduced(list_of<qfamily> &target, list_of<qfamily> &source);  //! merge/reduce two reduced lineages
+            
 
             friend std::ostream & operator<<(std::ostream &, const qfamily &);
 
@@ -184,6 +195,7 @@ namespace yack
             YACK_DISABLE_ASSIGN(qfamily);
             static void throw_invalid_init(const size_t ir);
             void        assign_all_indices(const readable<size_t> &rindx);
+
 
             template <typename T>
             void try_complete(list_of<qfamily> &lineage,
