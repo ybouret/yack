@@ -52,11 +52,12 @@ namespace yack
             qbase( new qmatrix(vbase.cols) ),
             basis(idxIO),
             ready(idxIO),
+            width(rindx.size()),
             next(NULL),
             prev(NULL)
             {
-                const size_t nr = rindx.size(); assert(nr>0);
-                const size_t ir = rindx[nr];    assert(ir<=vbase.rows);
+                assert(width>0);
+                const size_t ir = rindx[width]; assert(ir<=vbase.rows);
                 if(!qbase->grow(vbase[ir])) throw_invalid_init(ir);
                 assign_all_indices(rindx);
             }
@@ -73,7 +74,7 @@ namespace yack
                           const matrix<T>  &vbase) const
             {
 
-                std::cerr << "generate from " << qbase << std::endl;
+                std::cerr << "\tfrom " << qbase << std::endl;
                 //--------------------------------------------------------------
                 //
                 // check situation
@@ -143,8 +144,8 @@ namespace yack
                 {
                     member->ready -= member->basis;
                     member->ready -= span;
-                    std::cerr << "\t-> " << *member << std::endl;
-
+                    std::cerr << "\t->   " << *member << std::endl;
+                    assert(member->check_width());
                 }
                 
                 //--------------------------------------------------------------
@@ -155,7 +156,7 @@ namespace yack
                 reduce_freshly_created(lineage);
                 for(const qfamily *f=lineage.head;f;f=f->next)
                 {
-                    std::cerr << "\t-> " << *f << std::endl;
+                    std::cerr << "\t->   " << *f << std::endl;
                 }
             }
 
@@ -186,16 +187,17 @@ namespace yack
             clone_ptr<qmatrix> qbase; //!< current qbase
             qidx_set           basis; //!< indices used to form qbase
             qidx_set           ready; //!< indices ready to be used
+            const size_t       width; //!< basis->size+ready->size = initial indices
             qfamily           *next;  //!< for list
             qfamily           *prev;  //!< for list
 
+            inline bool        check_width() const throw() { return basis->size+ready->size==width; }
 
             
         private:
             YACK_DISABLE_ASSIGN(qfamily);
             static void throw_invalid_init(const size_t ir);
             void        assign_all_indices(const readable<size_t> &rindx);
-
 
             template <typename T>
             void try_complete(list_of<qfamily> &lineage,

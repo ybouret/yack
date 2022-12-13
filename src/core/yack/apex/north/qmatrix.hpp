@@ -112,6 +112,28 @@ namespace yack
                 }
             }
 
+            //! checking
+            template <typename U> inline
+            bool is_in_span(const readable<U> &user)
+            {
+                assert(user.size()==dimension);
+
+                apq            *qgs = obj();
+                thin_array<apq> u_k( qgs,           dimension );
+                thin_array<apq> v_k( qgs+dimension, dimension );
+
+                //--------------------------------------------------------------
+                //
+                // load user data
+                //
+                //--------------------------------------------------------------
+                for(size_t i=dimension;i>0;--i)
+                    u_k[i] = v_k[i] = user[i];
+
+                return qrow::grow(u_k,v_k,*this);
+            }
+
+
             //__________________________________________________________________
             //
             //! human friendly display

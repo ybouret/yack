@@ -13,6 +13,7 @@ namespace yack
         qbase(origin.qbase),
         basis(origin.basis),
         ready(origin.ready),
+        width(origin.width),
         next(0),
         prev(0)
         {
@@ -27,11 +28,11 @@ namespace yack
 
         void qfamily:: assign_all_indices(const readable<size_t> &rindx)
         {
-            const size_t nr = rindx.size(); assert(rindx.size()>0);
-            const size_t ir = rindx[nr];    assert(ir>0);
+            const size_t ir = rindx[width];
             basis << ir;
-            for(size_t i=1;i<nr;++i) ready << rindx[i];
+            for(size_t i=1;i<width;++i) ready << rindx[i];
             assert(basis.excludes(ready));
+            assert(check_width());
         }
 
         std::ostream & operator<<(std::ostream &os, const qfamily &self)
@@ -47,9 +48,11 @@ namespace yack
         void family_merge(qfamily       &house,
                           const qfamily &tribe)
         {
+            assert(house.check_width());
             house.basis += tribe.basis;
             house.ready += tribe.ready;
             house.ready -= house.basis;
+            assert(house.check_width());
         }
 
 
@@ -60,7 +63,7 @@ namespace yack
             list_type surrogate;
             while(lineage.size)
             {
-                auto_ptr<qfamily> tribe = lineage.pop_front();
+                auto_ptr<qfamily> tribe = lineage.pop_front(); assert(tribe->check_width());
                 const qmatrix    &lhs   = **tribe;
                 bool              enjoy = true;
                 for(qfamily *house=surrogate.head;house;house=house->next)
