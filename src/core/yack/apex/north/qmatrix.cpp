@@ -2,6 +2,7 @@
 #include "yack/randomized/bits.hpp"
 #include "yack/sort/indexing.hpp"
 #include "yack/memory/embed.hpp"
+#include "yack/memory/allocator/dyadic.hpp"
 
 namespace yack
 {
@@ -165,7 +166,7 @@ namespace yack
             const size_t    following = evaluated+1;
             const qrow     &component = row[following];
             thin_array<apq> target( &coerce(component[1]), dimension);
-            if(!constellation::prepare_vector(target,u_k,coerce(component.norm2)))
+            if(!prepare_vector(target,u_k,coerce(component.norm2)))
             {
                 //------------------------------------------------------
                 // nil vector!! shouldn't happen

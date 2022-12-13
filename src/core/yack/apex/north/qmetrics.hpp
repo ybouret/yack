@@ -24,24 +24,7 @@ namespace yack
             fully_grown  //! size == dims
         };
 
-        //______________________________________________________________________
-        //
-        //
-        //! data management
-        //
-        //______________________________________________________________________
-        struct constellation
-        {
-            
-            //! prepare simplified univocal target from source and normSq = |target|^2
-            static bool prepare_vector(writable<apq> &target,
-                                       writable<apq> &source,
-                                       apn           &normSq);
-
-            
-        };
-
-
+        
         //______________________________________________________________________
         //
         //
@@ -66,6 +49,12 @@ namespace yack
             static size_t   checked_dimension(const size_t); //!< check > 1
             static maturity updated_situation(const size_t dims,
                                               const size_t size) throw();  //!< update up to fully grown
+
+            //! prepare simplified univocal target from source and normSq = |target|^2
+            static bool prepare_vector(writable<apq> &target,
+                                       writable<apq> &source,
+                                       apn           &normSq);
+
             //__________________________________________________________________
             //
             // members

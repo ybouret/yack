@@ -45,7 +45,7 @@ namespace yack
 
       
 
-        bool constellation:: prepare_vector(writable<apq> &target,
+        bool qmetrics:: prepare_vector(writable<apq> &target,
                                             writable<apq> &source,
                                             apn           &normSq)
         {

@@ -40,7 +40,7 @@ namespace yack
                       const matrix<T>        &vbase)
             {
                 assert(  check_depth() );
-                qlist.push_back(new qfamily(rindx,vbase,idxIO));
+                qlist.push_back( new qfamily(rindx,vbase,idxIO) );
                 coerce(depth) = 1;
                 assert(  check_depth() );
                 assert( !found_twins() );

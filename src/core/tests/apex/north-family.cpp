@@ -2,6 +2,7 @@
 #include "yack/utest/run.hpp"
 #include "yack/sequence/vector.hpp"
 #include "yack/sequence/roll.hpp"
+#include "yack/apex/kernel.hpp"
 
 using namespace yack;
 
@@ -11,6 +12,41 @@ namespace {
     void display_vec(const readable<apq> &q )
     {
         std::cerr << "\t" << q << std::endl;
+    }
+
+    static inline void create_topo(matrix<int> &nu, randomized::bits &ran)
+    {
+        for(size_t i=1;i<=nu.rows;++i)
+        {
+            for(size_t j=1;j<=nu.cols;++j)
+            {
+                const double p = ran.to<double>();
+                if(p<0.4) {
+                    nu[i][j] = 0;
+                }
+                else
+                {
+                    nu[i][j] = static_cast<int>( ran.in(-2,2) );
+                }
+            }
+        }
+    }
+
+    static inline void test_qb(north::qbranch &source,
+                               const size_t    eqs,
+                               const size_t    spc,
+                               randomized::bits &ran)
+    {
+
+        source.prune();
+        matrix<int> nu(eqs,spc);
+        do
+        {
+            create_topo(nu,ran);
+        } while( apk::rank_of(nu) < eqs );
+
+        std::cerr << "nu=" << nu << std::endl;
+
     }
 
 }
@@ -49,7 +85,14 @@ YACK_UTEST(apex_north_family)
         source.for_each(display_vec);
     }
 
-    
+    randomized::rand_ ran;
+    for(size_t eqs=2; eqs<=2; ++eqs)
+    {
+        for(size_t spc=eqs;spc<=eqs+1;++spc)
+        {
+            test_qb(source,eqs,spc,ran);
+        }
+    }
 
 
 }

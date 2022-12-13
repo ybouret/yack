@@ -4,7 +4,6 @@
 #define YACK_APEX_NORTH_QMATRIX_INCLUDED 1
 
 #include "yack/apex/north/qvector.hpp"
-#include "yack/memory/allocator/dyadic.hpp"
 #include "yack/sequence/thin-array.hpp"
 #include "yack/ptr/contractor.hpp"
 #include "yack/memory/shelf.hpp"

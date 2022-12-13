@@ -1,5 +1,3 @@
-
-
 #include "yack/apex/north/qbranch.hpp"
 
 namespace yack
@@ -36,8 +34,10 @@ namespace yack
 
         bool qbranch:: check_depth() const throw()
         {
+            const size_t dims = qlist.head ? qlist.head->qbase->dimension : 0;
             for(const qfamily *member=qlist.head;member;member=member->next)
             {
+                assert((**member).dimension==dims);
                 if(depth!=member->qbase->size()) return false;
             }
             return true;
