@@ -31,10 +31,14 @@ namespace yack
             // methods
             //__________________________________________________________________
 
+            //------------------------------------------------------------------
             //! display metrics and one matrix per line
+            //------------------------------------------------------------------
             friend std::ostream & operator<<(std::ostream &, const qbranch &);
 
+            //------------------------------------------------------------------
             //! boot a new configuration, depth must be 0 or 1
+            //------------------------------------------------------------------
             template <typename T> inline
             void boot(const readable<size_t> &rindx,
                       const matrix<T>        &vbase)
@@ -47,11 +51,13 @@ namespace yack
                 assert( !found_twins() );
             }
 
+            //------------------------------------------------------------------
             //! iterate to next depth
             /**
              - maximum depth is rank(vbase)
              - returning 0 means end of algorithm
              */
+            //------------------------------------------------------------------
             template <typename T> inline
             size_t next(const matrix<T> &vbase)
             {
@@ -71,10 +77,14 @@ namespace yack
                 return depth;
             }
 
+            //------------------------------------------------------------------
             //! release memory
+            //------------------------------------------------------------------
             void prune() throw();
 
+            //------------------------------------------------------------------
             //! algorithm on each newly created vector
+            //------------------------------------------------------------------
             template <typename FUNC> inline
             void for_each( FUNC &func ) const
             {
@@ -87,10 +97,15 @@ namespace yack
                 }
             }
 
-            const list_of<qfamily> * operator->() const throw(); //!< access
-            const list_of<qfamily> & operator*()  const throw(); //!< access
+            //------------------------------------------------------------------
+            //! access
+            //------------------------------------------------------------------
+            const list_of<qfamily> * operator->() const throw();
 
-
+            //------------------------------------------------------------------
+            //! access
+            //------------------------------------------------------------------
+            const list_of<qfamily> & operator*()  const throw();  
 
             //__________________________________________________________________
             //
