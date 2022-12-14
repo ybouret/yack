@@ -5,6 +5,7 @@
 #include "yack/container/matrix.hpp"
 #include "yack/sequence/vector.hpp"
 #include "yack/ios/ascii/convert.hpp"
+#include "yack/ios/ocstream.hpp"
 
 using namespace yack;
 
@@ -122,7 +123,12 @@ YACK_UTEST(apex_north)
             YACK_CHECK(!U.grow(any));
             YACK_CHECK(!V.grow(any));
         }
-        
+
+        {
+            ios::ocstream fp("north.dat");
+            const size_t sz = U.serialize(fp);
+            std::cerr << "serialized with " << sz << " bytes" << std::endl;
+        }
     }
     
     std::cerr << std::endl << "-- univocal" << std::endl;

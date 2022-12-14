@@ -10,6 +10,7 @@
 #include "yack/sequence/vector.hpp"
 #include "yack/memory/sentry.hpp"
 
+//! sentry activation
 #define YACK_NORTH_SENTRY 1
 
 namespace yack
@@ -19,9 +20,15 @@ namespace yack
         class bits;
     }
 
+    namespace hashing
+    {
+        class function;
+    }
+
     namespace north
     {
 
+        typedef uint64_t hkey_type;
 
         //______________________________________________________________________
         //
@@ -66,8 +73,24 @@ namespace yack
             //! access components [1:evaluated]
             virtual const_qrow & operator[](const size_t) const throw();
 
+            //__________________________________________________________________
+            //
+            // ios::serializable interface
+            //__________________________________________________________________
+            virtual const char *class_uid()              const throw();
+            virtual size_t      serialize(ios::ostream&) const;
+
+            //__________________________________________________________________
+            //
             //! display as a julia matrix
+            //__________________________________________________________________
             std::ostream & julia(std::ostream &os) const;
+
+            //__________________________________________________________________
+            //
+            //! getting a hash
+            //__________________________________________________________________
+            hkey_type hash_with(hashing::function &) const;
 
 
             //__________________________________________________________________

@@ -91,17 +91,35 @@ namespace {
 
             do{
 
-                std::cerr << "\t\tdepth=" << std::setw(6) << source.depth << ": #" << std::setw(6) << source->size << std::endl;
+                std::cerr << "\t\tdepth=" << std::setw(6) << source.depth << ": #" << std::setw(6) << source->size;
                 //std::cerr << "\t\t" << source << std::endl;
                 if(source.depth>1)
                 {
                     const size_t old_count = repo.size();
                     source.for_each(repo);
                     const size_t new_count = repo.size();
-                    std::cerr << "\t\t\trepo: " << std::setw(6) << old_count << " -> " << std::setw(6) << new_count << " | +" << std::setw(6) << new_count - old_count << std::endl;
+                    std::cerr << " | repo: " << std::setw(6) << old_count << " -> " << std::setw(6) << new_count << " | +" << std::setw(6) << new_count - old_count;
                 }
+                std::cerr << std::endl;
+                vector<north::hkey_type> keys(source->size,as_capacity);
+                for(const north::qfamily *f=source->head;f;f=f->next)
+                {
+                    keys << (**f).hash_with(source.hfunc);
+                }
+                hsort(keys, comparison::increasing<north::hkey_type>);
+                //std::cerr << "keys=" << keys << std::endl;
+                for(size_t i=1;i<keys.size();++i)
+                {
+                    for(size_t j=i+1;j<=keys.size();++j)
+                    {
+                        YACK_ASSERT(keys[i]!=keys[j]);
+                    }
+                }
+
+
                 if(rk==source.depth) {
-                    //std::cerr << "\t\tfinal: " << source << std::endl;
+                    std::cerr << "\t\tfinal: " << std::endl;
+                    source.julia(std::cerr) << std::endl;
                 }
             } while( source.next(mu) );
         }
@@ -120,45 +138,53 @@ namespace {
 
 }
 
+#include "yack/ios/ascii/convert.hpp"
+
 YACK_UTEST(apex_north_family)
 {
     YACK_SIZEOF(north::qfamily);
-
-
-    matrix<int> vec(4,3);
-    vec[1][1] = 2;  vec[1][2] = 2;  vec[1][3] = 2;
-    vec[2][1] = 0;  vec[2][2] = 1;  vec[2][3] = 0;
-    vec[3][1] = 1;  vec[3][2] = 1;  vec[3][3] = 0;
-    vec[4][1] = 0;  vec[4][2] = 0;  vec[4][3] = 1;
-
-    vector<size_t>   rindx(4);
-    north::qidx_bptr idxIO = new north::qidx_bank();
-    rindx.ld_incr(1);
-    std::cerr << "rindx=" << rindx << std::endl;
-    std::cerr << "vbase=" << vec << std::endl;
-
-
+    size_t maxEqs = 5;
+    if(argc>1)
+    {
+        maxEqs = ios::ascii::convert::to<size_t>(argv[1]);
+    }
     north::qbranch source;
-
-    std::cerr << "Loading source" << std::endl;
-    for(size_t i=1;i<=vec.rows;++i)
     {
-        rolling::down(rindx);
-        source.boot(rindx,vec);
-    }
+        matrix<int> vec(4,3);
+        vec[1][1] = 2;  vec[1][2] = 2;  vec[1][3] = 2;
+        vec[2][1] = 0;  vec[2][2] = 1;  vec[2][3] = 0;
+        vec[3][1] = 1;  vec[3][2] = 1;  vec[3][3] = 0;
+        vec[4][1] = 0;  vec[4][2] = 0;  vec[4][3] = 1;
 
-    std::cerr << source << std::endl;
+        vector<size_t>   rindx(4);
+        north::qidx_bptr idxIO = new north::qidx_bank();
+        rindx.ld_incr(1);
+        std::cerr << "rindx=" << rindx << std::endl;
+        std::cerr << "vbase=" << vec << std::endl;
 
 
-    while( source.next(vec) )
-    {
+
+        std::cerr << "Loading source" << std::endl;
+        for(size_t i=1;i<=vec.rows;++i)
+        {
+            rolling::down(rindx);
+            source.boot(rindx,vec);
+        }
+
         std::cerr << source << std::endl;
-        source.for_each(display_vec);
+        source.julia(std::cerr) << std::endl;
+        while( source.next(vec) )
+        {
+            std::cerr << source << std::endl;
+            source.julia(std::cerr);
+            source.for_each(display_vec);
+        }
     }
+
 
     
     randomized::rand_ ran;
-    for(size_t eqs=2; eqs<=5; ++eqs)
+    for(size_t eqs=2; eqs<=maxEqs; ++eqs)
     {
         for(size_t spc=eqs;spc<=eqs+2;++spc)
         {

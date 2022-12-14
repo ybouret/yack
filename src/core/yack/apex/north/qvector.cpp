@@ -1,5 +1,6 @@
 
 #include "yack/apex/north/qvector.hpp"
+#include "yack/ios/encoder.hpp"
 
 namespace yack
 {
@@ -7,6 +8,21 @@ namespace yack
     namespace north
     {
 
+        const char *qvector:: class_uid() const throw()
+        {
+            return "north::qvector";
+        }
+
+        size_t qvector:: serialize(ios::ostream &os) const
+        {
+            const readable<type> &self = *this;
+            size_t res = ios::encoder::serialize(os,dimension);
+            for(size_t i=1;i<=dimension;++i)
+            {
+                res += self[i].serialize(os);
+            }
+            return res;
+        }
 
         qvector:: qvector(apz *ptr, const size_t num) :
         qmetrics(num),

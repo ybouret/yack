@@ -3,11 +3,39 @@
 #include "yack/sort/indexing.hpp"
 #include "yack/memory/embed.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
+#include "yack/ios/encoder.hpp"
+#include "yack/ios/serializer/hash.hpp"
 
 namespace yack
 {
     namespace north
     {
+
+        const char * qmatrix:: class_uid() const throw()
+        {
+            return "north::qmatrix";
+        }
+
+        size_t qmatrix:: serialize(ios::ostream &os) const
+        {
+            size_t res = ios::encoder::serialize(os,dimension);
+            res       += ios::encoder::serialize(os,evaluated);
+            for(size_t i=1;i<=evaluated;++i)
+            {
+                res += row[i].serialize(os);
+            }
+            return res;
+        }
+
+        hkey_type qmatrix:: hash_with(hashing::function &H) const
+        {
+            H.set();
+            (void) ios::serializer::hash::run(H,*this);
+            hkey_type k = 0;
+            H.get(&k,sizeof(hkey_type));
+            return k;
+        }
+
 
         qmatrix:: qmatrix(const size_t dims) :
         collection(),
@@ -180,7 +208,8 @@ namespace yack
                 qvec_julia(os,row[1]);
                 for(size_t i=2;i<=evaluated;++i)
                 {
-                    qvec_julia(os << ';' << std::endl,row[i]);
+                    //qvec_julia(os << ';' << std::endl,row[i]);
+                    qvec_julia(os << ';',row[i]);
                 }
             }
             os << ']';

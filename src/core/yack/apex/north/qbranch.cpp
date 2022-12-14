@@ -1,5 +1,7 @@
 #include "yack/apex/north/qbranch.hpp"
 #include "yack/system/exception.hpp"
+#include "yack/string.hpp"
+#include <iomanip>
 
 namespace yack
 {
@@ -8,7 +10,8 @@ namespace yack
         qbranch:: qbranch()   :
         depth(0),
         qlist(),
-        cache( new qidx_bank() )
+        cache( new qidx_bank() ),
+        hfunc()
         {
         }
 
@@ -29,6 +32,18 @@ namespace yack
                 os << "\t" << *f << std::endl;
             }
             os << "}";
+            return os;
+        }
+
+        std::ostream & qbranch:: julia(std::ostream &os) const
+        {
+            unsigned i=1;
+            for(const qfamily *f=qlist.head;f;f=f->next,++i)
+            {
+                const qmatrix  &Q = **f;
+                const hkey_type k = Q.hash_with(hfunc);
+                Q.julia(os << std::setw(7) << vformat("U%u",i)() << " = ") << " #hash=" << k << std::endl;
+            }
             return os;
         }
 

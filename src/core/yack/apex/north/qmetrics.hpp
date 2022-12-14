@@ -31,7 +31,7 @@ namespace yack
         //! shared metrics for vectors and matrices
         //
         //______________________________________________________________________
-        class qmetrics
+        class qmetrics : public ios::serializable
         {
         public:
             //__________________________________________________________________

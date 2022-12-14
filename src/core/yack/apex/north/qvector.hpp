@@ -40,6 +40,13 @@ namespace yack
 
             //__________________________________________________________________
             //
+            // ios::serializable interface
+            //__________________________________________________________________
+            virtual const char *class_uid()              const throw();
+            virtual size_t      serialize(ios::ostream&) const;
+
+            //__________________________________________________________________
+            //
             // methods
             //__________________________________________________________________
             void xch(qvector &other) throw();        //!< no-throw exchange

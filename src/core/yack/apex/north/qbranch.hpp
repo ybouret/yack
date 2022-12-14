@@ -4,6 +4,7 @@
 #define YACK_NORTH_QBRANCH_INCLUDED 1
 
 #include "yack/apex/north/qfamily.hpp"
+#include "yack/hashing/sha1.hpp"
 
 namespace yack
 {
@@ -35,6 +36,10 @@ namespace yack
             //! display metrics and one matrix per line
             //------------------------------------------------------------------
             friend std::ostream & operator<<(std::ostream &, const qbranch &);
+
+            //! display matrices for julia
+            std::ostream & julia(std::ostream &) const;
+
 
             //------------------------------------------------------------------
             //! boot a new configuration, depth must be 0 or 1
@@ -111,13 +116,14 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const size_t       depth; //!< automatic depth monitoring
+            const size_t          depth; //!< automatic depth monitoring
             
         private:
-            qfamily::list_type qlist; //!< list of families
+            qfamily::list_type    qlist; //!< list of families
         public:
-            qidx_bptr          cache; //!< cache for indices
-
+            qidx_bptr             cache; //!< cache for indices
+            mutable hashing::sha1 hfunc; //!< for hash computation
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(qbranch);
             bool found_twins() const throw(); //!< check, mostly for debug
