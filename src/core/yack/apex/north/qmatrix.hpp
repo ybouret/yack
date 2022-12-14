@@ -19,8 +19,6 @@ namespace yack
     namespace north
     {
 
-        struct qmatrices;
-
         //______________________________________________________________________
         //
         //
@@ -73,7 +71,21 @@ namespace yack
             bool grow(const readable<U> &user)
             {
                 assert(user.size()==dimension);
+#if 0
+                if(evaluated>=dimension)
+                {
+                    // full space
+                    return false;
+                }
+                else
+                {
+                    const size_t   following = evaluated+1;
+                    vector<apq>    u_k(dimension);
+                    writable<apz> &v_k = row[following];
 
+                }
+#endif
+#if 1
                 //apq            *qgs = obj();
                 //thin_array<apq> u_k( qgs,           dimension );
                 //thin_array<apq> v_k( qgs+dimension, dimension );
@@ -115,6 +127,7 @@ namespace yack
                     //----------------------------------------------------------
                     return false;
                 }
+#endif
             }
 
             //! checking
