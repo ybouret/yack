@@ -103,7 +103,8 @@ namespace yack
                     // Gram-Schmidt succeeded, try to finalize vector
                     //
                     //----------------------------------------------------------
-                    return complement(u_k);
+                    complement(u_k);
+                    return true;
                 }
                 else
                 {
@@ -121,10 +122,6 @@ namespace yack
             bool is_in_span(const readable<U> &user) 
             {
                 assert(user.size()==dimension);
-
-                //apq            *qgs = obj();
-                //thin_array<apq> u_k( qgs,           dimension );
-                //thin_array<apq> v_k( qgs+dimension, dimension );
 
                 //apq            *qgs = obj();
                 //thin_array<apq> u_k( qgs,           dimension );
@@ -189,12 +186,12 @@ namespace yack
             contractor<qrow> row; //!< row[dimension]
             
             void reschedule() throw();
-            bool complement(writable<apq> &u_k);
+            void complement(writable<apq> &u_k);
             void build_copy(const qmatrix &);
             void initialize();
             
         };
-        
+
 
 
     }

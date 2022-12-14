@@ -66,19 +66,23 @@ namespace yack
 
                 // keep only numerator
             case 1: {
-                apq &q = Q[1];
-                const apz z = q.num;
-
+                apq      &q = Q[1];
+                switch(q.num.s)
+                {
+                    case __zero__:       return;
+                    case positive: q=  1; return;
+                    case negative: q= -1; return;
+                }
             } return;
 
                 // make all denominators as 1
             default: {
-                const apq _ = lcm(Q,size_t(1),n);
+                static const size_t one(1);
+                const apn           _ = lcm(Q,one,n);
                 for(size_t i=n;i>0;--i) { Q[i] *= _; assert(1==Q[i].den); }
             } break;
         }
         assert(n>=2);
-
         apk_simplify(Q);
     }
 

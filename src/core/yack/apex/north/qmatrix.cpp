@@ -160,30 +160,17 @@ namespace yack
         }
         
         
-        bool qmatrix:: complement(writable<apq> &u_k)
+        void qmatrix:: complement(writable<apq> &u_k)
         {
             assert(evaluated<dimension);
             const size_t    following = evaluated+1;
             const qrow     &component = row[following];
             thin_array<apz> target( &coerce(component[1]), dimension);
-            if(!prepare_vector(target,u_k,coerce(component.norm2)))
-            {
-                //------------------------------------------------------
-                // nil vector!! shouldn't happen
-                //------------------------------------------------------
-                assert(0==component.norm2);
-                return false;
-            }
-            else
-            {
-                //------------------------------------------------------
-                // update all
-                //------------------------------------------------------
-                coerce(evaluated) = following;
-                coerce(situation) = updated_situation(dimension,evaluated);
-                reschedule();
-                return true;
-            }
+            prepare_vector(target,u_k,coerce(component.norm2));
+            coerce(evaluated) = following;
+            coerce(situation) = updated_situation(dimension,evaluated);
+            reschedule();
+
         }
         
 

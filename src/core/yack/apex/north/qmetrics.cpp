@@ -72,7 +72,7 @@ namespace yack
         }
 #endif
         
-        bool qmetrics:: prepare_vector(writable<apz> &target,
+        void qmetrics:: prepare_vector(writable<apz> &target,
                                        writable<apq> &source,
                                        apn           &normSq)
         {
@@ -87,15 +87,9 @@ namespace yack
                 normSq   += apn::squared(num.n);
             }
 
-            if(normSq<=0)
-            {
-                return false;
-            }
-            else
-            {
-                apk::univocal(target);
-                return true;
-            }
+            assert(normSq>=0);
+            apk::univocal(target);
+            
         }
 
         

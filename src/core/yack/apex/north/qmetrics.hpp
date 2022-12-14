@@ -59,7 +59,7 @@ namespace yack
 #endif
             
             //! prepare simplified univocal target from source and normSq = |target|^2
-            static bool prepare_vector(writable<apz> &target,
+            static void prepare_vector(writable<apz> &target,
                                        writable<apq> &source,
                                        apn           &normSq);
 
