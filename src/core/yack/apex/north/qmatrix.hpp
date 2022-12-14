@@ -194,41 +194,7 @@ namespace yack
             void initialize();
             
         };
-
-        //______________________________________________________________________
-        //
-        //
-        //! operations on qmatrices
-        //
-        //______________________________________________________________________
-        struct qmatrices
-        {
-
-
-            //! test equality of last insertion
-            static
-            bool have_same_last(const qmatrix &lhs,
-                                const qmatrix &rhs) throw()
-            {
-                assert(lhs.dimension==rhs.dimension);
-                assert(lhs.evaluated==rhs.evaluated);
-                assert(lhs.evaluated>0);
-                const size_t size = lhs.evaluated;
-
-#ifndef NDEBUG
-                for(size_t i=1;i<size;++i) {
-                    assert( comparison::equality(lhs[i],rhs[i]) );
-                }
-#endif
-                return comparison::equality(lhs[size],rhs[size]);
-
-            }
-            
-
-
-        };
-
-
+        
 
 
     }
