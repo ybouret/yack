@@ -177,7 +177,8 @@ namespace yack
         //! simplified integers
         //______________________________________________________________________
         static void simplify(writable<apz> &z);
-
+        static void simplify(writable<apz> &z, apn &z2);
+        
         //______________________________________________________________________
         //
         //! simplified natural

@@ -67,6 +67,16 @@ namespace yack
                 target[i] = source[ self[i] ];
             }
         }
+        
+        //! lineary search of value within current indices
+        template <typename T> inline
+        bool look_up(T &value) const {
+            const readable<size_t> &self = *this;
+            for(size_t i=self.size();i>0;--i) {
+                if( self[i] == value ) return true;
+            }
+            return false;
+        }
 
         //______________________________________________________________________
         //

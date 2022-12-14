@@ -29,7 +29,7 @@ namespace yack
         for(;j<=n;++j)
         {
             const apz &q = z[j];
-            if(q!=0) {
+            if(__zero__ != q.s) {
                 g = q.n;
                 break;
             }
@@ -41,7 +41,7 @@ namespace yack
         for(++j;j<=n;++j)
         {
             const apz &q = z[j];
-            if(q!=0) {
+            if(__zero__ != q.s) {
                 g = apn::gcd(q.n,g);
             }
         }
@@ -53,8 +53,63 @@ namespace yack
         {
             z[i] /= g;
         }
-
     }
+    
+    void apk:: simplify(writable<apz> &z, apn &z2)
+    {
+        z2.ldz();
+        const size_t n = z.size();
+        switch(n)
+        {
+            case 0: return;
+            case 1:
+                switch(z[1].s)
+                {
+                    case __zero__:          break;
+                    case positive: z[1]= 1; z2 = 1; break;
+                    case negative: z[1]=-1; z2 = 1; break;
+                }
+                return;
+            default:
+                break;
+        }
+        
+        //----------------------------------------------------------------------
+        // find first positive value
+        //----------------------------------------------------------------------
+        apn          g = 1;
+        size_t       j = 1;
+        for(;j<=n;++j)
+        {
+            const apz &q = z[j];
+            if(__zero__ != q.s) {
+                g = q.n;
+                break;
+            }
+        }
+        
+        //----------------------------------------------------------------------
+        // compute with other positive values
+        //----------------------------------------------------------------------
+        for(++j;j<=n;++j)
+        {
+            const apz &q = z[j];
+            if(__zero__ != q.s) {
+                g = apn::gcd(q.n,g);
+            }
+        }
+        
+        //----------------------------------------------------------------------
+        // simplify
+        //----------------------------------------------------------------------
+        for(size_t i=n;i>0;--i)
+        {
+            z2 += apn::squared( (z[i] /= g).n );
+        }
+    }
+    
+    
+    
 
     static inline sign_type  first_sign(const readable<apz> &v) throw()
     {
