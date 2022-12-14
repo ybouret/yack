@@ -19,7 +19,8 @@ namespace yack
         idx(NULL),
         lib(),
         obj(),
-        row()
+        row(),
+        vgs()
         {
             initialize();
         }
@@ -34,7 +35,8 @@ namespace yack
         idx(NULL),
         lib(),
         obj(),
-        row()
+        row(),
+        vgs()
         {
             initialize();
             build_copy(Q);
@@ -86,11 +88,12 @@ namespace yack
             // prepare all memory
             //--------------------------------------------------------------
             const size_t dsq = dimension*dimension;
-            const size_t ngs = extra    *dimension;
             qrow        *prw = 0;
             const size_t nrw = dimension;
             apz         *pit = 0;
-            const size_t nit = dsq+ngs;
+            const size_t nit = dsq;
+            apq         *pgs = 0;
+            const size_t ngs = dimension;
 
             //--------------------------------------------------------------
             // build top-level shelf
@@ -100,7 +103,8 @@ namespace yack
                 {
                     memory::embed(prw,nrw),
                     memory::embed(idx,dimension),
-                    memory::embed(pit,nit)
+                    memory::embed(pit,nit),
+                    memory::embed(pgs,ngs)
                 };
                 lib.build(emb, sizeof(emb)/sizeof(emb[0]),mem);
             }
@@ -113,7 +117,12 @@ namespace yack
             //--------------------------------------------------------------
             // build rows
             //--------------------------------------------------------------
-            { contractor<qrow> _row(prw,nrw,pit+ngs,dimension); _row.swap_with(row); }
+            { contractor<qrow> _row(prw,nrw,pit,dimension); _row.swap_with(row); }
+
+            //--------------------------------------------------------------
+            // build vgs
+            //--------------------------------------------------------------
+            { contractor<apq> _vgs(pgs,ngs); _vgs.swap_with(vgs); }
 
             
         }
@@ -160,20 +169,6 @@ namespace yack
         }
         
 
-#if 0
-        void qmatrix:: complement(writable<apq> &u_k)
-        {
-            assert(evaluated<dimension);
-            const size_t    following = evaluated+1;
-            const qrow     &component = row[following];
-            thin_array<apz> target( &coerce(component[1]), dimension);
-            prepare_vector(target,u_k,coerce(component.norm2));
-            coerce(evaluated) = following;
-            coerce(situation) = updated_situation(dimension,evaluated);
-            reschedule();
-
-        }
-#endif
 
         bool qmatrix:: equality(const qmatrix &lhs,
                                 const qmatrix &rhs) throw()

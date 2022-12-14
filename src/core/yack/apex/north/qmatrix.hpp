@@ -35,7 +35,6 @@ namespace yack
             typedef qvector          qrow;           //!< alias
             typedef readable<qrow>   rd_t;           //!< alias
             typedef rd_t::const_type const_qrow;     //!< alias
-            static  const size_t     extra = 2;      //!< extra arrays
 
             //__________________________________________________________________
             //
@@ -92,7 +91,7 @@ namespace yack
                     //----------------------------------------------------------
                     const size_t    following = evaluated+1;                // following index
                     const qrow     &brand_new = row[following];             // following vector
-                    vector<apq>     u_k(dimension);                         // apq workspace
+                    thin_array<apq> u_k( vgs(), dimension);                 // apq workspace
                     thin_array<apz> v_k( &coerce(brand_new[1]), dimension); // apz wokrspace
                     for(size_t i=dimension;i>0;--i)
                         u_k[i] = v_k[i] = user[i];
@@ -189,9 +188,10 @@ namespace yack
 
             size_t          *idx; //!< idx[dimension]
             memory::shelf    lib; //!< linear memory
-            contractor<apz>  obj; //!< obj[dimension*dimension+exta*dimension]
+            contractor<apz>  obj; //!< obj[dimension*dimension]
             contractor<qrow> row; //!< row[dimension]
-            
+            contractor<apq>  vgs; //!< vgs[dimension] for G-S algorithm
+
             void reschedule() throw();
             void build_copy(const qmatrix &);
             void initialize();
