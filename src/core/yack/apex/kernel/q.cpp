@@ -82,6 +82,66 @@ namespace yack
         apk_simplify(Q);
     }
 
+    static inline sign_type  first_sign(const readable<apq> &v) throw()
+    {
+        const size_t n = v.size();
+        for(size_t i=1;i<=n;++i)
+        {
+            const sign_type s = v[i].num.s;
+            if(s!=__zero__) return s;
+        }
+        return __zero__;
+    }
+
+    static inline void       change_signs(writable<apq> &v) throw() {
+        for(size_t i=v.size();i>0;--i)
+        {
+            sign_type &s = coerce(v[i].num.s);
+            s = __sign::opposite(s);
+        }
+    }
+
+    void apk:: univocal(writable<apq> &v) throw()
+    {
+        assert(v.size()>0);
+        size_t    np = 0;        // number of positive
+        size_t    nn = 0;        // number of negative
+        for(size_t i=v.size();i>0;--i)
+        {
+            switch(  v[i].num.s )
+            {
+                case __zero__:
+                    break;
+
+                case positive:
+                    ++np;
+                    break;
+
+                case negative:
+                    ++nn;
+
+                    break;
+            }
+        }
+
+        assert(nn>0||np>0);
+        switch( __sign::of(np,nn) )
+        {
+            case positive: // do nothing
+                assert(np>nn);
+                break;
+
+            case negative: // change signs
+                assert(np<nn);
+                change_signs(v);
+                break;
+
+            case __zero__: // change only if first sign is negative
+                assert(nn==np);
+                if(negative==first_sign(v)) change_signs(v);
+                break;
+        }
+    }
 
 
 }
