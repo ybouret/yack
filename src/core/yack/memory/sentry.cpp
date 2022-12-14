@@ -92,6 +92,7 @@ namespace yack
                         const size_t block_size) throw():
         wksp()
         {
+            assert(yack_good(block_addr,block_size));
             setup(file,line,block_addr,block_size);
         }
 

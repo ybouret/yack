@@ -8,6 +8,7 @@
 #include "yack/ptr/contractor.hpp"
 #include "yack/memory/shelf.hpp"
 #include "yack/sequence/vector.hpp"
+#include "yack/memory/sentry.hpp"
 
 namespace yack
 {
@@ -18,6 +19,7 @@ namespace yack
 
     namespace north
     {
+
 
         //______________________________________________________________________
         //
@@ -89,10 +91,11 @@ namespace yack
                     // use following qvector as apz workspace
                     //
                     //----------------------------------------------------------
+                    YACK_MEM_SENTRY_FOR(obj(),dimension);
                     const size_t    following = evaluated+1;                // following index
                     const qrow     &brand_new = row[following];             // following vector
                     thin_array<apq> u_k( vgs(), dimension);                 // apq workspace
-                    thin_array<apz> v_k( &coerce(brand_new[1]), dimension); // apz wokrspace
+                    thin_array<apz> v_k( &coerce(brand_new[1]), dimension); // apz workspace
                     for(size_t i=dimension;i>0;--i)
                         u_k[i] = v_k[i] = user[i];
 
@@ -109,6 +112,7 @@ namespace yack
                         prepare_vector(v_k,u_k, coerce(brand_new.norm2));
                         coerce(situation) = updated_situation(dimension,coerce(evaluated) = following);
                         reschedule();
+                        //for(size_t i=1;i<evaluated;++i) assert(0 == brand_new.dot(row[i]));
                         return true;
                     }
                     else
@@ -128,12 +132,11 @@ namespace yack
             bool is_in_span(const readable<U> &user) 
             {
                 assert(user.size()==dimension);
+                thin_array<apq> u_k( vgs(), dimension);
+                thin_array<apz> v_k( obj(), dimension);
 
-                //apq            *qgs = obj();
-                //thin_array<apq> u_k( qgs,           dimension );
-                //thin_array<apq> v_k( qgs+dimension, dimension );
-                vector<apq> u_k(dimension);
-                vector<apz> v_k(dimension);
+                YACK_MEM_SENTRY_FOR(idx           , dimension);
+                YACK_MEM_SENTRY_FOR(obj(dimension), dimension*dimension);
 
                 //--------------------------------------------------------------
                 //
@@ -188,7 +191,7 @@ namespace yack
 
             size_t          *idx; //!< idx[dimension]
             memory::shelf    lib; //!< linear memory
-            contractor<apz>  obj; //!< obj[dimension*dimension]
+            contractor<apz>  obj; //!< obj[dimension*dimension+dimension]
             contractor<qrow> row; //!< row[dimension]
             contractor<apq>  vgs; //!< vgs[dimension] for G-S algorithm
 

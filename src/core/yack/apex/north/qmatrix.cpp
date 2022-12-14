@@ -91,7 +91,7 @@ namespace yack
             qrow        *prw = 0;
             const size_t nrw = dimension;
             apz         *pit = 0;
-            const size_t nit = dsq;
+            const size_t nit = dsq + dimension;
             apq         *pgs = 0;
             const size_t ngs = dimension;
 
@@ -117,7 +117,7 @@ namespace yack
             //--------------------------------------------------------------
             // build rows
             //--------------------------------------------------------------
-            { contractor<qrow> _row(prw,nrw,pit,dimension); _row.swap_with(row); }
+            { contractor<qrow> _row(prw,nrw,pit+dimension,dimension); _row.swap_with(row); }
 
             //--------------------------------------------------------------
             // build vgs
