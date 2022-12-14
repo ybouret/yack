@@ -63,6 +63,9 @@ namespace yack
             //! access components [1:evaluated]
             virtual const_qrow & operator[](const size_t) const throw();
 
+
+
+
             //__________________________________________________________________
             //
             //! univocal Gram-Schmidt algorithm to grom family
@@ -71,63 +74,54 @@ namespace yack
             bool grow(const readable<U> &user)
             {
                 assert(user.size()==dimension);
-#if 0
                 if(evaluated>=dimension)
                 {
-                    // full space
+                    //----------------------------------------------------------
+                    //
+                    // full!
+                    //
+                    //----------------------------------------------------------
                     return false;
-                }
-                else
-                {
-                    const size_t   following = evaluated+1;
-                    vector<apq>    u_k(dimension);
-                    writable<apz> &v_k = row[following];
-
-                }
-#endif
-#if 1
-                //apq            *qgs = obj();
-                //thin_array<apq> u_k( qgs,           dimension );
-                //thin_array<apq> v_k( qgs+dimension, dimension );
-                vector<apq> u_k(dimension);
-                vector<apz> v_k(dimension);
-
-                //--------------------------------------------------------------
-                //
-                // load user data
-                //
-                //--------------------------------------------------------------
-                for(size_t i=dimension;i>0;--i)
-                {
-                    u_k[i] = v_k[i] = user[i];
-                }
-
-                
-                //--------------------------------------------------------------
-                //
-                // try to grow
-                //
-                //--------------------------------------------------------------
-                if(qrow::grow(u_k,v_k,*this))
-                {
-                    //----------------------------------------------------------
-                    //
-                    // Gram-Schmidt succeeded, try to finalize vector
-                    //
-                    //----------------------------------------------------------
-                    complement(u_k);
-                    return true;
                 }
                 else
                 {
                     //----------------------------------------------------------
                     //
-                    // in span or nil vector
+                    // use following qvector as apz workspace
                     //
                     //----------------------------------------------------------
-                    return false;
+                    const size_t    following = evaluated+1;                // following index
+                    const qrow     &brand_new = row[following];             // following vector
+                    vector<apq>     u_k(dimension);                         // apq workspace
+                    thin_array<apz> v_k( &coerce(brand_new[1]), dimension); // apz wokrspace
+                    for(size_t i=dimension;i>0;--i)
+                        u_k[i] = v_k[i] = user[i];
+
+                    //----------------------------------------------------------
+                    //
+                    // apply algortihm
+                    //
+                    //----------------------------------------------------------
+                    if(qrow::grow(u_k,v_k,*this))
+                    {
+                        //------------------------------------------------------
+                        // success, update
+                        //------------------------------------------------------
+                        prepare_vector(v_k,u_k, coerce(brand_new.norm2));
+                        coerce(situation) = updated_situation(dimension,coerce(evaluated) = following);
+                        reschedule();
+                        return true;
+                    }
+                    else
+                    {
+                        //------------------------------------------------------
+                        // failure, user was in current span
+                        //------------------------------------------------------
+                        return false;
+                    }
+
                 }
-#endif
+
             }
 
             //! checking
@@ -199,7 +193,6 @@ namespace yack
             contractor<qrow> row; //!< row[dimension]
             
             void reschedule() throw();
-            void complement(writable<apq> &u_k);
             void build_copy(const qmatrix &);
             void initialize();
             

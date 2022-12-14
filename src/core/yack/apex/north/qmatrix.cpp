@@ -159,7 +159,8 @@ namespace yack
             return row[evaluated];
         }
         
-        
+
+#if 0
         void qmatrix:: complement(writable<apq> &u_k)
         {
             assert(evaluated<dimension);
@@ -172,7 +173,7 @@ namespace yack
             reschedule();
 
         }
-        
+#endif
 
         bool qmatrix:: equality(const qmatrix &lhs,
                                 const qmatrix &rhs) throw()
