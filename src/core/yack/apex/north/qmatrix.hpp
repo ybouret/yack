@@ -160,7 +160,7 @@ namespace yack
             //! checking
             //__________________________________________________________________
             template <typename U> inline
-            bool is_in_span(const readable<U> &user) 
+            bool includes(const readable<U> &user) 
             {
                 assert(user.size()==dimension);
                 thin_array<apq> u_k( vgs(), dimension);

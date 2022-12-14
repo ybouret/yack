@@ -103,7 +103,7 @@ namespace yack
                 for(const qidx_node *node=basis->head;node;node=node->next)
                 {
                     const size_t i = **node; assert(i>=1); assert(i<=vbase.rows);
-                    if( ! coerce(*qbase).is_in_span(vbase[i]) ) return false;
+                    if( ! coerce(*qbase).includes(vbase[i]) ) return false;
                 }
                 return true;
             }

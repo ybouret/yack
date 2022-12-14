@@ -1,7 +1,6 @@
 #include "yack/apex/north/qmatrix.hpp"
 #include "yack/utest/run.hpp"
-#include "yack/memory/allocator/global.hpp"
-#include "yack/memory/allocator/pooled.hpp"
+
 #include "yack/container/matrix.hpp"
 #include "yack/sequence/vector.hpp"
 #include "yack/ios/ascii/convert.hpp"
@@ -26,7 +25,7 @@ namespace {
         for(size_t cycle=0;cycle<16;++cycle)
         {
             north::qmatrix  U(dims);
-            vector<int> tmp(dims);
+            vector<int>     tmp(dims);
 
             // create a qbase up to almost_done
             while(U.situation!=north::almost_done)

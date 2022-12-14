@@ -229,6 +229,7 @@ add_test(apr               test-core  apr 100 3)
 add_test(aprimes           test-core  aprimes)
 add_test(apex:nped         test-core  apex_npd)
 add_test(apex:north        test-core  apex_north 4)
+add_test(apex:north:space  test-core  apex_north_space)
 add_test(apex:north:family test-core  apex_north_family 3)
 
 add_test(ios:c-file     test-core ios_c_file)
