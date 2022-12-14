@@ -16,15 +16,15 @@ namespace {
         std::cerr << "\t" << q << std::endl;
     }
 
-    class vecstore : public list< vector<apq> >
+    class vecstore : public list< vector<apz> >
     {
     public:
-        typedef vector<apq> vtype;
+        typedef vector<apz> vtype;
 
         explicit vecstore() throw() {}
         virtual ~vecstore() throw() {}
 
-        void operator()(const readable<apq> &q)
+        void operator()(const readable<apz> &q)
         {
             for(iterator it=begin();it!=end();++it)
             {
@@ -123,7 +123,8 @@ namespace {
 YACK_UTEST(apex_north_family)
 {
     YACK_SIZEOF(north::qfamily);
-    
+
+#if 0
     matrix<int> vec(4,3);
     vec[1][1] = 2;  vec[1][2] = 2;  vec[1][3] = 2;
     vec[2][1] = 0;  vec[2][2] = 1;  vec[2][3] = 0;
@@ -162,7 +163,7 @@ YACK_UTEST(apex_north_family)
             test_qb(source,eqs,spc,ran);
         }
     }
-
+#endif
     YACK_SIZEOF(north::qfamily);
 
 }

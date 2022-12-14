@@ -89,7 +89,7 @@ namespace yack
             const size_t ngs = extra    *dimension;
             qrow        *prw = 0;
             const size_t nrw = dimension;
-            apq         *pit = 0;
+            apz         *pit = 0;
             const size_t nit = dsq+ngs;
 
             //--------------------------------------------------------------
@@ -108,7 +108,7 @@ namespace yack
             //--------------------------------------------------------------
             // build obj
             //--------------------------------------------------------------
-            { contractor<apq>  _obj(pit,nit); _obj.swap_with(obj); }
+            { contractor<apz>  _obj(pit,nit); _obj.swap_with(obj); }
 
             //--------------------------------------------------------------
             // build rows
@@ -154,7 +154,7 @@ namespace yack
             return os;
         }
         
-        const readable<apq> & qmatrix:: last() const throw() {
+        const readable<apz> & qmatrix:: last() const throw() {
             assert(evaluated>0);
             return row[evaluated];
         }
@@ -165,7 +165,7 @@ namespace yack
             assert(evaluated<dimension);
             const size_t    following = evaluated+1;
             const qrow     &component = row[following];
-            thin_array<apq> target( &coerce(component[1]), dimension);
+            thin_array<apz> target( &coerce(component[1]), dimension);
             if(!prepare_vector(target,u_k,coerce(component.norm2)))
             {
                 //------------------------------------------------------

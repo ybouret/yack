@@ -95,6 +95,7 @@ YACK_UTEST(apex_north)
             YACK_CHECK(north::qmatrices::have_same_last(U,V));
             YACK_CHECK(north::qmatrices::have_same_last(V,U));
         }
+
         
         std::cerr << std::endl;
         std::cerr << U << std::endl;

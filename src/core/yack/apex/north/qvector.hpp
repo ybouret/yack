@@ -20,7 +20,7 @@ namespace yack
         //! component of an orthogonal family
         //
         //______________________________________________________________________
-        class qvector : public qmetrics, public readable<apq>
+        class qvector : public qmetrics, public readable<apz>
         {
         public:
 
@@ -28,7 +28,7 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit qvector(apq *ptr, const size_t num); //!< setup from initialized ptr[num]
+            explicit qvector(apz *ptr, const size_t num); //!< setup from initialized ptr[num]
             virtual ~qvector() throw();                   //!< cleanup assigned space
 
             //__________________________________________________________________
@@ -42,12 +42,9 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            void xch(qvector &other) throw();           //!< no-throw exchange
-            apq  weight(const readable<apq> &v) const;  //!<  compute Gram-Schmidt weight = <coef|v>/nrm2
-
-            //! check orthogonality
-            static bool are_orthogonal(const readable<apq> & ,
-                                       const readable<apq> & );
+            void xch(qvector &other) throw();        //!< no-throw exchange
+            apz  dot(const readable<apz> &v) const;  //!<  compute Gram-Schmidt weight = <coeff|v> 
+            
             
             //__________________________________________________________________
             //
@@ -58,7 +55,7 @@ namespace yack
              */
             //__________________________________________________________________
             static bool grow(writable<apq>           &u_k,
-                             const readable<apq>     &v_k,
+                             const readable<apz>     &v_k,
                              const readable<qvector> &U);
 
             //__________________________________________________________________
@@ -73,7 +70,7 @@ namespace yack
             //__________________________________________________________________
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(qvector);
-            apq          *coeff;
+            apz          *coeff;
 
         public:
             const apn     norm2; //!< current squared norm

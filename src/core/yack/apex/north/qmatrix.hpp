@@ -7,6 +7,7 @@
 #include "yack/sequence/thin-array.hpp"
 #include "yack/ptr/contractor.hpp"
 #include "yack/memory/shelf.hpp"
+#include "yack/sequence/vector.hpp"
 
 namespace yack
 {
@@ -73,9 +74,11 @@ namespace yack
             {
                 assert(user.size()==dimension);
 
-                apq            *qgs = obj();
-                thin_array<apq> u_k( qgs,           dimension );
-                thin_array<apq> v_k( qgs+dimension, dimension );
+                //apq            *qgs = obj();
+                //thin_array<apq> u_k( qgs,           dimension );
+                //thin_array<apq> v_k( qgs+dimension, dimension );
+                vector<apq> u_k(dimension);
+                vector<apz> v_k(dimension);
 
                 //--------------------------------------------------------------
                 //
@@ -83,7 +86,9 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 for(size_t i=dimension;i>0;--i)
+                {
                     u_k[i] = v_k[i] = user[i];
+                }
 
                 
                 //--------------------------------------------------------------
@@ -117,9 +122,15 @@ namespace yack
             {
                 assert(user.size()==dimension);
 
-                apq            *qgs = obj();
-                thin_array<apq> u_k( qgs,           dimension );
-                thin_array<apq> v_k( qgs+dimension, dimension );
+                //apq            *qgs = obj();
+                //thin_array<apq> u_k( qgs,           dimension );
+                //thin_array<apq> v_k( qgs+dimension, dimension );
+
+                //apq            *qgs = obj();
+                //thin_array<apq> u_k( qgs,           dimension );
+                //thin_array<apq> v_k( qgs+dimension, dimension );
+                vector<apq> u_k(dimension);
+                vector<apz> v_k(dimension);
 
                 //--------------------------------------------------------------
                 //
@@ -149,7 +160,7 @@ namespace yack
             //
             //! access last inserted
             //__________________________________________________________________
-            const readable<apq> & last() const throw();
+            const readable<apz> & last() const throw();
 
             //__________________________________________________________________
             //
@@ -174,7 +185,7 @@ namespace yack
 
             size_t          *idx; //!< idx[dimension]
             memory::shelf    lib; //!< linear memory
-            contractor<apq>  obj; //!< obj[dimension*dimension+exta*dimension]
+            contractor<apz>  obj; //!< obj[dimension*dimension+exta*dimension]
             contractor<qrow> row; //!< row[dimension]
             
             void reschedule() throw();

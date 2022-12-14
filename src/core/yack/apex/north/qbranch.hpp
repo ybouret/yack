@@ -82,7 +82,7 @@ namespace yack
                 for(const qfamily *member=qlist.head;member;member=member->next)
                 {
                     const qmatrix       &Q = **member;
-                    const readable<apq> &q = Q[depth];
+                    const readable<apz> &q = Q[depth];
                     func(q);
                 }
             }
