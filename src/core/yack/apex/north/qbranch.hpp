@@ -87,8 +87,8 @@ namespace yack
                 }
             }
 
-            const list_of<qfamily> * operator->() const throw() { return &qlist; }
-            const list_of<qfamily> & operator*()  const throw() { return  qlist; }
+            const list_of<qfamily> * operator->() const throw(); //!< access
+            const list_of<qfamily> & operator*()  const throw(); //!< access
 
 
 
@@ -99,9 +99,9 @@ namespace yack
             const size_t       depth; //!< automatic depth monitoring
             
         private:
-            qfamily::list_type qlist;
+            qfamily::list_type qlist; //!< list of families
         public:
-            qidx_bptr          cache;
+            qidx_bptr          cache; //!< cache for indices
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(qbranch);

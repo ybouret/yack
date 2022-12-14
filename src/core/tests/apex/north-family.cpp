@@ -11,7 +11,7 @@ using namespace yack;
 namespace {
 
     static inline
-    void display_vec(const readable<apq> &q )
+    void display_vec(const readable<apz> &q )
     {
         std::cerr << "\t" << q << std::endl;
     }
@@ -124,7 +124,7 @@ YACK_UTEST(apex_north_family)
 {
     YACK_SIZEOF(north::qfamily);
 
-#if 0
+
     matrix<int> vec(4,3);
     vec[1][1] = 2;  vec[1][2] = 2;  vec[1][3] = 2;
     vec[2][1] = 0;  vec[2][2] = 1;  vec[2][3] = 0;
@@ -149,12 +149,14 @@ YACK_UTEST(apex_north_family)
 
     std::cerr << source << std::endl;
 
+
     while( source.next(vec) )
     {
         std::cerr << source << std::endl;
         source.for_each(display_vec);
     }
 
+    
     randomized::rand_ ran;
     for(size_t eqs=2; eqs<=5; ++eqs)
     {
@@ -163,7 +165,6 @@ YACK_UTEST(apex_north_family)
             test_qb(source,eqs,spc,ran);
         }
     }
-#endif
     YACK_SIZEOF(north::qfamily);
 
 }

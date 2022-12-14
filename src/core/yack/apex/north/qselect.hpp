@@ -10,9 +10,19 @@ namespace yack
 {
     namespace north
     {
+        //______________________________________________________________________
+        //
+        //
+        //! selecting procedures
+        //
+        //______________________________________________________________________
         struct qselect
         {
 
+            //__________________________________________________________________
+            //
+            //! counting coefficients different of zero
+            //__________________________________________________________________
             template <typename T> static inline
             size_t count_valid(const readable<T> &coef)
             {
@@ -23,13 +33,20 @@ namespace yack
                 return res;
             }
 
+            //__________________________________________________________________
+            //
+            //! compressing matrix with non zero, non proportional rows
+            /**
+             \param rvec row vectors
+             \param topo initial topology
+             */
+            //__________________________________________________________________
             template <typename T> static inline
-            size_t compress(matrix<T>       &target,
-                          const matrix<T> &source)
+            size_t compress(matrix<T>       &rvec,
+                            const matrix<T> &topo)
             {
-
-                const matrix<T> mu(source,transposed);
-                vector<size_t>  jndx(mu.rows,as_capacity);
+                const matrix<T> mu(topo,transposed);        // transposed
+                vector<size_t>  jndx(mu.rows,as_capacity);  // valid indices
                 {
                     const size_t    m = mu.rows;
                     for(size_t j=1;j<=m;++j)
@@ -56,16 +73,15 @@ namespace yack
                 }
                 else
                 {
-                    // compress mu
                     const size_t n = mu.cols;
-                    target.make(dims,n);
+                    rvec.make(dims,n);
                     for(size_t k=dims;k>0;--k)
                     {
-                        writable<T>       &tgt = target[k];
+                        writable<T>       &tgt = rvec[k];
                         const readable<T> &src = mu[ jndx[k] ];
                         for(size_t i=n;i>0;--i) tgt[i] = src[i];
                     }
-                    return apk::rank_of(target);
+                    return apk::rank_of(rvec);
                 }
             }
         };
