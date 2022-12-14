@@ -10,6 +10,8 @@
 #include "yack/sequence/vector.hpp"
 #include "yack/memory/sentry.hpp"
 
+#define YACK_NORTH_SENTRY 1
+
 namespace yack
 {
     namespace randomized
@@ -70,7 +72,7 @@ namespace yack
 
             //__________________________________________________________________
             //
-            //! univocal Gram-Schmidt algorithm to grom family
+            //! univocal Gram-Schmidt algorithm to grow family
             //__________________________________________________________________
             template <typename U> inline
             bool grow(const readable<U> &user)
@@ -92,7 +94,9 @@ namespace yack
                     // use following qvector as apz workspace
                     //
                     //----------------------------------------------------------
+#if defined(YACK_NORTH_SENTRY) && (1==YACK_NORTH_SENTRY)
                     YACK_MEM_SENTRY_FOR(obj(),dimension);
+#endif
                     const size_t    following = evaluated+1;                // following index
                     const qrow     &brand_new = row[following];             // following vector
                     thin_array<apq> u_k( vgs(), dimension);                 // apq workspace
@@ -128,7 +132,10 @@ namespace yack
 
             }
 
+            //__________________________________________________________________
+            //
             //! checking
+            //__________________________________________________________________
             template <typename U> inline
             bool is_in_span(const readable<U> &user) 
             {
@@ -136,8 +143,10 @@ namespace yack
                 thin_array<apq> u_k( vgs(), dimension);
                 thin_array<apz> v_k( obj(), dimension);
 
+#if defined(YACK_NORTH_SENTRY) && (1==YACK_NORTH_SENTRY)
                 YACK_MEM_SENTRY_FOR(idx           , dimension);
                 YACK_MEM_SENTRY_FOR(obj(dimension), dimension*dimension);
+#endif
 
                 //--------------------------------------------------------------
                 //
