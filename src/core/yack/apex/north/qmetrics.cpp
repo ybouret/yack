@@ -71,6 +71,32 @@ namespace yack
             }
         }
 
+        bool qmetrics:: prepare_vector(writable<apz> &target,
+                                       writable<apq> &source,
+                                       apn           &normSq)
+        {
+            assert(source.size()==target.size());
+            normSq.ldz();
+            apk::simplify(source);
+            for(size_t i=source.size();i>0;--i)
+            {
+                assert(1==source[i].den);
+                const apz &num = source[i].num;
+                target[i] = num;
+                normSq   += apn::squared(num.n);
+            }
+
+            if(normSq<=0)
+            {
+                return false;
+            }
+            else
+            {
+                apk::univocal(target);
+                return true;
+            }
+        }
+
         
         qmetrics:: ~qmetrics() throw()
         {

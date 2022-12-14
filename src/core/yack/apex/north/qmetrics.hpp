@@ -55,6 +55,11 @@ namespace yack
                                        writable<apq> &source,
                                        apn           &normSq);
 
+
+            static bool prepare_vector(writable<apz> &target,
+                                       writable<apq> &source,
+                                       apn           &normSq);
+
             //__________________________________________________________________
             //
             // members

@@ -238,6 +238,13 @@ namespace yack
          - make more positive than negative signs
          - in case of equality, first not null is positive
          */
+        static void  univocal(writable<apz> &) throw();
+
+        //! make univocal integers
+        /**
+         - make more positive than negative signs
+         - in case of equality, first not null is positive
+         */
         static void  univocal(writable<int64_t> &) throw();
 
         //______________________________________________________________________
