@@ -49,7 +49,7 @@ namespace {
             std::cerr << "last=" << last << "[";
 
             // compute other last from a copy of U
-            for(size_t iter=0;iter<16;++iter)
+            for(size_t iter=16;iter>0;--iter)
             {
                 north::qmatrix  V(U);
                 while(V.situation!=north::fully_grown)
@@ -62,6 +62,14 @@ namespace {
                 std::cerr << ".";
             }
             std::cerr << "]" << std::endl;
+
+            while(U.situation!=north::fully_grown)
+            {
+                fillv(tmp,ran);
+                if(!U.grow(tmp)) continue;
+            }
+            U.julia(std::cerr) << std::endl;
+
         }
 
 

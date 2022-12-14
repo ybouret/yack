@@ -64,7 +64,8 @@ namespace yack
             //! access components [1:evaluated]
             virtual const_qrow & operator[](const size_t) const throw();
 
-
+            //! display as a julia matrix
+            std::ostream & julia(std::ostream &os) const;
 
 
             //__________________________________________________________________
@@ -112,7 +113,7 @@ namespace yack
                         prepare_vector(v_k,u_k, coerce(brand_new.norm2));
                         coerce(situation) = updated_situation(dimension,coerce(evaluated) = following);
                         reschedule();
-                        //for(size_t i=1;i<evaluated;++i) assert(0 == brand_new.dot(row[i]));
+                        for(size_t i=1;i<evaluated;++i) assert(0 == brand_new.dot(row[i]));
                         return true;
                     }
                     else

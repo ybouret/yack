@@ -162,7 +162,32 @@ namespace yack
             os << '}';
             return os;
         }
-        
+
+
+        static inline
+        void qvec_julia(std::ostream &os, const readable<apz> &q)
+        {
+            assert(q.size()>=2);
+            os << q[1];
+            for(size_t i=2;i<=q.size();++i) os << ' ' << q[i];
+        }
+
+        std::ostream & qmatrix:: julia(std::ostream &os) const
+        {
+            os << '[';
+            if(evaluated)
+            {
+                qvec_julia(os,row[1]);
+                for(size_t i=2;i<=evaluated;++i)
+                {
+                    qvec_julia(os << ';' << std::endl,row[i]);
+                }
+            }
+            os << ']';
+            return os;
+        }
+
+
         const readable<apz> & qmatrix:: last() const throw() {
             assert(evaluated>0);
             return row[evaluated];

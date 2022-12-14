@@ -36,6 +36,7 @@ namespace yack
         const list_of<qfamily> * qbranch:: operator->() const throw() { return &qlist; }
 
         const list_of<qfamily> & qbranch:: operator*()  const throw() { return  qlist; }
+        
 
         void qbranch::prune() throw()
         {

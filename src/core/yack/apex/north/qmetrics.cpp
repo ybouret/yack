@@ -71,25 +71,70 @@ namespace yack
             }
         }
 #endif
-        
+
+
+        static inline
+        void zsimplify(apn &norm2, writable<apz> &z)
+        {
+            assert(z.size()>1);
+
+            norm2.ldz();
+            const size_t n = z.size();
+
+            //----------------------------------------------------------------------
+            // find first positive value
+            //----------------------------------------------------------------------
+            apn          g = 1;
+            size_t       j = 1;
+            for(;j<=n;++j)
+            {
+                const apz &Z = z[j];
+                if(__zero__!=Z.s) {
+                    g = Z.n;
+                    break;
+                }
+            }
+
+            //----------------------------------------------------------------------
+            // compute with other positive values
+            //----------------------------------------------------------------------
+            for(++j;j<=n;++j)
+            {
+                const apz &Z = z[j];
+                if(__zero__!=Z.s) {
+                    g = apn::gcd(Z.n,g);
+                }
+            }
+
+            //----------------------------------------------------------------------
+            // simplify
+            //----------------------------------------------------------------------
+            for(size_t i=n;i>0;--i)
+            {
+                norm2 += apn::squared( (z[i] /= g).n );
+            }
+
+        }
+
+
         void qmetrics:: prepare_vector(writable<apz> &target,
                                        writable<apq> &source,
                                        apn           &normSq)
         {
+            assert(source.size()>=2);
             assert(source.size()==target.size());
-            normSq.ldz();
-            apk::simplify(source);
-            for(size_t i=source.size();i>0;--i)
-            {
-                assert(1==source[i].den);
-                const apz &num = source[i].num;
-                target[i] = num;
-                normSq   += apn::squared(num.n);
-            }
 
-            assert(normSq>=0);
+            static const size_t one = 1;
+            const size_t        dim = source.size();
+            const apn           rho = apk::lcm(source,one,dim);
+
+            for(size_t i=dim;i>0;--i)
+            {
+                const apq & q = source[i];
+                target[i] = (q.num*rho/q.den);
+            }
+            zsimplify(normSq,target);
             apk::univocal(target);
-            
         }
 
         
