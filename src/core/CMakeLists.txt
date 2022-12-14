@@ -333,6 +333,12 @@ set(apex_north ${apex_north_impl} ${apex_north_decl})
 SOURCE_GROUP(apex/north FILES ${apex_north})
 install( FILES ${apex_north_decl} DESTINATION include/yack/apex/north ) 
 
+file(GLOB apex_kernel_impl yack/apex/kernel/*.cpp)
+file(GLOB apex_kernel_decl yack/apex/kernel/*.hpp)
+set(apex_kernel ${apex_kernel_impl} ${apex_kernel_decl})
+SOURCE_GROUP(apex/kernel FILES ${apex_kernel})
+install( FILES ${apex_kernel_decl} DESTINATION include/yack/apex/kernel ) 
+
 ########################################################################
 ##
 ## ios
@@ -638,7 +644,7 @@ ${associative} ${associative_hash} ${associative_suffix}
 ${memory} ${memory_allocator} ${memory_small} ${memory_large} ${memory_joint} ${memory_buffer}
 ${fft}
 ${functor}
-${apex} ${apex_m} ${apex_n} ${apex_z} ${apex_q} ${apex_north}
+${apex} ${apex_m} ${apex_n} ${apex_z} ${apex_q} ${apex_kernel} ${apex_north} 
 ${concurrent} ${concurrent_quark} ${concurrent_loop} ${concurrent_queue} ${concurrent_queue_pipeline}
 ${ios} ${ios_c} ${ios_gz} ${ios_bz} ${ios_fmt} ${ios_gv} ${ios_ascii} ${ios_serializer} ${ios_scribe}
 ${randomized}
