@@ -44,7 +44,7 @@ namespace yack
         }
 
 
-
+#if 0
         bool qmetrics:: prepare_vector(writable<apq> &target,
                                        writable<apq> &source,
                                        apn           &normSq)
@@ -70,7 +70,8 @@ namespace yack
                 return true;
             }
         }
-
+#endif
+        
         bool qmetrics:: prepare_vector(writable<apz> &target,
                                        writable<apq> &source,
                                        apn           &normSq)

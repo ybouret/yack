@@ -53,26 +53,62 @@ namespace yack
             return os;
         }
 
+        bool qvector:: perp(const readable<apq> &lhs, const readable<apz> &rhs)
+        {
+            assert(lhs.size()==rhs.size());
+            apq sum = 0;
+
+            for(size_t i=lhs.size();i>0;--i)
+            {
+                sum += rhs[i] * lhs[i];
+            }
+
+            return sum.num.s == __zero__;
+        }
+
+        bool qvector:: neqz(const readable<apq> &u) throw()
+        {
+            for(size_t i=u.size();i>0;--i)
+            {
+                if(u[i].num.s != __zero__) return  true;
+            }
+            return false;
+        }
+
         bool qvector:: grow(writable<apq>           &u_k,
                             const readable<apz>     &v_k,
                             const readable<qvector> &U)
         {
+            //------------------------------------------------------------------
+            //
+            // initialize
+            //
+            //------------------------------------------------------------------
             assert(u_k.size()==v_k.size());
             const size_t dim = u_k.size();
             const size_t sub = U.size();
-            for(size_t j=1;j<=sub;++j)
+
+            //------------------------------------------------------------------
+            //
+            // starting from u_k = v_k, substract all components
+            // on previous vectors
+            //
+            //------------------------------------------------------------------
+            for(size_t j=sub;j>0;--j)
             {
-                const qvector &u_j = U[j]; assert(u_j.dimension==dim);
-                const apq      cof(u_j.dot(v_k),u_j.norm2);
+                const qvector &u_j = U[j];                  assert(u_j.dimension==dim);
+                const apq      cof(u_j.dot(v_k),u_j.norm2); // projection coefficient
                 bool           gtz = false;
                 for(size_t i=dim;i>0;--i)
                 {
-                    if( (u_k[i] -= cof * u_j[i]).num.n.size() != 0 ) gtz=true;
+                    // upgrade vector, check is not null at once
+                    if( (u_k[i] -= cof * u_j[i]).num.s != __zero__ ) gtz=true;
                 }
-                //assert(are_orthogonal(u_k,u_j));
+                assert(perp(u_k,u_j));
                 if(!gtz) return false;
             }
-
+            
+            assert(neqz(u_k));
             return true;
         }
     }

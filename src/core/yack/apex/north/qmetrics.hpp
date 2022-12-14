@@ -50,12 +50,15 @@ namespace yack
             static maturity updated_situation(const size_t dims,
                                               const size_t size) throw();  //!< update up to fully grown
 
+
+#if 0
             //! prepare simplified univocal target from source and normSq = |target|^2
             static bool prepare_vector(writable<apq> &target,
                                        writable<apq> &source,
                                        apn           &normSq);
-
-
+#endif
+            
+            //! prepare simplified univocal target from source and normSq = |target|^2
             static bool prepare_vector(writable<apz> &target,
                                        writable<apq> &source,
                                        apn           &normSq);

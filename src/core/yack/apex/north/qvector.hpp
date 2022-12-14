@@ -43,8 +43,8 @@ namespace yack
             // methods
             //__________________________________________________________________
             void xch(qvector &other) throw();        //!< no-throw exchange
-            apz  dot(const readable<apz> &v) const;  //!<  compute Gram-Schmidt weight = <coeff|v> 
-            
+            apz  dot(const readable<apz> &v) const;  //!< compute <coeff|v>
+
             
             //__________________________________________________________________
             //
@@ -58,6 +58,7 @@ namespace yack
                              const readable<apz>     &v_k,
                              const readable<qvector> &U);
 
+
             //__________________________________________________________________
             //
             //! human friendly display
@@ -70,8 +71,10 @@ namespace yack
             //__________________________________________________________________
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(qvector);
+            static bool perp(const readable<apq> &lhs, const readable<apz> &rhs);
+            static bool neqz(const readable<apq> &u) throw();
             apz          *coeff;
-
+            
         public:
             const apn     norm2; //!< current squared norm
 
