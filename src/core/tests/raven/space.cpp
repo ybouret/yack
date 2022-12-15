@@ -83,7 +83,7 @@ namespace
                 {
                     YACK_ASSERT(U(nu[comb[i]]));
                 }
-                //std::cerr << "\tU=" << U << std::endl;
+
                 for(size_t i=1;i<=k;++i)
                 {
                     YACK_ASSERT(U.includes(nu[comb[i]]));
@@ -106,7 +106,6 @@ namespace
                     {
                         YACK_ASSERT(V(nu[indx[i]]));
                     }
-                    //std::cerr << "\tV=" << V << std::endl;
                     for(size_t i=1;i<=k;++i)
                     {
                         YACK_ASSERT(V.includes(nu[comb[i]]));
@@ -121,7 +120,6 @@ namespace
                         const readable<int> &cf = nu[ left[i] ];
                         YACK_ASSERT(U.guess(u,cf));
                         YACK_ASSERT(V.guess(v,cf));
-                        //std::cerr << "\t" << u  << " / " <<  v << std::endl;
                         YACK_ASSERT(u==v);
                     }
 
@@ -132,12 +130,6 @@ namespace
 
             } while( comb.next() );
         }
-
-
-
-
-
-        
 
 
     }
@@ -151,7 +143,6 @@ YACK_UTEST(raven_space)
 
     size_t size = 7; if(argc>1) size = ios::ascii::convert::to<size_t>(argv[1]);
     size_t rank = 4; if(argc>2) rank = ios::ascii::convert::to<size_t>(argv[2]);
-
 
 
     test(size,rank,ran);
