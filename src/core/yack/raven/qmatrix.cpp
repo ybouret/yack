@@ -146,7 +146,7 @@ namespace yack
                     if( __zero__ != (target[i] = tmp.num).s ) gtz = true;
                 }
             }
-
+            
             if(gtz)
             {
                 apn       dum;

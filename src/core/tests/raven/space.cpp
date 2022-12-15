@@ -60,6 +60,9 @@ namespace
 
         
         const size_t n = rank;
+        vector<apz>  u(size);
+        vector<apz>  v(size);
+
         for(size_t k=2;k<n;++k)
         {
             combination    comb(n,k);
@@ -80,7 +83,7 @@ namespace
                 {
                     YACK_ASSERT(U(nu[comb[i]]));
                 }
-                std::cerr << "\tU=" << U << std::endl;
+                //std::cerr << "\tU=" << U << std::endl;
                 for(size_t i=1;i<=k;++i)
                 {
                     YACK_ASSERT(U.includes(nu[comb[i]]));
@@ -103,7 +106,7 @@ namespace
                     {
                         YACK_ASSERT(V(nu[indx[i]]));
                     }
-                    std::cerr << "\tV=" << V << std::endl;
+                    //std::cerr << "\tV=" << V << std::endl;
                     for(size_t i=1;i<=k;++i)
                     {
                         YACK_ASSERT(V.includes(nu[comb[i]]));
@@ -112,6 +115,16 @@ namespace
                     {
                         YACK_ASSERT(!V.includes(nu[left[i]]));
                     }
+
+                    for(size_t i=left.size();i>0;--i)
+                    {
+                        const readable<int> &cf = nu[ left[i] ];
+                        YACK_ASSERT(U.guess(u,cf));
+                        YACK_ASSERT(V.guess(v,cf));
+                        //std::cerr << "\t" << u  << " / " <<  v << std::endl;
+                        YACK_ASSERT(u==v);
+                    }
+
 
 
                 } while(perm.next());
@@ -137,7 +150,7 @@ YACK_UTEST(raven_space)
     randomized::rand_ ran;
 
     size_t size = 7; if(argc>1) size = ios::ascii::convert::to<size_t>(argv[1]);
-    size_t rank = 3; if(argc>2) rank = ios::ascii::convert::to<size_t>(argv[2]);
+    size_t rank = 4; if(argc>2) rank = ios::ascii::convert::to<size_t>(argv[2]);
 
 
 

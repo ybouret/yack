@@ -85,6 +85,7 @@ namespace yack
                        const readable<T> &v)
             {
                 YACK_RAVEN_LOAD();
+                keep_ortho(u_k,v_k);
                 return try_polish(o,u_k);
             }
 
