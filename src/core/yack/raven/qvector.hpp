@@ -1,5 +1,4 @@
-
-//! \file Right Angle Vectors ENdeavor
+//! \file 
 
 #ifndef YACK_RAVEN_QVECTOR_INCLUDED
 #define YACK_RAVEN_QVECTOR_INCLUDED 1

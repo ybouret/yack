@@ -1,4 +1,4 @@
-#include "yack/raven/qvector.hpp"
+#include "yack/raven/qmatrix.hpp"
 #include "yack/utest/run.hpp"
 
 #include "yack/sequence/vector.hpp"
@@ -30,6 +30,7 @@ YACK_UTEST(raven_space)
     u1.sub(u,v);
     std::cerr << "u=" << u << std::endl;
 
+    raven::qmatrix U(3,2);
 
 
 }

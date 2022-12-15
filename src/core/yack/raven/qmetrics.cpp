@@ -14,6 +14,7 @@ namespace yack
         qmetrics:: qmetrics(const size_t dims) :
         dimension(dims)
         {
+            if(dimension<2) throw imported::exception("raven::metrics","dimension<2");
         }
 
         qmetrics:: qmetrics(const qmetrics &_) throw() :
