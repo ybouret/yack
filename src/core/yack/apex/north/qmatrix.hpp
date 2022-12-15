@@ -28,7 +28,7 @@ namespace yack
     namespace north
     {
 
-        typedef uint64_t hkey_type;
+        typedef uint64_t hkey_type; //!< alias
 
         //______________________________________________________________________
         //

@@ -10,6 +10,7 @@
 #include "yack/memory/sentry.hpp"
 
 #if 1
+//! helper to check untouched memory
 #define YACK_RAVEN_SENTRY() YACK_MEM_SENTRY_FOR( obj()+dimension, current_rank*dimension);
 #else
 #define YACK_RAVEN_SENTRY()
@@ -19,21 +20,40 @@ namespace yack
 {
     namespace raven
     {
-
+        //______________________________________________________________________
+        //
+        //
+        //! matrix of incremental orthogonal, univocal vectors
+        //
+        //______________________________________________________________________
         class qmatrix : public object, public qmetrics, public readable<qvector>
         {
         public:
-            virtual ~qmatrix() throw();
-            explicit qmatrix(const size_t sz, const size_t rk);
-            qmatrix(const qmatrix &other);
-            
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~qmatrix() throw();                         //!< cleanup
+            explicit qmatrix(const size_t sz, const size_t rk); //!< build with sz>=rk>=2
+            qmatrix(const qmatrix &other);                      //!< full copy
+
+            //__________________________________________________________________
+            //
+            // interface: readable
+            //__________________________________________________________________
             virtual size_t         size()                   const throw(); //!< current_rank
             virtual const qvector &operator[](const size_t) const throw(); //!< [1..current_rank]
-            size_t                 allocated()              const throw(); //!< linear memory
-            qmatrix               *clone() const;
 
-            friend std::ostream   &operator<<(std::ostream &, const qmatrix &);
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            size_t                 allocated()              const throw();      //!< linear memory
+            qmatrix               *clone()                          const;      //!< new qmatrix(*this)
+            void                   reset()                        throw();      //!< reset
+            friend std::ostream   &operator<<(std::ostream &, const qmatrix &); //!< display as matrix
 
+            //! try to insert a new vector
             template <typename T> inline
             bool operator()(const readable<T> &v)
             {
@@ -49,7 +69,7 @@ namespace yack
                 return build_next(u_k,v_k);
             }
 
-
+            //! check if the vector is included in linear space
             template <typename T> inline
             bool includes(const readable<T> &v)
             {
@@ -60,7 +80,7 @@ namespace yack
                 for(size_t i=dimension;i>0;--i) {
                     u_k[i] = v_k[i] = v[i];
                 }
-                projection(u_k,v_k);
+                keep_ortho(u_k,v_k);
                 return is_nil_vec(u_k);
             }
 
@@ -77,7 +97,7 @@ namespace yack
             contractor<apq>     vgs; //!< dimension for G-S
             
             void initialize();
-            void projection(writable<apq>       &u_k,
+            void keep_ortho(writable<apq>       &u_k,
                             const readable<apz> &v_k);
 
             bool is_nil_vec(const readable<apq> &u_k) const throw();

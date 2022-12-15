@@ -53,6 +53,10 @@ namespace yack
 
         qmatrix * qmatrix:: clone() const { return new qmatrix(*this); }
 
+        void qmatrix:: reset() throw() {
+            coerce(current_rank) = 0;
+        }
+
         size_t    qmatrix:: size() const throw() { return current_rank; }
 
         const qvector & qmatrix:: operator[](const size_t ivec) const throw()
@@ -92,7 +96,7 @@ namespace yack
             return lib.bytes;
         }
 
-        void qmatrix:: projection(writable<apq>       &u_k,
+        void qmatrix:: keep_ortho(writable<apq>       &u_k,
                                   const readable<apz> &v_k)
         {
             for(size_t j=current_rank;j>0;--j)
@@ -114,7 +118,7 @@ namespace yack
         bool qmatrix:: build_next(writable<apq>       &u_k,
                                   const readable<apz> &v_k)
         {
-            projection(u_k,v_k);
+            keep_ortho(u_k,v_k);
             const size_t working_rank = current_rank+1;
             qvector     &next_qvector = row[working_rank];
             if(!next_qvector.appointed(u_k))

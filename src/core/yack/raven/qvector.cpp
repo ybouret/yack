@@ -29,6 +29,13 @@ namespace yack
             }
         }
 
+        void qvector:: ldz() throw()
+        {
+            coerce(norm2).ldz();
+            for(size_t i=dimension;i>0;--i)
+                coeff[i].ldz();
+        }
+
 
         std::ostream & operator<<(std::ostream &os, const qvector &self)
         {
@@ -44,12 +51,14 @@ namespace yack
             return coeff[i];
         }
 
+#if 0
         void qvector:: normalize()
         {
             thin_array<apz> self( &coeff[1], dimension);
             apk::definite(self,coerce(norm2));
         }
-
+#endif
+        
         bool qvector:: appointed(const readable<apq> &u_k)
         {
             assert(u_k.size()==dimension);
