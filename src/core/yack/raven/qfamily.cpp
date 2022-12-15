@@ -22,6 +22,17 @@ namespace yack
             return os;
         }
 
+
+        qfamily:: qfamily(const qfamily &F) :
+        object(),
+        qbase( F.qbase ),
+        basis( F.basis ),
+        ready( F.ready ),
+        next(0),
+        prev(0)
+        {
+        }
+
     }
 
 }

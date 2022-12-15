@@ -7,6 +7,7 @@
 #include "yack/data/small/set.hpp"
 #include "yack/ptr/clone.hpp"
 #include "yack/container/matrix.hpp"
+#include "yack/ptr/auto.hpp"
 
 namespace yack
 {
@@ -20,6 +21,8 @@ namespace yack
         class qfamily : public object
         {
         public:
+            typedef cxx_list_of<qfamily> list_type;
+
             virtual ~qfamily() throw();
 
             template <typename T> inline
@@ -42,7 +45,32 @@ namespace yack
                 for(size_t i=1;i<nr;++i) ready << id[i];
             }
 
+            qfamily(const qfamily &);
+
+
             friend std::ostream & operator<<(std::ostream &, const qfamily &);
+
+            template <typename T> inline
+            void generate(list_of<qfamily> &lineage,
+                          const matrix<T>  &mu) const
+            {
+                assert(ready->size+basis->size==mu.rows);
+                switch(qbase->active_state)
+                {
+                    case fully_grown: return;
+                    case almost_done:
+                        std::cerr << "Almost Done!" << std::endl;
+                        final_generation(lineage,mu);
+                        exit(0);
+                        return;
+
+                    case in_progress:
+                        std::cerr << "In Progress!" << std::endl;
+                        exit(0);
+                        break;
+                }
+            }
+
 
 
             clone_ptr<qmatrix> qbase;
@@ -52,8 +80,22 @@ namespace yack
             qfamily           *prev;
 
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(qfamily);
+            YACK_DISABLE_ASSIGN(qfamily);
             void throw_singular_matrix(const size_t ir) const;
+
+            template <typename T> inline
+            void final_generation(list_of<qfamily> &lineage,
+                                  const matrix<T>  &mu) const
+            {
+                std::cerr << "Generating Final Generation" << std::endl;
+                auto_ptr<qfamily> children = new qfamily(*this);
+                assert(almost_done==children->qbase->active_state);
+                std::cerr << children << std::endl;
+
+            }
+
+
+
         };
 
     }

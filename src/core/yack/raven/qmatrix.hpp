@@ -30,6 +30,13 @@ namespace yack
 {
     namespace raven
     {
+
+        enum maturity {
+            in_progress,
+            almost_done,
+            fully_grown
+        };
+
         //______________________________________________________________________
         //
         //
@@ -115,8 +122,9 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const size_t maximum_rank; //!< maximum rank
-            const size_t current_rank; //!< current rank
+            const size_t   maximum_rank; //!< maximum rank
+            const size_t   current_rank; //!< current rank
+            const maturity active_state; //!< depending on ranks
 
         private:
             YACK_DISABLE_ASSIGN(qmatrix);

@@ -11,6 +11,7 @@ namespace yack
 
         }
 
+        static const char here[] = "raven::matrix";
 
         qmatrix:: qmatrix(const size_t sz,
                           const size_t rk) :
@@ -20,12 +21,12 @@ namespace yack
         readable<qvector>(),
         maximum_rank(rk),
         current_rank(0),
+        active_state(maximum_rank>2 ? in_progress : almost_done),
         lib(),
         obj(),
         row(),
         vgs()
         {
-            static const char here[] = "raven::matrix";
             if(maximum_rank<2)         throw imported::exception(here,"maximum_rank<2");
             if(maximum_rank>dimension) throw imported::exception(here,"maximum_rank>dimension");
             initialize();
@@ -38,6 +39,7 @@ namespace yack
         readable<qvector>(),
         maximum_rank(Q.maximum_rank),
         current_rank(Q.current_rank),
+        active_state(Q.active_state),
         lib(),
         obj(),
         row(),
@@ -55,6 +57,7 @@ namespace yack
         void qmatrix:: reset() throw()
         {
             coerce(current_rank) = 0;
+            coerce(active_state) = (maximum_rank>2 ? in_progress : almost_done);
         }
 
         size_t    qmatrix:: size() const throw() { return current_rank; }
@@ -118,16 +121,31 @@ namespace yack
                                   const readable<apz> &v_k)
         {
             keep_ortho(u_k,v_k);
-            const size_t working_rank = current_rank+1;
-            qvector     &next_qvector = row[working_rank];
-            if(!next_qvector.appointed(u_k))
+            if(fully_grown==active_state)
             {
+                if(!is_nil_vec(u_k)) throw imported::exception(here,"new vector while fully grown!");
                 return false;
             }
             else
             {
-                coerce(current_rank) = working_rank;
-                return true;
+                assert(current_rank<maximum_rank);
+                const size_t working_rank = current_rank+1;
+                qvector     &next_qvector = row[working_rank];
+                if(!next_qvector.appointed(u_k))
+                {
+                    return false;
+                }
+                else
+                {
+                    coerce(current_rank) = working_rank;
+                    switch(maximum_rank-current_rank)
+                    {
+                        case 0: coerce(active_state) = fully_grown; break;
+                        case 1: coerce(active_state) = almost_done; break;
+                        default: assert(in_progress==active_state); break;
+                    }
+                    return true;
+                }
             }
         }
 

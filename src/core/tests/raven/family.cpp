@@ -60,6 +60,13 @@ namespace
 
         std::cerr << source << std::endl;
 
+        raven::qfamily::list_type lineage;
+        for(const raven::qfamily *f=source->head;f;f=f->next)
+        {
+            lineage.release();
+            f->generate(lineage,mu);
+        }
+
 
 
 
