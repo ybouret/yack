@@ -15,6 +15,7 @@ namespace yack
     {
 
         typedef small_set<size_t>  qList;
+        typedef qList::node_type   qNode;
         typedef small_bank<size_t> qBank;
         typedef qBank::pointer     qFund;
 
@@ -57,12 +58,18 @@ namespace yack
                 assert(ready->size+basis->size==mu.rows);
                 switch(qbase->active_state)
                 {
+                        //------------------------------------------------------
+                        // end of lineage at this point
                     case fully_grown: return;
+                        //------------------------------------------------------
+
+
+                        //------------------------------------------------------
+                        // at most one final generation
                     case almost_done:
-                        std::cerr << "Almost Done!" << std::endl;
                         final_generation(lineage,mu);
-                        exit(0);
                         return;
+                        //------------------------------------------------------
 
                     case in_progress:
                         std::cerr << "In Progress!" << std::endl;
@@ -71,7 +78,8 @@ namespace yack
                 }
             }
 
-
+            qmatrix       & operator*()       throw() { return *qbase; }
+            const qmatrix & operator*() const throw() { return *qbase; }
 
             clone_ptr<qmatrix> qbase;
             qList              basis;
@@ -79,19 +87,55 @@ namespace yack
             qfamily           *next;
             qfamily           *prev;
 
+
+            static void reduce(list_of<qfamily> &lineage);
+
         private:
             YACK_DISABLE_ASSIGN(qfamily);
             void throw_singular_matrix(const size_t ir) const;
+
+            template <typename T>
+            bool bloom(const matrix<T> &mu)
+            {
+                assert(almost_done==qbase->active_state);
+                assert(ready->size+basis->size==mu.rows);
+                qmatrix &Q     = *qbase;
+                bool     found = false;
+
+                //--------------------------------------------------------------
+                // find a final vector, any will produce the same result
+                //--------------------------------------------------------------
+                while(ready->size)
+                {
+                    const size_t ir = ready.pull_front();
+                    basis << ir; assert(ready->size+basis->size==mu.rows);
+                    if( Q(mu[ir]) )
+                    {
+                        found = true;
+                        assert(fully_grown==qbase->active_state);
+                        break;
+                    }
+                }
+
+                //--------------------------------------------------------------
+                // cleanup
+                //--------------------------------------------------------------
+                basis += ready;
+                ready.free(); assert(ready->size+basis->size==mu.rows);
+
+                //--------------------------------------------------------------
+                // done!
+                //--------------------------------------------------------------
+                return found;
+            }
 
             template <typename T> inline
             void final_generation(list_of<qfamily> &lineage,
                                   const matrix<T>  &mu) const
             {
-                std::cerr << "Generating Final Generation" << std::endl;
                 auto_ptr<qfamily> children = new qfamily(*this);
-                assert(almost_done==children->qbase->active_state);
-                std::cerr << children << std::endl;
-
+                if(children->bloom(mu))
+                    lineage.push_back( children.yield() );
             }
 
 

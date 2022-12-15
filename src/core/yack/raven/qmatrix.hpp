@@ -118,6 +118,11 @@ namespace yack
             //------------------------------------------------------------------
             bool is_equivalent_to(const qmatrix &rhs);
 
+            //------------------------------------------------------------------
+            //! get latter created vector
+            //------------------------------------------------------------------
+            const readable<apz> & last() const throw() { assert(current_rank); return row[current_rank]; }
+
             //__________________________________________________________________
             //
             // members

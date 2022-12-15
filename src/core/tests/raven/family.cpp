@@ -19,7 +19,7 @@ namespace
     {
         for(size_t i=cf.size();i>0;--i)
         {
-            cf[i] = static_cast<int>( ran.in(-1,1) );
+            cf[i] = static_cast<int>( ran.in(-3,3) );
         }
     }
 
@@ -29,6 +29,19 @@ namespace
         {
             create(nu[i],ran);
         }
+    }
+
+    static inline
+    bool accept_all(const readable<int> &mu)
+    {
+        std::cerr << "initialize with " << mu << std::endl;
+        return true;
+    }
+
+    static inline
+    void display_vec(const readable<apz> &cf)
+    {
+        std::cerr << " -> " << cf << std::endl;
     }
 
     static inline void test(const size_t      size,
@@ -56,17 +69,24 @@ namespace
 
 
         raven::qbranch source;
-        source(mu,rank);
+        source(mu,rank,accept_all);
 
         std::cerr << source << std::endl;
 
+        while(source.generate(mu,display_vec))
+        {
+            std::cerr << source << std::endl;
+        }
+
+#if 0
         raven::qfamily::list_type lineage;
         for(const raven::qfamily *f=source->head;f;f=f->next)
         {
             lineage.release();
             f->generate(lineage,mu);
+            std::cerr << lineage << std::endl;
         }
-
+#endif
 
 
 
