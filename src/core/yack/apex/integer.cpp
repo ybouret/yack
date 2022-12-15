@@ -88,7 +88,23 @@ namespace yack
             
         }
 
-        
+        void integer:: ldz() throw()
+        {
+            coerce(s) = __zero__;
+            coerce(n).ldz();
+        }
+
+        void integer:: ldi(int_type i) throw()
+        {
+            switch( coerce(s) = __sign::of(i) )
+            {
+                case __zero__: coerce(n).ldz(); return;
+                case positive: coerce(n).ldu( static_cast<uint_type>(i)  ); return;
+                case negative: coerce(n).ldu( static_cast<uint_type>(-i) ); return;
+            }
+        }
+
+
         void integer:: xch(integer &z) throw()
         {
             coerce_cswap(s,z.s);

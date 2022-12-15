@@ -62,9 +62,10 @@ namespace yack
             // methods
             //__________________________________________________________________
 
-            //! no-throw exchange
-            void xch(integer &) throw();
-            
+
+            void xch(integer &) throw(); //!< no-throw exchange
+            void ldz()          throw(); //!< fast to zero
+            void ldi(int_type)  throw(); //!< fast loading of integer type
 
             //! display
             friend std::ostream &operator<<(std::ostream &, const integer &);

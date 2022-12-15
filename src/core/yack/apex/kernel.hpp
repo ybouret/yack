@@ -177,8 +177,7 @@ namespace yack
         //! simplified integers
         //______________________________________________________________________
         static void simplify(writable<apz> &z);
-        static void simplify(writable<apz> &z, apn &z2);
-        
+
         //______________________________________________________________________
         //
         //! simplified natural
@@ -240,6 +239,11 @@ namespace yack
          - in case of equality, first not null is positive
          */
         static void  univocal(writable<apz> &) throw();
+
+
+        //! make a simplified univocal
+        static void definite(writable<apz> &z, apn &z2);
+
 
         //! make univocal integers
         /**

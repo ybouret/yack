@@ -55,7 +55,7 @@ namespace yack
         }
     }
     
-    void apk:: simplify(writable<apz> &z, apn &z2)
+    void apk:: definite(writable<apz> &z, apn &z2)
     {
         z2.ldz();
         const size_t n = z.size();
@@ -66,8 +66,10 @@ namespace yack
                 switch(z[1].s)
                 {
                     case __zero__:          break;
-                    case positive: z[1]= 1; z2 = 1; break;
-                    case negative: z[1]=-1; z2 = 1; break;
+                    case positive:
+                    case negative:
+                        z[1]=1;
+                        z2 = 1; break;
                 }
                 return;
             default:
@@ -139,17 +141,9 @@ namespace yack
         {
             switch(  v[i].s )
             {
-                case __zero__:
-                    break;
-
-                case positive:
-                    ++np;
-                    break;
-
-                case negative:
-                    ++nn;
-
-                    break;
+                case __zero__:       break;
+                case positive: ++np; break;
+                case negative: ++nn; break;
             }
         }
 

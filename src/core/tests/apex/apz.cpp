@@ -13,6 +13,15 @@ YACK_UTEST(apz)
     const int64_t add_max = 1000000000;
     const int64_t add_min = -add_max;
 
+    {
+        apz z;
+        for(int i=-10;i<=10;++i)
+        {
+            z.ldi(i);
+            YACK_ASSERT(i==z);
+        }
+    }
+
     std::cerr << "[ADD/SUB]" << std::endl;
     for(size_t iter=0;iter<=iter_max;++iter)
     {
