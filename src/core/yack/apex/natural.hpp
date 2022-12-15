@@ -243,6 +243,7 @@ namespace yack
 
             static natural gcd(const natural &a, const natural &b);                         //!< gcd
             static natural lcm(const natural &a, const natural &b);                         //!< lcm=(a*b)/gcd(a,b)
+            static natural lcm_(const natural &a, const natural &b);                        //!< lcm for a>0, b>0
             static void    simplify(natural &num, natural &den);                            //!< simplification protocol
             static natural mod_inv(const natural &b, const natural &n);                     //!< modular inverse        (b^(-1))[n]
             static natural mod_exp(const natural &b, const natural &e, const natural &n);   //!< modular exponentiation (b^e)[n]

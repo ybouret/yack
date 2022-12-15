@@ -34,10 +34,10 @@ namespace yack
             }
             else
             {
-                apn res = apn::lcm(arr[lo].den,arr[lo+1].den);
+                apn res = apn::lcm_(arr[lo].den,arr[lo+1].den);
                 for(INDEX i=lo+2;i<=hi;++i)
                 {
-                    res = apn::lcm(res,arr[i].den);
+                    res = apn::lcm_(res,arr[i].den);
                 }
                 return res;
             }

@@ -42,18 +42,28 @@ namespace yack
             return a;
         }
 
+        natural natural:: lcm_(const natural &x, const natural &y)
+        {
+            assert(x>0);
+            assert(y>0);
+            const natural p = x*y;
+            return p/gcd(x,y);
+
+        }
+
         natural natural:: lcm(const natural &x, const natural &y)
         {
             if(x>0&&y>0)
             {
-                const natural p = x*y;
-                return p/gcd(x,y);
+                return lcm_(x,y);
             }
             else
             {
                 return natural(0);
             }
         }
+
+
 
         void natural:: simplify(natural &num, natural &den)
         {

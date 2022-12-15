@@ -36,8 +36,33 @@ namespace yack
 
         void qvector:: normalize()
         {
-            thin_array<apz> self( coerce(&coeff[1]), dimension);
+            thin_array<apz> self( &coeff[1], dimension);
             apk::definite(self,coerce(norm2));
+        }
+
+        bool qvector:: appointed(const readable<apq> &u_k)
+        {
+            assert(u_k.size()==dimension);
+            thin_array<apz> arr( &coeff[1], dimension);
+            const apn       lcm = apk::lcm(u_k, size_t(1), dimension);
+            bool            gtz = false;
+
+            for(size_t i=dimension;i>0;--i)
+            {
+                const apq q = u_k[i] * lcm;
+                if( (arr[i] = q.num).s != __zero__ ) gtz = true;
+            }
+
+            if(gtz)
+            {
+                apk::definite(arr,coerce(norm2));
+                return true;
+            }
+            else
+            {
+                coerce(norm2).ldz();
+                return false;
+            }
         }
 
 
@@ -58,13 +83,11 @@ namespace yack
 
             // scaling coefficient
             const apq  cof(uv,norm2);
-            bool       gtz = false;
             for(size_t i=nd;i>0;--i)
             {
-                if( (u_k[i] -= cof * u_j[i]).num.n.size() > 0 ) gtz = true;
+                u_k[i] -= cof * u_j[i];
             }
 
-            //return gtz;
 
         }
 

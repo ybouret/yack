@@ -31,6 +31,7 @@ namespace yack
                      const readable<apz> &v_k);
 
             void normalize();
+            bool appointed(const readable<apq> &u_k);
 
         private:
             apz      *coeff; //!< [1..dimension]
