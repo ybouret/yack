@@ -7,8 +7,8 @@
 #include "yack/container/matrix.hpp"
 #include "yack/ios/ascii/convert.hpp"
 
-#include "yack/counting/comb.hpp"
 #include "yack/counting/perm.hpp"
+#include "yack/sequence/roll.hpp"
 
 
 using namespace yack;
@@ -19,7 +19,7 @@ namespace
     {
         for(size_t i=cf.size();i>0;--i)
         {
-            cf[i] = static_cast<int>( ran.in(-4,4) );
+            cf[i] = static_cast<int>( ran.in(-1,1) );
         }
     }
 
@@ -31,27 +31,54 @@ namespace
         }
     }
 
+    static inline void test(const size_t      size,
+                            const size_t      rank,
+                            randomized::bits &ran)
+    {
+
+        std::cerr << "Testing with size=" << size << " | rank=" << rank << std::endl;
+
+        // buildng
+        matrix<int>    nu(rank,size);
+        do
+        {
+            create(nu,ran);
+        } while( apk::rank_of(nu) < rank );
+        std::cerr << "nu=" << nu << std::endl;
+
+        matrix<int> mu;
+        raven::qselect::compress(mu,nu);
+        std::cerr << "mu=" << mu << std::endl;
+        YACK_CHECK(apk::rank_of(mu) == rank);
+
+
+        const size_t   n = mu.rows;
+        vector<size_t> id(n); id.ld_incr(1);
+
+        for(size_t i=1;i<=n;++i)
+        {
+            rolling::down(id);
+            raven::qfamily F(id,mu,rank);
+        }
+
+
+
+
+
+
+    }
+
 }
 
 
 YACK_UTEST(raven_family)
 {
     randomized::rand_ ran;
-
-    {
-        const size_t eqs = 2;
-        const size_t spc = 3;
-
-        matrix<int> nu(eqs,spc);
-        create(nu,ran);
-        matrix<int> mu;
-        raven::qselect::compress(mu,nu);
-
-        std::cerr << "nu=" << nu << std::endl;
-        std::cerr << "mu=" << mu << std::endl;
+    size_t size = 5; if(argc>1) size = ios::ascii::convert::to<size_t>(argv[1]);
+    size_t rank = 3; if(argc>2) rank = ios::ascii::convert::to<size_t>(argv[2]);
 
 
-    }
+    test(size,rank,ran);
 
 
 }

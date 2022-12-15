@@ -1,6 +1,5 @@
 #include "yack/raven/qmatrix.hpp"
 #include "yack/system/imported.hpp"
-#include "yack/apex/kernel.hpp"
 
 namespace yack
 {
@@ -131,6 +130,30 @@ namespace yack
                 return true;
             }
         }
+
+        bool qmatrix:: is_equivalent_to(const qmatrix &rhs)
+        {
+            if(current_rank != rhs.current_rank) return false;
+
+            for(size_t i=current_rank;i>0;--i)
+            {
+                const readable<apz> &v = rhs[i];
+                if(!includes(v)) return false;
+            }
+            
+            return true;
+        }
+
+    }
+
+}
+
+#include "yack/apex/kernel.hpp"
+
+namespace yack
+{
+    namespace raven
+    {
 
         bool qmatrix:: try_polish(writable<apz>       &target,
                                   const readable<apq> &source) const
