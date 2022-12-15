@@ -1,5 +1,5 @@
 
-#include "yack/raven/qfamily.hpp"
+#include "yack/raven/qbranch.hpp"
 #include "yack/raven/qselect.hpp"
 #include "yack/utest/run.hpp"
 
@@ -54,19 +54,11 @@ namespace
         YACK_CHECK(apk::rank_of(mu) == rank);
 
 
-        const size_t   n = mu.rows;
-        vector<size_t> id(n); id.ld_incr(1);
 
-        cxx_list_of<raven::qfamily> source;
+        raven::qbranch source;
+        source(mu,rank);
 
-        for(size_t i=1;i<=n;++i)
-        {
-            rolling::down(id);
-            source.push_back( new raven::qfamily(id,mu,rank,io) );
-            std::cerr << *(source.tail) << std::endl;
-        }
-
-
+        std::cerr << source << std::endl;
 
 
 

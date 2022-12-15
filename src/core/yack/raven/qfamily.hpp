@@ -44,12 +44,12 @@ namespace yack
 
             friend std::ostream & operator<<(std::ostream &, const qfamily &);
 
+
             clone_ptr<qmatrix> qbase;
             qList              basis;
             qList              ready;
             qfamily           *next;
             qfamily           *prev;
-
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(qfamily);
