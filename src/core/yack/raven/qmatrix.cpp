@@ -53,7 +53,8 @@ namespace yack
 
         qmatrix * qmatrix:: clone() const { return new qmatrix(*this); }
 
-        void qmatrix:: reset() throw() {
+        void qmatrix:: reset() throw()
+        {
             coerce(current_rank) = 0;
         }
 
@@ -100,9 +101,8 @@ namespace yack
                                   const readable<apz> &v_k)
         {
             for(size_t j=current_rank;j>0;--j)
-            {
                 row[j].sub(u_k,v_k);
-            }
+            
         }
 
         bool qmatrix:: is_nil_vec(const readable<apq> &u_k) const throw()

@@ -6,6 +6,10 @@
 #include "yack/container/matrix.hpp"
 #include "yack/ios/ascii/convert.hpp"
 
+#include "yack/counting/comb.hpp"
+#include "yack/counting/perm.hpp"
+
+
 using namespace yack;
 
 namespace
@@ -51,6 +55,45 @@ namespace
         {
             YACK_ASSERT(U.includes(nu[i]));
         }
+
+        raven::qmatrix V(size,rank);
+
+        
+        const size_t n = rank;
+        for(size_t k=2;k<n;++k)
+        {
+            combination    comb(n,k);
+            vector<size_t> indx(k);
+            do
+            {
+                U.reset();
+                std::cerr << "using " << comb << std::endl;
+                for(size_t i=1;i<=k;++i)
+                {
+                    YACK_ASSERT(U(nu[comb[i]]));
+                }
+                std::cerr << "\tU=" << U << std::endl;
+                permutation perm(k);
+                do
+                {
+                    if(1==perm.index) continue;
+                    perm.designate(indx,comb);
+                    //std::cerr << "\t\tperm=" << perm << " => " << indx << std::endl;
+                    V.reset();
+                    for(size_t i=1;i<=k;++i)
+                    {
+                        YACK_ASSERT(V(nu[indx[i]]));
+                    }
+                    std::cerr << "\tV=" << V << std::endl;
+
+                } while(perm.next());
+
+
+            } while( comb.next() );
+        }
+
+
+
 
 
         
