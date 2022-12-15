@@ -15,12 +15,16 @@ namespace yack
 
         qmatrix:: qmatrix(const size_t sz,
                           const size_t rk) :
+        collection(),
+        object(),
         qmetrics(sz),
         readable<qvector>(),
         maximum_rank(rk),
         current_rank(0),
         lib(),
-        obj()
+        obj(),
+        row(),
+        vgs()
         {
             static const char here[] = "raven::matrix";
             if(maximum_rank<2)         throw imported::exception(here,"maximum_rank<2");
@@ -28,7 +32,28 @@ namespace yack
             initialize();
         }
 
-        size_t qmatrix:: size() const throw() { return current_rank; }
+        qmatrix:: qmatrix(const qmatrix &Q) :
+        collection(),
+        object(),
+        qmetrics(Q),
+        readable<qvector>(),
+        maximum_rank(Q.maximum_rank),
+        current_rank(Q.current_rank),
+        lib(),
+        obj(),
+        row(),
+        vgs()
+        {
+            initialize();
+            for(size_t i=current_rank;i>0;--i)
+            {
+                row[i].hard_copy(Q.row[i]);
+            }
+        }
+
+        qmatrix * qmatrix:: clone() const { return new qmatrix(*this); }
+
+        size_t    qmatrix:: size() const throw() { return current_rank; }
 
         const qvector & qmatrix:: operator[](const size_t ivec) const throw()
         {

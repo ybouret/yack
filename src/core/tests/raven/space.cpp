@@ -4,7 +4,7 @@
 
 #include "yack/sequence/vector.hpp"
 #include "yack/container/matrix.hpp"
-
+#include "yack/ios/ascii/convert.hpp"
 
 using namespace yack;
 
@@ -46,6 +46,8 @@ namespace
         std::cerr << "U=" << U << std::endl;
 
 
+
+
     }
 
 
@@ -55,7 +57,12 @@ YACK_UTEST(raven_space)
 {
     randomized::rand_ ran;
 
-    test(7,3,ran);
+    size_t size = 7; if(argc>1) size = ios::ascii::convert::to<size_t>(argv[1]);
+    size_t rank = 3; if(argc>2) rank = ios::ascii::convert::to<size_t>(argv[2]);
+
+
+
+    test(size,rank,ran);
 
 
     YACK_SIZEOF(raven::qvector);

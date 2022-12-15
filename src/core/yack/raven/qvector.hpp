@@ -30,6 +30,8 @@ namespace yack
             void sub(writable<apq>       &u_k,
                      const readable<apz> &v_k);
 
+
+            void hard_copy(const qvector &other);
             void normalize();
             bool appointed(const readable<apq> &u_k);
 

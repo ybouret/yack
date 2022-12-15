@@ -19,6 +19,16 @@ namespace yack
             --coeff;
         }
 
+        void qvector:: hard_copy(const qvector &other)
+        {
+            assert(dimension==other.dimension);
+            coerce(norm2) = other.norm2;
+            for(size_t i=dimension;i>0;--i)
+            {
+                coeff[i] = other.coeff[i];
+            }
+        }
+
 
         std::ostream & operator<<(std::ostream &os, const qvector &self)
         {

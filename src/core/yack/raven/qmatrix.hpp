@@ -14,15 +14,18 @@ namespace yack
     namespace raven
     {
 
-        class qmatrix : public qmetrics, public readable<qvector>
+        class qmatrix : public object, public qmetrics, public readable<qvector>
         {
         public:
             virtual ~qmatrix() throw();
             explicit qmatrix(const size_t sz, const size_t rk);
-
+            qmatrix(const qmatrix &other);
+            
             virtual size_t         size()                   const throw(); //!< current_rank
             virtual const qvector &operator[](const size_t) const throw(); //!< [1..current_rank]
             size_t                 allocated()              const throw(); //!< linear memory
+            qmatrix               *clone() const;
+
             friend std::ostream   &operator<<(std::ostream &, const qmatrix &);
 
             template <typename T> inline
@@ -36,7 +39,7 @@ namespace yack
                 for(size_t i=dimension;i>0;--i) {
                     u_k[i] = v_k[i] = v[i];
                 }
-                
+
                 return build_next(u_k,v_k);
             }
 
