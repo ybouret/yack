@@ -27,64 +27,23 @@ namespace
     }
 
 
-#if 0
-    static inline void test(const size_t      eqs,
-                            const size_t      spc,
-                            randomized::bits &ran)
-    {
-        YACK_ASSERT(eqs>=2);
-        YACK_ASSERT(spc>=eqs);
-
-        // create topology
-        matrix<int> nu(eqs,spc);
-        do {
-            create(nu,ran);
-        } while( apk::rank_of(nu) < eqs );
-        std::cerr << "nu=" << nu << std::endl;
-
-        // compress trials
-        matrix<int> mu;
-        raven::qselect::compress(mu,nu);
-        std::cerr << "mu=" << mu << std::endl;
-        YACK_ASSERT(mu.cols==eqs);
-
-        // create qmatrix
-        raven::qmatrix U(eqs,eqs);
-
-        std::cerr << U << std::endl;
-
-        if( U.grow(mu[1]) )
-        {
-            std::cerr << U << std::endl;
-        }
-
-    }
-#endif
-
     static inline void test(const size_t size,
                             const size_t rank,
                             randomized::bits &ran)
     {
         raven::qmatrix U(size,rank);
-        vector<int>    v(size);
-
-        // initial space
+        matrix<int>    nu(rank,size);
         do
         {
-            create(v,ran);
-        } while( !U.grow(v) );
-        std::cerr << "init with " << v << std::endl;
+            create(nu,ran);
+        } while( apk::rank_of(nu) < rank );
 
-        std::cerr << U << std::endl;
-        while(U.current_rank<U.maximum_rank)
+        std::cerr << "nu=" << nu << std::endl;
+        for(size_t i=1;i<=rank;++i)
         {
-            do
-            {
-                create(v,ran);
-            } while( !U.grow(v) );
-            std::cerr << "grow with " << v << std::endl;
-            std::cerr << U << std::endl;
+            YACK_ASSERT(U.grow(nu[i]));
         }
+        std::cerr << "U=" << U << std::endl;
 
 
     }
@@ -96,7 +55,7 @@ YACK_UTEST(raven_space)
 {
     randomized::rand_ ran;
 
-    test(5,2,ran);
+    test(7,3,ran);
 
 
     YACK_SIZEOF(raven::qvector);

@@ -24,7 +24,7 @@ namespace yack
             virtual const qvector &operator[](const size_t) const throw(); //!< [1..current_rank]
             size_t                 allocated()              const throw(); //!< linear memory
             friend std::ostream   &operator<<(std::ostream &, const qmatrix &);
-            
+
             template <typename T> inline
             bool grow(const readable<T> &v)
             {
@@ -36,6 +36,7 @@ namespace yack
                 for(size_t i=dimension;i>0;--i) {
                     u_k[i] = v_k[i] = v[i];
                 }
+                
                 return build_next(u_k,v_k);
             }
 
