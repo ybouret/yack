@@ -339,6 +339,18 @@ set(apex_kernel ${apex_kernel_impl} ${apex_kernel_decl})
 SOURCE_GROUP(apex/kernel FILES ${apex_kernel})
 install( FILES ${apex_kernel_decl} DESTINATION include/yack/apex/kernel ) 
 
+
+########################################################################
+##
+## raven
+##
+########################################################################
+file(GLOB raven_impl yack/raven/*.cpp)
+file(GLOB raven_decl yack/raven/*.hpp)
+set(raven ${raven_impl} ${raven_decl})
+SOURCE_GROUP(raven FILES ${raven})
+install( FILES ${raven_decl} DESTINATION include/yack/raven )
+
 ########################################################################
 ##
 ## ios
@@ -645,6 +657,7 @@ ${memory} ${memory_allocator} ${memory_small} ${memory_large} ${memory_joint} ${
 ${fft}
 ${functor}
 ${apex} ${apex_m} ${apex_n} ${apex_z} ${apex_q} ${apex_kernel} ${apex_north} 
+${raven}
 ${concurrent} ${concurrent_quark} ${concurrent_loop} ${concurrent_queue} ${concurrent_queue_pipeline}
 ${ios} ${ios_c} ${ios_gz} ${ios_bz} ${ios_fmt} ${ios_gv} ${ios_ascii} ${ios_serializer} ${ios_scribe}
 ${randomized}

@@ -59,6 +59,9 @@ source_group(field FILES ${field})
 file(GLOB color color/*.cpp)
 source_group(color FILES ${color})
 
+file(GLOB raven raven/*.cpp)
+source_group(raven FILES ${raven})
+
 set(HERE ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_executable(test-core main.cpp main.hpp
@@ -82,6 +85,7 @@ ${fs}
 ${kr}
 ${field}
 ${color}
+${raven}
 )
 
 yack_link_libraries(test-core)
@@ -307,5 +311,6 @@ add_test(color:yuv  test-core color_yuv)
 add_test(color:unit-real test-core color_unit_real)
 add_test(color:gs   test-core color_gs)
 
+add_test(raven:space test-core raven_space)
 
 yack_testing(core)
