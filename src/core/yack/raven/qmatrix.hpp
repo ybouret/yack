@@ -9,6 +9,12 @@
 #include "yack/sequence/thin-array.hpp"
 #include "yack/memory/sentry.hpp"
 
+#if 1
+#define YACK_RAVEN_SENTRY() YACK_MEM_SENTRY_FOR( obj()+dimension, current_rank*dimension);
+#else
+#define YACK_RAVEN_SENTRY()
+#endif
+
 namespace yack
 {
     namespace raven
@@ -29,10 +35,10 @@ namespace yack
             friend std::ostream   &operator<<(std::ostream &, const qmatrix &);
 
             template <typename T> inline
-            bool grow(const readable<T> &v)
+            bool operator()(const readable<T> &v)
             {
+                YACK_RAVEN_SENTRY();
                 assert(dimension==v.size());
-                YACK_MEM_SENTRY_FOR( obj()+dimension, current_rank*dimension);
 
                 thin_array<apz> v_k( obj(), dimension);
                 thin_array<apq> u_k( vgs(), dimension);
@@ -44,6 +50,19 @@ namespace yack
             }
 
 
+            template <typename T> inline
+            bool includes(const readable<T> &v)
+            {
+                YACK_RAVEN_SENTRY();
+                assert(dimension==v.size());
+                thin_array<apz> v_k( obj(), dimension);
+                thin_array<apq> u_k( vgs(), dimension);
+                for(size_t i=dimension;i>0;--i) {
+                    u_k[i] = v_k[i] = v[i];
+                }
+                projection(u_k,v_k);
+                return is_nil_vec(u_k);
+            }
 
 
             const size_t maximum_rank; //!< maximum rank
@@ -58,6 +77,11 @@ namespace yack
             contractor<apq>     vgs; //!< dimension for G-S
             
             void initialize();
+            void projection(writable<apq>       &u_k,
+                            const readable<apz> &v_k);
+
+            bool is_nil_vec(const readable<apq> &u_k) const throw();
+
             bool build_next(writable<apq>       &u_k,
                             const readable<apz> &v_k);
         };

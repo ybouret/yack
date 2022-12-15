@@ -33,19 +33,27 @@ namespace
     {
         raven::qmatrix U(size,rank);
         matrix<int>    nu(rank,size);
+
         do
         {
             create(nu,ran);
         } while( apk::rank_of(nu) < rank );
 
         std::cerr << "nu=" << nu << std::endl;
+
         for(size_t i=1;i<=rank;++i)
         {
-            YACK_ASSERT(U.grow(nu[i]));
+            YACK_ASSERT(U(nu[i]));
         }
         std::cerr << "U=" << U << std::endl;
 
+        for(size_t i=1;i<=rank;++i)
+        {
+            YACK_ASSERT(U.includes(nu[i]));
+        }
 
+
+        
 
 
     }

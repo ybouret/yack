@@ -92,15 +92,29 @@ namespace yack
             return lib.bytes;
         }
 
-        bool qmatrix:: build_next(writable<apq>       &u_k,
+        void qmatrix:: projection(writable<apq>       &u_k,
                                   const readable<apz> &v_k)
         {
             for(size_t j=current_rank;j>0;--j)
             {
                 row[j].sub(u_k,v_k);
             }
+        }
 
-            //std::cerr << "u_k=" << u_k << std::endl;
+        bool qmatrix:: is_nil_vec(const readable<apq> &u_k) const throw()
+        {
+            assert(dimension==u_k.size());
+            for(size_t i=dimension;i>0;--i)
+            {
+                if( __zero__ != u_k[i].num.s ) return false;
+            }
+            return true;
+        }
+
+        bool qmatrix:: build_next(writable<apq>       &u_k,
+                                  const readable<apz> &v_k)
+        {
+            projection(u_k,v_k);
             const size_t working_rank = current_rank+1;
             qvector     &next_qvector = row[working_rank];
             if(!next_qvector.appointed(u_k))
