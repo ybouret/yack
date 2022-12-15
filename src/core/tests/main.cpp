@@ -123,6 +123,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(apex_mem);
     YACK_UTEST(apn);
     YACK_UTEST(apz);
+    YACK_UTEST(apz_definite);
     YACK_UTEST(apq);
     YACK_UTEST(apex_ari);
     YACK_UTEST(apex_io);
