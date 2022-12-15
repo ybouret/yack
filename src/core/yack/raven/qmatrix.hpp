@@ -11,7 +11,7 @@
 
 #if 1
 //! helper to check untouched memory
-#define YACK_RAVEN_SENTRY() YACK_MEM_SENTRY_FOR( obj()+dimension, current_rank*dimension);
+#define YACK_RAVEN_SENTRY() YACK_MEM_SENTRY_FOR( obj()+dimension, current_rank*dimension)
 #else
 #define YACK_RAVEN_SENTRY()
 #endif
