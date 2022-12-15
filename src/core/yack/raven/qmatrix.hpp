@@ -63,7 +63,15 @@ namespace yack
             void                   reset()                        throw();      //!< reset
             friend std::ostream   &operator<<(std::ostream &, const qmatrix &); //!< display as matrix
 
+            //------------------------------------------------------------------
             //! try to insert a new vector
+            /**
+             - compute set u_k = v, then remove all components of v
+             on the current base
+             - if u_k is not 0, the base is increased and return true
+             - if u_k is 0, it is included in linear space, return false
+             */
+            //------------------------------------------------------------------
             template <typename T> inline
             bool operator()(const readable<T> &v)
             {
@@ -71,7 +79,13 @@ namespace yack
                 return build_next(u_k,v_k);
             }
 
+            //------------------------------------------------------------------
             //! check if the vector is included in linear space
+            /**
+             - compute the orthogonal projection of v on current subspace
+             - is the projection is 0, it is included
+             */
+            //------------------------------------------------------------------
             template <typename T> inline
             bool includes(const readable<T> &v)
             {
@@ -80,6 +94,9 @@ namespace yack
                 return is_nil_vec(u_k);
             }
 
+            //------------------------------------------------------------------
+            //! check orthogonal version of v, mostly to debug
+            //------------------------------------------------------------------
             template <typename T> inline
             bool guess(writable<apz>     &o,
                        const readable<T> &v)
@@ -89,8 +106,10 @@ namespace yack
                 return try_polish(o,u_k);
             }
 
-
-
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
             const size_t maximum_rank; //!< maximum rank
             const size_t current_rank; //!< current rank
 
@@ -103,16 +122,10 @@ namespace yack
             contractor<apq>     vgs; //!< dimension for G-S
             
             void initialize();
-            void keep_ortho(writable<apq>       &u_k,
-                            const readable<apz> &v_k);
-
+            void keep_ortho(writable<apq>       &u_k, const readable<apz> &v_k);
             bool is_nil_vec(const readable<apq> &u_k) const throw();
-
-            bool build_next(writable<apq>       &u_k,
-                            const readable<apz> &v_k);
-
-            bool try_polish(writable<apz>       &target,
-                            const readable<apq> &source) const;
+            bool build_next(writable<apq>       &u_k, const readable<apz> &v_k);
+            bool try_polish(writable<apz>       &, const readable<apq> &source) const;
         };
 
     }
