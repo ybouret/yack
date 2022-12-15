@@ -311,6 +311,7 @@ add_test(color:yuv  test-core color_yuv)
 add_test(color:unit-real test-core color_unit_real)
 add_test(color:gs   test-core color_gs)
 
-add_test(raven:space test-core raven_space)
+add_test(raven:space  test-core raven_space)
+add_test(raven:family test-core raven_family)
 
 yack_testing(core)

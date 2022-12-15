@@ -213,6 +213,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(color_gs);
 
     YACK_UTEST(raven_space);
+    YACK_UTEST(raven_family);
 
 }
 YACK_UTEST_EXEC()
