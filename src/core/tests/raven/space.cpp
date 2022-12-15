@@ -96,7 +96,7 @@ YACK_UTEST(raven_space)
 {
     randomized::rand_ ran;
 
-    test(3,2,ran);
+    test(5,2,ran);
 
 
     YACK_SIZEOF(raven::qvector);
