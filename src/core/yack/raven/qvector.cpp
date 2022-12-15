@@ -68,7 +68,7 @@ namespace yack
 
             for(size_t i=dimension;i>0;--i)
             {
-                const apq q = u_k[i] * lcm;
+                const apq q = u_k[i] * lcm; assert(1==q.den);
                 if( (arr[i] = q.num).s != __zero__ ) gtz = true;
             }
 

@@ -1,6 +1,6 @@
 #include "yack/raven/qmatrix.hpp"
 #include "yack/system/imported.hpp"
-//#include "yack/apex/kernel.hpp"
+#include "yack/apex/kernel.hpp"
 
 namespace yack
 {
@@ -130,8 +130,33 @@ namespace yack
                 coerce(current_rank) = working_rank;
                 return true;
             }
-
         }
+
+        bool qmatrix:: try_polish(writable<apz>       &target,
+                                  const readable<apq> &source) const
+        {
+            assert(target.size()==dimension);
+            assert(source.size()==dimension);
+            bool      gtz = false;
+            {
+                const apn rho = apk::lcm(source,size_t(1),dimension);
+                for(size_t i=dimension;i>0;--i)
+                {
+                    const apq tmp = source[i] * rho; assert(tmp.den==1);
+                    if( __zero__ != (target[i] = tmp.num).s ) gtz = true;
+                }
+            }
+
+            if(gtz)
+            {
+                apn       dum;
+                apk::definite(target,dum);
+                return true;
+            }
+            else
+                return false;
+        }
+
 
     }
 

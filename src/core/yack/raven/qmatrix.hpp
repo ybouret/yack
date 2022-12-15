@@ -16,6 +16,16 @@
 #define YACK_RAVEN_SENTRY()
 #endif
 
+//! helper to load template data
+#define YACK_RAVEN_LOAD()                    \
+/**/ YACK_RAVEN_SENTRY();                    \
+/**/ assert(dimension==v.size());            \
+/**/ thin_array<apz> v_k( obj(), dimension); \
+/**/ thin_array<apq> u_k( vgs(), dimension); \
+/**/ for(size_t i=dimension;i>0;--i)         \
+/**/   u_k[i] = v_k[i] = v[i]
+
+
 namespace yack
 {
     namespace raven
@@ -57,15 +67,7 @@ namespace yack
             template <typename T> inline
             bool operator()(const readable<T> &v)
             {
-                YACK_RAVEN_SENTRY();
-                assert(dimension==v.size());
-
-                thin_array<apz> v_k( obj(), dimension);
-                thin_array<apq> u_k( vgs(), dimension);
-                for(size_t i=dimension;i>0;--i) {
-                    u_k[i] = v_k[i] = v[i];
-                }
-
+                YACK_RAVEN_LOAD();
                 return build_next(u_k,v_k);
             }
 
@@ -73,16 +75,19 @@ namespace yack
             template <typename T> inline
             bool includes(const readable<T> &v)
             {
-                YACK_RAVEN_SENTRY();
-                assert(dimension==v.size());
-                thin_array<apz> v_k( obj(), dimension);
-                thin_array<apq> u_k( vgs(), dimension);
-                for(size_t i=dimension;i>0;--i) {
-                    u_k[i] = v_k[i] = v[i];
-                }
+                YACK_RAVEN_LOAD();
                 keep_ortho(u_k,v_k);
                 return is_nil_vec(u_k);
             }
+
+            template <typename T> inline
+            bool guess(writable<apz>     &o,
+                       const readable<T> &v)
+            {
+                YACK_RAVEN_LOAD();
+                return try_polish(o,u_k);
+            }
+
 
 
             const size_t maximum_rank; //!< maximum rank
@@ -104,6 +109,9 @@ namespace yack
 
             bool build_next(writable<apq>       &u_k,
                             const readable<apz> &v_k);
+
+            bool try_polish(writable<apz>       &target,
+                            const readable<apq> &source) const;
         };
 
     }

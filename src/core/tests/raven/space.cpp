@@ -64,27 +64,55 @@ namespace
         {
             combination    comb(n,k);
             vector<size_t> indx(k);
+            vector<size_t> left(n-k);
             do
             {
+                for(size_t i=1,j=1;i<=n;++i)
+                {
+                    if(comb.look_up(i)) continue;
+                    left[j++] = i;
+                }
+
+                // create subspace in U
                 U.reset();
-                std::cerr << "using " << comb << std::endl;
+                std::cerr << "using " << comb << " | left=" << left << std::endl;
                 for(size_t i=1;i<=k;++i)
                 {
                     YACK_ASSERT(U(nu[comb[i]]));
                 }
                 std::cerr << "\tU=" << U << std::endl;
+                for(size_t i=1;i<=k;++i)
+                {
+                    YACK_ASSERT(U.includes(nu[comb[i]]));
+                }
+
+                for(size_t i=left.size();i>0;--i)
+                {
+                    YACK_ASSERT(!U.includes(nu[left[i]]));
+                }
+
+
+                // create shuffled subspace in V
                 permutation perm(k);
                 do
                 {
                     if(1==perm.index) continue;
                     perm.designate(indx,comb);
-                    //std::cerr << "\t\tperm=" << perm << " => " << indx << std::endl;
                     V.reset();
                     for(size_t i=1;i<=k;++i)
                     {
                         YACK_ASSERT(V(nu[indx[i]]));
                     }
                     std::cerr << "\tV=" << V << std::endl;
+                    for(size_t i=1;i<=k;++i)
+                    {
+                        YACK_ASSERT(V.includes(nu[comb[i]]));
+                    }
+                    for(size_t i=left.size();i>0;--i)
+                    {
+                        YACK_ASSERT(!V.includes(nu[left[i]]));
+                    }
+
 
                 } while(perm.next());
 
