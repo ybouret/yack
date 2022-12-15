@@ -38,6 +38,8 @@ namespace
 
         std::cerr << "Testing with size=" << size << " | rank=" << rank << std::endl;
 
+        raven::qFund io = new raven::qBank();
+
         // buildng
         matrix<int>    nu(rank,size);
         do
@@ -55,10 +57,13 @@ namespace
         const size_t   n = mu.rows;
         vector<size_t> id(n); id.ld_incr(1);
 
+        cxx_list_of<raven::qfamily> source;
+
         for(size_t i=1;i<=n;++i)
         {
             rolling::down(id);
-            raven::qfamily F(id,mu,rank);
+            source.push_back( new raven::qfamily(id,mu,rank,io) );
+            std::cerr << *(source.tail) << std::endl;
         }
 
 
@@ -79,6 +84,9 @@ YACK_UTEST(raven_family)
 
 
     test(size,rank,ran);
+
+    YACK_SIZEOF(raven::qmatrix);
+    YACK_SIZEOF(raven::qfamily);
 
 
 }

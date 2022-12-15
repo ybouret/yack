@@ -110,10 +110,13 @@ namespace
                     {
                         YACK_ASSERT(V.includes(nu[comb[i]]));
                     }
+
                     for(size_t i=left.size();i>0;--i)
                     {
                         YACK_ASSERT(!V.includes(nu[left[i]]));
                     }
+
+                    YACK_ASSERT(U.is_equivalent_to(V));
 
                     for(size_t i=left.size();i>0;--i)
                     {

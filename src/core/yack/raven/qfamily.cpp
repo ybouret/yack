@@ -16,6 +16,12 @@ namespace yack
             throw imported::exception( "raven::qfamily","singular matrix[%u]", unsigned(ir) );
         }
 
+        std::ostream & operator<<(std::ostream &os, const qfamily &self)
+        {
+            os << *(self.qbase) << "@" << *(self.basis) << "+" << *(self.ready);
+            return os;
+        }
+
     }
 
 }

@@ -13,6 +13,10 @@ namespace yack
     namespace raven
     {
 
+        typedef small_set<size_t>  qList;
+        typedef small_bank<size_t> qBank;
+        typedef qBank::pointer     qFund;
+
         class qfamily : public object
         {
         public:
@@ -21,20 +25,30 @@ namespace yack
             template <typename T> inline
             explicit qfamily(readable<size_t> &id,
                              const matrix<T>  &mu,
-                             const size_t      rk) :
+                             const size_t      rk,
+                             const qFund      &io) :
             object(),
-            qbase( new qmatrix(mu.cols,rk) )
+            qbase( new qmatrix(mu.cols,rk) ),
+            basis(io),
+            ready(io),
+            next(0),
+            prev(0)
             {
                 const size_t nr = mu.rows;  assert(nr>=2);
                 const size_t ir = id[nr];   assert(ir>=1); assert(ir<=mu.rows);
                 qmatrix     &Q  = *qbase;
                 if(!Q(mu[ir])) throw_singular_matrix(ir);
-                std::cerr << "Q=" << Q << std::endl;
+                basis << ir;
+                for(size_t i=1;i<nr;++i) ready << id[i];
             }
 
+            friend std::ostream & operator<<(std::ostream &, const qfamily &);
 
             clone_ptr<qmatrix> qbase;
-
+            qList              basis;
+            qList              ready;
+            qfamily           *next;
+            qfamily           *prev;
 
 
         private:
