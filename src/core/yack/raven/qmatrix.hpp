@@ -31,17 +31,6 @@ namespace yack
     namespace raven
     {
 
-        //______________________________________________________________________
-        //
-        //
-        //! maturity of family
-        //
-        //______________________________________________________________________
-        enum maturity {
-            in_progress, //!< size<rank-1
-            almost_done, //!< size=rank-1
-            fully_grown  //!< size=rank
-        };
 
         //______________________________________________________________________
         //
@@ -52,6 +41,18 @@ namespace yack
         class qmatrix : public object, public qmetrics, public readable<qvector>
         {
         public:
+
+            enum maturity
+            {
+                meaningless,
+                initialized,
+                in_progress,
+                almost_done,
+                fully_grown
+            };
+
+            static const char *maturity_to_text(const maturity) throw();
+
             //__________________________________________________________________
             //
             // C++
@@ -71,6 +72,7 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
+            const char            *maturity_text()          const throw();      //!< human readadble maturity
             size_t                 allocated()              const throw();      //!< linear memory
             qmatrix               *clone()                          const;      //!< new qmatrix(*this)
             void                   reset()                        throw();      //!< reset

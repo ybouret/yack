@@ -11,7 +11,51 @@ namespace yack
 
         }
 
+        const char *qmatrix:: maturity_to_text(const maturity m) throw()
+        {
+            switch(m)
+            {
+                case meaningless: return "meaningless";
+                case initialized: return "initialized";
+                case in_progress: return "in_progress";
+                case almost_done: return "almost_done";
+                case fully_grown: return "fully_grown";
+            }
+            return yack_unknown;
+        }
+
+
         static const char here[] = "raven::matrix";
+
+
+        static inline qmatrix::maturity get_maturity(const size_t maximum_rank,
+                                                     const size_t current_rank)
+        {
+
+            assert(current_rank<=maximum_rank);
+            switch(maximum_rank-current_rank)
+            {
+                case 0: return qmatrix::fully_grown; // ok...
+                case 1: return qmatrix::almost_done; // prioritary over initialized
+                default:
+                    break;
+            }
+
+            switch(current_rank)
+            {
+                case 0: return qmatrix::meaningless;
+                case 1: return qmatrix::initialized;
+                default:
+                    break;
+            }
+            return qmatrix::in_progress;
+
+        }
+
+        const char * qmatrix:: maturity_text() const throw()
+        {
+            return maturity_to_text(active_state);
+        }
 
         qmatrix:: qmatrix(const size_t sz,
                           const size_t rk) :
@@ -21,7 +65,7 @@ namespace yack
         readable<qvector>(),
         maximum_rank(rk),
         current_rank(0),
-        active_state(maximum_rank>2 ? in_progress : almost_done),
+        active_state(get_maturity(maximum_rank,current_rank)),
         lib(),
         obj(),
         row(),
@@ -57,7 +101,7 @@ namespace yack
         void qmatrix:: reset() throw()
         {
             coerce(current_rank) = 0;
-            coerce(active_state) = (maximum_rank>2 ? in_progress : almost_done);
+            coerce(active_state) = get_maturity(maximum_rank,current_rank);
         }
 
         size_t    qmatrix:: size() const throw() { return current_rank; }
@@ -138,12 +182,7 @@ namespace yack
                 else
                 {
                     coerce(current_rank) = working_rank;
-                    switch(maximum_rank-current_rank)
-                    {
-                        case 0: coerce(active_state) = fully_grown; break;
-                        case 1: coerce(active_state) = almost_done; break;
-                        default: assert(in_progress==active_state); break;
-                    }
+                    coerce(active_state) = get_maturity(maximum_rank,current_rank);
                     return true;
                 }
             }

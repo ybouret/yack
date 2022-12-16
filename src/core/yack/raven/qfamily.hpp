@@ -69,10 +69,15 @@ namespace yack
             next(0),
             prev(0)
             {
+                // initialize input
                 const size_t nr = mu.rows;  assert(nr>=2);
                 const size_t ir = id[nr];   assert(ir>=1); assert(ir<=mu.rows);
+
+                // initialize matrix
                 qmatrix     &Q  = *qbase;
                 if(!Q(mu[ir])) throw_singular_matrix(ir);
+
+                // initialize indices
                 basis += ir;
                 for(size_t i=1;i<nr;++i) ready += id[i];
 
@@ -100,27 +105,7 @@ namespace yack
             void generate(list_of<qfamily> &lineage,
                           const matrix<T>  &mu) const
             {
-                assert(ready->size+basis->size==mu.rows);
-                switch(qbase->active_state)
-                {
-                        //------------------------------------------------------
-                        // end of lineage at this point
-                    case fully_grown: return;
-                        //------------------------------------------------------
-
-
-                        //------------------------------------------------------
-                        // at most one final generation
-                    case almost_done:
-                        final_generation(lineage,mu);
-                        return;
-                        //------------------------------------------------------
-
-                    case in_progress:
-                        std::cerr << "In Progress!" << std::endl;
-                        exit(0);
-                        break;
-                }
+                
             }
 
             qmatrix       & operator*()       throw() { return *qbase; }
@@ -134,58 +119,12 @@ namespace yack
             qfamily           *prev;
 
 
-            static void reduce(list_of<qfamily> &lineage);
 
         private:
             YACK_DISABLE_ASSIGN(qfamily);
             void throw_singular_matrix(const size_t ir) const;
 
-            template <typename T>
-            bool bloom(const matrix<T> &mu)
-            {
-                assert(almost_done==qbase->active_state);
-                YACK_RAVEN_CHECK();
-
-                qmatrix &Q     = *qbase;
-                bool     found = false;
-
-                //--------------------------------------------------------------
-                // find a final vector, any will produce the same result
-                //--------------------------------------------------------------
-                while(ready->size)
-                {
-                    const size_t ir = ready.pull_lower(); // extract index
-                    basis += ir;                          // record in basis
-                    YACK_RAVEN_CHECK();
-                    if( Q(mu[ir]) )
-                    {
-                        found = true;
-                        assert(fully_grown==qbase->active_state);
-                        break;
-                    }
-                }
-
-                //--------------------------------------------------------------
-                // cleanup
-                //--------------------------------------------------------------
-                basis += ready;
-                ready.free();
-                YACK_RAVEN_CHECK();
-
-                //--------------------------------------------------------------
-                // done!
-                //--------------------------------------------------------------
-                return found;
-            }
-
-            template <typename T> inline
-            void final_generation(list_of<qfamily> &lineage,
-                                  const matrix<T>  &mu) const
-            {
-                auto_ptr<qfamily> children = new qfamily(*this);
-                if(children->bloom(mu))
-                    lineage.push_back( children.yield() );
-            }
+            
 
 
 

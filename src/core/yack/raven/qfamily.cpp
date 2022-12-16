@@ -34,41 +34,7 @@ namespace yack
         }
 
 
-        void qfamily:: reduce(list_of<qfamily> &lineage)
-        {
-            cxx_list_of<qfamily> repo;
-
-            while( lineage.size )
-            {
-                auto_ptr<qfamily> tribeF = lineage.pop_front();
-                const qmatrix    &tribeQ = **tribeF;
-                if(tribeQ.active_state == fully_grown)
-                {
-                    std::cerr << "fully grown" << std::endl;
-                    continue;
-                }
-                bool              housed = false;
-
-                std::cerr << " => " << tribeQ << std::endl;
-
-                for(qfamily *houseF=repo.head;houseF;houseF=houseF->next)
-                {
-                    qmatrix &houseQ = **houseF;
-                    std::cerr << " |_" << houseQ << std::endl;
-                    if(houseQ.is_equivalent_to(tribeQ)) {
-                        std::cerr << "Equivalent " << tribeQ << " and " << houseQ << " !" << std::endl;
-                        housed = true;
-                    }
-                }
-
-
-                repo.push_back( tribeF.yield() );
-                std::cerr << "\t#repo=" << repo.size << std::endl;
-            }
-
-            lineage.swap_with(repo);
-
-        }
+        
 
     }
 

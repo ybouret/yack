@@ -65,67 +65,66 @@ namespace
         std::cerr << "mu=" << mu << std::endl;
         YACK_CHECK(apk::rank_of(mu) == rank);
 
-        cxx_array<apz> urr(mu.cols);
-        cxx_array<apz> vrr(mu.cols);
-
-        for(size_t i=1;i<mu.rows;++i)
+        if(false)
         {
-            for(size_t j=i+1;j<=mu.rows;++j)
+            cxx_array<apz> urr(mu.cols);
+            cxx_array<apz> vrr(mu.cols);
+
+            for(size_t i=1;i<mu.rows;++i)
             {
-                raven::qmatrix U(mu.cols,rank);
-                YACK_ASSERT(U(mu[i]));
-                if(!U(mu[j])) continue;
-                std::cerr << "(" << i << "," << j << ")" << std::endl;
-
-                raven::qmatrix V(mu.cols,rank);
-                YACK_ASSERT(V(mu[j]));
-                YACK_ASSERT(V(mu[i]));
-                YACK_ASSERT(U.size()==V.size());
-
-                while(U.active_state!=raven::fully_grown)
+                for(size_t j=i+1;j<=mu.rows;++j)
                 {
-                    std::cerr << "\tU=" << U << std::endl;
-                    std::cerr << "\tV=" << V << std::endl;
-                    YACK_ASSERT(U.is_equivalent_to(V));
-                    for(size_t k=2;k<mu.rows;++k)
-                    {
-                        const readable<int> &mu_k = mu[k];
-                        if(U.guess(urr,mu_k))
-                        {
-                            YACK_ASSERT(V.guess(vrr,mu_k));
-                            std::cerr << "\t\t (" << k <<") " << mu_k << " -> " << urr << " | " << vrr << std::endl;
-                            YACK_ASSERT(urr==vrr);
-                        }
-                        else
-                        {
-                            YACK_ASSERT(!V.guess(vrr,mu_k));
-                        }
-                    }
+                    raven::qmatrix U(mu.cols,rank);
+                    YACK_ASSERT(U(mu[i]));
+                    if(!U(mu[j])) continue;
+                    std::cerr << "(" << i << "," << j << ")" << std::endl;
 
-                    while(true) {
-                        const int k = static_cast<int>( ran.in(2,mu.rows) );
-                        if(U(mu[k]))
+                    raven::qmatrix V(mu.cols,rank);
+                    YACK_ASSERT(V(mu[j]));
+                    YACK_ASSERT(V(mu[i]));
+                    YACK_ASSERT(U.size()==V.size());
+
+                    while(U.active_state!=raven::qmatrix::fully_grown)
+                    {
+                        std::cerr << "\tU=" << U << std::endl;
+                        std::cerr << "\tV=" << V << std::endl;
+                        YACK_ASSERT(U.is_equivalent_to(V));
+                        for(size_t k=2;k<=mu.rows;++k)
                         {
-                            YACK_ASSERT(V(mu[k]));
-                            break;
+                            const readable<int> &mu_k = mu[k];
+                            if(U.guess(urr,mu_k))
+                            {
+                                YACK_ASSERT(V.guess(vrr,mu_k));
+                                std::cerr << "\t\t (" << k <<") " << mu_k << " -> " << urr << " | " << vrr << std::endl;
+                                YACK_ASSERT(urr==vrr);
+                            }
+                            else
+                            {
+                                YACK_ASSERT(!V.guess(vrr,mu_k));
+                            }
                         }
+
+                        for(size_t k=1;k<=mu.rows;++k)
+                        {
+                            const readable<int> &mu_k = mu[k];
+                            if(U(mu_k))
+                            {
+                                YACK_ASSERT(V(mu[k]));
+                                break;
+                            }
+                        }
+
                     }
                 }
             }
         }
 
 
-#if 0
         raven::qbranch source;
         source(mu,rank,accept_all);
-
         std::cerr << source << std::endl;
 
-        while(source.generate(mu,display_vec))
-        {
-            std::cerr << source << std::endl;
-        }
-#endif
+
 
 
 

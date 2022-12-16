@@ -31,14 +31,18 @@ namespace yack
                             const size_t     rk,
                             FUNC            &ok)
             {
+                // cleanup
                 prune();
                 try {
+                    // prepare data
                     const size_t      nr = mu.rows;
                     cxx_array<size_t> id(nr); id.ld_incr(1);
+
+                    // loop over all first vector
                     for(size_t i=1;i<=nr;++i)
                     {
                         rolling::down(id); assert(i==id[nr]);
-                        if(!ok(mu[i])) continue;;
+                        if(!ok(mu[i])) continue;
                         qlist.push_back( new qfamily(id,mu,rk,io) );
                         coerce(depth) = 1;
                     }
@@ -46,6 +50,7 @@ namespace yack
                 catch(...) { prune(); throw; }
             }
 
+#if 0
             template <typename T, typename PROC>
             inline size_t generate(const matrix<T> &mu,
                                    PROC            &cb)
@@ -80,7 +85,7 @@ namespace yack
                     return 0;
                 }
             }
-
+#endif
 
             const size_t depth;
 
