@@ -1,4 +1,4 @@
-
+#if 0
 //! \file
 
 #ifndef YACK_DATA_SMALL_REPO_INCLUDED
@@ -141,4 +141,5 @@ namespace yack
 
 }
 
+#endif
 #endif

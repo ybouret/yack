@@ -11,6 +11,7 @@ namespace
 
 YACK_UTEST(data_small_repo)
 {
+#if 0
     small_repo<int> icache;
     icache.push_back(5);
     icache.push_front(7);
@@ -20,7 +21,8 @@ YACK_UTEST(data_small_repo)
     std::cerr << *icache << std::endl;
     
     icache.free();
-
+#endif
+    
 }
 YACK_UDONE()
 
