@@ -146,8 +146,6 @@ namespace yack
                 }
                 return true;
             }
-
-
         }
 
         bool contains(param_type args) const
@@ -156,6 +154,23 @@ namespace yack
             node_type *prev = NULL;
             return search(args,prev);
         }
+
+        bool remove(param_type args)
+        {
+            std::cerr << "=> removing " << args << std::endl;
+            node_type *prev = NULL;
+            if(search(args,prev))
+            {
+                assert(NULL!=prev);
+                cache->free( items.pop(prev) );
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
 
         inline const list_type * operator->() const throw() { return &items; }
         inline const list_type & operator* () const throw() { return  items; }
@@ -288,7 +303,7 @@ namespace yack
                 case __zero__:
                     std::cerr << "--> found " << args << " within #" << items.size << std::endl;
                     prev = forward;
-                    return false; // found at forward
+                    return true; // found at forward
 
                 case negative:
                     prev = lower;
