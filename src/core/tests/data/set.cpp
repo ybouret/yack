@@ -34,7 +34,7 @@ namespace
                 else
                     std::cerr << '.';
             }
-            if(++count>=32)
+            if(++count>=64)
             {
                 std::cerr << std::endl;
                 count = 0;
@@ -48,7 +48,7 @@ namespace
                 }
             }
 
-            if(ops>=1000) break;
+            if(ops>=10000) break;
         }
         std::cerr << std::endl;
 

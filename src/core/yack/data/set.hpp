@@ -16,54 +16,99 @@
 namespace yack
 {
 
+    //__________________________________________________________________________
+    //
+    //
+    //! compact data set node
+    //
+    //__________________________________________________________________________
     template <typename T>
     class ds_node
     {
     public:
-        YACK_DECL_ARGS_(T,type);
-        inline  ds_node(const_type &args) : next(0), prev(0), data(args) {}
-        inline ~ds_node() throw() {}
+        //______________________________________________________________________
+        //
+        // types
+        //______________________________________________________________________
+        YACK_DECL_ARGS_(T,type); //!< aliases
 
-        inline const_type & operator*() const throw() { return data; }
-        inline type       & operator*()       throw() { return data; }
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        inline  ds_node(const_type &args) : next(0), prev(0), data(args) {} //!< setup
+        inline ~ds_node() throw() {}                                        //!< cleanu[
+
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+        inline const_type & operator*() const throw() { return data; } //!< access, const
+
+        //! display content
         inline friend std::ostream & operator<<(std::ostream &os, const ds_node &self) {
             os << self.data;
             return os;
         }
 
-        ds_node *next;
-        ds_node *prev;
+        //______________________________________________________________________
+        //
+        // members
+        //______________________________________________________________________
+        ds_node *next; //!< for list/pool
+        ds_node *prev; //!< for list
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(ds_node);
         type     data;
     };
 
+    //__________________________________________________________________________
+    //
+    //
+    //! pool of zombie nodes, to be shared
+    //
+    //__________________________________________________________________________
     template <typename T>
     class ds_zpool : public object, public counted
     {
     public:
-        typedef ds_node<T>        node_type;
-        typedef arc_ptr<ds_zpool> pointer;
+        //______________________________________________________________________
+        //
+        // types
+        //______________________________________________________________________
+        typedef ds_node<T>        node_type; //!< alias
+        typedef arc_ptr<ds_zpool> pointer;   //!< alias
+        YACK_DECL_ARGS_(T,type);             //!< aliases
 
-        YACK_DECL_ARGS_(T,type);
-        inline explicit ds_zpool() throw() : object(), counted() {}
-        inline virtual ~ds_zpool() throw() { release(); }
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        inline explicit ds_zpool() throw() : object(), counted(), repo() {} //!< setup empty
+        inline virtual ~ds_zpool() throw() { release(); }                   //!< cleanup
 
-        inline size_t size() const throw() { return repo.size; }
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
 
+        //! reserve n extra nodes
         inline void reserve(size_t n) {
             while(n-- > 0) repo.store( object::zacquire<node_type>() );
         }
 
+        //! release all memory
         inline void release() throw() {
             while( repo.size ) object::zrelease( repo.query() );
         }
 
+        //! free/clean specific node
         inline void free(node_type *node) throw() {
-            assert(node);
+            assert(node); assert(NULL==node->prev); assert(NULL==node->next);
             repo.store( out_of_reach::naught( destructed(node) ) );
         }
 
+        //! create a node from a zombie
         inline node_type *make(const_type &args) {
             node_type *node = repo.size ? repo.query() : object::zacquire<node_type>();
             try {
@@ -75,29 +120,46 @@ namespace yack
             }
         }
 
+        //! access for info
+        inline const pool_of<node_type> & operator* () const throw() { return repo; }
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(ds_zpool);
         pool_of<node_type> repo;
     };
 
-
+    //__________________________________________________________________________
+    //
+    //
+    //! data set of unique/ordered nodes
+    //
+    //__________________________________________________________________________
     template <typename T>
     class data_set
     {
     public:
-        YACK_DECL_ARGS(T,type);
-        typedef ds_node<T>         node_type;
-        typedef list_of<node_type> list_type;
+        //______________________________________________________________________
+        //
+        // types
+        //______________________________________________________________________
+        YACK_DECL_ARGS(T,type);                              //!< aliases
+        typedef ds_node<T>                       node_type;  //!< alias
+        typedef list_of<node_type>               list_type;  //!< alias
+        typedef typename ds_zpool<type>::pointer zcache;     //!< alias
 
-        typedef typename ds_zpool<type>::pointer zcache;
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
 
+        //! setup with cache
         inline explicit data_set(const zcache &shared) throw() :
         items(),
         cache(shared)
         {
         }
 
+        //! hard copy using cache
         inline data_set(const data_set &other) :
         items(),
         cache(other.cache)
@@ -109,6 +171,7 @@ namespace yack
             catch(...) { free(); throw; }
         }
 
+        //! assign by copy/swap
         inline data_set & operator=( const data_set &other )
         {
             data_set tmp(other);
@@ -116,19 +179,24 @@ namespace yack
             return *this;
         }
 
-
+        //! cleanup, send back to cache
         inline virtual ~data_set() throw() { free(); }
 
+
+        //______________________________________________________________________
+        //
+        // single items methods
+        //______________________________________________________________________
+
+        //! free memory into cache
         inline void free() throw() { while(items.size) cache->free(items.pop_back()); }
 
-
+        //! try to insert a new value
         bool insert(param_type args)
         {
-            std::cerr << "=> inserting " << args << std::endl;
             node_type *prev = NULL;
             if(search(args,prev))
             {
-                std::cerr << "--> already" << std::endl;
                 return false;
             }
             else
@@ -137,27 +205,25 @@ namespace yack
                 if(prev)
                 {
                     items.insert_after(prev,node);
-                    std::cerr << "--> insert " << args << " after " << **prev << std::endl;
                 }
                 else
                 {
                     items.push_front(node);
-                    std::cerr << "--> push front " << args << std::endl;
                 }
                 return true;
             }
         }
 
+        //! test if contains a value
         bool contains(param_type args) const
         {
-            std::cerr << "=> containing " << args << std::endl;
             node_type *prev = NULL;
             return search(args,prev);
         }
 
+        //! try to remove a value
         bool remove(param_type args)
         {
-            std::cerr << "=> removing " << args << std::endl;
             node_type *prev = NULL;
             if(search(args,prev))
             {
@@ -171,20 +237,25 @@ namespace yack
             }
         }
 
+        //______________________________________________________________________
+        //
+        // access methods
+        //______________________________________________________________________
+        inline const list_type * operator->() const throw() { return &items; } //!< access
+        inline const list_type & operator* () const throw() { return  items; } //!< access
 
-        inline const list_type * operator->() const throw() { return &items; }
-        inline const list_type & operator* () const throw() { return  items; }
-
+        //______________________________________________________________________
+        //
+        // set operations
+        //______________________________________________________________________
 
         
     private:
         list_type items;
         zcache    cache;
 
-
         inline bool search(const_type &args, node_type * &prev) const {
 
-            std::cerr << "--> search " << args << std::endl;
             //------------------------------------------------------------------
             //
             // dispatch search
@@ -194,15 +265,12 @@ namespace yack
             switch(items.size) {
                     //----------------------------------------------------------
                     // empty list
-                case  0:
-                    std::cerr << "--> [empty]" << std::endl;
-                    return false;
+                case  0: return false;
                     //----------------------------------------------------------
 
                     //----------------------------------------------------------
                     // check with head=tail
-                case  1:
-                    return search_first(args,prev);
+                case  1: return search_first(args,prev);
                     //----------------------------------------------------------
 
                 default:
@@ -222,14 +290,11 @@ namespace yack
             assert(NULL==prev);
             switch( __sign::of(args,**items.head) ) {
                 case negative:
-                    std::cerr << "--> " << args << " < " << **items.head << " @first" << std::endl;
                     break;
                 case __zero__:
-                    std::cerr << "--> " << args << " = " << **items.head << " @first" << std::endl;
                     prev = items.head;
                     return true;
                 case positive:
-                    std::cerr << "--> " << args << " > " << **items.head << " @first" << std::endl;
                     prev = items.head;
                     return false;
             }
@@ -246,16 +311,13 @@ namespace yack
             node_type *lower = items.head;
             switch( __sign::of(args,**lower) ) {
                 case negative:
-                    std::cerr << "--> " << args << " < " << **lower << " @head" << std::endl;
                     return false;
 
                 case __zero__:
-                    std::cerr << "--> " << args << " = " << **lower << " @head" << std::endl;
                     prev = lower;
                     return true;
 
                 case positive:
-                    std::cerr << "--> " << args << " > " << **lower << " @head" << std::endl;
                     break;
             }
 
@@ -269,16 +331,13 @@ namespace yack
             switch( __sign::of(args,**upper) )
             {
                 case negative:
-                    std::cerr << "--> " << args << " < " << **upper << " @tail" << std::endl;
                     break;
 
                 case __zero__:
-                    std::cerr << "--> " << args << " = " << **upper << " @tail" << std::endl;
                     prev = lower;
                     return true;
 
                 case positive:
-                    std::cerr << "--> " << args << " > " << **upper << " @tail" << std::endl;
                     prev = upper;
                     return false;
             }
@@ -293,7 +352,6 @@ namespace yack
             node_type *forward = lower->next;
             if(forward==upper)
             {
-                std::cerr << "--> " << **lower << " < " << args << " < " << **forward << " within #" << items.size << std::endl;
                 prev = lower;
                 return false;
             }
@@ -301,19 +359,17 @@ namespace yack
             switch( __sign::of(args,**forward) )
             {
                 case __zero__:
-                    std::cerr << "--> found " << args << " within #" << items.size << std::endl;
                     prev = forward;
                     return true; // found at forward
 
                 case negative:
                     prev = lower;
-                    std::cerr << "--> " << **lower << " < " << args << " < " << **forward << " within #" << items.size << std::endl;
                     return false; // between lower and forward
 
                 case positive:
-                    std::cerr << "--> " << args << " > " << **forward << " : move up" << std::endl;
-                    lower = forward; break;
-                    // move
+                    lower = forward;
+                    break; // move
+
             }
 
             goto STEP_FORWARD;
