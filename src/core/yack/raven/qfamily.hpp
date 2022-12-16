@@ -117,18 +117,17 @@ namespace yack
                         return;
 
                     case qmatrix::almost_done:
+                        // return at most one new !!
                         finish(lineage,mu);
                         return;
 
                     case qmatrix::in_progress:
                         expand(lineage,mu);
-                        reduce(lineage);
                         return;
                 }
             }
 
-            static void reduce(list_of<qfamily> &lineage);
-
+            
             qmatrix       & operator*()       throw() { return *qbase; }
             const qmatrix & operator*() const throw() { return *qbase; }
 
@@ -216,8 +215,38 @@ namespace yack
                     assert(f->basis.excludes(f->ready));
                 }
 
+                reduce(lineage,mu);
+
             }
 
+            template <typename T>
+            static void reduce(list_of<qfamily> &lineage,
+                               const matrix<T>  &mu)
+            {
+                qfamily::list_type original;
+                while(lineage.size)
+                {
+                    auto_ptr<qfamily> F = lineage.pop_front();
+                    qmatrix          &L = **F;
+                    for(qfamily *G=original.head;G;G=G->next)
+                    {
+                        qmatrix &R = **G;
+                        if(L.is_equivalent_to(R))
+                        {
+                            std::cerr << "sould reduce " << *F << " and " << *G << std::endl;
+                            for(const qNode *node=F->basis->head;node;node=node->next)
+                            {
+                                
+                            }
+                        }
+                    }
+                    
+                    original.push_back(F.yield());
+                }
+                
+                lineage.swap_with(original);
+                
+            }
 
 
         };

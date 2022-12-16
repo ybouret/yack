@@ -35,9 +35,7 @@ namespace yack
         {
         }
 
-        void qfamily:: reduce(list_of<qfamily> &lineage)
-        {
-        }
+       
 
 
 

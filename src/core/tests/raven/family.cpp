@@ -122,8 +122,11 @@ namespace
 
         raven::qbranch source;
         source(mu,rank,accept_all);
-        std::cerr << source << std::endl;
-        source.generate(mu,display_vec);
+        do
+        {
+            std::cerr << source << std::endl;
+            if(source.depth>=2) break;
+        } while( source.generate(mu, display_vec) );
         
 
     }
