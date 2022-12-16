@@ -260,6 +260,36 @@ namespace yack
         inline const list_type * operator->() const throw() { return &items; } //!< access
         inline const list_type & operator* () const throw() { return  items; } //!< access
 
+        //! remove upper value
+        inline void pop_upper() throw()
+        {
+            assert(items.tail); cache->free( items.pop_back() );
+        }
+
+        //! remove lower value
+        inline void pop_lower() throw()
+        {
+            assert(items.head); cache->free( items.pop_front() );
+        }
+
+        //! pull upper value
+        inline type pull_upper() {
+            assert(items.tail);
+            type res = **items.tail;
+            cache->free( items.pop_back() );
+            return res;
+        }
+
+        //! pull lower value
+        inline type pull_lower() {
+            assert(items.head);
+            type res = **items.head;
+            cache->free( items.pop_front() );
+            return res;
+        }
+
+
+
         //______________________________________________________________________
         //
         // set operations
