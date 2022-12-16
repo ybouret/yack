@@ -12,29 +12,38 @@ YACK_UTEST(data_set)
 
     data_set<int> ids( izp );
 
-    YACK_CHECK(!ids.contains(4));
+    std::cerr << "Inserting On Empty" << std::endl;
+    YACK_ASSERT(ids.insert(10));
+    YACK_ASSERT(ids.contains(10));
+    YACK_ASSERT(!ids.insert(10));
+    YACK_ASSERT(!ids.contains(1));
+    YACK_ASSERT(!ids.contains(100));
+    std::cerr << std::endl;
 
-    YACK_CHECK(ids.insert(12));
-    YACK_CHECK(ids.insert(13));
-    std::cerr << *ids << std::endl;
+    std::cerr << "Inserting On Size=1, Lower" << std::endl;
     ids.free();
-    YACK_CHECK(ids.insert(13));
-    YACK_CHECK(ids.insert(12));
-    YACK_CHECK(ids.insert(4));
-    YACK_CHECK(ids.insert(15));
+    YACK_ASSERT(ids.insert(10));
+    YACK_ASSERT(ids.insert(1));
+    YACK_ASSERT(ids.contains(10));
+    YACK_ASSERT(ids.contains(1));
+    YACK_ASSERT(!ids.contains(0));
+    YACK_ASSERT(!ids.contains(11));
+    YACK_ASSERT(!ids.contains(5));
 
-    std::cerr << *ids << std::endl;
-    YACK_CHECK(ids.contains(4));
-    YACK_CHECK(ids.contains(15));
+    std::cerr << "Inserting On Size=1, Upper" << std::endl;
+    ids.free();
+    YACK_ASSERT(ids.insert(1));
+    YACK_ASSERT(ids.insert(10));
+    YACK_ASSERT(ids.contains(10));
+    YACK_ASSERT(ids.contains(1));
+    YACK_ASSERT(!ids.contains(0));
+    YACK_ASSERT(!ids.contains(11));
+    YACK_ASSERT(!ids.contains(5));
 
 
 
 
-    YACK_SIZEOF(ds_zpool<int>);
-    YACK_SIZEOF(ds_zpool<string>);
-    YACK_SIZEOF(data_set<int>);
-    YACK_SIZEOF(data_set<string>);
-
+    
 }
 YACK_UDONE()
 

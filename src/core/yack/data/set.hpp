@@ -93,32 +93,57 @@ namespace yack
         typedef typename ds_zpool<type>::pointer zcache;
 
         inline explicit data_set(const zcache &shared) throw() :
+        items(),
         cache(shared)
         {
         }
 
-        inline virtual ~data_set() throw()
+        inline data_set(const data_set &other) :
+        items(),
+        cache(other.cache)
         {
-            free();
+            try {
+                for(const node_type *node=other->head;node;node=node->next)
+                    items.push_back( cache->make( **node) );
+            }
+            catch(...) { free(); throw; }
         }
 
-        inline void free() throw() {
-            while(items.size) cache->free(items.pop_back());
+        inline data_set & operator=( const data_set &other )
+        {
+            data_set tmp(other);
+            items.swap_with(tmp.items);
+            return *this;
         }
+
+
+        inline virtual ~data_set() throw() { free(); }
+
+        inline void free() throw() { while(items.size) cache->free(items.pop_back()); }
 
 
         bool insert(param_type args)
         {
+            std::cerr << "=> inserting " << args << std::endl;
             node_type *prev = NULL;
             if(search(args,prev))
-                return true;
+            {
+                std::cerr << "--> already" << std::endl;
+                return false;
+            }
             else
             {
                 node_type *node = cache->make(args);
                 if(prev)
+                {
                     items.insert_after(prev,node);
+                    std::cerr << "--> insert " << args << " after " << **prev << std::endl;
+                }
                 else
+                {
                     items.push_front(node);
+                    std::cerr << "--> push front " << args << std::endl;
+                }
                 return true;
             }
 
@@ -127,6 +152,7 @@ namespace yack
 
         bool contains(param_type args) const
         {
+            std::cerr << "=> containing " << args << std::endl;
             node_type *prev = NULL;
             return search(args,prev);
         }
@@ -143,29 +169,79 @@ namespace yack
 
         inline bool search(const_type &args, node_type * &prev) const {
 
+            std::cerr << "--> search " << args << std::endl;
+            //------------------------------------------------------------------
+            //
+            // dispatch search
+            //
+            //------------------------------------------------------------------
+            assert(NULL==prev);
+            switch(items.size) {
+                    //----------------------------------------------------------
+                    // empty list
+                case  0:
+                    std::cerr << "--> [empty]" << std::endl;
+                    return false;
+                    //----------------------------------------------------------
+
+                    //----------------------------------------------------------
+                    // check with head=tail
+                case  1:
+                    return search_first(args,prev);
+                    //----------------------------------------------------------
+
+                default:
+                    break;
+            }
+
             //------------------------------------------------------------------
             //
             // look up in the ordered list
             //
             //------------------------------------------------------------------
+            return search_local(args,prev);
+        }
+
+        inline bool search_first(const_type &args, node_type * &prev) const {
+            assert(1==items.size);
             assert(NULL==prev);
-            switch(items.size) {
-                case  0: return false;                   // not found,
-                case  1: return search_first(args,prev); // special case
-                default: break;                          // generic case
+            switch( __sign::of(args,**items.head) ) {
+                case negative:
+                    std::cerr << "--> " << args << " < " << **items.head << " @first" << std::endl;
+                    break;
+                case __zero__:
+                    std::cerr << "--> " << args << " = " << **items.head << " @first" << std::endl;
+                    prev = items.head;
+                    return true;
+                case positive:
+                    std::cerr << "--> " << args << " > " << **items.head << " @first" << std::endl;
+                    prev = items.head;
+                    return false;
             }
+            return false;
+        }
 
-            assert(items.size>=2);
-
+        inline bool search_local(const_type &args, node_type * &prev) const
+        {
             //------------------------------------------------------------------
             //
             // compare to head
             //
             //------------------------------------------------------------------
-            switch( __sign::of(args,**items.head) ) {
-                case negative: return false;                   // smaller than head
-                case __zero__: prev = items.head; return true; // found at head
-                case positive: break;                          // greater than head
+            node_type *lower = items.head;
+            switch( __sign::of(args,**lower) ) {
+                case negative:
+                    std::cerr << "--> " << args << " < " << **lower << " @head" << std::endl;
+                    return false;
+
+                case __zero__:
+                    std::cerr << "--> " << args << " = " << **lower << " @head" << std::endl;
+                    prev = lower;
+                    return true;
+
+                case positive:
+                    std::cerr << "--> " << args << " > " << **lower << " @head" << std::endl;
+                    break;
             }
 
 
@@ -174,29 +250,58 @@ namespace yack
             // compare to tail
             //
             //------------------------------------------------------------------
-            switch( __sign::of(**items.tail,args) ) {
-                case negative: prev = items.tail; return false; // greater than tail
-                case __zero__: prev = items.tail; return true;  // found   at tauil
-                case positive: break;                           // smaller than tail
+            node_type *upper = items.tail;
+            switch( __sign::of(args,**upper) )
+            {
+                case negative:
+                    std::cerr << "--> " << args << " < " << **upper << " @tail" << std::endl;
+                    break;
+
+                case __zero__:
+                    std::cerr << "--> " << args << " = " << **upper << " @tail" << std::endl;
+                    prev = lower;
+                    return true;
+
+                case positive:
+                    std::cerr << "--> " << args << " > " << **upper << " @tail" << std::endl;
+                    prev = upper;
+                    return false;
             }
 
-            assert(**items.head<args);
-            assert(args<**items.tail);
 
-            exit(0);
 
-            return false;
-        }
 
-        inline bool search_first(const_type &args, node_type * &prev) const {
-            assert(1==items.size);
-            assert(NULL==prev);
-            switch( __sign::of(args,**items.head) ) {
-                case negative: break;
-                case __zero__: prev = items.head; return true;
-                case positive: prev = items.head; return false;
+        STEP_FORWARD:
+            assert(lower!=upper);
+            assert(**lower<args);
+            assert(args<**upper);
+            node_type *forward = lower->next;
+            if(forward==upper)
+            {
+                std::cerr << "--> " << **lower << " < " << args << " < " << **forward << " within #" << items.size << std::endl;
+                prev = lower;
+                return false;
             }
-            return false;
+
+            switch( __sign::of(args,**forward) )
+            {
+                case __zero__:
+                    std::cerr << "--> found " << args << " within #" << items.size << std::endl;
+                    prev = forward;
+                    return false; // found at forward
+
+                case negative:
+                    prev = lower;
+                    std::cerr << "--> " << **lower << " < " << args << " < " << **forward << " within #" << items.size << std::endl;
+                    return false; // between lower and forward
+
+                case positive:
+                    std::cerr << "--> " << args << " > " << **forward << " : move up" << std::endl;
+                    lower = forward; break;
+                    // move
+            }
+
+            goto STEP_FORWARD;
         }
 
 
