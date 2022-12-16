@@ -51,9 +51,8 @@ namespace
 
         std::cerr << "Testing with size=" << size << " | rank=" << rank << std::endl;
 
-        raven::qFund io = new raven::qBank();
 
-        // buildng
+        // building
         matrix<int>    nu(rank,size);
         do
         {
@@ -78,15 +77,6 @@ namespace
             std::cerr << source << std::endl;
         }
 
-#if 0
-        raven::qfamily::list_type lineage;
-        for(const raven::qfamily *f=source->head;f;f=f->next)
-        {
-            lineage.release();
-            f->generate(lineage,mu);
-            std::cerr << lineage << std::endl;
-        }
-#endif
 
 
 

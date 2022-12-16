@@ -13,7 +13,12 @@ namespace yack
 {
     namespace raven
     {
-
+        //______________________________________________________________________
+        //
+        //
+        // aliases for internal indices
+        //
+        //______________________________________________________________________
         typedef small_set<size_t>  qList;
         typedef qList::node_type   qNode;
         typedef small_bank<size_t> qBank;
