@@ -76,31 +76,41 @@ namespace
                 YACK_ASSERT(U(mu[i]));
                 if(!U(mu[j])) continue;
                 std::cerr << "(" << i << "," << j << ")" << std::endl;
-                std::cerr << "\tU=" << U << std::endl;
-                
+
                 raven::qmatrix V(mu.cols,rank);
                 YACK_ASSERT(V(mu[j]));
                 YACK_ASSERT(V(mu[i]));
                 YACK_ASSERT(U.size()==V.size());
-                std::cerr << "\tV=" << V << std::endl;
-                YACK_ASSERT(U.is_equivalent_to(V));
 
-                for(size_t k=2;k<mu.rows;++k)
+                while(U.active_state!=raven::fully_grown)
                 {
-                    const readable<int> &mu_k = mu[k];
-                    if(U.guess(urr,mu_k))
+                    std::cerr << "\tU=" << U << std::endl;
+                    std::cerr << "\tV=" << V << std::endl;
+                    YACK_ASSERT(U.is_equivalent_to(V));
+                    for(size_t k=2;k<mu.rows;++k)
                     {
-                        YACK_ASSERT(V.guess(vrr,mu_k));
-                        std::cerr << "\t\t (" << k <<") " << mu_k << " -> " << urr << " | " << vrr << std::endl;
-                        YACK_ASSERT(urr==vrr);
+                        const readable<int> &mu_k = mu[k];
+                        if(U.guess(urr,mu_k))
+                        {
+                            YACK_ASSERT(V.guess(vrr,mu_k));
+                            std::cerr << "\t\t (" << k <<") " << mu_k << " -> " << urr << " | " << vrr << std::endl;
+                            YACK_ASSERT(urr==vrr);
+                        }
+                        else
+                        {
+                            YACK_ASSERT(!V.guess(vrr,mu_k));
+                        }
                     }
-                    else
-                    {
-                        YACK_ASSERT(!V.guess(vrr,mu_k));
+
+                    while(true) {
+                        const int k = static_cast<int>( ran.in(2,mu.rows) );
+                        if(U(mu[k]))
+                        {
+                            YACK_ASSERT(V(mu[k]));
+                            break;
+                        }
                     }
                 }
-
-
             }
         }
 
