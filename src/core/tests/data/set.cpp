@@ -54,6 +54,25 @@ namespace
 
         std::cerr << *ids << std::endl;
 
+        YACK_ASSERT(ids.includes(ids));
+
+        for(size_t iter=0;iter<10;++iter)
+        {
+            data_set<int> sub( ids.cache );
+            for(const ds_node<int> *node=ids->head;node;node=node->next)
+            {
+                if( ran.to<double>() < 0.4 ) sub.ensure( **node );
+            }
+            YACK_CHECK(ids.includes(sub));
+
+            data_set<int> tmp = ids;
+            YACK_CHECK(tmp==ids);
+            tmp += sub;
+            YACK_CHECK(tmp==ids);
+
+        }
+
+
     }
 }
 

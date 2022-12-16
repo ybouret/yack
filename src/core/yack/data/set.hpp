@@ -264,40 +264,123 @@ namespace yack
         //
         // set operations
         //______________________________________________________________________
-        bool includes(const data_set &other) const
+
+        //! all other data must be in this set
+        inline bool includes(const data_set &other) const
         {
 
             // get rid of trivial cases
             if(this == &other)              return true; //!< same set
             if(items.size<other.items.size) return false; //!< this is too small
 
-            // initialize searc
+            // initialize search
             const node_type *node = other->head;
             node_type       *mine = NULL;
             if(!search(**node,mine)) return false;
             assert(NULL!=mine);
 
             // look of for other nodes
-            for(node=node->next;node;node->next)
+            for(node=node->next;node;node=node->next)
             {
             NEXT_MINE:
                 mine=mine->next;
                 if(!mine) return false;
                 if(**mine!=**node) goto NEXT_MINE;
             }
-
             return true;
-
-
         }
 
 
+        //! no other data allowed in this set
+        inline bool excludes(const data_set &other) const
+        {
+            for(const node_type *node=other->head;node;node=node->next)
+            {
+                node_type *mine=NULL;
+                if(search(**node,mine)) return false;
+            }
+            return true;
+        }
 
+
+        //! merge all foreign data
+        inline void merge(const data_set &other)
+        {
+            if(this!=&other) {
+                for(const node_type *node=other->head;node;node=node->next)
+                    ensure(**node);
+            }
+        }
+
+        //! purge all common data
+        inline void purge(const data_set &other)
+        {
+            if(this!=&other) {
+                for(const node_type *node=other->head;node;node=node->next)
+                    dismiss(**node);
+            }
+            else
+            {
+                free();
+            }
+        }
+
+
+        //! syntax: ensure
+        data_set & operator+=(param_type args) {
+            ensure(args);
+            return *this;
+        }
+
+
+        //! syntax: dismiss
+        data_set & operator-=(param_type args) {
+            dismiss(args);
+            return *this;
+        }
+
+        //! syntax: merge
+        data_set & operator+=(const data_set &other) {
+            merge(other);
+            return *this;
+        }
+
+        //! syntax: purge
+        data_set & operator-=(const data_set &other) {
+            purge(other);
+            return *this;
+        }
+
+
+        //! element-wise comparison
+        inline friend bool operator==(const data_set &lhs, const data_set &rhs)
+        {
+            if(lhs->size != rhs->size)
+            {
+                return false;
+            }
+            else
+            {
+                for(const node_type *l=lhs->head,*r=rhs->head;l;l=l->next,r=r->next)
+                {
+                    if( **l != **r ) return false;
+                }
+                return true;
+            }
+        }
+
+
+        //______________________________________________________________________
+        //
+        // members
+        //______________________________________________________________________
         
     private:
-        list_type items;
-        zcache    cache;
+        list_type items; //!< live nodes
+    public:
+        zcache    cache; //!< shared zombie nodes
 
+    private:
         inline bool search(const_type &args, node_type * &prev) const {
 
             //------------------------------------------------------------------
@@ -386,9 +469,7 @@ namespace yack
                     return false;
             }
 
-
-
-
+            
         STEP_FORWARD:
             assert(lower!=upper);
             assert(**lower<args);

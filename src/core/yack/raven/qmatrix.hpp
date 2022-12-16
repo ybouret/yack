@@ -31,10 +31,16 @@ namespace yack
     namespace raven
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! maturity of family
+        //
+        //______________________________________________________________________
         enum maturity {
-            in_progress,
-            almost_done,
-            fully_grown
+            in_progress, //!< size<rank-1
+            almost_done, //!< size=rank-1
+            fully_grown  //!< size=rank
         };
 
         //______________________________________________________________________
