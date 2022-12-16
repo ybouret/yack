@@ -45,7 +45,7 @@ namespace yack
             enum maturity
             {
                 meaningless,
-                initialized,
+                //initialized,
                 in_progress,
                 almost_done,
                 fully_grown

@@ -16,6 +16,8 @@ namespace yack
             throw imported::exception( "raven::qfamily","singular matrix[%u]", unsigned(ir) );
         }
 
+
+
         std::ostream & operator<<(std::ostream &os, const qfamily &self)
         {
             os << *(self.qbase) << "@" << *(self.basis) << "+" << *(self.ready);
@@ -33,8 +35,11 @@ namespace yack
         {
         }
 
+        void qfamily:: reduce(list_of<qfamily> &lineage)
+        {
+        }
 
-        
+
 
     }
 

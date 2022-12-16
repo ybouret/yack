@@ -50,7 +50,9 @@ namespace yack
                 catch(...) { prune(); throw; }
             }
 
-#if 0
+
+
+
             template <typename T, typename PROC>
             inline size_t generate(const matrix<T> &mu,
                                    PROC            &cb)
@@ -66,7 +68,6 @@ namespace yack
                         for(const qfamily *f=lineage.head;f;f=f->next)
                             cb( (**f).last() );
 
-                        qfamily::reduce(lineage);
 
                         // fusion
                         target.merge_back(lineage);
@@ -85,8 +86,7 @@ namespace yack
                     return 0;
                 }
             }
-#endif
-
+            
             const size_t depth;
 
         private:

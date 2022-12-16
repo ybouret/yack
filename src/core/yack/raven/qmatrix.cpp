@@ -16,7 +16,7 @@ namespace yack
             switch(m)
             {
                 case meaningless: return "meaningless";
-                case initialized: return "initialized";
+                //case initialized: return "initialized";
                 case in_progress: return "in_progress";
                 case almost_done: return "almost_done";
                 case fully_grown: return "fully_grown";
@@ -33,22 +33,24 @@ namespace yack
         {
 
             assert(current_rank<=maximum_rank);
-            switch(maximum_rank-current_rank)
-            {
-                case 0: return qmatrix::fully_grown; // ok...
-                case 1: return qmatrix::almost_done; // prioritary over initialized
-                default:
-                    break;
-            }
 
-            switch(current_rank)
+            if(current_rank<=0)
             {
-                case 0: return qmatrix::meaningless;
-                case 1: return qmatrix::initialized;
-                default:
-                    break;
+                return qmatrix::meaningless;
             }
-            return qmatrix::in_progress;
+            else
+            {
+                switch(maximum_rank-current_rank)
+                {
+                    case 0: return qmatrix::fully_grown;
+                    case 1: return qmatrix::almost_done;
+                    default:
+                        break;
+                }
+
+                return qmatrix::in_progress;
+            }
+            
 
         }
 

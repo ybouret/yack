@@ -123,10 +123,8 @@ namespace
         raven::qbranch source;
         source(mu,rank,accept_all);
         std::cerr << source << std::endl;
-
-
-
-
+        source.generate(mu,display_vec);
+        
 
     }
 

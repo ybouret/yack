@@ -22,6 +22,7 @@ namespace yack
         //______________________________________________________________________
         typedef data_set<size_t>   qList; //!< list of indices
         typedef ds_zpool<size_t>   qBank; //!< bank of indices
+        typedef ds_node<size_t>    qNode; //!< for list of indices
         typedef qBank::pointer     qFund; //!< shared bank of indices
 
 
@@ -105,8 +106,28 @@ namespace yack
             void generate(list_of<qfamily> &lineage,
                           const matrix<T>  &mu) const
             {
-                
+                YACK_RAVEN_CHECK();
+                std::cerr << "generate <" << qbase->maturity_text() << ">" << std::endl;
+                switch(qbase->active_state)
+                {
+                    case qmatrix::meaningless:
+                        return;
+
+                    case qmatrix::fully_grown:
+                        return;
+
+                    case qmatrix::almost_done:
+                        finish(lineage,mu);
+                        return;
+
+                    case qmatrix::in_progress:
+                        expand(lineage,mu);
+                        reduce(lineage);
+                        return;
+                }
             }
+
+            static void reduce(list_of<qfamily> &lineage);
 
             qmatrix       & operator*()       throw() { return *qbase; }
             const qmatrix & operator*() const throw() { return *qbase; }
@@ -123,8 +144,79 @@ namespace yack
         private:
             YACK_DISABLE_ASSIGN(qfamily);
             void throw_singular_matrix(const size_t ir) const;
-
             
+
+            template <typename T>
+            void finish(list_of<qfamily> &lineage,
+                        const matrix<T>  &mu) const
+            {
+                assert(qmatrix::almost_done==qbase->active_state);
+                assert(ready->size>0);
+
+                auto_ptr<qfamily> chld = new qfamily(*this);
+                qmatrix          &Q    = *(chld->qbase);
+
+                while(chld->ready->size)
+                {
+                    const size_t i = chld->ready.pull_lower();
+                    chld->basis.ensure(i);
+                    if(Q(mu[i]))
+                    {
+                        // found one = last
+                        assert(qmatrix::fully_grown==Q.active_state);
+                        chld->basis.merge(chld->ready);
+                        chld->ready.free();
+                        std::cerr << "finish: " << chld << std::endl;
+                        lineage.push_back( chld.yield() );
+                        return;
+                    }
+                }
+
+            }
+
+
+            template <typename T> inline
+            void expand(list_of<qfamily> &lineage,
+                        const matrix<T>  &mu) const
+            {
+                assert(ready->size>0);
+
+                qList             span(basis.cache);
+                {
+                    auto_ptr<qfamily> chld = new qfamily(*this);
+                    const qNode      *node = ready->head;
+
+                NEXT_CHILD:
+                    const size_t      i = **node;
+                    qmatrix          &Q = *(chld->qbase);
+                    if(Q(mu[i]))
+                    {
+                        chld->basis.ensure(i);
+                        lineage.push_back( chld.yield() );
+                        if(NULL!=(node=node->next))
+                        {
+                            chld = new qfamily(*this);
+                            goto NEXT_CHILD; // with new child
+                        }
+                    }
+                    else
+                    {
+                        span.ensure(i);
+                        if(NULL!=(node=node->next))
+                            goto NEXT_CHILD; // with same chld
+                    }
+                }
+
+                for(qfamily *f=lineage.head;f;f=f->next)
+                {
+                    f->basis += span;
+                    f->ready -= f->basis;
+                    std::cerr << "expand: " << *f << std::endl;
+                    assert(f->basis->size+f->ready->size==mu.rows);
+                    assert(f->basis.excludes(f->ready));
+                }
+
+            }
 
 
 
