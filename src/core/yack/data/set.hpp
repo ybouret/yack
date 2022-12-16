@@ -192,7 +192,7 @@ namespace yack
         inline void free() throw() { while(items.size) cache->free(items.pop_back()); }
 
         //! try to insert a new value
-        bool insert(param_type args)
+        inline bool insert(param_type args)
         {
             node_type *prev = NULL;
             if(search(args,prev))
@@ -214,6 +214,13 @@ namespace yack
             }
         }
 
+        //! ensure value
+        inline void ensure(param_type args)
+        {
+            (void) insert(args);
+        }
+
+
         //! test if contains a value
         bool contains(param_type args) const
         {
@@ -224,11 +231,12 @@ namespace yack
         //! try to remove a value
         bool remove(param_type args)
         {
-            node_type *prev = NULL;
-            if(search(args,prev))
+            node_type *node = NULL;
+            if(search(args,node))
             {
-                assert(NULL!=prev);
-                cache->free( items.pop(prev) );
+                assert(NULL!=node);
+                cache->free( items.pop(node) );
+                assert(!contains(args));
                 return true;
             }
             else
@@ -236,6 +244,14 @@ namespace yack
                 return false;
             }
         }
+
+        //! dismiss args
+        inline void dismiss(param_type args)
+        {
+            (void) remove(args);
+        }
+
+
 
         //______________________________________________________________________
         //
@@ -248,6 +264,34 @@ namespace yack
         //
         // set operations
         //______________________________________________________________________
+        bool includes(const data_set &other) const
+        {
+
+            // get rid of trivial cases
+            if(this == &other)              return true; //!< same set
+            if(items.size<other.items.size) return false; //!< this is too small
+
+            // initialize searc
+            const node_type *node = other->head;
+            node_type       *mine = NULL;
+            if(!search(**node,mine)) return false;
+            assert(NULL!=mine);
+
+            // look of for other nodes
+            for(node=node->next;node;node->next)
+            {
+            NEXT_MINE:
+                mine=mine->next;
+                if(!mine) return false;
+                if(**mine!=**node) goto NEXT_MINE;
+            }
+
+            return true;
+
+
+        }
+
+
 
         
     private:
@@ -334,7 +378,7 @@ namespace yack
                     break;
 
                 case __zero__:
-                    prev = lower;
+                    prev = upper;
                     return true;
 
                 case positive:

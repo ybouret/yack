@@ -52,6 +52,8 @@ namespace
         }
         std::cerr << std::endl;
 
+        std::cerr << *ids << std::endl;
+
     }
 }
 
