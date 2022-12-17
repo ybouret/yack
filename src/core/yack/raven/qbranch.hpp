@@ -64,12 +64,16 @@ namespace yack
                     {
                         const auto_ptr<qfamily> parents = qlist.pop_front();
                         qfamilies               lineage;
+
+                        // generate original lineage, no duplicate
                         parents->generate(lineage,mu);
 
+                        // present all new vectors to callback
                         std::cerr << "==> +" << lineage.size << std::endl;
                         for(const qfamily *f=lineage.head;f;f=f->next)
                             cb( (**f).last() );
 
+                        // incremental merging...
 
                         // fusion
                         target.merge_back(lineage);
