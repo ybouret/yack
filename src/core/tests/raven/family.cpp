@@ -38,6 +38,37 @@ namespace
         return true;
     }
 
+
+    class vecstore : public vector< cxx_array<apz> >
+    {
+    public:
+        explicit vecstore() throw() :vector< cxx_array<apz> >()
+        {
+        }
+
+        virtual ~vecstore() throw()
+        {
+        }
+
+        void operator()( const readable<apz> &cf )
+        {
+            const cxx_array<apz> temp(cf,transmogrify);
+            for(size_t i=size();i>0;--i)
+            {
+                if( (*this)[i] == temp )
+                {
+                    std::cerr << "\t[-]" << temp << std::endl;
+                    return;
+                }
+            }
+            std::cerr << "\t[+]" << temp << std::endl;
+            push_back(temp);
+        }
+
+    private:
+        YACK_DISABLE_COPY_AND_ASSIGN(vecstore);
+    };
+
     static inline
     void display_vec(const readable<apz> &cf)
     {
@@ -122,14 +153,23 @@ namespace
         }
 
 
+        vecstore       vdb;
         raven::qbranch source;
         source(mu,rank,accept_all);
         do
         {
             std::cerr << source << std::endl;
             //if(source.depth>=2) break;
-        } while( source.generate(mu, display_vec) );
-        
+        } while( source.generate(mu,vdb) );
+
+        for(size_t i=1;i<=vdb.size();++i)
+        {
+            const string name = vformat("u%02d",unsigned(i));
+            std::cerr << "\t" << name << " = " << vdb[i] << std::endl;
+        }
+        std::cerr << "#found=" << vdb.size() << std::endl;
+        std::cerr << "nu=" << nu << std::endl;
+        std::cerr << "mu=" << mu << std::endl;
 
     }
 
