@@ -57,12 +57,13 @@ namespace yack
             inline size_t generate(const matrix<T> &mu,
                                    PROC            &cb)
             {
+                std::cerr << "-------- Branching @depth=" << depth << " #" << qlist.size << " --------" << std::endl;
                 {
-                    qfamily::list_type target;
+                    qfamilies target;
                     while(qlist.size)
                     {
                         const auto_ptr<qfamily> parents = qlist.pop_front();
-                        qfamily::list_type      lineage;
+                        qfamilies               lineage;
                         parents->generate(lineage,mu);
 
                         for(const qfamily *f=lineage.head;f;f=f->next)
@@ -91,7 +92,7 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(qbranch);
-            qfamily::list_type qlist;
+            qfamilies qlist;
 
         public:
             qFund io;

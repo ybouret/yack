@@ -208,6 +208,20 @@ namespace yack
             return true;
         }
 
+        bool operator==(const qmatrix &lhs, const qmatrix &rhs)
+        {
+            const size_t             rk = lhs.current_rank; if(rk!=rhs.current_rank) return false;
+            const thin_array<size_t> li(lhs.idx,rk);
+            const thin_array<size_t> ri(rhs.idx,rk);
+
+            for(size_t i=rk;i>0;--i)
+            {
+                if( lhs[ li[i] ] != rhs[ ri[i] ] ) return false;
+            }
+            
+            return true;
+        }
+
     }
 
 }

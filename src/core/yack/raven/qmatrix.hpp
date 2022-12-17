@@ -127,6 +127,12 @@ namespace yack
             }
 
             //------------------------------------------------------------------
+            //! check equality using indexed rows
+            //------------------------------------------------------------------
+            friend bool operator==(const qmatrix &lhs, const qmatrix &rhs);
+            
+
+            //------------------------------------------------------------------
             //! check equivalence
             //------------------------------------------------------------------
             bool is_equivalent_to(const qmatrix &rhs);

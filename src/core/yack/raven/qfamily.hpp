@@ -25,9 +25,18 @@ namespace yack
         typedef ds_node<size_t>    qNode; //!< for list of indices
         typedef qBank::pointer     qFund; //!< shared bank of indices
 
+        //______________________________________________________________________
+        //
+        //
+        // alias for families
+        //
+        //______________________________________________________________________
+        class   qfamily;
+        typedef cxx_list_of<qfamily> qfamilies;
+
 
         //! for sanity checks
-#define YACK_RAVEN_CHECK()   assert(basis->size+ready->size==mu.rows); assert(basis.excludes(ready))
+#define YACK_RAVEN_CHECK(PTR)   assert((PTR)->basis->size+(PTR)->ready->size==mu.rows); assert((PTR)->basis.excludes((PTR)->ready))
 
         //______________________________________________________________________
         //
@@ -38,12 +47,6 @@ namespace yack
         class qfamily : public object
         {
         public:
-            //__________________________________________________________________
-            //
-            // types
-            //__________________________________________________________________
-            typedef cxx_list_of<qfamily> list_type; //!< alias
-
             //__________________________________________________________________
             //
             // C++
@@ -85,7 +88,7 @@ namespace yack
                 // sanity check
                 assert(1==basis->size);
                 assert(nr-1==ready->size);
-                YACK_RAVEN_CHECK();
+                YACK_RAVEN_CHECK(this);
             }
 
             //! hard copy
@@ -106,7 +109,7 @@ namespace yack
             void generate(list_of<qfamily> &lineage,
                           const matrix<T>  &mu) const
             {
-                YACK_RAVEN_CHECK();
+                YACK_RAVEN_CHECK(this);
                 std::cerr << "generate <" << qbase->maturity_text() << ">" << std::endl;
                 switch(qbase->active_state)
                 {
@@ -179,7 +182,9 @@ namespace yack
                         const matrix<T>  &mu) const
             {
                 assert(ready->size>0);
+                std::cerr << "==> Expanding " << *this << " <==" << std::endl;
 
+                // preparing a list of spanned indice
                 qList             span(basis.cache);
                 {
                     auto_ptr<qfamily> chld = new qfamily(*this);
@@ -190,6 +195,7 @@ namespace yack
                     qmatrix          &Q = *(chld->qbase);
                     if(Q(mu[i]))
                     {
+                        // found a new vector
                         chld->basis.ensure(i);
                         lineage.push_back( chld.yield() );
                         if(NULL!=(node=node->next))
@@ -200,6 +206,7 @@ namespace yack
                     }
                     else
                     {
+                        // this vector is in span
                         span.ensure(i);
                         if(NULL!=(node=node->next))
                             goto NEXT_CHILD; // with same chld
@@ -210,43 +217,85 @@ namespace yack
                 {
                     f->basis += span;
                     f->ready -= f->basis;
-                    std::cerr << "expand: " << *f << std::endl;
-                    assert(f->basis->size+f->ready->size==mu.rows);
-                    assert(f->basis.excludes(f->ready));
+                    std::cerr << "    expanded: " << *f << std::endl;
+                    YACK_RAVEN_CHECK(f);
                 }
 
                 reduce(lineage,mu);
 
             }
 
+
+            //! reducing lineage with same ancestor family
+            /**
+             The only difference is the last vector
+             */
             template <typename T>
             static void reduce(list_of<qfamily> &lineage,
                                const matrix<T>  &mu)
             {
-                qfamily::list_type original;
+                qfamilies accepted;
                 while(lineage.size)
                 {
-                    auto_ptr<qfamily> F = lineage.pop_front();
-                    qmatrix          &L = **F;
-                    for(qfamily *G=original.head;G;G=G->next)
+                    auto_ptr<qfamily> f = lineage.pop_front();
+                    qmatrix          &F = **f;
+                    bool              reduced = false;
+                    for(qfamily  *g=accepted.head;g;g=g->next)
                     {
-                        qmatrix &R = **G;
-                        if(L.is_equivalent_to(R))
+                        qmatrix &G = **g;
+                        if( F.last() == G.last() )
                         {
-                            std::cerr << "sould reduce " << *F << " and " << *G << std::endl;
-                            for(const qNode *node=F->basis->head;node;node=node->next)
-                            {
-                                
-                            }
+                            std::cerr << "\tNeed to reduce " << f << " and " << *g << std::endl;
+                            collapse(*g,*f,mu);
+                            reduced = true;
+                            break;
                         }
                     }
-                    
-                    original.push_back(F.yield());
+
+                    if(reduced) continue;            // drop f
+                    accepted.push_back( f.yield() ); // keep f
                 }
-                
-                lineage.swap_with(original);
-                
+                lineage.swap_with(accepted);
             }
+
+
+
+            static void throw_distinct_basis();
+
+            template <typename T> static inline
+            void collapse(qfamily         &target,
+                          qfamily         &source,
+                          const matrix<T> &mu)
+            {
+                qmatrix &tgt = *target;
+                qmatrix &src = *source;
+
+                assert(tgt.current_rank==src.current_rank);
+
+                // check compatibility of target basis with source matrix
+                for(const qNode *node = target.basis->head;node;node=node->next)
+                {
+                    const size_t i = **node;
+                    if(!src.includes(mu[i])) throw_distinct_basis();
+                }
+
+                // check compatibilty of source basis with target matrix
+                for(const qNode *node = source.basis->head;node;node=node->next)
+                {
+                    const size_t i = **node;
+                    if(!tgt.includes(mu[i])) throw_distinct_basis();
+                }
+
+
+                target.basis += source.basis;
+                target.ready += source.ready;
+                target.ready -= target.basis;
+                std::cerr << "\t-> " << target << std::endl;
+                YACK_RAVEN_CHECK(&target);
+
+            }
+
+
 
 
         };

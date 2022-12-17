@@ -41,7 +41,9 @@ namespace
     static inline
     void display_vec(const readable<apz> &cf)
     {
-        std::cerr << " -> " << cf << std::endl;
+        if(false)
+            std::cerr << " -> " << cf << std::endl;
+
     }
 
     static inline void test(const size_t      size,

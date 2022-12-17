@@ -16,7 +16,10 @@ namespace yack
             throw imported::exception( "raven::qfamily","singular matrix[%u]", unsigned(ir) );
         }
 
-
+        void qfamily:: throw_distinct_basis()
+        {
+            throw imported::exception("raven::collapse","unexpected distrinc basis");
+        }
 
         std::ostream & operator<<(std::ostream &os, const qfamily &self)
         {
