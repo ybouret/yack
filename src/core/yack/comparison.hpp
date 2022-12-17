@@ -101,17 +101,17 @@ namespace yack
 
         //______________________________________________________________________
         //
-        //! lexicographic comparison of same lengths arrays[1..n]
+        //! lexicographic comparison of same lengths arrays[0..n-1]
         //______________________________________________________________________
         template <typename T> static inline
         int lexicographic(const T *lhs, const T *rhs, const size_t n) throw()
         {
             assert(NULL!=lhs);
             assert(NULL!=rhs);
-            for(size_t i=1;i<=n;++i)
+            for(size_t i=n;i>0;--i)
             {
-                const T &L = *(++lhs);
-                const T &R = *(++rhs);
+                const T &L = *(lhs++);
+                const T &R = *(rhs++);
                 if(L<R)
                     return -1;
                 else
@@ -124,7 +124,6 @@ namespace yack
             }
             return 0;
         }
-
 
         //______________________________________________________________________
         //

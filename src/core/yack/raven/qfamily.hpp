@@ -144,7 +144,7 @@ namespace yack
             YACK_DISABLE_ASSIGN(qfamily);
             void throw_singular_matrix(const size_t ir) const;
             
-
+            // this is the last stage
             template <typename T>
             void finish(list_of<qfamily> &lineage,
                         const matrix<T>  &mu) const

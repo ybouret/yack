@@ -201,7 +201,7 @@ namespace yack
         static inline int compare(const v4d &lhs, const v4d &rhs) throw()
         {
             const T *l = &lhs.x; const T *r = &rhs.x;
-            return comparison::lexicographic(--l,--r,4);
+            return comparison::lexicographic(l,r,4);
         }
     };
 }

@@ -56,6 +56,9 @@ namespace yack
             //! try to build a univocal vector, return false if u_k==0
             bool appointed(const readable<apq> &u_k);
 
+            //! lexicographic comparison
+            static int  compare(const qvector &lhs, const qvector &rhs) throw();
+
         private:
             apz      *coeff; //!< [1..dimension]
 

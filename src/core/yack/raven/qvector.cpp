@@ -110,6 +110,13 @@ namespace yack
 
         }
 
+
+        int qvector:: compare(const qvector &lhs, const qvector &rhs) throw()
+        {
+            assert(lhs.size() == rhs.size() );
+            return comparison::lexicographic(&lhs[1], &rhs[1], lhs.size() );
+        }
+
     }
 
 }

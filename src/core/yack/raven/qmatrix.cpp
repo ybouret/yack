@@ -16,7 +16,7 @@ namespace yack
             switch(m)
             {
                 case meaningless: return "meaningless";
-                //case initialized: return "initialized";
+                    //case initialized: return "initialized";
                 case in_progress: return "in_progress";
                 case almost_done: return "almost_done";
                 case fully_grown: return "fully_grown";
@@ -137,6 +137,8 @@ namespace yack
 
             }
             os << ']';
+            const thin_array<size_t> indx(self.idx,self.current_rank);
+            os << " #<" << indx << ">";
             return os;
         }
 
@@ -187,6 +189,7 @@ namespace yack
                 {
                     coerce(current_rank) = working_rank;
                     coerce(active_state) = get_maturity(maximum_rank,current_rank);
+                    reschedule();
                     return true;
                 }
             }
@@ -203,6 +206,26 @@ namespace yack
             }
             
             return true;
+        }
+
+    }
+
+}
+
+
+#include "yack/sort/indexing.hpp"
+
+namespace yack
+{
+    namespace raven
+    {
+
+
+        void qmatrix:: reschedule() throw()
+        {
+            assert(idx);
+            thin_array<size_t> indx(idx,current_rank);
+            indexing::make(indx,qvector::compare,*this);
         }
 
     }
