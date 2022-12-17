@@ -71,6 +71,7 @@ namespace yack
         lib(),
         obj(),
         row(),
+        idx(0),
         vgs()
         {
             if(maximum_rank<2)         throw imported::exception(here,"maximum_rank<2");
@@ -89,6 +90,7 @@ namespace yack
         lib(),
         obj(),
         row(),
+        idx(0),
         vgs()
         {
             initialize();
@@ -272,6 +274,7 @@ namespace yack
             memory::embed emb[] =
             {
                 memory::embed(pqv,nqv),
+                memory::embed(idx,dimension),
                 memory::embed(pit,nit),
                 memory::embed(pgs,ngs)
             };

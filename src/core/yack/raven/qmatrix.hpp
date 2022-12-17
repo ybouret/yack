@@ -41,16 +41,21 @@ namespace yack
         class qmatrix : public object, public qmetrics, public readable<qvector>
         {
         public:
-
+            //__________________________________________________________________
+            //
+            // types and definitions
+            //__________________________________________________________________
+            
+            //! current maturity
             enum maturity
             {
-                meaningless,
-                //initialized,
-                in_progress,
-                almost_done,
-                fully_grown
+                meaningless, //!< empty
+                in_progress, //!< rank<max_rank-1
+                almost_done, //!< rank=max_rank-1
+                fully_grown  //!< rank=max_rank
             };
 
+            //! human readable maturity
             static const char *maturity_to_text(const maturity) throw();
 
             //__________________________________________________________________
@@ -141,10 +146,11 @@ namespace yack
 
         private:
             YACK_DISABLE_ASSIGN(qmatrix);
-
+            
             memory::shelf       lib; //!< all linear memory
             contractor<apz>     obj; //!< maximum_rank * dimension + dimension for G-S
             contractor<qvector> row; //!< maximum_rank
+            size_t             *idx; //!< indexing
             contractor<apq>     vgs; //!< dimension for G-S
             
             void initialize();
