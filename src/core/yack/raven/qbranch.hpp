@@ -66,6 +66,7 @@ namespace yack
                         qfamilies               lineage;
                         parents->generate(lineage,mu);
 
+                        std::cerr << "==> +" << lineage.size << std::endl;
                         for(const qfamily *f=lineage.head;f;f=f->next)
                             cb( (**f).last() );
 
@@ -73,6 +74,7 @@ namespace yack
                         // fusion
                         target.merge_back(lineage);
                     }
+
                     target.swap_with(qlist);
                 }
                 const size_t nf = qlist.size;

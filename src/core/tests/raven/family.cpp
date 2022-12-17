@@ -41,8 +41,8 @@ namespace
     static inline
     void display_vec(const readable<apz> &cf)
     {
-        if(false)
-            std::cerr << " -> " << cf << std::endl;
+        //if(false)
+        std::cerr << " -->  " << cf << std::endl;
 
     }
 

@@ -245,7 +245,6 @@ namespace yack
                         qmatrix &G = **g;
                         if( F.last() == G.last() )
                         {
-                            std::cerr << "\tNeed to reduce " << f << " and " << *g << std::endl;
                             collapse(*g,*f,mu);
                             reduced = true;
                             break;
@@ -257,7 +256,6 @@ namespace yack
                 }
                 lineage.swap_with(accepted);
             }
-
 
 
             static void throw_distinct_basis();
@@ -290,7 +288,8 @@ namespace yack
                 target.basis += source.basis;
                 target.ready += source.ready;
                 target.ready -= target.basis;
-                std::cerr << "\t-> " << target << std::endl;
+                std::cerr << "    collapse: " << target << std::endl;
+
                 YACK_RAVEN_CHECK(&target);
 
             }
