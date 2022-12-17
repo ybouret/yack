@@ -99,6 +99,9 @@ namespace yack
                 return build_next(u_k,v_k);
             }
 
+
+
+
             //------------------------------------------------------------------
             //! check if the vector is included in linear space
             /**
@@ -130,7 +133,7 @@ namespace yack
             //! check equality using indexed rows
             //------------------------------------------------------------------
             friend bool operator==(const qmatrix &lhs, const qmatrix &rhs);
-            
+
 
             //------------------------------------------------------------------
             //! check equivalence

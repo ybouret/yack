@@ -65,7 +65,7 @@ namespace yack
                         const auto_ptr<qfamily> parents = qlist.pop_front();
                         qfamilies               lineage;
 
-                        // generate original lineage, no duplicate
+                        // generate reduced lineage, no duplicate
                         parents->generate(lineage,mu);
 
                         // present all new vectors to callback
@@ -73,19 +73,19 @@ namespace yack
                         {
                             if(lineage.size>1)
                                 std::cerr << "==> +" << lineage.size << std::endl;
+
                             for(const qfamily *f=lineage.head;f;f=f->next)
                                 cb( (**f).last() );
 
-                            // condense lineage
-                            condense(lineage,mu);
 
-                            // fusion
-                            target.merge_back(lineage);
+                            intra_condensation(lineage,mu);         /// condense lineage
+                            incremental_fusion(target,lineage,mu);  // incremental compact
                         }
                     }
 
                     target.swap_with(qlist);
                 }
+                
                 const size_t nf = qlist.size;
                 if(nf)
                 {
@@ -109,34 +109,57 @@ namespace yack
             qFund io;
 
         private:
-            template <typename T>
-            static void condense(list_of<qfamily> &lineage,
-                                 const matrix<T>  &mu)
+
+            template <typename T> static inline
+            void try_merge(list_of<qfamily>  &surrogate,
+                           auto_ptr<qfamily> &candidate,
+                           const matrix<T>  &mu)
+            {
+                qmatrix       &F = **candidate;
+                for(qfamily  *g  = surrogate.head;g;g=g->next) {
+                    qmatrix  &G  = **g;
+                    if(   F==G                   // fast
+                       || F.is_equivalent_to(G)  // slow
+                       )
+                    {
+                        std::cerr << "    condense: " << candidate << " and " << *g << std::endl;
+                        qfamily::collapse(*g,*candidate,mu);
+                        //exit(0);
+                        return; // drop candidate
+                    }
+                }
+
+                surrogate.push_back( candidate.yield() ); // keep candidate
+            }
+
+
+
+            template <typename T> static inline
+            void intra_condensation(list_of<qfamily> &lineage,
+                                    const matrix<T>  &mu)
             {
                 qfamilies surrogate;
                 while(lineage.size)
                 {
-                    auto_ptr<qfamily> f = lineage.pop_front();
-                    qmatrix          &F = **f;
-                    bool              squeezed = false;
-                    for(qfamily  *g=surrogate.head;g;g=g->next)
-                    {
-                        qmatrix &G = **g;
-                        if( F==G || F.is_equivalent_to(G) )
-                        {
-                            std::cerr << "condense " << F << " and " << G << std::endl;
-                            exit(0);
-                            qfamily::collapse(*g,*f,mu);
-                            squeezed = true;
-                            break;
-                        }
-                    }
-
-                    if(squeezed) continue;             // drop f
-                    surrogate.push_back( f.yield() ); // keep f
+                    auto_ptr<qfamily> candidate = lineage.pop_front();
+                    try_merge(surrogate,candidate,mu);
                 }
                 lineage.swap_with(surrogate);
             }
+
+            //! compact two lists of condensed families
+            template <typename T> static inline
+            void incremental_fusion(list_of<qfamily> &target,
+                                    list_of<qfamily> &source,
+                                    const matrix<T>  &mu)
+            {
+                while(source.size)
+                {
+                    auto_ptr<qfamily> candidate = source.pop_front();
+                    try_merge(target,candidate,mu);
+                }
+            }
+
             
         };
 

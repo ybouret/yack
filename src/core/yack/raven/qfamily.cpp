@@ -1,5 +1,4 @@
 #include "yack/raven/qfamily.hpp"
-#include "yack/system/imported.hpp"
 
 
 namespace yack
@@ -11,15 +10,7 @@ namespace yack
         {
         }
 
-        void qfamily:: throw_singular_matrix(const size_t ir) const
-        {
-            throw imported::exception( "raven::qfamily","singular matrix[%u]", unsigned(ir) );
-        }
-
-        void qfamily:: throw_distinct_basis()
-        {
-            throw imported::exception("raven::collapse","unexpected distrinc basis");
-        }
+        
 
         std::ostream & operator<<(std::ostream &os, const qfamily &self)
         {

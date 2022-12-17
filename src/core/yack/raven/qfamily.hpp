@@ -9,6 +9,7 @@
 #include "yack/container/matrix.hpp"
 #include "yack/data/list/cxx.hpp"
 #include "yack/ptr/auto.hpp"
+#include "yack/system/imported.hpp"
 
 namespace yack
 {
@@ -79,7 +80,7 @@ namespace yack
 
                 // initialize matrix
                 qmatrix     &Q  = *qbase;
-                if(!Q(mu[ir])) throw_singular_matrix(ir);
+                if(!Q(mu[ir])) throw imported::exception("raven::qfamily","invadid first vector[%u]", static_cast<unsigned>(ir));
 
                 // initialize indices
                 basis += ir;
@@ -145,8 +146,7 @@ namespace yack
 
         private:
             YACK_DISABLE_ASSIGN(qfamily);
-            void throw_singular_matrix(const size_t ir) const;
-            
+
             // this is the last stage
             template <typename T>
             void finish(list_of<qfamily> &lineage,
@@ -176,7 +176,7 @@ namespace yack
 
             }
 
-
+            // expand before last stage
             template <typename T> inline
             void expand(list_of<qfamily> &lineage,
                         const matrix<T>  &mu) const
@@ -234,41 +234,31 @@ namespace yack
             static void reduce(list_of<qfamily> &lineage,
                                const matrix<T>  &mu)
             {
-                const size_t ini = lineage.size;
+
+                qfamilies   accepted;
+                while(lineage.size)
                 {
-                    qfamilies   accepted;
-                    while(lineage.size)
+                    auto_ptr<qfamily> f = lineage.pop_front();
+                    qmatrix          &F = **f;
+                    bool              reduced = false;
+                    for(qfamily  *g=accepted.head;g;g=g->next)
                     {
-                        auto_ptr<qfamily> f = lineage.pop_front();
-                        qmatrix          &F = **f;
-                        bool              reduced = false;
-                        for(qfamily  *g=accepted.head;g;g=g->next)
+                        qmatrix &G = **g;  assert(G.current_rank==G.current_rank);
+                        if( F.last() == G.last() )
                         {
-                            qmatrix &G = **g;
-                            if( F.last() == G.last() )
-                            {
-                                collapse(*g,*f,mu);
-                                reduced = true;
-                                break;
-                            }
+                            collapse(*g,*f,mu);
+                            reduced = true;
+                            break;
                         }
-
-                        if(reduced) continue;            // drop f
-                        accepted.push_back( f.yield() ); // keep f
                     }
-                    lineage.swap_with(accepted);
-                }
-                const size_t end = lineage.size;
-                assert(end<=ini);
-                if(end<ini)
-                {
-                    std::cerr << "reduced: " << ini << " -> " << end << std::endl;
-                }
 
+                    if(reduced) continue;            // drop f
+                    accepted.push_back( f.yield() ); // keep f
+                }
+                lineage.swap_with(accepted);
             }
 
 
-            static void throw_distinct_basis();
 
         public:
             template <typename T> static inline
@@ -285,14 +275,14 @@ namespace yack
                 for(const qNode *node = target.basis->head;node;node=node->next)
                 {
                     const size_t i = **node;
-                    if(!src.includes(mu[i])) throw_distinct_basis();
+                    if(!src.includes(mu[i])) throw imported::exception("raven::qfamily::collapse","distinct basis");
                 }
 
                 // check compatibilty of source basis with target matrix
                 for(const qNode *node = source.basis->head;node;node=node->next)
                 {
                     const size_t i = **node;
-                    if(!tgt.includes(mu[i])) throw_distinct_basis();
+                    if(!tgt.includes(mu[i])) throw imported::exception("raven::qfamily::collapse","distinct basis");
                 }
 
                 // fusion!
