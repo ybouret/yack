@@ -234,27 +234,37 @@ namespace yack
             static void reduce(list_of<qfamily> &lineage,
                                const matrix<T>  &mu)
             {
-                qfamilies accepted;
-                while(lineage.size)
+                const size_t ini = lineage.size;
                 {
-                    auto_ptr<qfamily> f = lineage.pop_front();
-                    qmatrix          &F = **f;
-                    bool              reduced = false;
-                    for(qfamily  *g=accepted.head;g;g=g->next)
+                    qfamilies   accepted;
+                    while(lineage.size)
                     {
-                        qmatrix &G = **g;
-                        if( F.last() == G.last() )
+                        auto_ptr<qfamily> f = lineage.pop_front();
+                        qmatrix          &F = **f;
+                        bool              reduced = false;
+                        for(qfamily  *g=accepted.head;g;g=g->next)
                         {
-                            collapse(*g,*f,mu);
-                            reduced = true;
-                            break;
+                            qmatrix &G = **g;
+                            if( F.last() == G.last() )
+                            {
+                                collapse(*g,*f,mu);
+                                reduced = true;
+                                break;
+                            }
                         }
-                    }
 
-                    if(reduced) continue;            // drop f
-                    accepted.push_back( f.yield() ); // keep f
+                        if(reduced) continue;            // drop f
+                        accepted.push_back( f.yield() ); // keep f
+                    }
+                    lineage.swap_with(accepted);
                 }
-                lineage.swap_with(accepted);
+                const size_t end = lineage.size;
+                assert(end<=ini);
+                if(end<ini)
+                {
+                    std::cerr << "reduced: " << ini << " -> " << end << std::endl;
+                }
+
             }
 
 

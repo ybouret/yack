@@ -69,18 +69,19 @@ namespace yack
                         parents->generate(lineage,mu);
 
                         // present all new vectors to callback
-                        std::cerr << "==> +" << lineage.size << std::endl;
-                        for(const qfamily *f=lineage.head;f;f=f->next)
-                            cb( (**f).last() );
+                        if(lineage.size)
+                        {
+                            if(lineage.size>1)
+                                std::cerr << "==> +" << lineage.size << std::endl;
+                            for(const qfamily *f=lineage.head;f;f=f->next)
+                                cb( (**f).last() );
 
-                        // condense lineage
-                        condense(lineage,mu);
+                            // condense lineage
+                            condense(lineage,mu);
 
-
-
-
-                        // fusion
-                        target.merge_back(lineage);
+                            // fusion
+                            target.merge_back(lineage);
+                        }
                     }
 
                     target.swap_with(qlist);

@@ -127,7 +127,7 @@ namespace
         do
         {
             std::cerr << source << std::endl;
-            if(source.depth>=2) break;
+            //if(source.depth>=2) break;
         } while( source.generate(mu, display_vec) );
         
 
