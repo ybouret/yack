@@ -125,7 +125,7 @@ namespace yack
                         {
                             std::cerr << "condense " << F << " and " << G << std::endl;
                             exit(0);
-                            collapse(*g,*f,mu);
+                            qfamily::collapse(*g,*f,mu);
                             squeezed = true;
                             break;
                         }

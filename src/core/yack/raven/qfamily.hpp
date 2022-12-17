@@ -260,6 +260,7 @@ namespace yack
 
             static void throw_distinct_basis();
 
+        public:
             template <typename T> static inline
             void collapse(qfamily         &target,
                           qfamily         &source,
@@ -294,7 +295,7 @@ namespace yack
 
 
 
-          
+
 
 
         };
