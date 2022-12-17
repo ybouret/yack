@@ -157,6 +157,7 @@ namespace yack
             const size_t   maximum_rank; //!< maximum rank
             const size_t   current_rank; //!< current rank
             const maturity active_state; //!< depending on ranks
+            const apn      total_weight; //!< sum of qvector norm2
 
         private:
             YACK_DISABLE_ASSIGN(qmatrix);

@@ -68,6 +68,7 @@ namespace yack
         maximum_rank(rk),
         current_rank(0),
         active_state(get_maturity(maximum_rank,current_rank)),
+        total_weight(),
         lib(),
         obj(),
         row(),
@@ -87,6 +88,7 @@ namespace yack
         maximum_rank(Q.maximum_rank),
         current_rank(Q.current_rank),
         active_state(Q.active_state),
+        total_weight(Q.total_weight),
         lib(),
         obj(),
         row(),
@@ -106,6 +108,7 @@ namespace yack
         {
             coerce(current_rank) = 0;
             coerce(active_state) = get_maturity(maximum_rank,current_rank);
+            coerce(total_weight).ldz();
         }
 
         size_t    qmatrix:: size() const throw() { return current_rank; }
@@ -139,6 +142,7 @@ namespace yack
             os << ']';
             const thin_array<size_t> indx(self.idx,self.current_rank);
             os << " #<" << indx << ">";
+            os << " |" << self.total_weight << "|";
             return os;
         }
 
@@ -187,6 +191,8 @@ namespace yack
                 }
                 else
                 {
+                    apn w = total_weight + next_qvector.norm2;
+                    coerce(total_weight).xch(w);
                     coerce(current_rank) = working_rank;
                     coerce(active_state) = get_maturity(maximum_rank,current_rank);
                     reschedule();

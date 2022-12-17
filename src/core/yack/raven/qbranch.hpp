@@ -113,7 +113,7 @@ namespace yack
             template <typename T> static inline
             void try_merge(list_of<qfamily>  &surrogate,
                            auto_ptr<qfamily> &candidate,
-                           const matrix<T>  &mu)
+                           const matrix<T>   &mu)
             {
                 qmatrix       &F = **candidate;
                 for(qfamily  *g  = surrogate.head;g;g=g->next) {
