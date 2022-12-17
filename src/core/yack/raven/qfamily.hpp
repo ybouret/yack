@@ -286,7 +286,7 @@ namespace yack
                     if(!tgt.includes(mu[i])) throw_distinct_basis();
                 }
 
-
+                // fusion!
                 target.basis += source.basis;
                 target.ready += source.ready;
                 target.ready -= target.basis;
