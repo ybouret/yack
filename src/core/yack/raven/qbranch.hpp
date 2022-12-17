@@ -73,7 +73,11 @@ namespace yack
                         for(const qfamily *f=lineage.head;f;f=f->next)
                             cb( (**f).last() );
 
-                        // incremental merging...
+                        // condense lineage
+                        condense(lineage,mu);
+
+
+
 
                         // fusion
                         target.merge_back(lineage);
@@ -103,6 +107,36 @@ namespace yack
         public:
             qFund io;
 
+        private:
+            template <typename T>
+            static void condense(list_of<qfamily> &lineage,
+                                 const matrix<T>  &mu)
+            {
+                qfamilies surrogate;
+                while(lineage.size)
+                {
+                    auto_ptr<qfamily> f = lineage.pop_front();
+                    qmatrix          &F = **f;
+                    bool              squeezed = false;
+                    for(qfamily  *g=surrogate.head;g;g=g->next)
+                    {
+                        qmatrix &G = **g;
+                        if( F==G || F.is_equivalent_to(G) )
+                        {
+                            std::cerr << "condense " << F << " and " << G << std::endl;
+                            exit(0);
+                            collapse(*g,*f,mu);
+                            squeezed = true;
+                            break;
+                        }
+                    }
+
+                    if(squeezed) continue;             // drop f
+                    surrogate.push_back( f.yield() ); // keep f
+                }
+                lineage.swap_with(surrogate);
+            }
+            
         };
 
     }

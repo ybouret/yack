@@ -289,12 +289,12 @@ namespace yack
                 target.ready += source.ready;
                 target.ready -= target.basis;
                 std::cerr << "    collapse: " << target << std::endl;
-
                 YACK_RAVEN_CHECK(&target);
-
             }
 
 
+
+          
 
 
         };
