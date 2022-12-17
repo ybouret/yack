@@ -201,7 +201,39 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
                 }
             }
         }
-        
+
+        //! replace mine with another node
+        inline NODE *replace(NODE *mine, NODE *node) throw()
+        {
+            assert(NULL!=mine); assert(NULL!=node); assert(NULL==node->prev); assert(NULL==node->next);
+            assert( owns(mine) );
+
+            if(mine==head)
+            {
+                (void) pop_front();
+                (void) push_front(node);
+            }
+            else
+            {
+                if(mine==tail)
+                {
+                    (void) pop_back();
+                    (void) push_back(node);
+                }
+                else
+                {
+                    assert(size>2);
+                    mine->next->prev = node; node->next = mine->next;
+                    mine->prev->next = node; node->prev = mine->prev;
+                    mine->next = NULL;
+                    mine->prev = NULL;
+                }
+            }
+
+
+            return mine;
+        }
+
         //! move owned node to head node
         inline NODE *move_to_front(NODE *node) throw()
         {
@@ -372,6 +404,9 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
                 }
             }
         }
+
+
+
         
         //______________________________________________________________________
         //

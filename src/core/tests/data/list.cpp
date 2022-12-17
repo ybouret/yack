@@ -257,6 +257,25 @@ YACK_UTEST(data_list)
     }
 
 
+    {
+        std::cerr << "replacing..." << std::endl;
+        cxx_list_of<XNode> xl;
+        for(size_t i=2+ran.leq(1000);i>0;--i)
+        {
+            if(ran.choice()) xl.push_back(  new XNode() );
+            else             xl.push_front( new XNode() );
+        }
+        std::cerr << "...within #" << xl.size << std::endl;
+        for(size_t iter=1+ran.leq(10000);iter>0;--iter)
+        {
+
+            XNode *node = xl.pop( xl.get(1+ran.leq(xl.size-1)) );
+            XNode *mine = xl.get(1+ran.leq(xl.size-1)) ;
+            YACK_ASSERT( mine == xl.replace(mine,node) );
+            xl.push_back(mine);
+        }
+
+    }
 
 }
 YACK_UDONE()
