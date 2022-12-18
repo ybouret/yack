@@ -31,7 +31,9 @@ namespace yack
     namespace raven
     {
 
-
+        typedef apex::int_type     int_type;
+        typedef readable<int_type> ireadable;
+        
         //______________________________________________________________________
         //
         //
