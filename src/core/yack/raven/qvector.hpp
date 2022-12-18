@@ -58,6 +58,14 @@ namespace yack
             //! lexicographic comparison
             static int  compare(const qvector &lhs, const qvector &rhs) throw();
 
+            //! cast to integer type
+            template <typename T> inline
+            void cast_to(writable<T> &arr) const
+            {
+                assert(dimension==arr.size());
+                for(size_t i=dimension;i>0;--i) arr[i] = coeff[i].cast_to<T>();
+            }
+            
         private:
             apz      *coeff; //!< [1..dimension]
 

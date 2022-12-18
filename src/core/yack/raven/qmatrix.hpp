@@ -31,9 +31,6 @@ namespace yack
     namespace raven
     {
 
-        typedef apex::int_type     int_type;
-        typedef readable<int_type> ireadable;
-        
         //______________________________________________________________________
         //
         //
@@ -95,14 +92,12 @@ namespace yack
              */
             //------------------------------------------------------------------
             template <typename T> inline
-            bool operator()(const readable<T> &v)
-            {
+            bool operator()(const readable<T> &v) {
                 YACK_RAVEN_LOAD();
                 return build_next(u_k,v_k);
             }
 
-
-
+            
 
             //------------------------------------------------------------------
             //! check if the vector is included in linear space
@@ -132,7 +127,7 @@ namespace yack
             }
 
             //------------------------------------------------------------------
-            //! check equality using indexed rows
+            //! check equality using row index
             //------------------------------------------------------------------
             friend bool operator==(const qmatrix &lhs, const qmatrix &rhs);
 
@@ -148,7 +143,7 @@ namespace yack
             const readable<apz> & last() const throw() { assert(current_rank); return row[current_rank]; }
 
             //------------------------------------------------------------------
-            //! rebuilding index
+            //! rebuilding row index
             //------------------------------------------------------------------
             void reschedule() throw();
 
