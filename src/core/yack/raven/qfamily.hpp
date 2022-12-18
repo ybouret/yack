@@ -53,8 +53,8 @@ namespace yack
             // C++
             //__________________________________________________________________
             virtual ~qfamily() throw(); //!< cleanup
-
-
+            
+            
             //! start a new family
             /**
              \param id indices[1...nr], id[nr] = starting index
@@ -77,31 +77,31 @@ namespace yack
                 // initialize input
                 const size_t nr = mu.rows;  assert(nr>=2);
                 const size_t ir = id[nr];   assert(ir>=1); assert(ir<=mu.rows);
-
+                
                 // initialize matrix
                 qmatrix     &Q  = *qbase;
                 if(!Q(mu[ir])) throw imported::exception("raven::qfamily","invadid first vector[%u]", static_cast<unsigned>(ir));
-
+                
                 // initialize indices
                 basis += ir;
                 for(size_t i=1;i<nr;++i) ready += id[i];
-
+                
                 // sanity check
                 assert(1==basis->size);
                 assert(nr-1==ready->size);
                 YACK_RAVEN_CHECK(this);
             }
-
+            
             //! hard copy
             qfamily(const qfamily &);
-
-
+            
+            
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
             friend std::ostream & operator<<(std::ostream &, const qfamily &); //!< display
-
+            
             //__________________________________________________________________
             //
             // generate all possible lineage from this family
@@ -116,37 +116,37 @@ namespace yack
                 {
                     case qmatrix::meaningless:
                         return;
-
+                        
                     case qmatrix::fully_grown:
                         return;
-
+                        
                     case qmatrix::almost_done:
                         // return at most one new !!
                         finish(lineage,mu);
                         return;
-
+                        
                     case qmatrix::in_progress:
                         expand(lineage,mu);
                         return;
                 }
             }
-
+            
             
             qmatrix       & operator*()       throw() { return *qbase; }
             const qmatrix & operator*() const throw() { return *qbase; }
-
-
+            
+            
             clone_ptr<qmatrix> qbase;
             qList              basis;
             qList              ready;
             qfamily           *next;
             qfamily           *prev;
-
-
-
+            
+            
+            
         private:
             YACK_DISABLE_ASSIGN(qfamily);
-
+            
             // this is the last stage
             template <typename T>
             void finish(list_of<qfamily> &lineage,
@@ -154,10 +154,10 @@ namespace yack
             {
                 assert(qmatrix::almost_done==qbase->active_state);
                 assert(ready->size>0);
-
+                
                 auto_ptr<qfamily> chld = new qfamily(*this);
                 qmatrix          &Q    = *(chld->qbase);
-
+                
                 while(chld->ready->size)
                 {
                     const size_t i = chld->ready.pull_lower();
@@ -173,9 +173,9 @@ namespace yack
                         return;
                     }
                 }
-
+                
             }
-
+            
             // expand before last stage
             template <typename T> inline
             void expand(list_of<qfamily> &lineage,
@@ -183,13 +183,13 @@ namespace yack
             {
                 assert(ready->size>0);
                 std::cerr << "==> Expanding " << *this << " <==" << std::endl;
-
+                
                 // preparing a list of spanned indice
                 qList             span(basis.cache);
                 {
                     auto_ptr<qfamily> chld = new qfamily(*this);
                     const qNode      *node = ready->head;
-
+                    
                 NEXT_CHILD:
                     const size_t      i = **node;
                     qmatrix          &Q = *(chld->qbase);
@@ -212,7 +212,7 @@ namespace yack
                             goto NEXT_CHILD; // with same chld
                     }
                 }
-
+                
                 for(qfamily *f=lineage.head;f;f=f->next)
                 {
                     f->basis += span;
@@ -220,12 +220,12 @@ namespace yack
                     std::cerr << "    expanded: " << *f << std::endl;
                     YACK_RAVEN_CHECK(f);
                 }
-
+                
                 reduce(lineage,mu);
-
+                
             }
-
-
+            
+            
             //! reducing lineage with same ancestor family
             /**
              The only difference is the last vector
@@ -234,7 +234,7 @@ namespace yack
             static void reduce(list_of<qfamily> &lineage,
                                const matrix<T>  &mu)
             {
-
+                
                 qfamilies   accepted;
                 while(lineage.size)
                 {
@@ -251,16 +251,33 @@ namespace yack
                             break;
                         }
                     }
-
+                    
                     if(reduced) continue;            // drop f
                     accepted.push_back( f.yield() ); // keep f
                 }
                 lineage.swap_with(accepted);
             }
-
-
-
+            
+            
+            
         public:
+            template <typename T> static
+            inline bool compatible_basis(qfamily         &target,
+                                         qfamily         &source,
+                                         const matrix<T> &mu)
+            {
+                qmatrix       &Q = *target;
+                // check compatibilty of source basis with target matrix
+                for(const qNode *node = source.basis->head;node;node=node->next)
+                {
+                    const size_t i = **node;
+                    if(!Q.includes(mu[i])) return false;
+                }
+                return true;
+                
+            }
+            
+            
             template <typename T> static inline
             void collapse(qfamily         &target,
                           qfamily         &source,
@@ -271,20 +288,9 @@ namespace yack
 
                 assert(tgt.current_rank==src.current_rank);
 
-                // check compatibility of target basis with source matrix
-                for(const qNode *node = target.basis->head;node;node=node->next)
-                {
-                    const size_t i = **node;
-                    if(!src.includes(mu[i])) throw imported::exception("raven::qfamily::collapse","distinct basis");
-                }
-
-                // check compatibilty of source basis with target matrix
-                for(const qNode *node = source.basis->head;node;node=node->next)
-                {
-                    const size_t i = **node;
-                    if(!tgt.includes(mu[i])) throw imported::exception("raven::qfamily::collapse","distinct basis");
-                }
-
+                if(!compatible_basis(target,source,mu) || !compatible_basis(source,target,mu))
+                    throw imported::exception("raven::qfamily::collapse","distinct basis");
+                
                 // fusion!
                 target.basis += source.basis;
                 target.ready += source.ready;
