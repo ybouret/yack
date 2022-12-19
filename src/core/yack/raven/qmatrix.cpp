@@ -59,15 +59,24 @@ namespace yack
             return maturity_to_text(active_state);
         }
 
+        static inline size_t checked_max_rank(const size_t dimension,
+                                              const size_t maxi_rank)
+        {
+            assert(dimension>=2);
+            if(maxi_rank<2)         throw imported::exception(here,"maximum_rank=%u<2",unsigned(maxi_rank));
+            if(maxi_rank>dimension) throw imported::exception(here,"maximum_rank=%u > dimension=%u", unsigned(maxi_rank), unsigned(dimension) );
+            return maxi_rank;
+        }
+
         qmatrix:: qmatrix(const size_t sz,
                           const size_t rk) :
         collection(),
         object(),
         qmetrics(sz),
         readable<qvector>(),
-        maximum_rank(rk),
+        maximum_rank( checked_max_rank(dimension,rk) ),
         current_rank(0),
-        active_state(get_maturity(maximum_rank,current_rank)),
+        active_state( get_maturity(maximum_rank,current_rank) ),
         total_weight(),
         lib(),
         obj(),
@@ -75,8 +84,6 @@ namespace yack
         idx(0),
         vgs()
         {
-            if(maximum_rank<2)         throw imported::exception(here,"maximum_rank<2");
-            if(maximum_rank>dimension) throw imported::exception(here,"maximum_rank>dimension");
             initialize();
         }
 
@@ -96,7 +103,7 @@ namespace yack
         vgs()
         {
             initialize();
-            for(size_t i=current_rank;i>0;--i)
+            for(size_t i=1;i<=current_rank;++i)
             {
                 row[i].hard_copy(Q.row[i]);
             }
@@ -153,12 +160,12 @@ namespace yack
             return lib.bytes;
         }
 
-        void qmatrix:: keep_ortho(writable<apq>       &u_k,
-                                  const readable<apz> &v_k)
+        const readable<apq> & qmatrix:: keep_ortho(writable<apq>       &u_k,
+                                                   const readable<apz> &v_k)
         {
             for(size_t j=current_rank;j>0;--j)
                 row[j].sub(u_k,v_k);
-            
+            return u_k;
         }
 
         bool qmatrix:: is_nil_vec(const readable<apq> &u_k) const throw()
@@ -174,10 +181,9 @@ namespace yack
         bool qmatrix:: build_next(writable<apq>       &u_k,
                                   const readable<apz> &v_k)
         {
-            keep_ortho(u_k,v_k);
             if(fully_grown==active_state)
             {
-                if(!is_nil_vec(u_k)) throw imported::exception(here,"new vector while fully grown!");
+                if(!is_nil_vec( keep_ortho(u_k,v_k) )) throw imported::exception(here,"new vector while fully grown!");
                 return false;
             }
             else
@@ -185,7 +191,7 @@ namespace yack
                 assert(current_rank<maximum_rank);
                 const size_t working_rank = current_rank+1;
                 qvector     &next_qvector = row[working_rank];
-                if(!next_qvector.appointed(u_k))
+                if(!next_qvector.appointed(keep_ortho(u_k,v_k)))
                 {
                     return false;
                 }
@@ -209,8 +215,7 @@ namespace yack
 
             for(size_t i=current_rank;i>0;--i)
             {
-                const readable<apz> &v = rhs[i];
-                if(!includes(v)) return false;
+                if(!includes_(rhs[i])) return false;
             }
             
             return true;

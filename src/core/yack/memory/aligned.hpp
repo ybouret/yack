@@ -10,10 +10,16 @@ namespace yack
 {
     namespace memory
     {
+        //______________________________________________________________________
+        //
+        //
+        //! memory aligment helpers
+        //
+        //______________________________________________________________________
         struct aligned
         {
-            static const size_t largest;
-            static size_t       package(const size_t) throw();
+            static const size_t largest;                       //!< using base2
+            static size_t       package(const size_t) throw(); //!< using YACK_MEMALIGN
         };
     }
 }

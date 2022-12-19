@@ -131,6 +131,8 @@ namespace yack
             //
             // comparisons
             //__________________________________________________________________
+
+            //! fast named comparison
             template <uint8_t u> inline
             bool is() const throw() { return bytes<=1 && u == word[0]; }
 

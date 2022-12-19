@@ -69,13 +69,7 @@ namespace
         YACK_DISABLE_COPY_AND_ASSIGN(vecstore);
     };
 
-    static inline
-    void display_vec(const readable<apz> &cf)
-    {
-        //if(false)
-        std::cerr << " -->  " << cf << std::endl;
-
-    }
+    
 
     static inline void test(const size_t      size,
                             const size_t      rank,

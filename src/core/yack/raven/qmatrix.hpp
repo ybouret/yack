@@ -9,7 +9,7 @@
 #include "yack/sequence/thin-array.hpp"
 #include "yack/memory/sentry.hpp"
 
-#if 1
+#if !defined(NDEBUG)
 //______________________________________________________________________________
 //
 //
@@ -41,7 +41,6 @@ namespace yack
     namespace raven
     {
 
-        
         //______________________________________________________________________
         //
         //
@@ -59,7 +58,7 @@ namespace yack
             //! current maturity
             enum maturity
             {
-                meaningless, //!< empty
+                meaningless, //!< empty matrix
                 in_progress, //!< rank<max_rank-1
                 almost_done, //!< rank=max_rank-1
                 fully_grown  //!< rank=max_rank
@@ -96,10 +95,9 @@ namespace yack
             //------------------------------------------------------------------
             //! try to insert a new vector
             /**
-             - compute set u_k = v, then remove all components of v
-             on the current base
-             - if u_k is not 0, the base is increased and return true
-             - if u_k is 0, it is included in linear space, return false
+             -  set u_k = v_k = v, then apply G-S to u_k and v_k
+             - if u_k != 0, the base is upgraded           => return true
+             - if u_k == 0, it is included in linear space => return false
              */
             //------------------------------------------------------------------
             template <typename T> inline
@@ -109,7 +107,6 @@ namespace yack
             }
 
             
-
             //------------------------------------------------------------------
             //! check if the vector is included in linear space
             /**
@@ -121,9 +118,16 @@ namespace yack
             bool includes(const readable<T> &v)
             {
                 YACK_RAVEN_LOAD();
-                keep_ortho(u_k,v_k);
-                return is_nil_vec(u_k);
+                return is_nil_vec(keep_ortho(u_k,v_k));
             }
+
+            bool includes_(const readable<apz> &v) {
+                assert(dimension==v.size());
+                thin_array<apq> u_k( vgs(), dimension);
+                for(size_t i=dimension;i>0;--i) u_k[i] = v[i];
+                return is_nil_vec(keep_ortho(u_k,v));
+            }
+
 
             //------------------------------------------------------------------
             //! check orthogonal version of v, mostly to debug
@@ -133,30 +137,24 @@ namespace yack
                        const readable<T> &v)
             {
                 YACK_RAVEN_LOAD();
-                keep_ortho(u_k,v_k);
-                return try_polish(o,u_k);
+                return try_polish(o,keep_ortho(u_k,v_k));
             }
 
             //------------------------------------------------------------------
-            //! check equality using row index
+            //! check equality up to a permutation using row index
             //------------------------------------------------------------------
             friend bool operator==(const qmatrix &lhs, const qmatrix &rhs);
 
 
             //------------------------------------------------------------------
-            //! check equivalence
+            //! check equivalence : same rank and all in linear space
             //------------------------------------------------------------------
             bool is_equivalent_to(const qmatrix &rhs);
 
             //------------------------------------------------------------------
-            //! get latter created vector
+            //! get latter created vector for current_rank>0
             //------------------------------------------------------------------
             const qvector & last() const throw();
-
-            //------------------------------------------------------------------
-            //! rebuilding row index
-            //------------------------------------------------------------------
-            void reschedule() throw();
 
             //__________________________________________________________________
             //
@@ -176,11 +174,13 @@ namespace yack
             size_t             *idx; //!< indexing
             contractor<apq>     vgs; //!< dimension for G-S
             
-            void initialize();
-            void keep_ortho(writable<apq>       &u_k,    const readable<apz> &v_k);          //!< projection
-            bool is_nil_vec(const readable<apq> &u_k)    const throw();                      //!< test nil vec
-            bool build_next(writable<apq>       &u_k,    const readable<apz> &v_k);          //!< try to build next basis vector
-            bool try_polish(writable<apz>       &target, const readable<apq> &source) const; //!< univocal target
+            void                 initialize();
+            const readable<apq> &keep_ortho(writable<apq>       &u_k,    const readable<apz> &v_k);          //!< projection
+            bool                 is_nil_vec(const readable<apq> &u_k)    const throw();                      //!< test nil vec
+            bool                 build_next(writable<apq>       &u_k,    const readable<apz> &v_k);          //!< try to build next basis vector
+            bool                 try_polish(writable<apz>       &target, const readable<apq> &source) const; //!< univocal target
+            void                 reschedule() throw();                                                       //!< rebuilding row index
+
         };
 
     }
