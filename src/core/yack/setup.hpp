@@ -60,7 +60,14 @@ namespace yack
     {
         static const int value = N; //!< original value
     };
-    
+
+    //! make a class from an unsigned value
+    template <unsigned N>
+    struct uint2type
+    {
+        static const unsigned value = N; //!< original value
+    };
+
     
 }
 
