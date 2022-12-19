@@ -30,6 +30,8 @@ namespace yack
 {
     namespace raven
     {
+        typedef apex::int_type int_type;
+        
 
         //______________________________________________________________________
         //
@@ -140,7 +142,7 @@ namespace yack
             //------------------------------------------------------------------
             //! get latter created vector
             //------------------------------------------------------------------
-            const readable<apz> & last() const throw() { assert(current_rank); return row[current_rank]; }
+            const readable<apz> & last() const throw();
 
             //------------------------------------------------------------------
             //! rebuilding row index
@@ -166,10 +168,10 @@ namespace yack
             contractor<apq>     vgs; //!< dimension for G-S
             
             void initialize();
-            void keep_ortho(writable<apq>       &u_k, const readable<apz> &v_k);
-            bool is_nil_vec(const readable<apq> &u_k) const throw();
-            bool build_next(writable<apq>       &u_k, const readable<apz> &v_k);
-            bool try_polish(writable<apz>       &, const readable<apq> &source) const;
+            void keep_ortho(writable<apq>       &u_k,    const readable<apz> &v_k);          //!< projection
+            bool is_nil_vec(const readable<apq> &u_k)    const throw();                      //!< test nil vec
+            bool build_next(writable<apq>       &u_k,    const readable<apz> &v_k);          //!< try to build next basis vector
+            bool try_polish(writable<apz>       &target, const readable<apq> &source) const; //!< univocal target
         };
 
     }

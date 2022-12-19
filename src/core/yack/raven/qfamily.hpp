@@ -114,15 +114,14 @@ namespace yack
                 std::cerr << "generate <" << qbase->maturity_text() << ">" << std::endl;
                 switch(qbase->active_state)
                 {
-                    case qmatrix::meaningless:
+                    case qmatrix::meaningless: // empty, say goodbay
                         return;
                         
-                    case qmatrix::fully_grown:
+                    case qmatrix::fully_grown: // fully grown, no more children
                         return;
                         
-                    case qmatrix::almost_done:
-                        // return at most one new !!
-                        finish(lineage,mu);
+                    case qmatrix::almost_done: // at most one new child
+                         finish(lineage,mu);
                         return;
                         
                     case qmatrix::in_progress:
@@ -261,6 +260,8 @@ namespace yack
             
             
         public:
+
+            // check ths source basis vector are included in target matrix
             template <typename T> static
             inline bool compatible_basis(qfamily         &target,
                                          qfamily         &source,
