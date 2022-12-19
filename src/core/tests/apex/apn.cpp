@@ -13,7 +13,14 @@ YACK_UTEST(apn)
 
     randomized::rand_  ran;
 
-    
+    {
+        apn _0(0); std::cerr << "_0=" << _0 << std::endl;
+        apn _1(1); std::cerr << "_1=" << _1 << std::endl;
+        apn _2(2); std::cerr << "_2=" << _2 << std::endl;
+        apn _10(10); std::cerr << "_10=" << _10 << std::endl;
+
+    }
+
     
     for(size_t bits=0;bits<=64;++bits)
     {

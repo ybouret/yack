@@ -97,6 +97,26 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
                              uint_type  u,
                              size_t    &n) throw()
         {
+            switch(u)
+            {
+                case 0: n=0; return 0;
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                case 8:
+                case 9:
+                case 10:
+                    n=1;
+                    w[0] = static_cast<uint8_t>(u);
+                    return 1;
+
+                default:
+                    break;
+            }
             // store words
             w[0] = word_type(u);
             for(size_t i=1;i<words_per_uint;++i)
@@ -137,13 +157,16 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
             return static_cast<word_type *>( out_of_reach::copy(&value,temp,sizeof(temp)) );
         }
 
+
+#define YACK_NATURAL_LDU8(X) case X: word[0] = X; break
+
         void natural:: ldu(uint_type u) throw()
         {
             assert(max_bytes>=sizeof(uint_type));
             assert(max_words>=words_per_uint);
-
             words = ldw(word,u,bytes);
             zpad();
+            return;
         }
 
 
