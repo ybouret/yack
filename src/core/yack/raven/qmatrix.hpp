@@ -10,13 +10,23 @@
 #include "yack/memory/sentry.hpp"
 
 #if 1
+//______________________________________________________________________________
+//
+//
 //! helper to check untouched memory
+//
+//------------------------------------------------------------------------------
 #define YACK_RAVEN_SENTRY() YACK_MEM_SENTRY_FOR( obj()+dimension, current_rank*dimension)
 #else
 #define YACK_RAVEN_SENTRY()
 #endif
 
+//______________________________________________________________________________
+//
+//
 //! helper to load template data
+//
+//______________________________________________________________________________
 #define YACK_RAVEN_LOAD()                    \
 /**/ YACK_RAVEN_SENTRY();                    \
 /**/ assert(dimension==v.size());            \
@@ -30,9 +40,8 @@ namespace yack
 {
     namespace raven
     {
-        typedef apex::int_type int_type;
-        
 
+        
         //______________________________________________________________________
         //
         //
