@@ -121,6 +121,7 @@ namespace yack
                 return is_nil_vec(keep_ortho(u_k,v_k));
             }
 
+            //! testing include of a precomputed apz vector
             bool includes_(const readable<apz> &v) {
                 assert(dimension==v.size());
                 thin_array<apq> u_k( vgs(), dimension);
