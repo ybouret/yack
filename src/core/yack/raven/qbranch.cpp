@@ -13,11 +13,9 @@ namespace yack
         void qbranch:: prune() throw()
         {
             qlist.release();
-            coerce(depth) = 0;
         }
 
         qbranch:: qbranch():
-        depth(),
         qlist(),
         io( new qBank() )
         {
@@ -35,7 +33,7 @@ namespace yack
 
         std::ostream & operator<<(std::ostream &os, const qbranch &self)
         {
-            os << " |depth=" << self.depth << " #" << self.qlist.size << "|={" << std::endl;
+            os << " |#" << self.qlist.size << "|={" << std::endl;
             for(const qfamily *member = self->head; member; member=member->next)
             {
                 os << "\t" << *member << std::endl;

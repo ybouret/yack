@@ -16,7 +16,7 @@ namespace yack
         //______________________________________________________________________
         //
         //
-        //! branch of distinct families with generation monitoring
+        //! branch containing iterative generations
         //
         //______________________________________________________________________
         class qbranch
@@ -75,7 +75,6 @@ namespace yack
                         rolling::down(id); assert(i==id[nr]);
                         if(!ok(mu[i])) continue;
                         qlist.push_back( new qfamily(id,mu,rk,io) );
-                        coerce(depth) = 1;
                     }
                 }
                 catch(...) { prune(); throw; }
@@ -118,24 +117,13 @@ namespace yack
                     target.swap_with(qlist);
                 }
                 
-                const size_t nf = qlist.size;
-                if(nf)
-                {
-                    ++coerce(depth);
-                    return nf;
-                }
-                else
-                {
-                    coerce(depth) = 0;
-                    return 0;
-                }
+                return qlist.size;
             }
 
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
-            const size_t depth; //!< depth monitoring
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(qbranch);
