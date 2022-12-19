@@ -381,7 +381,11 @@ namespace yack
             template <typename T> static inline
             void collapse(qfamily         &target,
                           qfamily         &source,
-                          const matrix<T> &mu)
+                          const matrix<T> &
+#if !defined(NDEBUG)
+                          mu
+#endif
+                          )
             {
                 // sanity check
                 assert(target->current_rank==source->current_rank);

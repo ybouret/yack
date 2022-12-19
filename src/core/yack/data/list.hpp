@@ -202,7 +202,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
             }
         }
 
-        //! replace mine with another node
+        //! replace mine with another node, return mine for further processing
         inline NODE *replace(NODE *mine, NODE *node) throw()
         {
             assert(NULL!=mine); assert(NULL!=node); assert(NULL==node->prev); assert(NULL==node->next);

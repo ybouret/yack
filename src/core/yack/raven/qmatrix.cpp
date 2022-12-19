@@ -1,5 +1,6 @@
 #include "yack/raven/qmatrix.hpp"
 #include "yack/system/imported.hpp"
+#include <cstring>
 
 namespace yack
 {

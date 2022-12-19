@@ -13,34 +13,65 @@ namespace yack
     namespace raven
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! branch of distinct families with generation monitoring
+        //
+        //______________________________________________________________________
         class qbranch
         {
         public:
-            explicit qbranch();
-            virtual ~qbranch() throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit qbranch();           //!< setup empty
+            virtual ~qbranch() throw();   //!< cleanup
 
-            void prune() throw();
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            void                     prune()            throw();                  //!< remove all families
+            const list_of<qfamily> & operator*()  const throw();                  //!< access, const
+            const list_of<qfamily> * operator->() const throw();                  //!< access, const
+            friend std::ostream    & operator<<(std::ostream &, const qbranch &); //!< display
 
-            const list_of<qfamily> & operator*()  const throw();
-            const list_of<qfamily> * operator->() const throw();
-            friend std::ostream & operator<<(std::ostream &os, const qbranch &);
+            //__________________________________________________________________
+            //
+            // generating methods
+            //__________________________________________________________________
 
+            //__________________________________________________________________
+            //
             //! initialize branch
+            /**
+             \param mu matrix of row vectors
+             \param rk rank(mu)
+             \param ok keep mu[i] iff ok(mu[i])
+             */
+            //__________________________________________________________________
             template <typename T, typename FUNC> inline
             void operator()(const matrix<T> &mu,
                             const size_t     rk,
                             FUNC            &ok)
             {
+                //--------------------------------------------------------------
                 // cleanup
+                //--------------------------------------------------------------
                 prune();
                 try {
-                    // prepare data
+                    //----------------------------------------------------------
+                    // prepare data: number of rows and indices
+                    //----------------------------------------------------------
                     const size_t      nr = mu.rows;
                     cxx_array<size_t> id(nr); id.ld_incr(1);
 
+                    //----------------------------------------------------------
                     // loop over all first vector
-                    for(size_t i=1;i<=nr;++i)
-                    {
+                    //----------------------------------------------------------
+                    for(size_t i=1;i<=nr;++i) {
                         rolling::down(id); assert(i==id[nr]);
                         if(!ok(mu[i])) continue;
                         qlist.push_back( new qfamily(id,mu,rk,io) );
@@ -52,7 +83,14 @@ namespace yack
 
 
 
-
+            //__________________________________________________________________
+            //
+            //! initialize branch
+            /**
+             \param mu matrix of row vectors
+             \param cb call on generated new qvector
+             */
+            //__________________________________________________________________
             template <typename T, typename PROC>
             inline size_t generate(const matrix<T> &mu,
                                    PROC            &cb)
@@ -78,11 +116,10 @@ namespace yack
                                 cb( (**f).last() );
 
 
-                            intra_condensation(lineage,mu);         /// condense lineage
+                            intra_condensation(lineage,mu);         // condense lineage
                             incremental_fusion(target,lineage,mu);  // incremental compact
                         }
                     }
-
                     target.swap_with(qlist);
                 }
                 
@@ -98,38 +135,71 @@ namespace yack
                     return 0;
                 }
             }
-            
-            const size_t depth;
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const size_t depth; //!< depth monitoring
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(qbranch);
-            qfamilies qlist;
+            qfamilies qlist;   //!< current generations
 
         public:
-            qFund io;
+            qFund        io;   //!< shared memory for indices
 
         private:
-
             template <typename T> static inline
             void try_merge(list_of<qfamily>  &surrogate,
                            auto_ptr<qfamily> &candidate,
                            const matrix<T>   &mu)
             {
-                qmatrix       &F = **candidate;
-                for(qfamily  *g  = surrogate.head;g;g=g->next) {
-                    qmatrix  &G  = **g;
-                    if(   F==G                   // fast
-                       || F.is_equivalent_to(G)  // slow
-                       )
-                    {
+
+                //--------------------------------------------------------------
+                //
+                // current family
+                //
+                //--------------------------------------------------------------
+                qfamily &f = *candidate; assert(NULL==f.next); assert(NULL==f.prev);
+                qmatrix &F = *f;
+
+
+                //--------------------------------------------------------------
+                //
+                // loop over surrogate
+                //
+                //--------------------------------------------------------------
+                for(qfamily *g = surrogate.head;g;g=g->next)
+                {
+                    const qmatrix &G = **g;
+                    if( F==G /* fast */ || F.is_equivalent_to(G) /* slow */) {
+                        //------------------------------------------------------
+                        // found equivalent: keep lightest matrix
+                        //------------------------------------------------------
                         std::cerr << "    condense: " << candidate << " and " << *g << std::endl;
-                        qfamily::collapse(*g,*candidate,mu);
-                        //exit(0);
-                        return; // drop candidate
+                        if(G.total_weight <= F.total_weight)
+                        {
+                            // keep g, drop f=candidate
+                            qfamily::collapse(*g,f,mu);
+                            return; // drop f=candidate
+                        }
+                        else
+                        {
+                            // keep f=candidate, delete g
+                            qfamily::collapse(f,*g,mu);
+                            delete surrogate.replace(g,candidate.yield());
+                            return;
+                        }
                     }
                 }
 
-                surrogate.push_back( candidate.yield() ); // keep candidate
+                //--------------------------------------------------------------
+                //
+                // no equivalent found at this point...
+                //
+                //--------------------------------------------------------------
+                surrogate.push_back( candidate.yield() );
             }
 
 
