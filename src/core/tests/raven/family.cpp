@@ -152,7 +152,7 @@ namespace
         source(mu,rank,accept_all);
         do
         {
-            std::cerr << source << std::endl;
+            //std::cerr << source << std::endl;
             //if(source.depth>=2) break;
         } while( source.generate(mu,vdb) );
 
