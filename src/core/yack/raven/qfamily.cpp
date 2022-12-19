@@ -29,11 +29,12 @@ namespace yack
 
         qfamily:: qfamily(const qfamily &F) :
         object(),
+        qmetrics(F),
+        next(0),
+        prev(0),
         qbase( F.qbase ),
         basis( F.basis ),
-        ready( F.ready ),
-        next(0),
-        prev(0)
+        ready( F.ready )
         {
         }
 

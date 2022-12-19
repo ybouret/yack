@@ -10,6 +10,7 @@
 #include "yack/data/list/cxx.hpp"
 #include "yack/ptr/auto.hpp"
 #include "yack/system/imported.hpp"
+#include "yack/sequence/cxx-array.hpp"
 
 namespace yack
 {
@@ -50,7 +51,7 @@ namespace yack
         //! family built from a set of vectors
         //
         //______________________________________________________________________
-        class qfamily : public object
+        class qfamily : public object, public qmetrics
         {
         public:
             //__________________________________________________________________
@@ -73,11 +74,12 @@ namespace yack
                              const size_t      rk,
                              const qFund      &io) :
             object(),
-            qbase( new qmatrix(mu.cols,rk) ),
-            basis(io),
-            ready(io),
+            qmetrics(mu.cols),
             next(0),
-            prev(0)
+            prev(0),
+            qbase( new qmatrix(dimension,rk) ),
+            basis(io),
+            ready(io)
             {
                 //--------------------------------------------------------------
                 // initialize input
@@ -130,7 +132,7 @@ namespace yack
                           const matrix<T>  &mu) const
             {
                 YACK_RAVEN_CHECK(this);
-                std::cerr << "generate <" << qbase->maturity_text() << ">" << std::endl;
+                //std::cerr << "generate <" << qbase->maturity_text() << ">" << std::endl;
                 switch(qbase->active_state)
                 {
                     case qmatrix::meaningless: // empty, say goodbay
@@ -143,55 +145,104 @@ namespace yack
                          finish(lineage,mu);
                         return;
                         
-                    case qmatrix::in_progress:
+                    case qmatrix::in_progress: // make new families
                         expand(lineage,mu);
                         return;
                 }
             }
-            
+
+            template <typename T> inline
+            bool consistent_almost_done(const matrix<T> &mu) const
+            {
+                assert(qbase->active_state==qmatrix::almost_done);
+                qmatrix          &Q       = coerce(**this);
+                const qNode      *node    = ready->head;
+                cxx_array<apz>    primary(dimension);
+                cxx_array<apz>    replica(dimension);
+                while(node)
+                {
+                    if(Q.guess(primary,mu[**node]))
+                    {
+                        //std::cerr << "found primary: " << primary << std::endl;
+                        break;
+                    }
+                    node=node->next;
+                }
+
+                for(node=node->next;node;node=node->next)
+                {
+                    if(Q.guess(replica,mu[**node]))
+                    {
+                        //std::cerr << "found replica: " << primary << std::endl;
+                        if( replica !=  primary ) return false;
+                    }
+                }
+
+                return true;
+            }
+
             
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
+            qfamily           *next;  //!< for list
+            qfamily           *prev;  //!< for list
+
+        private:
             clone_ptr<qmatrix> qbase; //!< current base
             qList              basis; //!< indices of vectors employed  in basis
             qList              ready; //!< indices of vectors available in ready
-            qfamily           *next;  //!< for list
-            qfamily           *prev;  //!< for list
-            
-            
+
             
         private:
             YACK_DISABLE_ASSIGN(qfamily);
-            
-            // this is the last stage
+
+            //__________________________________________________________________
+            //
+            //
+            // this is the last stage:
+            // any input vector produces 0 or the same output vector
+            //
+            //__________________________________________________________________
             template <typename T>
             void finish(list_of<qfamily> &lineage,
                         const matrix<T>  &mu) const
             {
                 assert(qmatrix::almost_done==qbase->active_state);
-                assert(ready->size>0);
-                
-                auto_ptr<qfamily> chld = new qfamily(*this);
-                qmatrix          &Q    = *(chld->qbase);
-                
-                while(chld->ready->size)
+                assert( consistent_almost_done(mu) );
+
+                //--------------------------------------------------------------
+                // full copy of this
+                //--------------------------------------------------------------
+                qfamily          *f = new qfamily(*this);
+                auto_ptr<qfamily> F = f;
+                qmatrix          &Q = **F;
+
+                //--------------------------------------------------------------
+                // look up for a new vector from ready indices
+                //--------------------------------------------------------------
+                while(F->ready->size)
                 {
-                    const size_t i = chld->ready.pull_lower();
-                    chld->basis.ensure(i);
+                    const size_t i = F->ready.pull_lower();
+                    F->basis.ensure(i);
                     if(Q(mu[i]))
                     {
+                        //------------------------------------------------------
                         // found one = last
+                        //------------------------------------------------------
                         assert(qmatrix::fully_grown==Q.active_state);
-                        chld->basis.merge(chld->ready);
-                        chld->ready.free();
-                        std::cerr << "finish: " << chld << std::endl;
-                        lineage.push_back( chld.yield() );
+                        F->basis.merge(F->ready);
+                        F->ready.free();
+                        YACK_RAVEN_CHECK(f);
+                        std::cerr << "finish: " << F << std::endl;
+                        lineage.push_back( F.yield() );
                         return;
                     }
+                    //----------------------------------------------------------
+                    // else mu[i] is in linear space
+                    //----------------------------------------------------------
                 }
-                
             }
             
             // expand before last stage
