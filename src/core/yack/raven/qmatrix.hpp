@@ -148,6 +148,11 @@ namespace yack
 
 
             //------------------------------------------------------------------
+            //! check same vector up to current_rank-1
+            //------------------------------------------------------------------
+            static bool are_siblings(const qmatrix &lhs, const qmatrix &rhs);
+
+            //------------------------------------------------------------------
             //! check equivalence : same rank and all in linear space
             //------------------------------------------------------------------
             bool is_equivalent_to(const qmatrix &rhs);

@@ -20,6 +20,17 @@ namespace yack
             return *qbase;
         }
 
+        qmatrix       * qfamily:: operator->()       throw()
+        {
+            return & *qbase;
+        }
+
+
+        const qmatrix * qfamily:: operator->() const throw()
+        {
+            return & *qbase;
+        }
+
         std::ostream & operator<<(std::ostream &os, const qfamily &self)
         {
             os << *(self.qbase) << "@" << *(self.basis) << "+" << *(self.ready);

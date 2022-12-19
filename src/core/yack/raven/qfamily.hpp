@@ -116,8 +116,10 @@ namespace yack
             // methods
             //__________________________________________________________________
             friend std::ostream & operator<<(std::ostream &, const qfamily &); //!< display with all info
-            qmatrix       &       operator*()       throw();                   //!< access, const
-            const qmatrix &       operator*() const throw();                   //!< access, const
+            const qmatrix &       operator*()  const throw();                  //!< access, const
+            const qmatrix *       operator->() const throw();                  //!< access, const
+            qmatrix       *       operator->()       throw();                  //!< access
+            qmatrix       &       operator*()        throw();                  //!< access
 
             //__________________________________________________________________
             //
@@ -151,6 +153,10 @@ namespace yack
                 }
             }
 
+            //__________________________________________________________________
+            //
+            //! test that all ready vector produces the same output
+            //__________________________________________________________________
             template <typename T> inline
             bool consistent_almost_done(const matrix<T> &mu) const
             {
@@ -162,18 +168,13 @@ namespace yack
                 while(node)
                 {
                     if(Q.guess(primary,mu[**node]))
-                    {
-                        //std::cerr << "found primary: " << primary << std::endl;
-                        break;
-                    }
+                        break; //! found primary
                     node=node->next;
                 }
 
                 for(node=node->next;node;node=node->next)
                 {
-                    if(Q.guess(replica,mu[**node]))
-                    {
-                        //std::cerr << "found replica: " << primary << std::endl;
+                    if(Q.guess(replica,mu[**node])) {
                         if( replica !=  primary ) return false;
                     }
                 }
@@ -181,7 +182,6 @@ namespace yack
                 return true;
             }
 
-            
             //__________________________________________________________________
             //
             // members
@@ -190,13 +190,10 @@ namespace yack
             qfamily           *prev;  //!< for list
 
         private:
+            YACK_DISABLE_ASSIGN(qfamily);
             clone_ptr<qmatrix> qbase; //!< current base
             qList              basis; //!< indices of vectors employed  in basis
             qList              ready; //!< indices of vectors available in ready
-
-            
-        private:
-            YACK_DISABLE_ASSIGN(qfamily);
 
             //__________________________________________________________________
             //
@@ -244,44 +241,65 @@ namespace yack
                     //----------------------------------------------------------
                 }
             }
-            
+
+            //__________________________________________________________________
+            //
+            //
             // expand before last stage
+            //
+            //__________________________________________________________________
             template <typename T> inline
             void expand(list_of<qfamily> &lineage,
                         const matrix<T>  &mu) const
             {
                 assert(ready->size>0);
-                std::cerr << "==> Expanding " << *this << " <==" << std::endl;
-                
-                // preparing a list of spanned indice
-                qList             span(basis.cache);
+                //std::cerr << "==> Expanding " << *this << " <==" << std::endl;
+
+
+                qList             span(basis.cache); // preparing a list of spanned indice
                 {
+                    //----------------------------------------------------------
+                    //
+                    // start from a  fist clone and a first index from ready
+                    //
+                    //----------------------------------------------------------
                     auto_ptr<qfamily> chld = new qfamily(*this);
                     const qNode      *node = ready->head;
                     
                 NEXT_CHILD:
-                    const size_t      i = **node;
-                    qmatrix          &Q = *(chld->qbase);
+                    const size_t      i = **node; assert(i>=1); assert(i<=mu.rows);
+                    qmatrix          &Q = **chld; assert(Q==**this);
                     if(Q(mu[i]))
                     {
+                        //------------------------------------------------------
                         // found a new vector
+                        //------------------------------------------------------
                         chld->basis.ensure(i);
                         lineage.push_back( chld.yield() );
                         if(NULL!=(node=node->next))
                         {
-                            chld = new qfamily(*this);
-                            goto NEXT_CHILD; // with new child
-                        }
+                            chld = new qfamily(*this); //-----------------------
+                            goto NEXT_CHILD;           // again with new child
+                        }                              //-----------------------
                     }
                     else
                     {
+                        //------------------------------------------------------
                         // this vector is in span
+                        //------------------------------------------------------
                         span.ensure(i);
                         if(NULL!=(node=node->next))
-                            goto NEXT_CHILD; // with same chld
+                        {                    //---------------------------------
+                            goto NEXT_CHILD; // again with same child
+                        }                    //---------------------------------
                     }
                 }
-                
+
+                //--------------------------------------------------------------
+                //
+                // finalize families by updating indidces
+                //
+                //--------------------------------------------------------------
                 for(qfamily *f=lineage.head;f;f=f->next)
                 {
                     f->basis += span;
@@ -289,38 +307,48 @@ namespace yack
                     std::cerr << "    expanded: " << *f << std::endl;
                     YACK_RAVEN_CHECK(f);
                 }
-                
+
+                //--------------------------------------------------------------
+                //
+                // reduce families with the same last index
+                //
+                //--------------------------------------------------------------
                 reduce(lineage,mu);
-                
             }
             
-            
+
+            //------------------------------------------------------------------
+            //
             //! reducing lineage with same ancestor family
             /**
              The only difference is the last vector
              */
+            //------------------------------------------------------------------
             template <typename T>
             static void reduce(list_of<qfamily> &lineage,
                                const matrix<T>  &mu)
             {
-                
                 qfamilies   accepted;
                 while(lineage.size)
                 {
+                    //----------------------------------------------------------
+                    // take current family
+                    //----------------------------------------------------------
                     auto_ptr<qfamily> f = lineage.pop_front();
                     qmatrix          &F = **f;
                     bool              reduced = false;
-                    for(qfamily  *g=accepted.head;g;g=g->next)
-                    {
-                        qmatrix &G = **g;  assert(G.current_rank==G.current_rank);
-                        if( F.last() == G.last() )
-                        {
+
+                    //----------------------------------------------------------
+                    // scan already accepted distinct families (siblings)
+                    //----------------------------------------------------------
+                    for(qfamily * g =accepted.head;g;g=g->next) {
+                        qmatrix & G = **g; assert(qmatrix::are_siblings(F,G));
+                        if( F.last() == G.last() ) {
                             collapse(*g,*f,mu);
                             reduced = true;
                             break;
                         }
                     }
-                    
                     if(reduced) continue;            // drop f
                     accepted.push_back( f.yield() ); // keep f
                 }
@@ -328,44 +356,42 @@ namespace yack
             }
             
             
-            
-        public:
-
-            // check ths source basis vector are included in target matrix
+            // check the source basis vector are included in target matrix
             template <typename T> static
             inline bool compatible_basis(qfamily         &target,
-                                         qfamily         &source,
+                                         const qfamily   &source,
                                          const matrix<T> &mu)
             {
                 qmatrix       &Q = *target;
                 // check compatibilty of source basis with target matrix
                 for(const qNode *node = source.basis->head;node;node=node->next)
                 {
-                    const size_t i = **node;
-                    if(!Q.includes(mu[i])) return false;
+                    if(!Q.includes(mu[**node])) return false;
                 }
                 return true;
-                
             }
+
+        public:
             
-            
+            //------------------------------------------------------------------
+            //
+            //! collapsing equal or equivalent families
+            //
+            //------------------------------------------------------------------
             template <typename T> static inline
             void collapse(qfamily         &target,
                           qfamily         &source,
                           const matrix<T> &mu)
             {
-                qmatrix &tgt = *target;
-                qmatrix &src = *source;
+                // sanity check
+                assert(target->current_rank==source->current_rank);
+                assert(compatible_basis(target,source,mu));
+                assert(compatible_basis(source,source,mu));
 
-                assert(tgt.current_rank==src.current_rank);
-
-                if(!compatible_basis(target,source,mu) || !compatible_basis(source,target,mu))
-                    throw imported::exception("raven::qfamily::collapse","distinct basis");
-                
-                // fusion!
-                target.basis += source.basis;
-                target.ready += source.ready;
-                target.ready -= target.basis;
+                // fusion
+                target.basis += source.basis; // merge basis
+                target.ready += source.ready; // merge ready
+                target.ready -= target.basis; // cleanup ready
                 std::cerr << "    collapse: " << target << std::endl;
                 YACK_RAVEN_CHECK(&target);
             }

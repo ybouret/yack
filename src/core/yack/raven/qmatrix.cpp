@@ -107,6 +107,7 @@ namespace yack
             {
                 row[i].hard_copy(Q.row[i]);
             }
+            memcpy(idx,Q.idx,current_rank*sizeof(size_t));
         }
 
         qmatrix * qmatrix:: clone() const { return new qmatrix(*this); }
@@ -232,6 +233,18 @@ namespace yack
                 if( lhs[ li[i] ] != rhs[ ri[i] ] ) return false;
             }
             
+            return true;
+        }
+
+        bool qmatrix:: are_siblings(const qmatrix &lhs, const qmatrix &rhs)  
+        {
+            if(lhs.current_rank<=0 || rhs.current_rank<=0 || lhs.current_rank!=rhs.current_rank) return false;
+
+            for(size_t i=lhs.current_rank-1;i>0;--i)
+            {
+                if(lhs[i] != rhs[i]) return false;
+            }
+
             return true;
         }
 
