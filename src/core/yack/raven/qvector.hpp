@@ -66,13 +66,13 @@ namespace yack
                 for(size_t i=dimension;i>0;--i) arr[i] = coeff[i].cast_to<T>();
                 return arr;
             }
-            
-        private:
-            apz      *coeff; //!< [1..dimension]
 
-        public:
-            const apn norm2; //!< |this|^2
-
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+        private: apz      *coeff; //!< [1..dimension]
+        public:  const apn norm2; //!< |this|^2
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(qvector);
         };

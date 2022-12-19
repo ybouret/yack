@@ -51,19 +51,15 @@ namespace yack
             return coeff[i];
         }
 
-#if 0
-        void qvector:: normalize()
-        {
-            thin_array<apz> self( &coeff[1], dimension);
-            apk::definite(self,coerce(norm2));
-        }
-#endif
+
         
         bool qvector:: appointed(const readable<apq> &u_k)
         {
+            static const size_t one(1);
             assert(u_k.size()==dimension);
+
             thin_array<apz> arr( &coeff[1], dimension);
-            const apn       lcm = apk::lcm(u_k, size_t(1), dimension);
+            const apn       lcm = apk::lcm(u_k,one,dimension);
             bool            gtz = false;
 
             for(size_t i=dimension;i>0;--i)
@@ -95,7 +91,7 @@ namespace yack
             assert(dimension==u_k.size());
             assert(dimension==v_k.size());
 
-            // dot product v_k u_j
+            // dot product <v_k|u_j>
             const size_t nd = dimension;
             size_t       ii = nd;
             apz          uv = v_k[ii] * u_j[ii];
