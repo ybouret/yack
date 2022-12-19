@@ -33,10 +33,15 @@ namespace yack
         //
         //______________________________________________________________________
         class   qfamily;
-        typedef cxx_list_of<qfamily> qfamilies;
+        typedef cxx_list_of<qfamily> qfamilies; //!< alias
 
 
+        //______________________________________________________________________
+        //
+        //
         //! for sanity checks
+        //
+        //______________________________________________________________________
 #define YACK_RAVEN_CHECK(PTR)   assert((PTR)->basis->size+(PTR)->ready->size==mu.rows); assert((PTR)->basis.excludes((PTR)->ready))
 
         //______________________________________________________________________
@@ -74,25 +79,33 @@ namespace yack
             next(0),
             prev(0)
             {
+                //--------------------------------------------------------------
                 // initialize input
+                //--------------------------------------------------------------
                 const size_t nr = mu.rows;  assert(nr>=2);
                 const size_t ir = id[nr];   assert(ir>=1); assert(ir<=mu.rows);
-                
+
+                //--------------------------------------------------------------
                 // initialize matrix
+                //--------------------------------------------------------------
                 qmatrix     &Q  = *qbase;
-                if(!Q(mu[ir])) throw imported::exception("raven::qfamily","invadid first vector[%u]", static_cast<unsigned>(ir));
-                
+                if(!Q(mu[ir])) throw imported::exception("raven::qfamily","invalid first vector[%u]", static_cast<unsigned>(ir));
+
+                //--------------------------------------------------------------
                 // initialize indices
-                basis += ir;
-                for(size_t i=1;i<nr;++i) ready += id[i];
-                
+                //--------------------------------------------------------------
+                basis += ir;                             // basis
+                for(size_t i=1;i<nr;++i) ready += id[i]; // ready
+
+                //--------------------------------------------------------------
                 // sanity check
+                //--------------------------------------------------------------
                 assert(1==basis->size);
                 assert(nr-1==ready->size);
                 YACK_RAVEN_CHECK(this);
             }
             
-            //! hard copy
+            //! make a hard full copy
             qfamily(const qfamily &);
             
             
@@ -100,11 +113,17 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            friend std::ostream & operator<<(std::ostream &, const qfamily &); //!< display
-            
+            friend std::ostream & operator<<(std::ostream &, const qfamily &); //!< display with all info
+            qmatrix       &       operator*()       throw();                   //!< access, const
+            const qmatrix &       operator*() const throw();                   //!< access, const
+
             //__________________________________________________________________
             //
-            // generate all possible lineage from this family
+            //! generate all possible lineage from this family
+            /**
+             \param lineage target lineage of new possible families
+             \param mu      row matrix of usable vectors
+             */
             //__________________________________________________________________
             template <typename T> inline
             void generate(list_of<qfamily> &lineage,
@@ -131,15 +150,15 @@ namespace yack
             }
             
             
-            qmatrix       & operator*()       throw() { return *qbase; }
-            const qmatrix & operator*() const throw() { return *qbase; }
-            
-            
-            clone_ptr<qmatrix> qbase;
-            qList              basis;
-            qList              ready;
-            qfamily           *next;
-            qfamily           *prev;
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            clone_ptr<qmatrix> qbase; //!< current base
+            qList              basis; //!< indices of vectors employed  in basis
+            qList              ready; //!< indices of vectors available in ready
+            qfamily           *next;  //!< for list
+            qfamily           *prev;  //!< for list
             
             
             

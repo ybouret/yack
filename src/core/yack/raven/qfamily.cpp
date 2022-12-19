@@ -10,7 +10,15 @@ namespace yack
         {
         }
 
-        
+        qmatrix       & qfamily:: operator*()       throw()
+        {
+            return *qbase;
+        }
+
+        const qmatrix & qfamily:: operator*() const throw()
+        {
+            return *qbase;
+        }
 
         std::ostream & operator<<(std::ostream &os, const qfamily &self)
         {
