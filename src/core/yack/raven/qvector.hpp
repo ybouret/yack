@@ -60,10 +60,11 @@ namespace yack
 
             //! cast to integer type
             template <typename T> inline
-            void cast_to(writable<T> &arr) const
+            writable<T> &cast_to(writable<T> &arr) const
             {
                 assert(dimension==arr.size());
                 for(size_t i=dimension;i>0;--i) arr[i] = coeff[i].cast_to<T>();
+                return arr;
             }
             
         private:

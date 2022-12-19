@@ -201,7 +201,7 @@ namespace yack
             }
         }
 
-        const readable<apz> & qmatrix:: last() const throw()  { assert(current_rank); return row[current_rank]; }
+        const qvector & qmatrix:: last() const throw()  { assert(current_rank); return row[current_rank]; }
 
         bool qmatrix:: is_equivalent_to(const qmatrix &rhs)
         {

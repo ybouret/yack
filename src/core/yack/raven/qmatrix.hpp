@@ -142,7 +142,7 @@ namespace yack
             //------------------------------------------------------------------
             //! get latter created vector
             //------------------------------------------------------------------
-            const readable<apz> & last() const throw();
+            const qvector & last() const throw();
 
             //------------------------------------------------------------------
             //! rebuilding row index

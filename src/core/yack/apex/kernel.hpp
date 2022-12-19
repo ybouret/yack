@@ -118,7 +118,7 @@ namespace yack
                 const apz L( lhs[i] );
                 const apz R( rhs[i] );
 
-                switch(__sign::pair_of(L,R))
+                switch(__sign::pair(L.s,R.s))
                 {
                     case zz_pair:
                         // 0/0 => compatible

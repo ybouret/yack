@@ -8,35 +8,21 @@
 
 #include "yack/sequence/bunch.hpp"
 #include "yack/sequence/roll.hpp"
-#include "yack/apex/north/qbranch.hpp"
-
+#include "yack/raven/qbranch.hpp"
+#include "yack/raven/qselect.hpp"
 
 #include <iomanip>
 
 namespace yack
 {
     using namespace math;
-    
+    using namespace raven;
+
     namespace chemical
     {
         
 
-        //----------------------------------------------------------------------
-        //
-        //
-        // counting coef != 0
-        //
-        //
-        //----------------------------------------------------------------------
-        static inline size_t count_valid(const readable<int> &coef) throw()
-        {
-            size_t count = 0;
-            for(size_t i=coef.size();i>0;--i)
-            {
-                if( 0 != coef[i] ) ++count;
-            }
-            return count;
-        }
+
 
 
         //----------------------------------------------------------------------
@@ -71,7 +57,7 @@ namespace yack
                 const species       &s = ***sn;
                 const size_t         j = *s;
                 const readable<int> &curr = mu[j];
-                if(count_valid(curr)<=0) continue;
+                if(qselect::count_valid(curr)<=0) continue;
 
                 bool                 isOk = true;
 
@@ -113,592 +99,39 @@ namespace yack
         //
         //
         //----------------------------------------------------------------------
-        static inline
-        const readable<int> &q2i(writable<int>       &cof,
-                                 const readable<apq> &q)
-        {
-            assert(cof.size()==q.size());
-            for(size_t i=cof.size();i>0;--i)
-            {
-                assert(1==q[i].den);
-                cof[i] = q[i].num.cast_to<int>();
-            }
-            return cof;
-        }
+
 
         static const char * const fn = "sub_manifold";
 
-        typedef north::qmatrix     qFamily_;
-        typedef small_bank<size_t> iBank;
-        typedef iBank::pointer     iSharedBank;
-        typedef small_set<size_t>  iList;
-        typedef small_node<size_t> iNode;
-        
-        
-        //----------------------------------------------------------------------
-        //
-        // orthogonal family, with
-        // - indices of used in              .basis
-        // - indices of still not used a.k.a .ready
-        //
-        //----------------------------------------------------------------------
-        class qFamily : public qFamily_
+
+        template <typename T>
+        static inline
+        bool keep_more_than_two(const readable<T> &cf) throw()
+        {
+            return qselect::count_valid(cf) >= 2;
+        }
+
+        class collector : public bunch<int>
         {
         public:
+            explicit collector(const size_t w) : bunch<int>(w) {}
+            virtual ~collector() throw() {}
 
-            //------------------------------------------------------------------
-            //
-            //! full setup
-            //
-            //------------------------------------------------------------------
-            explicit qFamily(const readable<size_t> &jx,
-                             const imatrix          &mu,
-                             const iSharedBank      &io) :
-            qFamily_(mu.cols),
-            next(0),
-            prev(0),
-            basis(io),
-            ready(io)
+            void operator()(const qvector &cf)
             {
-
-                //--------------------------------------------------------------
-                //
-                // initialize indices
-                //
-                //--------------------------------------------------------------
-                assert(jx.size()==mu.rows);            // check sanity
-                size_t               i  = mu.rows;     // last index...
-                const size_t         ip = jx[i];       // ...gives primary index
-                const readable<int> &primary = mu[ip]; // and primary vector
-                assert(count_valid(primary)>1);        // sanity check
-
-                //--------------------------------------------------------------
-                //
-                // build first vector
-                //
-                //--------------------------------------------------------------
-                if(!grow(primary))
-                    throw imported::exception(fn,"invalid primary sub-space");
-
-
-                //--------------------------------------------------------------
-                //
-                // load primary info
-                //
-                //--------------------------------------------------------------
-                basis << ip;
-
-                //--------------------------------------------------------------
-                //
-                // load other
-                //
-                //--------------------------------------------------------------
-                while(--i>0)
+                std::cerr << " found " << cf << std::endl;
+                if( qselect::count_valid(  cf.cast_to(work) ) >= 2 )
                 {
-                    const size_t ir = jx[i]; // remaining index
-                    ready.pre(ir);           // store remaining
+                    ensure(work);
                 }
-
-            }
-            
-            //------------------------------------------------------------------
-            //
-            //! duplicate all
-            //
-            //------------------------------------------------------------------
-            inline qFamily(const qFamily &parent) :
-            qFamily_(parent),
-            next(0),
-            prev(0),
-            basis(parent.basis),
-            ready(parent.ready)
-            {
-            }
-            
-
-            //------------------------------------------------------------------
-            //
-            //! cleanup...
-            //
-            //------------------------------------------------------------------
-            virtual ~qFamily() throw() {}
-
-
-
-            //------------------------------------------------------------------
-            //
-            //! verbosity
-            //
-            //------------------------------------------------------------------
-            inline friend std::ostream & operator<<(std::ostream &os, const qFamily &self)
-            {
-                const qFamily_ &from = self;
-                std::cerr << from << " / " << *self.basis << "+" << *self.ready;
-                return os;
             }
 
-
-            //------------------------------------------------------------------
-            //
-            // members
-            //
-            //------------------------------------------------------------------
-            qFamily *next;  //!< for list
-            qFamily *prev;  //!< for list
-            iList    basis; //!< used to build basis
-            iList    ready; //!< candidate
-            
-            
-            inline void to(bunch<int> &coef) const
-            {
-                const qFamily_ &self = *this;
-                assert(self.size()>1);
-
-#if 0
-                //std::cerr << "\t |_parse = " << self << std::endl;
-                for(const worthy::qarray *arr=self->head->next;arr;arr=arr->next)
-                {
-                    const readable<int> &host = q2i(coef.work,arr->coef);
-                    if(count_valid(host)<2) continue;
-                    coef.ensure(host);
-                }
-#endif
-            }
-            
-        private:
-            YACK_DISABLE_ASSIGN(qFamily);
-        };
-
-        //----------------------------------------------------------------------
-        //
-        //! list of qFamilies forms a  qBranch
-        //
-        //----------------------------------------------------------------------
-        typedef cxx_list_of<qFamily> qBranch_;
-
-
-        //----------------------------------------------------------------------
-        //
-        //! branch of families, from the same genitors
-        //
-        //----------------------------------------------------------------------
-        class qBranch : public qBranch_
-        {
-        public:
-            //! initialize
-            inline explicit qBranch() throw() : qBranch_() {}
-
-            //! cleanup
-            inline virtual ~qBranch() throw() {}
-
-
-            //! full sanity check
-            inline bool has_no_duplicate() const
-            {
-                for(const qFamily *lhs=head;lhs;lhs=lhs->next)
-                {
-                    for(const qFamily *rhs=lhs->next;rhs;rhs=rhs->next)
-                    {
-                        if( north::qmatrix::equality(*lhs,*rhs)) return false;
-                    }
-                }
-                return true;
-            }
 
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(qBranch);
+            YACK_DISABLE_COPY_AND_ASSIGN(collector);
         };
 
 
-        //----------------------------------------------------------------------
-        //
-        //
-        // find twin by comparing only last coefficients
-        //
-        //
-        //----------------------------------------------------------------------
-        static inline
-        qFamily *find_fast_twin_of(const qFamily &chld,
-                                   const qBranch &target)
-        {
-
-            const qFamily_      &rhs = chld; assert(rhs.size()>1);
-            for(qFamily *scan=target.head;scan;scan=scan->next)
-            {
-                const qFamily_ &lhs = *scan;
-
-                assert( lhs.size() == rhs.size() );
-
-                if( comparison::equality(lhs.last(),rhs.last()) )
-                {
-                    return scan;
-                }
-            }
-            return NULL;
-        }
-
-        //----------------------------------------------------------------------
-        //
-        //
-        // find twin by comparing full family
-        //
-        //
-        //----------------------------------------------------------------------
-        static inline
-        qFamily *find_full_twin_of(const qFamily &chld,
-                                   const qBranch &target)
-        {
-            for(qFamily *scan=target.head;scan;scan=scan->next)
-            {
-                assert(scan->size() == chld.size());
-                if( north::qmatrix::equality(*scan,chld) )
-                    return scan;
-            }
-            return NULL;
-        }
-
-
-        //----------------------------------------------------------------------
-        //
-        //
-        // update twin by merging basis and ready, and removing new basis
-        // from ready
-        //
-        //----------------------------------------------------------------------
-        static inline
-        void update_twin(qFamily       &twin,
-                         const qFamily &chld)
-        {
-            twin.basis += chld.basis;
-            twin.ready += chld.ready;
-            twin.ready -= twin.basis;
-        }
-
-        //----------------------------------------------------------------------
-        //
-        // try to grow the branch with a family that differs
-        // only by the last array
-        //
-        //----------------------------------------------------------------------
-        static inline
-        void incremental_prune(qBranch                &source)
-        {
-            qBranch      target;
-            while(source.size)
-            {
-                auto_ptr<qFamily> chld = source.pop_front();
-                qFamily          *twin = find_fast_twin_of(*chld,target);
-
-                if(twin)
-                {
-                    update_twin(*twin,*chld);
-                }
-                else
-                {
-                    target.push_back( chld.yield() );
-                }
-            }
-            target.swap_with(source);
-        }
-
-
-
-        //----------------------------------------------------------------------
-        //
-        // create next generation
-        //
-        //----------------------------------------------------------------------
-        static inline
-        void create_next_gen(qBranch       &target,
-                             const qFamily &source,
-                             const imatrix &mu,
-                             iSharedBank   &io)
-        {
-            assert(north::in_progress==source.situation);
-            assert(0==target.size);
-
-            iList             span(io);
-
-            {
-                auto_ptr<qFamily> chld( new qFamily(source) );
-                const iNode      *node = source.ready->head;
-
-            NEXT_CHILD:
-                const size_t         ir = **node;
-                const readable<int> &cr = mu[ir];
-                if(chld->grow(cr))
-                {
-                    //----------------------------------------------------------
-                    //
-                    // valid index!
-                    //
-                    //----------------------------------------------------------
-                    chld->basis << ir;                // register in basis
-                    target.push_back( chld.yield() ); // register as possible child
-
-                    // prepare next node
-                    node=node->next;
-                    if(node)
-                    {
-                        // prepare next child
-                        chld = new qFamily(source);
-                        goto NEXT_CHILD;
-                    }
-                }
-                else
-                {
-                    //----------------------------------------------------------
-                    //
-                    // invalid index :
-                    // in parent's span for the rest of the cycles
-                    //
-                    //----------------------------------------------------------
-                    span << ir;
-                    node=node->next;
-                    if(node)
-                        goto NEXT_CHILD;
-                }
-                assert(NULL==node);
-            }
-
-
-            //----------------------------------------------------------
-            //
-            // first pass: cleaning up indices
-            //
-            //----------------------------------------------------------
-            for(qFamily *member=target.head;member;member=member->next)
-            {
-                member->ready -= member->basis;
-                member->ready -= span;
-            }
-
-            incremental_prune(target);
-        }
-
-        //----------------------------------------------------------------------
-        //
-        // transfert to target only branches that are different
-        //
-        //----------------------------------------------------------------------
-        static inline
-        void incremental_merge(qBranch       &target,
-                               qBranch       &source)
-        {
-            assert(target.has_no_duplicate());
-            assert(source.has_no_duplicate());
-
-            while(source.size)
-            {
-                auto_ptr<qFamily> chld = source.pop_front();
-                qFamily          *twin = find_full_twin_of(*chld,target);
-
-                if(twin)
-                {
-                    update_twin(*twin,*chld);
-                }
-                else
-                {
-                    target.push_back( chld.yield() );
-                }
-            }
-
-        }
-
-        //----------------------------------------------------------------------
-        //
-        //
-        // find any completing vector for family
-        //
-        //----------------------------------------------------------------------
-        static inline
-        void complete_family(qFamily       &source,
-                             const imatrix &mu)
-        {
-            static const char * const here = "nexus::complete_family";
-            assert(north::almost_done==source.situation);
-            assert(source.ready->size>0);
-            for(const iNode *node=source.ready->head;node;node=node->next)
-            {
-                if(source.grow(mu[**node])) return;
-            }
-            throw imported::exception(here,"unable to complete family");
-        }
-
-
-        void update_all_combinations(const size_t            degree,
-                                     bunch<int>             &coef,
-                                     qBranch                &genitors,
-                                     const imatrix          &mu,
-                                     iSharedBank            &io,
-                                     const xmlog            &xml)
-
-        {
-            static const char * const here = "nexus::update_all_combinations";
-
-            qBranch children;
-
-            //------------------------------------------------------------------
-            //
-            // make a new generation for each present genitor
-            //
-            //------------------------------------------------------------------
-            YACK_XMLOG(xml, "-- |genitors| = " << genitors.size << " @degree=" << degree );
-            while(genitors.size)
-            {
-                auto_ptr<qFamily> source = genitors.pop_front();
-                assert(source->ready->size>0);
-                switch(source->situation)
-                {
-                        //------------------------------------------------------
-                        //
-                    case north::fully_grown:
-                        YACK_XMLOG(xml, "[!] " << source);
-                        throw imported::exception(here,"unexpected fully grown family!");
-                        //
-                        //------------------------------------------------------
-
-                        //------------------------------------------------------
-                        //
-                    case north::almost_done:
-                        // all children will produce the same last vector
-                        // so we take the first that matches by completing
-                        complete_family(*source,mu); assert(north::fully_grown==source->situation);
-                        YACK_XMLOG(xml, "[*] " << source);
-
-                        // process and discard this source
-                        source->to(coef);
-                        source = NULL;
-                        continue;
-                        //
-                        //------------------------------------------------------
-
-                        //------------------------------------------------------
-                        //
-                    case north::in_progress: {
-                        //YACK_XMLOG(xml, "[+] " << source);
-                        qBranch target;                        // local new generation
-                        create_next_gen(target,*source,mu,io); // create it
-                        incremental_merge(children,target);    // fusion
-                    } break;
-                        //
-                        //------------------------------------------------------
-                }
-            }
-            assert(0==genitors.size);
-
-            //------------------------------------------------------------------
-            //
-            // replace genitors content
-            //
-            //------------------------------------------------------------------
-            while(children.size)
-            {
-                auto_ptr<qFamily> chld = children.pop_front();
-                // todo: check
-                genitors.push_back(chld.yield());
-            }
-
-        }
-
-
-
-        static inline
-        void create_all_combinations(bunch<int>    &coef,
-                                     const sp_list &sl,
-                                     const imatrix &mu,
-                                     const xmlog   &xml,
-                                     const library &lib)
-        {
-            static const char * const here = "create_all_combinations";
-            YACK_XMLSUB(xml,here);
-
-            assert(mu.cols>1);
-            assert(mu.rows>1);
-            assert(sl.size==mu.rows);
-            assert(coef.width       == mu.cols);
-            assert(apk::rank_of(mu) == mu.cols);
-
-
-            //------------------------------------------------------------------
-            //
-            //
-            // initialize memory
-            //
-            //
-            //------------------------------------------------------------------
-            const size_t             m  = mu.rows;
-            iSharedBank              io = new iBank();   // I/O for indices
-            cxx_array<size_t>        jx(m);              // indices reservoir
-            qBranch                  genitors;           // top-level genitors
-            jx.ld_incr<size_t>(1); assert(m==jx[m]);     // initial indices
-
-            //------------------------------------------------------------------
-            //
-            //
-            // loading all genitors for vanishing species
-            //
-            //
-            //------------------------------------------------------------------
-            YACK_XMLOG(xml, "-- loading all genitors");
-            for(const sp_node *sn=sl.head;sn;sn=sn->next)
-            {
-
-                //--------------------------------------------------------------
-                //
-                // prepare pool of indices, last one will be the leading index
-                //
-                //--------------------------------------------------------------
-                rolling::down(jx);
-                const species &s = **sn;
-                const size_t   j = jx[m];
-
-                //--------------------------------------------------------------
-                //
-                // the species must appear at least twice
-                //
-                //--------------------------------------------------------------
-                if(count_valid(mu[j]) < 2 ) continue;
-
-                //--------------------------------------------------------------
-                //
-                // initialize a genitor
-                //
-                //--------------------------------------------------------------
-                genitors.push_back( new qFamily(jx,mu,io) );
-                if(xml.verbose)
-                {
-                    lib.pad(*xml << "[" << s.name << "]",s) << " with "<< *(genitors.tail) << std::endl;
-                }
-            }
-
-            for(const qFamily *lhs=genitors.head;lhs;lhs=lhs->next)
-            {
-                for(const qFamily *rhs=lhs->next;rhs;rhs=rhs->next)
-                {
-                    if( *lhs == *rhs ) throw imported::exception(here,"multiple genitors!");
-                }
-            }
-
-            //------------------------------------------------------------------
-            //
-            //
-            // upgrade all
-            //
-            //
-            //------------------------------------------------------------------
-            size_t degree=0;
-            while(genitors.size)
-            {
-                ++degree;
-                update_all_combinations(degree,coef,genitors,mu,io,xml);
-                YACK_XMLOG(xml, "-- |_|genitors| = " << genitors.size );
-            }
-            YACK_XMLOG(xml,"-- DONE:  @degree=" << degree );
-        }
-        
-        
-        
         void nexus:: make_manifold_(cluster     &cls,
                                     const xmlog &xml)
         {
@@ -761,23 +194,30 @@ namespace yack
             // build all possible weights
             //
             //------------------------------------------------------------------
-            bunch<int> coef(n);
-            create_all_combinations(coef,sl,mu,xml,corelib);
+            const size_t nd = mu.cols;
+            const size_t rk = apk::rank_of(mu);
+            collector    coef(nd);
+            {
+                qbranch qgen;
+                qgen(mu,rk,keep_more_than_two<int>);
+                while( qgen.generate(mu,coef) )
+                    ;
+            }
 
-#if 0
-            std::cerr << "Listing: #" << coef->size << std::endl;
             for(const bunch<int>::entry *ep=coef->head;ep;ep=ep->next)
             {
-                std::cerr << " --> " << *ep << std::endl;
+                std::cerr << " [+] " << *ep << std::endl;
             }
-            return;
-#endif
+
+            exit(1);
+            
 
             //------------------------------------------------------------------
             //
             // expanding
             //
             //------------------------------------------------------------------
+
             cluster        repo;
             {
                 cxx_array<int> gcof(N);
