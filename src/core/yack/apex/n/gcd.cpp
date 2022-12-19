@@ -33,7 +33,8 @@ namespace yack
             }
             assert(a>b);
             natural r = 0;
-            while(b>0)
+            //while(b>0)
+            while(b.bytes)
             {
                 natural q = quot(a,b,r);
                 a.xch(b);
@@ -71,14 +72,14 @@ namespace yack
             if(num.words<=0)
             {
                 assert(0==num);
-                den = 1;
+                den.ldu(1);
             }
             else
             {
                 if(0==compare(num,den))
                 {
-                    num = 1;
-                    den = 1;
+                    num.ldu(1);
+                    den.ldu(1);
                 }
                 else
                 {
