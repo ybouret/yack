@@ -130,27 +130,30 @@ namespace yack
              */
             //__________________________________________________________________
             template <typename T> inline
-            void generate(list_of<qfamily> &lineage,
+            bool generate(list_of<qfamily> &lineage,
                           const matrix<T>  &mu) const
             {
                 YACK_RAVEN_CHECK(this);
-                //std::cerr << "generate <" << qbase->maturity_text() << ">" << std::endl;
+                if(ready->size<=0) return false;
+
                 switch(qbase->active_state)
                 {
                     case qmatrix::meaningless: // empty, say goodbay
-                        return;
+                        break;
                         
                     case qmatrix::fully_grown: // fully grown, no more children
-                        return;
+                        break;
                         
                     case qmatrix::almost_done: // at most one new child
-                         finish(lineage,mu);
-                        return;
+                        finish(lineage,mu);
+                        break;
                         
                     case qmatrix::in_progress: // make new families
                         expand(lineage,mu);
-                        return;
+                        return ready->size>0;
                 }
+
+                return false;
             }
 
             //__________________________________________________________________
@@ -385,7 +388,7 @@ namespace yack
 #if !defined(NDEBUG)
                           mu
 #endif
-                          )
+            )
             {
                 // sanity check
                 assert(target->current_rank==source->current_rank);
@@ -396,7 +399,7 @@ namespace yack
                 target.basis += source.basis; // merge basis
                 target.ready += source.ready; // merge ready
                 target.ready -= target.basis; // cleanup ready
-                std::cerr << "    collapse: " << target << std::endl;
+                //std::cerr << "    collapse: " << target << std::endl;
                 YACK_RAVEN_CHECK(&target);
             }
 

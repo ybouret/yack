@@ -104,7 +104,7 @@ namespace yack
                         qfamilies               lineage;
 
                         // generate reduced lineage, no duplicate
-                        parents->generate(lineage,mu);
+                        const bool has_future = parents->generate(lineage,mu);
 
                         // present all new vectors to callback
                         if(lineage.size)
@@ -115,9 +115,20 @@ namespace yack
                             for(const qfamily *f=lineage.head;f;f=f->next)
                                 cb( (**f).last() );
 
+                            //std::cerr << "has_future=" << has_future << std::endl;
 
-                            intra_condensation(lineage,mu);         // condense lineage
-                            incremental_fusion(target,lineage,mu);  // incremental compact
+                            if(has_future)
+                            {
+                                intra_condensation(lineage,mu);         // condense lineage
+                                incremental_fusion(target,lineage,mu);  // incremental compact
+                            }
+                            else
+                            {
+                                lineage.release();
+                                //intra_condensation(lineage,mu);         // condense lineage
+                                //incremental_fusion(target,lineage,mu);  // incremental compact
+                            }
+
                         }
                     }
                     target.swap_with(qlist);
@@ -177,7 +188,7 @@ namespace yack
                         //------------------------------------------------------
                         // found equivalent: keep lightest matrix
                         //------------------------------------------------------
-                        std::cerr << "    condense: " << candidate << " and " << *g << std::endl;
+                        //std::cerr << "    condense: " << candidate << " and " << *g << std::endl;
                         if(G.total_weight <= F.total_weight)
                         {
                             // keep g, drop f=candidate
