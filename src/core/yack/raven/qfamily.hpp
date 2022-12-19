@@ -130,31 +130,38 @@ namespace yack
              */
             //__________________________________________________________________
             template <typename T> inline
-            bool generate(list_of<qfamily> &lineage,
+            void generate(list_of<qfamily> &lineage,
                           const matrix<T>  &mu) const
             {
                 YACK_RAVEN_CHECK(this);
-                if(ready->size<=0) return false;
+                if(ready->size<=0) return;
 
                 switch(qbase->active_state)
                 {
                     case qmatrix::meaningless: // empty, say goodbay
-                        break;
+                        return;
                         
                     case qmatrix::fully_grown: // fully grown, no more children
-                        break;
+                        return;
                         
                     case qmatrix::almost_done: // at most one new child
                         finish(lineage,mu);
-                        break;
+                        return;
                         
                     case qmatrix::in_progress: // make new families
                         expand(lineage,mu);
-                        return ready->size>0;
+                        return;
                 }
 
+            }
+            
+            bool is_complete() const throw()
+            {
+                if(qmatrix::fully_grown==qbase->active_state) return true;
+                if(ready->size<=0)                            return true;
                 return false;
             }
+
 
             //__________________________________________________________________
             //
@@ -229,11 +236,11 @@ namespace yack
                     if(Q(mu[i]))
                     {
                         //------------------------------------------------------
-                        // found one = last
+                        // found one => last
                         //------------------------------------------------------
                         assert(qmatrix::fully_grown==Q.active_state);
-                        F->basis.merge(F->ready);
-                        F->ready.free();
+                        F->basis.merge(F->ready); // transfer ready
+                        F->ready.free();          // quick cleanup
                         YACK_RAVEN_CHECK(f);
                         //std::cerr << "finish: " << F << std::endl;
                         lineage.push_back( F.yield() );
@@ -256,9 +263,6 @@ namespace yack
                         const matrix<T>  &mu) const
             {
                 assert(ready->size>0);
-                //std::cerr << "==> Expanding " << *this << " <==" << std::endl;
-
-
                 qList             span(basis.cache); // preparing a list of spanned indice
                 {
                     //----------------------------------------------------------

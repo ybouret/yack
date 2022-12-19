@@ -95,37 +95,24 @@ namespace yack
             inline size_t generate(const matrix<T> &mu,
                                    PROC            &cb)
             {
-                std::cerr << "-------- Branching @depth=" << depth << " #" << qlist.size << " --------" << std::endl;
+                //std::cerr << "-------- Branching @depth=" << depth << " #" << qlist.size << " --------" << std::endl;
                 {
                     qfamilies target;
                     while(qlist.size)
                     {
                         const auto_ptr<qfamily> parents = qlist.pop_front();
                         qfamilies               lineage;
-
                         // generate reduced lineage, no duplicate
-                        const bool has_future = parents->generate(lineage,mu);
+                        parents->generate(lineage,mu);
 
                         // present all new vectors to callback
                         if(lineage.size)
                         {
                             for(const qfamily *f=lineage.head;f;f=f->next)
                                 cb( (**f).last() );
-
-                            //std::cerr << "has_future=" << has_future << std::endl;
-
-                            if(has_future)
-                            {
-                                intra_condensation(lineage,mu);         // condense lineage
-                                incremental_fusion(target,lineage,mu);  // incremental compact
-                            }
-                            else
-                            {
-                                lineage.release();
-                                //intra_condensation(lineage,mu);         // condense lineage
-                                //incremental_fusion(target,lineage,mu);  // incremental compact
-                            }
-
+                            
+                            intra_condensation(lineage,mu);         // condense lineage
+                            incremental_fusion(target,lineage,mu);  // incremental fusion
                         }
                     }
                     target.swap_with(qlist);
@@ -220,6 +207,9 @@ namespace yack
                 while(lineage.size)
                 {
                     auto_ptr<qfamily> candidate = lineage.pop_front();
+                    if(candidate->is_complete()) {
+                        continue;
+                    }
                     try_merge(surrogate,candidate,mu);
                 }
                 lineage.swap_with(surrogate);
