@@ -88,6 +88,7 @@ namespace yack
         void qvector:: sub(writable<apq>       &u_k,
                            const readable<apz> &v_k)
         {
+            // use self as u_j in G-S algo
             const readable<apz> &u_j = *this;
             assert(norm2.size());
             assert(dimension==u_j.size());

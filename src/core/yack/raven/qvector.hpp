@@ -24,7 +24,7 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit qvector(apz *ptr, const size_t num); //!< constructor
+            explicit qvector(apz *ptr, const size_t num); //!< constructor on predefined ptr[num]
             virtual ~qvector()                   throw(); //!< cleanup
 
             //__________________________________________________________________
@@ -41,7 +41,7 @@ namespace yack
             friend std::ostream & operator<<(std::ostream &, const qvector &); //!< display
             void   ldz() throw();                                              //!< fast load of zero into coeff/norm2
 
-            //! remove projection of v_k to u_k
+            //! remove projection of v_k on u_k
             /**
              \param u_k current rational vector, initially v_k
              \param v_k trial vector

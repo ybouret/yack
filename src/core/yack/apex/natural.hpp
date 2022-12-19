@@ -131,7 +131,10 @@ namespace yack
             //
             // comparisons
             //__________________________________________________________________
-            
+            template <uint8_t u> inline
+            bool is() const throw() { return bytes<=1 && u == word[0]; }
+
+
             //! make local handles and call PROTO
 #define     YACK_APN_BINARY_IMPL(PROTO) const natural::handle l(lhs), r(rhs); return PROTO(l,r)
             
