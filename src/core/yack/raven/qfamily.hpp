@@ -235,7 +235,7 @@ namespace yack
                         F->basis.merge(F->ready);
                         F->ready.free();
                         YACK_RAVEN_CHECK(f);
-                        std::cerr << "finish: " << F << std::endl;
+                        //std::cerr << "finish: " << F << std::endl;
                         lineage.push_back( F.yield() );
                         return;
                     }
@@ -307,7 +307,7 @@ namespace yack
                 {
                     f->basis += span;
                     f->ready -= f->basis;
-                    std::cerr << "    expanded: " << *f << std::endl;
+                    //std::cerr << "    expanded: " << *f << std::endl;
                     YACK_RAVEN_CHECK(f);
                 }
 

@@ -109,9 +109,6 @@ namespace yack
                         // present all new vectors to callback
                         if(lineage.size)
                         {
-                            if(lineage.size>1)
-                                std::cerr << "==> +" << lineage.size << std::endl;
-
                             for(const qfamily *f=lineage.head;f;f=f->next)
                                 cb( (**f).last() );
 

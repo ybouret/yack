@@ -209,8 +209,7 @@ namespace yack
                 std::cerr << " [+] " << *ep << std::endl;
             }
 
-            exit(1);
-            
+
 
             //------------------------------------------------------------------
             //
@@ -231,7 +230,7 @@ namespace yack
                         const size_t ei = ***node;
                         gcof[ei] = lcof[i];
                     }
-                    //YACK_XMLOG(xml, "--> " << gcof);
+                    YACK_XMLOG(xml, "--> " << gcof);
                     repo << &promote_mixed(gcof);
                 }
             }
