@@ -196,15 +196,15 @@ namespace yack
             //------------------------------------------------------------------
             const size_t nd = mu.cols;
             const size_t rk = apk::rank_of(mu);
-            collector    coef(nd);
+            collector    cw(nd);
             {
                 qbranch qgen;
                 qgen(mu,rk,keep_more_than_two<int>);
-                while( qgen.generate(mu,coef) )
+                while( qgen.generate(mu,cw) )
                     ;
             }
 
-            for(const bunch<int>::entry *ep=coef->head;ep;ep=ep->next)
+            for(const bunch<int>::entry *ep=cw->head;ep;ep=ep->next)
             {
                 std::cerr << " [+] " << *ep << std::endl;
             }
@@ -219,19 +219,31 @@ namespace yack
 
             cluster        repo;
             {
-                cxx_array<int> gcof(N);
-                for(const bunch<int>::entry *ep=coef->head;ep;ep=ep->next)
+                YACK_XMLSUB(xml,"mixing");
+                cxx_array<int> weight(N); // global weight
+                cxx_array<int> stoich(M); // global coefficients
+                unsigned       imix=1;    // mixing index
+                for(const collector::entry *ep=cw->head;ep;ep=ep->next,++imix)
                 {
                     const readable<int> &lcof = *ep;
-                    gcof.ld(0);
+                    weight.ld(0);
                     size_t  i=1;
                     for(const eq_node *node=cls.head;node;node=node->next,++i)
                     {
                         const size_t ei = ***node;
-                        gcof[ei] = lcof[i];
+                        weight[ei] = lcof[i];
                     }
-                    YACK_XMLOG(xml, "--> " << gcof);
-                    repo << &promote_mixed(gcof);
+                    
+                    qbranch::assess(stoich,weight,Nu);
+                   
+                    repo << &promote_mixed(weight);
+                    if(verbose)
+                    {
+                        const equilibrium &emix = **repo.tail;
+                        const components  &cmix = emix;
+                        //std::cerr << "  u" << imix << " = " << gcof << " : " << cmix << " @" << emix.name << std::endl;
+                        std::cerr << "  u" << imix << " = " << weight << " => " << stoich << " : " << cmix << std::endl;
+                    }
                 }
             }
 

@@ -9,6 +9,7 @@
 
 #include "yack/counting/perm.hpp"
 #include "yack/sequence/roll.hpp"
+#include "yack/sequence/bunch.hpp"
 
 
 using namespace yack;
@@ -39,10 +40,10 @@ namespace
     }
 
 
-    class vecstore : public vector< cxx_array<apz> >
+    class vecstore : public vector< cxx_array<int> >
     {
     public:
-        explicit vecstore() throw() :vector< cxx_array<apz> >()
+        explicit vecstore() throw() :vector< cxx_array<int> >()
         {
         }
 
@@ -50,9 +51,10 @@ namespace
         {
         }
 
-        void operator()( const readable<apz> &cf )
+        void operator()( const raven::qvector &cf )
         {
-            const cxx_array<apz> temp(cf,transmogrify);
+            cxx_array<int> temp(cf.dimension);
+            cf.cast_to(temp);
             for(size_t i=size();i>0;--i)
             {
                 if( (*this)[i] == temp )
@@ -156,15 +158,23 @@ namespace
             //if(source.depth>=2) break;
         } while( source.generate(mu,vdb) );
 
+        bunch<int>      all(size);
+        cxx_array<int> &summed = all.work;
         for(size_t i=1;i<=vdb.size();++i)
         {
-            const string name = vformat("u%02d",unsigned(i));
-            std::cerr << "\t" << name << " = " << vdb[i] << std::endl;
+            const string         name    = vformat("u%02d",unsigned(i));
+            const readable<int> &weight = vdb[i];
+            raven::qbranch::assess(summed,weight,nu);
+            std::cerr << "\t" << name << " = " << weight<<  " # => " << summed << std::endl;
+            all.ensure(summed);
         }
         std::cerr << "#found=" << vdb.size() << std::endl;
+        std::cerr << "#given=" << all->size << std::endl;
         std::cerr << "nu=" << nu << std::endl;
         std::cerr << "mu=" << mu << std::endl;
-
+        
+        
+        
     }
 
 }

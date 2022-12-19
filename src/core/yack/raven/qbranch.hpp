@@ -94,7 +94,6 @@ namespace yack
             inline size_t generate(const matrix<T> &mu,
                                    PROC            &cb)
             {
-                //std::cerr << "-------- Branching @depth=" << depth << " #" << qlist.size << " --------" << std::endl;
                 {
                     qfamilies target;
                     while(qlist.size)
@@ -120,6 +119,23 @@ namespace yack
                 return qlist.size;
             }
 
+            template <typename T, typename U,typename V> static inline
+            void assess(writable<T>       &summed,
+                        const readable<U> &weight,
+                        const matrix<V>   &nu)
+            {
+                assert(summed.size()==nu.cols);
+                assert(weight.size()==nu.rows);
+                const size_t n = weight.size();
+                for(size_t j=summed.size();j>0;--j)
+                {
+                    V sum = 0;
+                    for(size_t i=n;i>0;--i) sum += weight[i] * nu[i][j];
+                    summed[j] = sum;
+                }
+                
+            }
+            
             //__________________________________________________________________
             //
             // members
@@ -160,7 +176,6 @@ namespace yack
                         //------------------------------------------------------
                         // found equivalent: keep lightest matrix
                         //------------------------------------------------------
-                        //std::cerr << "    condense: " << candidate << " and " << *g << std::endl;
                         if(G.total_weight <= F.total_weight)
                         {
                             // keep g, drop f=candidate
@@ -187,6 +202,7 @@ namespace yack
 
 
 
+            //! remove duplicate or complete lineage
             template <typename T> static inline
             void intra_condensation(list_of<qfamily> &lineage,
                                     const matrix<T>  &mu)

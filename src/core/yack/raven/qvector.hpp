@@ -75,6 +75,7 @@ namespace yack
         public:  const apn norm2; //!< |this|^2
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(qvector);
+            
         };
     }
 
