@@ -5,6 +5,7 @@
 #include "yack/math/algebra/ortho-family.hpp"
 #include "yack/apex/kernel.hpp"
 #include "yack/sequence/cxx-series.hpp"
+#include "yack/sequence/bunch.hpp"
 
 #include <iomanip>
 
@@ -16,38 +17,86 @@ namespace yack
     namespace chemical
     {
 
-        template <typename T>
-        static inline
-        void compressQ(matrix<T> &Q, const matrix<T> &Q0)
-        {
-            const size_t       n = Q0.rows;
-            cxx_series<size_t> indx(n);
+        namespace {
 
-            for(size_t i=1;i<=n;++i)
+            template <typename T>
+            static inline
+            void compressQ(matrix<T> &Q, const matrix<T> &Q0)
             {
-                const readable<T>   &Qi = Q0[i];
-                bool                 ok = true;
-                for(size_t j=indx.size();j>0;--j)
+                const size_t       n = Q0.rows;
+                cxx_series<size_t> indx(n);
+
+                for(size_t i=1;i<=n;++i)
                 {
-                    if( apk::are_prop(Qi,Q0[indx[j]],NULL))
+                    const readable<T>   &Qi = Q0[i];
+                    bool                 ok = true;
+                    for(size_t j=indx.size();j>0;--j)
                     {
-                        ok = false;
-                        break;
+                        if( apk::are_prop(Qi,Q0[indx[j]],NULL))
+                        {
+                            ok = false;
+                            break;
+                        }
                     }
+                    if(!ok) continue;
+                    indx << i;
                 }
-                if(!ok) continue;
-                indx << i;
+                const size_t q = indx.size();
+                Q.make(q,Q0.cols);
+                for(size_t j=1;j<=q;++j)
+                    iota::load(Q[j],Q0[indx[j]]);
             }
-            const size_t q = indx.size();
-            Q.make(q,Q0.cols);
-            for(size_t j=1;j<=q;++j)
-                iota::load(Q[j],Q0[indx[j]]);
-        }
 
 
-        static inline bool keep_all(const readable<int> &)
-        {
-            return true;
+
+
+            class collector : public bunch<int>
+            {
+            public:
+                explicit collector(const size_t dim) : bunch<int>(dim)
+                {
+                }
+
+                virtual ~collector() throw()
+                {
+                }
+
+                bool validate(const readable<apz> &v) const throw()
+                {
+                    assert(v.size()==width);
+                    size_t np = 0;
+                    for(size_t i=width;i>0;--i)
+                    {
+                        switch(v[i].s)
+                        {
+                            case __zero__:
+                                continue;
+                            case positive:
+                                ++np;
+                                continue;
+                            case negative:
+                                return false;
+                        }
+                    }
+                    return np>1;
+                }
+
+                void operator()(const qvector &v)
+                {
+                    const bool ok = validate(v) && insert( v.cast_to<int>(work) );
+                    if(ok)
+                    {
+                        std::cerr << "[+] " << v << std::endl;
+                    }
+
+                }
+
+
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(collector);
+            };
+
+
         }
 
         void nexus:: conserved_set_(cluster &sharing, const xmlog &xml)
@@ -144,7 +193,11 @@ namespace yack
                 if(ker!=apk::rank(Q))          throw imported::exception(fn,"singular compressed sub-system");
             }
 
-            
+            collector cb(m);
+            {
+                qbranch  source;
+                source.batch(Q,ker,cb);
+            }
 
 
 

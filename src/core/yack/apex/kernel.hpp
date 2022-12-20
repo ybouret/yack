@@ -208,6 +208,7 @@ namespace yack
             for(size_t i=M.rows;i>0;--i)
             {
                 simplify(M[i]);
+                univocal(M[i]);
             }
         }
         

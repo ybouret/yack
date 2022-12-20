@@ -76,6 +76,46 @@ namespace yack
                 catch(...) { prune(); throw; }
             }
 
+            //__________________________________________________________________
+            //
+            //! initialize branch
+            /**
+             \param mu matrix of row vectors
+             \param rk rank(mu)
+             \param ok keep mu[i] iff ok(mu[i])
+             */
+            //__________________________________________________________________
+            template <typename T, typename PROC> inline
+            size_t init0(const matrix<T> &mu,
+                         const size_t     rk,
+                         PROC            &cb)
+            {
+                //--------------------------------------------------------------
+                // cleanup
+                //--------------------------------------------------------------
+                prune();
+                try {
+                    //----------------------------------------------------------
+                    // prepare data: number of rows and indices
+                    //----------------------------------------------------------
+                    const size_t      nr = mu.rows;
+                    cxx_array<size_t> id(nr); id.ld_incr(1);
+
+                    //----------------------------------------------------------
+                    // loop over all first vector
+                    //----------------------------------------------------------
+                    for(size_t i=1;i<=nr;++i) {
+                        rolling::down(id); assert(i==id[nr]);
+                        qfamily &f = *qlist.push_back( new qfamily(id,mu,rk,io) );
+                        cb( f->last() );
+                    }
+                    return qlist.size;
+                }
+                catch(...) { prune(); throw; }
+            }
+
+
+
             
 
 
@@ -146,6 +186,17 @@ namespace yack
                        PROCESS         &cb)
             {
                 if( init(mu,rk,ok) ) {
+                    while( grow(mu,cb) )
+                        ;
+                }
+            }
+
+            template <typename T, typename PROCESS> inline
+            void batch(const matrix<T> &mu,
+                       const size_t     rk,
+                       PROCESS         &cb)
+            {
+                if(init0(mu,rk,cb)) {
                     while( grow(mu,cb) )
                         ;
                 }
