@@ -205,7 +205,10 @@ namespace yack
         template <typename T> static inline
         void simplify_rows(matrix<T> &M)
         {
-            for(size_t i=M.rows;i>0;--i) simplify(M[i]);
+            for(size_t i=M.rows;i>0;--i)
+            {
+                simplify(M[i]);
+            }
         }
         
         //______________________________________________________________________

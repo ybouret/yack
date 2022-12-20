@@ -4,6 +4,7 @@
 #include "yack/raven/qbranch.hpp"
 #include "yack/math/algebra/ortho-family.hpp"
 #include "yack/apex/kernel.hpp"
+#include "yack/sequence/cxx-series.hpp"
 
 #include <iomanip>
 
@@ -15,6 +16,39 @@ namespace yack
     namespace chemical
     {
 
+        template <typename T>
+        static inline
+        void compressQ(matrix<T> &Q, const matrix<T> &Q0)
+        {
+            const size_t       n = Q0.rows;
+            cxx_series<size_t> indx(n);
+
+            for(size_t i=1;i<=n;++i)
+            {
+                const readable<T>   &Qi = Q0[i];
+                bool                 ok = true;
+                for(size_t j=indx.size();j>0;--j)
+                {
+                    if( apk::are_prop(Qi,Q0[indx[j]],NULL))
+                    {
+                        ok = false;
+                        break;
+                    }
+                }
+                if(!ok) continue;
+                indx << i;
+            }
+            const size_t q = indx.size();
+            Q.make(q,Q0.cols);
+            for(size_t j=1;j<=q;++j)
+                iota::load(Q[j],Q0[indx[j]]);
+        }
+
+
+        static inline bool keep_all(const readable<int> &)
+        {
+            return true;
+        }
 
         void nexus:: conserved_set_(cluster &sharing, const xmlog &xml)
         {
@@ -86,7 +120,8 @@ namespace yack
             //
             //------------------------------------------------------------------
             assert(n<m);
-            imatrix nu(n,m);
+            const size_t ker = m-n;
+            imatrix      nu(n,m);
             {
                 size_t i=1;
                 for(const eq_node *en=usual.head;en;en=en->next,++i)
@@ -101,30 +136,16 @@ namespace yack
             }
             std::cerr << "nu=" << nu << std::endl;
 
-            matrix<apz> Q(m,m);
-            if(!ortho_family::build(Q,nu)) throw imported::exception(fn,"singular sub-system");
-            std::cerr << "Q=" << Q << std::endl;
-
-            raven::qmatrix F(m,m);
-
-            // build Span(nu)
-            for(size_t i=1;i<=n;++i)
-            //for(size_t i=n;i>0;--i)
+            imatrix Q;
             {
-                if(!F(nu[i])) throw imported::exception(fn,"direct span RAVEn failure");
-                std::cerr << "F=" << F << std::endl;
+                imatrix Q0(m,m);
+                if(!ortho_family::construct(Q0,nu)) throw imported::exception(fn,"singular sub-system");
+                compressQ(Q,Q0); std::cerr << "Q=" << Q << std::endl;
+                if(ker!=apk::rank(Q))          throw imported::exception(fn,"singular compressed sub-system");
             }
 
-            // build Span(nu_ortho)
-            assert(qmatrix::fully_grown != F.active_state);
-            //            for(size_t i=1;i<=m;++i)
-            for(size_t i=m;i>0;--i)
-            {
-                if(!F(Q[i])) continue;
-                std::cerr << "F=" << F << std::endl;
-                if(qmatrix::fully_grown==F.active_state) break;
-            }
-            if(qmatrix::fully_grown!=F.active_state) throw imported::exception(fn,"ortho span RAVEn failure");
+            
+
 
 
         }

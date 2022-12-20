@@ -69,10 +69,10 @@ namespace yack
              \param io cache for lists of indices
              */
             template <typename T> inline
-            explicit qfamily(readable<size_t> &id,
-                             const matrix<T>  &mu,
-                             const size_t      rk,
-                             const qFund      &io) :
+            explicit qfamily(const readable<size_t> &id,
+                             const matrix<T>        &mu,
+                             const size_t            rk,
+                             const qFund            &io) :
             object(),
             qmetrics(mu.cols),
             next(0),
@@ -106,6 +106,7 @@ namespace yack
                 assert(nr-1==ready->size);
                 YACK_RAVEN_CHECK(this);
             }
+
             
             //! make a hard full copy
             qfamily(const qfamily &);

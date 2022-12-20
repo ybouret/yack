@@ -76,6 +76,7 @@ namespace yack
                 catch(...) { prune(); throw; }
             }
 
+            
 
 
             //__________________________________________________________________
@@ -149,6 +150,8 @@ namespace yack
                         ;
                 }
             }
+
+            
 
 
             //__________________________________________________________________
@@ -249,6 +252,7 @@ namespace yack
                 }
                 lineage.swap_with(surrogate);
             }
+
 
             //! compact two lists of condensed families
             template <typename T> static inline
