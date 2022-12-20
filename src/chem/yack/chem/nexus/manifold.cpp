@@ -1,13 +1,6 @@
 #include "yack/chem/nexus.hpp"
-#include "yack/counting/comb.hpp"
-#include "yack/counting/perm.hpp"
-#include "yack/data/list/sort.hpp"
-#include "yack/apex/kernel.hpp"
 #include "yack/math/iota.hpp"
-#include "yack/system/imported.hpp"
-
 #include "yack/sequence/bunch.hpp"
-#include "yack/sequence/roll.hpp"
 #include "yack/raven/qbranch.hpp"
 #include "yack/raven/qselect.hpp"
 
@@ -20,11 +13,6 @@ namespace yack
 
     namespace chemical
     {
-        
-
-
-
-
         //----------------------------------------------------------------------
         //
         //
