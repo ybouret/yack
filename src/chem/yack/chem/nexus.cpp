@@ -31,6 +31,8 @@ namespace yack
         N( singles.size() ),
         L(0),
         Nu(N,N>0?M:0),
+        xadd(),
+        xmul(),
         worklib( corelib ),
         
         mtab(12,M),
