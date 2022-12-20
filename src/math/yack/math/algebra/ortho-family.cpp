@@ -1,6 +1,5 @@
 
 #include "yack/math/algebra/ortho-family.hpp"
-#include "yack/apex/kernel.hpp"
 #include "yack/math/iota.hpp"
 #include "yack/math/algebra/crout.hpp"
 
@@ -47,8 +46,6 @@ namespace yack
                     Q[i][j] = -Q[i][j];
                 }
             }
-            
-            //apk::simplify_rows(Q);
 
             return true;
                 

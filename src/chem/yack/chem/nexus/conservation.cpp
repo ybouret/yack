@@ -23,10 +23,13 @@ namespace yack
             sp_list      house;
 
             //------------------------------------------------------------------
+            //
             // extract usual equilibria and house of species
+            //
             //------------------------------------------------------------------
             {
                 addrbook     tribe;
+
                 for(const eq_node *en=sharing.head;en;en=en->next)
                 {
                     const equilibrium &eq = **en;
@@ -45,6 +48,12 @@ namespace yack
                 }
                 house.sort();
             }
+
+            //------------------------------------------------------------------
+            //
+            // study result
+            //
+            //------------------------------------------------------------------
             YACK_XMLOG(xml, "-- #usual = " << usual.size << " / " << sharing.size << ", #house=" << house.size);
             if(usual.size<=0) return;
             if(verbose)
@@ -57,9 +66,7 @@ namespace yack
             }
             assert(house.size>=2);
 
-            //------------------------------------------------------------------
-            // build virtual topology of conserved species
-            //------------------------------------------------------------------
+
             const size_t n = usual.size;
             const size_t m = house.size;
             switch( __sign::of(m,n) )
@@ -71,6 +78,12 @@ namespace yack
                 case positive:
                     break;
             }
+
+            //------------------------------------------------------------------
+            //
+            // build virtual topology
+            //
+            //------------------------------------------------------------------
             assert(n<m);
             imatrix nu(n,m);
             {
@@ -86,12 +99,11 @@ namespace yack
                 }
             }
             std::cerr << "nu=" << nu << std::endl;
-            
-            matrix<apq> Q(m,m);
-            ortho_family::build(Q,nu);
-            apk::simplify_rows(Q);
-            std::cerr << "Q=" << Q << std::endl;
 
+            matrix<int> Q(m,m);
+            if(!ortho_family::construct(Q,nu)) throw imported::exception(fn,"singular sub-system");
+            std::cerr << "Q=" << Q << std::endl;
+            
 
         }
 
