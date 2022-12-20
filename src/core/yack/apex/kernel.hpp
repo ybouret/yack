@@ -171,6 +171,8 @@ namespace yack
         //! convert array of rational into simplified integers (all denoms=1)
         //_____________________________________________________________________
         static void simplify(writable<apq> &q);
+        static void definite(writable<apq> &q);
+
 
         //______________________________________________________________________
         //
@@ -208,9 +210,18 @@ namespace yack
             for(size_t i=M.rows;i>0;--i)
             {
                 simplify(M[i]);
-                univocal(M[i]);
             }
         }
+
+        template <typename T> static inline
+        void definite_rows(matrix<T> &M)
+        {
+            for(size_t i=M.rows;i>0;--i)
+            {
+                definite(M[i]);
+            }
+        }
+
         
         //______________________________________________________________________
         //

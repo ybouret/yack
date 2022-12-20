@@ -50,10 +50,14 @@ namespace yack
 
 
 
-            class collector : public bunch<int>
+            class collector : public bunch<unsigned>
             {
             public:
-                explicit collector(const size_t dim) : bunch<int>(dim)
+                const xmlog &xml;
+
+                explicit collector(const size_t dim, const xmlog &_) :
+                bunch<unsigned>(dim),
+                xml(_)
                 {
                 }
 
@@ -83,10 +87,10 @@ namespace yack
 
                 void operator()(const qvector &v)
                 {
-                    const bool ok = validate(v) && insert( v.cast_to<int>(work) );
+                    const bool ok = validate(v) && insert( v.cast_to<unsigned>(work) );
                     if(ok)
                     {
-                        std::cerr << "[+] " << v << std::endl;
+                        YACK_XMLOG(xml, "[+] " << work);
                     }
 
                 }
@@ -183,22 +187,54 @@ namespace yack
                     }
                 }
             }
-            std::cerr << "nu=" << nu << std::endl;
+            YACK_XMLOG(xml,"-- nu = " << nu);
 
+            //------------------------------------------------------------------
+            //
+            // build compressed orthogonal space
+            //
+            //------------------------------------------------------------------
             imatrix Q;
             {
                 imatrix Q0(m,m);
                 if(!ortho_family::construct(Q0,nu)) throw imported::exception(fn,"singular sub-system");
-                compressQ(Q,Q0); std::cerr << "Q=" << Q << std::endl;
-                if(ker!=apk::rank(Q))          throw imported::exception(fn,"singular compressed sub-system");
+                compressQ(Q,Q0);
+                if(ker!=apk::rank(Q))               throw imported::exception(fn,"singular compressed sub-system");
             }
+            YACK_XMLOG(xml,"-- Q  = " << Q);
 
-            collector cb(m);
+            //------------------------------------------------------------------
+            //
+            // apply RAVEn from root
+            //
+            //------------------------------------------------------------------
+            collector cb(m,xml);
             {
+                YACK_XMLSUB(xml, "RAVEn");
                 qbranch  source;
                 source.batch(Q,ker,cb);
             }
 
+            //------------------------------------------------------------------
+            //
+            // use collected entries
+            //
+            //------------------------------------------------------------------
+            for(const collector::entry *ep=cb->head;ep;ep=ep->next)
+            {
+                const readable<unsigned> &cf   = *ep;
+                conservation_law         &claw = *coerce(Ql).push_back( new conservation_law() );
+                size_t j=1;
+                for(const sp_node *sn=house.head;sn;sn=sn->next,++j)
+                {
+                    const unsigned w = cf[j];
+                    if(w)
+                    {
+                        claw(**sn,w);
+                    }
+                }
+                YACK_XMLOG(xml,"--> " << claw);
+            }
 
 
         }
@@ -212,6 +248,7 @@ namespace yack
             {
                 conserved_set_(*sharing,xml);
             }
+            coerce(Nc) = Ql.size;
         }
 
         

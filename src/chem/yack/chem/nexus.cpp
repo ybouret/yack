@@ -53,8 +53,9 @@ namespace yack
 
         // conservation
         Nc(0),
-        Qc(),
-
+        Ql(),
+        Qt(),
+        
         lockLib(coerce(corelib)),
         lockEqs(coerce(singles))
         {

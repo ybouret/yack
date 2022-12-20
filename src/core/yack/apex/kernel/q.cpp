@@ -147,6 +147,12 @@ namespace yack
         }
     }
 
+    void apk:: definite(writable<apq> &q)
+    {
+        simplify(q);
+        univocal(q);
+    }
+
 
 }
 

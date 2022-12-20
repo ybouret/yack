@@ -31,10 +31,12 @@ namespace yack
             template <typename T> static inline
             bool build(matrix<apz> &Q, const matrix<T> &P)
             {
-                const matrix<apq> _P(P,transmogrify);
                 matrix<apq>       _Q(Q.rows,Q.cols);
-                if(!make(_Q,_P)) return false;
-                apk::simplify_rows(_Q);
+                {
+                    const matrix<apq> _P(P,transmogrify);
+                    if(!make(_Q,_P)) return false;
+                }
+                apk::definite_rows(_Q);
                 Q.apply(numerator_of,_Q);
                 return true;
             }
@@ -43,10 +45,12 @@ namespace yack
             template <typename TARGET, typename SOURCE> static inline
             bool construct(matrix<TARGET> &Q, const matrix<SOURCE> &P)
             {
-                const matrix<apq> _P(P,transmogrify);
                 matrix<apq>       _Q(Q.rows,Q.cols);
-                if(!make(_Q,_P)) return false;
-                apk::simplify_rows(_Q);
+                {
+                    const matrix<apq> _P(P,transmogrify);
+                    if(!make(_Q,_P)) return false;
+                }
+                apk::definite_rows(_Q);
                 Q.apply(numerator_to<TARGET>,_Q);
                 return true;
             }
@@ -61,7 +65,7 @@ namespace yack
                 return q.num.cast_to<T>();
             }
 
-
+            
         };
         
     }
