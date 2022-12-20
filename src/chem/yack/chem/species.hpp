@@ -89,16 +89,17 @@ namespace yack
         };
 
         typedef meta_repo<const species> sp_repo;     //!< cache of species
-        typedef meta_list<const species> sp_list_;    //!< list of species
+        typedef meta_list<const species> sp_list_;    //!< list of species, base class
         typedef sp_list_::node_type      sp_node;     //!< node within sp_repo
 
+
+        //! list of species, with sorting capabilities
         class sp_list : public sp_list_
         {
         public:
-            explicit sp_list() throw();
-            virtual ~sp_list() throw();
-
-            void sort() throw();
+            explicit sp_list() throw(); //!< setup
+            virtual ~sp_list() throw(); //!< cleanup
+            void     sort()    throw(); //!< sort by increasing index
 
             //! compare by increasing indices
             static int node_compare(const sp_node *, const sp_node *) throw();

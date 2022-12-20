@@ -7,7 +7,12 @@ namespace yack
 {
     namespace math
     {
-        
+        apz ortho_family:: numerator_of(const apq &q)
+        {
+            assert(1==q.den);
+            return q.num;
+        }
+
         bool ortho_family:: make(matrix<apq>       &Q,
                                  const matrix<apq> &P)
         {

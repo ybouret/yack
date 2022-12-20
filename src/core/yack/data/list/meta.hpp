@@ -19,12 +19,12 @@ namespace yack
     class meta_list : public cxx_list_of< meta_node<T> >
     {
     public:
-        YACK_DECL_ARGS_(T,type);
 
         //______________________________________________________________________
         //
         // types and definitions
         //______________________________________________________________________
+        YACK_DECL_ARGS_(T,type);                  //!< aliases
         typedef meta_node<T>           node_type; //!< alias
         typedef cxx_list_of<node_type> list_type; //!< alias
 

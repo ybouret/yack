@@ -135,7 +135,7 @@ namespace yack
                 return qlist.size;
             }
 
-
+            //! full batch processing
             template <typename T,
             typename CONFIRM,
             typename PROCESS> inline

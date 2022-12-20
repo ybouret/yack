@@ -103,7 +103,9 @@ namespace yack
             matrix<int> Q(m,m);
             if(!ortho_family::construct(Q,nu)) throw imported::exception(fn,"singular sub-system");
             std::cerr << "Q=" << Q << std::endl;
+
             
+
 
         }
 
