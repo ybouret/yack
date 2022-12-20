@@ -10,7 +10,8 @@
 namespace yack
 {
     using namespace math;
-    
+    using namespace raven;
+
     namespace chemical
     {
 
@@ -100,11 +101,30 @@ namespace yack
             }
             std::cerr << "nu=" << nu << std::endl;
 
-            matrix<int> Q(m,m);
-            if(!ortho_family::construct(Q,nu)) throw imported::exception(fn,"singular sub-system");
+            matrix<apz> Q(m,m);
+            if(!ortho_family::build(Q,nu)) throw imported::exception(fn,"singular sub-system");
             std::cerr << "Q=" << Q << std::endl;
 
-            
+            raven::qmatrix F(m,m);
+
+            // build Span(nu)
+            for(size_t i=1;i<=n;++i)
+            //for(size_t i=n;i>0;--i)
+            {
+                if(!F(nu[i])) throw imported::exception(fn,"direct span RAVEn failure");
+                std::cerr << "F=" << F << std::endl;
+            }
+
+            // build Span(nu_ortho)
+            assert(qmatrix::fully_grown != F.active_state);
+            //            for(size_t i=1;i<=m;++i)
+            for(size_t i=m;i>0;--i)
+            {
+                if(!F(Q[i])) continue;
+                std::cerr << "F=" << F << std::endl;
+                if(qmatrix::fully_grown==F.active_state) break;
+            }
+            if(qmatrix::fully_grown!=F.active_state) throw imported::exception(fn,"ortho span RAVEn failure");
 
 
         }
