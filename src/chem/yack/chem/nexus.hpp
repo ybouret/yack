@@ -50,7 +50,7 @@ namespace yack
             const size_t        M;        //!< corelib.size
             const size_t        N;        //!< singles.size
             const size_t        L;        //!< lattice.size
-            const imatrix       Nu;       //!< [NxM] topology
+            const imatrix       Nu;       //!< [NxM] initial topology
             raddops             xadd;     //!< perform additions
             rmulops             xmul;     //!< perform multiplications
 
@@ -89,7 +89,8 @@ namespace yack
             void               make_manifold_(cluster &sharing, const xmlog &);
             const equilibrium &promote_mixed(const readable<int> &);
             void               conserved_set(const xmlog &);
-            
+            void               conserved_set_(cluster &sharing, const xmlog &);
+
         };
 
     }
