@@ -46,9 +46,15 @@ namespace yack
                 house.sort();
             }
             YACK_XMLOG(xml, "-- #usual = " << usual.size << " / " << sharing.size << ", #house=" << house.size);
-            std::cerr << usual << std::endl;
-            std::cerr << house << std::endl;
             if(usual.size<=0) return;
+            if(verbose)
+            {
+                for(const eq_node *node=usual.head;node;node=node->next)
+                {
+                    *xml << " (*) " << (**node).name << std::endl;
+                }
+                *xml << "  |_" << house << std::endl;
+            }
             assert(house.size>=2);
 
             //------------------------------------------------------------------
@@ -56,6 +62,16 @@ namespace yack
             //------------------------------------------------------------------
             const size_t n = usual.size;
             const size_t m = house.size;
+            switch( __sign::of(m,n) )
+            {
+                case negative: throw imported::exception(fn,"too few species");
+                case __zero__:
+                    YACK_XMLOG(xml, "-- specific system");
+                    return;
+                case positive:
+                    break;
+            }
+            assert(n<m);
             imatrix nu(n,m);
             {
                 size_t i=1;
@@ -70,7 +86,7 @@ namespace yack
                 }
             }
             std::cerr << "nu=" << nu << std::endl;
-
+            
             matrix<apq> Q(m,m);
             ortho_family::build(Q,nu);
             apk::simplify_rows(Q);
