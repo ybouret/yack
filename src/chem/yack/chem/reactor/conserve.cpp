@@ -444,7 +444,7 @@ namespace yack
                 ++k;
                 const readable<apz>     &Wk   = *db[ indx[k] ];
                 for(size_t j=M;j>0;--j) Fi[j] = Wk[j].cast_to<unsigned>();
-                if( apk::rank_of(F) < i )
+                if( apk::rank(F) < i )
                     goto NEXT_K;
                 if(i<rank)
                     goto NEXT_I;

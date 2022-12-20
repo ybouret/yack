@@ -154,7 +154,11 @@ namespace yack
                 }
 
             }
-            
+
+            //__________________________________________________________________
+            //
+            //! this matrix won't produce any new vector
+            //__________________________________________________________________
             bool is_complete() const throw()
             {
                 if(qmatrix::fully_grown==qbase->active_state) return true;
@@ -369,8 +373,8 @@ namespace yack
                                          const qfamily   &source,
                                          const matrix<T> &mu)
             {
-                qmatrix       &Q = *target;
                 // check compatibilty of source basis with target matrix
+                qmatrix       &Q = *target;
                 for(const qNode *node = source.basis->head;node;node=node->next)
                 {
                     if(!Q.includes(mu[**node])) return false;

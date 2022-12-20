@@ -109,7 +109,7 @@ namespace yack
                 }
                 
                 // checking rank
-                const size_t rank =  apk::rank_of(Nu);
+                const size_t rank =  apk::rank(Nu);
                 YACK_XMLOG(xml, "-- Nu   = " << Nu);
                 YACK_XMLOG(xml, "-- rank = " << rank << " / " << N);
                 if(rank<N) throw imported::exception(clid,"dependent equilibria");

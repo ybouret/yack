@@ -95,30 +95,53 @@ namespace yack
                                    PROC            &cb)
             {
                 {
-                    qfamilies target;
+                    //----------------------------------------------------------
+                    //
+                    // accumulate new generation in progeny
+                    //
+                    //----------------------------------------------------------
+                    qfamilies progeny;
                     while(qlist.size)
                     {
+                        //------------------------------------------------------
+                        //
+                        // loop over parents from this
+                        //
+                        //------------------------------------------------------
                         const auto_ptr<qfamily> parents = qlist.pop_front();
-                        qfamilies               lineage;
-                        // generate reduced lineage, no duplicate
-                        parents->generate(lineage,mu);
-
-                        // present all new vectors to callback
-                        if(lineage.size)
                         {
+                            //--------------------------------------------------
+                            // generate direct, univocal lineage
+                            //--------------------------------------------------
+                            qfamilies           lineage;
+                            parents->generate(lineage,mu);
+                            if(!lineage.size) continue;
+
+                            //--------------------------------------------------
+                            // present all new vectors to callback
+                            //--------------------------------------------------
                             for(const qfamily *f=lineage.head;f;f=f->next)
                                 cb( (**f).last() );
-                            
-                            intra_condensation(lineage,mu);         // condense lineage
-                            incremental_fusion(target,lineage,mu);  // incremental fusion
+
+                            intra_condensation(lineage,mu);          // condense lineage
+                            incremental_fusion(progeny,lineage,mu);  // incremental fusion
                         }
+                        //------------------------------------------------------
+                        //
+                        // progeny was updated
+                        //
+                        //------------------------------------------------------
                     }
-                    target.swap_with(qlist);
+                    progeny.swap_with(qlist);
                 }
                 
                 return qlist.size;
             }
 
+            //__________________________________________________________________
+            //
+            //! helper to assess new coefficients: summed = weight'*nu
+            //__________________________________________________________________
             template <typename T, typename U,typename V> static inline
             void assess(writable<T>       &summed,
                         const readable<U> &weight,
@@ -133,7 +156,6 @@ namespace yack
                     for(size_t i=n;i>0;--i) sum += weight[i] * nu[i][j];
                     summed[j] = sum;
                 }
-                
             }
             
             //__________________________________________________________________
@@ -194,7 +216,7 @@ namespace yack
 
                 //--------------------------------------------------------------
                 //
-                // no equivalent found at this point...
+                // no equivalent found at this point: enroll candidate
                 //
                 //--------------------------------------------------------------
                 surrogate.push_back( candidate.yield() );
@@ -208,12 +230,9 @@ namespace yack
                                     const matrix<T>  &mu)
             {
                 qfamilies surrogate;
-                while(lineage.size)
-                {
+                while(lineage.size) {
                     auto_ptr<qfamily> candidate = lineage.pop_front();
-                    if(candidate->is_complete()) {
-                        continue;
-                    }
+                    if(candidate->is_complete()) continue; // drop candidate
                     try_merge(surrogate,candidate,mu);
                 }
                 lineage.swap_with(surrogate);

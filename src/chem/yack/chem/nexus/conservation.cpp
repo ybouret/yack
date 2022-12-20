@@ -177,7 +177,7 @@ namespace yack
                     YACK_XMLOG(xml, "-- singular conserved set");
                     return;
                 }
-                const size_t  rank = apk::rank_of(Q);
+                const size_t  rank = apk::rank(Q);
 
                 std::cerr << "P=" << P << std::endl;
                 std::cerr << "Q=" << Q << std::endl;

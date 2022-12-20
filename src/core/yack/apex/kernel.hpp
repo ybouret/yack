@@ -212,18 +212,18 @@ namespace yack
         //
         //! rank by gauss jordan
         //______________________________________________________________________
-        static size_t rank(matrix<apq> &Q);
+        static size_t rank_of(matrix<apq> &Q);
 
         //______________________________________________________________________
         //
         //! rank by gauss jordan of a matrix converted to apq
         //______________________________________________________________________
         template <typename T> static inline
-        size_t  rank_of(const matrix<T> &M)
+        size_t  rank(const matrix<T> &M)
         {
             matrix<apq> Q(M,transmogrify);
             assert(matrix_metrics::have_same_sizes(Q,M));
-            return  rank(Q);
+            return  rank_of(Q);
         }
 
         //! make univocal rationals

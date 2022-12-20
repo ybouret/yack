@@ -170,7 +170,6 @@ namespace yack
                     for(const eq_node *node=cls.head;node;node=node->next,++i)
                         iota::load(nu[i],Nu[***node]);
                 }
-
                 //--------------------------------------------------------------
                 //
                 // select local vectors: the problem becomes abstract
@@ -195,7 +194,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             const size_t nd = mu.cols;
-            const size_t rk = apk::rank_of(mu);
+            const size_t rk = apk::rank(mu);
             collector    cw(nd);
             {
                 qbranch qgen;

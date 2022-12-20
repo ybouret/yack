@@ -86,13 +86,13 @@ namespace
         do
         {
             create(nu,ran);
-        } while( apk::rank_of(nu) < rank );
+        } while( apk::rank(nu) < rank );
         std::cerr << "nu=" << nu << std::endl;
 
         matrix<int> mu;
         raven::qselect::compress(mu,nu);
         std::cerr << "mu=" << mu << std::endl;
-        YACK_CHECK(apk::rank_of(mu) == rank);
+        YACK_CHECK(apk::rank(mu) == rank);
 
         if(false)
         {

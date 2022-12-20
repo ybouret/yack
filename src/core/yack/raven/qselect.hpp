@@ -80,7 +80,7 @@ namespace yack
                         const readable<T> &src = mu[ jndx[k] ];
                         for(size_t i=n;i>0;--i) tgt[i] = src[i];
                     }
-                    return apk::rank_of(rvec);
+                    return apk::rank(rvec);
                 }
             }
         };
