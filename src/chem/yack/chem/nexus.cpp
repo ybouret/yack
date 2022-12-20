@@ -118,7 +118,13 @@ namespace yack
                 
                 // build related (at least one cluster)
                 build_related(xml); assert(related.size>0);
-                
+
+
+                //make conserved sets
+                conserved_set(xml);
+
+                exit(0);
+
                 // make manifold
                 make_manifold(xml);
                 
@@ -146,9 +152,7 @@ namespace yack
                     }
                     //std::cerr << "Kl=" << Kl << std::endl;
                 }
-                
-                //make conserved sets
-                conserved_set(xml);
+
             }
             
         }

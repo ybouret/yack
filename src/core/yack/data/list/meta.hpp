@@ -19,6 +19,8 @@ namespace yack
     class meta_list : public cxx_list_of< meta_node<T> >
     {
     public:
+        YACK_DECL_ARGS_(T,type);
+
         //______________________________________________________________________
         //
         // types and definitions
@@ -48,6 +50,14 @@ namespace yack
         //! on-the fly push back new meta node with data
         inline meta_list & operator<<( T *user ) { (void) this->push_back( new node_type(user) ); return *this; }
 
+        //! check if ref was inserted
+        inline bool met(const_type &ref) const throw() {
+            for(const node_type *node=this->head;node;node=node->next) {
+                const_type &usr = **node;
+                if( &usr == &ref ) return true;
+            }
+            return false;
+        }
 
     private:
         YACK_DISABLE_ASSIGN(meta_list);

@@ -88,11 +88,25 @@ namespace yack
             virtual const char *attr() const;
         };
 
-
-        typedef meta_list<const species> sp_list;     //!< list of species
         typedef meta_repo<const species> sp_repo;     //!< cache of species
-        typedef sp_repo::node_type       sp_node;     //!< node within sp_repo
-        int sp_node_compare(const sp_node *, const sp_node *) throw(); //!< compare by increasing index
+        typedef meta_list<const species> sp_list_;    //!< list of species
+        typedef sp_list_::node_type      sp_node;     //!< node within sp_repo
+
+        class sp_list : public sp_list_
+        {
+        public:
+            explicit sp_list() throw();
+            virtual ~sp_list() throw();
+
+            void sort() throw();
+
+            //! compare by increasing indices
+            static int node_compare(const sp_node *, const sp_node *) throw();
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(sp_list);
+        };
+
     }
 }
 
