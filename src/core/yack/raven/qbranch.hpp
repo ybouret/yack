@@ -40,11 +40,6 @@ namespace yack
 
             //__________________________________________________________________
             //
-            // generating methods
-            //__________________________________________________________________
-
-            //__________________________________________________________________
-            //
             //! initialize branch
             /**
              \param mu matrix of row vectors
@@ -53,9 +48,9 @@ namespace yack
              */
             //__________________________________________________________________
             template <typename T, typename FUNC> inline
-            void operator()(const matrix<T> &mu,
-                            const size_t     rk,
-                            FUNC            &ok)
+            size_t init(const matrix<T> &mu,
+                        const size_t     rk,
+                        FUNC            &ok)
             {
                 //--------------------------------------------------------------
                 // cleanup
@@ -76,6 +71,7 @@ namespace yack
                         if(!ok(mu[i])) continue;
                         qlist.push_back( new qfamily(id,mu,rk,io) );
                     }
+                    return qlist.size;
                 }
                 catch(...) { prune(); throw; }
             }
@@ -84,15 +80,16 @@ namespace yack
 
             //__________________________________________________________________
             //
-            //! initialize branch
+            //! grow branch
             /**
              \param mu matrix of row vectors
              \param cb call on generated new qvector
+             \return number of still growing families
              */
             //__________________________________________________________________
             template <typename T, typename PROC>
-            inline size_t generate(const matrix<T> &mu,
-                                   PROC            &cb)
+            inline size_t grow(const matrix<T> &mu,
+                               PROC            &cb)
             {
                 {
                     //----------------------------------------------------------
@@ -138,6 +135,22 @@ namespace yack
                 return qlist.size;
             }
 
+
+            template <typename T,
+            typename CONFIRM,
+            typename PROCESS> inline
+            void batch(const matrix<T> &mu,
+                       const size_t     rk,
+                       CONFIRM         &ok,
+                       PROCESS         &cb)
+            {
+                if( init(mu,rk,ok) ) {
+                    while( grow(mu,cb) )
+                        ;
+                }
+            }
+
+
             //__________________________________________________________________
             //
             //! helper to assess new coefficients: summed = weight'*nu
@@ -162,7 +175,6 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(qbranch);
             qfamilies qlist;   //!< current generations

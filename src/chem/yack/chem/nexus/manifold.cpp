@@ -119,7 +119,7 @@ namespace yack
 
             void operator()(const qvector &cf)
             {
-                std::cerr << " found " << cf << std::endl;
+                //std::cerr << " found " << cf << std::endl;
                 if( qselect::count_valid(  cf.cast_to(work) ) >= 2 )
                 {
                     ensure(work);
@@ -169,6 +169,7 @@ namespace yack
                     size_t  i=1;
                     for(const eq_node *node=cls.head;node;node=node->next,++i)
                         iota::load(nu[i],Nu[***node]);
+                    assert( n == apk::rank(nu) );
                 }
                 //--------------------------------------------------------------
                 //
@@ -178,6 +179,8 @@ namespace yack
                 {
                     const imatrix nut(nu,transposed);
                     select_clan(coerce(sl),coerce(mu),nut,corelib);
+                    assert( n==apk::rank(nut) );
+                    assert( n==apk::rank(mu)  );
                 }
 
                 if(verbose)
@@ -194,20 +197,11 @@ namespace yack
             //
             //------------------------------------------------------------------
             const size_t nd = mu.cols;
-            const size_t rk = apk::rank(mu);
             collector    cw(nd);
             {
                 qbranch qgen;
-                qgen(mu,rk,keep_more_than_two<int>);
-                while( qgen.generate(mu,cw) )
-                    ;
+                qgen.batch(mu,n,keep_more_than_two<int>,cw);
             }
-
-            for(const bunch<int>::entry *ep=cw->head;ep;ep=ep->next)
-            {
-                std::cerr << " [+] " << *ep << std::endl;
-            }
-
 
 
             //------------------------------------------------------------------

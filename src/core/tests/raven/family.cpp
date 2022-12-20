@@ -151,12 +151,12 @@ namespace
 
         vecstore       vdb;
         raven::qbranch source;
-        source(mu,rank,accept_all);
+        source.init(mu,rank,accept_all);
         do
         {
             //std::cerr << source << std::endl;
             //if(source.depth>=2) break;
-        } while( source.generate(mu,vdb) );
+        } while( source.grow(mu,vdb) );
 
         bunch<int>      all(size);
         cxx_array<int> &summed = all.work;
