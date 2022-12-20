@@ -48,7 +48,7 @@ namespace yack
                 }
             }
             
-            apk::simplify_rows(Q);
+            //apk::simplify_rows(Q);
 
             return true;
                 

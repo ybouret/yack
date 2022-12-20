@@ -2,6 +2,8 @@
 #include "yack/chem/nexus.hpp"
 #include "yack/math/iota.hpp"
 #include "yack/raven/qbranch.hpp"
+#include "yack/math/algebra/ortho-family.hpp"
+#include "yack/apex/kernel.hpp"
 
 #include <iomanip>
 
@@ -19,6 +21,10 @@ namespace yack
             YACK_XMLSUB(xml,fn);
             eq_team      usual;
             sp_list      house;
+
+            //------------------------------------------------------------------
+            // extract usual equilibria and house of species
+            //------------------------------------------------------------------
             {
                 addrbook     tribe;
                 for(const eq_node *en=sharing.head;en;en=en->next)
@@ -44,6 +50,10 @@ namespace yack
             std::cerr << house << std::endl;
             if(usual.size<=0) return;
             assert(house.size>=2);
+
+            //------------------------------------------------------------------
+            // build virtual topology of conserved species
+            //------------------------------------------------------------------
             const size_t n = usual.size;
             const size_t m = house.size;
             imatrix nu(n,m);
@@ -60,6 +70,12 @@ namespace yack
                 }
             }
             std::cerr << "nu=" << nu << std::endl;
+
+            matrix<apq> Q(m,m);
+            ortho_family::build(Q,nu);
+            apk::simplify_rows(Q);
+            std::cerr << "Q=" << Q << std::endl;
+
 
         }
 
