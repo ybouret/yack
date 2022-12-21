@@ -31,20 +31,14 @@ namespace yack
         N( singles.size() ),
         L(0),
         Nu(N,N>0?M:0),
-        xadd(),
-        xmul(),
         worklib( corelib ),
         
-        mtab(12,M),
-        ntab(12,N),
-        ltab(12,L),
-        ctab(12,0),
         
         // species
-        crit(mtab.next(),transmogrify),
+        crit(M),
         
         // singles
-        K( ntab.next() ),
+        K( N ),
         regular(),
         roaming(),
         related(),
@@ -52,12 +46,7 @@ namespace yack
         // c-laws
         Nq(0),
         Qm(),
-        Qc(),
-        Qs(ctab.next()),
         
-        // lattice
-        Kl( ltab.next() ),
-
         lockLib(coerce(corelib)),
         lockEqs(coerce(singles))
         {
@@ -172,9 +161,7 @@ namespace yack
                 coerce(L) = lattice.size();
                 if(L)
                 {
-                    ltab.make(L);
-                    assert(L==Kl.size());
-                    iota::save(Kl,K);
+                    
                     {
                         const enode *en = lattice.head();
                         for(size_t i=N;i>0;--i)
@@ -184,13 +171,14 @@ namespace yack
                         }
                         coerce(next_en) = en;
                     }
-                    
+#if 0
                     for(const enode *en=next_en;en;en=en->next)
                     {
                         const equilibrium &eq = ***en;
                         const size_t       ei = *eq;
                         Kl[ei] = eq.K(t);
                     }
+#endif
                     //std::cerr << "Kl=" << Kl << std::endl;
                 }
 
@@ -198,6 +186,27 @@ namespace yack
             
         }
         
+        void nexus:: upgrade_lattice(writable<double> &Kl)
+        {
+            assert(Kl.size()>=L);
+            iota::save(Kl,K);
+            for(const enode *en=next_en;en;en=en->next)
+            {
+                const equilibrium &eq = ***en;
+                const size_t       ei = *eq;
+                Kl[ei] = eq.K(-1);
+            }
+        }
+        
+        void nexus:: compute_singles(const double t)
+        {
+            for(const enode *en=singles.head();en;en=en->next)
+            {
+                const equilibrium &eq = ***en;
+                K[*eq] = eq.K(t);
+            }
+        }
+
         
     }
     

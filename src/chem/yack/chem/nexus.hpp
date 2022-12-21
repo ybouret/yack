@@ -8,7 +8,7 @@
 #include "yack/chem/active.hpp"
 #include "yack/ios/xmlog.hpp"
 #include "yack/container/matrix.hpp"
-#include "yack/sequence/arrays.hpp"
+#include "yack/sequence/cxx-array.hpp"
 #include "yack/chem/nexus/cluster.hpp"
 
 namespace yack
@@ -25,10 +25,8 @@ namespace yack
         typedef matrix<unsigned>            umatrix;    //!< alias
         typedef matrix<double>              rmatrix;    //!< alias
         
-        typedef arrays_of<double>           tableaux;   //!< alias
-        typedef tableaux::array_type        tableau;    //!< alias
-        typedef thin_array<const criterion> criterions; //!< alias
-
+        typedef cxx_array<const criterion> criterions; //!< alias
+        typedef cxx_array<double>          tableau;
         
         //______________________________________________________________________
         //
@@ -61,6 +59,16 @@ namespace yack
 
             void preserve(writable<double> &C0);
 
+            
+            //! update Kl after K is computed
+            /**
+             use memory inside mixed equilibria
+             */
+            void upgrade_lattice(writable<double> &Kl);
+            
+            //! compute K
+            void compute_singles(const double t);
+            
             //__________________________________________________________________
             //
             // members
@@ -74,29 +82,23 @@ namespace yack
             const size_t        N;        //!< singles.size
             const size_t        L;        //!< lattice.size
             const imatrix       Nu;       //!< [NxM] initial topology
-            raddops             xadd;     //!< perform additions
-            rmulops             xmul;     //!< perform multiplications
-
+            
         private:
             const library     worklib; //!< hard copy of corelib, to build combinations
-            tableaux          mtab;    //!< [M]-sized
-            tableaux          ntab;    //!< [N]-sized
-            tableaux          ltab;    //!< [L]-sized
-            tableaux          ctab;    //!< [Nq]-sized
-
+            
         public:
             //__________________________________________________________________
             //
             // species data
             //__________________________________________________________________
             const criterions crit;      //!< [M] criterions
-
+            
             //__________________________________________________________________
             //
             // singles data
             //__________________________________________________________________
-            tableau           &K;       //!< [N] single constants
-            const eq_team      regular; //!< both ways
+            tableau            K;       //!< [N] single constants
+            const eq_team      regular; //!< both ways equilibrium
             const eq_team      roaming; //!< [part|join]_only
             const clusters     related; //!< clusters of related equilibria with their c-laws
 
@@ -105,17 +107,9 @@ namespace yack
             //
             // conservation matrix
             //__________________________________________________________________
-            const size_t       Nq; //!< number of consevation laws
+            const size_t       Nq; //!< number of conservation laws
             const umatrix      Qm; //!< built from each conservation law
-            rmatrix            Qc; //!< [NqxM]
-            tableau           &Qs; //!< [Nq] solving constraint score
-            claw_repo          Qr; //!< repository for algorithm
-
-            //__________________________________________________________________
-            //
-            // lattice data
-            //__________________________________________________________________
-            tableau           &Kl;      //!< [L] constants
+            
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(nexus);

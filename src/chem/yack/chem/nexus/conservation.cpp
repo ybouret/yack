@@ -14,19 +14,19 @@ namespace yack
 {
     using namespace math;
     using namespace raven;
-
+    
     namespace chemical
     {
-
+        
         namespace {
-
+            
             template <typename T>
             static inline
             void compressQ(matrix<T> &Q, const matrix<T> &Q0)
             {
                 const size_t       n = Q0.rows;
                 cxx_series<size_t> indx(n);
-
+                
                 for(size_t i=1;i<=n;++i)
                 {
                     const readable<T>   &Qi = Q0[i];
@@ -47,25 +47,25 @@ namespace yack
                 for(size_t j=1;j<=q;++j)
                     iota::load(Q[j],Q0[indx[j]]);
             }
-
-
-
-
+            
+            
+            
+            
             class collector : public bunch<unsigned>
             {
             public:
                 const xmlog &xml;
-
+                
                 explicit collector(const size_t dim, const xmlog &_) :
                 bunch<unsigned>(dim),
                 xml(_)
                 {
                 }
-
+                
                 virtual ~collector() throw()
                 {
                 }
-
+                
                 bool validate(const readable<apz> &v) const throw()
                 {
                     assert(v.size()==width);
@@ -85,7 +85,7 @@ namespace yack
                     }
                     return np>1;
                 }
-
+                
                 void operator()(const qvector &v)
                 {
                     const bool ok = validate(v) && insert( v.cast_to<unsigned>(work) );
@@ -93,24 +93,24 @@ namespace yack
                     {
                         YACK_XMLOG(xml, "[+] " << work);
                     }
-
+                    
                 }
-
-
+                
+                
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(collector);
             };
-
-
+            
+            
         }
-
+        
         void nexus:: conserved_set_(cluster &sharing, const xmlog &xml)
         {
             static const char * const fn = "conserved_subset";
             YACK_XMLSUB(xml,fn);
             eq_team      usual;
             sp_list      house;
-
+            
             //------------------------------------------------------------------
             //
             // extract usual equilibria and house of species
@@ -118,7 +118,7 @@ namespace yack
             //------------------------------------------------------------------
             {
                 addrbook     tribe;
-
+                
                 for(const eq_node *en=sharing.head;en;en=en->next)
                 {
                     const equilibrium &eq = **en;
@@ -127,7 +127,7 @@ namespace yack
                         eq.update(tribe);
                     }
                 }
-
+                
                 for(addrbook::const_iterator it=tribe.begin();it!=tribe.end();++it)
                 {
                     const species &sp = *static_cast<species*>(*it);
@@ -136,7 +136,7 @@ namespace yack
                 }
                 house.sort();
             }
-
+            
             //------------------------------------------------------------------
             //
             // study result
@@ -153,8 +153,8 @@ namespace yack
                 *xml << "  |_" << house << std::endl;
             }
             assert(house.size>=2);
-
-
+            
+            
             //------------------------------------------------------------------
             //
             // prepare answer
@@ -172,7 +172,7 @@ namespace yack
                     break;
             }
             collector cb(m,xml);
-
+            
             {
                 //--------------------------------------------------------------
                 //
@@ -196,7 +196,7 @@ namespace yack
                 }
                 usual.release();
                 YACK_XMLOG(xml,"-- nu = " << nu);
-
+                
                 //--------------------------------------------------------------
                 //
                 // build compressed orthogonal space
@@ -209,7 +209,7 @@ namespace yack
                     compressQ(Q,Q0); if(ker!=alga::rank(Q)) throw imported::exception(fn,"singular compressed sub-system");
                 }
                 YACK_XMLOG(xml,"-- Q  = " << Q);
-
+                
                 //--------------------------------------------------------------
                 //
                 // apply RAVEn from root
@@ -221,7 +221,7 @@ namespace yack
                     source.batch(Q,ker,cb);
                 }
             }
-
+            
             //------------------------------------------------------------------
             //
             // use collected entries
@@ -245,7 +245,7 @@ namespace yack
                 }
             }
             house.release();
-
+            
             //------------------------------------------------------------------
             //
             // create teams of c-laws for this cluster
@@ -257,8 +257,8 @@ namespace yack
             }
             YACK_XMLOG(xml,"|_team = " << sharing.ct.size );
         }
-
-
+        
+        
         void nexus:: conserved_set(const xmlog &xml)
         {
             static const char * const fn = "conserved_set";
@@ -271,25 +271,23 @@ namespace yack
             YACK_XMLOG(xml,"-- conservation  laws : " << Nq);
             YACK_XMLOG(xml,"-- equilibria         : " << singles.size() );
             YACK_XMLOG(xml,"-- active species     : " << working.size   );
-
+            
             if(Nq)
             {
-                ctab.make(Nq);
-
+                
+                
+                coerce(Qm).make(Nq,M);
                 {
-                    umatrix &Qu = coerce(Qm);
-                    Qu.make(Nq,M);
-                    Qc.make(Nq,M);
-
                     size_t i=1;
                     for(const cluster *cls=related.head;cls;cls=cls->next)
                     {
                         for(const conservation_law *claw = cls->cl.head;claw;claw=claw->next,++i)
                         {
-                            claw->fill(Qu[i]);
+                            claw->fill( coerce(Qm[i]) );
                         }
                     }
                 }
+                
                 
                 std::cerr << "\tQm=" << Qm << std::endl;
                 
@@ -328,9 +326,9 @@ namespace yack
                     std::cerr << "F=" << F << std::endl;
                 }
             }
-
+            
         }
-
+        
         
     }
     

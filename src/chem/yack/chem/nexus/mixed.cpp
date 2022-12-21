@@ -17,17 +17,16 @@ namespace yack
                 }
                 
                 const readable<double> &Ktab;
-                rmulops                &xmul;
+                mutable rmulops         xmul;
                 const cxx_array<int>    coef;
                 
                 explicit mixed_equilibrium(const string           &uid,
                                            const size_t            idx,
                                            const readable<double> &myK,
-                                           rmulops                &ops,
                                            const readable<int>    &arr) :
                 equilibrium(uid,idx),
                 Ktab(myK),
-                xmul(ops),
+                xmul(),
                 coef(arr,transmogrify)
                 {
                     
@@ -74,10 +73,9 @@ namespace yack
             equilibria  &target = coerce(lattice);
             const string name   = singles.make_name(weight);
             const size_t mxid   = target.size()+1;
-            equilibrium &mxeq   = target.use( new mixed_equilibrium(name,mxid,K,xmul,weight) );
+            equilibrium &mxeq   = target.use( new mixed_equilibrium(name,mxid,K,weight) );
 
-            //std::cerr << name << " : " << gcoef << std::endl;
-
+ 
             for(size_t j=1;j<=M;++j)
             {
                 const int f = gcoef[j];

@@ -30,7 +30,15 @@ YACK_UTEST(nexus)
 
     nexus        cs(lib,eqs,0.0);
     const size_t M = cs.M;
+    const size_t L = cs.L;
+    
+    cs.singles(std::cerr,"K_",cs.K);
+    
+    cxx_array<double> Kl(L);
+    cs.upgrade_lattice(Kl);
+    //cs.lattice(std::cerr,"K_",Kl);
 
+    
     vector<double> C(M,0);
 
     for(size_t i=M;i>0;--i) {
