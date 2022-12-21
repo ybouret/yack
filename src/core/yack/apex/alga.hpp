@@ -9,6 +9,7 @@
 namespace yack
 {
 
+
     //______________________________________________________________________
     //
     //
@@ -17,6 +18,10 @@ namespace yack
     //______________________________________________________________________
     struct alga
     {
+
+        template <typename T> struct ratio;
+
+
         //______________________________________________________________________
         //
         //! find least common multiple of an array of rationals
@@ -35,6 +40,9 @@ namespace yack
                 return res;
             }
         }
+
+
+
 
         //______________________________________________________________________
         //
@@ -55,7 +63,10 @@ namespace yack
 
     };
 
-
+    template <>
+    struct alga::ratio<apq>
+    {
+    };
 
 }
 
