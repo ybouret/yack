@@ -9,11 +9,19 @@ YACK_UTEST(alga)
     vector<apq> Q;
     Q << apq(10,3);
     Q << apq(-5,6);
-    Q << apq(20,3);
+    Q << apq(-20,3);
     std::cerr << "Q=" << Q << std::endl;
-    vector<apq> Q2(Q);
-    alga::simplify(Q2);
-    std::cerr << "Q=" << Q2 << std::endl;
+    {
+        vector<apq> Q2(Q);
+        alga::simplify(Q2);
+        std::cerr << "Q=" << Q2 << std::endl;
+    }
+    {
+        vector<apq> Q2(Q);
+        alga::univocal(Q2);
+        std::cerr << "Q=" << Q2 << std::endl;
+    }
+
 
 }
 YACK_UDONE()

@@ -5,7 +5,6 @@
 
 #include "yack/apex.hpp"
 #include "yack/container/matrix.hpp"
-#include "yack/sequence/vector.hpp"
 
 namespace yack
 {
@@ -41,6 +40,11 @@ namespace yack
 
         //! simplify keeping signs
         static void simplify( writable<apq> &v );
+
+        //! simplify to univocal
+        static void univocal( writable<apq> &v );
+
+        
 
 
 
