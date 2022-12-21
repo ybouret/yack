@@ -3,7 +3,8 @@
 #ifndef YACK_RAVEN_QSELECT_INCLUDED
 #define YACK_RAVEN_QSELECT_INCLUDED 1
 
-#include "yack/apex/kernel.hpp"
+#include "yack/apex/alga.hpp"
+#include "yack/sequence/cxx-series.hpp"
 
 namespace yack
 {
@@ -44,8 +45,8 @@ namespace yack
             size_t compress(matrix<T>       &rvec,
                             const matrix<T> &topo)
             {
-                const matrix<T> mu(topo,transposed);        // transposed
-                vector<size_t>  jndx(mu.rows,as_capacity);  // valid indices
+                const matrix<T>    mu(topo,transposed);   // transposed
+                cxx_series<size_t> jndx(mu.rows);         // valid indices
                 {
                     const size_t    m = mu.rows;
                     for(size_t j=1;j<=m;++j)
@@ -55,7 +56,7 @@ namespace yack
                         bool original = true;
                         for(size_t k=jndx.size();k>0;--k)
                         {
-                            if( apk::are_prop(mu_j,mu[jndx[k]], NULL) )
+                            if( alga::colinear(mu_j,mu[jndx[k]]) )
                             {
                                 original = false;
                                 break;
@@ -80,7 +81,7 @@ namespace yack
                         const readable<T> &src = mu[ jndx[k] ];
                         for(size_t i=n;i>0;--i) tgt[i] = src[i];
                     }
-                    return apk::rank(rvec);
+                    return alga::rank(rvec);
                 }
             }
         };

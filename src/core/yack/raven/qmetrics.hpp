@@ -10,9 +10,6 @@ namespace yack
     // Right Angle Vectors ENdeavor
     namespace raven
     {
-
-       
-
         //______________________________________________________________________
         //
         //

@@ -51,7 +51,7 @@ namespace yack
 
                 for(size_t k=jrow.size();k>0;--k)
                 {
-                    if( apk::are_prop(mu[ jrow[k] ],curr,NULL) )
+                    if( alga::colinear(mu[ jrow[k] ],curr) )
                     {
                         isOk = false;
                         break;
@@ -157,7 +157,7 @@ namespace yack
                     size_t  i=1;
                     for(const eq_node *node=cls.head;node;node=node->next,++i)
                         iota::load(nu[i],Nu[***node]);
-                    assert( n == apk::rank(nu) );
+                    assert( n == alga::rank(nu) );
                 }
                 //--------------------------------------------------------------
                 //
@@ -167,8 +167,8 @@ namespace yack
                 {
                     const imatrix nut(nu,transposed);
                     select_clan(coerce(sl),coerce(mu),nut,corelib);
-                    assert( n==apk::rank(nut) );
-                    assert( n==apk::rank(mu)  );
+                    assert( n==alga::rank(nut) );
+                    assert( n==alga::rank(mu)  );
                 }
 
                 if(verbose)

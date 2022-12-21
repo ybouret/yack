@@ -41,7 +41,7 @@ namespace
         do
         {
             create(nu,ran);
-        } while( apk::rank(nu) < rank );
+        } while( alga::rank(nu) < rank );
 
         std::cerr << "nu=" << nu << std::endl;
 
