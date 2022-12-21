@@ -121,8 +121,7 @@ namespace yack
                 for(const eq_node *en=sharing.head;en;en=en->next)
                 {
                     const equilibrium &eq = **en;
-                    if( regular.met(eq) )
-                    {
+                    if( regular.met(eq) ) {
                         usual << &eq;
                         eq.update(tribe);
                     }
@@ -155,6 +154,11 @@ namespace yack
             assert(house.size>=2);
 
 
+            //------------------------------------------------------------------
+            //
+            // prepare answer
+            //
+            //------------------------------------------------------------------
             const size_t n = usual.size;
             const size_t m = house.size;
             switch( __sign::of(m,n) )
@@ -166,52 +170,55 @@ namespace yack
                 case positive:
                     break;
             }
+            collector cb(m,xml);
 
-            //------------------------------------------------------------------
-            //
-            // build virtual topology
-            //
-            //------------------------------------------------------------------
-            assert(n<m);
-            const size_t ker = m-n;
-            imatrix      nu(n,m);
             {
-                size_t i=1;
-                for(const eq_node *en=usual.head;en;en=en->next,++i)
+                //--------------------------------------------------------------
+                //
+                // build virtual topology
+                //
+                //--------------------------------------------------------------
+                assert(n<m);
+                const size_t ker = m-n;
+                imatrix      nu(n,m);
                 {
-                    const readable<int> &Nu_i = Nu[***en];
-                    writable<int>       &nu_i = nu[i];
-                    size_t j=1;
-                    for(const sp_node *sn=house.head;sn;sn=sn->next,++j) {
-                        nu_i[j] = Nu_i[ ***sn ];
+                    size_t i=1;
+                    for(const eq_node *en=usual.head;en;en=en->next,++i)
+                    {
+                        const readable<int> &Nu_i = Nu[***en];
+                        writable<int>       &nu_i = nu[i];
+                        size_t j=1;
+                        for(const sp_node *sn=house.head;sn;sn=sn->next,++j) {
+                            nu_i[j] = Nu_i[ ***sn ];
+                        }
                     }
                 }
-            }
-            YACK_XMLOG(xml,"-- nu = " << nu);
+                usual.release();
+                YACK_XMLOG(xml,"-- nu = " << nu);
 
-            //------------------------------------------------------------------
-            //
-            // build compressed orthogonal space
-            //
-            //------------------------------------------------------------------
-            imatrix Q;
-            {
-                imatrix Q0(m,m);
-                if(!ortho_family::build(Q0,nu,true))    throw imported::exception(fn,"singular sub-system");
-                compressQ(Q,Q0); if(ker!=alga::rank(Q)) throw imported::exception(fn,"singular compressed sub-system");
-            }
-            YACK_XMLOG(xml,"-- Q  = " << Q);
+                //--------------------------------------------------------------
+                //
+                // build compressed orthogonal space
+                //
+                //--------------------------------------------------------------
+                imatrix Q;
+                {
+                    imatrix Q0(m,m);
+                    if(!ortho_family::build(Q0,nu,true))    throw imported::exception(fn,"singular sub-system");
+                    compressQ(Q,Q0); if(ker!=alga::rank(Q)) throw imported::exception(fn,"singular compressed sub-system");
+                }
+                YACK_XMLOG(xml,"-- Q  = " << Q);
 
-            //------------------------------------------------------------------
-            //
-            // apply RAVEn from root
-            //
-            //------------------------------------------------------------------
-            collector cb(m,xml);
-            {
-                YACK_XMLSUB(xml, "RAVEn");
-                qbranch  source;
-                source.batch(Q,ker,cb);
+                //--------------------------------------------------------------
+                //
+                // apply RAVEn from root
+                //
+                //--------------------------------------------------------------
+                {
+                    YACK_XMLSUB(xml, "RAVEn");
+                    qbranch  source;
+                    source.batch(Q,ker,cb);
+                }
             }
 
             //------------------------------------------------------------------
@@ -219,24 +226,31 @@ namespace yack
             // use collected entries
             //
             //------------------------------------------------------------------
-            conservation_laws &kept = coerce(sharing.kept);
             for(const collector::entry *ep=cb->head;ep;ep=ep->next)
             {
                 const readable<unsigned> &cf   = *ep;
-                conservation_law         &claw = *kept.push_back( new conservation_law() );
+                conservation_law         &claw = *coerce(sharing.cl).push_back( new conservation_law() );
                 size_t j=1;
                 for(const sp_node *sn=house.head;sn;sn=sn->next,++j)
                 {
                     const unsigned w = cf[j];
                     if(w)
-                    {
                         claw(**sn,w);
-                    }
                 }
                 YACK_XMLOG(xml,"--> " << claw);
             }
+            house.release();
 
-
+            //------------------------------------------------------------------
+            //
+            // create teams of c-laws for this cluster
+            //
+            //------------------------------------------------------------------
+            for(const conservation_law *claw=sharing.cl.head;claw;claw=claw->next)
+            {
+                coerce(sharing.ct).recruit(*claw);
+            }
+            YACK_XMLOG(xml,"|_team = " << sharing.ct.size );
         }
 
 

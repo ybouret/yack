@@ -7,8 +7,8 @@ namespace yack
     namespace chemical
     {
 
-        cluster::  cluster() throw() : eq_team(), next(0), prev(0), kept() {}
-        cluster:: ~cluster() throw() {}
+        cluster:: cluster() throw() : eq_team(), next(0), prev(0), cl(), ct() {}
+        cluster::~cluster() throw() {}
 
         bool cluster:: attached_to(const equilibrium &eq) const throw()
         {
