@@ -39,22 +39,9 @@ YACK_UTEST(nexus)
 
     lib(std::cerr,"",C);
 
-    for(const cluster *cls=cs.related.head;cls;cls=cls->next)
-    {
-        for(const conservation_law *claw=cls->cl.head;claw;claw=claw->next)
-        {
-            const size_t i   = **claw;
-            const bool   bad = claw->regulate(cs.Qc[i],C,cs.xadd);
-            if(bad)
-            {
-                std::cerr << *claw << " => " << cs.xadd.get() << " @" << cs.Qc[i] << std::endl;
-            }
-            else
-            {
-                std::cerr << *claw << " ok" << std::endl;
-            }
-        }
-    }
+    cs.preserve(C);
+
+
 
 
     

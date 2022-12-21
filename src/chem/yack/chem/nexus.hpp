@@ -59,6 +59,8 @@ namespace yack
             //! cleanup
             virtual ~nexus() throw();
 
+            void preserve(writable<double> &C0);
+
             //__________________________________________________________________
             //
             // members
@@ -80,7 +82,8 @@ namespace yack
             tableaux          mtab;    //!< [M]-sized
             tableaux          ntab;    //!< [N]-sized
             tableaux          ltab;    //!< [L]-sized
-            
+            tableaux          ctab;    //!< [Nq]-sized
+
         public:
             //__________________________________________________________________
             //
@@ -105,7 +108,9 @@ namespace yack
             const size_t       Nq; //!< number of consevation laws
             const umatrix      Qm; //!< built from each conservation law
             rmatrix            Qc; //!< [NqxM]
-            
+            tableau           &Qs; //!< [Nq] solving constraint score
+            claw_repo          Qr; //!< repository for algorithm
+
             //__________________________________________________________________
             //
             // lattice data

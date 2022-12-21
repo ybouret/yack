@@ -274,19 +274,23 @@ namespace yack
 
             if(Nq)
             {
-                umatrix &Qu = coerce(Qm);
-                
-                Qu.make(Nq,M);
-                Qc.make(Nq,M);
+                ctab.make(Nq);
 
-                size_t i=1;
-                for(const cluster *cls=related.head;cls;cls=cls->next)
                 {
-                    for(const conservation_law *claw = cls->cl.head;claw;claw=claw->next,++i)
+                    umatrix &Qu = coerce(Qm);
+                    Qu.make(Nq,M);
+                    Qc.make(Nq,M);
+
+                    size_t i=1;
+                    for(const cluster *cls=related.head;cls;cls=cls->next)
                     {
-                        claw->fill(Qu[i]);
+                        for(const conservation_law *claw = cls->cl.head;claw;claw=claw->next,++i)
+                        {
+                            claw->fill(Qu[i]);
+                        }
                     }
                 }
+                
                 std::cerr << "\tQm=" << Qm << std::endl;
                 
                 cxx_array<int> Z(M);

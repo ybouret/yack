@@ -4,7 +4,7 @@
 #define YACK_NEXUS_CLUSTER_INCLUDED 1
 
 #include "yack/chem/equilibrium.hpp"
-#include "yack/chem/conservation-law.hpp"
+#include "yack/chem/claw-team.hpp"
 
 namespace yack
 {
@@ -91,7 +91,7 @@ namespace yack
         public:
             explicit clusters() throw();
             virtual ~clusters() throw();
-            
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(clusters);
         };

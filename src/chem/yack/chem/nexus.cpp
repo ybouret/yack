@@ -38,6 +38,7 @@ namespace yack
         mtab(12,M),
         ntab(12,N),
         ltab(12,L),
+        ctab(12,0),
         
         // species
         crit(mtab.next(),transmogrify),
@@ -51,6 +52,8 @@ namespace yack
         // c-laws
         Nq(0),
         Qm(),
+        Qc(),
+        Qs(ctab.next()),
         
         // lattice
         Kl( ltab.next() ),
