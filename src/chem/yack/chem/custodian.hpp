@@ -19,7 +19,9 @@ namespace yack
             explicit custodian(const nexus &);
             virtual ~custodian() throw();
             
-            
+            const nexus &hub;
+            tableau      xs;
+            rmatrix      Cs;
             
             
             
