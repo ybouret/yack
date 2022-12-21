@@ -84,7 +84,7 @@ namespace yack
                 //--------------------------------------------------------------
                 // initialize input
                 //--------------------------------------------------------------
-                const size_t nr = mu.rows;  assert(nr>=2);
+                const size_t nr = mu.rows;  assert(nr>=1);
                 const size_t ir = id[nr];   assert(ir>=1); assert(ir<=mu.rows);
 
                 //--------------------------------------------------------------

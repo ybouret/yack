@@ -176,7 +176,7 @@ namespace yack
                 return qlist.size;
             }
 
-            //! full batch processing
+            //! full batch processing AFTER the initial insertion
             template <typename T,
             typename CONFIRM,
             typename PROCESS> inline
@@ -191,6 +191,7 @@ namespace yack
                 }
             }
 
+            //! process all from the intial insertion
             template <typename T, typename PROCESS> inline
             void batch(const matrix<T> &mu,
                        const size_t     rk,

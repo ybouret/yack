@@ -3,7 +3,7 @@
 #include "yack/system/imported.hpp"
 #include "yack/math/iota.hpp"
 #include "yack/type/utils.hpp"
-#include "yack/apex/kernel.hpp"
+#include "yack/apex/alga.hpp"
 
 namespace yack
 {
@@ -428,7 +428,7 @@ namespace yack
             size_t       n = max_of( lhs.span(), rhs.span() );
             vector<int>  L(n,0); lhs.fill(L);
             vector<int>  R(n,0); rhs.fill(R);
-            return apk::are_prop(L,R, NULL);
+            return alga::colinear(L,R);
         }
 
         bool components:: similar_to(const components &rhs) const

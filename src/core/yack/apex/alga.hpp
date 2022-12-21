@@ -57,7 +57,7 @@ namespace yack
         static void univocal( writable<apz> &v );                                 //!< simplify to univocal
         static void definite( writable<apz> &v, apn &z2);                         //!< simplify to univocal with norm squared
         static bool colinear(const readable<apz> &lhs, const readable<apz> &rhs); //!< check proportional
-        static bool colinear(const readable<int> &, const readable<int> & );//! test colinearity for ints
+        static bool colinear(const readable<int> &, const readable<int> & );      //!< test colinearity for ints
 
 
         //______________________________________________________________________

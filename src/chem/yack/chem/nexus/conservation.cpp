@@ -3,7 +3,7 @@
 #include "yack/math/iota.hpp"
 #include "yack/raven/qbranch.hpp"
 #include "yack/math/algebra/ortho-family.hpp"
-#include "yack/apex/kernel.hpp"
+#include "yack/apex/alga.hpp"
 #include "yack/sequence/cxx-series.hpp"
 #include "yack/sequence/bunch.hpp"
 
@@ -32,7 +32,7 @@ namespace yack
                     bool                 ok = true;
                     for(size_t j=indx.size();j>0;--j)
                     {
-                        if( apk::are_prop(Qi,Q0[indx[j]],NULL))
+                        if( alga::colinear(Qi,Q0[indx[j]]))
                         {
                             ok = false;
                             break;
@@ -197,8 +197,9 @@ namespace yack
             imatrix Q;
             {
                 imatrix Q0(m,m);
-                if(!ortho_family::build(Q0,nu,true))   throw imported::exception(fn,"singular sub-system");
-                compressQ(Q,Q0); if(ker!=apk::rank(Q)) throw imported::exception(fn,"singular compressed sub-system");
+                if(!ortho_family::build(Q0,nu,true))    throw imported::exception(fn,"singular sub-system");
+                std::cerr << "Q0=" << Q0 << std::endl;
+                compressQ(Q,Q0); if(ker!=alga::rank(Q)) throw imported::exception(fn,"singular compressed sub-system");
             }
             YACK_XMLOG(xml,"-- Q  = " << Q);
 

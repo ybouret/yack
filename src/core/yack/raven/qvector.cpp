@@ -1,6 +1,6 @@
 
 #include "yack/raven/qvector.hpp"
-#include "yack/apex/kernel.hpp"
+#include "yack/apex/alga.hpp"
 
 namespace yack
 {
@@ -59,7 +59,7 @@ namespace yack
             assert(u_k.size()==dimension);
 
             thin_array<apz> arr( &coeff[1], dimension);
-            const apn       lcm = apk::lcm(u_k,one,dimension);
+            const apn       lcm = alga::lcm(u_k,one,dimension);
             bool            gtz = false;
 
             for(size_t i=dimension;i>0;--i)
@@ -70,7 +70,7 @@ namespace yack
 
             if(gtz)
             {
-                apk::definite(arr,coerce(norm2));
+                alga::definite(arr,coerce(norm2));
                 return true;
             }
             else

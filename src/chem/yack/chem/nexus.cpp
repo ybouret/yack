@@ -1,7 +1,7 @@
 
 #include "yack/chem/nexus.hpp"
 #include "yack/system/imported.hpp"
-#include "yack/apex/kernel.hpp"
+#include "yack/apex/alga.hpp"
 #include "yack/math/iota.hpp"
 
 namespace yack
@@ -112,7 +112,7 @@ namespace yack
                 }
                 
                 // checking rank
-                const size_t rank =  apk::rank(Nu);
+                const size_t rank =  alga::rank(Nu);
                 YACK_XMLOG(xml, "-- Nu   = " << Nu);
                 YACK_XMLOG(xml, "-- rank = " << rank << " / " << N);
                 if(rank<N) throw imported::exception(clid,"dependent equilibria");
@@ -125,7 +125,7 @@ namespace yack
 
                 //make conserved sets
                 conserved_set(xml);
-
+                
                 exit(0);
 
                 // make manifold

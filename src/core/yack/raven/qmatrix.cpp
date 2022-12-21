@@ -64,7 +64,7 @@ namespace yack
                                               const size_t maxi_rank)
         {
             assert(dimension>=2);
-            if(maxi_rank<2)         throw imported::exception(here,"maximum_rank=%u<2",unsigned(maxi_rank));
+            if(maxi_rank<1)         throw imported::exception(here,"maximum_rank=%u<1",unsigned(maxi_rank));
             if(maxi_rank>dimension) throw imported::exception(here,"maximum_rank=%u > dimension=%u", unsigned(maxi_rank), unsigned(dimension) );
             return maxi_rank;
         }
@@ -273,7 +273,7 @@ namespace yack
 
 }
 
-#include "yack/apex/kernel.hpp"
+#include "yack/apex/alga.hpp"
 
 namespace yack
 {
@@ -287,7 +287,7 @@ namespace yack
             assert(source.size()==dimension);
             bool      gtz = false;
             {
-                const apn rho = apk::lcm(source,size_t(1),dimension);
+                const apn rho = alga::lcm(source,size_t(1),dimension);
                 for(size_t i=dimension;i>0;--i)
                 {
                     const apq tmp = source[i] * rho; assert(tmp.den==1);
@@ -298,7 +298,7 @@ namespace yack
             if(gtz)
             {
                 apn       dum;
-                apk::definite(target,dum);
+                alga::definite(target,dum);
                 return true;
             }
             else

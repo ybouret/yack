@@ -327,11 +327,6 @@ set(apex_q ${apex_q_impl} ${apex_q_decl})
 SOURCE_GROUP(apex/q FILES ${apex_q})
 install( FILES ${apex_q_decl} DESTINATION include/yack/apex/q ) 
 
-file(GLOB apex_kernel_impl yack/apex/kernel/*.cpp)
-file(GLOB apex_kernel_decl yack/apex/kernel/*.hpp)
-set(apex_kernel ${apex_kernel_impl} ${apex_kernel_decl})
-SOURCE_GROUP(apex/kernel FILES ${apex_kernel})
-install( FILES ${apex_kernel_decl} DESTINATION include/yack/apex/kernel ) 
 
 file(GLOB apex_alga_impl yack/apex/alga/*.cpp)
 file(GLOB apex_alga_decl yack/apex/alga/*.hpp)

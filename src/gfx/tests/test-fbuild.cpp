@@ -4,7 +4,7 @@
 #include "yack/math/algebra/crout.hpp"
 #include "yack/sequence/vector.hpp"
 #include "yack/ios/ascii/convert.hpp"
-#include "yack/apex/kernel.hpp"
+#include "yack/apex/alga.hpp"
 #include "yack/randomized/gaussian.hpp"
 #include "yack/sequence/stats.hpp"
 
@@ -14,7 +14,7 @@ using namespace yack;
 static inline
 apn normalize_field( field2D<apq> &coef )
 {
-    const apn res = apk::lcm2D(coef);
+    const apn res = 1; //apk::lcm2D(coef);
     for(unit_t j=coef.lower.y;j<=coef.upper.y;++j)
     {
         for(unit_t i=coef.lower.x;i<=coef.upper.x;++i)

@@ -9,7 +9,7 @@
 #include "yack/ptr/auto.hpp"
 #include "yack/type/boolean.h"
 #include "yack/type/utils.hpp"
-#include "yack/apex/kernel.hpp"
+#include "yack/apex/alga.hpp"
 #include "yack/math/algebra/crout.hpp"
 #include "yack/sequence/list.hpp"
 #include "yack/ptr/shared.hpp"
@@ -72,7 +72,7 @@ namespace yack
                 {
                     Qi[j] = -Qi[j];
                 }
-                apk::simplify(Qi);
+                alga::simplify(Qi);
             }
         }
 
@@ -206,7 +206,7 @@ namespace yack
                         {
                             const zcoeffs zc = new zvector(vtry);
                             arr.push_back(zc);
-                            apk::simplify(*arr.back());
+                            alga::simplify(*arr.back());
                         }
                         break;
 
@@ -217,7 +217,7 @@ namespace yack
                             iota::neg(vtry);
                             const zcoeffs zc = new zvector(vtry);
                             arr.push_back(zc);
-                            apk::simplify(*arr.back());
+                            alga::simplify(*arr.back());
                         }
                         break;
 
@@ -275,7 +275,7 @@ namespace yack
                 for(size_t i=size();i>0;--i)
                 {
                     const zvector &self = *(*this)[i];
-                    if( apk::are_prop(zvec,self,NULL))
+                    if( alga::colinear(zvec,self))
                     {
                         // reject if proportional to existing
                         return;
@@ -423,7 +423,7 @@ namespace yack
                     if(xml.verbose) std::cerr << "\tW" << i << "\t= " << db[ii] << "  // " << w[ii] << std::endl;;
                     iota::load(W[i],*db[ii]);
                 }
-                rank = apk::rank(W);
+                rank = alga::rank(W);
             }
             YACK_XMLOG(xml, "-- |rank|     = " << rank);
 
@@ -444,7 +444,7 @@ namespace yack
                 ++k;
                 const readable<apz>     &Wk   = *db[ indx[k] ];
                 for(size_t j=M;j>0;--j) Fi[j] = Wk[j].cast_to<unsigned>();
-                if( apk::rank(F) < i )
+                if( alga::rank(F) < i )
                     goto NEXT_K;
                 if(i<rank)
                     goto NEXT_I;
