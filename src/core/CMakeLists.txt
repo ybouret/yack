@@ -333,6 +333,12 @@ set(apex_kernel ${apex_kernel_impl} ${apex_kernel_decl})
 SOURCE_GROUP(apex/kernel FILES ${apex_kernel})
 install( FILES ${apex_kernel_decl} DESTINATION include/yack/apex/kernel ) 
 
+file(GLOB apex_alga_impl yack/apex/alga/*.cpp)
+file(GLOB apex_alga_decl yack/apex/alga/*.hpp)
+set(apex_alga ${apex_alga_impl} ${apex_alga_decl})
+SOURCE_GROUP(apex/alga FILES ${apex_alga})
+install( FILES ${apex_alga_decl} DESTINATION include/yack/apex/alga ) 
+
 
 ########################################################################
 ##
@@ -650,7 +656,7 @@ ${associative} ${associative_hash} ${associative_suffix}
 ${memory} ${memory_allocator} ${memory_small} ${memory_large} ${memory_joint} ${memory_buffer}
 ${fft}
 ${functor}
-${apex} ${apex_m} ${apex_n} ${apex_z} ${apex_q} ${apex_kernel}
+${apex} ${apex_m} ${apex_n} ${apex_z} ${apex_q} ${apex_kernel} ${apex_alga} 
 ${raven}
 ${concurrent} ${concurrent_quark} ${concurrent_loop} ${concurrent_queue} ${concurrent_queue_pipeline}
 ${ios} ${ios_c} ${ios_gz} ${ios_bz} ${ios_fmt} ${ios_gv} ${ios_ascii} ${ios_serializer} ${ios_scribe}
