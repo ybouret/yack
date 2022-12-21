@@ -50,9 +50,8 @@ namespace yack
         //
         //! hold list of c-laws
         //
-        //__________________________________________________________________
-        typedef cxx_list_of<conservation_law> conservation_laws;
-
+        //______________________________________________________________________
+        typedef cxx_list_of<conservation_law>     conservation_laws;
         typedef meta_list<const conservation_law> claw_team_; //!< base class
         typedef claw_team_::node_type             claw_node;  //!< alias
 
@@ -65,44 +64,63 @@ namespace yack
         class claw_team : public object, public claw_team_
         {
         public:
-            explicit claw_team() throw();
-            virtual ~claw_team() throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit claw_team() throw(); //!< setup empty
+            virtual ~claw_team() throw(); //!< cleanup
 
-            bool attached_to(const conservation_law &lhs) const throw()
-            {
-                for(const claw_node *node=head;node;node=node->next)
-                {
-                    const conservation_law &rhs = **node;
-                    if(rhs.attached_to(lhs)) return true;
-                }
-                return false;
-            }
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            bool attached_to(const conservation_law &) const throw(); //!< check link to a law
+            bool attached_to(const claw_team        &) const throw(); //!< check link to a team
 
-            bool attached_to(const claw_team &team) const throw()
-            {
-                for(const claw_node *node=head;node;node=node->next)
-                {
-                    if(team.attached_to(**node)) return true;
-                }
-                return false;
-            }
-
-
-            claw_team *next;
-            claw_team *prev;
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            claw_team *next; //!< for list
+            claw_team *prev; //!< for list
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(claw_team);
         };
 
+
+        //______________________________________________________________________
+        //
+        //
+        //! base class for teams of interlinked conservation laws
+        //
+        //______________________________________________________________________
         typedef cxx_list_of<claw_team> claw_teams_;
 
+
+        //______________________________________________________________________
+        //
+        //
+        //! teams of interlinked conservation laws
+        //
+        //______________________________________________________________________
         class claw_teams : public claw_teams_
         {
         public:
-            explicit claw_teams() throw();
-            virtual ~claw_teams() throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit claw_teams() throw(); //!< setup empty
+            virtual ~claw_teams() throw(); //!< cleanup
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
+            //! recruit a law: create or add to a team, update structure
             void recruit(const conservation_law &law);
             
 
