@@ -19,7 +19,9 @@ namespace yack
     struct alga
     {
 
-        template <typename T> struct ratio;
+        template <typename T> struct ratio {
+            static apq of(const T &lhs, const T &rhs);
+        };
 
 
         //______________________________________________________________________
@@ -63,10 +65,7 @@ namespace yack
 
     };
 
-    template <>
-    struct alga::ratio<apq>
-    {
-    };
+
 
 }
 
