@@ -10,7 +10,6 @@
 #include "yack/container/matrix.hpp"
 #include "yack/sequence/arrays.hpp"
 #include "yack/chem/nexus/cluster.hpp"
-#include "yack/chem/conservation-law.hpp"
 
 namespace yack
 {
@@ -73,11 +72,6 @@ namespace yack
             // lattice data
             tableau           &Kl;      //!< [L] constants
 
-            // conservation data
-            const size_t             Nc;      //!< number of conservation laws
-            const conservation_laws  Ql;      //!< list of Nc laws
-            const claw_teams         Qt;      //!< list of attached conservation laws
-            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(nexus);
             const lockable::scope lockLib;

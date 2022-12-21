@@ -219,10 +219,11 @@ namespace yack
             // use collected entries
             //
             //------------------------------------------------------------------
+            conservation_laws &kept = coerce(sharing.kept);
             for(const collector::entry *ep=cb->head;ep;ep=ep->next)
             {
                 const readable<unsigned> &cf   = *ep;
-                conservation_law         &claw = *coerce(Ql).push_back( new conservation_law() );
+                conservation_law         &claw = *kept.push_back( new conservation_law() );
                 size_t j=1;
                 for(const sp_node *sn=house.head;sn;sn=sn->next,++j)
                 {
@@ -247,7 +248,6 @@ namespace yack
             {
                 conserved_set_(*sharing,xml);
             }
-            coerce(Nc) = Ql.size;
             
         }
 

@@ -51,17 +51,17 @@ namespace yack
         // lattice
         Kl( ltab.next() ),
 
-        // conservation
-        Nc(0),
-        Ql(),
-        Qt(),
-        
         lockLib(coerce(corelib)),
         lockEqs(coerce(singles))
         {
             const xmlog xml(clid,std::cerr,verbose);
             YACK_XMLSUB(xml, "initialize");
-            
+
+            //------------------------------------------------------------------
+            //
+            // initialize criterions for species
+            //
+            //------------------------------------------------------------------
             assert(corelib.size()==worklib.size());
             for(const snode *sn=corelib.head();sn;sn=sn->next)
             {
@@ -69,9 +69,13 @@ namespace yack
                 const size_t   j = *s;
                 coerce(crit[j]) = (s.rank<=0) ? spectator : conserved;
             }
-            
+
+            //------------------------------------------------------------------
+            //
             // initialize singles, their properties and their
             // impact on species
+            //
+            //------------------------------------------------------------------
             if(N>0)
             {
                 YACK_XMLSUB(xml, "singles");
@@ -80,15 +84,21 @@ namespace yack
                     const equilibrium &eq = ***en;
                     const size_t       ei = *eq;
                     YACK_XMLOG(xml,eq);
-                    
+
+                    //----------------------------------------------------------
                     // check validity
+                    //----------------------------------------------------------
                     if(!eq.neutral()) throw imported::exception(clid,"<%s> is not neutral", eq.name() );
                     if(!eq.minimal()) throw imported::exception(clid,"<%s> is not minimal", eq.name() );
-                    
+
+                    //----------------------------------------------------------
                     // prepare topology
+                    //----------------------------------------------------------
                     eq.fill(coerce(Nu[ei]));
-                    
+
+                    //----------------------------------------------------------
                     // classification
+                    //----------------------------------------------------------
                     switch(eq.kind)
                     {
                         case undefined: throw imported::exception(clid,"<%s> is undefined", eq.name() );
@@ -106,24 +116,38 @@ namespace yack
                             }
                             break;
                     }
-                    
-                    // setup constant
+
+                    //----------------------------------------------------------
+                    // setup known constants
+                    //----------------------------------------------------------
                     K[ei] = eq.K(t);
                 }
-                
-                // checking rank
+
+                //----------------------------------------------------------
+                //
+                // checking rank from full topology
+                //
+                //----------------------------------------------------------
                 const size_t rank =  alga::rank(Nu);
                 YACK_XMLOG(xml, "-- Nu   = " << Nu);
                 YACK_XMLOG(xml, "-- rank = " << rank << " / " << N);
-                if(rank<N) throw imported::exception(clid,"dependent equilibria");
+                if(rank<N) throw imported::exception(clid,"detected dependent equilibria");
                 
                 singles.graphviz("singles.dot", corelib);
-                
+
+
+                //--------------------------------------------------------------
+                //
                 // build related (at least one cluster)
+                //
+                //----------------------------------------------------------
                 build_related(xml); assert(related.size>0);
 
-
-                //make conserved sets
+                //--------------------------------------------------------------
+                //
+                // make conserved sets within clusters
+                //
+                //--------------------------------------------------------------
                 conserved_set(xml);
                 
                 exit(0);

@@ -4,6 +4,7 @@
 #define YACK_NEXUS_CLUSTER_INCLUDED 1
 
 #include "yack/chem/equilibrium.hpp"
+#include "yack/chem/conservation-law.hpp"
 
 namespace yack
 {
@@ -62,9 +63,10 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            cluster *next; //!< for list/pool
-            cluster *prev; //!< for list
-            
+            cluster                *next; //!< for list/pool
+            cluster                *prev; //!< for list
+            const conservation_laws kept; //!< conservation among species
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(cluster);
         };

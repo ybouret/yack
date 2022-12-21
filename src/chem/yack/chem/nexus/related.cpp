@@ -17,7 +17,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             {
-                YACK_XMLSUB(xml,"building");
+                //YACK_XMLSUB(xml,"building");
                 clusters &cls = coerce(related); assert(cls.size<=0);
 
                 for(const enode *en=singles.head();en;en=en->next)
