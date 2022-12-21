@@ -104,7 +104,8 @@ namespace yack
             //__________________________________________________________________
             const size_t       Nq; //!< number of consevation laws
             const umatrix      Qm; //!< built from each conservation law
-
+            rmatrix            Qc; //!< [NqxM]
+            
             //__________________________________________________________________
             //
             // lattice data

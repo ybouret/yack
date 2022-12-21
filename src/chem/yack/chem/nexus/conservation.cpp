@@ -227,18 +227,22 @@ namespace yack
             // use collected entries
             //
             //------------------------------------------------------------------
-            for(const collector::entry *ep=cb->head;ep;ep=ep->next)
             {
-                const readable<unsigned> &cf   = *ep;
-                conservation_law         &claw = *coerce(sharing.cl).push_back( new conservation_law() );
-                size_t j=1;
-                for(const sp_node *sn=house.head;sn;sn=sn->next,++j)
+                size_t ic = 0;
+                for(const collector::entry *ep=cb->head;ep;ep=ep->next)
                 {
-                    const unsigned w = cf[j];
-                    if(w)
-                        claw(**sn,w);
+                    const readable<unsigned> &cf   = *ep;
+                    conservation_law         &claw = *coerce(sharing.cl).push_back( new conservation_law() );
+                    size_t j=1;
+                    for(const sp_node *sn=house.head;sn;sn=sn->next,++j)
+                    {
+                        const unsigned w = cf[j];
+                        if(w)
+                            claw(**sn,w);
+                    }
+                    claw.finalize(++ic);
+                    YACK_XMLOG(xml,"--> " << claw);
                 }
-                YACK_XMLOG(xml,"--> " << claw);
             }
             house.release();
 
@@ -268,54 +272,58 @@ namespace yack
             YACK_XMLOG(xml,"-- equilibria         : " << singles.size() );
             YACK_XMLOG(xml,"-- active species     : " << working.size   );
 
-            umatrix &Q = coerce(Qm);
-
-            Q.make(Nq,M);
-            size_t i=1;
-            for(const cluster *cls=related.head;cls;cls=cls->next)
+            if(Nq)
             {
-                for(const conservation_law *claw = cls->cl.head;claw;claw=claw->next,++i)
+                umatrix &Qu = coerce(Qm);
+                
+                Qu.make(Nq,M);
+                Qc.make(Nq,M);
+
+                size_t i=1;
+                for(const cluster *cls=related.head;cls;cls=cls->next)
                 {
-                    claw->fill(Q[i]);
+                    for(const conservation_law *claw = cls->cl.head;claw;claw=claw->next,++i)
+                    {
+                        claw->fill(Qu[i]);
+                    }
+                }
+                std::cerr << "\tQm=" << Qm << std::endl;
+                
+                cxx_array<int> Z(M);
+                for(const snode *node=corelib.head();node;node=node->next)
+                {
+                    const species &s = ***node;
+                    Z[*s] = s.z;
+                }
+                
+                std::cerr << "\tZ=" << Z << std::endl;
+                
+                
+                if(Nq+N<M)
+                {
+                    std::cerr << "Trying to raven..." << std::endl;
+                    raven::qmatrix F(M,M);
+                    for(size_t i=1;i<=N;++i)
+                    {
+                        if(!F(Nu[i])) throw exception("bad Nu");
+                    }
+                    for(size_t i=1;i<=Nq;++i)
+                    {
+                        if(!F(Qm[i])) throw exception("bad Qm");
+                    }
+                    std::cerr << "F=" << F << std::endl;
+                    
+                    cxx_array<int>    dum(M);
+                    randomized::rand_ ran;
+                    while(true)
+                    {
+                        for(size_t i=M;i>0;--i) dum[i] = static_cast<int>( ran.in(-10,10) );
+                        if(F(dum)) break;
+                        std::cerr << "invalid dummy=" << dum << std::endl;
+                    }
+                    std::cerr << "F=" << F << std::endl;
                 }
             }
-            std::cerr << "\tQm=" << Qm << std::endl;
-
-            cxx_array<int> Z(M);
-            for(const snode *node=corelib.head();node;node=node->next)
-            {
-                const species &s = ***node;
-                Z[*s] = s.z;
-            }
-
-            std::cerr << "\tZ=" << Z << std::endl;
-
-
-            if(Nq+N<M)
-            {
-                std::cerr << "Trying to raven..." << std::endl;
-                raven::qmatrix F(M,M);
-                for(size_t i=1;i<=N;++i)
-                {
-                    if(!F(Nu[i])) throw exception("bad Nu");
-                }
-                for(size_t i=1;i<=Nq;++i)
-                {
-                    if(!F(Qm[i])) throw exception("bad Qm");
-                }
-                std::cerr << "F=" << F << std::endl;
-
-                cxx_array<int>    dum(M);
-                randomized::rand_ ran;
-                while(true)
-                {
-                    for(size_t i=M;i>0;--i) dum[i] = static_cast<int>( ran.in(-10,10) );
-                    if(F(dum)) break;
-                    std::cerr << "invalid dummy=" << dum << std::endl;
-                }
-                std::cerr << "F=" << F << std::endl;
-            }
-
 
         }
 

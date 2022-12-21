@@ -60,7 +60,7 @@ namespace yack
                                rmulops                &ops) const;
 
             
-            //! mass action with rmulops, C+nu*xi >=0 
+            //! mass action with rmulops, C+nu*xi >=0
             double mass_action(const readable<double> &C,
                                const double            xi,
                                rmulops                &ops) const;
@@ -133,12 +133,13 @@ namespace yack
             //__________________________________________________________________
             const unsigned  molecularity; //!< molecularity = sum_i nu_i
             const int       algebraic_Z;  //!< algebraic_Z  = sum_i nu_i z_i
-            
+
+        protected:
+            const cxx_list_of<actor>           crew; //!< actors
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(actors);
-            cxx_list_of<actor>                 crew; //!< actors
             mutable memory::workplace<xlimit>  wlim; //!< data for xlimit, standard
             mutable memory::workplace<xlimit>  wbal; //!< data for xlimit, balancing
+            YACK_DISABLE_COPY_AND_ASSIGN(actors);
         };
 
     }

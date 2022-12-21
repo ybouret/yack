@@ -39,7 +39,7 @@ namespace yack
                 assert(&sp != & **a);
             }
 #endif
-            crew.push_back(new actor(sp,nu) );
+            coerce(crew).push_back( new actor(sp,nu) );
             coerce(molecularity) += nu;
             coerce(algebraic_Z) += int(nu)*sp.z;
         }
@@ -54,7 +54,7 @@ namespace yack
             coerce(molecularity) -= nu;
             coerce(algebraic_Z)  -= int(nu)*z;
             
-            delete crew.pop_back();
+            delete coerce(crew).pop_back();
         }
 
         double actors:: mass_action(const readable<double> &C,
