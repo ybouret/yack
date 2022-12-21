@@ -22,12 +22,6 @@ namespace yack
         public:
             //__________________________________________________________________
             //
-            // types and definitions
-            //__________________________________________________________________
-            typedef math::adder<double> adder_type;
-
-            //__________________________________________________________________
-            //
             // C++
             //__________________________________________________________________
             explicit conservation_law() throw(); //!< setup
@@ -41,8 +35,8 @@ namespace yack
             //! specific display
             friend std::ostream & operator<<(std::ostream &os, const conservation_law &self);
 
-            void   finalize(const size_t i) throw();                        //!< setup nrm2 and inx
-            double evaluate(const readable<double> &C, adder_type &) const; //!< evaluate excess
+            void   finalize(const size_t i) throw();                     //!< setup nrm2 and inx
+            double evaluate(const readable<double> &C, raddops &) const; //!< evaluate excess
 
             //! regulate
             /**
@@ -51,8 +45,9 @@ namespace yack
              */
             bool   regulate(writable<double>       &target,
                             const readable<double> &source,
-                            adder_type             &xadd) const;
+                            raddops                &xadd) const;
 
+            //! access index
             size_t operator*() const throw() { return indx; }
             
             //__________________________________________________________________

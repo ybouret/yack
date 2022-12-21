@@ -98,9 +98,11 @@ namespace yack
             //! access operator to use list
             const list_of<actor> * operator->() const throw();
 
+            //! fill array with coefficients at their position
             template <typename T> inline
             void fill( writable<T> &q ) const
             {
+                q.ld(0);
                 for(const actor *a=crew.head;a;a=a->next)
                     q[***a] = a->nu;
             }

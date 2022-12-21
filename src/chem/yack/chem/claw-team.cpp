@@ -41,7 +41,7 @@ namespace yack
                                  matrix<double>   &Qc,
                                  writable<double> &Qs,
                                  claw_repo        &cr,
-                                 adder_type       &xadd) const
+                                 raddops          &xadd) const
         {
             std::cerr << "updating #" << size << " team(s)" << std::endl;
 

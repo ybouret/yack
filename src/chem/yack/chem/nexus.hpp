@@ -26,7 +26,7 @@ namespace yack
         typedef matrix<double>              rmatrix;    //!< alias
         
         typedef cxx_array<const criterion> criterions; //!< alias
-        typedef cxx_array<double>          tableau;
+        typedef cxx_array<double>          tableau;    //!< alias
         
         //______________________________________________________________________
         //
@@ -56,9 +56,7 @@ namespace yack
 
             //! cleanup
             virtual ~nexus() throw();
-
-            void preserve(writable<double> &C0);
-
+            
             
             //! update Kl after K is computed
             /**

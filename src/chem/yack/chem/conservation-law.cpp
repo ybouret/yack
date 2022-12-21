@@ -5,10 +5,10 @@
 namespace yack
 {
     using namespace math;
-
+    
     namespace chemical
     {
-
+        
         conservation_law:: ~conservation_law() throw() {}
         conservation_law::  conservation_law() throw() :
         object(),
@@ -18,15 +18,15 @@ namespace yack
         nrm2(0),
         indx(0)
         {}
-
-
+        
+        
         std::ostream & operator<<(std::ostream &os, const conservation_law &self)
         {
             const actors &me = self;
-            os << "0=d(" << me << ")";
+            os << "d(" << me << ")";
             return os;
         }
-
+        
         void   conservation_law:: finalize(const size_t i) throw()
         {
             coerce(nrm2) = 0;
@@ -35,9 +35,9 @@ namespace yack
             {
                 coerce(nrm2) += squared(a->nu);
             }
-
+            
         }
-
+        
         double conservation_law:: evaluate(const readable<double> &C, math::adder<double> &xadd) const
         {
             xadd.ldz();
@@ -47,10 +47,10 @@ namespace yack
             }
             return xadd.get();
         }
-
+        
         bool conservation_law:: regulate(writable<double>       &target,
-                                           const readable<double> &source,
-                                           adder_type             &xadd) const
+                                         const readable<double> &source,
+                                         raddops                &xadd) const
         {
             assert(nrm2>0);
             const double xs = evaluate(source,xadd);
@@ -73,10 +73,10 @@ namespace yack
                 return false;
             }
         }
-
-
+        
+        
     }
-
+    
 }
 
 

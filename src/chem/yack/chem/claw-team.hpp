@@ -31,8 +31,6 @@ namespace yack
         class claw_team : public object, public claw_team_
         {
         public:
-            typedef conservation_law::adder_type adder_type;
-
             //__________________________________________________________________
             //
             // C++
@@ -55,7 +53,7 @@ namespace yack
                         matrix<double>   &Qc,
                         writable<double> &Qs,
                         claw_repo        &cr,
-                        adder_type       &xadd) const;
+                        raddops          &xadd) const;
 
 
             //__________________________________________________________________
@@ -88,8 +86,6 @@ namespace yack
         class claw_teams : public claw_teams_
         {
         public:
-            typedef conservation_law::adder_type adder_type;
-
             //__________________________________________________________________
             //
             // C++
@@ -111,7 +107,7 @@ namespace yack
                         matrix<double>   &Qc,
                         writable<double> &Qs,
                         claw_repo        &cr,
-                        adder_type       &xadd) const
+                        raddops          &xadd) const
             {
                 for(const claw_team *team=head;team;team=team->next)
                 {
