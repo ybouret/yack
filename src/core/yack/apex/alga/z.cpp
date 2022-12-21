@@ -57,6 +57,111 @@ namespace yack
         }
     }
 
+
+    void alga:: univocal(writable<apz> &z)
+    {
+        //----------------------------------------------------------------------
+        //
+        // find first positive value in g, keep track of signs
+        //
+        //----------------------------------------------------------------------
+        const size_t n = z.size();
+        switch(n)
+        {
+            case 0: return;
+            case 1:
+                switch(z[1].s)
+                {
+                    case __zero__: break;
+                    case positive:
+                    case negative: z[1].ldi(1); break;
+                }
+                return;
+            default:
+                break;
+        }
+
+
+        //----------------------------------------------------------------------
+        //
+        // compute metrics
+        //
+        //----------------------------------------------------------------------
+        sign_type    f = __zero__; // fist sign
+        size_t       m = 0;        // count of minus signs
+        size_t       p = 0;        // count of positive signs
+        apn          g = 1;        // current gcd
+        {
+            //------------------------------------------------------------------
+            // find first divider and its sign
+            //------------------------------------------------------------------
+            size_t       j = 1;
+            for(;j<=n;++j)
+            {
+                const apz &y = z[j];
+                switch(y.s)
+                {
+                    case __zero__: continue;
+                    case positive: p=1; f = positive; break;
+                    case negative: m=1; f = negative; break;
+                }
+                g = y.n;
+                break;
+            }
+            assert(p+m<=1);
+
+            //------------------------------------------------------------------
+            // find first divider, keep track of signs
+            //------------------------------------------------------------------
+            for(++j;j<=n;++j)
+            {
+                const apz &y = z[j];
+                switch(y.s)
+                {
+                    case __zero__: continue;
+                    case positive: ++p; break;
+                    case negative: ++m;  break;
+                }
+                g = apn::gcd(y.n,g);
+            }
+        }
+
+        //----------------------------------------------------------------------
+        //
+        // simplify/change sign
+        //
+        //----------------------------------------------------------------------
+        if( (m>p) || ( (m==p) && negative==f) )
+        {
+            for(size_t i=n;i>0;--i)
+            {
+                apz &y = z[i];
+                switch(y.s)
+                {
+                    case __zero__: continue;
+                    case positive: coerce(y.s) = negative; break;
+                    case negative: coerce(y.s) = positive; break;
+                }
+                coerce(y.n) /= g;
+            }
+        }
+        else
+        {
+            for(size_t i=n;i>0;--i)
+            {
+                apz &y = z[i];
+                switch(y.s)
+                {
+                    case __zero__: continue;
+                    case positive:
+                    case negative:
+                        coerce(y.n) /= g ;
+                        continue;
+                }
+            }
+        }
+    }
+
     void alga:: definite(writable<apz> &z, apn &z2)
     {
         //----------------------------------------------------------------------
@@ -163,7 +268,7 @@ namespace yack
     }
 
 
-    bool alga:: are_prop(const readable<apz> &lhs, const readable<apz> &rhs)
+    bool alga:: colinear(const readable<apz> &lhs, const readable<apz> &rhs)
     {
         assert( lhs.size() == rhs.size() );
         auto_ptr<const apq> f = NULL;

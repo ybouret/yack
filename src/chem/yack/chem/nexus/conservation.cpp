@@ -197,9 +197,8 @@ namespace yack
             imatrix Q;
             {
                 imatrix Q0(m,m);
-                if(!ortho_family::construct(Q0,nu)) throw imported::exception(fn,"singular sub-system");
-                compressQ(Q,Q0);
-                if(ker!=apk::rank(Q))               throw imported::exception(fn,"singular compressed sub-system");
+                if(!ortho_family::build(Q0,nu,true))   throw imported::exception(fn,"singular sub-system");
+                compressQ(Q,Q0); if(ker!=apk::rank(Q)) throw imported::exception(fn,"singular compressed sub-system");
             }
             YACK_XMLOG(xml,"-- Q  = " << Q);
 

@@ -1,6 +1,4 @@
 #include "yack/apex/kernel.hpp"
-
-
 #include "yack/math/api.hpp"
 #include "yack/type/utils.hpp"
 

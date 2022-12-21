@@ -16,6 +16,7 @@ YACK_UTEST_DECL(80)
     YACK_UTEST(cyclic);
     YACK_UTEST(cholesky);
     YACK_UTEST(diagonalize);
+    YACK_UTEST(ortho);
 
     YACK_UTEST(rk4);
     YACK_UTEST(explicit);

@@ -3,7 +3,7 @@
 #ifndef YACK_MATH_ORTHO_FAMILY_INCLUDED
 #define YACK_MATH_ORTHO_FAMILY_INCLUDED 1
 
-#include "yack/apex/kernel.hpp"
+#include "yack/apex/alga.hpp"
 #include "yack/container/matrix.hpp"
 
 namespace yack
@@ -15,45 +15,38 @@ namespace yack
         struct ortho_family
         {
 
-            //! fundamental algorithm: Q.rows = Q.cols = P.cols
+            //! fundamental algorithm
+            /**
+             Q.rows = Q.cols = P.cols
+             */
             static bool make(matrix<apq> &Q, const matrix<apq> &P);
 
-
-            //! copy integral type to apq, return make
+            //! simplify/univocal
             template <typename T> static inline
-            bool build(matrix<apq> &Q, const matrix<T> &P)
+            bool make(matrix<apz> &Q, const matrix<T> &P, const bool univocal)
             {
-                const  matrix<apq> _P(P,transmogrify);
-                return make(Q,_P);
-            }
-
-            //! copy integral type to apq, return simplified apz
-            template <typename T> static inline
-            bool build(matrix<apz> &Q, const matrix<T> &P)
-            {
-                matrix<apq>       _Q(Q.rows,Q.cols);
-                {
-                    const matrix<apq> _P(P,transmogrify);
-                    if(!make(_Q,_P)) return false;
-                }
-                apk::definite_rows(_Q);
+                matrix<apq> _P(P,transmogrify);
+                matrix<apq> _Q(Q.rows,Q.cols);
+                if(!make(_Q,_P)) return false;
+                if(univocal) alga::univocal_rows(_Q); else alga::simplify_rows(_Q);
                 Q.apply(numerator_of,_Q);
                 return true;
             }
 
-            //! copy P to apq, compute simplified Q
-            template <typename TARGET, typename SOURCE> static inline
-            bool construct(matrix<TARGET> &Q, const matrix<SOURCE> &P)
+
+            //! simplify/unicoval
+            template <typename T, typename U> static inline
+            bool build(matrix<T> &Q, const matrix<U> &P, const bool univocal)
             {
-                matrix<apq>       _Q(Q.rows,Q.cols);
-                {
-                    const matrix<apq> _P(P,transmogrify);
-                    if(!make(_Q,_P)) return false;
-                }
-                apk::definite_rows(_Q);
-                Q.apply(numerator_to<TARGET>,_Q);
+                matrix<apq> _P(P,transmogrify);
+                matrix<apq> _Q(Q.rows,Q.cols);
+                if(!make(_Q,_P)) return false;
+                if(univocal) alga::univocal_rows(_Q); else alga::simplify_rows(_Q);
+                Q.apply(numerator_to<T>,_Q);
                 return true;
             }
+
+
 
             //! get numerator of simplified rational
             static apz numerator_of(const apq &);
@@ -65,7 +58,6 @@ namespace yack
                 return q.num.cast_to<T>();
             }
 
-            
         };
         
     }

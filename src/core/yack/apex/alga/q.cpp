@@ -147,7 +147,7 @@ namespace yack
         }
     }
 
-    bool alga:: are_prop(const readable<apq> &lhs, const readable<apq> &rhs)
+    bool alga:: colinear(const readable<apq> &lhs, const readable<apq> &rhs)
     {
         assert( lhs.size() == rhs.size() );
         auto_ptr<const apq> f = NULL;

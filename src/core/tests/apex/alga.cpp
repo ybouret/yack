@@ -1,6 +1,7 @@
 #include "yack/apex/alga.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/sequence/vector.hpp"
+#include "../main.hpp"
 
 using namespace yack;
 
@@ -12,7 +13,7 @@ namespace
         std::cerr << "check  " << lhs << std::endl;
         std::cerr << "versus " << rhs << std::endl;
 
-        if( alga::are_prop(lhs,rhs) )
+        if( alga::colinear(lhs,rhs) )
         {
             std::cerr << "\tproportional" << std::endl;
         }
@@ -111,6 +112,12 @@ YACK_UTEST(alga)
 
     test_prop<int>(ran);
 
+    for(size_t iter=0;iter<10;++iter)
+    {
+        matrix<int> M(1+ran.leq(5),1+ran.leq(5));
+        bring::fill(M,ran);
+        std::cerr << "rank(" << M << ")=" << alga::rank(M) << std::endl;
+    }
 
 }
 YACK_UDONE()

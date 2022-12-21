@@ -45,20 +45,52 @@ namespace yack
         //
         // algorithm for rationals
         //______________________________________________________________________
-        static void simplify( writable<apq> &v );  //! simplify keeping signs
-        static void univocal( writable<apq> &v );  //! simplify to univocal
-        static bool are_prop(const readable<apq> &lhs, const readable<apq> &rhs);
+        static void simplify( writable<apq> &v );                           //!< simplify keeping signs
+        static void univocal( writable<apq> &v );                           //!< simplify to univocal
+        static bool colinear(const readable<apq> &, const readable<apq> &); //!< check proportional
         
         //______________________________________________________________________
         //
         // algorithm for integers
         //______________________________________________________________________
-        static void simplify( writable<apz> &v );  //! simplify keeping signs
-        static void definite( writable<apz> &v, apn &z2);  //! simplify to univocal
-        static bool are_prop(const readable<apz> &lhs, const readable<apz> &rhs);
+        static void simplify( writable<apz> &v );                                 //!< simplify keeping signs
+        static void univocal( writable<apz> &v );                                 //!< simplify to univocal
+        static void definite( writable<apz> &v, apn &z2);                         //!< simplify to univocal with norm squared
+        static bool colinear(const readable<apz> &lhs, const readable<apz> &rhs); //!< check proportional
+        static bool colinear(const readable<int> &, const readable<int> & );//! test colinearity for ints
 
 
-        static bool are_prop(const readable<int> &lhs, const readable<int> &rhs);
+        //______________________________________________________________________
+        //
+        //! rank by gauss jordan
+        //______________________________________________________________________
+        static size_t rank_of(matrix<apq> &Q);
+
+        //______________________________________________________________________
+        //
+        //! rank by gauss jordan of a matrix converted to apq
+        //______________________________________________________________________
+        template <typename T> static inline
+        size_t  rank(const matrix<T> &M)
+        {
+            matrix<apq> Q(M,transmogrify);
+            assert(matrix_metrics::have_same_sizes(Q,M));
+            return  rank_of(Q);
+        }
+
+        //! simplify all rows
+        template <typename T>
+        static inline void simplify_rows(matrix<T> &M) {
+            for(size_t i=M.rows;i>0;--i) simplify(M[i]);
+        }
+
+        //! univocla all rows
+        template <typename T>
+        static inline void univocal_rows(matrix<T> &M) {
+            for(size_t i=M.rows;i>0;--i) univocal(M[i]);
+        }
+
+
 
     };
 

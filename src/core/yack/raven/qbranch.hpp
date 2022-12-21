@@ -82,7 +82,7 @@ namespace yack
             /**
              \param mu matrix of row vectors
              \param rk rank(mu)
-             \param ok keep mu[i] iff ok(mu[i])
+             \param cb processing new qvector
              */
             //__________________________________________________________________
             template <typename T, typename PROC> inline
