@@ -123,7 +123,7 @@ namespace yack
 
         if(nn>np || (nn==np&&negative==fs))
         {
-            // changin sign
+            // changing signs
             for(size_t i=n;i>0;--i)
             {
                 const apz &z = v[i].num;
@@ -139,7 +139,7 @@ namespace yack
         }
         else
         {
-            // keeping sign
+            // keeping signs
             for(size_t i=n;i>0;--i)
                 coerce(v[i].num.n) /= g;
 

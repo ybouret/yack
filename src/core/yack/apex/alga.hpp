@@ -26,9 +26,7 @@ namespace yack
         {
             assert(lo<=hi);
             if(lo>=hi)
-            {
                 return arr[lo].den;
-            }
             else
             {
                 apn res = apn::lcm_(arr[lo].den,arr[lo+1].den);
@@ -38,13 +36,20 @@ namespace yack
             }
         }
 
-        //! simplify keeping signs
-        static void simplify( writable<apq> &v );
-
-        //! simplify to univocal
-        static void univocal( writable<apq> &v );
+        //______________________________________________________________________
+        //
+        // algorithm for rationals
+        //______________________________________________________________________
+        static void simplify( writable<apq> &v );  //! simplify keeping signs
+        static void univocal( writable<apq> &v );  //! simplify to univocal
 
         
+        //______________________________________________________________________
+        //
+        // algorithm for integers
+        //______________________________________________________________________
+        static void simplify( writable<apz> &v );  //! simplify keeping signs
+        static void definite( writable<apz> &v, apn &z2);  //! simplify to univocal
 
 
 
