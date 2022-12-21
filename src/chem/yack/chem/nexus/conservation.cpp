@@ -281,6 +281,16 @@ namespace yack
             }
             std::cerr << "\tQm=" << Qm << std::endl;
 
+            cxx_array<int> Z(M);
+            for(const snode *node=corelib.head();node;node=node->next)
+            {
+                const species &s = ***node;
+                Z[*s] = s.z;
+            }
+
+            std::cerr << "\tZ=" << Z << std::endl;
+
+
             if(Nq+N<M)
             {
                 std::cerr << "Trying to raven..." << std::endl;
