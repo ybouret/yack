@@ -6,6 +6,7 @@
 #include "yack/apex/alga.hpp"
 #include "yack/sequence/cxx-series.hpp"
 #include "yack/sequence/bunch.hpp"
+#include "yack/randomized/rand.hpp"
 
 #include <iomanip>
 
@@ -291,6 +292,16 @@ namespace yack
                 for(size_t i=1;i<=Nq;++i)
                 {
                     if(!F(Qm[i])) throw exception("bad Qm");
+                }
+                std::cerr << "F=" << F << std::endl;
+
+                cxx_array<int>    dum(M);
+                randomized::rand_ ran;
+                while(true)
+                {
+                    for(size_t i=M;i>0;--i) dum[i] = static_cast<int>( ran.in(-10,10) );
+                    if(F(dum)) break;
+                    std::cerr << "invalid dummy=" << dum << std::endl;
                 }
                 std::cerr << "F=" << F << std::endl;
             }
