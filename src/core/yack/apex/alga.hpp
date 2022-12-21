@@ -19,11 +19,6 @@ namespace yack
     struct alga
     {
 
-        template <typename T> struct ratio {
-            static apq of(const T &lhs, const T &rhs);
-        };
-
-
         //______________________________________________________________________
         //
         //! find least common multiple of an array of rationals
@@ -52,7 +47,7 @@ namespace yack
         //______________________________________________________________________
         static void simplify( writable<apq> &v );  //! simplify keeping signs
         static void univocal( writable<apq> &v );  //! simplify to univocal
-
+        static bool are_prop(const readable<apq> &lhs, const readable<apq> &rhs);
         
         //______________________________________________________________________
         //
@@ -60,8 +55,10 @@ namespace yack
         //______________________________________________________________________
         static void simplify( writable<apz> &v );  //! simplify keeping signs
         static void definite( writable<apz> &v, apn &z2);  //! simplify to univocal
+        static bool are_prop(const readable<apz> &lhs, const readable<apz> &rhs);
 
 
+        static bool are_prop(const readable<int> &lhs, const readable<int> &rhs);
 
     };
 

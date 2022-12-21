@@ -41,7 +41,7 @@ namespace yack
             rational(const rational &);                     //!< copy
             rational(const int_type);                       //!< num/1
             rational(const integer &);                      //!< num/1
-            rational(const sign_type, const natural &);     //!< num/1
+            rational(const sign_type, const natural &);     //!< num/1 with sign
             rational(const natural &);                      //!< num/1
             rational&operator=(const rational &);           //!< assign by copy/xch
             rational(randomized::bits &,const size_t bits); //!< random

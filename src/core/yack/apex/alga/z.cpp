@@ -1,5 +1,6 @@
 
 #include "yack/apex/alga.hpp"
+#include "yack/ptr/auto.hpp"
 
 namespace yack
 {
@@ -160,6 +161,57 @@ namespace yack
             }
         }
     }
+
+
+    bool alga:: are_prop(const readable<apz> &lhs, const readable<apz> &rhs)
+    {
+        assert( lhs.size() == rhs.size() );
+        auto_ptr<const apq> f = NULL;
+
+        for(size_t i=lhs.size();i>0;--i)
+        {
+            const apz &l = lhs[i];
+            const apz &r = rhs[i];
+            switch( __sign::pair(l.s,r.s) )
+            {
+                case zz_pair: continue; // compatible;
+                case zp_pair:
+                case pz_pair:
+                case zn_pair:
+                case nz_pair:
+                    return false; // incompatible
+
+                case nn_pair:
+                case pp_pair: {
+                    const apq rho(l.n,r.n);
+                    if(f.is_empty())
+                    {
+                        f = new apq(rho);
+                    }
+                    else
+                    {
+                        if( *f != rho ) return false;
+                    }
+                } continue;
+
+                case np_pair:
+                case pn_pair: {
+                    const apq rho(l.n,r.n); coerce(rho.num.s) = negative;
+                    if(f.is_empty())
+                    {
+                        f = new apq(rho);
+                    }
+                    else
+                    {
+                        if( *f != rho ) return false;
+                    }
+                } continue;
+            }
+        }
+
+        return true;
+    }
+
 
 }
 
