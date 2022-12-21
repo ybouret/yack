@@ -198,7 +198,6 @@ namespace yack
             {
                 imatrix Q0(m,m);
                 if(!ortho_family::build(Q0,nu,true))    throw imported::exception(fn,"singular sub-system");
-                std::cerr << "Q0=" << Q0 << std::endl;
                 compressQ(Q,Q0); if(ker!=alga::rank(Q)) throw imported::exception(fn,"singular compressed sub-system");
             }
             YACK_XMLOG(xml,"-- Q  = " << Q);
@@ -249,6 +248,7 @@ namespace yack
                 conserved_set_(*sharing,xml);
             }
             coerce(Nc) = Ql.size;
+            
         }
 
         
