@@ -15,7 +15,12 @@ namespace yack
 {
     namespace chemical
     {
-
+        //______________________________________________________________________
+        //
+        //
+        // aliases for Nexus
+        //
+        //______________________________________________________________________
         typedef matrix<int>                 imatrix;    //!< alias
         typedef matrix<unsigned>            umatrix;    //!< alias
         typedef matrix<double>              rmatrix;    //!< alias
@@ -25,13 +30,26 @@ namespace yack
         typedef thin_array<const criterion> criterions; //!< alias
 
         
-
+        //______________________________________________________________________
+        //
+        //
         //! nexus
+        //
+        //______________________________________________________________________
         class nexus
         {
         public:
+            //__________________________________________________________________
+            //
+            // types and definitions
+            //__________________________________________________________________
             static const char * const clid;    //!< [nexus]
             static bool              &verbose; //!< verbosity
+
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
 
             //! setup
             explicit nexus(const library    &lib,
@@ -41,6 +59,10 @@ namespace yack
             //! cleanup
             virtual ~nexus() throw();
 
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
             const library    &  corelib;  //!< initial library
             const equilibria &  singles;  //!< initial equilibria
             const equilibria    lattice;  //!< lattice of equilibria
@@ -60,16 +82,25 @@ namespace yack
             tableaux          ltab;    //!< [L]-sized
             
         public:
+            //__________________________________________________________________
+            //
             // species data
+            //__________________________________________________________________
             const criterions crit;      //!< [M] criterions
 
+            //__________________________________________________________________
+            //
             // singles data
+            //__________________________________________________________________
             tableau           &K;       //!< [N] single constants
             const eq_team      regular; //!< both ways
             const eq_team      roaming; //!< [part|join]_only
-            const clusters     related; //!< clusters of related equilibria
+            const clusters     related; //!< clusters of related equilibria with their c-laws
+
+            //__________________________________________________________________
 
             // lattice data
+            //__________________________________________________________________
             tableau           &Kl;      //!< [L] constants
 
         private:

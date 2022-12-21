@@ -258,11 +258,36 @@ namespace yack
         {
             static const char * const fn = "conserved_set";
             YACK_XMLSUB(xml,fn);
+            size_t ncl = 0;
             for(cluster *sharing=related.head;sharing;sharing=sharing->next)
             {
                 conserved_set_(*sharing,xml);
+                ncl += sharing->cl.size;
             }
+            YACK_XMLOG(xml,"-- conservation  laws : " << ncl);
+            YACK_XMLOG(xml,"-- equilibria         : " << singles.size() );
+            YACK_XMLOG(xml,"-- active species     : " << working.size   );
+
+            imatrix Q(ncl+singles.size(),M);
+            size_t i=1;
+            for(const enode *node=singles.head();node;node=node->next,++i)
+            {
+                const components &C = ***node;
+                C.fill(Q[i]);
+            }
+
+            for(const cluster *cls=related.head;cls;cls=cls->next)
+            {
+                for(const conservation_law *claw = cls->cl.head;claw;claw=claw->next,++i)
+                {
+                    claw->fill(Q[i]);
+                }
+            }
+
+            std::cerr << "Q=" << Q << std::endl;
             
+
+
         }
 
         

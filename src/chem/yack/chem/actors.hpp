@@ -96,10 +96,13 @@ namespace yack
             void display_compact(std::ostream &, const readable<double> &C) const;
 
             //! access operator to use list
-            const list_of<actor> * operator->() const throw()
+            const list_of<actor> * operator->() const throw();
+
+            template <typename T> inline
+            void fill( writable<T> &q ) const
             {
-                const list_of<actor> &self = crew;
-                return &self;
+                for(const actor *a=crew.head;a;a=a->next)
+                    q[***a] = a->nu;
             }
 
             //! check

@@ -23,6 +23,12 @@ namespace yack
 
         }
 
+        const list_of<actor> * actors:: operator->() const throw()
+        {
+            const list_of<actor> &self = crew;
+            return &self;
+        }
+
 
         void actors:: operator()(const species &sp, const unsigned nu)
         {
