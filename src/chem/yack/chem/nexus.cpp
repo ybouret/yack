@@ -47,6 +47,10 @@ namespace yack
         regular(),
         roaming(),
         related(),
+
+        // c-laws
+        Nq(0),
+        Qm(),
         
         // lattice
         Kl( ltab.next() ),

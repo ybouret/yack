@@ -258,24 +258,19 @@ namespace yack
         {
             static const char * const fn = "conserved_set";
             YACK_XMLSUB(xml,fn);
-            size_t ncl = 0;
             for(cluster *sharing=related.head;sharing;sharing=sharing->next)
             {
                 conserved_set_(*sharing,xml);
-                ncl += sharing->cl.size;
+                coerce(Nq) += sharing->cl.size;
             }
-            YACK_XMLOG(xml,"-- conservation  laws : " << ncl);
+            YACK_XMLOG(xml,"-- conservation  laws : " << Nq);
             YACK_XMLOG(xml,"-- equilibria         : " << singles.size() );
             YACK_XMLOG(xml,"-- active species     : " << working.size   );
 
-            imatrix Q(ncl+singles.size(),M);
-            size_t i=1;
-            for(const enode *node=singles.head();node;node=node->next,++i)
-            {
-                const components &C = ***node;
-                C.fill(Q[i]);
-            }
+            umatrix &Q = coerce(Qm);
 
+            Q.make(Nq,M);
+            size_t i=1;
             for(const cluster *cls=related.head;cls;cls=cls->next)
             {
                 for(const conservation_law *claw = cls->cl.head;claw;claw=claw->next,++i)
@@ -283,9 +278,22 @@ namespace yack
                     claw->fill(Q[i]);
                 }
             }
+            std::cerr << "\tQm=" << Qm << std::endl;
 
-            std::cerr << "Q=" << Q << std::endl;
-            
+            if(Nq+N<M)
+            {
+                std::cerr << "Trying to raven..." << std::endl;
+                raven::qmatrix F(M,M);
+                for(size_t i=1;i<=N;++i)
+                {
+                    if(!F(Nu[i])) throw exception("bad Nu");
+                }
+                for(size_t i=1;i<=Nq;++i)
+                {
+                    if(!F(Qm[i])) throw exception("bad Qm");
+                }
+                std::cerr << "F=" << F << std::endl;
+            }
 
 
         }

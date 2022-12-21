@@ -97,8 +97,16 @@ namespace yack
             const eq_team      roaming; //!< [part|join]_only
             const clusters     related; //!< clusters of related equilibria with their c-laws
 
-            //__________________________________________________________________
 
+            //__________________________________________________________________
+            //
+            // conservation matrix
+            //__________________________________________________________________
+            const size_t       Nq; //!< number of consevation laws
+            const umatrix      Qm; //!< built from each conservation law
+
+            //__________________________________________________________________
+            //
             // lattice data
             //__________________________________________________________________
             tableau           &Kl;      //!< [L] constants
