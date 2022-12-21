@@ -11,7 +11,7 @@ namespace yack
     large_object::  large_object() throw() {}
     large_object:: ~large_object() throw() {}
 
-    static inline void hard_check(const void *block_addr, const size_t block_size ) throw()
+    static inline void hard_check(const void *block_addr, const size_t block_size) throw()
     {
         assert(block_addr);
         const size_t allocated = memory::parcel::size_of(block_addr);

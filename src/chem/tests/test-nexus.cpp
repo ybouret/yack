@@ -32,7 +32,7 @@ YACK_UTEST(nexus)
     const size_t M = cs.M;
     const size_t L = cs.L;
     
-    cs.singles(std::cerr,"K_",cs.K);
+    cs.singles(std::cerr << "K=" ,"K_",cs.K);
     
     cxx_array<double> Kl(L);
     cs.upgrade_lattice(Kl);
@@ -45,11 +45,10 @@ YACK_UTEST(nexus)
         C[i] = ran.choice() ? lib.concentration(ran) : -lib.concentration(ran);
     }
 
-    lib(std::cerr,"",C);
+    lib(std::cerr << "C=","",C);
 
-    cs.preserve(C);
-
-
+    
+    YACK_SIZEOF(nexus);
 
 
     

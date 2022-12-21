@@ -164,6 +164,7 @@ add_test(memory:shelf      test-core memory_shelf)
 
 add_test(object          test-core object)
 add_test(large_object    test-core large_object)
+add_test(spot_object     test-croe spot_object)
 
 add_test(data:list         test-core data_list)
 add_test(data:list:sort    test-core data_list_sort)

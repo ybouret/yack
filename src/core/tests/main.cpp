@@ -52,6 +52,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(memory_objects);
     YACK_UTEST(object);
     YACK_UTEST(large_object);
+    YACK_UTEST(spot_object);
     YACK_UTEST(memory_parcel);
     YACK_UTEST(memory_parcels);
     YACK_UTEST(memory_buffers);

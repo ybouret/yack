@@ -60,6 +60,7 @@ namespace yack
             
             //! update Kl after K is computed
             /**
+             not constant,
              use memory inside mixed equilibria
              */
             void upgrade_lattice(writable<double> &Kl);
