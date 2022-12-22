@@ -239,40 +239,6 @@ namespace yack
         }
 
 
-        const xlimit *  actors:: primarily_bad(const readable<double> &C) const throw()
-        {
-            //------------------------------------------------------------------
-            //
-            // initialize search
-            //
-            //------------------------------------------------------------------
-            const actor *ua = 0;
-            double       xu = 0;
-
-            //------------------------------------------------------------------
-            //
-            // loop over primaries
-            //
-            //------------------------------------------------------------------
-            for(const actor *a = crew.head;NULL!=a;a=a->next)
-            {
-                if(! a->is_primary() ) continue;
-                const double c = C[ ***a ];
-                if(c<0)
-                {
-                    const double x = -c/a->nu; assert(x>=0);
-                    if(x>xu)
-                    {
-                        xu = x;
-                        ua = a;
-                    }
-                }
-            }
-            return ua ? new (*wbal) xlimit(*ua,xu) : NULL;
-        }
-
-
-
     }
 
 }

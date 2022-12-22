@@ -71,11 +71,10 @@ namespace yack
             //! C -> C+nu*xi, raw value, sign of xi must be adapted
             void  mov_(writable<double> &C, const double xi) const throw();
 
-
+            bool  balancing_extent(sp_repo &vanishing, const readable<double> &C) const;
 
             const xlimit     *genuine_limit(const readable<double> &C) const throw(); //!< test all actors
             const xlimit     *primary_limit(const readable<double> &C) const throw(); //!< test all primary actors
-            const xlimit     *primarily_bad(const readable<double> &C) const throw(); //!< test for invalid actors
             
             //! display
             friend std::ostream & operator<<(std::ostream &, const actors &);
@@ -138,6 +137,7 @@ namespace yack
 
         protected:
             const cxx_list_of<actor>           crew; //!< actors
+       
         private:
             mutable memory::workplace<xlimit>  wlim; //!< data for xlimit, standard
             mutable memory::workplace<xlimit>  wbal; //!< data for xlimit, balancing
