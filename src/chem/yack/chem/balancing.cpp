@@ -54,7 +54,11 @@ namespace yack
                 const equilibrium &eq = **en;
                 eqs.pad(std::cerr << "-> " << eq.name,eq) << " : ";
                 //std::cerr << feature_to_text(eq.kind);
-                
+
+                for(const actor *a=eq.reac->head;a;a=a->next)
+                {
+                    
+                }
 
 
 
