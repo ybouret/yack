@@ -94,6 +94,7 @@ namespace yack
             pool.store(node)->link(NULL);
         }
 
+        //! remove and store a selected node
         inline void pop(node_type *node) throw()
         {
             assert(NULL!=node);

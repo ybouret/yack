@@ -56,15 +56,15 @@ namespace yack
             const double xs = evaluate(source,xadd);
             if(xs<0)
             {
+                const double factor = -xs;
                 xadd.ldz();
                 iota::load(target,source);
                 for(const actor *a=crew.head;a;a=a->next)
                 {
-                    const double  d = (-xs*a->nu)/nrm2;
+                    const double  d = (factor*a->nu)/nrm2;
                     target[***a] += d;
                     xadd.push(d);
                 }
-                //std::cerr << xadd << std::endl;
                 assert(xadd.size()==crew.size);
                 return true;
             }
@@ -73,7 +73,18 @@ namespace yack
                 return false;
             }
         }
-        
+
+        void conservation_law:: injected(writable<double>       &inset,
+                                         const readable<double> &source,
+                                         const readable<double> &target) const throw()
+        {
+            for(const actor *a=crew.head;a;a=a->next)
+            {
+                const size_t j = ***a;
+                const double d = target[j] - source[j]; assert(d>=0);
+                inset[j] += d;
+            }
+        }
         
     }
     

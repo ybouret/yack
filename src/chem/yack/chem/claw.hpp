@@ -47,6 +47,11 @@ namespace yack
                             const readable<double> &source,
                             raddops                &xadd) const;
 
+            //! update injected concentration from source to target
+            void   injected(writable<double>       &inset,
+                            const readable<double> &source,
+                            const readable<double> &target) const throw();
+
             //! access index
             size_t operator*() const throw() { return indx; }
             

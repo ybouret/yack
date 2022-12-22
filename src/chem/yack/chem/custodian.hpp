@@ -13,19 +13,42 @@ namespace yack
     
     namespace chemical
     {
+
+        //______________________________________________________________________
+        //
+        //
         //! will apply conservation laws
+        //
+        //______________________________________________________________________
         class custodian : public authority<const nexus>
         {
         public:
-            explicit custodian(const nexus &, const xmlog &);
-            virtual ~custodian() throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit custodian(const nexus &, const xmlog &); //!< setup
+            virtual ~custodian() throw();                     //!< cleanup
 
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
 
+            //! inject minimal concentration to fullfill all laws
+            /**
+             C0 is updated and a track of injectect concentrations
+             is kept in 'inset'
+             */
             void operator()(writable<double> &C0);
-            
-            const size_t rules;  //!< nexus.Nq
-            const size_t items;  //!< nexus.M
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const size_t rules;  //!< nexus.Nq, total number of laws
+            const size_t items;  //!< nexus.M,  total number of species
             tableau      score;  //!< [count]   comparative scores
             tableau      inset;  //!< [M]       cumulative correction
             rmatrix      state;  //!< [count:M] corrected configurations

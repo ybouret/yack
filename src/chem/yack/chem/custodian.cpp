@@ -121,7 +121,9 @@ namespace yack
                 YACK_XMLOG(xml,"|_[using] " << claw << " : " << score[indx]);
 
                 // remove satisfied rule
-                iota::save(C0,state[indx]);
+                const readable<double> &C1 = state[indx];
+                claw.injected(inset,C0,C1);
+                iota::save(C0,C1);
                 score[indx] = 0;
                 alive.pop(node);
 
@@ -152,6 +154,19 @@ namespace yack
             for(const cluster *cls=(**this).related.head;cls;cls=cls->next)
             {
                 abide(C0,*cls);
+            }
+            if(xml.verbose)
+            {
+                for(const anode *an=(**this).working.head;an;an=an->next)
+                {
+                    const species &s = **an;
+                    const size_t   j = *s;
+                    const double   d = inset[j];
+                    if(d>0) {
+                        (**this).corelib.pad(*xml << "  (*) d_[" << s.name << "]",s) << " = " << std::setw(15) << d << std::endl;
+                    }
+                }
+
             }
         }
 
