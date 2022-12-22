@@ -1,4 +1,4 @@
-#include "yack/chem/nexus.hpp"
+#include "yack/chem/custodian.hpp"
 #include "yack/chem/eqs/lua.hpp"
 #include "yack/system/env.hpp"
 #include "yack/utest/run.hpp"
@@ -46,6 +46,11 @@ YACK_UTEST(nexus)
     }
 
     lib(std::cerr << "C=","",C);
+
+    custodian toto(cs);
+
+    toto(C);
+
 
     
     YACK_SIZEOF(nexus);
