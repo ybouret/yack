@@ -21,6 +21,13 @@ set(chem_eqs ${chem_eqs_decl} ${chem_eqs_srcs})
 SOURCE_GROUP(chem/eqs FILES ${chem_eqs})
 install( FILES ${chem_eqs_decl} DESTINATION include/yack/chem/eqs )
 
+#claw
+file(GLOB chem_claw_decl yack/chem/claw/*.hpp)
+file(GLOB chem_claw_srcs yack/chem/claw/*.cpp)
+set(chem_claw ${chem_claw_decl} ${chem_claw_srcs})
+SOURCE_GROUP(chem/claw FILES ${chem_claw})
+install( FILES ${chem_claw_decl} DESTINATION include/yack/chem/claw )
+
 #nexus
 file(GLOB chem_nexus_decl yack/chem/nexus/*.hpp)
 file(GLOB chem_nexus_srcs yack/chem/nexus/*.cpp)
@@ -33,6 +40,7 @@ ${chem_main}
 ${chem_designer}
 ${chem_eqs}
 ${chem_nexus}
+${chem_claw}
 )
 
 install( TARGETS yack-chem ARCHIVE DESTINATION lib )

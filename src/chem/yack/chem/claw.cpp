@@ -1,5 +1,5 @@
 
-#include "yack/chem/conservation-law.hpp"
+#include "yack/chem/claw.hpp"
 #include "yack/math/iota.hpp"
 
 namespace yack

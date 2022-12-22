@@ -5,7 +5,7 @@
 #ifndef YACK_CHEMICAL_CLAW_TEAM_INCLUDED
 #define YACK_CHEMICAL_CLAW_TEAM_INCLUDED 1
 
-#include "yack/chem/conservation-law.hpp"
+#include "yack/chem/claw.hpp"
 #include "yack/container/matrix.hpp"
 
 namespace yack

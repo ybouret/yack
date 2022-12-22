@@ -1,5 +1,5 @@
 
-#include "yack/chem/claw-team.hpp"
+#include "yack/chem/claw/team.hpp"
 #include <iomanip>
 
 namespace yack

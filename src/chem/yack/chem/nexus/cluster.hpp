@@ -4,7 +4,7 @@
 #define YACK_NEXUS_CLUSTER_INCLUDED 1
 
 #include "yack/chem/equilibrium.hpp"
-#include "yack/chem/claw-team.hpp"
+#include "yack/chem/claw/team.hpp"
 
 namespace yack
 {
