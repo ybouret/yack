@@ -5,6 +5,7 @@
 #define YACK_CHEMICAL_CUSTODIAN_INCLUDED 1
 
 #include "yack/chem/nexus.hpp"
+#include "yack/type/authority.hpp"
 
 
 namespace yack
@@ -13,7 +14,7 @@ namespace yack
     namespace chemical
     {
         //! will apply conservation laws
-        class custodian
+        class custodian : public authority<const nexus>
         {
         public:
             explicit custodian(const nexus &);
@@ -23,11 +24,11 @@ namespace yack
 
             void operator()(writable<double> &C0);
             
-
-            const nexus &heart;  //!< nexus
-            const size_t count;  //!< heart.Nq
-            tableau      score;  //!< [count]
-            rmatrix      state;  //!< [count:M]
+            const size_t rules;  //!< nexus.Nq
+            const size_t items;  //!< nexus.M
+            tableau      score;  //!< [count]   comparative scores
+            tableau      inset;  //!< [M]       cumulative correction
+            rmatrix      state;  //!< [count:M] corrected configurations
             claw_repo    alive;  //!< [0..count]
             raddops      xadd;   //!<
 
@@ -38,6 +39,10 @@ namespace yack
 
             void abide(writable<double>  &C0,
                        const cluster     &cc);
+
+            bool       initialize_with(const readable<double> &, const claw_team &);
+            claw_node *select_next_law() throw();
+            bool       need_to_process(const readable<double> &);
         };
         
     }

@@ -36,31 +36,7 @@ namespace yack
             return false;
         }
 
-
-        void claw_team :: update(writable<double> &C0,
-                                 matrix<double>   &Qc,
-                                 writable<double> &Qs,
-                                 claw_repo        &cr,
-                                 raddops          &xadd) const
-        {
-            std::cerr << "updating #" << size << " team(s)" << std::endl;
-
-            // initialize
-            cr.free();
-            for(const claw_node *node=head;node;node=node->next)
-            {
-                const conservation_law &claw = **node;
-                const size_t            indx = *claw;
-                if( claw.regulate(Qc[indx],C0,xadd) )
-                {
-                    Qs[indx] = xadd.get();
-                    cr.push_back(claw);
-                    std::cerr << std::setw(15) <<  Qs[indx] << "@ " << claw << std::endl;
-                }
-            }
-            
-
-        }
+        
 
 
     }

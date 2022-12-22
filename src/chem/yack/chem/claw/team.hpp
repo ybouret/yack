@@ -43,15 +43,7 @@ namespace yack
             bool attached_to(const conservation_law &) const throw(); //!< check link to a law
             bool attached_to(const claw_team        &) const throw(); //!< check link to a team
 
-            //__________________________________________________________________
-            //
-            // methods to solve
-            //__________________________________________________________________
-            void update(writable<double> &C0,
-                        matrix<double>   &Qc,
-                        writable<double> &Qs,
-                        claw_repo        &cr,
-                        raddops          &xadd) const;
+            
 
 
             //__________________________________________________________________

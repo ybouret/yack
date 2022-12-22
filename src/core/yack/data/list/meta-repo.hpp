@@ -86,7 +86,6 @@ namespace yack
         {
             zstore(list.pop_front());
         }
-
         
         //! store an unused node
         inline void zstore(node_type *node) throw()
@@ -94,6 +93,13 @@ namespace yack
             assert(node);
             pool.store(node)->link(NULL);
         }
+
+        inline void pop(node_type *node) throw()
+        {
+            assert(NULL!=node);
+            zstore( list.pop(node) );
+        }
+
         //______________________________________________________________________
         //
         // members

@@ -36,6 +36,8 @@ namespace yack
         inline host       & operator*()  throw()       { return host_; } //!< access
         inline const_host & operator*()  const throw() { return host_; } //!< access
         
+        inline host       * operator->()  throw()       { return &host_; } //!< access
+        inline const_host * operator->()  const throw() { return &host_; } //!< access
         
     private:
         mutable_host &host_;

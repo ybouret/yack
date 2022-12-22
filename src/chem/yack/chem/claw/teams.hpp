@@ -42,21 +42,7 @@ namespace yack
             //! recruit a law: create or add to a team, update structure
             void recruit(const conservation_law &law);
 
-
-            //! update all
-            void update(writable<double> &C0,
-                        matrix<double>   &Qc,
-                        writable<double> &Qs,
-                        claw_repo        &cr,
-                        raddops          &xadd) const
-            {
-                for(const claw_team *team=head;team;team=team->next)
-                {
-                    team->update(C0,Qc,Qs,cr,xadd);
-                }
-            }
-
-
+            
 
 
         private:
