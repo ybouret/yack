@@ -35,7 +35,7 @@ namespace yack
                                           const claw_team        &ct)
         {
             assert(C0.size()>= (**this).M);
-            YACK_XMLOG(xml, "| init");
+            YACK_XMLOG(xml, "|_[initializing]");
             alive.free();
             for(const claw_node *node=ct.head;node;node=node->next)
             {
@@ -75,29 +75,34 @@ namespace yack
 
         bool custodian:: need_to_process(const readable<double> &C0)
         {
-
+            if(alive->size)
             {
-                claw_repo::list_type still_alive;
-                while(alive->size)
+                YACK_XMLOG(xml, "|_[*rescanning*]");
                 {
-                    auto_ptr<claw_node>     node = alive->pop_front();
-                    const conservation_law &claw = **node;
-                    const size_t            indx = *claw;
-                    if( claw.regulate(state[indx],C0,xadd) )
+                    claw_repo::list_type still_alive;
+                    while(alive->size)
                     {
-                        score[indx] = xadd.get();
-                        still_alive.push_back(node.yield());
-                        std::cerr << std::setw(15) << score[indx] << " @" << claw << std::endl;
+                        auto_ptr<claw_node>     node = alive->pop_front();
+                        const conservation_law &claw = **node;
+                        const size_t            indx = *claw;
+                        if( claw.regulate(state[indx],C0,xadd) )
+                        {
+                            score[indx] = xadd.get();
+                            still_alive.push_back(node.yield());
+                            YACK_XMLOG(xml, "| " << std::setw(15) << score[indx] << " @" << claw );
+                        }
+                        else
+                        {
+                            alive.zstore(node.yield());
+                            YACK_XMLOG(xml, "| " << std::setw(15) << "ok" << " @" << claw);
+                        }
                     }
-                    else
-                    {
-                        alive.zstore(node.yield());
-                        std::cerr << std::setw(15) << "ok" << " @" << claw << std::endl;
-                    }
+                    alive.list.swap_with(still_alive);
                 }
-                alive.list.swap_with(still_alive);
+                return alive->size>0;
             }
-            return alive->size>0;
+            else
+                return false;
         }
 
 
@@ -109,12 +114,12 @@ namespace yack
             {
             PROCESSING:
                 // find minimal displacement
-                YACK_XMLOG(xml,"| #processing = " << alive->size);
+                YACK_XMLOG(xml,"|_[alive = " << alive->size << "]");
                 claw_node              *node = select_next_law();
                 const conservation_law &claw = **node;
                 const size_t            indx = *claw;
-                YACK_XMLOG(xml,"| --> " << claw << " : " << score[indx]);
-                
+                YACK_XMLOG(xml,"|_[using] " << claw << " : " << score[indx]);
+
                 // remove satisfied rule
                 iota::save(C0,state[indx]);
                 score[indx] = 0;
@@ -124,7 +129,7 @@ namespace yack
                     goto PROCESSING;
 
             }
-            YACK_XMLOG(xml, "| quit");
+            YACK_XMLOG(xml, "|_[full custody]");
 
         }
 
