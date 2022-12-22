@@ -63,10 +63,10 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            cluster                *next; //!< for list/pool
-            cluster                *prev; //!< for list
-            const conservation_laws cl;   //!< conservation among species
-            const claw_teams        ct;   //!< teams of linked laws
+            cluster                *next;  //!< for list/pool
+            cluster                *prev;  //!< for list
+            const conservation_laws canon; //!< conservation among species
+            const claw_teams        cells; //!< teams of linked laws
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(cluster);
