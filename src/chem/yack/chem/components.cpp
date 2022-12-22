@@ -4,6 +4,7 @@
 #include "yack/math/iota.hpp"
 #include "yack/type/utils.hpp"
 #include "yack/apex/alga.hpp"
+#include "yack/sequence/cxx-array.hpp"
 
 namespace yack
 {
@@ -87,29 +88,7 @@ namespace yack
             return * new ( *xlm ) xlimits(reac.primary_limit(C),prod.primary_limit(C),w);
         }
 
-        double components:: balance_of(const readable<double> &C, raddops &xadd) const
-        {
-            xadd.free();
-            for(const cnode *node = head(); node;node=node->next )
-            {
-                const double c = C[ *****node ];
-                if(c<0) xadd << -c;
-            }
-            return xadd.get();
-        }
-       
-        double components:: change_of(const readable<double> &C0,
-                                      const readable<double> &C1,
-                                      raddops                &xadd) const
-        {
-            for(const cnode *node = head(); node;node=node->next )
-            {
-                const size_t j = *****node;
-                xadd << fabs(C0[j]-C1[j]);
-            }
-            return xadd.get();
-        }
-
+        
 
         static inline
         feature kind_for(const actors &reac, const actors &prod) throw()
@@ -422,18 +401,12 @@ namespace yack
             return res;
         }
 
-
         bool components:: are_similar(const components &lhs, const components &rhs)
         {
-            size_t       n = max_of( lhs.span(), rhs.span() );
-            vector<int>  L(n,0); lhs.fill(L);
-            vector<int>  R(n,0); rhs.fill(R);
+            size_t          n = max_of( lhs.span(), rhs.span() );
+            cxx_array<int>  L(n); lhs.fill(L);
+            cxx_array<int>  R(n); rhs.fill(R);
             return alga::colinear(L,R);
-        }
-
-        bool components:: similar_to(const components &rhs) const
-        {
-            return are_similar(*this,rhs);
         }
 
     }

@@ -205,10 +205,8 @@ namespace yack
             //! test proportionality of coefficients
             static bool are_similar(const components &lhs, const components &rhs);
 
-            //! are_similar(*this,rhs)
-            bool similar_to(const components &rhs) const;
 
-            //! transfer only concerned components
+            //! transfer only involved components
             template <typename TARGET, typename SOURCE> inline
             void transfer(TARGET &target, SOURCE &source) const
             {
@@ -257,15 +255,7 @@ namespace yack
             
             //! display list of associated concentrations
             std::ostream & display_compact(std::ostream &os, const readable<double> &C) const;
-
-            //! get balance
-            double balance_of(const readable<double> &C, raddops &xadd) const;
-
-            //! get difference
-            double change_of(const readable<double> &C0,
-                             const readable<double> &C1,
-                             raddops                &xadd) const;
-
+            
             
             //__________________________________________________________________
             //

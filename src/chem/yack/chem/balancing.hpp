@@ -20,7 +20,7 @@ namespace yack
         public:
             explicit balancing(const nexus &);
             virtual ~balancing() throw();
-
+            
 
 
         private:
