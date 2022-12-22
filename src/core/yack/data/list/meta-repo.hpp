@@ -87,6 +87,7 @@ namespace yack
             zstore(list.pop_front());
         }
 
+        
         //! store an unused node
         inline void zstore(node_type *node) throw()
         {

@@ -50,6 +50,22 @@ namespace yack
             while(alive->size)
             {
                 std::cerr << "processing " << *alive << std::endl;
+
+                claw_node *low_node = alive->head;
+                double     low_corr = score[***low_node];
+                for(claw_node *node=low_node->next;node;node=node->next)
+                {
+                    const double corr = score[***node];
+                    if(corr<low_corr) {
+                        low_corr = corr;
+                        low_node = node;
+                    }
+                }
+                const conservation_law &claw = **low_node;
+                const size_t            indx = *claw;
+                std::cerr << "low: " << claw << " with " << score[indx] << std::endl;
+                
+
                 break;
             }
 
