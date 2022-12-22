@@ -25,6 +25,7 @@ namespace yack
         inset(items),
         state(rules,rules>0? items:0 ),
         alive(rules),
+        xadd(),
         xml(out)
         {
         }
@@ -34,7 +35,7 @@ namespace yack
                                           const claw_team        &ct)
         {
             assert(C0.size()>= (**this).M);
-            score.ld(0);
+            YACK_XMLOG(xml, "| init");
             alive.free();
             for(const claw_node *node=ct.head;node;node=node->next)
             {
@@ -44,11 +45,11 @@ namespace yack
                 {
                     score[i] = xadd.get();
                     alive.push_back(claw);
-                    std::cerr << std::setw(15) << score[i] << " @" << claw << std::endl;
+                    YACK_XMLOG(xml, "| " << std::setw(15) << score[i] << " @" << claw );
                 }
                 else
                 {
-                    std::cerr << std::setw(15) << "ok" << " @" << claw << std::endl;
+                    YACK_XMLOG(xml, "| " << std::setw(15) << "ok" << " @" << claw);
                 }
             }
             return (alive->size > 0);
@@ -108,13 +109,12 @@ namespace yack
             {
             PROCESSING:
                 // find minimal displacement
-                std::cerr << "processing " << *alive << std::endl;
+                YACK_XMLOG(xml,"| #processing = " << alive->size);
                 claw_node              *node = select_next_law();
                 const conservation_law &claw = **node;
                 const size_t            indx = *claw;
-                std::cerr << "low: " << claw << " with " << score[indx] << std::endl;
-                std::cerr << "from " << C0 << " to " << state[indx] << std::endl;
-
+                YACK_XMLOG(xml,"| --> " << claw << " : " << score[indx]);
+                
                 // remove satisfied rule
                 iota::save(C0,state[indx]);
                 score[indx] = 0;
@@ -124,7 +124,7 @@ namespace yack
                     goto PROCESSING;
 
             }
-
+            YACK_XMLOG(xml, "| quit");
 
         }
 
@@ -143,6 +143,7 @@ namespace yack
         {
             YACK_XMLSUB(xml, "custodian");
             inset.ld(0);
+            score.ld(0);
             for(const cluster *cls=(**this).related.head;cls;cls=cls->next)
             {
                 abide(C0,*cls);
