@@ -49,11 +49,12 @@ namespace yack
             return true;
 
         TRY_BALANCE:
-            for(const eq_node *en=cc.head;en;en=en->next)
+            for(const eq_node *en=cc.bounded->head;en;en=en->next)
             {
                 const equilibrium &eq = **en;
                 eqs.pad(std::cerr << "-> " << eq.name,eq) << " : ";
-                std::cerr << feature_text(eq.kind);
+                //std::cerr << feature_to_text(eq.kind);
+                
 
 
 

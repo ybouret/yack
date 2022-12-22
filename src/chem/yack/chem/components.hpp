@@ -33,7 +33,7 @@ namespace yack
         };
 
         //! convert feature to text
-        const char * feature_text(const feature kind) throw();
+        const char * feature_to_text(const feature kind) throw();
 
         //______________________________________________________________________
         //

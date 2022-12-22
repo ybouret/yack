@@ -11,7 +11,7 @@ namespace yack
     namespace chemical
     {
 
-        const char * feature_text(const feature kind) throw()
+        const char * feature_to_text(const feature kind) throw()
         {
             switch(kind)
             {
