@@ -47,7 +47,9 @@ YACK_UTEST(nexus)
 
     lib(std::cerr << "C=","",C);
 
-    custodian toto(cs);
+    xmlog xml(nexus::clid,std::cerr,nexus::verbose);
+
+    custodian toto(cs,xml);
 
     toto(C);
 

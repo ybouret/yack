@@ -17,7 +17,7 @@ namespace yack
         class custodian : public authority<const nexus>
         {
         public:
-            explicit custodian(const nexus &);
+            explicit custodian(const nexus &, const xmlog &);
             virtual ~custodian() throw();
 
 
@@ -30,8 +30,9 @@ namespace yack
             tableau      inset;  //!< [M]       cumulative correction
             rmatrix      state;  //!< [count:M] corrected configurations
             claw_repo    alive;  //!< [0..count]
-            raddops      xadd;   //!<
-
+            raddops      xadd;   //!< for internal ops
+            const xmlog &xml;    //!< for verbosity
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(custodian);
             void abide(writable<double> &C0,

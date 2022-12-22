@@ -17,14 +17,15 @@ namespace yack
         }
         
 
-        custodian:: custodian(const nexus &usr) :
+        custodian:: custodian(const nexus &usr, const xmlog &out) :
         authority<const nexus>(usr),
         rules( (**this).Nq ),
         items( (**this).M  ),
         score(rules),
         inset(items),
         state(rules,rules>0? items:0 ),
-        alive(rules)
+        alive(rules),
+        xml(out)
         {
         }
 
@@ -102,7 +103,7 @@ namespace yack
         void custodian:: abide(writable<double> &C0,
                                const claw_team  &claws)
         {
-
+            YACK_XMLSUB(xml, "custodian:cluster:team");
             if( initialize_with(C0,claws) )
             {
             PROCESSING:
@@ -131,6 +132,7 @@ namespace yack
         void custodian:: abide(writable<double>  &C0,
                                const cluster     &cc)
         {
+            YACK_XMLSUB(xml, "custodian:cluster");
             for(const claw_team *team=cc.cells.head;team;team=team->next)
             {
                 abide(C0,*team);
@@ -139,6 +141,7 @@ namespace yack
 
         void custodian::  operator()(writable<double> &C0)
         {
+            YACK_XMLSUB(xml, "custodian");
             inset.ld(0);
             for(const cluster *cls=(**this).related.head;cls;cls=cls->next)
             {
