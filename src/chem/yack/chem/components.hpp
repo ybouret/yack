@@ -181,22 +181,14 @@ namespace yack
             void move(writable<double> &C, const double xi) const throw();
 
             //! ensure each species is registered in tribe
-            void update(addrbook &tribe) const
-            {
-                for(const cnode *cn=head();cn;cn=cn->next)
-                {
-                    const species &s = ****cn;
-                    tribe.ensure(&s);
-                }
-            }
+            void update(addrbook &tribe) const;
 
             //! fill topology
             template <typename T> inline void fill(writable<T> &nu) const
             {
                 const bare<T> _0;
                 nu.ld(*_0);
-                for(const cnode *node=head();node;node=node->next)
-                {
+                for(const cnode *node=head();node;node=node->next) {
                     const component &comp = ***node;
                     nu[**comp] = comp.nu;
                 }
@@ -210,8 +202,7 @@ namespace yack
             template <typename TARGET, typename SOURCE> inline
             void transfer(TARGET &target, SOURCE &source) const
             {
-                for(const cnode *node=head();node;node=node->next)
-                {
+                for(const cnode *node=head();node;node=node->next) {
                     const size_t j = *****node;
                     target[j] = source[j];
                 }
@@ -250,8 +241,7 @@ namespace yack
             //! check is use species
             bool uses(const species &) const throw();
 
-            //! try to primary balance Corg
-            bool try_primary_balance(writable<double> &Corg, const xmlog &xml) const throw();
+            
             
             //! display list of associated concentrations
             std::ostream & display_compact(std::ostream &os, const readable<double> &C) const;
@@ -275,8 +265,7 @@ namespace yack
             //__________________________________________________________________
             components_set                     cdb; //!< components database
             mutable memory::workplace<xlimits> xlm; //!< workplace for xlimits
-
-            void primary_cleanup(writable<double> &) const throw();
+            
 
         };
         

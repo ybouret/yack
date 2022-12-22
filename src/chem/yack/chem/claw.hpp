@@ -75,9 +75,18 @@ namespace yack
         //! hold list of c-laws
         //
         //______________________________________________________________________
-        typedef cxx_list_of<conservation_law>     conservation_laws;
-        
+        typedef cxx_list_of<conservation_law>     conservation_laws_;
 
+
+        class conservation_laws : public object, public conservation_laws_
+        {
+        public:
+            explicit conservation_laws() throw() : object(), conservation_laws_() {}
+            virtual ~conservation_laws() throw() {}
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(conservation_laws);
+        };
     }
 
 }

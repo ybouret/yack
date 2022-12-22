@@ -227,12 +227,14 @@ namespace yack
             // use collected entries
             //
             //------------------------------------------------------------------
+            if(cb->size)
             {
+                conservation_laws &canon = coerce(*sharing.canon);
                 size_t ic = 0;
                 for(const collector::entry *ep=cb->head;ep;ep=ep->next)
                 {
                     const readable<unsigned> &cf   = *ep;
-                    conservation_law         &claw = *coerce(sharing.canon).push_back( new conservation_law() );
+                    conservation_law         &claw = *(canon.push_back( new conservation_law() ));
                     size_t j=1;
                     for(const sp_node *sn=house.head;sn;sn=sn->next,++j)
                     {
@@ -251,11 +253,11 @@ namespace yack
             // create teams of c-laws for this cluster
             //
             //------------------------------------------------------------------
-            for(const conservation_law *claw=sharing.canon.head;claw;claw=claw->next)
+            for(const conservation_law *claw=sharing.canon->head;claw;claw=claw->next)
             {
-                coerce(sharing.cells).recruit(*claw);
+                coerce(*sharing.cells).recruit(*claw);
             }
-            YACK_XMLOG(xml,"|_#cell = " << sharing.cells.size );
+            YACK_XMLOG(xml,"|_#cell = " << sharing.cells->size );
         }
         
         
@@ -266,7 +268,7 @@ namespace yack
             for(cluster *sharing=related.head;sharing;sharing=sharing->next)
             {
                 conserved_set_(*sharing,xml);
-                coerce(Nq) += sharing->canon.size;
+                coerce(Nq) += sharing->canon->size;
             }
             YACK_XMLOG(xml,"-- conservation  laws : " << Nq);
             YACK_XMLOG(xml,"-- equilibria         : " << singles.size() );
@@ -281,7 +283,7 @@ namespace yack
                     size_t i=1;
                     for(const cluster *cls=related.head;cls;cls=cls->next)
                     {
-                        for(const conservation_law *claw = cls->canon.head;claw;claw=claw->next,++i)
+                        for(const conservation_law *claw = cls->canon->head;claw;claw=claw->next,++i)
                         {
                             claw->fill( coerce(Qm[i]) );
                         }

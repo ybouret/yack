@@ -24,7 +24,7 @@ namespace yack
         //! independant teams for a cluster
         //
         //______________________________________________________________________
-        class claw_teams : public claw_teams_
+        class claw_teams : public object, public claw_teams_
         {
         public:
             //__________________________________________________________________

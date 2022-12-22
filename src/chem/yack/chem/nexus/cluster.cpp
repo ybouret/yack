@@ -7,12 +7,14 @@ namespace yack
     namespace chemical
     {
 
-        cluster:: cluster() throw() :
+        cluster:: cluster() :
         eq_team(),
         next(0),
         prev(0),
-        canon(),
-        cells()
+        canon( new conservation_laws() ),
+        cells( new claw_teams  ),
+        roaming( new eq_team() ),
+        bounded( new eq_team() )
         {}
         cluster::~cluster() throw() {}
 

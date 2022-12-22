@@ -5,6 +5,7 @@
 
 #include "yack/chem/equilibrium.hpp"
 #include "yack/chem/claw/teams.hpp"
+#include "yack/ptr/auto.hpp"
 
 namespace yack
 {
@@ -16,14 +17,18 @@ namespace yack
         //! cluster of equilibria
         //
         //______________________________________________________________________
-        class cluster : public object, public eq_team
+        class cluster :  public eq_team
         {
         public:
+            typedef auto_ptr<const eq_team>           eq_team_ptr;
+            typedef auto_ptr<const claw_teams>        cells_type;
+            typedef auto_ptr<const conservation_laws> canon_type;
+
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            explicit cluster() throw(); //!< setup emtpy
+            explicit cluster();          //!< setup emtpy
             virtual ~cluster() throw(); //!< cleanup
 
             //__________________________________________________________________
@@ -65,9 +70,11 @@ namespace yack
             //__________________________________________________________________
             cluster                *next;  //!< for list/pool
             cluster                *prev;  //!< for list
-            const conservation_laws canon; //!< conservation among species
-            const claw_teams        cells; //!< teams of linked laws
-            
+            const canon_type        canon; //!< conservation among species
+            const cells_type        cells; //!< teams of linked laws
+            const eq_team_ptr       roaming;
+            const eq_team_ptr       bounded;
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(cluster);
         };

@@ -194,7 +194,6 @@ namespace yack
             // expanding
             //
             //------------------------------------------------------------------
-
             cluster        repo;
             {
                 YACK_XMLSUB(xml,"mixing");
@@ -227,6 +226,28 @@ namespace yack
 
             YACK_XMLOG(xml,"-- added #" << repo.size << " to local cluster");
             cls.merge_back(repo);
+
+            // create local teams
+            eq_team &roaming =  coerce(*cls.roaming);
+            eq_team &bounded =  coerce(*cls.bounded);
+            for(const eq_node *en=cls.head;en;en=en->next)
+            {
+                const equilibrium &eq = **en;
+                switch(eq.kind)
+                {
+                    case join_only:
+                    case part_only:
+                        roaming << &eq;
+                        break;
+
+                    case both_ways:
+                        bounded << &eq;
+                        break;
+
+                    case undefined: throw imported::exception(fn,"unexpected undefined <%s>", eq.name());
+                }
+             }
+
 
         }
         

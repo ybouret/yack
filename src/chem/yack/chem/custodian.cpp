@@ -139,7 +139,7 @@ namespace yack
                                const cluster     &cc)
         {
             YACK_XMLSUB(xml, "custodian:cluster");
-            for(const claw_team *team=cc.cells.head;team;team=team->next)
+            for(const claw_team *team=cc.cells->head;team;team=team->next)
             {
                 abide(C0,*team);
             }

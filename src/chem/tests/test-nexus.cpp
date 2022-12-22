@@ -1,4 +1,6 @@
 #include "yack/chem/custodian.hpp"
+#include "yack/chem/balancing.hpp"
+
 #include "yack/chem/eqs/lua.hpp"
 #include "yack/system/env.hpp"
 #include "yack/utest/run.hpp"
@@ -54,9 +56,16 @@ YACK_UTEST(nexus)
     toto(C);
     lib(std::cerr << "C=","",C);
 
+    balancing titi(cs,xml);
+    titi(C);
+
 
     
     YACK_SIZEOF(nexus);
+    YACK_SIZEOF(cluster);
+    YACK_SIZEOF(eq_team);
+    YACK_SIZEOF(conservation_laws);
+    YACK_SIZEOF(claw_teams);
 
 
     

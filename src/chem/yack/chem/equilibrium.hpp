@@ -62,9 +62,19 @@ namespace yack
             virtual const char *attr()       const;
         };
 
-        typedef meta_list<const equilibrium> eq_team; //!< alias
+        typedef meta_list<const equilibrium> eq_team_; //!< alias
         typedef meta_node<const equilibrium> eq_node; //!< alias
         typedef meta_repo<const equilibrium> eq_repo; //!< alias
+        
+        class eq_team : public object, public eq_team_
+        {
+        public:
+            explicit eq_team() throw() : object(), eq_team_() {}
+            virtual ~eq_team() throw() {}
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(eq_team);
+        };
 
     }
     
