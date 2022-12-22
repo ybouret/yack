@@ -87,8 +87,6 @@ namespace yack
         //
         //
         //----------------------------------------------------------------------
-
-
         static const char * const fn = "sub_manifold";
 
 
@@ -107,7 +105,6 @@ namespace yack
 
             void operator()(const qvector &cf)
             {
-                //std::cerr << " found " << cf << std::endl;
                 if( qselect::count_valid(  cf.cast_to(work) ) >= 2 )
                 {
                     ensure(work);
@@ -216,13 +213,13 @@ namespace yack
                     }
                     
                     qbranch::assess(stoich,weight,Nu);
-                   
+
                     repo << &promote_mixed(weight);
+                    
                     if(verbose)
                     {
                         const equilibrium &emix = **repo.tail;
                         const components  &cmix = emix;
-                        //std::cerr << "  u" << imix << " = " << gcof << " : " << cmix << " @" << emix.name << std::endl;
                         std::cerr << "  u" << imix << " = " << weight << " => " << stoich << " : " << cmix << std::endl;
                     }
                 }
