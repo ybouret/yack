@@ -166,12 +166,15 @@ namespace yack
         //
         // helpers
         //______________________________________________________________________
+
+        //! create new default node
         inline  joint_list & operator<<(const default_type_t &)
         {
             this->push_back( fund->create() );
             return *this;
         }
 
+        //! create node with default argument
         template <typename T>
         inline joint_list & operator<<(const T &args) {
             this->push_back( fund->create(args) );

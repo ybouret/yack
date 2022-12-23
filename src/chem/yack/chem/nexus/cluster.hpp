@@ -20,15 +20,15 @@ namespace yack
         class cluster :  public eq_team
         {
         public:
-            typedef auto_ptr<const eq_team>           eq_team_ptr;
-            typedef auto_ptr<const claw_teams>        cells_type;
-            typedef auto_ptr<const conservation_laws> canon_type;
+            typedef auto_ptr<const eq_team>           eq_team_ptr; //!< alias
+            typedef auto_ptr<const claw_teams>        cells_type;  //!< alias
+            typedef auto_ptr<const conservation_laws> canon_type;  //!< alias
 
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            explicit cluster();          //!< setup emtpy
+            explicit cluster();         //!< setup emtpy
             virtual ~cluster() throw(); //!< cleanup
 
             //__________________________________________________________________

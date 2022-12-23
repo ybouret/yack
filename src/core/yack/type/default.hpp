@@ -7,8 +7,8 @@
 
 namespace yack {
 
-    typedef type2type<void>     default_type_t;
-    extern const default_type_t default_type;
+    typedef type2type<void>     default_type_t; //!< helper to use default functions
+    extern const default_type_t default_type;   //!< syntax helper
 
 }
 
