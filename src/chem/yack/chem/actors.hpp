@@ -11,6 +11,7 @@
 #include "yack/math/adder.hpp"
 #include "yack/memory/workplace.hpp"
 #include "yack/data/bare.hpp"
+#include "yack/data/list/com.hpp"
 
 namespace yack
 {
@@ -108,14 +109,7 @@ namespace yack
                 for(const actor *a=crew.head;a;a=a->next)
                     q[***a] = a->nu;
             }
-
-            bool must_balance(const readable<double>   &C,
-                              double                   &extent,
-                              meta_list<const species> &vanish) const;
-
-
-
-
+            
             //__________________________________________________________________
             //
             // members

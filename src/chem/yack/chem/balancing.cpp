@@ -49,17 +49,45 @@ namespace yack
             return true;
 
         TRY_BALANCE:
+            // try bounded eq
             for(const eq_node *en=cc.bounded->head;en;en=en->next)
             {
                 const equilibrium &eq = **en;
                 eqs.pad(std::cerr << "-> " << eq.name,eq) << " : ";
-                //std::cerr << feature_to_text(eq.kind);
 
+                size_t nr = 0;
                 for(const actor *a=eq.reac->head;a;a=a->next)
                 {
-                    
+                    const species &s = **a;
+                    const size_t   j = *s;
+                    const double   c = C0[j];
+                    if(c<0)
+                    {
+                        ++nr;
+                    }
+                    else
+                    {
+
+                    }
                 }
 
+                size_t np = 0;
+                for(const actor *a=eq.prod->head;a;a=a->next)
+                {
+                    const species &s = **a;
+                    const size_t   j = *s;
+                    const double   c = C0[j];
+                    if(c<0)
+                    {
+                        ++np;
+                    }
+                    else
+                    {
+
+                    }
+                }
+
+                
 
 
                 //eq.display_compact(std::cerr,C0);
