@@ -180,20 +180,21 @@ namespace yack
         // helpers
         //______________________________________________________________________
 
-        //! create new default node
+        //! push_back new default node
         inline  joint_list & operator<<(const default_type_t &)
         {
             this->push_back( fund->create() );
             return *this;
         }
 
+        //! push_front new default node
         inline joint_list & operator>>(const default_type_t &)
         {
             this->push_front( fund->create() );
             return *this;
         }
 
-        //! create node with  1 argument
+        //! push_back new node with  1 argument
         template <typename T>
         inline joint_list & operator<<(const T &args) {
             this->push_back( fund->create(args) );
@@ -201,7 +202,7 @@ namespace yack
         }
 
 
-        //! create node with  1 argument
+        //! push_front node with  1 argument
         template <typename T>
         inline joint_list & operator>>(const T &args) {
             this->push_front( fund->create(args) );

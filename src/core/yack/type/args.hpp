@@ -23,7 +23,7 @@ YACK_DECL_ARGS_(T,NAME);                                                      \
 typedef typename                                                              \
 yack::pick_from<                                                              \
 type_traits<mutable_##NAME>::is_primitive, /* no references in containers */  \
-const_##NAME  , /* pass primitive mutable types by const value            */  \
+NAME,           /* pass primitive mutable types by       value            */  \
 const_##NAME &  /* pass non primitive mutable types by const reference    */  \
 >::type param_##NAME
     

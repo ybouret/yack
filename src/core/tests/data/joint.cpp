@@ -42,13 +42,6 @@ YACK_UTEST(data_joint)
 {
     randomized::rand_ ran;
 
-    YACK_SIZEOF(xPool);
-    YACK_SIZEOF(xList);
-    YACK_SIZEOF(xList::node_type);
-
-    YACK_SIZEOF(sPool);
-    YACK_SIZEOF(sList);
-    YACK_SIZEOF(sList::node_type);
 
     {
         xPool::pointer fund = new xPool();
@@ -99,12 +92,28 @@ YACK_UTEST(data_joint)
         com_list<const int *>          L(fund);
         for(size_t i=0;i<sizeof(tab)/sizeof(tab[0]);++i)
         {
-            if(ran.choice()) L << &coerce(tab[i]); else L >> &coerce(tab[i]);
-            //L << tab+i;
+            if(ran.choice()) L << (tab+i); else L >> (tab+i);
         }
         std::cerr << L << std::endl;
     }
 
+
+    YACK_SIZEOF(xPool);
+    YACK_SIZEOF(xList);
+    YACK_SIZEOF(xList::node_type);
+    std::cerr << std::endl;
+
+    YACK_SIZEOF(sPool);
+    YACK_SIZEOF(sList);
+    YACK_SIZEOF(sList::node_type);
+    std::cerr << std::endl;
+
+
+    YACK_SIZEOF(com_node<int8_t>);
+    YACK_SIZEOF(com_node<int16_t>);
+    YACK_SIZEOF(com_node<int32_t>);
+    YACK_SIZEOF(com_node<int64_t>);
+    YACK_SIZEOF(com_node<string>);
 
 }
 YACK_UDONE()
