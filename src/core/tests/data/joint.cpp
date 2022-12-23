@@ -115,6 +115,17 @@ YACK_UTEST(data_joint)
     YACK_SIZEOF(com_node<int64_t>);
     YACK_SIZEOF(com_node<string>);
 
+    {
+        typedef com_list<int> iList;
+        typedef com_pool<int> iPool;
+        typedef iPool::pointer iFund;
+
+        iFund fund = new iPool(4);
+        iList il(fund);
+
+
+    }
+
 }
 YACK_UDONE()
 

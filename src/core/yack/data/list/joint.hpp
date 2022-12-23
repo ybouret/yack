@@ -34,9 +34,9 @@ namespace yack
         //
         // types
         //______________________________________________________________________
-        typedef NODE                node_type; //!< alias
-        typedef pool_of<NODE>       pool_type; //!< alias
-        typedef arc_ptr<joint_pool> pointer;   //!< alias
+        typedef NODE                        node_type; //!< alias
+        typedef pool_of<NODE>               pool_type; //!< alias
+        typedef arc_ptr< joint_pool<NODE> > pointer;   //!< alias
 
         //______________________________________________________________________
         //

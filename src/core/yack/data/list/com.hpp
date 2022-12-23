@@ -106,10 +106,10 @@ namespace yack
         //
         // types
         //______________________________________________________________________
-        typedef com_node<T>                 node_type; //!< alias
-        typedef joint_list<node_type>       self_type; //!< alias
-        typedef joint_pool<node_type>       bank_type; //!< alias
-        typedef typename bank_type::pointer fund_type; //!< alias
+        typedef com_node<T>                  node_type; //!< alias
+        typedef joint_list<node_type>        self_type; //!< alias
+        typedef joint_pool<node_type>        jpool_type; //!< alias
+        typedef typename jpool_type::pointer fund_type; //!< alias
 
         //______________________________________________________________________
         //

@@ -96,7 +96,49 @@ namespace yack
                 }
             }
         }
-        
+
+        bool compress_limiting(double                     &xi,
+                               sp_repo                    &zs,
+                               const readable<xinfo>      &xp)
+        {
+            xi = 0;
+            zs.release();
+            const size_t np = xp.size();
+            if(np)
+            {
+                {
+                    const xinfo &head = xp[1];
+                    xi  =   head.x;
+                    zs << & head.s;
+                }
+                for(size_t i=np;i>1;--i)
+                {
+                    const xinfo &here = xp[i];
+                    switch( __sign::of(here.x,xi) )
+                    {
+                        case negative: assert(here.x<xi);
+                            zs.release();
+                            xi = here.x;
+                            zs << & here.s;
+                            continue;
+
+                        case positive: assert(here.x>xi);
+                            continue;
+
+                        case __zero__:
+                            zs << & here.s;
+                            continue;
+                    }
+                }
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
         bool balancing:: balance(writable<double> &C0,
                                  const cluster    &cc)
         {
@@ -114,6 +156,10 @@ namespace yack
             xinfos negative_prod(M);
             xinfos positive_prod(M);
 
+            sp_fund fund = new sp_pool();
+            sp_repo zs(fund);
+
+
             const equilibria &eqs = (**this).lattice;
 
             YACK_XMLOG(xml," |cluster| =" << cc.size);
@@ -127,7 +173,6 @@ namespace yack
             return true;
 
         TRY_BALANCE:
-            // try bounded eqs of this cluster
             std::cerr << "Try Balancing Bounded" << std::endl;
             for(const eq_node *en=cc.bounded->head;en;en=en->next)
             {
@@ -141,7 +186,7 @@ namespace yack
                 if(negative_prod.size()) flag |= unbalanced_prod;
 
 
-
+                double xi = 0;
                 switch(flag)
                 {
                     case unbalanced_both:
@@ -150,10 +195,14 @@ namespace yack
 
                     case unbalanced_reac:
                         std::cerr << "[unbalanced reac] " << negative_reac << " | limiting: " << positive_prod;
+                        compress_limiting(xi,zs,positive_prod);
+                        std::cerr << zs;
                         break;
 
                     case unbalanced_prod:
                         std::cerr << "[unbalanced prod] " << negative_prod << " | limiting: " << positive_reac;
+                        compress_limiting(xi,zs,positive_reac);
+                        std::cerr << zs;
                         break;
 
                     default:
