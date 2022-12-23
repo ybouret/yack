@@ -71,8 +71,7 @@ namespace yack
             //! C -> C+nu*xi, raw value, sign of xi must be adapted
             void  mov_(writable<double> &C, const double xi) const throw();
 
-            bool  balancing_extent(sp_repo &vanishing, const readable<double> &C) const;
-
+            
             const xlimit     *genuine_limit(const readable<double> &C) const throw(); //!< test all actors
             const xlimit     *primary_limit(const readable<double> &C) const throw(); //!< test all primary actors
             

@@ -5,7 +5,7 @@
 
 #include "yack/chem/entity.hpp"
 #include "yack/ptr/ark.hpp"
-#include "yack/data/list/meta-repo.hpp"
+#include "yack/data/list/meta.hpp"
 
 namespace yack
 {
@@ -88,7 +88,6 @@ namespace yack
             virtual const char *attr() const;
         };
 
-        typedef meta_repo<const species> sp_repo;     //!< cache of species
         typedef meta_list<const species> sp_list_;    //!< list of species, base class
         typedef sp_list_::node_type      sp_node;     //!< node within sp_repo
 

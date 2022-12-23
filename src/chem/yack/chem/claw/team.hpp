@@ -5,6 +5,7 @@
 
 #include "yack/chem/claw.hpp"
 #include "yack/container/matrix.hpp"
+#include "yack/data/list/meta-repo.hpp"
 
 namespace yack
 {
