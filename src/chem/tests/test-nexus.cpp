@@ -53,9 +53,12 @@ YACK_UTEST(nexus)
 
     custodian toto(cs,xml);
 
-    toto(C);
-    lib(std::cerr << "C=","",C);
-
+    if(false)
+    {
+        toto(C);
+        lib(std::cerr << "C=","",C);
+    }
+    
     balancing titi(cs,xml);
     titi(C);
 
