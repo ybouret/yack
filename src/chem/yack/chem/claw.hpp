@@ -72,16 +72,25 @@ namespace yack
         //______________________________________________________________________
         //
         //
-        //! hold list of c-laws
+        //! base class for conservations laws
         //
         //______________________________________________________________________
         typedef cxx_list_of<conservation_law>     conservation_laws_;
 
 
+        //______________________________________________________________________
+        //
+        //
+        //! hold list of c-laws
+        //
+        //______________________________________________________________________
         class conservation_laws : public object, public conservation_laws_
         {
         public:
+            //! setup empty
             explicit conservation_laws() throw() : object(), conservation_laws_() {}
+
+            //! cleanup
             virtual ~conservation_laws() throw() {}
 
         private:
