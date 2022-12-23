@@ -154,7 +154,7 @@ namespace yack
             xinfos negative_reac(M);
             xinfos positive_reac(M);
             xinfos negative_prod(M);
-            xinfos positive_prod(M);
+            xinfos limiting_prod(M);
 
             sp_fund fund = new sp_pool();
             sp_repo zs(fund);
@@ -181,7 +181,7 @@ namespace yack
                 eqs.pad(std::cerr << "-> " << eq.name,eq) << " : ";
 
                 fill(negative_reac,positive_reac,eq.reac->head,C0,crit);
-                fill(negative_prod,positive_prod,eq.prod->head,C0,crit);
+                fill(negative_prod,limiting_prod,eq.prod->head,C0,crit);
                 if(negative_reac.size()) flag |= unbalanced_reac;
                 if(negative_prod.size()) flag |= unbalanced_prod;
 
@@ -194,15 +194,19 @@ namespace yack
                         continue;
 
                     case unbalanced_reac:
-                        std::cerr << "[unbalanced reac] " << negative_reac << " | limiting: " << positive_prod;
-                        compress_limiting(xi,zs,positive_prod);
-                        std::cerr << zs;
+                        std::cerr << "[unbalanced reac] " << negative_reac << " | limiting: " << limiting_prod;
+                        if(compress_limiting(xi,zs,limiting_prod) )
+                        {
+                            std::cerr << " / " << zs << " @" << xi;
+                        }
                         break;
 
                     case unbalanced_prod:
                         std::cerr << "[unbalanced prod] " << negative_prod << " | limiting: " << positive_reac;
-                        compress_limiting(xi,zs,positive_reac);
-                        std::cerr << zs;
+                        if(compress_limiting(xi,zs,positive_reac) )
+                        {
+                            std::cerr << " / " << zs << " @" << xi;
+                        }
                         break;
 
                     default:
