@@ -132,104 +132,111 @@ namespace yack
             
             if(n<=1) {
                 YACK_XMLOG(xml, "<standalone>");
-                return;
             }
-            
-
-            //------------------------------------------------------------------
-            //
-            // select local topology
-            //
-            //------------------------------------------------------------------
-            const imatrix mu;
-            const sp_list sl;
+            else
             {
+
                 //--------------------------------------------------------------
                 //
-                // build local topology
+                // select local topology
                 //
                 //--------------------------------------------------------------
-                imatrix       nu(n,M);
+                const imatrix mu;
+                const sp_list sl;
                 {
-                    size_t  i=1;
-                    for(const eq_node *node=cls.head;node;node=node->next,++i)
-                        iota::load(nu[i],Nu[***node]);
-                    assert( n == alga::rank(nu) );
-                }
-                //--------------------------------------------------------------
-                //
-                // select local vectors: the problem becomes abstract
-                //
-                //--------------------------------------------------------------
-                {
-                    const imatrix nut(nu,transposed);
-                    select_clan(coerce(sl),coerce(mu),nut,corelib);
-                    assert( n==alga::rank(nut) );
-                    assert( n==alga::rank(mu)  );
-                }
-
-                if(verbose)
-                {
-                    YACK_XMLOG(xml,"-- local topogy");
-                    std::cerr << "\tnu=" << nu << std::endl;
-                    std::cerr << "\tmu=" << mu << std::endl;
-                }
-            }
-
-            //------------------------------------------------------------------
-            //
-            // build all possible weights
-            //
-            //------------------------------------------------------------------
-            const size_t nd = mu.cols;
-            collector    cw(nd);
-            {
-                qbranch qgen;
-                qgen.batch(mu,n,keep_more_than_two<int>,cw);
-            }
-
-
-            //------------------------------------------------------------------
-            //
-            // expanding
-            //
-            //------------------------------------------------------------------
-            cluster        repo;
-            {
-                YACK_XMLSUB(xml,"mixing");
-                cxx_array<int> weight(N); // global weight
-                cxx_array<int> stoich(M); // global coefficients
-                unsigned       imix=1;    // mixing index
-                for(const collector::entry *ep=cw->head;ep;ep=ep->next,++imix)
-                {
-                    const readable<int> &lcof = *ep;
-                    weight.ld(0);
-                    size_t  i=1;
-                    for(const eq_node *node=cls.head;node;node=node->next,++i)
+                    //----------------------------------------------------------
+                    //
+                    // build local topology
+                    //
+                    //----------------------------------------------------------
+                    imatrix       nu(n,M);
                     {
-                        const size_t ei = ***node;
-                        weight[ei] = lcof[i];
+                        size_t  i=1;
+                        for(const eq_node *node=cls.head;node;node=node->next,++i)
+                            iota::load(nu[i],Nu[***node]);
+                        assert( n == alga::rank(nu) );
                     }
-                    
-                    qbranch::assess(stoich,weight,Nu);
+                    //----------------------------------------------------------
+                    //
+                    // select local vectors: the problem becomes abstract
+                    //
+                    //----------------------------------------------------------
+                    {
+                        const imatrix nut(nu,transposed);
+                        select_clan(coerce(sl),coerce(mu),nut,corelib);
+                        assert( n==alga::rank(nut) );
+                        assert( n==alga::rank(mu)  );
+                    }
 
-                    repo << &promote_mixed(weight);
-                    
                     if(verbose)
                     {
-                        const equilibrium &emix = **repo.tail;
-                        const components  &cmix = emix;
-                        std::cerr << "  u" << imix << " = " << weight << " => " << stoich << " : " << cmix << std::endl;
+                        YACK_XMLOG(xml,"-- local topogy");
+                        std::cerr << "\tnu=" << nu << std::endl;
+                        std::cerr << "\tmu=" << mu << std::endl;
                     }
                 }
+
+                //--------------------------------------------------------------
+                //
+                // build all possible weights
+                //
+                //--------------------------------------------------------------
+                const size_t nd = mu.cols;
+                collector    cw(nd);
+                {
+                    qbranch qgen;
+                    qgen.batch(mu,n,keep_more_than_two<int>,cw);
+                }
+
+
+                //--------------------------------------------------------------
+                //
+                // expanding
+                //
+                //--------------------------------------------------------------
+                cluster        repo;
+                {
+                    YACK_XMLSUB(xml,"mixing");
+                    cxx_array<int> weight(N); // global weight
+                    cxx_array<int> stoich(M); // global coefficients
+                    unsigned       imix=1;    // mixing index
+                    for(const collector::entry *ep=cw->head;ep;ep=ep->next,++imix)
+                    {
+                        const readable<int> &lcof = *ep;
+                        weight.ld(0);
+                        size_t  i=1;
+                        for(const eq_node *node=cls.head;node;node=node->next,++i)
+                        {
+                            const size_t ei = ***node;
+                            weight[ei] = lcof[i];
+                        }
+
+                        qbranch::assess(stoich,weight,Nu);
+
+                        repo << &promote_mixed(weight);
+
+                        if(verbose)
+                        {
+                            const equilibrium &emix = **repo.tail;
+                            const components  &cmix = emix;
+                            std::cerr << "  u" << imix << " = " << weight << " => " << stoich << " : " << cmix << std::endl;
+                        }
+                    }
+                }
+
+                YACK_XMLOG(xml,"-- added #" << repo.size << " to local cluster");
+                cls.merge_back(repo);
+                YACK_XMLOG(xml,"--       #" << cls.size  << " in local cluster");
             }
 
-            YACK_XMLOG(xml,"-- added #" << repo.size << " to local cluster");
-            cls.merge_back(repo);
-
-            // create local teams
+            //------------------------------------------------------------------
+            //
+            // create local teams of equilibria
+            //
+            //------------------------------------------------------------------
             eq_team &roaming =  coerce(*cls.roaming);
             eq_team &bounded =  coerce(*cls.bounded);
+
             for(const eq_node *en=cls.head;en;en=en->next)
             {
                 const equilibrium &eq = **en;
@@ -246,7 +253,7 @@ namespace yack
 
                     case undefined: throw imported::exception(fn,"unexpected undefined <%s>", eq.name());
                 }
-             }
+            }
 
 
         }

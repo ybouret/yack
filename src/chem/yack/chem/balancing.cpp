@@ -38,9 +38,17 @@ namespace yack
                                  const cluster    &cc)
         {
 
+            static const unsigned balanced         = 0x00;
+            static const unsigned unbalanced_reac  = 0x01;
+            static const unsigned unbalanced_prod  = 0x02;
+            static const unsigned unbalanced_both  = unbalanced_reac | unbalanced_prod;
+
+
             const equilibria &eqs = (**this).lattice;
 
-            YACK_XMLOG(xml,"balancing |cluster|=" << cc.size << " |roaming|=" << cc.roaming->size);
+            YACK_XMLOG(xml,"balancing |cluster| =" << cc.size);
+            YACK_XMLOG(xml,"          |roaming| =" << cc.roaming->size);
+            YACK_XMLOG(xml,"          |bounded| =" << cc.bounded->size);
 
             for(const anode *an = (**this).working.head;an;an=an->next)
             {
@@ -49,13 +57,14 @@ namespace yack
             return true;
 
         TRY_BALANCE:
-            // try bounded eq
+            // try bounded eqs of this cluster
+            std::cerr << "Try Balancing Bounded" << std::endl;
             for(const eq_node *en=cc.bounded->head;en;en=en->next)
             {
-                const equilibrium &eq = **en;
+                const equilibrium &eq   = **en;
+                unsigned           flag = balanced;
                 eqs.pad(std::cerr << "-> " << eq.name,eq) << " : ";
 
-                size_t nr = 0;
                 for(const actor *a=eq.reac->head;a;a=a->next)
                 {
                     const species &s = **a;
@@ -63,7 +72,7 @@ namespace yack
                     const double   c = C0[j];
                     if(c<0)
                     {
-                        ++nr;
+                        flag |= unbalanced_reac;
                     }
                     else
                     {
@@ -71,7 +80,6 @@ namespace yack
                     }
                 }
 
-                size_t np = 0;
                 for(const actor *a=eq.prod->head;a;a=a->next)
                 {
                     const species &s = **a;
@@ -79,7 +87,7 @@ namespace yack
                     const double   c = C0[j];
                     if(c<0)
                     {
-                        ++np;
+                        flag |= unbalanced_prod;
                     }
                     else
                     {
@@ -87,10 +95,31 @@ namespace yack
                     }
                 }
 
-                
+                switch(flag)
+                {
+                    case unbalanced_both:
+                        std::cerr << "[unbalanced both]";
+                        break;
+
+                    case unbalanced_reac:
+                        std::cerr << "[unbalanced reac]";
+                        break;
+
+                    case unbalanced_prod:
+                        std::cerr << "[unbalanced prod]";
+                        break;
+
+                    default:
+                        assert(0==flag);
+                        std::cerr << "[balanced]";
 
 
-                //eq.display_compact(std::cerr,C0);
+                }
+
+
+
+
+                eq.display_compact(std::cerr,C0);
                 std::cerr << std::endl;
             }
 
