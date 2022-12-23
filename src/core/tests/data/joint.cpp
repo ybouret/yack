@@ -68,6 +68,8 @@ YACK_UTEST(data_joint)
 
             l << default_type;
             l << 3;
+            l >> default_type;
+            l >> 4;
         }
 
         std::cerr << "@cache: " << (**fund).size << std::endl;
@@ -88,8 +90,21 @@ YACK_UTEST(data_joint)
 
             std::cerr << l << std::endl;
         }
-
     }
+
+    {
+        const int tab[8] = {1,2,3,4,5,6,7,8};
+
+        com_pool<const int *>::pointer fund = new com_pool<const int *>();
+        com_list<const int *>          L(fund);
+        for(size_t i=0;i<sizeof(tab)/sizeof(tab[0]);++i)
+        {
+            if(ran.choice()) L << &coerce(tab[i]); else L >> &coerce(tab[i]);
+            //L << tab+i;
+        }
+        std::cerr << L << std::endl;
+    }
+
 
 }
 YACK_UDONE()
