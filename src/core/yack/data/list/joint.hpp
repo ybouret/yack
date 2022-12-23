@@ -148,6 +148,19 @@ namespace yack
         //! cleanup, returning nodes to pool
         inline virtual ~joint_list() throw() { empty(); }
 
+        //! copy based on node copy
+        inline joint_list(const joint_list &other) :
+        list_type(), releasable(), fund(other.fund)
+        {
+            try {
+                for(const node_type *node=other.head;node;node=node->next) {
+                    const node_type &args= *node;
+                    this->push_back( fund->create(args) );
+                }
+            }
+            catch(...) { empty(); throw; }
+        }
+
         //______________________________________________________________________
         //
         // methods
@@ -189,7 +202,7 @@ namespace yack
         //______________________________________________________________________
         fund_type fund; //!< shared fund of nodes
     private:
-        YACK_DISABLE_COPY_AND_ASSIGN(joint_list);
+        YACK_DISABLE_ASSIGN(joint_list);
 
         inline void empty() throw()
         {
