@@ -8,7 +8,6 @@
 #include "yack/chem/component.hpp"
 #include "yack/chem/xlimits.hpp"
 #include "yack/associative/suffix/set.hpp"
-#include "yack/data/bare.hpp"
 #include "yack/associative/addrbook.hpp"
 
 

@@ -10,6 +10,7 @@
 #include "yack/math/multiplier.hpp"
 #include "yack/math/adder.hpp"
 #include "yack/memory/workplace.hpp"
+#include "yack/data/bare.hpp"
 
 namespace yack
 {
@@ -71,7 +72,7 @@ namespace yack
             //! C -> C+nu*xi, raw value, sign of xi must be adapted
             void  mov_(writable<double> &C, const double xi) const throw();
 
-            
+
             const xlimit     *genuine_limit(const readable<double> &C) const throw(); //!< test all actors
             const xlimit     *primary_limit(const readable<double> &C) const throw(); //!< test all primary actors
             
@@ -98,33 +99,18 @@ namespace yack
 
             //! fill array with coefficients at their position
             template <typename T> inline
-            void fill( writable<T> &q ) const
-            {
-                q.ld(0);
+            void fill( writable<T> &q ) const {
+                const bare<T> _0; q.ld(*_0);
                 for(const actor *a=crew.head;a;a=a->next)
                     q[***a] = a->nu;
             }
 
-            //! check
-            inline bool attached_to(const actor &lhs) const throw()
-            {
-                const size_t j = **lhs;
-                for(const actor *rhs=crew.head;rhs;rhs=rhs->next)
-                {
-                    if( j == ***rhs) return true;
-                }
-                return false;
-            }
 
             //! check
-            inline bool attached_to(const actors &other) const throw()
-            {
-                for(const actor *lhs=other->head;lhs;lhs=lhs->next)
-                {
-                    if( attached_to(*lhs) ) return true;
-                }
-                return false;
-            }
+            bool attached_to(const actor &lhs) const throw();
+
+            //! check
+            bool attached_to(const actors &other) const throw();
 
 
             //__________________________________________________________________
@@ -139,7 +125,7 @@ namespace yack
        
         private:
             mutable memory::workplace<xlimit>  wlim; //!< data for xlimit, standard
-            mutable memory::workplace<xlimit>  wbal; //!< data for xlimit, balancing
+            //mutable memory::workplace<xlimit>  wbal; //!< data for xlimit, balancing
             YACK_DISABLE_COPY_AND_ASSIGN(actors);
         };
 

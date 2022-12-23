@@ -17,8 +17,7 @@ namespace yack
         molecularity(0),
         algebraic_Z(0),
         crew(),
-        wlim(),
-        wbal()
+        wlim() 
         {
 
         }
@@ -55,6 +54,25 @@ namespace yack
             coerce(algebraic_Z)  -= int(nu)*z;
             
             delete coerce(crew).pop_back();
+        }
+
+        bool actors:: attached_to(const actor &lhs) const throw()
+        {
+            const size_t j = **lhs;
+            for(const actor *rhs=crew.head;rhs;rhs=rhs->next)
+            {
+                if( j == ***rhs) return true;
+            }
+            return false;
+        }
+
+        bool actors:: attached_to(const actors &other) const throw()
+        {
+            for(const actor *lhs=other->head;lhs;lhs=lhs->next)
+            {
+                if( attached_to(*lhs) ) return true;
+            }
+            return false;
         }
 
         double actors:: mass_action(const readable<double> &C,
