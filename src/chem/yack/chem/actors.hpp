@@ -56,6 +56,12 @@ namespace yack
             //! emergency remove last
             void remove_last() throw();
 
+
+            const list_of<actor> * operator->() const throw(); //!< access to const crew
+            bool attached_to(const actor  &) const throw();    //!< check link with actor
+            bool attached_to(const actors &) const throw();    //!< check link with other actors
+            //!
+
             //! mass action with rmulops
             double mass_action(const readable<double> &C,
                                rmulops                &ops) const;
@@ -94,8 +100,6 @@ namespace yack
             //! display list of compact associated concentrations
             void display_compact(std::ostream &, const readable<double> &C) const;
 
-            //! access operator to use list
-            const list_of<actor> * operator->() const throw();
 
             //! fill array with coefficients at their position
             template <typename T> inline
@@ -105,12 +109,11 @@ namespace yack
                     q[***a] = a->nu;
             }
 
+            bool must_balance(const readable<double>   &C,
+                              double                   &extent,
+                              meta_list<const species> &vanish) const;
 
-            //! check
-            bool attached_to(const actor &lhs) const throw();
 
-            //! check
-            bool attached_to(const actors &other) const throw();
 
 
             //__________________________________________________________________

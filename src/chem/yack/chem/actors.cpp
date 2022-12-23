@@ -17,7 +17,7 @@ namespace yack
         molecularity(0),
         algebraic_Z(0),
         crew(),
-        wlim() 
+        wlim()
         {
 
         }
@@ -256,6 +256,63 @@ namespace yack
             
         }
 
+
+        bool actors:: must_balance(const readable<double>   &C,
+                                   double                   &extent,
+                                   meta_list<const species> &vanish) const
+        {
+
+            extent=0;
+            vanish.release();
+
+            // find first
+            const actor *a = crew.head;
+        FIND_FIRST:
+            {
+                // check
+                const species &s = **a;
+                const double   c = C[*s];
+                if(c>=0)
+                {
+                    if(NULL==(a=a->next)) return false;
+                    goto FIND_FIRST;
+                }
+
+                // initialize
+                extent = (-c)/a->nu;
+                vanish << &s;
+            }
+
+            // find other shorter
+            for(a=a->next;a;a=a->next)
+            {
+                const species &s = **a;
+                const double   c = C[*s];
+                if(c>=0) continue;
+                const double xx = (-c)/a->nu;
+                switch( __sign::of(xx,extent) )
+                {
+                    case negative: assert(xx<extent);
+                        vanish.release();
+                        extent = xx;
+                        vanish << &s;
+                        continue;
+
+                    case positive: assert(xx>extent);
+                        continue;
+
+                    case __zero__:
+                        vanish << &s;
+                        continue;
+                }
+            }
+
+
+
+
+            return true;
+
+        }
 
     }
 
