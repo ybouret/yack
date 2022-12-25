@@ -126,9 +126,9 @@ namespace yack
             
             const equilibria &eqs = (**this).lattice;
 
-            YACK_XMLOG(xml," |cluster| =" << cc.size);
-            YACK_XMLOG(xml," |roaming| =" << cc.roaming->size);
-            YACK_XMLOG(xml," |bounded| =" << cc.bounded->size);
+            YACK_XMLOG(xml,"\\---|cluster| =" << cc.size);
+            YACK_XMLOG(xml," \\--|roaming| =" << cc.roaming->size);
+            YACK_XMLOG(xml,"  \\-|bounded| =" << cc.bounded->size);
 
             for(const anode *an = (**this).working.head;an;an=an->next)
             {

@@ -10,6 +10,7 @@ namespace yack
     namespace chemical
     {
 
+        //! lower boundary, with equivalent vanishing species
         class boundary : public sp_repo
         {
         public:
@@ -21,6 +22,8 @@ namespace yack
             void free() throw();
             void add(const double   x,
                      const species &s);
+            
+            friend std::ostream & operator<<(std::ostream &, const boundary &);
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(boundary);

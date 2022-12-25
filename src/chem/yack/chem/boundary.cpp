@@ -24,6 +24,8 @@ namespace yack
         {
             assert(x>=0);
             sp_repo &self = *this;
+            
+            // initialize first
             if(size<=0) {
                 xi   =   x;
                 self << &s;
@@ -45,6 +47,20 @@ namespace yack
                     break;
             }
         }
+        
+        std::ostream & operator<<(std::ostream &os, const boundary &b)
+        {
+            os << "[";
+            switch(b.size)
+            {
+                case 0: os << "none"; break;
+                default:
+                    os << "xi=" << b.xi << "@" << static_cast<const sp_repo&>(b);
+            }
+            os << "]";
+            return os;
+        }
+        
     }
     
 }
