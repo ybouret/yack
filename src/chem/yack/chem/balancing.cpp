@@ -3,6 +3,7 @@
 #include "yack/math/iota.hpp"
 #include "yack/ptr/auto.hpp"
 #include "yack/sequence/cxx-series.hpp"
+#include "yack/chem/boundary.hpp"
 #include <iomanip>
 
 
@@ -74,7 +75,7 @@ namespace yack
 
         static inline
         void fill(xinfos                          &neg,
-                  xinfos                          &pos,
+                  boundary                        &pos,
                   const actor                     *a,
                   const readable<double>          &C,
                   const readable<const criterion> &crit)
@@ -96,48 +97,7 @@ namespace yack
                 }
             }
         }
-
-        bool compress_limiting(double                     &xi,
-                               sp_repo                    &zs,
-                               const readable<xinfo>      &xp)
-        {
-            xi = 0;
-            zs.release();
-            const size_t np = xp.size();
-            if(np)
-            {
-                {
-                    const xinfo &head = xp[1];
-                    xi  =   head.x;
-                    zs << & head.s;
-                }
-                for(size_t i=np;i>1;--i)
-                {
-                    const xinfo &here = xp[i];
-                    switch( __sign::of(here.x,xi) )
-                    {
-                        case negative: assert(here.x<xi);
-                            zs.release();
-                            xi = here.x;
-                            zs << & here.s;
-                            continue;
-
-                        case positive: assert(here.x>xi);
-                            continue;
-
-                        case __zero__:
-                            zs << & here.s;
-                            continue;
-                    }
-                }
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
+        
 
         bool balancing:: balance(writable<double> &C0,
                                  const cluster    &cc)
@@ -151,15 +111,19 @@ namespace yack
 
             const size_t                     M     = (**this).M ;
             const readable<const criterion> &crit = (**this).crit;
-            xinfos negative_reac(M);
-            xinfos positive_reac(M);
-            xinfos negative_prod(M);
-            xinfos limiting_prod(M);
+            
 
+            
             sp_fund fund = new sp_pool();
             sp_repo zs(fund);
+            
+            
+            xinfos   negative_reac(M);
+            boundary boundary_reac(fund);
+            xinfos   negative_prod(M);
+            boundary boundary_prod(fund);
 
-
+            
             const equilibria &eqs = (**this).lattice;
 
             YACK_XMLOG(xml," |cluster| =" << cc.size);
@@ -180,13 +144,11 @@ namespace yack
                 unsigned           flag = balanced;
                 eqs.pad(std::cerr << "-> " << eq.name,eq) << " : ";
 
-                fill(negative_reac,positive_reac,eq.reac->head,C0,crit);
-                fill(negative_prod,limiting_prod,eq.prod->head,C0,crit);
+                fill(negative_reac,boundary_reac,eq.reac->head,C0,crit);
+                fill(negative_prod,boundary_prod,eq.prod->head,C0,crit);
                 if(negative_reac.size()) flag |= unbalanced_reac;
                 if(negative_prod.size()) flag |= unbalanced_prod;
-
-
-                double xi = 0;
+                
                 switch(flag)
                 {
                     case unbalanced_both:
@@ -194,19 +156,11 @@ namespace yack
                         continue;
 
                     case unbalanced_reac:
-                        std::cerr << "[unbalanced reac] " << negative_reac << " | limiting: " << limiting_prod;
-                        if(compress_limiting(xi,zs,limiting_prod) )
-                        {
-                            std::cerr << " / " << zs << " @" << xi;
-                        }
+                        std::cerr << "[unbalanced reac] " << negative_reac << " | limiting: " << boundary_prod;
                         break;
 
                     case unbalanced_prod:
-                        std::cerr << "[unbalanced prod] " << negative_prod << " | limiting: " << positive_reac;
-                        if(compress_limiting(xi,zs,positive_reac) )
-                        {
-                            std::cerr << " / " << zs << " @" << xi;
-                        }
+                        std::cerr << "[unbalanced prod] " << negative_prod << " | limiting: " << boundary_reac;
                         break;
 
                     default:
