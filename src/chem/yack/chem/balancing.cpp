@@ -3,6 +3,7 @@
 #include "yack/math/iota.hpp"
 #include "yack/ptr/auto.hpp"
 #include "yack/sequence/cxx-series.hpp"
+#include "yack/chem/limiting.hpp"
 #include "yack/chem/boundary.hpp"
 #include <iomanip>
 
@@ -67,21 +68,23 @@ namespace yack
 
 
 
-
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(xinfos);
         };
 
+        
+
+
 
         static inline
         void fill(xinfos                          &neg,
-                  boundary                        &pos,
+                  limiting                        &pos,
                   const actor                     *a,
                   const readable<double>          &C,
                   const readable<const criterion> &crit)
         {
             neg.free();
-            pos.free();
+            pos.destroy();
             for(;a;a=a->next)
             {
                 const species &s = **a;
@@ -93,7 +96,7 @@ namespace yack
                 }
                 else
                 {
-                    pos.add( c/a->nu,s );
+                    pos.upgrade( c/a->nu,s );
                 }
             }
         }
@@ -119,16 +122,19 @@ namespace yack
             
             
             xinfos   negative_reac(M);
-            boundary boundary_reac(fund);
-            xinfos   negative_prod(M);
-            boundary boundary_prod(fund);
+
+            boundaries boundary_reac(M,fund);
+            limiting   limiting_reac(fund);
+
+            xinfos     negative_prod(M);
+            limiting   limiting_prod(fund);
 
             
             const equilibria &eqs = (**this).lattice;
 
-            YACK_XMLOG(xml,"\\---|cluster| =" << cc.size);
-            YACK_XMLOG(xml," \\--|roaming| =" << cc.roaming->size);
-            YACK_XMLOG(xml,"  \\-|bounded| =" << cc.bounded->size);
+            YACK_XMLOG(xml,"\\___|cluster| =" << cc.size);
+            YACK_XMLOG(xml," \\__|roaming| =" << cc.roaming->size);
+            YACK_XMLOG(xml,"  \\_|bounded| =" << cc.bounded->size);
 
             for(const anode *an = (**this).working.head;an;an=an->next)
             {
@@ -144,8 +150,8 @@ namespace yack
                 unsigned           flag = balanced;
                 eqs.pad(std::cerr << "-> " << eq.name,eq) << " : ";
 
-                fill(negative_reac,boundary_reac,eq.reac->head,C0,crit);
-                fill(negative_prod,boundary_prod,eq.prod->head,C0,crit);
+                fill(negative_reac,limiting_reac,eq.reac->head,C0,crit);
+                fill(negative_prod,limiting_prod,eq.prod->head,C0,crit);
                 if(negative_reac.size()) flag |= unbalanced_reac;
                 if(negative_prod.size()) flag |= unbalanced_prod;
                 
@@ -156,11 +162,11 @@ namespace yack
                         continue;
 
                     case unbalanced_reac:
-                        std::cerr << "[unbalanced reac] " << negative_reac << " | limiting: " << boundary_prod;
+                        std::cerr << "[unbalanced reac] " << negative_reac << " | limiting: " << limiting_prod;
                         break;
 
                     case unbalanced_prod:
-                        std::cerr << "[unbalanced prod] " << negative_prod << " | limiting: " << boundary_reac;
+                        std::cerr << "[unbalanced prod] " << negative_prod << " | limiting: " << limiting_reac;
                         break;
 
                     default:

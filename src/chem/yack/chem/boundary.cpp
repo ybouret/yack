@@ -4,63 +4,54 @@ namespace yack
 {
     namespace chemical
     {
+
         boundary:: ~boundary() throw()
         {
         }
-        
+
         boundary:: boundary(const sp_fund &io) throw() :
-        sp_repo(io),
-        xi(0)
+        frontier(io)
         {
         }
+
         
-        void boundary:: free() throw() {
-            release();
-            xi = 0;
-        }
-        
-        void boundary:: add(const double   x,
-                            const species &s)
-        {
-            assert(x>=0);
-            sp_repo &self = *this;
-            
-            // initialize first
-            if(size<=0) {
-                xi   =   x;
-                self << &s;
-                return;
-            }
-            switch( __sign::of(x,xi) )
-            {
-                case negative: assert(x<xi);
-                    release();
-                    xi   =   x;
-                    self << &s;
-                    break;
-                    
-                case __zero__:
-                    self << &s;
-                    break;
-                    
-                case positive: assert(x>xi);
-                    break;
-            }
-        }
-        
-        std::ostream & operator<<(std::ostream &os, const boundary &b)
-        {
-            os << "[";
-            switch(b.size)
-            {
-                case 0: os << "none"; break;
-                default:
-                    os << "xi=" << b.xi << "@" << static_cast<const sp_repo&>(b);
-            }
-            os << "]";
-            return os;
-        }
-        
+
     }
-    
+
 }
+
+namespace yack
+{
+    namespace chemical
+    {
+
+        boundaries:: ~boundaries() throw()
+        {
+        }
+
+        boundaries:: boundaries(const size_t m, const sp_fund &io):
+        readable<boundary>(),
+        bnd(m),
+        bio(io)
+        {
+        }
+
+        size_t boundaries:: size() const throw() { return bnd.size(); }
+
+        const boundary & boundaries:: operator[](const size_t i) const throw()
+        {
+            assert(i>=1);
+            assert(i<=bnd.size());
+            return bnd[i];
+        }
+
+
+        void boundaries:: destroy() throw()
+        {
+            bnd.free();
+        }
+
+    }
+
+}
+
