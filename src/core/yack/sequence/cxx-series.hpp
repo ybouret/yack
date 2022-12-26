@@ -115,7 +115,7 @@ namespace yack
         }
 
 
-        //! one argument setup, insertion
+        //! one argument setup, insertion at given position
         template <typename U> inline
         type &ins(typename type_traits<U>::parameter_type u, const size_t pos)
         {
@@ -138,7 +138,9 @@ namespace yack
                     out_of_reach::move(next,curr,nmov);
                     try
                     {
-                        return * new ( out_of_reach::naught(curr) ) T(u);
+                        new ( out_of_reach::naught(curr) ) T(u);
+                        ++coerce(count);
+                        return *curr;
                     }
                     catch(...)
                     {

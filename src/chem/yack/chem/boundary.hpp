@@ -63,6 +63,8 @@ namespace yack
             //! upgrade boundaries with a new extent/species
             void                     upgrade(const double x, const species &s);
 
+            //! check consistency
+            bool is_consistent() const throw();
 
 
         private:
@@ -73,6 +75,8 @@ namespace yack
             void ins0(const double x, const species &s);
             void ins1(const double x, const species &s);
             void insN(const double x, const species &s);
+
+
 
         };
 
