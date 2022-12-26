@@ -68,12 +68,12 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            cluster                *next;  //!< for list/pool
-            cluster                *prev;  //!< for list
-            const canon_type        canon; //!< conservation among species
-            const cells_type        cells; //!< teams of linked laws
-            const eq_team_ptr       roaming;
-            const eq_team_ptr       bounded;
+            cluster                *next;    //!< for list/pool
+            cluster                *prev;    //!< for list
+            const canon_type        canon;   //!< conservation among species
+            const cells_type        cells;   //!< teams of linked laws
+            const eq_team_ptr       roaming; //!< roaming of this cluster
+            const eq_team_ptr       bounded; //!< roaming of this cluster
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(cluster);

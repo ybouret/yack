@@ -11,17 +11,36 @@ namespace yack
     namespace chemical
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! frontier = a list of species with the same frontier extent
+        //
+        //______________________________________________________________________
         class frontier : public sp_repo
         {
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
         protected:
-            explicit frontier(const sp_fund &) throw();
+            explicit frontier(const sp_fund &) throw(); //!< setup
         public:
-            virtual ~frontier() throw();
-            void     destroy() throw();
+            virtual ~frontier() throw();                //!< cleanup
 
-            friend std::ostream & operator<<(std::ostream &, const frontier &);
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            void                  destroy() throw(); //!< release list, xi=0
+            friend std::ostream & operator<<(std::ostream &, const frontier &); //!< display
 
-            double   xi;
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const double   xi; //!< frontier extent at which species vanish
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(frontier);

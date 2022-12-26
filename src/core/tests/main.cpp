@@ -72,6 +72,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(data_small);
     YACK_UTEST(data_matrix);
     YACK_UTEST(data_sequence);
+    YACK_UTEST(data_cxx_series);
     YACK_UTEST(data_heap);
     YACK_UTEST(data_tree);
     YACK_UTEST(data_hash);

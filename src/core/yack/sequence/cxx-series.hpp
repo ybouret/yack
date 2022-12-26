@@ -70,12 +70,22 @@ namespace yack
         inline size_t         capacity() const throw() { return total; }
 
         //! push back param_type
-        inline void push_back( param_type args )
+        inline void push_back(param_type args)
         {
             assert(count<total);
             new (basis+count) T(args);
             ++coerce(count);
         }
+
+        //! push front param_type
+        inline void push_front(param_type args)
+        {
+            assert(count<total);
+            lift(); try { new (basis) T(args); } catch(...) { fall(); throw; }
+            ++coerce(count);
+        }
+
+
 
         //! helper
         inline cxx_series & operator<<(param_type args) {
@@ -83,15 +93,64 @@ namespace yack
             return *this;
         }
 
-        //! one argument setup
+        //! one argument setup, push_back
         template <typename U> inline
         type &add(typename type_traits<U>::parameter_type u)
         {
+            assert(count<total);
             mutable_type *target = basis+count;
             new (target) T(u);
             ++coerce(count);
             return *target;
         }
+
+        //! one argument setup, push_front
+        template <typename U> inline
+        type &pre(typename type_traits<U>::parameter_type u)
+        {
+            assert(count<total);
+            lift(); try { new (basis) T(u); } catch(...) { fall(); throw; }
+            ++coerce(count);
+            return *basis;
+        }
+
+
+        //! one argument setup, insertion
+        template <typename U> inline
+        type &ins(typename type_traits<U>::parameter_type u, const size_t pos)
+        {
+            assert(count<total);
+            if(pos<=0)
+            {
+                return pre<U>(u);
+            }
+            else
+            {
+                if(pos>count)
+                {
+                    return add<U>(u);
+                }
+                else
+                {
+                    mutable_type *curr = &entry[pos];
+                    mutable_type *next =  curr+1;
+                    const size_t  nmov = (count+1-pos) * sizeof(type);
+                    out_of_reach::move(next,curr,nmov);
+                    try
+                    {
+                        return * new ( out_of_reach::naught(curr) ) T(u);
+                    }
+                    catch(...)
+                    {
+                        out_of_reach::move(curr,next,nmov);
+                        out_of_reach::naught(basis+count);
+                        throw;
+                    }
+                }
+            }
+
+        }
+
 
         //! two arguments setup
         template <typename U, typename V> inline
@@ -142,6 +201,25 @@ namespace yack
         }
         virtual const_type *cxx() const throw() { return entry; }
         virtual const_type *mem() const throw() { return basis; }
+
+        void lift() throw()
+        {
+            assert(count<total);
+            const void  *source = basis;
+            void        *target = basis+1;
+            const size_t length = count * sizeof(type);
+            out_of_reach::move(target,source,length);
+        }
+
+        void fall()
+        {
+            assert(count<total);
+            const void  *source = basis+1;
+            void        *target = basis;
+            const size_t length = count * sizeof(type);
+            out_of_reach::move(target,source,length);
+        }
+
 
     };
 

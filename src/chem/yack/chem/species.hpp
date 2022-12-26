@@ -109,16 +109,18 @@ namespace yack
         };
 
 
-        typedef com_list<const species *> sp_repo_;
-        typedef com_pool<const species *> sp_pool;
-        typedef sp_pool::pointer          sp_fund;
+        typedef com_list<const species *> sp_repo_; //!< repositiroy
+        typedef com_pool<const species *> sp_pool;  //!< shared pool
+        typedef sp_pool::pointer          sp_fund;  //!< shared fund
 
+        //! repository of species with shared fund
         class sp_repo : public sp_repo_
         {
         public:
-            explicit sp_repo(const sp_fund &fund) throw() : sp_repo_(fund) {}
-            virtual ~sp_repo() throw() {}
+            explicit sp_repo(const sp_fund &fund) throw() : sp_repo_(fund) {} //!< setup
+            virtual ~sp_repo() throw() {} //!< cleanup
 
+            //! display
             friend std::ostream & operator<<(std::ostream &os, const sp_repo &self)
             {
                 os << '{';

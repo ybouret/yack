@@ -10,25 +10,57 @@ namespace yack
     namespace chemical
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! boundary species with their common extent
+        //
+        //______________________________________________________________________
         class boundary : public frontier
         {
         public:
-            explicit boundary(const sp_fund &) throw();
-            virtual ~boundary() throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit boundary(const sp_fund &) throw(); //!< setup
+            virtual ~boundary() throw();                //!< cleanup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(boundary);
         };
 
+
+        //______________________________________________________________________
+        //
+        //
+        //! ordered boundaries
+        //
+        //______________________________________________________________________
         class boundaries : public readable<boundary>
         {
         public:
-            explicit boundaries(const size_t m, const sp_fund &);
-            virtual ~boundaries() throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit boundaries(const size_t m, const sp_fund &); //!< setup
+            virtual ~boundaries() throw();                        //!< cleanup
 
-            virtual size_t           size()                   const throw();
-            virtual const boundary & operator[](const size_t) const throw();
-            void                     destroy() throw();
+            //__________________________________________________________________
+            //
+            // interface: readable
+            //__________________________________________________________________
+            virtual size_t           size()                   const throw(); //!< active boundaries
+            virtual const boundary & operator[](const size_t) const throw(); //!< access in increasing ordere
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            void                     destroy() throw(); //!< destroy boundaries
+
+            //! upgrade boundaries with a new extent/species
             void                     upgrade(const double x, const species &s);
 
 
@@ -37,6 +69,11 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(boundaries);
             cxx_series<boundary> bnd;
             sp_fund              bio;
+
+            void ins0(const double x, const species &s);
+            void ins1(const double x, const species &s);
+            void insN(const double x, const species &s);
+
         };
 
 

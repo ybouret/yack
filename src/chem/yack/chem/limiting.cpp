@@ -24,7 +24,7 @@ namespace yack
 
             // initialize first
             if(size<=0) {
-                xi   =   x;
+                coerce(xi) = x;
                 self << &s;
                 return;
             }
@@ -35,7 +35,7 @@ namespace yack
             {
                 case negative: assert(x<xi);
                     release();
-                    xi   =   x;
+                    coerce(xi) =  x;
                     self << &s;
                     break;
 

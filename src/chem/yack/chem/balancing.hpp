@@ -13,18 +13,33 @@ namespace yack
 
     namespace chemical
     {
-
-
+        //______________________________________________________________________
+        //
+        //
+        //! balancing algorithm
+        //
+        //______________________________________________________________________
         class balancing : public authority<const nexus>
         {
         public:
-            explicit balancing(const nexus &, const xmlog &);
-            virtual ~balancing() throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit balancing(const nexus &, const xmlog &); //!< setup
+            virtual ~balancing() throw();                     //!< cleanup
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            bool operator()(writable<double> &C0); //!< balance C0
 
-            bool operator()(writable<double> &C0);
-
-            const xmlog &xml;
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const xmlog &xml; //!< helper
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(balancing);

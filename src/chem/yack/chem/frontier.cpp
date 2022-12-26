@@ -6,7 +6,7 @@ namespace yack
     {
         frontier:: ~frontier() throw()
         {
-            xi=0;
+            coerce(xi)=0;
         }
 
         frontier:: frontier(const sp_fund &io) throw() :
@@ -18,7 +18,7 @@ namespace yack
 
         void frontier:: destroy() throw() {
             release();
-            xi = 0;
+            coerce(xi) = 0;
         }
 
 

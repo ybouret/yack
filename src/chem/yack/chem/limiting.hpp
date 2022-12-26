@@ -11,16 +11,34 @@ namespace yack
     namespace chemical
     {
 
-
+        //______________________________________________________________________
+        //
+        //
         //! lower limiting, with matching vanishing species
+        //
+        //______________________________________________________________________
         class limiting : public frontier
         {
         public:
-            explicit limiting(const sp_fund &) throw();
-            virtual ~limiting() throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit limiting(const sp_fund &) throw(); //!< setup
+            virtual ~limiting() throw();                //!< cleanup
 
-            void upgrade(const double   x,
-                         const species &s);
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            //! upgrade current status
+            /**
+             - initialize if first species
+             - keep smallest or update list of vanishing species
+             */
+
+            void upgrade(const double x, const species &s);
             
 
         private:
