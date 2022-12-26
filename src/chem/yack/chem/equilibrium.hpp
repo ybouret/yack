@@ -80,12 +80,26 @@ namespace yack
         class eq_squad : public eq_team
         {
         public:
-            explicit eq_squad() throw() : eq_team() {}
+            explicit eq_squad() throw() : eq_team(), next(0), prev(0) {}
             virtual ~eq_squad() throw() {}
             
+            
+            eq_squad *next;
+            eq_squad *prev;
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(eq_squad);
         };
+        
+        class eq_squads : public cxx_list_of<eq_squad>
+        {
+        public:
+            explicit eq_squads() throw();
+            virtual ~eq_squads() throw();
+            
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(eq_squads);
+        };
+        
         
     }
     
