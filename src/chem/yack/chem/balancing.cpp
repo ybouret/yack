@@ -101,8 +101,7 @@ namespace yack
 
             boundaries boundary_prod(M,io);
             limiting   limiting_prod(io);
-
-            sp_repo    vanishing(io);
+            frontier   vanishing(io);
             
             const equilibria &eqs = (**this).lattice;
 
@@ -142,17 +141,13 @@ namespace yack
                     case unbalanced_reac:
                         assert(limiting_prod.size>0);
                         if(xml.verbose) std::cerr  << boundary_reac << " | limited by: " << limiting_prod << std::endl;
-                    {
-                        const double xi = boundary_reac.analyze(vanishing,limiting_prod);
-                    }
+                        boundary_reac.analyze(vanishing,limiting_prod);
                         break;
 
                     case unbalanced_prod:
                         assert(limiting_reac.size>0);
                         if(xml.verbose) std::cerr  <<  boundary_prod << " | limited by: " << limiting_reac << std::endl;
-                    {
-                        const double xi = boundary_prod.analyze(vanishing,limiting_reac);
-                    }
+                        boundary_prod.analyze(vanishing,limiting_reac);
                         break;
 
                     default:

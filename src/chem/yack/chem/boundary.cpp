@@ -224,14 +224,14 @@ namespace yack
 
 
         static inline
-        double __joined(sp_repo &zero, const frontier &winner)
+        void __joined(frontier &zero, const frontier &winner)
         {
             zero.join(winner);
-            return winner.xi;
+            coerce(zero.xi) = winner.xi;
         }
 
-        double boundaries:: analyze(sp_repo        &zero,
-                                    const frontier &mark) const
+        void boundaries:: analyze(frontier        &zero,
+                                  const frontier &mark) const
         {
 
             assert(size()>0);
@@ -250,7 +250,7 @@ namespace yack
                 {
                         // mark is reached first
                     case negative: assert(mark.xi<self.xi);
-                        std::cerr << "limited by" << mark << std::endl;
+                        std::cerr << "limited by " << mark << std::endl;
                         return __joined(zero,mark);
 
 
@@ -314,7 +314,7 @@ namespace yack
                         assert(mark.xi<self.xi);
                         break;
 
-                    case positive:
+                    case positive: // go on
                         jlo = jnx;
                         continue;
 

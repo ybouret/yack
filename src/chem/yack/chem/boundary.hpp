@@ -67,8 +67,8 @@ namespace yack
             //! check consistency
             bool is_consistent() const throw();
             
-            double analyze(sp_repo        &zero,
-                           const frontier &mark) const;
+            void analyze(frontier       &zero,
+                         const frontier &mark) const;
 
 
         private:
