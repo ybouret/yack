@@ -6,7 +6,8 @@
 
 #include "yack/chem/nexus.hpp"
 #include "yack/type/authority.hpp"
-
+#include "yack/chem/limiting.hpp"
+#include "yack/chem/boundary.hpp"
 
 namespace yack
 {
@@ -40,11 +41,16 @@ namespace yack
             // members
             //__________________________________________________________________
             const xmlog &xml; //!< helper
-
+            sp_fund      io;  //!< shared
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(balancing);
             bool balance(writable<double> &C0,
                          const cluster    &cc);
+
+            void compute(const boundaries &neg,
+                         const limiting   &pos);
+            
         };
 
 

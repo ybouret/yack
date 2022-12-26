@@ -2,9 +2,6 @@
 #include "yack/chem/balancing.hpp"
 #include "yack/math/iota.hpp"
 #include "yack/ptr/auto.hpp"
-#include "yack/sequence/cxx-series.hpp"
-#include "yack/chem/limiting.hpp"
-#include "yack/chem/boundary.hpp"
 #include <iomanip>
 
 
@@ -21,7 +18,8 @@ namespace yack
 
         balancing:: balancing(const nexus &usr, const xmlog &out) :
         authority<const nexus>(usr),
-        xml(out)
+        xml(out),
+        io( new sp_pool() )
         {}
 
         bool balancing:: operator()(writable<double> &C0)
@@ -35,9 +33,6 @@ namespace yack
             }
             return result;
         }
-
-
-
 
 
 
@@ -67,7 +62,7 @@ namespace yack
         }
 
 
-        static const unsigned balanced         = 0x00;
+        static const unsigned is_now_balanced  = 0x00;
         static const unsigned unbalanced_reac  = 0x01;
         static const unsigned unbalanced_prod  = 0x02;
         static const unsigned unbalanced_both  = unbalanced_reac | unbalanced_prod;
@@ -81,8 +76,7 @@ namespace yack
         };
 
 
-
-
+        
         bool balancing:: balance(writable<double> &C0,
                                  const cluster    &cc)
         {
@@ -92,19 +86,12 @@ namespace yack
 
             const size_t                     M     = (**this).M ;
             const readable<const criterion> &crit = (**this).crit;
-            
 
-            
-            sp_fund fund = new sp_pool();
-            sp_repo zs(fund);
-            
-            
+            boundaries boundary_reac(M,io);
+            limiting   limiting_reac(io);
 
-            boundaries boundary_reac(M,fund);
-            limiting   limiting_reac(fund);
-
-            boundaries boundary_prod(M,fund);
-            limiting   limiting_prod(fund);
+            boundaries boundary_prod(M,io);
+            limiting   limiting_prod(io);
 
             
             const equilibria &eqs = (**this).lattice;
@@ -124,9 +111,9 @@ namespace yack
             for(const eq_node *en=cc.bounded->head;en;en=en->next)
             {
                 const equilibrium &eq   = **en;
-                unsigned           flag = balanced;
+                unsigned           flag = is_now_balanced;
 
-
+                // interleaved scanning
                 fill(boundary_reac,limiting_reac,eq.reac->head,C0,crit);
                 fill(boundary_prod,limiting_prod,eq.prod->head,C0,crit);
                 if(boundary_reac.size()) flag |= unbalanced_reac;
@@ -135,7 +122,7 @@ namespace yack
                 if(xml.verbose) eqs.pad(*xml << eq.name,eq) << " |" << balanced_msg[flag] << "| ";
 
 
-
+                // check
                 switch(flag)
                 {
                     case unbalanced_both:
@@ -143,10 +130,12 @@ namespace yack
                         continue;
 
                     case unbalanced_reac:
+                        assert(limiting_prod.size>0);
                         if(xml.verbose) std::cerr  << boundary_reac << " | limited by: " << limiting_prod << std::endl;
                         break;
 
                     case unbalanced_prod:
+                        assert(limiting_reac.size>0);
                         if(xml.verbose) std::cerr  <<  boundary_prod << " | limited by: " << limiting_reac << std::endl;
                         break;
 
@@ -160,6 +149,14 @@ namespace yack
 
 
             return false;
+        }
+
+        void balancing:: compute(const boundaries &neg,
+                                 const limiting   &pos)
+        {
+            assert(pos.size>0);      //! at least one limiting species
+            assert(neg.size()>=0);   //! at least one unbalanced species
+            
         }
 
     }
