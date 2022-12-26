@@ -63,7 +63,9 @@ YACK_UTEST(nexus)
     titi(C);
 
 
-    
+    std::cerr << "topo=" << cs.topo << std::endl;
+    std::cerr << "tbal=" << cs.tbal << std::endl;
+
     YACK_SIZEOF(nexus);
     YACK_SIZEOF(cluster);
     YACK_SIZEOF(eq_team);

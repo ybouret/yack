@@ -250,21 +250,18 @@ namespace yack
                 {
                         // mark is reached first
                     case negative: assert(mark.xi<self.xi);
-                        std::cerr << "limited by " << mark << std::endl;
                         return __joined(zero,mark);
 
 
                         // numerical same value
                     case __zero__:
-                        std::cerr << "exact first " << mark << " and " << self << std::endl;
                         zero.join(self);
                         return __joined(zero,mark);
 
-
+                        // greater than first value
                     case positive: assert(mark.xi>self.xi);
                         if(size()<=1) {
-                            std::cerr << "met first " << self << std::endl;
-                            return __joined(zero,self);
+                            return __joined(zero,self); // early return
                         }
                         break;
                 }
@@ -273,17 +270,15 @@ namespace yack
             assert(size()>1);
             assert(mark.xi>bnd[1].xi);
 
-            const size_t jup = bnd.size();
+            const size_t jup = bnd.size(); assert(jup>=2);
             {
                 const boundary &self = bnd[jup];
                 switch( __sign::of(mark.xi,self.xi) )
                 {
                     case positive: assert(mark.xi>self.xi);
-                        std::cerr << "met last " << self << std::endl;
                         return __joined(zero,self);
 
                     case __zero__:
-                        std::cerr << "exactly last " << self << " and " << mark << std::endl;
                         zero.join(self);
                         return __joined(zero,mark);
 
@@ -293,7 +288,6 @@ namespace yack
                 }
             }
 
-            std::cerr << "look up..." << std::endl;
             size_t jlo = 1;
 
             assert(mark.xi>bnd[jlo].xi);
@@ -304,13 +298,11 @@ namespace yack
                 const boundary &self = bnd[jnx];
                 switch(__sign::of(mark.xi,self.xi))
                 {
-                    case __zero__:
-                        std::cerr << "exactly same " << self << " and " << mark << std::endl;
+                    case __zero__: // found jnx
                         zero.join(self);
                         return __joined(zero,mark);
 
-                    case negative:
-                        std::cerr << "found upper value " << self << std::endl;
+                    case negative: // found jlo: double break
                         assert(mark.xi<self.xi);
                         break;
 

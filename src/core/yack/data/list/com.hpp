@@ -37,8 +37,8 @@ namespace yack
         //
         // method
         //______________________________________________________________________
-        inline type       & operator*()       throw() { return data; } //!< access
-        inline const_type & operator*() const throw() { return data; } //!< access
+        inline type       & operator*()       throw() { return              data; } //!< access
+        inline const_type & operator*() const throw() { return (const_type&)data; } //!< access
 
         //! display data
         inline friend std::ostream & operator<<(std::ostream   &os,
@@ -108,8 +108,8 @@ namespace yack
         //______________________________________________________________________
         typedef com_node<T>                  node_type; //!< alias
         typedef joint_list<node_type>        self_type; //!< alias
-        typedef joint_pool<node_type>        jpool_type; //!< alias
-        typedef typename jpool_type::pointer fund_type; //!< alias
+        typedef joint_pool<node_type>        pool_type; //!< alias
+        typedef typename pool_type::pointer  fund_type; //!< alias
 
         //______________________________________________________________________
         //

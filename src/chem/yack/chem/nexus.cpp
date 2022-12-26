@@ -161,22 +161,38 @@ namespace yack
                 coerce(L) = lattice.size();
                 if(L)
                 {
-                    
+                    coerce(topo).make(L,M);
+                    coerce(tbal).make(L,M);
                     {
                         const enode *en = lattice.head();
                         for(size_t i=N;i>0;--i)
                         {
                             assert(en);
                             en=en->next;
+                            iota::load(coerce(topo)[i],Nu[i]);
                         }
                         coerce(next_en) = en;
                     }
-#if 0
+
+#if 1
                     for(const enode *en=next_en;en;en=en->next)
                     {
                         const equilibrium &eq = ***en;
                         const size_t       ei = *eq;
-                        Kl[ei] = eq.K(t);
+                        eq.fill(coerce(topo)[ei]);
+                    }
+
+                    coerce(tbal).assign(topo);
+                    for(size_t i=L;i>0;--i)
+                    {
+                        writable<int> &r = coerce(tbal)[i];
+                        for(size_t j=M;j>0;--j)
+                        {
+                            if( crit[j] != conserved )
+                            {
+                                r[j] = 0;
+                            }
+                        }
                     }
 #endif
                     //std::cerr << "Kl=" << Kl << std::endl;

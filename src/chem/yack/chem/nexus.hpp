@@ -108,7 +108,9 @@ namespace yack
             //__________________________________________________________________
             const size_t       Nq; //!< number of conservation laws
             const umatrix      Qm; //!< built from each conservation law
-            
+
+            const imatrix      topo; //!< full topology
+            const imatrix      tbal; //!< topology for balancing
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(nexus);

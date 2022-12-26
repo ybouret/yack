@@ -219,7 +219,7 @@ namespace yack
                         {
                             const equilibrium &emix = **repo.tail;
                             const components  &cmix = emix;
-                            std::cerr << "  u" << imix << " = " << weight << " => " << stoich << " : " << cmix << std::endl;
+                            std::cerr << "  u" << imix << " = " << weight << " => " << stoich << " : " << cmix << " : " << emix.name << std::endl;
                         }
                     }
                 }

@@ -2,6 +2,7 @@
 #include "yack/chem/balancing.hpp"
 #include "yack/math/iota.hpp"
 #include "yack/ptr/auto.hpp"
+#include "yack/type/utils.hpp"
 #include <iomanip>
 
 
@@ -18,8 +19,10 @@ namespace yack
 
         balancing:: balancing(const nexus &usr, const xmlog &out) :
         authority<const nexus>(usr),
-        xml(out),
-        io( new sp_pool() )
+        io( new sp_pool() ),
+        Cbalanced(usr.L,usr.L>0?usr.M:0),
+        vanishing(io),
+        xml(out)
         {}
 
         bool balancing:: operator()(writable<double> &C0)
@@ -101,7 +104,6 @@ namespace yack
 
             boundaries boundary_prod(M,io);
             limiting   limiting_prod(io);
-            frontier   vanishing(io);
             
             const equilibria &eqs = (**this).lattice;
 
@@ -128,33 +130,34 @@ namespace yack
                 if(boundary_reac.size()) flag |= unbalanced_reac;
                 if(boundary_prod.size()) flag |= unbalanced_prod;
 
-                if(xml.verbose) eqs.pad(*xml << eq.name,eq) << balanced_msg[flag];
 
 
                 // check
                 switch(flag)
                 {
                     case unbalanced_both:
-                        if(xml.verbose) std::cerr << std::endl;
                         continue;
 
                     case unbalanced_reac:
                         assert(limiting_prod.size>0);
-                        if(xml.verbose) std::cerr  << boundary_reac << " | limited by: " << limiting_prod << std::endl;
                         boundary_reac.analyze(vanishing,limiting_prod);
+                        if(xml.verbose) eqs.pad(*xml << eq.name,eq) << balanced_msg[flag]  << boundary_reac << " | limited by prod: " << limiting_prod << " => " << vanishing << std::endl;
+                        coerce(vanishing.xi) = -vanishing.xi;
+                        std::cerr << "score= " << score(C0,eq) << std::endl;
                         break;
 
                     case unbalanced_prod:
                         assert(limiting_reac.size>0);
-                        if(xml.verbose) std::cerr  <<  boundary_prod << " | limited by: " << limiting_reac << std::endl;
                         boundary_prod.analyze(vanishing,limiting_reac);
+                        if(xml.verbose) eqs.pad(*xml << eq.name,eq) << balanced_msg[flag] <<  boundary_prod << " | limited by reac: " << limiting_reac << " => " << vanishing << std::endl;
+                        std::cerr << "score= " << score(C0,eq) << std::endl;
                         break;
 
                     default:
                         assert(0==flag);
-                        if(xml.verbose) std::cerr << std::endl;
                         continue;
                 }
+
 
             }
 
@@ -162,6 +165,62 @@ namespace yack
             return false;
         }
 
+
+        double balancing:: score(const readable<double> &C0, const equilibrium &eq)
+        {
+            writable<double> &C = Cbalanced[*eq];
+
+            // first pass, evaluate best concentration
+            iota::load(C,C0);
+
+            const double xi = vanishing.xi;
+            for(const cnode *cn=eq.head();cn;cn=cn->next)
+            {
+                const component &a = ***cn;
+                const species   &s = *a;
+                const size_t     j = *s;
+                const double     c = C0[j];
+                if(c<0)
+                {
+                    C[j] = C0[j] + a.nu * xi;
+                }
+                else
+                {
+                    C[j] = max_of(C0[j]+a.nu*xi,0.0);
+                }
+            }
+
+            for(const sp_knot *sn=vanishing.head;sn;sn=sn->next)
+            {
+                const species &sp = ***sn;
+                const size_t   j  = *sp;
+                C[j] = 0;
+            }
+
+            (**this).corelib(std::cerr,"",C);
+
+
+            const readable<const criterion> &crit = (**this).crit;
+            xadd.ldz();
+
+            // second pass, get improvement
+            for(const cnode *cn=eq.head();cn;cn=cn->next)
+            {
+                const size_t j = *****cn;
+                if(crit[j]!=conserved) continue;
+                const double c0 = C0[j];
+                if(c0<0)
+                {
+                    xadd.push(-c0);
+                    const double c = C[j];
+                    if(c<0) xadd.push(c);
+                }
+            }
+
+
+
+            return xadd.get();
+        }
         
     }
 }

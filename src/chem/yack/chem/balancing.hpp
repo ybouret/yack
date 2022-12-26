@@ -40,14 +40,19 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const xmlog &xml; //!< helper
-            sp_fund      io;  //!< shared
-            
+            sp_fund      io;         //!< shared
+            rmatrix      Cbalanced;  //!< [LxM] balanced concentration matrix
+            frontier     vanishing;
+            raddops      xadd;
+            const xmlog &xml;   //!< helper
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(balancing);
             bool balance(writable<double> &C0,
                          const cluster    &cc);
-            
+
+            double score(const readable<double> &C0, const equilibrium &);
+
         };
 
 

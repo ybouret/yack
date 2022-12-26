@@ -90,7 +90,7 @@ namespace yack
         };
 
         typedef meta_list<const species> sp_list_;    //!< list of species, base class
-        typedef sp_list_::node_type      sp_node;     //!< node within sp_repo
+        typedef sp_list_::node_type      sp_node;     //!< node within sp_list
 
 
         //! list of species, with sorting capabilities
@@ -108,10 +108,11 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(sp_list);
         };
 
-
-        typedef com_list<const species *> sp_repo_; //!< repositiroy
-        typedef com_pool<const species *> sp_pool;  //!< shared pool
+        typedef const species *           sp_addr;
+        typedef com_list<sp_addr>         sp_repo_; //!< repositiroy
+        typedef sp_repo_::pool_type       sp_pool;  //!< shared pool
         typedef sp_pool::pointer          sp_fund;  //!< shared fund
+        typedef sp_repo_::node_type       sp_knot;  //!< node with sp_repo
 
         //! repository of species with shared fund
         class sp_repo : public sp_repo_
