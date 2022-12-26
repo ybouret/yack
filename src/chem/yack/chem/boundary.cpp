@@ -180,9 +180,10 @@ namespace yack
                 boundary &b = bnd[jnx];
                 switch( __sign::of(x,b.xi) )
                 {
-                    case __zero__: // mutliple same value
+                    case __zero__: // multiple same value
                         b << &s;
                         return;
+
                     case positive: // check next interval
                         jlo = jnx;
                         continue;
@@ -220,6 +221,114 @@ namespace yack
             }
 
         }
+
+
+        static inline
+        double __joined(sp_repo &zero, const frontier &winner)
+        {
+            zero.join(winner);
+            return winner.xi;
+        }
+
+        double boundaries:: analyze(sp_repo        &zero,
+                                    const frontier &mark) const
+        {
+
+            assert(size()>0);
+            assert(bnd[1].xi>0);
+            assert(is_consistent());
+
+            assert(mark.size>0);
+            assert(mark.xi>=0);
+
+            zero.release();
+
+            // test again head
+            {
+                const boundary &self = bnd[1];
+                switch( __sign::of(mark.xi,self.xi) )
+                {
+                        // mark is reached first
+                    case negative: assert(mark.xi<self.xi);
+                        std::cerr << "limited by" << mark << std::endl;
+                        return __joined(zero,mark);
+
+
+                        // numerical same value
+                    case __zero__:
+                        std::cerr << "exact first " << mark << " and " << self << std::endl;
+                        zero.join(self);
+                        return __joined(zero,mark);
+
+
+                    case positive: assert(mark.xi>self.xi);
+                        if(size()<=1) {
+                            std::cerr << "met first " << self << std::endl;
+                            return __joined(zero,self);
+                        }
+                        break;
+                }
+            }
+
+            assert(size()>1);
+            assert(mark.xi>bnd[1].xi);
+
+            const size_t jup = bnd.size();
+            {
+                const boundary &self = bnd[jup];
+                switch( __sign::of(mark.xi,self.xi) )
+                {
+                    case positive: assert(mark.xi>self.xi);
+                        std::cerr << "met last " << self << std::endl;
+                        return __joined(zero,self);
+
+                    case __zero__:
+                        std::cerr << "exactly last " << self << " and " << mark << std::endl;
+                        zero.join(self);
+                        return __joined(zero,mark);
+
+                    case negative: assert(mark.xi<self.xi);
+                        // will zero the closest small boundary
+                        break;
+                }
+            }
+
+            std::cerr << "look up..." << std::endl;
+            size_t jlo = 1;
+
+            assert(mark.xi>bnd[jlo].xi);
+            assert(mark.xi<bnd[jup].xi);
+
+            for(size_t jnx=jlo+1;jnx!=jup;++jnx)
+            {
+                const boundary &self = bnd[jnx];
+                switch(__sign::of(mark.xi,self.xi))
+                {
+                    case __zero__:
+                        std::cerr << "exactly same " << self << " and " << mark << std::endl;
+                        zero.join(self);
+                        return __joined(zero,mark);
+
+                    case negative:
+                        std::cerr << "found upper value " << self << std::endl;
+                        assert(mark.xi<self.xi);
+                        break;
+
+                    case positive:
+                        jlo = jnx;
+                        continue;
+
+                }
+
+                break;
+            }
+
+            assert(mark.xi>bnd[jlo].xi);
+            return __joined(zero,bnd[jlo]);
+
+        }
+
+        
 
     }
 

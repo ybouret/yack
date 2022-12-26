@@ -67,6 +67,7 @@ namespace yack
         static const unsigned unbalanced_prod  = 0x02;
         static const unsigned unbalanced_both  = unbalanced_reac | unbalanced_prod;
 
+#if 0
         static const char * const balanced_msg[] =
         {
             "is now balanced",
@@ -74,7 +75,15 @@ namespace yack
             "unbalanced prod",
             "unbalanced both"
         };
+#endif
 
+        static const char * const balanced_msg[] =
+        {
+            " [+] ",
+            " [<] ",
+            " [>] ",
+            " [-] "
+        };
 
         
         bool balancing:: balance(writable<double> &C0,
@@ -93,6 +102,7 @@ namespace yack
             boundaries boundary_prod(M,io);
             limiting   limiting_prod(io);
 
+            sp_repo    vanishing(io);
             
             const equilibria &eqs = (**this).lattice;
 
@@ -119,7 +129,7 @@ namespace yack
                 if(boundary_reac.size()) flag |= unbalanced_reac;
                 if(boundary_prod.size()) flag |= unbalanced_prod;
 
-                if(xml.verbose) eqs.pad(*xml << eq.name,eq) << " |" << balanced_msg[flag] << "| ";
+                if(xml.verbose) eqs.pad(*xml << eq.name,eq) << balanced_msg[flag];
 
 
                 // check
@@ -132,11 +142,17 @@ namespace yack
                     case unbalanced_reac:
                         assert(limiting_prod.size>0);
                         if(xml.verbose) std::cerr  << boundary_reac << " | limited by: " << limiting_prod << std::endl;
+                    {
+                        const double xi = boundary_reac.analyze(vanishing,limiting_prod);
+                    }
                         break;
 
                     case unbalanced_prod:
                         assert(limiting_reac.size>0);
                         if(xml.verbose) std::cerr  <<  boundary_prod << " | limited by: " << limiting_reac << std::endl;
+                    {
+                        const double xi = boundary_prod.analyze(vanishing,limiting_reac);
+                    }
                         break;
 
                     default:
@@ -151,14 +167,7 @@ namespace yack
             return false;
         }
 
-        void balancing:: compute(const boundaries &neg,
-                                 const limiting   &pos)
-        {
-            assert(pos.size>0);      //! at least one limiting species
-            assert(neg.size()>=0);   //! at least one unbalanced species
-            
-        }
-
+        
     }
 }
 

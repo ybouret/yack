@@ -175,6 +175,12 @@ namespace yack
             fund->zstore( destructed(node) );
         }
 
+        //! join a copy of an other list
+        inline void join(const joint_list &other)
+        {
+            joint_list _(other); this->merge_back(_);
+        }
+
         //______________________________________________________________________
         //
         // helpers
@@ -194,6 +200,7 @@ namespace yack
             return *this;
         }
 
+
         //! push_back new node with  1 argument
         template <typename T>
         inline joint_list & operator<<(const T &args) {
@@ -208,6 +215,8 @@ namespace yack
             this->push_front( fund->create(args) );
             return *this;
         }
+
+
 
 
 

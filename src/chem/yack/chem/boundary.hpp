@@ -26,6 +26,7 @@ namespace yack
             explicit boundary(const sp_fund &) throw(); //!< setup
             virtual ~boundary() throw();                //!< cleanup
 
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(boundary);
         };
@@ -65,6 +66,9 @@ namespace yack
 
             //! check consistency
             bool is_consistent() const throw();
+            
+            double analyze(sp_repo        &zero,
+                           const frontier &mark) const;
 
 
         private:
@@ -75,8 +79,7 @@ namespace yack
             void ins0(const double x, const species &s);
             void ins1(const double x, const species &s);
             void insN(const double x, const species &s);
-
-
+            
 
         };
 

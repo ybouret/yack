@@ -29,13 +29,13 @@ namespace yack
             //__________________________________________________________________
             explicit balancing(const nexus &, const xmlog &); //!< setup
             virtual ~balancing() throw();                     //!< cleanup
-
+            
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
             bool operator()(writable<double> &C0); //!< balance C0
-
+            
             //__________________________________________________________________
             //
             // members
@@ -47,9 +47,6 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(balancing);
             bool balance(writable<double> &C0,
                          const cluster    &cc);
-
-            void compute(const boundaries &neg,
-                         const limiting   &pos);
             
         };
 
