@@ -36,54 +36,19 @@ namespace yack
             return result;
         }
 
-        class xinfo
-        {
-        public:
-            double         x;
-            const species &s;
-
-            xinfo(const double _x, const species &_s) throw() : x(_x), s(_s) {}
-            ~xinfo() throw() {}
-            xinfo(const xinfo &_) throw() : x(_.x), s(_.s)  {}
-
-            inline friend std::ostream & operator<<(std::ostream &os, const xinfo &self)
-            {
-                os << "<" << self.s.name << ">@" << self.x;
-                return os;
-            }
-        private:
-            YACK_DISABLE_ASSIGN(xinfo);
-        };
-
-        class xinfos : public cxx_series<xinfo>
-        {
-        public:
-            explicit xinfos(const size_t m) : cxx_series<xinfo>(m) {}
-            virtual ~xinfos() throw() {}
-
-            void add(const double x, const species &s) {
-                const xinfo _(x,s);
-                push_back(_);
-            }
 
 
-
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(xinfos);
-        };
-
-        
 
 
 
         static inline
-        void fill(xinfos                          &neg,
+        void fill(boundaries                      &neg,
                   limiting                        &pos,
                   const actor                     *a,
                   const readable<double>          &C,
                   const readable<const criterion> &crit)
         {
-            neg.free();
+            neg.destroy();
             pos.destroy();
             for(;a;a=a->next)
             {
@@ -92,7 +57,7 @@ namespace yack
                 const double   c = C[j];
                 if(c<0)
                 {
-                    neg.add( (-c)/a->nu,s );
+                    neg.upgrade( (-c)/a->nu,s );
                 }
                 else
                 {
@@ -121,12 +86,11 @@ namespace yack
             sp_repo zs(fund);
             
             
-            xinfos   negative_reac(M);
 
             boundaries boundary_reac(M,fund);
             limiting   limiting_reac(fund);
 
-            xinfos     negative_prod(M);
+            boundaries boundary_prod(M,fund);
             limiting   limiting_prod(fund);
 
             
@@ -150,10 +114,10 @@ namespace yack
                 unsigned           flag = balanced;
                 eqs.pad(std::cerr << "-> " << eq.name,eq) << " : ";
 
-                fill(negative_reac,limiting_reac,eq.reac->head,C0,crit);
-                fill(negative_prod,limiting_prod,eq.prod->head,C0,crit);
-                if(negative_reac.size()) flag |= unbalanced_reac;
-                if(negative_prod.size()) flag |= unbalanced_prod;
+                fill(boundary_reac,limiting_reac,eq.reac->head,C0,crit);
+                fill(boundary_prod,limiting_prod,eq.prod->head,C0,crit);
+                if(boundary_reac.size()) flag |= unbalanced_reac;
+                if(boundary_prod.size()) flag |= unbalanced_prod;
                 
                 switch(flag)
                 {
@@ -162,11 +126,11 @@ namespace yack
                         continue;
 
                     case unbalanced_reac:
-                        std::cerr << "[unbalanced reac] " << negative_reac << " | limiting: " << limiting_prod;
+                        std::cerr << "[unbalanced reac] " << boundary_reac << " | limiting: " << limiting_prod;
                         break;
 
                     case unbalanced_prod:
-                        std::cerr << "[unbalanced prod] " << negative_prod << " | limiting: " << limiting_reac;
+                        std::cerr << "[unbalanced prod] " << boundary_prod << " | limiting: " << limiting_reac;
                         break;
 
                     default:

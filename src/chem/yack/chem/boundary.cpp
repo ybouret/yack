@@ -51,6 +51,21 @@ namespace yack
             bnd.free();
         }
 
+        void boundaries:: upgrade(const double x, const species &s)
+        {
+            assert(x>=0);
+            if(bnd.size()<=0)
+            {
+                boundary &b = bnd.add<const sp_fund&>(bio);
+                b.xi = x;
+                b << &s;
+            }
+            else
+            {
+                exit(0);
+            }
+        }
+
     }
 
 }

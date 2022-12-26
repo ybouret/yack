@@ -24,14 +24,14 @@ namespace yack
 
         std::ostream & operator<<(std::ostream &os, const frontier &b)
         {
-            os << "[";
+            os << "<";
             switch(b.size)
             {
                 case 0: os << "none"; break;
                 default:
                     os << "xi=" << b.xi << "@" << static_cast<const sp_repo&>(b);
             }
-            os << "]";
+            os << ">";
             return os;
         }
 

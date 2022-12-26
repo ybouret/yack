@@ -85,10 +85,12 @@ namespace yack
 
         //! one argument setup
         template <typename U> inline
-        void add(typename type_traits<U>::parameter_type u)
+        type &add(typename type_traits<U>::parameter_type u)
         {
-            new (basis+count) T(u);
+            mutable_type *target = basis+count;
+            new (target) T(u);
             ++coerce(count);
+            return *target;
         }
 
         //! two arguments setup
