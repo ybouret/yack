@@ -65,17 +65,30 @@ namespace yack
                 }
             }
         }
-        
+
+
+        static const unsigned balanced         = 0x00;
+        static const unsigned unbalanced_reac  = 0x01;
+        static const unsigned unbalanced_prod  = 0x02;
+        static const unsigned unbalanced_both  = unbalanced_reac | unbalanced_prod;
+
+        static const char * const balanced_msg[] =
+        {
+            "is now balanced",
+            "unbalanced reac",
+            "unbalanced prod",
+            "unbalanced both"
+        };
+
+
+
 
         bool balancing:: balance(writable<double> &C0,
                                  const cluster    &cc)
         {
 
             YACK_XMLSUB(xml, "balancing:cluster");
-            static const unsigned balanced         = 0x00;
-            static const unsigned unbalanced_reac  = 0x01;
-            static const unsigned unbalanced_prod  = 0x02;
-            static const unsigned unbalanced_both  = unbalanced_reac | unbalanced_prod;
+
 
             const size_t                     M     = (**this).M ;
             const readable<const criterion> &crit = (**this).crit;
@@ -107,41 +120,42 @@ namespace yack
             return true;
 
         TRY_BALANCE:
-            std::cerr << "Try Balancing Bounded" << std::endl;
+            YACK_XMLOG(xml,"-- balancing bounded");
             for(const eq_node *en=cc.bounded->head;en;en=en->next)
             {
                 const equilibrium &eq   = **en;
                 unsigned           flag = balanced;
-                eqs.pad(std::cerr << "-> " << eq.name,eq) << " : ";
+
 
                 fill(boundary_reac,limiting_reac,eq.reac->head,C0,crit);
                 fill(boundary_prod,limiting_prod,eq.prod->head,C0,crit);
                 if(boundary_reac.size()) flag |= unbalanced_reac;
                 if(boundary_prod.size()) flag |= unbalanced_prod;
-                
+
+                if(xml.verbose) eqs.pad(*xml << eq.name,eq) << " |" << balanced_msg[flag] << "| ";
+
+
+
                 switch(flag)
                 {
                     case unbalanced_both:
-                        std::cerr << "[unbalanced both]" << std::endl;
+                        if(xml.verbose) std::cerr << std::endl;
                         continue;
 
                     case unbalanced_reac:
-                        std::cerr << "[unbalanced reac] " << boundary_reac << " | limiting: " << limiting_prod;
+                        if(xml.verbose) std::cerr  << boundary_reac << " | limited by: " << limiting_prod << std::endl;
                         break;
 
                     case unbalanced_prod:
-                        std::cerr << "[unbalanced prod] " << boundary_prod << " | limiting: " << limiting_reac;
+                        if(xml.verbose) std::cerr  <<  boundary_prod << " | limited by: " << limiting_reac << std::endl;
                         break;
 
                     default:
                         assert(0==flag);
-                        std::cerr << "[balanced]" << std::endl;
+                        if(xml.verbose) std::cerr << std::endl;
                         continue;
                 }
 
-
-
-                std::cerr << std::endl;
             }
 
 
