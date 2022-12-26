@@ -72,8 +72,14 @@ YACK_UTEST(nexus)
     YACK_SIZEOF(conservation_laws);
     YACK_SIZEOF(claw_teams);
 
-
-    
+    if(cs.L>0)
+    {
+        matrix<bool> d(cs.L,cs.L);
+        
+        
+        cs.build_detached(d,cs.topo);
+        cs.lattice(std::cerr << "detached=","",d);
+    }
     
 
 }

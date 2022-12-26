@@ -224,10 +224,11 @@ namespace yack
 
 
         static inline
-        void __joined(frontier &zero, const frontier &winner)
+        void __joined(frontier       &vanish,
+                      const frontier &winner)
         {
-            zero.join(winner);
-            coerce(zero.xi) = winner.xi;
+            vanish.join(winner);
+            coerce(vanish.xi) = winner.xi;
         }
 
         void boundaries:: analyze(frontier        &zero,

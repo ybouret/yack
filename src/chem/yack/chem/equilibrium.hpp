@@ -70,9 +70,9 @@ namespace yack
         class eq_team : public object, public eq_team_
         {
         public:
-            explicit eq_team() throw() : object(), eq_team_() {} //!< setup
-            virtual ~eq_team() throw() {}                        //!< cleanup
-
+            explicit eq_team() throw(); //!< setup
+            virtual ~eq_team() throw(); //!< cleanup
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(eq_team);
         };

@@ -73,6 +73,24 @@ namespace yack
     
 }
 
+namespace yack
+{
+    namespace chemical
+    {
+        eq_team:: ~eq_team() throw()
+        {
+        }
+        
+        eq_team:: eq_team() throw() : object(), eq_team_()
+        {
+        }
+        
+        
+
+    }
+    
+}
+
 #include "yack/chem/library.hpp"
 
 namespace yack

@@ -152,7 +152,9 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 make_manifold(xml);
-
+                
+                std::cerr << "lattice=" << lattice << std::endl;
+                
                 //--------------------------------------------------------------
                 //
                 // update lattice
@@ -223,7 +225,35 @@ namespace yack
             }
         }
 
+        static inline
+        bool are_detached(const readable<int> &lhs, const readable<int> &rhs) throw()
+        {
+            assert(lhs.size()==rhs.size());
+            for(size_t k=lhs.size();k>0;--k)
+            {
+                if(lhs[k]!=0 && rhs[k]!=0) return false;
+            }
+            return true;
+        }
         
+        void nexus:: build_detached(matrix<bool> &detached, const imatrix &coef) const
+        {
+            assert( detached.rows == coef.rows );
+            assert( detached.cols == coef.rows );
+            
+            detached.ld(false);
+            for(size_t i=coef.rows;i>0;--i)
+            {
+                writable<bool>      &d_i = detached[i];
+                const readable<int> &c_i = coef[i];
+                for(size_t j=i-1;j>0;--j)
+                {
+                    const readable<int> &c_j = coef[j];
+                    d_i[j] = detached[j][i] = are_detached(c_i,c_j);
+                }
+            }
+        }
+
     }
     
 }

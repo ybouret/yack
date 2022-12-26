@@ -111,7 +111,9 @@ namespace yack
 
             const imatrix      topo; //!< full topology
             const imatrix      tbal; //!< topology for balancing
-
+            
+            void build_detached(matrix<bool> &detached, const imatrix &) const;
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(nexus);
             const lockable::scope lockLib;
@@ -123,7 +125,8 @@ namespace yack
             const equilibrium &promote_mixed(const readable<int> &);
             void               conserved_set(const xmlog &);
             void               conserved_set_(cluster &sharing, const xmlog &);
-
+            
+            
         };
 
     }
