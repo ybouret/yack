@@ -77,6 +77,16 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(eq_team);
         };
 
+        class eq_squad : public eq_team
+        {
+        public:
+            explicit eq_squad() throw() : eq_team() {}
+            virtual ~eq_squad() throw() {}
+            
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(eq_squad);
+        };
+        
     }
     
 }
