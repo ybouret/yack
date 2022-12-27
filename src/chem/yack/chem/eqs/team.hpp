@@ -12,7 +12,6 @@ namespace yack
     {
         typedef meta_list<const equilibrium> eq_team_; //!< alias
         typedef meta_node<const equilibrium> eq_node;  //!< alias
-        typedef meta_repo<const equilibrium> eq_repo;  //!< alias
 
         //______________________________________________________________________
         //
@@ -23,9 +22,18 @@ namespace yack
         class eq_team : public object, public eq_team_
         {
         public:
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
             explicit eq_team() throw(); //!< setup
             virtual ~eq_team() throw(); //!< cleanup
             eq_team(const eq_team &);   //!< copy
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
 
             //! display as list
             friend std::ostream & operator<<(std::ostream &os, const eq_team &self)
@@ -52,10 +60,7 @@ namespace yack
 
             //! sort using compare
             void sort() throw();
-
-
-
-
+            
         private:
             YACK_DISABLE_ASSIGN(eq_team);
         };

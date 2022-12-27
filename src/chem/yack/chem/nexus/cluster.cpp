@@ -11,7 +11,7 @@ namespace yack
         eq_team(),
         next(0),
         prev(0),
-        working(),
+        working( new active_list()       ),
         canon(   new conservation_laws() ),
         cells(   new claw_teams  ),
         roaming( new eq_team() ),
@@ -54,7 +54,7 @@ namespace yack
 
         void cluster:: sort()
         {
-            active_list &A = coerce(working);
+            active_list &A = coerce(*working);
             A.release();
             merge_list_of<eq_node>::sort(*this,eq_node_compare);
             {

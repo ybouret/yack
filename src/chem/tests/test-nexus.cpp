@@ -96,11 +96,9 @@ YACK_UTEST(nexus)
 
     YACK_SIZEOF(nexus);
     YACK_SIZEOF(cluster);
-    YACK_SIZEOF(eq_team);
-    YACK_SIZEOF(conservation_laws);
-    YACK_SIZEOF(claw_teams);
-    YACK_SIZEOF(auto_ptr<const eq_squads>);
-    YACK_SIZEOF(eq_squads);
+    
+
+
 
 }
 YACK_UDONE()

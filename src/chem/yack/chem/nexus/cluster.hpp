@@ -26,7 +26,8 @@ namespace yack
             typedef auto_ptr<const eq_team>           party_type;  //!< alias
             typedef auto_ptr<const claw_teams>        cells_type;  //!< alias
             typedef auto_ptr<const conservation_laws> canon_type;  //!< alias
-            typedef auto_ptr<const eq_squads>         squads_ptr;
+            typedef auto_ptr<const eq_squads>         squads_ptr;  //!< alias
+            typedef auto_ptr<const active_list>       active_ptr;
 
             //__________________________________________________________________
             //
@@ -53,7 +54,7 @@ namespace yack
             //__________________________________________________________________
             cluster                *next;    //!< for list/pool
             cluster                *prev;    //!< for list
-            const active_list       working; //!< workin species in this cluster
+            const active_ptr        working; //!< workin species in this cluster
             const canon_type        canon;   //!< conservation among species
             const cells_type        cells;   //!< teams of linked laws
             const party_type        roaming; //!< roaming of this cluster
