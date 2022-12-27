@@ -4,7 +4,7 @@
 #ifndef YACK_CHEM_LIMITING_INCUDED
 #define YACK_CHEM_LIMITING_INCUDED 1
 
-#include "yack/chem/frontier.hpp"
+#include "yack/chem/balancing/frontier.hpp"
 
 namespace yack
 {

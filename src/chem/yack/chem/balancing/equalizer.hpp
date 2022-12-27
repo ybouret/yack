@@ -4,8 +4,8 @@
 #ifndef YACK_CHEMICAL_EQUALIZER_INCLUDED
 #define YACK_CHEMICAL_EQUALIZER_INCLUDED 1
 
-#include "yack/chem/limiting.hpp"
-#include "yack/chem/boundary.hpp"
+#include "yack/chem/balancing/limiting.hpp"
+#include "yack/chem/balancing/boundary.hpp"
 
 namespace yack
 {

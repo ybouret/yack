@@ -1,5 +1,5 @@
 
-#include "yack/chem/equalizer.hpp"
+#include "yack/chem/balancing/equalizer.hpp"
 
 namespace yack
 {

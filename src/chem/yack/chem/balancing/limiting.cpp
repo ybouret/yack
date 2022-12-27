@@ -1,5 +1,5 @@
 
-#include "yack/chem/limiting.hpp"
+#include "yack/chem/balancing/limiting.hpp"
 
 namespace yack
 {

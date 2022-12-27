@@ -35,12 +35,20 @@ set(chem_nexus ${chem_nexus_decl} ${chem_nexus_srcs})
 SOURCE_GROUP(chem/nexus FILES ${chem_nexus})
 #install( FILES ${chem_nexus_decl} DESTINATION include/yack/chem/nexus )
 
+#balancing
+file(GLOB chem_balancing_decl yack/chem/balancing/*.hpp)
+file(GLOB chem_balancing_srcs yack/chem/balancing/*.cpp)
+set(chem_balancing ${chem_balancing_decl} ${chem_balancing_srcs})
+SOURCE_GROUP(chem/balancing FILES ${chem_balancing})
+install( FILES ${chem_balancing_decl} DESTINATION include/yack/chem/balancing )
+
 add_library(yack-chem STATIC
 ${chem_main}
 ${chem_designer}
 ${chem_eqs}
 ${chem_nexus}
 ${chem_claw}
+${chem_balancing}
 )
 
 install( TARGETS yack-chem ARCHIVE DESTINATION lib )

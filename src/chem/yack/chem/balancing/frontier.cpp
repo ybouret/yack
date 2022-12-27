@@ -1,4 +1,4 @@
-#include "yack/chem/frontier.hpp"
+#include "yack/chem/balancing/frontier.hpp"
 
 namespace yack
 {

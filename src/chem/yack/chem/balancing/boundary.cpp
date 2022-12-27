@@ -1,4 +1,4 @@
-#include "yack/chem/boundary.hpp"
+#include "yack/chem/balancing/boundary.hpp"
 
 namespace yack
 {

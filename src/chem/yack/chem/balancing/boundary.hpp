@@ -3,7 +3,7 @@
 #ifndef YACK_CHEM_BOUNDARY_INCUDED
 #define YACK_CHEM_BOUNDARY_INCUDED 1
 
-#include "yack/chem/frontier.hpp"
+#include "yack/chem/balancing/frontier.hpp"
 #include "yack/sequence/cxx-series.hpp"
 namespace yack
 {
