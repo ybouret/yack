@@ -47,8 +47,11 @@ namespace yack
         // methods
         //______________________________________________________________________
 
+        //! on the fly new node for user data
+        inline void append( T *user ) { (void) this->push_back( new node_type(user) ); }
+
         //! on-the fly push back new meta node with data
-        inline meta_list & operator<<( T *user ) { (void) this->push_back( new node_type(user) ); return *this; }
+        inline meta_list & operator<<( T *user ) { append(user); return *this; }
 
         //! check if ref was inserted
         inline bool met(const_type &ref) const throw() {

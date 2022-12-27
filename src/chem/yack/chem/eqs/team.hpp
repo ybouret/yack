@@ -20,9 +20,30 @@ namespace yack
         public:
             explicit eq_team() throw(); //!< setup
             virtual ~eq_team() throw(); //!< cleanup
+            eq_team(const eq_team &);   //!< copy
+
+            //! display as list
+            friend std::ostream & operator<<(std::ostream &os, const eq_team &self)
+            {
+                const eq_node *node = self.head;
+                if(node)
+                {
+                    os << "{ " << (**node).name;
+                    for(node=node->next;node;node=node->next)
+                    {
+                        os << ", " << (**node).name;
+                    }
+                    os << " }";
+                    return os;
+                }
+                else
+                {
+                    return os << "{}";
+                }
+            }
 
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(eq_team);
+            YACK_DISABLE_ASSIGN(eq_team);
         };
 
     }

@@ -14,13 +14,16 @@ namespace yack
         public:
             explicit eq_squad() throw();
             virtual ~eq_squad() throw();
-
+            eq_squad(const eq_squad &other);
+            eq_squad *clone() const;
 
             eq_squad *next;
             eq_squad *prev;
-            
+
+            static int compare(const eq_squad *lhs, const eq_squad *rhs) throw();
+
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(eq_squad);
+            YACK_DISABLE_ASSIGN(eq_squad);
         };
         
 

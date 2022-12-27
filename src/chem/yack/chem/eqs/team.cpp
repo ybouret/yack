@@ -13,6 +13,9 @@ namespace yack
         {
         }
 
+        eq_team:: eq_team(const eq_team &other) : object(), eq_team_(other) {}
+        
+
     }
 
 }

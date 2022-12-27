@@ -76,9 +76,19 @@ YACK_UTEST(nexus)
         cs.build_detached(d,*cs.topo);
         cs.print_detached(d);
 
-        std::cerr << "conserved topology detached" << std::endl;
-        cs.build_detached(d,*cs.tbal);
-        cs.print_detached(d);
+        cluster  &cc = coerce(*cs.related.head);
+        eq_squads sqd;
+        cluster::build_squads( sqd, cc, d, xml);
+
+        if(true)
+        {
+            std::cerr << "conserved topology detached" << std::endl;
+            cs.build_detached(d,*cs.tbal);
+            cs.print_detached(d);
+            sqd.release();
+            cluster::build_squads( sqd, *cc.bounded, d, xml);
+
+        }
 
     }
     

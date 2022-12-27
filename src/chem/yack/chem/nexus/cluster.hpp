@@ -4,9 +4,11 @@
 #define YACK_NEXUS_CLUSTER_INCLUDED 1
 
 #include "yack/chem/eqs/team.hpp"
+#include "yack/chem/eqs/squad.hpp"
 #include "yack/chem/claw/teams.hpp"
 #include "yack/ptr/auto.hpp"
 #include "yack/chem/active.hpp"
+//#include "yack/ios/xmlog.hpp"
 
 namespace yack
 {
@@ -43,25 +45,7 @@ namespace yack
             //! true if one of the equilibrium is attached
             bool attached_to(const cluster &rhs) const throw();
 
-            //! display as list
-            friend std::ostream & operator<<(std::ostream &os, const cluster &self)
-            {
-                const eq_node *node = self.head;
-                if(node)
-                {
-                    os << "{ " << (**node).name;
-                    for(node=node->next;node;node=node->next)
-                    {
-                        os << ", " << (**node).name;
-                    }
-                    os << " }";
-                    return os;
-                }
-                else
-                {
-                    return os << "{}";
-                }
-            }
+
 
             void sort(); //!< according to equilibrium index, collect working
 
@@ -76,6 +60,13 @@ namespace yack
             const cells_type        cells;   //!< teams of linked laws
             const party_type        roaming; //!< roaming of this cluster
             const party_type        bounded; //!< roaming of this cluster
+            //const eq_squads         zsquads;
+
+            static void build_squads(eq_squads          &groups,
+                                     const eq_team      &guests,
+                                     const matrix<bool> &detached,
+                                     const xmlog        &xml);
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(cluster);

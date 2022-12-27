@@ -116,7 +116,7 @@ namespace yack
 
             void build_detached(matrix<bool> &detached, const imatrix &) const;
             void print_detached(const matrix<bool> &detached) const;
-
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(nexus);
             const lockable::scope lockLib;
