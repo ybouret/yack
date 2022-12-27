@@ -12,16 +12,38 @@ namespace yack
 
     namespace chemical
     {
+        //______________________________________________________________________
+        //
+        //
+        //! hold limiting and boundaries for reactants/products
+        //
+        //______________________________________________________________________
         class equalizer
         {
         public:
-            equalizer(const size_t m, const sp_fund &io);
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            equalizer(const size_t m, const sp_fund &io); //!< setup memory
             ~equalizer() throw();
 
-            void reset() throw();
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            void destroy() throw(); //!< cleanup all
 
-            limiting   pos;
-            boundaries neg;
+
+            //! syntax helper: neg.analyze(fade,other.lim)
+            void look_up(frontier &fade, const equalizer &other) const;
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            limiting   lim; //!< limiting extent
+            boundaries neg; //!< negative extents
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(equalizer);

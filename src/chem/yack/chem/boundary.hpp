@@ -66,7 +66,13 @@ namespace yack
 
             //! check consistency
             bool is_consistent() const throw();
-            
+
+            //! analyze how much extent is possible
+            /**
+             - if mark is too small, it's mark
+             - otherwise, it the smallest boudary below mark
+             - equalities are taken care of
+             */
             void analyze(frontier       &zero,
                          const frontier &mark) const;
 

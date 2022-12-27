@@ -108,7 +108,7 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(sp_list);
         };
 
-        typedef const species *           sp_addr;
+        typedef const species *           sp_addr;  //!< alias
         typedef com_list<sp_addr>         sp_repo_; //!< repositiroy
         typedef sp_repo_::pool_type       sp_pool;  //!< shared pool
         typedef sp_pool::pointer          sp_fund;  //!< shared fund

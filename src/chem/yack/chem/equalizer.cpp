@@ -12,15 +12,20 @@ namespace yack
         }
 
         equalizer:: equalizer(const size_t m, const sp_fund &io) :
-        pos(io),
+        lim(io),
         neg(m,io)
         {
         }
 
-        void equalizer:: reset() throw()
+        void equalizer:: destroy() throw()
         {
-            pos.destroy();
+            lim.destroy();
             neg.destroy();
+        }
+
+        void equalizer:: look_up(frontier &fade, const equalizer &other) const
+        {
+            neg.analyze(fade,other.lim);
         }
 
 

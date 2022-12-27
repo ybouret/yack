@@ -62,6 +62,7 @@ YACK_UTEST(nexus)
     balancing titi(cs,xml);
     titi(C);
 
+    return 0;
 
     std::cerr << "topo=" << cs.topo << std::endl;
     std::cerr << "tbal=" << cs.tbal << std::endl;

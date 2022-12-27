@@ -41,19 +41,20 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            sp_fund      spIO;        //!< shared
-            equalizer    reac;
-            equalizer    prod;
-            rmatrix      Cbalanced;  //!< [LxM] balanced concentration matrix
-            frontier     vanishing;  //!< result to compute balananced concentrations and score
-            raddops      xadd;
-            const xmlog &xml;   //!< helper
+            sp_fund      spIO;       //!< shared
+            equalizer    reac;       //!< compute reac pos/neg
+            equalizer    prod;       //!< compute prod pos/neg
+            rmatrix      Cbal;       //!< [LxM] balanced concentration matrix
+            frontier     fade;       //!< result to compute balananced concentrations and score
+            raddops      xadd;       //!< for internal computation
+            const xmlog &xml;        //!< helper
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(balancing);
             bool balance(writable<double> &C0,
                          const cluster    &cc);
 
+            void   probe(equalizer &eqz, const actor *a, const readable<double> &C0);
             double score(const readable<double> &C0, const equilibrium &);
 
         };

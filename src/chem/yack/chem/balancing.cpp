@@ -22,8 +22,9 @@ namespace yack
         spIO( new sp_pool() ),
         reac(usr.M,spIO),
         prod(usr.M,spIO),
-        Cbalanced(usr.L,usr.L>0?usr.M:0),
-        vanishing(spIO),
+        Cbal(usr.L,usr.L>0?usr.M:0),
+        fade(spIO),
+        xadd(),
         xml(out)
         {}
 
@@ -39,17 +40,11 @@ namespace yack
             return result;
         }
 
-
-
-        static inline
-        void fill(boundaries                      &neg,
-                  limiting                        &pos,
-                  const actor                     *a,
-                  const readable<double>          &C,
-                  const readable<const criterion> &crit)
+        
+        void balancing:: probe(equalizer &eqz, const actor *a, const readable<double> &C)
         {
-            neg.destroy();
-            pos.destroy();
+            const readable<const criterion> &crit = (**this).crit;
+            eqz.destroy();
             for(;a;a=a->next)
             {
                 const species &s = **a;
@@ -57,14 +52,15 @@ namespace yack
                 const double   c = C[j];
                 if(c<0)
                 {
-                    neg.upgrade( (-c)/a->nu,s );
+                    eqz.neg.upgrade( (-c)/a->nu,s );
                 }
                 else
                 {
-                    pos.upgrade( c/a->nu,s );
+                    eqz.lim.upgrade( c/a->nu,s );
                 }
             }
         }
+
 
 
         static const unsigned is_now_balanced  = 0x00;
@@ -88,16 +84,7 @@ namespace yack
             YACK_XMLSUB(xml, "balancing:cluster");
 
 
-            const size_t                     M     = (**this).M ;
-            const readable<const criterion> &crit = (**this).crit;
-
-            boundaries boundary_reac(M,spIO);
-            limiting   limiting_reac(spIO);
-
-            boundaries boundary_prod(M,spIO);
-            limiting   limiting_prod(spIO);
-            
-            const equilibria &eqs = (**this).lattice;
+            const equilibria     &eqs = (**this).lattice;
 
             YACK_XMLOG(xml,"\\___|cluster| =" << cc.size);
             YACK_XMLOG(xml," \\__|roaming| =" << cc.roaming->size);
@@ -117,12 +104,8 @@ namespace yack
                 unsigned           flag = is_now_balanced;
 
                 // interleaved scanning
-                fill(boundary_reac,limiting_reac,eq.reac->head,C0,crit);
-                fill(boundary_prod,limiting_prod,eq.prod->head,C0,crit);
-                if(boundary_reac.size()) flag |= unbalanced_reac;
-                if(boundary_prod.size()) flag |= unbalanced_prod;
-
-
+                probe(reac,eq.reac->head,C0); if(reac.neg.size()) flag |= unbalanced_reac;
+                probe(prod,eq.prod->head,C0); if(prod.neg.size()) flag |= unbalanced_prod;
 
                 // check
                 switch(flag)
@@ -131,18 +114,21 @@ namespace yack
                         continue;
 
                     case unbalanced_reac:
-                        assert(limiting_prod.size>0);
-                        boundary_reac.analyze(vanishing,limiting_prod);
-                        if(xml.verbose) eqs.pad(*xml << eq.name,eq) << balanced_msg[flag]  << boundary_reac << " | limited by prod: " << limiting_prod << " => " << vanishing << std::endl;
-                        coerce(vanishing.xi) = -vanishing.xi;
-                        std::cerr << "score= " << score(C0,eq) << std::endl;
+                        assert(prod.lim.size>0);
+                        assert(reac.neg.size()>0);
+                        assert(prod.neg.size()<=0);
+                        reac.look_up(fade,prod);
+                        if(xml.verbose) eqs.pad(*xml << eq.name,eq) << balanced_msg[flag]  << reac.neg << " | limited by prod: " << prod.lim << " => " << fade << std::endl;
+                        coerce(fade.xi) = -fade.xi;
                         break;
 
                     case unbalanced_prod:
-                        assert(limiting_reac.size>0);
-                        boundary_prod.analyze(vanishing,limiting_reac);
-                        if(xml.verbose) eqs.pad(*xml << eq.name,eq) << balanced_msg[flag] <<  boundary_prod << " | limited by reac: " << limiting_reac << " => " << vanishing << std::endl;
-                        std::cerr << "score= " << score(C0,eq) << std::endl;
+                        assert(reac.lim.size>0);
+                        assert(prod.neg.size()>0);
+                        assert(reac.neg.size()<=0);
+
+                        prod.look_up(fade,reac);
+                        if(xml.verbose) eqs.pad(*xml << eq.name,eq) << balanced_msg[flag] <<  prod.neg << " | limited by reac: " << reac.lim << " => " << fade << std::endl;
                         break;
 
                     default:
@@ -160,12 +146,12 @@ namespace yack
 
         double balancing:: score(const readable<double> &C0, const equilibrium &eq)
         {
-            writable<double> &C = Cbalanced[*eq];
+            writable<double> &C = Cbal[*eq];
 
             // first pass, evaluate best concentration
             iota::load(C,C0);
 
-            const double xi = vanishing.xi;
+            const double xi = fade.xi;
             for(const cnode *cn=eq.head();cn;cn=cn->next)
             {
                 const component &a = ***cn;
@@ -182,15 +168,15 @@ namespace yack
                 }
             }
 
-            for(const sp_knot *sn=vanishing.head;sn;sn=sn->next)
+            for(const sp_knot *sn=fade.head;sn;sn=sn->next)
             {
                 const species &sp = ***sn;
                 const size_t   j  = *sp;
                 C[j] = 0;
             }
 
-            (**this).corelib(std::cerr,"",C);
-
+            //(**this).corelib(std::cerr,"",C);
+            eq.display_compact(std::cerr,C) << std::endl;
 
             const readable<const criterion> &crit = (**this).crit;
             xadd.ldz();
