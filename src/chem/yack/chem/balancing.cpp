@@ -87,10 +87,10 @@ namespace yack
             //
             //------------------------------------------------------------------
             YACK_XMLSUB(xml, "balancing:cluster");
-            YACK_XMLOG(xml,"\\___|cluster| =" << cc.size);
-            YACK_XMLOG(xml," \\__|roaming| =" << cc.roaming->size);
-            YACK_XMLOG(xml,"  \\_|bounded| =" << cc.bounded->size);
-
+            YACK_XMLOG(xml,"\\___|cluster| = " << cc.size);
+            YACK_XMLOG(xml," \\__|roaming| = " << cc.roaming->size);
+            YACK_XMLOG(xml,"  \\_|bounded| = " << cc.bounded->size);
+            YACK_XMLOG(xml,"check: " << cc.working);
             for(const anode *an = cc.working.head;an;an=an->next)
             {
                 if(C0[***an]<0) goto TRY_BALANCE;

@@ -44,6 +44,9 @@ namespace yack
             bool attached_to(const cluster &rhs)    const throw(); //!< true if one of the equilibrium is attached
             void sort();                                           //!< according to equilibrium index, collect working
 
+            void build_army_with(const matrix<bool> &detached, const xmlog &xml);
+            void build_wing_with(const matrix<bool> &detached, const xmlog &xml);
+
             //__________________________________________________________________
             //
             // members

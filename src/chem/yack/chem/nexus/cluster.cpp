@@ -71,9 +71,15 @@ namespace yack
             merge_list_of<anode>::sort(A,sp_list::node_compare);
         }
 
+        void cluster:: build_army_with(const matrix<bool> &detached, const xmlog &xml)
+        {
+            coerce(*army).build(*this,detached,xml);
+        }
 
-       
-
+        void cluster:: build_wing_with(const matrix<bool> &detached, const xmlog &xml)
+        {
+            coerce(*wing).build(*bounded,detached,xml);
+        }
     }
 
 

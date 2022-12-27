@@ -205,17 +205,13 @@ namespace yack
 
                 build_detached(detached,topo);
                 for(cluster *cc=related.head;cc;cc=cc->next)
-                {
-                    // use full cluster to build army
-                    coerce(*(cc->army)).build(*cc,detached,xml);
-                }
+                    cc->build_army_with(detached,xml);
+
 
                 build_detached(detached,tbal);
                 for(cluster *cc=related.head;cc;cc=cc->next)
-                {
-                    // use bounded cluster to build wing
-                    coerce(*(cc->wing)).build(*(cc->bounded),detached,xml);
-                }
+                    cc->build_wing_with(detached,xml);
+
 
 
             }
