@@ -24,10 +24,7 @@ namespace yack
         typedef matrix<int>                 imatrix;    //!< alias
         typedef matrix<unsigned>            umatrix;    //!< alias
         typedef matrix<double>              rmatrix;    //!< alias
-        typedef matrix<char>                cmatrix;    //!< alias
-
         typedef auto_ptr<imatrix>           imatrix_ptr;
-        typedef auto_ptr<cmatrix>           cmatrix_ptr;
 
         typedef cxx_array<const criterion> criterions; //!< alias
         typedef cxx_array<double>          tableau;    //!< alias
@@ -72,8 +69,6 @@ namespace yack
             //! compute K
             void compute_singles(const double t);
 
-            //! display vertical equilibria UIDs
-            void display_vert_euid(std::ostream &, const size_t space=0) const;
 
             //__________________________________________________________________
             //
@@ -118,10 +113,10 @@ namespace yack
 
             const imatrix_ptr  topo; //!< full topology
             const imatrix_ptr  tbal; //!< topology for balancing
-            const cmatrix_ptr  euid; //!< equilibria UID
-            
+
             void build_detached(matrix<bool> &detached, const imatrix &) const;
-            
+            void print_detached(const matrix<bool> &detached) const;
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(nexus);
             const lockable::scope lockLib;
@@ -133,7 +128,6 @@ namespace yack
             const equilibrium &promote_mixed(const readable<int> &);
             void               conserved_set(const xmlog &);
             void               conserved_set_(cluster &sharing, const xmlog &);
-            void               build_eqs_uid();
             
         };
 

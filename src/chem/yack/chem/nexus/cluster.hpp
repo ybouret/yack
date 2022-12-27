@@ -6,6 +6,7 @@
 #include "yack/chem/eqs/team.hpp"
 #include "yack/chem/claw/teams.hpp"
 #include "yack/ptr/auto.hpp"
+#include "yack/chem/active.hpp"
 
 namespace yack
 {
@@ -62,7 +63,7 @@ namespace yack
                 }
             }
 
-            void sort(); //!< according to equilibrium index
+            void sort(); //!< according to equilibrium index, collect working
 
             //__________________________________________________________________
             //
@@ -70,6 +71,7 @@ namespace yack
             //__________________________________________________________________
             cluster                *next;    //!< for list/pool
             cluster                *prev;    //!< for list
+            const active_list       working; //!< workin species in this cluster
             const canon_type        canon;   //!< conservation among species
             const cells_type        cells;   //!< teams of linked laws
             const party_type        roaming; //!< roaming of this cluster

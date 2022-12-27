@@ -22,6 +22,7 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(eq_squad);
         };
+        
 
         class eq_squads : public cxx_list_of<eq_squad>
         {

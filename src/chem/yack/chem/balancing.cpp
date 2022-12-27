@@ -91,7 +91,7 @@ namespace yack
             YACK_XMLOG(xml," \\__|roaming| =" << cc.roaming->size);
             YACK_XMLOG(xml,"  \\_|bounded| =" << cc.bounded->size);
 
-            for(const anode *an = (**this).working.head;an;an=an->next)
+            for(const anode *an = cc.working.head;an;an=an->next)
             {
                 if(C0[***an]<0) goto TRY_BALANCE;
             }

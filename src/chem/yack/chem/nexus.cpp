@@ -47,8 +47,7 @@ namespace yack
         Nq(0),
         Qm(),
 
-        euid(),
-        
+
         lockLib(coerce(corelib)),
         lockEqs(coerce(singles))
         {
@@ -197,44 +196,12 @@ namespace yack
                     }
                 }
 #endif
-                build_eqs_uid();
             }
             
         }
 
-        void  nexus:: build_eqs_uid()
-        {
-            const size_t  width = lattice.maxlen;
-            coerce(euid)        = new cmatrix(L,width+1);
-            cmatrix     &uid    = coerce(*euid);
-            for(const enode *en=lattice.head();en;en=en->next)
-            {
-                const equilibrium &eq = ***en;
-                const size_t       ei = *eq;
-                const string      &id = eq.name; assert(id.size()<=width);
-                const size_t       nc = id.size();
-                writable<char>    &ch = uid[ei];
-                for(size_t i=1;i<=nc;++i)       ch[i] = id[i];
-                for(size_t i=nc+1;i<=width;++i) ch[i] = ' ';
-            }
-            display_vert_euid(std::cerr,0);
 
-        }
 
-        void nexus:: display_vert_euid(std::ostream &os, const size_t space) const
-        {
-            const cmatrix &id = *euid;
-            const size_t   nr = lattice.maxlen;
-            const size_t   nc = L;
-            for(size_t i=1;i<=nr;++i)
-            {
-                for(size_t j=space;j>0;--j) os << ' ';
-                os << '|';
-                for(size_t j=1;j<=nc;++j) os << id[j][i] << '|';
-                os << std::endl;
-            }
-
-        }
 
 
 
@@ -287,6 +254,25 @@ namespace yack
                 }
             }
         }
+
+        void nexus:: print_detached(const matrix<bool> &detached) const
+        {
+            for(const enode *en=lattice.head();en;en=en->next)
+            {
+                const equilibrium    &eq = ***en;
+                const size_t          ei = *eq;
+                const readable<bool> &di = detached[ei];
+                lattice.pad(std::cerr << eq.name,eq) << " : " << di << "_|_{ ";
+                for(const enode *sub=lattice.head();sub;sub=sub->next)
+                {
+                    const equilibrium &ep = ***sub;
+                    const size_t       ej = *ep;
+                    if(di[ej]) std::cerr << ep.name << ' ';
+                }
+                std::cerr << "}" << std::endl;
+            }
+        }
+
 
     }
     

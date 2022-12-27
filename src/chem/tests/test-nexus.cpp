@@ -72,10 +72,14 @@ YACK_UTEST(nexus)
     {
         matrix<bool> d(cs.L,cs.L);
         
-        
+        std::cerr << "full      topology detached:" << std::endl;
         cs.build_detached(d,*cs.topo);
-        cs.display_vert_euid(std::cerr,cs.lattice.maxlen+6);
-        cs.lattice(std::cerr << "detached=","",d);
+        cs.print_detached(d);
+
+        std::cerr << "conserved topology detached" << std::endl;
+        cs.build_detached(d,*cs.tbal);
+        cs.print_detached(d);
+
     }
     
 
