@@ -1,10 +1,10 @@
-
 //! \file
 
 #ifndef YACK_CHEMICAL_EQ_TEAM_INCLUDED
 #define YACK_CHEMICAL_EQ_TEAM_INCLUDED 1
 
 #include "yack/chem/equilibrium.hpp"
+#include "yack/ptr/auto.hpp"
 
 namespace yack
 {
@@ -22,6 +22,8 @@ namespace yack
         class eq_team : public object, public eq_team_
         {
         public:
+            typedef auto_ptr<eq_team> pointer;
+
             //__________________________________________________________________
             //
             // C++
@@ -60,7 +62,7 @@ namespace yack
 
             //! sort using compare
             void sort() throw();
-            
+
         private:
             YACK_DISABLE_ASSIGN(eq_team);
         };

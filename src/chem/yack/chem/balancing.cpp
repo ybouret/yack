@@ -88,8 +88,8 @@ namespace yack
             //------------------------------------------------------------------
             YACK_XMLSUB(xml, "balancing:cluster");
             YACK_XMLOG(xml,"\\___|cluster| = " << cc.size);
-            YACK_XMLOG(xml," \\__|roaming| = " << cc.roaming->size);
-            YACK_XMLOG(xml,"  \\_|bounded| = " << cc.bounded->size);
+            YACK_XMLOG(xml," \\__|roaming| = " << cc.genus->roaming.size);
+            YACK_XMLOG(xml,"  \\_|bounded| = " << cc.genus->bounded.size);
             YACK_XMLOG(xml,"check: " << cc.working);
             for(const anode *an = cc.working->head;an;an=an->next)
             {
@@ -101,7 +101,7 @@ namespace yack
         TRY_BALANCE:
             YACK_XMLOG(xml,"-- balancing bounded");
             const equilibria     &eqs = (**this).lattice;
-            for(const eq_node *en=cc.bounded->head;en;en=en->next)
+            for(const eq_node *en=cc.genus->bounded.head;en;en=en->next)
             {
                 const equilibrium &eq   = **en;
                 unsigned           flag = is_now_balanced;

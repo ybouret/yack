@@ -3,17 +3,18 @@
 #ifndef YACK_NEXUS_CLUSTER_INCLUDED
 #define YACK_NEXUS_CLUSTER_INCLUDED 1
 
-#include "yack/chem/eqs/team.hpp"
+#include "yack/chem/eqs/tier.hpp"
 #include "yack/chem/eqs/squad.hpp"
 #include "yack/chem/claw/teams.hpp"
 #include "yack/ptr/auto.hpp"
 #include "yack/chem/active.hpp"
-//#include "yack/ios/xmlog.hpp"
 
 namespace yack
 {
     namespace chemical
     {
+
+
         //______________________________________________________________________
         //
         //
@@ -23,7 +24,6 @@ namespace yack
         class cluster :  public eq_team
         {
         public:
-            typedef auto_ptr<const eq_team>           party_type;  //!< alias
             typedef auto_ptr<const claw_teams>        cells_type;  //!< alias
             typedef auto_ptr<const conservation_laws> canon_type;  //!< alias
             typedef auto_ptr<const eq_squads>         squads_ptr;  //!< alias
@@ -57,8 +57,7 @@ namespace yack
             const active_ptr        working; //!< workin species in this cluster
             const canon_type        canon;   //!< conservation among species
             const cells_type        cells;   //!< teams of linked laws
-            const party_type        roaming; //!< roaming of this cluster
-            const party_type        bounded; //!< roaming of this cluster
+            const eq_tier::pointer  genus;   //!< roaming/bounded
             const squads_ptr        army;    //!< full combination for steady state
             const squads_ptr        wing;    //!< bounded combination for balance
 

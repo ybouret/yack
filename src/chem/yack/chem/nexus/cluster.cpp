@@ -14,8 +14,7 @@ namespace yack
         working( new active_list()       ),
         canon(   new conservation_laws() ),
         cells(   new claw_teams  ),
-        roaming( new eq_team() ),
-        bounded( new eq_team() ),
+        genus(   new eq_tier() ),
         army(    new eq_squads() ),
         wing(    new eq_squads() )
         {}
@@ -78,7 +77,7 @@ namespace yack
 
         void cluster:: build_wing_with(const matrix<bool> &detached, const xmlog &xml)
         {
-            coerce(*wing).build(*bounded,detached,xml);
+            coerce(*wing).build(genus->bounded,detached,xml);
         }
     }
 

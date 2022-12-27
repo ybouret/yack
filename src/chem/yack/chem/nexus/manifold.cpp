@@ -234,8 +234,8 @@ namespace yack
             // create local teams of equilibria
             //
             //------------------------------------------------------------------
-            eq_team &roaming =  coerce(*cls.roaming);
-            eq_team &bounded =  coerce(*cls.bounded);
+            eq_team &roaming =  coerce(cls.genus->roaming);
+            eq_team &bounded =  coerce(cls.genus->bounded);
 
             for(const eq_node *en=cls.head;en;en=en->next)
             {
