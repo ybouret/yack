@@ -3,7 +3,7 @@
 #ifndef YACK_NEXUS_CLUSTER_INCLUDED
 #define YACK_NEXUS_CLUSTER_INCLUDED 1
 
-#include "yack/chem/equilibrium.hpp"
+#include "yack/chem/eqs/team.hpp"
 #include "yack/chem/claw/teams.hpp"
 #include "yack/ptr/auto.hpp"
 
