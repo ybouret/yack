@@ -6,14 +6,15 @@
 
 #include "yack/chem/nexus.hpp"
 #include "yack/type/authority.hpp"
-#include "yack/chem/limiting.hpp"
-#include "yack/chem/boundary.hpp"
+#include "yack/chem/equalizer.hpp"
 
 namespace yack
 {
 
     namespace chemical
     {
+       
+
         //______________________________________________________________________
         //
         //
@@ -40,9 +41,11 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            sp_fund      io;         //!< shared
+            sp_fund      spIO;        //!< shared
+            equalizer    reac;
+            equalizer    prod;
             rmatrix      Cbalanced;  //!< [LxM] balanced concentration matrix
-            frontier     vanishing;
+            frontier     vanishing;  //!< result to compute balananced concentrations and score
             raddops      xadd;
             const xmlog &xml;   //!< helper
 

@@ -19,9 +19,11 @@ namespace yack
 
         balancing:: balancing(const nexus &usr, const xmlog &out) :
         authority<const nexus>(usr),
-        io( new sp_pool() ),
+        spIO( new sp_pool() ),
+        reac(usr.M,spIO),
+        prod(usr.M,spIO),
         Cbalanced(usr.L,usr.L>0?usr.M:0),
-        vanishing(io),
+        vanishing(spIO),
         xml(out)
         {}
 
@@ -69,17 +71,7 @@ namespace yack
         static const unsigned unbalanced_reac  = 0x01;
         static const unsigned unbalanced_prod  = 0x02;
         static const unsigned unbalanced_both  = unbalanced_reac | unbalanced_prod;
-
-#if 0
-        static const char * const balanced_msg[] =
-        {
-            "is now balanced",
-            "unbalanced reac",
-            "unbalanced prod",
-            "unbalanced both"
-        };
-#endif
-
+        
         static const char * const balanced_msg[] =
         {
             " [+] ",
@@ -99,11 +91,11 @@ namespace yack
             const size_t                     M     = (**this).M ;
             const readable<const criterion> &crit = (**this).crit;
 
-            boundaries boundary_reac(M,io);
-            limiting   limiting_reac(io);
+            boundaries boundary_reac(M,spIO);
+            limiting   limiting_reac(spIO);
 
-            boundaries boundary_prod(M,io);
-            limiting   limiting_prod(io);
+            boundaries boundary_prod(M,spIO);
+            limiting   limiting_prod(spIO);
             
             const equilibria &eqs = (**this).lattice;
 
