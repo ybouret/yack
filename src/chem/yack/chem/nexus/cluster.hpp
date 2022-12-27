@@ -20,7 +20,7 @@ namespace yack
         class cluster :  public eq_team
         {
         public:
-            typedef auto_ptr<const eq_team>           eq_team_ptr; //!< alias
+            typedef auto_ptr<const eq_team>           eq_crew; //!< alias
             typedef auto_ptr<const claw_teams>        cells_type;  //!< alias
             typedef auto_ptr<const conservation_laws> canon_type;  //!< alias
 
@@ -72,8 +72,8 @@ namespace yack
             cluster                *prev;    //!< for list
             const canon_type        canon;   //!< conservation among species
             const cells_type        cells;   //!< teams of linked laws
-            const eq_team_ptr       roaming; //!< roaming of this cluster
-            const eq_team_ptr       bounded; //!< roaming of this cluster
+            const eq_crew       roaming; //!< roaming of this cluster
+            const eq_crew       bounded; //!< roaming of this cluster
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(cluster);

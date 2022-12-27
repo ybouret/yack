@@ -81,11 +81,12 @@ namespace yack
                                  const cluster    &cc)
         {
 
+            //------------------------------------------------------------------
+            //
+            // check species in this cluster
+            //
+            //------------------------------------------------------------------
             YACK_XMLSUB(xml, "balancing:cluster");
-
-
-            const equilibria     &eqs = (**this).lattice;
-
             YACK_XMLOG(xml,"\\___|cluster| =" << cc.size);
             YACK_XMLOG(xml," \\__|roaming| =" << cc.roaming->size);
             YACK_XMLOG(xml,"  \\_|bounded| =" << cc.bounded->size);
@@ -96,8 +97,10 @@ namespace yack
             }
             return true;
 
+
         TRY_BALANCE:
             YACK_XMLOG(xml,"-- balancing bounded");
+            const equilibria     &eqs = (**this).lattice;
             for(const eq_node *en=cc.bounded->head;en;en=en->next)
             {
                 const equilibrium &eq   = **en;
