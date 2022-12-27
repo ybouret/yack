@@ -62,27 +62,29 @@ YACK_UTEST(nexus)
     balancing titi(cs,xml);
     titi(C);
 
-    return 0;
+
 
     std::cerr << "topo=" << cs.topo << std::endl;
     std::cerr << "tbal=" << cs.tbal << std::endl;
 
-    YACK_SIZEOF(nexus);
-    YACK_SIZEOF(cluster);
-    YACK_SIZEOF(eq_team);
-    YACK_SIZEOF(conservation_laws);
-    YACK_SIZEOF(claw_teams);
 
     if(cs.L>0)
     {
         matrix<bool> d(cs.L,cs.L);
         
         
-        cs.build_detached(d,cs.topo);
+        cs.build_detached(d,*cs.topo);
+        cs.display_vert_euid(std::cerr,cs.lattice.maxlen+6);
         cs.lattice(std::cerr << "detached=","",d);
     }
     
 
+    YACK_SIZEOF(nexus);
+    YACK_SIZEOF(cluster);
+    YACK_SIZEOF(eq_team);
+    YACK_SIZEOF(conservation_laws);
+    YACK_SIZEOF(claw_teams);
+    
 }
 YACK_UDONE()
 

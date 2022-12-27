@@ -263,12 +263,21 @@ namespace yack
         {
             static const char * const fn = "make_manifold";
             YACK_XMLSUB(xml,fn);
-            
+
+            // making manifold for each cluster
             for(cluster *sharing=related.head;sharing;sharing=sharing->next)
                 make_manifold_(*sharing,xml);
 
-            //std::cerr << lattice << std::endl;
-            std::cerr << singles.size() << " -> " << lattice.size() << std::endl;
+            YACK_XMLOG(xml, "-- resetting working species");
+            assert( worklib.size() == corelib.size() );
+            for(const snode *target=worklib.head(), *source=corelib.head();target;target=target->next,source=source->next)
+            {
+                const species &tgt = ***target;
+                const species &src = ***source;
+                coerce(tgt.rank) = src.rank;
+            }
+            YACK_XMLOG(xml, "-- equilibria: from " << singles.size() << "  to " << lattice.size() );
+
         }
         
     }

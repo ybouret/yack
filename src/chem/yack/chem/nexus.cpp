@@ -46,6 +46,8 @@ namespace yack
         // c-laws
         Nq(0),
         Qm(),
+
+        euid(),
         
         lockLib(coerce(corelib)),
         lockEqs(coerce(singles))
@@ -161,49 +163,81 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 coerce(L) = lattice.size();
-                if(L)
+                coerce(topo) = new imatrix(L,M);
+                coerce(tbal) = new imatrix(L,M);
                 {
-                    coerce(topo).make(L,M);
-                    coerce(tbal).make(L,M);
+                    const enode *en = lattice.head();
+                    for(size_t i=N;i>0;--i)
                     {
-                        const enode *en = lattice.head();
-                        for(size_t i=N;i>0;--i)
-                        {
-                            assert(en);
-                            en=en->next;
-                            iota::load(coerce(topo)[i],Nu[i]);
-                        }
-                        coerce(next_en) = en;
+                        assert(en);
+                        en=en->next;
+                        iota::load(coerce(*topo)[i],Nu[i]);
                     }
-
-#if 1
-                    for(const enode *en=next_en;en;en=en->next)
-                    {
-                        const equilibrium &eq = ***en;
-                        const size_t       ei = *eq;
-                        eq.fill(coerce(topo)[ei]);
-                    }
-
-                    coerce(tbal).assign(topo);
-                    for(size_t i=L;i>0;--i)
-                    {
-                        writable<int> &r = coerce(tbal)[i];
-                        for(size_t j=M;j>0;--j)
-                        {
-                            if( crit[j] != conserved )
-                            {
-                                r[j] = 0;
-                            }
-                        }
-                    }
-#endif
-                    //std::cerr << "Kl=" << Kl << std::endl;
+                    coerce(next_en) = en;
                 }
 
+#if 1
+                for(const enode *en=next_en;en;en=en->next)
+                {
+                    const equilibrium &eq = ***en;
+                    const size_t       ei = *eq;
+                    eq.fill(coerce(*topo)[ei]);
+                }
+
+                coerce(*tbal).assign(*topo);
+                for(size_t i=L;i>0;--i)
+                {
+                    writable<int> &r = coerce(*tbal)[i];
+                    for(size_t j=M;j>0;--j)
+                    {
+                        if( crit[j] != conserved )
+                        {
+                            r[j] = 0;
+                        }
+                    }
+                }
+#endif
+                build_eqs_uid();
             }
             
         }
-        
+
+        void  nexus:: build_eqs_uid()
+        {
+            const size_t  width = lattice.maxlen;
+            coerce(euid)        = new cmatrix(L,width+1);
+            cmatrix     &uid    = coerce(*euid);
+            for(const enode *en=lattice.head();en;en=en->next)
+            {
+                const equilibrium &eq = ***en;
+                const size_t       ei = *eq;
+                const string      &id = eq.name; assert(id.size()<=width);
+                const size_t       nc = id.size();
+                writable<char>    &ch = uid[ei];
+                for(size_t i=1;i<=nc;++i)       ch[i] = id[i];
+                for(size_t i=nc+1;i<=width;++i) ch[i] = ' ';
+            }
+            display_vert_euid(std::cerr,0);
+
+        }
+
+        void nexus:: display_vert_euid(std::ostream &os, const size_t space) const
+        {
+            const cmatrix &id = *euid;
+            const size_t   nr = lattice.maxlen;
+            const size_t   nc = L;
+            for(size_t i=1;i<=nr;++i)
+            {
+                for(size_t j=space;j>0;--j) os << ' ';
+                os << '|';
+                for(size_t j=1;j<=nc;++j) os << id[j][i] << '|';
+                os << std::endl;
+            }
+
+        }
+
+
+
         void nexus:: upgrade_lattice(writable<double> &Kl)
         {
             assert(Kl.size()>=L);
