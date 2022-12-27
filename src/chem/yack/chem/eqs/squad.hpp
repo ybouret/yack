@@ -1,5 +1,3 @@
-
-
 //! \file
 
 #ifndef YACK_CHEMICAL_EQ_SQUAD_INCLUDED
