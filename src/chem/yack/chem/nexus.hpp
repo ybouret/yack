@@ -24,7 +24,6 @@ namespace yack
         typedef matrix<int>                 imatrix;    //!< alias
         typedef matrix<unsigned>            umatrix;    //!< alias
         typedef matrix<double>              rmatrix;    //!< alias
-        typedef auto_ptr<imatrix>           imatrix_ptr;
 
         typedef cxx_array<const criterion> criterions; //!< alias
         typedef cxx_array<double>          tableau;    //!< alias
@@ -111,10 +110,11 @@ namespace yack
             const size_t       Nq; //!< number of conservation laws
             const umatrix      Qm; //!< built from each conservation law
 
-            const imatrix_ptr  topo; //!< full topology
-            const imatrix_ptr  tbal; //!< topology for balancing
-
+            
+            //! build detached matrix from given topology
             void build_detached(matrix<bool> &detached, const imatrix &) const;
+
+            //! print human readable status
             void print_detached(const matrix<bool> &detached) const;
             
         private:

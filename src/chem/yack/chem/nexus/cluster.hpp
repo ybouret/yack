@@ -26,6 +26,7 @@ namespace yack
             typedef auto_ptr<const eq_team>           party_type;  //!< alias
             typedef auto_ptr<const claw_teams>        cells_type;  //!< alias
             typedef auto_ptr<const conservation_laws> canon_type;  //!< alias
+            typedef auto_ptr<const eq_squads>         squads_ptr;
 
             //__________________________________________________________________
             //
@@ -38,16 +39,10 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            
-            //! true if eq is attached to one of the team
-            bool attached_to(const equilibrium &eq) const throw();
 
-            //! true if one of the equilibrium is attached
-            bool attached_to(const cluster &rhs) const throw();
-
-
-
-            void sort(); //!< according to equilibrium index, collect working
+            bool attached_to(const equilibrium &eq) const throw(); //!< true if eq is attached to one of the team
+            bool attached_to(const cluster &rhs)    const throw(); //!< true if one of the equilibrium is attached
+            void sort();                                           //!< according to equilibrium index, collect working
 
             //__________________________________________________________________
             //
@@ -60,12 +55,8 @@ namespace yack
             const cells_type        cells;   //!< teams of linked laws
             const party_type        roaming; //!< roaming of this cluster
             const party_type        bounded; //!< roaming of this cluster
-            //const eq_squads         zsquads;
-
-            static void build_squads(eq_squads          &groups,
-                                     const eq_team      &guests,
-                                     const matrix<bool> &detached,
-                                     const xmlog        &xml);
+            const squads_ptr        army;    //!< full combination for steady state
+            const squads_ptr        wing;    //!< bounded combination for balance
 
 
         private:

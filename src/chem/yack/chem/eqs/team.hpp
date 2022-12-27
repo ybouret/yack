@@ -14,7 +14,12 @@ namespace yack
         typedef meta_node<const equilibrium> eq_node;  //!< alias
         typedef meta_repo<const equilibrium> eq_repo;  //!< alias
 
+        //______________________________________________________________________
+        //
+        //
         //! team of equilibria
+        //
+        //______________________________________________________________________
         class eq_team : public object, public eq_team_
         {
         public:
@@ -41,6 +46,15 @@ namespace yack
                     return os << "{}";
                 }
             }
+
+            //! compare by index
+            static int compare(const eq_node *, const eq_node *) throw();
+
+            //! sort using compare
+            void sort() throw();
+
+
+
 
         private:
             YACK_DISABLE_ASSIGN(eq_team);

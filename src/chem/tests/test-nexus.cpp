@@ -8,7 +8,7 @@
 using namespace yack;
 using namespace chemical;
 
- 
+
 
 YACK_UTEST(nexus)
 {
@@ -63,10 +63,10 @@ YACK_UTEST(nexus)
     titi(C);
 
 
+#if 0
 
     std::cerr << "topo=" << cs.topo << std::endl;
     std::cerr << "tbal=" << cs.tbal << std::endl;
-
 
     if(cs.L>0)
     {
@@ -74,31 +74,34 @@ YACK_UTEST(nexus)
         
         std::cerr << "full      topology detached:" << std::endl;
         cs.build_detached(d,*cs.topo);
-        cs.print_detached(d);
+        //cs.print_detached(d);
 
         cluster  &cc = coerce(*cs.related.head);
         eq_squads sqd;
-        cluster::build_squads( sqd, cc, d, xml);
+        sqd.build(cc,d,xml);
 
         if(true)
         {
             std::cerr << "conserved topology detached" << std::endl;
             cs.build_detached(d,*cs.tbal);
-            cs.print_detached(d);
+            //cs.print_detached(d);
             sqd.release();
-            cluster::build_squads( sqd, *cc.bounded, d, xml);
-
+            sqd.build(*cc.bounded, d, xml);
         }
 
+
     }
-    
+
+#endif
 
     YACK_SIZEOF(nexus);
     YACK_SIZEOF(cluster);
     YACK_SIZEOF(eq_team);
     YACK_SIZEOF(conservation_laws);
     YACK_SIZEOF(claw_teams);
-    
+    YACK_SIZEOF(auto_ptr<const eq_squads>);
+    YACK_SIZEOF(eq_squads);
+
 }
 YACK_UDONE()
 

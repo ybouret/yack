@@ -50,6 +50,9 @@ namespace yack
 
 }
 
+#include "yack/ios/xmlog.hpp"
+#include "yack/data/list/sort.hpp"
+#include "yack/system/imported.hpp"
 
 namespace yack
 {
@@ -58,6 +61,86 @@ namespace yack
 
         eq_squads::  eq_squads() throw() :  cxx_list_of<eq_squad>() {}
         eq_squads:: ~eq_squads() throw() {}
+
+
+        static inline bool is_detached_from(const eq_squad     &squad,
+                                            const equilibrium  &eq,
+                                            const matrix<bool> &detached) throw()
+        {
+            const readable<bool> &det = detached[*eq];
+            for(const eq_node *node=squad.head;node;node=node->next)
+            {
+                if( !det[ ***node] ) return false;
+            }
+            return true;
+        }
+
+        static inline bool independent(const eq_squad     &squad,
+                                       const matrix<bool> &detached) throw()
+        {
+            for(const eq_node *node=squad.head;node;node=node->next)
+            {
+                const readable<bool> &det = detached[ ***node ];
+                for(const eq_node *scan=node->next;scan;scan=scan->next)
+                {
+                    if( !det[ ***scan] ) return false;
+                }
+            }
+            return true;
+        }
+
+        void eq_squads:: build(const eq_team      &guests,
+                               const matrix<bool> &detached,
+                               const xmlog        &xml)
+        {
+            static const char * const here = "equilibria::squads::build";
+            YACK_XMLSUB(xml,here);
+
+            assert(0==size);
+            for(const eq_node *node=guests.head;node;node=node->next)
+            {
+                const equilibrium    &lhs = **node;
+                push_back( new eq_squad() )->append(&lhs);
+                for(const eq_node *scan=node->next;scan;scan=scan->next)
+                {
+                    const equilibrium &rhs = **scan;
+                    for(eq_squad *squad=head;squad;squad=squad->next)
+                    {
+                        if( is_detached_from(*squad, rhs, detached) )
+                        {
+                            push_front( squad->clone() )->append(&rhs);
+                            for(const eq_squad *sub=head->next;sub;sub=sub->next)
+                            {
+                                if(0==eq_squad::compare(head,sub) )
+                                {
+                                    delete pop_front();
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            assert(size>=guests.size);
+            YACK_XMLOG(xml, "-- sorting " << size << " / " << guests.size << " : added #" << size - guests.size);
+            
+            for(eq_squad *squad=head;squad;squad=squad->next)
+                squad->sort();
+            merge_list_of<eq_squad>::sort(*this,eq_squad::compare);
+
+            for(const eq_squad *squad=head;squad;squad=squad->next)
+            {
+                if( !independent(*squad,detached) ) {
+                    YACK_XMLOG(xml,"-- invalid " << *squad);
+                    throw imported::exception(here,"unexpected invalid equilibria squad");
+                }
+                if(squad->size>1)
+                {
+                    YACK_XMLOG(xml,"  (+) " << *squad);
+                }
+            }
+
+        }
 
     }
 

@@ -153,8 +153,10 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 make_manifold(xml);
-                
-                std::cerr << "lattice=" << lattice << std::endl;
+
+
+                YACK_XMLOG(xml,"lattice=" << lattice);
+
                 
                 //--------------------------------------------------------------
                 //
@@ -162,31 +164,34 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 coerce(L) = lattice.size();
-                coerce(topo) = new imatrix(L,M);
-                coerce(tbal) = new imatrix(L,M);
+                imatrix topo(L,M);
+                imatrix tbal(L,M);
+
+                // fill global topology and setup next_en
                 {
                     const enode *en = lattice.head();
                     for(size_t i=N;i>0;--i)
                     {
                         assert(en);
                         en=en->next;
-                        iota::load(coerce(*topo)[i],Nu[i]);
+                        iota::load(topo[i],Nu[i]);
                     }
                     coerce(next_en) = en;
                 }
 
-#if 1
+                // complete global topology
                 for(const enode *en=next_en;en;en=en->next)
                 {
                     const equilibrium &eq = ***en;
                     const size_t       ei = *eq;
-                    eq.fill(coerce(*topo)[ei]);
+                    eq.fill(topo[ei]);
                 }
 
-                coerce(*tbal).assign(*topo);
+                // update balance topology by removing not conserved species
+                tbal.assign(topo);
                 for(size_t i=L;i>0;--i)
                 {
-                    writable<int> &r = coerce(*tbal)[i];
+                    writable<int> &r = tbal[i];
                     for(size_t j=M;j>0;--j)
                     {
                         if( crit[j] != conserved )
@@ -195,7 +200,24 @@ namespace yack
                         }
                     }
                 }
-#endif
+
+                matrix<bool> detached(L,L);
+
+                build_detached(detached,topo);
+                for(cluster *cc=related.head;cc;cc=cc->next)
+                {
+                    // use full cluster to build army
+                    coerce(*(cc->army)).build(*cc,detached,xml);
+                }
+
+                build_detached(detached,tbal);
+                for(cluster *cc=related.head;cc;cc=cc->next)
+                {
+                    // use bounded cluster to build wing
+                    coerce(*(cc->wing)).build(*(cc->bounded),detached,xml);
+                }
+
+
             }
             
         }
