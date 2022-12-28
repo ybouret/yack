@@ -126,7 +126,21 @@ namespace yack
             {
                 const int l1 = norm1(lhs);
                 const int r1 = norm1(rhs);
-                return l1-r1;
+                if(l1<r1)
+                {
+                    return -1;
+                }
+                else
+                {
+                    if(r1<l1)
+                    {
+                        return 1;
+                    }
+                    else
+                    {
+                        return comparison::lexicographic(lhs,rhs);
+                    }
+                }
             }
 
             inline void organize()
