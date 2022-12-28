@@ -24,6 +24,8 @@ namespace yack
             //! display
             friend std::ostream & operator<<(std::ostream &, const eq_repo &);
 
+            bool contains(const equilibrium &) const throw();
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(eq_repo);
         };

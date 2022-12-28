@@ -84,7 +84,16 @@ namespace yack
             return ok ? "[succes]" : "[no gain]";
         }
 
-        
+        static inline bool squad_includes_lead(const eq_squad &squad,
+                                               const eq_repo  &lead) throw()
+        {
+            for(const eq_node *en=squad.head;en;en=en->next)
+            {
+                if(!lead.contains(**en)) return false;
+            }
+            return true;
+        }
+
         bool balancing:: balance(writable<double> &C0,
                                  const cluster    &cc)
         {
@@ -178,7 +187,10 @@ namespace yack
             
             for(const eq_squad *squad=cc.wing->head;squad;squad=squad->next)
             {
-
+                if( squad_includes_lead(*squad,lead) )
+                {
+                    std::cerr << "-- use " << *squad << std::endl;
+                }
             }
 
 

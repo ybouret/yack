@@ -100,7 +100,6 @@ namespace yack
             tableau                 K;       //!< [N] single constants
             const eq_tier::pointer  genus;   //!< classification of singles
             const clusters          wired;   //!< clusters of connex equilibria with their c-laws
-
             
 
             //__________________________________________________________________

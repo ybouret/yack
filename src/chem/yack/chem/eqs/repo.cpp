@@ -27,6 +27,16 @@ namespace yack
             return os;
         }
 
+        bool eq_repo:: contains(const equilibrium &eq) const throw()
+        {
+            const size_t lhs = *eq;
+            for(const node_type *node=head;node;node=node->next)
+            {
+                if(lhs == ****node) return true;
+            }
+            return false;
+        }
+
     }
 
 }
