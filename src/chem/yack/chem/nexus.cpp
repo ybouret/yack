@@ -134,10 +134,10 @@ namespace yack
 
                 //--------------------------------------------------------------
                 //
-                // build related (at least one cluster)
+                // build wired (int at least one cluster)
                 //
                 //----------------------------------------------------------
-                build_related(xml); assert(wired.size>0);
+                resolve_wired(xml); assert(wired.size>0);
 
                 //--------------------------------------------------------------
                 //
@@ -159,38 +159,48 @@ namespace yack
                 
                 //--------------------------------------------------------------
                 //
-                // update lattice
+                // finalize
                 //
                 //--------------------------------------------------------------
                 coerce(L) = lattice.size();
-                imatrix topo(L,M);
-                imatrix tbal(L,M);
+                imatrix      topology(L,M);
+                matrix<bool> detached(L,L);
 
+                //--------------------------------------------------------------
                 // fill global topology and setup next_en
+                //--------------------------------------------------------------
                 {
                     const enode *en = lattice.head();
                     for(size_t i=N;i>0;--i)
                     {
                         assert(en);
                         en=en->next;
-                        iota::load(topo[i],Nu[i]);
+                        iota::load(topology[i],Nu[i]);
                     }
                     coerce(next_en) = en;
                 }
 
-                // complete global topology
+                //--------------------------------------------------------------
+                // complete global topology and apply to clusters
+                //--------------------------------------------------------------
                 for(const enode *en=next_en;en;en=en->next)
                 {
                     const equilibrium &eq = ***en;
                     const size_t       ei = *eq;
-                    eq.fill(topo[ei]);
+                    eq.fill(topology[ei]);
                 }
 
-                // update balance topology by removing not conserved species
-                tbal.assign(topo);
+                build_detached(detached,topology);
+                for(cluster *cc=wired.head;cc;cc=cc->next)
+                    cc->build_army_with(detached,xml);
+
+                //--------------------------------------------------------------
+                // update topology by removing not conserved species
+                // and apply to clusters
+                //--------------------------------------------------------------
                 for(size_t i=L;i>0;--i)
                 {
-                    writable<int> &r = tbal[i];
+                    writable<int> &r = topology[i];
                     for(size_t j=M;j>0;--j)
                     {
                         if( crit[j] != conserved )
@@ -200,19 +210,10 @@ namespace yack
                     }
                 }
 
-                matrix<bool> detached(L,L);
-
-                build_detached(detached,topo);
-                for(cluster *cc=wired.head;cc;cc=cc->next)
-                    cc->build_army_with(detached,xml);
-
-
-                build_detached(detached,tbal);
+                build_detached(detached,topology);
                 for(cluster *cc=wired.head;cc;cc=cc->next)
                     cc->build_wing_with(detached,xml);
-
-
-
+                
             }
             
         }

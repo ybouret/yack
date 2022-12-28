@@ -122,7 +122,7 @@ namespace yack
             const lockable::scope lockLib;
             const lockable::scope lockEqs;
 
-            void               build_related(const xmlog &);
+            void               resolve_wired(const xmlog &);
             void               make_manifold(const xmlog &);
             void               make_manifold_(cluster &sharing, const xmlog &);
             const equilibrium &promote_mixed(const readable<int> &);

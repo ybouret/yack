@@ -6,7 +6,7 @@ namespace yack
     namespace chemical
     {
 
-        void nexus:: build_related(const xmlog &xml)
+        void nexus:: resolve_wired(const xmlog &xml)
         {
             static const char * const fn = "build_related";
             YACK_XMLSUB(xml,fn);
