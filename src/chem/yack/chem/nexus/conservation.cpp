@@ -122,7 +122,7 @@ namespace yack
                 for(const eq_node *en=sharing.head;en;en=en->next)
                 {
                     const equilibrium &eq = **en;
-                    if( genus.bounded.met(eq) ) {
+                    if( genus->bounded.met(eq) ) {
                         usual << &eq;
                         eq.update(tribe);
                     }
@@ -272,7 +272,7 @@ namespace yack
             }
             YACK_XMLOG(xml,"-- conservation  laws : " << Nq);
             YACK_XMLOG(xml,"-- equilibria         : " << singles.size() );
-            YACK_XMLOG(xml,"-- active species     : " << working.size   );
+            YACK_XMLOG(xml,"-- active species     : " << working->size  );
             
             if(Nq)
             {

@@ -7,6 +7,7 @@
 #include "yack/chem/library.hpp"
 #include "yack/data/list/meta.hpp"
 #include "yack/math/adder.hpp"
+#include "yack/ptr/auto.hpp"
 
 namespace yack
 {
@@ -31,6 +32,12 @@ namespace yack
         class active_list : public alist
         {
         public:
+            //__________________________________________________________________
+            //
+            // types
+            //__________________________________________________________________
+            typedef auto_ptr<const active_list> pointer; //!< alias
+
             //__________________________________________________________________
             //
             // C++

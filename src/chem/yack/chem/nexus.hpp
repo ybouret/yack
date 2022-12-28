@@ -73,15 +73,15 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const library    &  corelib;  //!< initial library
-            const equilibria &  singles;  //!< initial equilibria
-            const equilibria    lattice;  //!< lattice of equilibria
-            const enode * const next_en;  //!< firt node of lattice after single
-            const active_list   working;  //!< list of active species
-            const size_t        M;        //!< corelib.size
-            const size_t        N;        //!< singles.size
-            const size_t        L;        //!< lattice.size
-            const imatrix       Nu;       //!< [NxM] initial topology
+            const library    &         corelib;  //!< initial library
+            const equilibria &         singles;  //!< initial equilibria
+            const equilibria           lattice;  //!< lattice of equilibria
+            const enode * const        next_en;  //!< firt node of lattice after single
+            const active_list::pointer working;  //!< list of active species
+            const size_t               M;        //!< corelib.size
+            const size_t               N;        //!< singles.size
+            const size_t               L;        //!< lattice.size
+            const imatrix              Nu;       //!< [NxM] initial topology
             
         private:
             const library     worklib; //!< hard copy of corelib, to build combinations
@@ -97,9 +97,9 @@ namespace yack
             //
             // singles data
             //__________________________________________________________________
-            tableau            K;       //!< [N] single constants
-            const eq_tier      genus;   //!< classification of singles
-            const clusters     wired;   //!< clusters of connex equilibria with their c-laws
+            tableau                 K;       //!< [N] single constants
+            const eq_tier::pointer  genus;   //!< classification of singles
+            const clusters          wired;   //!< clusters of connex equilibria with their c-laws
 
             
 

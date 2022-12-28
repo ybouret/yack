@@ -26,7 +26,7 @@ namespace yack
         singles( eqs ),
         lattice( singles ),
         next_en( NULL ),
-        working( corelib.head() ),
+        working( new active_list(corelib.head()) ),
         M( corelib.size() ),
         N( singles.size() ),
         L(0),
@@ -39,7 +39,7 @@ namespace yack
         
         // singles
         K( N ),
-        genus(),
+        genus( new eq_tier() ),
         wired(),
 
         // c-laws
@@ -99,12 +99,12 @@ namespace yack
                     {
                         case undefined: throw imported::exception(clid,"<%s> is undefined", eq.name() );
                         case both_ways:
-                            coerce(genus.bounded) << &eq;
+                            coerce(genus->bounded) << &eq;
                             break;
                             
                         case join_only:
                         case part_only:
-                            coerce(genus.roaming) << &eq;
+                            coerce(genus->roaming) << &eq;
                             for(const cnode *cn=eq.head();cn;cn=cn->next)
                             {
                                 const species &s = ****cn;
