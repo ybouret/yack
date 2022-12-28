@@ -265,7 +265,7 @@ namespace yack
             YACK_XMLSUB(xml,fn);
 
             // making manifold for each cluster
-            for(cluster *sharing=related.head;sharing;sharing=sharing->next)
+            for(cluster *sharing=wired.head;sharing;sharing=sharing->next)
                 make_manifold_(*sharing,xml);
 
             YACK_XMLOG(xml, "-- resetting working species");

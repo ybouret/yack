@@ -18,7 +18,7 @@ namespace yack
             //------------------------------------------------------------------
             {
                 //YACK_XMLSUB(xml,"building");
-                clusters &cls = coerce(related); assert(cls.size<=0);
+                clusters &cls = coerce(wired); assert(cls.size<=0);
 
                 for(const enode *en=singles.head();en;en=en->next)
                 {
@@ -88,7 +88,7 @@ namespace yack
                 }
             }
 
-            YACK_XMLOG(xml,"related = " << related);
+            YACK_XMLOG(xml,"wired = " << wired);
 
             
         }

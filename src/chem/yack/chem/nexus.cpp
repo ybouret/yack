@@ -39,9 +39,8 @@ namespace yack
         
         // singles
         K( N ),
-        regular(),
-        roaming(),
-        related(),
+        genus(),
+        wired(),
 
         // c-laws
         Nq(0),
@@ -100,12 +99,12 @@ namespace yack
                     {
                         case undefined: throw imported::exception(clid,"<%s> is undefined", eq.name() );
                         case both_ways:
-                            coerce(regular) << &eq;
+                            coerce(genus.bounded) << &eq;
                             break;
                             
                         case join_only:
                         case part_only:
-                            coerce(roaming) << &eq;
+                            coerce(genus.roaming) << &eq;
                             for(const cnode *cn=eq.head();cn;cn=cn->next)
                             {
                                 const species &s = ****cn;
@@ -130,7 +129,7 @@ namespace yack
                 YACK_XMLOG(xml, "-- rank = " << rank << " / " << N);
                 if(rank<N) throw imported::exception(clid,"detected dependent equilibria");
                 
-                singles.graphviz("singles.dot", corelib);
+                //singles.graphviz("singles.dot", corelib);
 
 
                 //--------------------------------------------------------------
@@ -138,7 +137,7 @@ namespace yack
                 // build related (at least one cluster)
                 //
                 //----------------------------------------------------------
-                build_related(xml); assert(related.size>0);
+                build_related(xml); assert(wired.size>0);
 
                 //--------------------------------------------------------------
                 //
@@ -204,12 +203,12 @@ namespace yack
                 matrix<bool> detached(L,L);
 
                 build_detached(detached,topo);
-                for(cluster *cc=related.head;cc;cc=cc->next)
+                for(cluster *cc=wired.head;cc;cc=cc->next)
                     cc->build_army_with(detached,xml);
 
 
                 build_detached(detached,tbal);
-                for(cluster *cc=related.head;cc;cc=cc->next)
+                for(cluster *cc=wired.head;cc;cc=cc->next)
                     cc->build_wing_with(detached,xml);
 
 

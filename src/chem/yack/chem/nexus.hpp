@@ -98,10 +98,10 @@ namespace yack
             // singles data
             //__________________________________________________________________
             tableau            K;       //!< [N] single constants
-            const eq_team      regular; //!< both ways equilibrium
-            const eq_team      roaming; //!< [part|join]_only
-            const clusters     related; //!< clusters of related equilibria with their c-laws
+            const eq_tier      genus;   //!< classification of singles
+            const clusters     wired;   //!< clusters of connex equilibria with their c-laws
 
+            
 
             //__________________________________________________________________
             //

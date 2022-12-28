@@ -150,7 +150,7 @@ namespace yack
             YACK_XMLSUB(xml, "custodian");
             inset.ld(0);
             score.ld(0);
-            for(const cluster *cls=(**this).related.head;cls;cls=cls->next)
+            for(const cluster *cls=(**this).wired.head;cls;cls=cls->next)
             {
                 abide(C0,*cls);
             }

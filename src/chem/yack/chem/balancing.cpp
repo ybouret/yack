@@ -31,7 +31,7 @@ namespace yack
         bool balancing:: operator()(writable<double> &C0)
         {
             bool result = true;
-            for(const cluster *cls= (**this).related.head;cls;cls=cls->next)
+            for(const cluster *cls= (**this).wired.head;cls;cls=cls->next)
             {
                 if(!balance(C0,*cls)) {
                     result = false;

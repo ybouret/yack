@@ -122,7 +122,7 @@ namespace yack
                 for(const eq_node *en=sharing.head;en;en=en->next)
                 {
                     const equilibrium &eq = **en;
-                    if( regular.met(eq) ) {
+                    if( genus.bounded.met(eq) ) {
                         usual << &eq;
                         eq.update(tribe);
                     }
@@ -265,7 +265,7 @@ namespace yack
         {
             static const char * const fn = "conserved_set";
             YACK_XMLSUB(xml,fn);
-            for(cluster *sharing=related.head;sharing;sharing=sharing->next)
+            for(cluster *sharing=wired.head;sharing;sharing=sharing->next)
             {
                 conserved_set_(*sharing,xml);
                 coerce(Nq) += sharing->canon->size;
@@ -281,7 +281,7 @@ namespace yack
                 coerce(Qm).make(Nq,M);
                 {
                     size_t i=1;
-                    for(const cluster *cls=related.head;cls;cls=cls->next)
+                    for(const cluster *cls=wired.head;cls;cls=cls->next)
                     {
                         for(const conservation_law *claw = cls->canon->head;claw;claw=claw->next,++i)
                         {
