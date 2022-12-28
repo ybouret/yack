@@ -5,6 +5,15 @@
 
 using namespace yack;
 
+namespace
+{
+    static inline int compare_arrays(const readable<int> &lhs,
+                                     const readable<int> &rhs)
+    {
+        return comparison::lexicographic(lhs,rhs);
+    }
+}
+
 YACK_UTEST(data_bunch)
 {
     randomized::rand_ ran;
@@ -18,6 +27,8 @@ YACK_UTEST(data_bunch)
         std::cerr << "ib=" << *ib << std::endl;
     }
 
+    ib.sort_with(compare_arrays);
+    std::cerr << "ib=" << *ib << std::endl;
 
 }
 YACK_UDONE()

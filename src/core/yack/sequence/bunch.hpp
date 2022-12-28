@@ -4,6 +4,7 @@
 
 #include "yack/sequence/cxx-array.hpp"
 #include "yack/data/list/cxx.hpp"
+#include "yack/data/list/sort.hpp"
 #include "yack/object.hpp"
 
 namespace yack
@@ -24,6 +25,7 @@ namespace yack
         //______________________________________________________________________
         YACK_DECL_ARGS(T,type);                     //!< aliases
         typedef cxx_array<mutable_type> array_type; //!< alias
+        typedef readable<type>          readable_t; //!< default interface
 
         //______________________________________________________________________
         //
@@ -124,6 +126,15 @@ namespace yack
             (void)insert(arr);
         }
 
+        //! sort using 'int proc(const readable_t &, const readable_t &)'
+        template <typename COMPARE> inline
+        void sort_with(COMPARE &proc)
+        {
+            callback<COMPARE> compare_entries = { proc };
+            return merge_list_of<entry>::sort(alive,compare_entries);
+        }
+
+
         //______________________________________________________________________
         //
         // members
@@ -151,6 +162,18 @@ namespace yack
             }
             return true;
         }
+
+        template <typename COMPARE>
+        struct callback
+        {
+            COMPARE &proc;
+            inline int operator()(const entry *lhs, const entry *rhs)
+            {
+                assert(lhs); assert(rhs);
+                return proc(*coerce_cast<readable_t,array_type>(lhs),*coerce_cast<readable_t,array_type>(rhs));
+            }
+        };
+
 
     public:
         array_type work; //!< workspace for possible conversions

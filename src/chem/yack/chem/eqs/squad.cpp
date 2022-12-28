@@ -97,6 +97,12 @@ namespace yack
             YACK_XMLSUB(xml,here);
 
             assert(0==size);
+
+            exit(0);
+
+
+#if 0
+            assert(0==size);
             for(const eq_node *node=guests.head;node;node=node->next)
             {
                 const equilibrium    &lhs = **node;
@@ -139,6 +145,7 @@ namespace yack
                     YACK_XMLOG(xml,"  (+) " << *squad);
                 }
             }
+#endif
 
         }
 

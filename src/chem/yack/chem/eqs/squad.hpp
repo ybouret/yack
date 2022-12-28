@@ -64,7 +64,7 @@ namespace yack
             //
             // typedef
             //__________________________________________________________________
-            typedef auto_ptr<const eq_squads> pointer;
+            typedef auto_ptr<const eq_squads> pointer; //!< alias
 
             //__________________________________________________________________
             //

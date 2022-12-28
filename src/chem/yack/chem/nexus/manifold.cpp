@@ -111,6 +111,29 @@ namespace yack
                 }
             }
 
+            static inline int norm1(const readable<int> &arr) throw()
+            {
+                int sum = 0;
+                for(size_t i=arr.size();i>0;--i)
+                {
+                    sum += absolute(arr[i]);
+                }
+                return sum;
+            }
+
+            static inline int compare(const readable<int> &lhs,
+                                      const readable<int> &rhs) throw()
+            {
+                const int l1 = norm1(lhs);
+                const int r1 = norm1(rhs);
+                return l1-r1;
+            }
+
+            inline void organize()
+            {
+                sort_with(compare);
+            }
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(collector);
@@ -187,6 +210,7 @@ namespace yack
                     qbranch qgen;
                     qgen.batch(mu,n,keep_more_than_two<int>,cw);
                 }
+                cw.organize();
 
 
                 //--------------------------------------------------------------
