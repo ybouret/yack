@@ -54,7 +54,8 @@ namespace yack
 
         void actor:: display_compact(std::ostream &os, const readable<double> &C) const
         {
-            os << '[' << sp.name << ']' << '=' << std::setw(15) << C[*sp];
+            //os << '[' << sp.name << ']' << '=' << std::setw(15) << C[*sp];
+            os << '[' << sp.name << ']' << '=' << C[*sp];
         }
 
 

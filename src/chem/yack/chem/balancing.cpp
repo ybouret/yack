@@ -226,7 +226,7 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // third pass: get improvement
+            // third pass: get improvement on negative conserved values
             //
             //------------------------------------------------------------------
             xadd.ldz();
@@ -234,18 +234,25 @@ namespace yack
             for(const cnode *cn=eq.head();cn;cn=cn->next)
             {
                 const size_t j = *****cn;
-                if(crit[j]!=conserved) continue;
-                const double c0 = C0[j];
-                if(c0<0)
+                switch(crit[j])
                 {
-                    xadd.push(-c0);
-                    const double c = C[j];
-                    if(c<0) xadd.push(c);
+                    case unbounded:
+                    case spectator:
+                        continue;
+
+                    case conserved:
+                        const double c0 = C0[j];
+                        if(c0<0) {
+                            xadd.push(-c0);
+                            const double c= C[j];
+                            if(c<0)
+                                xadd.push(c);
+                        }
                 }
             }
 
             lead << &eq;
-            gain[*eq] =  xadd.get();
+            gain[*eq] = xadd.get();
         }
         
     }
