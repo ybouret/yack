@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_CHEMICAL_EQ_TIER_INCLUDED
@@ -12,17 +11,34 @@ namespace yack
     namespace chemical
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! for classification of equilibria
+        //
+        //______________________________________________________________________
         class eq_tier : public object
         {
         public:
-            typedef auto_ptr<eq_tier> pointer;
+            //__________________________________________________________________
+            //
+            // types
+            //__________________________________________________________________
+            typedef auto_ptr<eq_tier> pointer; //!< alias
 
-            explicit eq_tier() throw();
-            virtual ~eq_tier() throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit eq_tier() throw(); //!< setup empty
+            virtual ~eq_tier() throw(); //!< cleanup
 
-            const eq_team roaming;
-            const eq_team bounded;
-
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const eq_team roaming; //!< roaming equilibiria
+            const eq_team bounded; //!< bounded equilibria
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(eq_tier);

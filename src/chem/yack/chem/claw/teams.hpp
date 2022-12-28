@@ -4,6 +4,7 @@
 #define YACK_CHEMICAL_CLAW_TEAMS_INCLUDED 1
 
 #include "yack/chem/claw/team.hpp"
+#include "yack/ptr/auto.hpp"
 
 namespace yack
 {
@@ -15,7 +16,7 @@ namespace yack
         //! base class for teams of interlinked conservation laws
         //
         //______________________________________________________________________
-        typedef cxx_list_of<claw_team> claw_teams_;
+        typedef cxx_list_of<claw_team> claw_teams_; //!< alias
 
 
         //______________________________________________________________________
@@ -27,6 +28,12 @@ namespace yack
         class claw_teams : public object, public claw_teams_
         {
         public:
+            //__________________________________________________________________
+            //
+            // types
+            //__________________________________________________________________
+            typedef auto_ptr<const claw_teams> pointer; //!< alias
+
             //__________________________________________________________________
             //
             // C++

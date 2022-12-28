@@ -44,9 +44,6 @@ namespace yack
             bool attached_to(const conservation_law &) const throw(); //!< check link to a law
             bool attached_to(const claw_team        &) const throw(); //!< check link to a team
 
-            
-
-
             //__________________________________________________________________
             //
             // members

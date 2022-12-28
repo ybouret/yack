@@ -22,7 +22,11 @@ namespace yack
         class eq_team : public object, public eq_team_
         {
         public:
-            typedef auto_ptr<eq_team> pointer;
+            //__________________________________________________________________
+            //
+            // types
+            //__________________________________________________________________
+            typedef auto_ptr<eq_team> pointer; //!< alias
 
             //__________________________________________________________________
             //

@@ -27,7 +27,7 @@ namespace yack
             typedef auto_ptr<const claw_teams>        cells_type;  //!< alias
             typedef auto_ptr<const conservation_laws> canon_type;  //!< alias
             typedef auto_ptr<const eq_squads>         squads_ptr;  //!< alias
-            typedef auto_ptr<const active_list>       active_ptr;
+            typedef auto_ptr<const active_list>       active_ptr;  //!< alias
 
             //__________________________________________________________________
             //
@@ -45,8 +45,8 @@ namespace yack
             bool attached_to(const cluster &rhs)    const throw(); //!< true if one of the equilibrium is attached
             void sort();                                           //!< according to equilibrium index, collect working
 
-            void build_army_with(const matrix<bool> &detached, const xmlog &xml);
-            void build_wing_with(const matrix<bool> &detached, const xmlog &xml);
+            void build_army_with(const matrix<bool> &detached, const xmlog &xml); //!< detached equilibria for steady-state
+            void build_wing_with(const matrix<bool> &detached, const xmlog &xml); //!< detached equilibria for balancing
 
             //__________________________________________________________________
             //
