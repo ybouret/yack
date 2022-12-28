@@ -163,7 +163,6 @@ namespace yack
                 std::cerr << "stuck..." << std::endl;
                 exit(0);
             }
-
             YACK_XMLOG(xml,"-------- status:");
             for(const eq_knot *node=lead.head;node;node=node->next)
             {
@@ -176,6 +175,12 @@ namespace yack
                     xml() << std::endl;
                 }
             }
+            
+            for(const eq_squad *squad=cc.wing->head;squad;squad=squad->next)
+            {
+
+            }
+
 
             return false;
         }
