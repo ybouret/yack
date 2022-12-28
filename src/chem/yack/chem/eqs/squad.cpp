@@ -140,7 +140,7 @@ namespace yack
 
             for(const eq_squad *squad=head;squad;squad=squad->next)
             {
-                
+
                 if( !independent(*squad,detached) ) {
                     YACK_XMLOG(xml,"-- invalid " << *squad);
                     throw imported::exception(here,"unexpected invalid equilibria squad");

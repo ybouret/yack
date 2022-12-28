@@ -188,7 +188,15 @@ namespace yack
             for(const eq_squad *squad=cc.wing->head;squad;squad=squad->next)
             {
                 if(!squad_includes_lead(*squad,lead)) continue;
-                std::cerr << "-- use " << *squad << std::endl;
+                xadd.ldz();
+                for(const eq_node *node=squad->head;node;node=node->next)
+                {
+                    const equilibrium &eq = **node;
+                    xadd.push( gain[ *eq ]);
+                }
+                const double Gain = xadd.get();
+                std::cerr << "-- use " << std::setw(15) <<  Gain << "@" << *squad << std::endl;
+
             }
 
 
