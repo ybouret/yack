@@ -20,10 +20,13 @@ namespace yack
         balancing:: balancing(const nexus &usr, const xmlog &out) :
         authority<const nexus>(usr),
         spIO( new sp_pool() ),
+        eqIO( new eq_pool() ),
         reac(usr.M,spIO),
         prod(usr.M,spIO),
         Cbal(usr.L,usr.L>0?usr.M:0),
         fade(spIO),
+        lead(eqIO),
+        gain( usr.L ),
         xadd(),
         xml(out)
         {}
@@ -43,7 +46,7 @@ namespace yack
         
         void balancing:: probe(equalizer &eqz, const actor *a, const readable<double> &C)
         {
-            const readable<const criterion> &crit = (**this).crit;
+            const readable<criterion> &crit = (**this).crit;
             eqz.destroy();
             for(;a;a=a->next)
             {
@@ -99,9 +102,10 @@ namespace yack
 
 
         TRY_BALANCE:
-            YACK_XMLOG(xml,"-- balancing bounded");
-            const equilibria     &eqs = (**this).lattice;
-            for(const eq_node *en=cc.genus->bounded.head;en;en=en->next)
+            YACK_XMLOG(xml,"-- gathering bounded balance");
+            lead.release();
+            const gathering    &eqs = (**this).lattice;
+            for(const eq_node  *en  = cc.genus->bounded.head;en;en=en->next)
             {
                 const equilibrium &eq   = **en;
                 unsigned           flag = is_now_balanced;
@@ -123,6 +127,7 @@ namespace yack
                         reac.look_up(fade,prod);
                         if(xml.verbose) eqs.pad(*xml << eq.name,eq) << balanced_msg[flag]  << reac.neg << " | limited by prod: " << prod.lim << " => " << fade << std::endl;
                         coerce(fade.xi) = -fade.xi;
+                        score(C0,eq);
                         break;
 
                     case unbalanced_prod:
@@ -132,26 +137,44 @@ namespace yack
 
                         prod.look_up(fade,reac);
                         if(xml.verbose) eqs.pad(*xml << eq.name,eq) << balanced_msg[flag] <<  prod.neg << " | limited by reac: " << reac.lim << " => " << fade << std::endl;
+                        score(C0,eq);
                         break;
 
                     default:
                         assert(0==flag);
                         continue;
                 }
-
+            }
+            std::cerr << "lead=" << lead << std::endl;
+            YACK_XMLOG(xml,"-- status:");
+            for(const eq_knot *node=lead.head;node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                const size_t       ei = *eq;
+                if(xml.verbose)
+                {
+                    eqs.pad(*xml << eq.name,eq) << " : " << std::setw(15) << gain[ei] << "@";
+                    eq.display_compact(xml(), Cbal[ei]);
+                    xml() << std::endl;
+                }
 
             }
-
 
             return false;
         }
 
 
-        double balancing:: score(const readable<double> &C0, const equilibrium &eq)
+        void balancing:: score(const readable<double> &C0, const equilibrium &eq)
         {
-            writable<double> &C = Cbal[*eq];
+            writable<double>          &C    = Cbal[*eq];
+            const readable<criterion> &crit = (**this).crit;
 
-            // first pass, evaluate best concentration
+            //------------------------------------------------------------------
+            //
+            // first pass: evaluate best concentration
+            //
+            //------------------------------------------------------------------
+
             iota::load(C,C0);
 
             const double xi = fade.xi;
@@ -160,17 +183,40 @@ namespace yack
                 const component &a = ***cn;
                 const species   &s = *a;
                 const size_t     j = *s;
-                const double     c = C0[j];
-                if(c<0)
+                const double     d = a.nu * xi;
+
+                switch( crit[j] )
                 {
-                    C[j] = C0[j] + a.nu * xi;
+                    case unbounded:
+                        //------------------------------------------------------
+                        // move freely
+                        //------------------------------------------------------
+                        C[j] = C0[j] + d;
+                        continue;
+
+                    case spectator:
+                        //------------------------------------------------------
+                        // never get here!
+                        //------------------------------------------------------
+                        continue;
+
+                    case conserved:
+                        //------------------------------------------------------
+                        // a positive value will never become negative
+                        //------------------------------------------------------
+                        const double c0 = C0[j];
+                        double      &c  = (C[j]=C0[j]+d);
+                        if(c0>=0)    c  = max_of(c,0.0);
+                        continue;
                 }
-                else
-                {
-                    C[j] = max_of(C0[j]+a.nu*xi,0.0);
-                }
+
             }
 
+            //------------------------------------------------------------------
+            //
+            // second pass: numerical zero(s)
+            //
+            //------------------------------------------------------------------
             for(const sp_knot *sn=fade.head;sn;sn=sn->next)
             {
                 const species &sp = ***sn;
@@ -178,13 +224,13 @@ namespace yack
                 C[j] = 0;
             }
 
-            //(**this).corelib(std::cerr,"",C);
-            eq.display_compact(std::cerr,C) << std::endl;
-
-            const readable<const criterion> &crit = (**this).crit;
+            //------------------------------------------------------------------
+            //
+            // third pass: get improvement
+            //
+            //------------------------------------------------------------------
             xadd.ldz();
 
-            // second pass, get improvement
             for(const cnode *cn=eq.head();cn;cn=cn->next)
             {
                 const size_t j = *****cn;
@@ -198,9 +244,8 @@ namespace yack
                 }
             }
 
-
-
-            return xadd.get();
+            lead << &eq;
+            gain[*eq] =  xadd.get();
         }
         
     }

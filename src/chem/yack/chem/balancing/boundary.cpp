@@ -244,23 +244,34 @@ namespace yack
 
             zero.release();
 
-            // test again head
+            //------------------------------------------------------------------
+            //
+            // test against head
+            //
+            //------------------------------------------------------------------
             {
                 const boundary &self = bnd[1];
                 switch( __sign::of(mark.xi,self.xi) )
                 {
-                        // mark is reached first
+
                     case negative: assert(mark.xi<self.xi);
+                        //------------------------------------------------------
+                        // mark is reached first
+                        //------------------------------------------------------
                         return __joined(zero,mark);
 
 
-                        // numerical same value
                     case __zero__:
+                        //------------------------------------------------------
+                        // numerical same value
+                        //------------------------------------------------------
                         zero.join(self);
                         return __joined(zero,mark);
 
-                        // greater than first value
                     case positive: assert(mark.xi>self.xi);
+                        //------------------------------------------------------
+                        // greater than first value
+                        //------------------------------------------------------
                         if(size()<=1) {
                             return __joined(zero,self); // early return
                         }
@@ -268,29 +279,47 @@ namespace yack
                 }
             }
 
+
             assert(size()>1);
             assert(mark.xi>bnd[1].xi);
 
+            //------------------------------------------------------------------
+            //
+            // test against tail
+            //
+            //------------------------------------------------------------------
             const size_t jup = bnd.size(); assert(jup>=2);
             {
                 const boundary &self = bnd[jup];
                 switch( __sign::of(mark.xi,self.xi) )
                 {
                     case positive: assert(mark.xi>self.xi);
+                        //------------------------------------------------------
+                        // (highest) tail value is reached
+                        //------------------------------------------------------
                         return __joined(zero,self);
 
                     case __zero__:
+                        //------------------------------------------------------
+                        // numerical same value
+                        //------------------------------------------------------
                         zero.join(self);
                         return __joined(zero,mark);
 
                     case negative: assert(mark.xi<self.xi);
+                        //------------------------------------------------------
                         // will zero the closest small boundary
+                        //------------------------------------------------------
                         break;
                 }
             }
 
+            //------------------------------------------------------------------
+            //
+            // look up for smallest boundary below mark
+            //
+            //------------------------------------------------------------------
             size_t jlo = 1;
-
             assert(mark.xi>bnd[jlo].xi);
             assert(mark.xi<bnd[jup].xi);
 
@@ -299,15 +328,24 @@ namespace yack
                 const boundary &self = bnd[jnx];
                 switch(__sign::of(mark.xi,self.xi))
                 {
-                    case __zero__: // found jnx
+                    case __zero__:
+                        //------------------------------------------------------
+                        // numerical same value @jnx
+                        //------------------------------------------------------
                         zero.join(self);
                         return __joined(zero,mark);
 
-                    case negative: // found jlo: double break
+                    case negative:
+                        //------------------------------------------------------
+                        // found jlo: double break out of the loop
+                        //------------------------------------------------------
                         assert(mark.xi<self.xi);
                         break;
 
-                    case positive: // go on
+                    case positive:
+                        //------------------------------------------------------
+                        // need to go on
+                        //------------------------------------------------------
                         jlo = jnx;
                         continue;
 
@@ -316,6 +354,11 @@ namespace yack
                 break;
             }
 
+            //------------------------------------------------------------------
+            //
+            // done!
+            //
+            //------------------------------------------------------------------
             assert(mark.xi>bnd[jlo].xi);
             return __joined(zero,bnd[jlo]);
 

@@ -48,10 +48,10 @@ namespace yack
         //
         // methods
         //______________________________________________________________________
-        std::ostream & operator*()    const; //!< return formatted/indented ostream
-        virtual void   incr() const throw(); //!< increase indentation
-        virtual void   decr() const throw(); //!< decrease indentatiomn
-        
+        std::ostream & operator*()      const; //!< return formatted/indented ostream
+        virtual void   incr()   const throw(); //!< increase indentation
+        virtual void   decr()   const throw(); //!< decrease indentatiomn
+        std::ostream & operator()(void) const; //!< return raw ostream
 
         //______________________________________________________________________
         //

@@ -25,7 +25,7 @@ namespace yack
         typedef matrix<unsigned>            umatrix;    //!< alias
         typedef matrix<double>              rmatrix;    //!< alias
 
-        typedef cxx_array<const criterion> criterions; //!< alias
+        typedef cxx_array<criterion>       criterions; //!< alias
         typedef cxx_array<double>          tableau;    //!< alias
         
         //______________________________________________________________________

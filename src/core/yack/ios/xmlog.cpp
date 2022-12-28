@@ -14,6 +14,11 @@ namespace yack
         return os;
     }
 
+    std::ostream & xmlog:: operator()(void) const
+    {
+        return output;
+    }
+
 
     xmlog:: ~xmlog() throw()
     {

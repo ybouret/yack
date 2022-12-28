@@ -7,6 +7,7 @@
 #include "yack/chem/nexus.hpp"
 #include "yack/type/authority.hpp"
 #include "yack/chem/balancing/equalizer.hpp"
+#include "yack/chem/eqs/repo.hpp"
 
 namespace yack
 {
@@ -14,7 +15,6 @@ namespace yack
     namespace chemical
     {
        
-
         //______________________________________________________________________
         //
         //
@@ -24,6 +24,7 @@ namespace yack
         class balancing : public authority<const nexus>
         {
         public:
+            
             //__________________________________________________________________
             //
             // C++
@@ -41,11 +42,14 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            sp_fund      spIO;       //!< shared
+            sp_fund      spIO;       //!< cache
+            eq_fund      eqIO;       //!< cache
             equalizer    reac;       //!< compute reac pos/neg
             equalizer    prod;       //!< compute prod pos/neg
             rmatrix      Cbal;       //!< [LxM] balanced concentration matrix
             frontier     fade;       //!< result to compute balananced concentrations and score
+            eq_repo      lead;       //!< possibilities
+            tableau      gain;       //!< store gains
             raddops      xadd;       //!< for internal computation
             const xmlog &xml;        //!< helper
 
@@ -55,7 +59,7 @@ namespace yack
                          const cluster    &cc);
 
             void   probe(equalizer &eqz, const actor *a, const readable<double> &C0);
-            double score(const readable<double> &C0, const equilibrium &);
+            void   score(const readable<double> &C0, const equilibrium &);
 
         };
 
