@@ -187,10 +187,8 @@ namespace yack
             
             for(const eq_squad *squad=cc.wing->head;squad;squad=squad->next)
             {
-                if( squad_includes_lead(*squad,lead) )
-                {
-                    std::cerr << "-- use " << *squad << std::endl;
-                }
+                if(!squad_includes_lead(*squad,lead)) continue;
+                std::cerr << "-- use " << *squad << std::endl;
             }
 
 
