@@ -95,57 +95,63 @@ namespace yack
         {
             static const char * const here = "equilibria::squads::build";
             YACK_XMLSUB(xml,here);
-
             assert(0==size);
 
-            exit(0);
-
-
-#if 0
-            assert(0==size);
+            //------------------------------------------------------------------
+            //
+            // initialize
+            //
+            //------------------------------------------------------------------
             for(const eq_node *node=guests.head;node;node=node->next)
             {
                 const equilibrium    &lhs = **node;
                 push_back( new eq_squad() )->append(&lhs);
-                for(const eq_node *scan=node->next;scan;scan=scan->next)
+            }
+
+            //------------------------------------------------------------------
+            //
+            // for each existing squad, to grow it
+            // with a new equilibrium, totally detached
+            //
+            //------------------------------------------------------------------
+            for(const eq_node *node=guests.head;node;node=node->next)
+            {
+                const equilibrium &rhs = **node;
+                const size_t       rid = *rhs;
+                for(eq_squad *squad=head;squad;squad=squad->next)
                 {
-                    const equilibrium &rhs = **scan;
-                    for(eq_squad *squad=head;squad;squad=squad->next)
-                    {
-                        if( is_detached_from(*squad, rhs, detached) )
-                        {
-                            push_front( squad->clone() )->append(&rhs);
-                            for(const eq_squad *sub=head->next;sub;sub=sub->next)
-                            {
-                                if(0==eq_squad::compare(head,sub) )
-                                {
-                                    delete pop_front();
-                                    break;
-                                }
-                            }
-                        }
-                    }
+                    assert(squad->tail);
+                    if(***(squad->tail)>=rid)                  continue; // keep for later
+                    if(!is_detached_from(*squad,rhs,detached)) continue; // not possible
+                    push_front( squad->clone() )->append(&rhs);          // clone with new
                 }
             }
+
+            //------------------------------------------------------------------
+            //
+            // cleanup tree
+            //
+            //------------------------------------------------------------------
             assert(size>=guests.size);
             YACK_XMLOG(xml, "-- sorting " << size << " / " << guests.size << " : added #" << size - guests.size);
-            
-            for(eq_squad *squad=head;squad;squad=squad->next)
-                squad->sort();
+
+            for(eq_squad *squad=head;squad;squad=squad->next) squad->sort();
             merge_list_of<eq_squad>::sort(*this,eq_squad::compare);
 
             for(const eq_squad *squad=head;squad;squad=squad->next)
             {
+                
                 if( !independent(*squad,detached) ) {
                     YACK_XMLOG(xml,"-- invalid " << *squad);
                     throw imported::exception(here,"unexpected invalid equilibria squad");
                 }
-                if(squad->size>1)
-                {
+
+                if(squad->size>1) {
                     YACK_XMLOG(xml,"  (+) " << *squad);
                 }
             }
-#endif
+
+
 
         }
 
