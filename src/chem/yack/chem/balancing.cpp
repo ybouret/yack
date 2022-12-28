@@ -79,6 +79,11 @@ namespace yack
             " [-] "
         };
 
+        static const char * score_msg(const bool ok)   throw()
+        {
+            return ok ? "[succes]" : "[no gain]";
+        }
+
         
         bool balancing:: balance(writable<double> &C0,
                                  const cluster    &cc)
@@ -102,7 +107,7 @@ namespace yack
 
 
         TRY_BALANCE:
-            YACK_XMLOG(xml,"-- gathering bounded balance");
+            YACK_XMLOG(xml,"-------- gathering bounded balance");
             lead.release();
             const gathering    &eqs = (**this).lattice;
             for(const eq_node  *en  = cc.genus->bounded.head;en;en=en->next)
@@ -120,33 +125,46 @@ namespace yack
                     case unbalanced_both:
                         continue;
 
-                    case unbalanced_reac:
+                    case unbalanced_reac: {
                         assert(prod.lim.size>0);
                         assert(reac.neg.size()>0);
                         assert(prod.neg.size()<=0);
                         reac.look_up(fade,prod);
-                        if(xml.verbose) eqs.pad(*xml << eq.name,eq) << balanced_msg[flag]  << reac.neg << " | limited by prod: " << prod.lim << " => " << fade << std::endl;
                         coerce(fade.xi) = -fade.xi;
-                        score(C0,eq);
-                        break;
+                        const bool ok   = score(C0,eq);
+                        if(xml.verbose)
+                            eqs.pad(*xml << eq.name,eq)
+                            << balanced_msg[flag]  << reac.neg
+                            << " | limited by prod: " << prod.lim
+                            << " => " << fade << " => " << score_msg(ok) << std::endl;
+                    } break;
 
-                    case unbalanced_prod:
+                    case unbalanced_prod: {
                         assert(reac.lim.size>0);
                         assert(prod.neg.size()>0);
                         assert(reac.neg.size()<=0);
 
                         prod.look_up(fade,reac);
-                        if(xml.verbose) eqs.pad(*xml << eq.name,eq) << balanced_msg[flag] <<  prod.neg << " | limited by reac: " << reac.lim << " => " << fade << std::endl;
-                        score(C0,eq);
-                        break;
+                        const bool ok = score(C0,eq);
+                        if(xml.verbose)
+                            eqs.pad(*xml << eq.name,eq)
+                            << balanced_msg[flag] <<  prod.neg
+                            << " | limited by reac: " << reac.lim
+                            << " => " << fade << " => " << score_msg(ok) << std::endl;
+                    } break;
 
                     default:
                         assert(0==flag);
                         continue;
                 }
             }
-            std::cerr << "lead=" << lead << std::endl;
-            YACK_XMLOG(xml,"-- status:");
+            if(lead.size<=0)
+            {
+                std::cerr << "stuck..." << std::endl;
+                exit(0);
+            }
+
+            YACK_XMLOG(xml,"-------- status:");
             for(const eq_knot *node=lead.head;node;node=node->next)
             {
                 const equilibrium &eq = ***node;
@@ -157,14 +175,13 @@ namespace yack
                     eq.display_compact(xml(), Cbal[ei]);
                     xml() << std::endl;
                 }
-
             }
 
             return false;
         }
 
 
-        void balancing:: score(const readable<double> &C0, const equilibrium &eq)
+        bool balancing:: score(const readable<double> &C0, const equilibrium &eq)
         {
             writable<double>          &C    = Cbal[*eq];
             const readable<criterion> &crit = (**this).crit;
@@ -251,8 +268,17 @@ namespace yack
                 }
             }
 
-            lead << &eq;
-            gain[*eq] = xadd.get();
+            const double g = xadd.get();
+            if(g>0)
+            {
+                lead << &eq;
+                gain[*eq] = g;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
         
     }

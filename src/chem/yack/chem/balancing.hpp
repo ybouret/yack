@@ -59,7 +59,7 @@ namespace yack
                          const cluster    &cc);
 
             void   probe(equalizer &eqz, const actor *a, const readable<double> &C0);
-            void   score(const readable<double> &C0, const equilibrium &);
+            bool   score(const readable<double> &C0, const equilibrium &);
 
         };
 
