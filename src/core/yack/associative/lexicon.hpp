@@ -1,8 +1,8 @@
 
 //! \file
 
-#ifndef YACK_ASSOCIATIVE_ADDRBOOK_INCLUDED
-#define YACK_ASSOCIATIVE_ADDRBOOK_INCLUDED 1
+#ifndef YACK_ASSOCIATIVE_LEXICON_INCLUDED
+#define YACK_ASSOCIATIVE_LEXICON_INCLUDED 1
 
 #include "yack/data/suffix/tree.hpp"
 #include "yack/container/iterator/linked.hpp"

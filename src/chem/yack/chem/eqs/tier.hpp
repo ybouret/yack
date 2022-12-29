@@ -41,7 +41,7 @@ namespace yack
 
             
             //! compile species list once roaming and engaged are setup
-            void        compile();
+            void        compile_with(const library &);
 
             //__________________________________________________________________
             //

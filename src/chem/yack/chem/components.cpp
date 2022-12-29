@@ -67,12 +67,12 @@ namespace yack
         }
 
 
-        void components:: update(addrbook &tribe) const
+        void components:: update(lexicon<size_t> &tribe) const
         {
             for(const cnode *cn=head();cn;cn=cn->next)
             {
                 const species &s = ****cn;
-                tribe.ensure(&s);
+                tribe.ensure(*s);
             }
         }
 

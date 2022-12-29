@@ -123,7 +123,7 @@ namespace yack
                 // compiling genus
                 //
                 //--------------------------------------------------------------
-                coerce(genus)->compile();
+                coerce(genus)->compile_with(corelib);
                 YACK_XMLOG(xml,"-- unbridled : " << genus->unbridled);
                 YACK_XMLOG(xml,"-- regulated : " << genus->regulated);
                 YACK_XMLOG(xml,"-- committed : " << genus->committed);

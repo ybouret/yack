@@ -5,7 +5,7 @@
 
 #include "yack/chem/species.hpp"
 #include "yack/data/list/meta.hpp"
-#include "yack/associative/addrbook.hpp"
+#include "yack/associative/lexicon.hpp"
 
 namespace yack {
 
@@ -19,7 +19,9 @@ namespace yack {
         //______________________________________________________________________
         typedef meta_list<const species> sp_list_;    //!< list of species, base class
         typedef sp_list_::node_type      sp_node;     //!< node within sp_list
-
+        typedef lexicon<size_t>          sp_book;     //!< alias
+        class library;
+        
         //______________________________________________________________________
         //
         //
@@ -40,9 +42,9 @@ namespace yack {
             //
             // methods
             //__________________________________________________________________
-            void     sort()    throw();              //!< sort by increasing index
-            void     load(const addrbook &);         //!< load and sort
-            void     shed(const sp_list  &) throw(); //!< remove from self
+            void     sort()    throw();                      //!< sort by increasing index
+            void     load(const sp_book &, const library &); //!< load and sort
+            void     shed(const sp_list &) throw();          //!< remove from self
             
             //! compare by increasing indices
             static int node_compare(const sp_node *, const sp_node *) throw();

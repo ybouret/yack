@@ -22,15 +22,7 @@ namespace yack {
             merge_list_of<sp_node>::sort(*this,node_compare);
         }
 
-        void sp_list:: load(const addrbook &tribe)
-        {
-            sp_list_ &self = *this;
-            for(addrbook::const_iterator it=tribe.begin();it!=tribe.end();++it)
-            {
-                self << static_cast<const species*>(*it);
-            }
-            sort();
-        }
+
 
         void sp_list:: shed(const sp_list  &other) throw()
         {
@@ -57,4 +49,23 @@ namespace yack {
         }
     }
 
+}
+
+
+#include "yack/chem/library.hpp"
+
+namespace yack {
+    
+    namespace chemical
+    {
+        void sp_list:: load(const sp_book &tribe, const library &lib)
+        {
+            sp_list_ &self = *this;
+            for(sp_book::const_iterator it=tribe.begin();it!=tribe.end();++it)
+            {
+                self << &lib[*it];
+            }
+            sort();
+        }
+    }
 }

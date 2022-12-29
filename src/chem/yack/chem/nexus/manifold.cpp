@@ -264,7 +264,7 @@ namespace yack
 
                 YACK_XMLOG(xml,"-- added #" << repo.size << " to local cluster");
                 cls.merge_back(repo);
-                YACK_XMLOG(xml,"--       #" << cls.size  << " in local cluster");
+                YACK_XMLOG(xml,"-- total #" << cls.size  << " in local cluster");
             }
 
             //------------------------------------------------------------------
@@ -294,7 +294,7 @@ namespace yack
             }
 
             // and compile genus
-            coerce(cls.genus)->compile();
+            coerce(cls.genus)->compile_with(corelib);
 
         }
         

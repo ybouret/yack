@@ -8,7 +8,7 @@
 #include "yack/chem/component.hpp"
 #include "yack/chem/xlimits.hpp"
 #include "yack/associative/suffix/set.hpp"
-#include "yack/associative/addrbook.hpp"
+#include "yack/associative/lexicon.hpp"
 
 
 namespace yack
@@ -180,7 +180,7 @@ namespace yack
             void move(writable<double> &C, const double xi) const throw();
 
             //! ensure each species is registered in tribe
-            void update(addrbook &tribe) const;
+            void update(lexicon<size_t> &tribe) const;
 
             //! fill topology
             template <typename T> inline void fill(writable<T> &nu) const

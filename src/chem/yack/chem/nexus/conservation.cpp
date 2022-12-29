@@ -117,7 +117,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             {
-                addrbook     tribe;
+                lexicon<size_t>     tribe;
                 
                 for(const eq_node *en=sharing.head;en;en=en->next)
                 {
@@ -128,11 +128,11 @@ namespace yack
                     }
                 }
                 
-                for(addrbook::const_iterator it=tribe.begin();it!=tribe.end();++it)
+                for(lexicon<size_t>::const_iterator it=tribe.begin();it!=tribe.end();++it)
                 {
-                    const species &sp = *static_cast<species*>(*it);
+                    const species &sp = corelib[*it];
                     if( conserved != crit[*sp] ) continue;;
-                    house << static_cast<species *>(*it);
+                    house << &sp;
                 }
                 house.sort();
             }
