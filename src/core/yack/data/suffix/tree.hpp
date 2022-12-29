@@ -6,6 +6,8 @@
 
 #include "yack/data/suffix/node.hpp"
 #include "yack/data/list/ordered.hpp"
+#include "yack/data/list/sort.hpp"
+#include "yack/data/nodes-comparison.hpp"
 #include "yack/ios/ocstream.hpp"
 
 namespace yack
@@ -178,7 +180,7 @@ namespace yack
 
             //__________________________________________________________________
             //
-            //! search method, nutable
+            //! search method, mutable
             //__________________________________________________________________
             template <typename ITERATOR> inline
             type *search(ITERATOR iter, size_t n) throw()
@@ -339,6 +341,17 @@ namespace yack
             {
                 root.swap_with(other.root);
                 data.swap_with(other.data);
+            }
+
+            //__________________________________________________________________
+            //
+            //! sorting internal data list
+            //__________________________________________________________________
+            template <typename COMPARE> inline
+            void sort_with(COMPARE &compare)
+            {
+                nodes_comparison<knot_type,COMPARE> proc = { compare };
+                merge_list_of<knot_type>::sort(data,proc);
             }
 
             //__________________________________________________________________

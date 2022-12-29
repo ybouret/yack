@@ -18,6 +18,8 @@ YACK_UTEST(data_lexicon)
     toto.gv("lexicon.dot");
     ios::vizible::render("lexicon.dot");
 
+    toto.sort_with( comparison::decreasing<int> );
+
     for(lexicon<int>::const_iterator it=toto.begin();it!=toto.end();++it)
     {
         std::cerr << *it << std::endl;
