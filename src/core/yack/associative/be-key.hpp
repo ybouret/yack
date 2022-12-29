@@ -24,6 +24,7 @@ namespace yack
         //______________________________________________________________________
         virtual ~be_key_() throw(); //!< cleanup
 
+
     protected:
         //! setup
         explicit be_key_(void *       target,
@@ -39,6 +40,11 @@ namespace yack
 
         //! out of reach display
         static void show(std::ostream &, const uint8_t *source, const size_t length) throw();
+
+    public:
+        //! to use within suffix tree
+        const uint8_t *begin() const throw() ;
+
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(be_key_);
@@ -74,6 +80,7 @@ namespace yack
         //______________________________________________________________________
         inline virtual const void * ro_addr() const throw() { return wksp;   }
         inline virtual size_t       measure() const throw() { return length; }
+
 
         //______________________________________________________________________
         //

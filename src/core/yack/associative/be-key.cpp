@@ -35,5 +35,8 @@ namespace yack
         os << '>';
     }
 
+    const uint8_t * be_key_:: begin() const throw() { return static_cast<const uint8_t*>( ro_addr() ); }
+
+
 }
 

@@ -327,10 +327,10 @@ namespace yack
             }
 
 
-            //! data access
+            //! const data access
             inline const list_of<knot_type> & operator *() const throw() { return data; }
 
-            //! data access
+            //! const data access
             inline const list_of<knot_type> * operator->() const throw() { return &data; }
 
 

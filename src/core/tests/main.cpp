@@ -89,6 +89,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(data_stats);
     YACK_UTEST(data_pipes);
     YACK_UTEST(data_addrbook);
+    YACK_UTEST(data_lexicon);
     YACK_UTEST(data_meta);
     YACK_UTEST(data_doubly);
     YACK_UTEST(data_groove);
