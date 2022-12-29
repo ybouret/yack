@@ -79,10 +79,7 @@ namespace yack
             " [-] "
         };
 
-        static const char * score_msg(const bool ok)   throw()
-        {
-            return ok ? "[succes]" : "[no gain]";
-        }
+
 
         static inline bool squad_includes_lead(const eq_squad &squad,
                                                const eq_repo  &lead) throw()
@@ -140,12 +137,12 @@ namespace yack
                         assert(prod.neg.size()<=0);
                         reac.look_up(fade,prod);
                         coerce(fade.xi) = -fade.xi;
-                        const bool ok   = score(C0,eq);
+                        score(C0,eq);
                         if(xml.verbose)
                             eqs.pad(*xml << eq.name,eq)
                             << balanced_msg[flag]  << reac.neg
                             << " | limited by prod: " << prod.lim
-                            << " => " << fade << " => " << score_msg(ok) << std::endl;
+                            << " => " << fade << std::endl;
                     } break;
 
                     case unbalanced_prod: {
@@ -154,12 +151,12 @@ namespace yack
                         assert(reac.neg.size()<=0);
 
                         prod.look_up(fade,reac);
-                        const bool ok = score(C0,eq);
+                        score(C0,eq);
                         if(xml.verbose)
                             eqs.pad(*xml << eq.name,eq)
                             << balanced_msg[flag] <<  prod.neg
                             << " | limited by reac: " << reac.lim
-                            << " => " << fade << " => " << score_msg(ok) << std::endl;
+                            << " => " << fade << std::endl;
                     } break;
 
                     default:
@@ -204,7 +201,7 @@ namespace yack
         }
 
 
-        bool balancing:: score(const readable<double> &C0, const equilibrium &eq)
+        void balancing:: score(const readable<double> &C0, const equilibrium &eq)
         {
             writable<double>          &C    = Cbal[*eq];
             const readable<criterion> &crit = (**this).crit;
@@ -217,6 +214,7 @@ namespace yack
 
             iota::load(C,C0);
 
+            xadd.ldz();
             const double xi = fade.xi;
             for(const cnode *cn=eq.head();cn;cn=cn->next)
             {
@@ -245,8 +243,21 @@ namespace yack
                         // a positive value will never become negative
                         //------------------------------------------------------
                         const double c0 = C0[j];
-                        double      &c  = (C[j]=C0[j]+d);
-                        if(c0>=0)    c  = max_of(c,0.0);
+                        if(c0<0)
+                        {
+                            double &c =(C[j]=c0+d);
+                            if(c<0) {
+                                xadd.push(d);
+                            }
+                            else
+                            {
+                                xadd.push(-c0);
+                            }
+                        }
+                        else
+                        {
+                            C[j]  = max_of(c0+d,0.0);
+                        }
                         continue;
                 }
 
@@ -269,6 +280,7 @@ namespace yack
             // third pass: get improvement on negative conserved values
             //
             //------------------------------------------------------------------
+#if 0
             xadd.ldz();
 
             for(const cnode *cn=eq.head();cn;cn=cn->next)
@@ -290,18 +302,11 @@ namespace yack
                         }
                 }
             }
+#endif
 
-            const double g = xadd.get();
-            if(g>0)
-            {
-                lead << &eq;
-                gain[*eq] = g;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            lead << &eq;
+            gain[*eq] = xadd.get();
+
         }
         
     }
