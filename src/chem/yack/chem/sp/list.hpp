@@ -43,9 +43,21 @@ namespace yack {
             void     sort()    throw();              //!< sort by increasing index
             void     load(const addrbook &);         //!< load and sort
             void     shed(const sp_list  &) throw(); //!< remove from self
-
+            
             //! compare by increasing indices
             static int node_compare(const sp_node *, const sp_node *) throw();
+
+            //! transfer only active part
+            template <typename TARGET, typename SOURCE> inline
+            void transfer(TARGET &target, SOURCE &source) const
+            {
+                for(const sp_node *node=this->head;node;node=node->next)
+                {
+                    const size_t j = ***node;
+                    target[j] = source[j];
+                }
+            }
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(sp_list);

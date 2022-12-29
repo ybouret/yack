@@ -96,7 +96,8 @@ YACK_UTEST(nexus)
 
     YACK_SIZEOF(nexus);
     YACK_SIZEOF(cluster);
-    
+    YACK_SIZEOF(eq_tier);
+
 
 
 

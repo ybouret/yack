@@ -49,11 +49,10 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const eq_team roaming;   //!< roaming equilibiria
-            const eq_team bounded;   //!< bounded equilibria
-            const sp_list unbridled; //!< unbridled species from roaming
-            const sp_list regulated; //!< regulated species from bounded
-
+            const eq_team     roaming;   //!< roaming equilibiria
+            const eq_team     bounded;   //!< bounded equilibria
+            const sp_list     unbridled; //!< unbridled species from roaming
+            const sp_list     regulated; //!< regulated species from bounded
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(eq_tier);

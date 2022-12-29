@@ -50,17 +50,8 @@ namespace yack
             // methods
             //__________________________________________________________________
 
-            //! transfer only active part
-            template <typename TARGET, typename SOURCE> inline
-            void transfer(TARGET &target, SOURCE &source) const
-            {
-                for(const anode *node=this->head;node;node=node->next)
-                {
-                    const size_t j = ***node;
-                    target[j] = source[j];
-                }
-            }
 
+#if 0
             //! target = max_of(0,LHS+RHS)
             template <typename TARGET, typename LHS, typename RHS> inline
             void add_safe(TARGET &target, LHS &lhs, RHS &rhs) const
@@ -117,7 +108,7 @@ namespace yack
                 }
                 return xadd.get();
             }
-
+#endif
             
 
 
