@@ -6,7 +6,7 @@ namespace yack
 {
     namespace chemical
     {
-        eq_tier::  eq_tier() throw() : roaming(), bounded() {}
+        eq_tier::  eq_tier() throw() : roaming(), bounded(), unbridled(), regulated() {}
         eq_tier:: ~eq_tier() throw() {}
 
         void eq_tier:: compose(sp_list &target, const eq_team &source)

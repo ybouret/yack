@@ -120,6 +120,8 @@ namespace yack
                 }
 
                 coerce(genus)->compile();
+                YACK_XMLOG(xml,"-- unbridled : " << genus->unbridled);
+                YACK_XMLOG(xml,"-- regulated : " << genus->regulated);
 
                 //----------------------------------------------------------
                 //
@@ -220,6 +222,7 @@ namespace yack
             
         }
 
+        
 
 
 
