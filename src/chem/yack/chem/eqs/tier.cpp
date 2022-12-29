@@ -10,7 +10,8 @@ namespace yack
         eq_tier:: ~eq_tier() throw() {}
 
 
-        static inline void update(addrbook &tribe, const eq_team &source)
+        static inline void update(addrbook      &tribe,
+                                  const eq_team &source)
         {
             for(const eq_node *node=source.head;node;node=node->next)
                 (**node).update(tribe);

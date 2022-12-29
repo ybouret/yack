@@ -17,10 +17,9 @@ namespace yack
             //
             //------------------------------------------------------------------
             {
-                //YACK_XMLSUB(xml,"building");
                 clusters &cls = coerce(wired); assert(cls.size<=0);
 
-                for(const enode *en=singles.head();en;en=en->next)
+                for(const enode *en=lattice.head();en;en=en->next)
                 {
                     const equilibrium &eq = ***en;
                     YACK_XMLOG(xml, "<" << eq.name << ">");
@@ -84,7 +83,7 @@ namespace yack
                 for(cluster *cc=cls.head;cc;cc=cc->next)
                 {
                     cc->sort();
-                    YACK_XMLOG(xml,"cluster=" << *cc << " => " << cc->genus->committed);
+                    YACK_XMLOG(xml,"cluster=" << *cc);
                 }
             }
 

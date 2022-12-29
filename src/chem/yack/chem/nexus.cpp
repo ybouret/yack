@@ -227,11 +227,6 @@ namespace yack
         }
 
         
-
-
-
-
-
         void nexus:: upgrade_lattice(writable<double> &Kl)
         {
             assert(Kl.size()>=L);
