@@ -58,9 +58,10 @@ namespace yack
             bool balance(writable<double> &C0,
                          const cluster    &cc);
 
-            void   probe(equalizer &eqz, const actor *a, const readable<double> &C0);
-            void   score(const readable<double> &C0, const equilibrium &);
-
+            void            probe(equalizer &eqz, const actor *a, const readable<double> &C0);
+            void            score(const readable<double> &C0, const equilibrium &);
+            double          total(const eq_squad &);
+            const eq_squad *champ(const eq_squad *, double &);
         };
 
 

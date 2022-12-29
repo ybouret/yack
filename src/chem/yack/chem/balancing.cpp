@@ -4,7 +4,7 @@
 #include "yack/ptr/auto.hpp"
 #include "yack/type/utils.hpp"
 #include <iomanip>
-
+#include "yack/system/imported.hpp"
 
 namespace yack
 {
@@ -113,7 +113,7 @@ namespace yack
 
 
         TRY_BALANCE:
-            YACK_XMLOG(xml,"-------- gathering bounded balance");
+            YACK_XMLOG(xml,"-------- bounded limits --------");
             lead.release();
             const gathering    &eqs = (**this).lattice;
             for(const eq_node  *en  = cc.genus->bounded.head;en;en=en->next)
@@ -164,40 +164,76 @@ namespace yack
                         continue;
                 }
             }
+
             if(lead.size<=0)
             {
                 std::cerr << "stuck..." << std::endl;
                 exit(0);
             }
-            YACK_XMLOG(xml,"-------- status:");
-            for(const eq_knot *node=lead.head;node;node=node->next)
+
+            if(xml.verbose)
             {
-                const equilibrium &eq = ***node;
-                const size_t       ei = *eq;
-                if(xml.verbose)
+                *xml << "-------- bounded status --------" << std::endl;
+                for(const eq_knot *node=lead.head;node;node=node->next)
                 {
+                    const equilibrium &eq = ***node;
+                    const size_t       ei = *eq;
                     eqs.pad(*xml << eq.name,eq) << " : " << std::setw(15) << gain[ei] << "@";
                     eq.display_compact(xml(), Cbal[ei]);
                     xml() << std::endl;
                 }
             }
-            
-            for(const eq_squad *squad=cc.wing->head;squad;squad=squad->next)
-            {
-                if(!squad_includes_lead(*squad,lead)) continue;
-                xadd.ldz();
-                for(const eq_node *node=squad->head;node;node=node->next)
-                {
-                    const equilibrium &eq = **node;
-                    xadd.push( gain[ *eq ]);
-                }
-                const double Gain = xadd.get();
-                std::cerr << "-- use " << std::setw(15) <<  Gain << "@" << *squad << std::endl;
 
-            }
+            YACK_XMLOG(xml,"-------- bounded select --------");
+
+            double          gain = 0;
+            const eq_squad *best = champ(cc.wing->head,gain);
+            YACK_XMLOG(xml, " [*] " << std::setw(15) << gain << " @" << *best);
 
 
             return false;
+        }
+
+        const eq_squad * balancing:: champ(const eq_squad *squad, double &Gain)
+        {
+
+            // find first squad
+            assert(NULL!=squad);
+            while( !squad_includes_lead(*squad,lead) )
+            {
+                squad = squad->next;
+                if(!squad) throw imported::exception("balancing","no equilibria squad matching balancing lead!!");
+            }
+            const eq_squad *Best = squad;
+            Gain                 = total(*Best);
+            YACK_XMLOG(xml, " [+] " << std::setw(15) << Gain << " @" << *Best);
+
+            // find better squad
+            for(squad=squad->next;squad;squad=squad->next)
+            {
+                if(!squad_includes_lead(*squad,lead) ) continue;;
+                const double Temp = total(*squad);
+                const bool   ok   = Temp>Gain;
+                YACK_XMLOG(xml, (ok?" [+] " : " [-] ") << std::setw(15) << Temp << " @" << *squad);
+                if(ok) {
+                    Best = squad;
+                    Gain = Temp;
+                }
+            }
+
+            return Best;
+        }
+
+
+        double balancing:: total(const eq_squad &squad)
+        {
+            xadd.ldz();
+            for(const eq_node *node=squad.head;node;node=node->next)
+            {
+                const equilibrium &eq = **node;
+                xadd.push( gain[ *eq ]);
+            }
+            return xadd.get();
         }
 
 
@@ -211,7 +247,6 @@ namespace yack
             // first pass: evaluate best concentration
             //
             //------------------------------------------------------------------
-
             iota::load(C,C0);
 
             xadd.ldz();
@@ -274,36 +309,7 @@ namespace yack
                 const size_t   j  = *sp;
                 C[j] = 0;
             }
-
-            //------------------------------------------------------------------
-            //
-            // third pass: get improvement on negative conserved values
-            //
-            //------------------------------------------------------------------
-#if 0
-            xadd.ldz();
-
-            for(const cnode *cn=eq.head();cn;cn=cn->next)
-            {
-                const size_t j = *****cn;
-                switch(crit[j])
-                {
-                    case unbounded:
-                    case spectator:
-                        continue;
-
-                    case conserved:
-                        const double c0 = C0[j];
-                        if(c0<0) {
-                            xadd.push(-c0);
-                            const double c= C[j];
-                            if(c<0)
-                                xadd.push(c);
-                        }
-                }
-            }
-#endif
-
+            
             lead << &eq;
             gain[*eq] = xadd.get();
 

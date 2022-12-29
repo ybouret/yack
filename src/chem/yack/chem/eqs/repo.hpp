@@ -24,6 +24,7 @@ namespace yack
             //! display
             friend std::ostream & operator<<(std::ostream &, const eq_repo &);
 
+            //! find by equilibrium index
             bool contains(const equilibrium &) const throw();
 
         private:
