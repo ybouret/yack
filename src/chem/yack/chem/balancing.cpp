@@ -117,7 +117,8 @@ namespace yack
         TRY_BALANCE:
             YACK_XMLOG(xml,"-------- bounded limits --------");
             lead.release();
-            const gathering    &eqs = (**this).lattice;
+            const gathering           &eqs  = (**this).lattice;
+            const readable<criterion> &crit = (**this).crit;
             for(const eq_node  *en  = cc.genus->bounded.head;en;en=en->next)
             {
                 const equilibrium &eq   = **en;
@@ -210,6 +211,53 @@ namespace yack
             double          gain = 0;
             const eq_squad *best = champ(cc.wing->head,gain);
             YACK_XMLOG(xml, " [*] " << std::setw(15) << gain << " @" << *best);
+
+            std::cerr << C0 <<  " @C0" << std::endl;
+            tableau C1( (**this).M);
+            iota::load(C1,C0);
+            for(const eq_node *node=best->head;node;node=node->next)
+            {
+                const equilibrium      &eq = **node;
+                const readable<double> &Ci = Cbal[*eq];
+                std::cerr << Ci << " @" << eq.name << std::endl;
+                for(const cnode *cn=eq.head();cn;cn=cn->next)
+                {
+                    const species &s = ****cn;
+                    const size_t   j = *s;
+                    switch(crit[j])
+                    {
+                        case conserved:
+                            C1[j] = Ci[j];
+                            continue;
+
+                        default:
+                            continue;
+                    }
+                }
+            }
+            std::cerr << C1 << " @C1" << std::endl;
+
+            for(const sp_node *sn=cc.genus->unbridled.head;sn;sn=sn->next)
+            {
+                const species &s = **sn;
+                const size_t   j = *s;
+                const double   c0 = C0[j];
+                xadd.ldz();
+                xadd.push(c0);
+                for(const eq_node *node=best->head;node;node=node->next)
+                {
+                    const equilibrium      &eq = **node;
+                    const readable<double> &Ci = Cbal[*eq];
+                    xadd.push( Ci[j] );
+                    xadd.push( -c0 );
+                }
+
+                C1[j] = xadd.get();
+            }
+            std::cerr << C1 << " @C1" << std::endl;
+
+            // roaming
+            
 
 
             return false;
