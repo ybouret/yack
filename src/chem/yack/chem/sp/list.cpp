@@ -31,6 +31,30 @@ namespace yack {
             }
             sort();
         }
+
+        void sp_list:: shed(const sp_list  &other) throw()
+        {
+            if(this==&other) release();
+            else
+            {
+                sp_list_ kept;
+                while(size)
+                {
+                    sp_node     *node = pop_front();
+                    const size_t indx = ***node;
+                    bool         flag = false;
+                    for(const sp_node *scan=other.head;scan;scan=scan->next)
+                    {
+                        if(indx==***scan) { flag=true; break; }
+                    }
+                    if(flag)
+                        delete node;
+                    else
+                        kept.push_back(node);
+                }
+                swap_with(kept);
+            }
+        }
     }
 
 }

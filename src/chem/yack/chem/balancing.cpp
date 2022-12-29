@@ -101,9 +101,12 @@ namespace yack
             //
             //------------------------------------------------------------------
             YACK_XMLSUB(xml, "balancing:cluster");
-            YACK_XMLOG(xml,"\\___|cluster| = " << cc.size);
-            YACK_XMLOG(xml," \\__|roaming| = " << cc.genus->roaming.size);
-            YACK_XMLOG(xml,"  \\_|bounded| = " << cc.genus->bounded.size);
+            YACK_XMLOG(xml,"\\_____|cluster| = " << cc.size);
+            YACK_XMLOG(xml," \\____|roaming| = " << cc.genus->roaming.size);
+            YACK_XMLOG(xml,"  \\___|bounded| = " << cc.genus->bounded.size);
+            YACK_XMLOG(xml,"   \\__unbridled = " << cc.genus->unbridled);
+            YACK_XMLOG(xml,"    \\_regulated = " << cc.genus->regulated);
+
             YACK_XMLOG(xml,"check: " << cc.working);
             for(const anode *an = cc.working->head;an;an=an->next)
             {

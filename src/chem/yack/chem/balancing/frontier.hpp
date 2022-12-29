@@ -4,7 +4,7 @@
 #ifndef YACK_CHEM_FRONTIER_INCUDED
 #define YACK_CHEM_FRONTIER_INCUDED 1
 
-#include "yack/chem/species.hpp"
+#include "yack/chem/sp/repo.hpp"
 
 namespace yack
 {

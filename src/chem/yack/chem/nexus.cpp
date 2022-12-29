@@ -119,6 +119,8 @@ namespace yack
                     K[ei] = eq.K(t);
                 }
 
+                coerce(genus)->compile();
+
                 //----------------------------------------------------------
                 //
                 // checking rank from full topology

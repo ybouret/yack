@@ -293,6 +293,8 @@ namespace yack
                 }
             }
 
+            // and compile genus
+            coerce(cls.genus)->compile();
 
         }
         

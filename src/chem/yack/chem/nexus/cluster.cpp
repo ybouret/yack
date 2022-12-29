@@ -53,15 +53,8 @@ namespace yack
 
         void cluster:: sort()
         {
-            active_list &A = coerce(*working);
-            A.release();
             merge_list_of<eq_node>::sort(*this,eq_node_compare);
-            addrbook tribe;
-            for(const eq_node *en=head;en;en=en->next)
-            {
-                (**en).update(tribe);
-            }
-            A.load(tribe);
+            eq_tier::compose(coerce(*working),*this);
         }
 
         void cluster:: build_army_with(const matrix<bool> &detached, const xmlog &xml)

@@ -24,6 +24,7 @@ namespace yack {
             virtual ~sp_list() throw(); //!< cleanup
             void     sort()    throw(); //!< sort by increasing index
             void     load(const addrbook &tribe); //!< load and sort
+            void     shed(const sp_list  &other) throw();
 
             //! compare by increasing indices
             static int node_compare(const sp_node *, const sp_node *) throw();

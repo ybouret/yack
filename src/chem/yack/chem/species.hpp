@@ -5,7 +5,6 @@
 
 #include "yack/chem/entity.hpp"
 #include "yack/ptr/ark.hpp"
-#include "yack/data/list/com.hpp"
 
 namespace yack
 {
@@ -86,40 +85,7 @@ namespace yack
             virtual const char *attr() const;
         };
 
-        typedef const species *           sp_addr;  //!< alias
-        typedef com_list<sp_addr>         sp_repo_; //!< repositiroy
-        typedef sp_repo_::pool_type       sp_pool;  //!< shared pool
-        typedef sp_pool::pointer          sp_fund;  //!< shared fund
-        typedef sp_repo_::node_type       sp_knot;  //!< node with sp_repo
-
-        //! repository of species with shared fund
-        class sp_repo : public sp_repo_
-        {
-        public:
-            explicit sp_repo(const sp_fund &fund) throw() : sp_repo_(fund) {} //!< setup
-            virtual ~sp_repo() throw() {} //!< cleanup
-
-            //! display
-            friend std::ostream & operator<<(std::ostream &os, const sp_repo &self)
-            {
-                os << '{';
-                sp_repo::node_type *node = self.head;
-                if(node)
-                {
-                    os << ***node;
-                    for(node=node->next;node;node=node->next)
-                    {
-                        os << ',' << ***node;
-                    }
-                }
-                os << '}';
-                return os;
-            }
-
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(sp_repo);
-        };
-
+        
 
     }
 }
