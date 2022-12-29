@@ -6,7 +6,7 @@
 
 #include "yack/chem/library.hpp"
 #include "yack/math/adder.hpp"
-#include "yack/chem/species.hpp"
+#include "yack/chem/sp/list.hpp"
 #include "yack/ptr/auto.hpp"
 
 namespace yack

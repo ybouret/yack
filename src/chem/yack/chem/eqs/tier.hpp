@@ -4,6 +4,7 @@
 #define YACK_CHEMICAL_EQ_TIER_INCLUDED 1
 
 #include "yack/chem/eqs/team.hpp"
+#include "yack/chem/sp/list.hpp"
 #include "yack/ptr/auto.hpp"
 
 namespace yack

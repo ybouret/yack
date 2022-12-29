@@ -14,6 +14,13 @@ set(chem_designer ${chem_designer_decl} ${chem_designer_srcs})
 SOURCE_GROUP(chem/designer FILES ${chem_designer})
 #install( FILES ${chem_designer_decl} DESTINATION include/yack/chem/designer )
 
+#sp
+file(GLOB chem_sp_decl yack/chem/sp/*.hpp)
+file(GLOB chem_sp_srcs yack/chem/sp/*.cpp)
+set(chem_sp ${chem_sp_decl} ${chem_sp_srcs})
+SOURCE_GROUP(chem/sp FILES ${chem_sp})
+install( FILES ${chem_sp_decl} DESTINATION include/yack/chem/sp )
+
 #eqs
 file(GLOB chem_eqs_decl yack/chem/eqs/*.hpp)
 file(GLOB chem_eqs_srcs yack/chem/eqs/*.cpp)
@@ -45,6 +52,7 @@ install( FILES ${chem_balancing_decl} DESTINATION include/yack/chem/balancing )
 add_library(yack-chem STATIC
 ${chem_main}
 ${chem_designer}
+${chem_sp}
 ${chem_eqs}
 ${chem_nexus}
 ${chem_claw}
