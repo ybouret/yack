@@ -10,15 +10,16 @@ namespace yack
         {
         }
 
-        active_list:: active_list() throw() : alist() {}
+        active_list:: active_list() throw() : sp_list() {}
 
-        active_list:: active_list(const snode *node) : alist()
+        active_list:: active_list(const snode *node) : sp_list()
         {
             for(;node;node=node->next)
             {
                 const species &sp = ***node;
                 if(sp.rank>0) (*this) << &sp;
             }
+            sort();
         }
 
     }

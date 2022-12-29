@@ -5,8 +5,8 @@
 #define YACK_CHEMICAL_ACTIVE_INCLUDED 1
 
 #include "yack/chem/library.hpp"
-#include "yack/data/list/meta.hpp"
 #include "yack/math/adder.hpp"
+#include "yack/chem/species.hpp"
 #include "yack/ptr/auto.hpp"
 
 namespace yack
@@ -20,8 +20,7 @@ namespace yack
         // types for list of active species
         //
         //______________________________________________________________________
-        typedef meta_list<const species> alist; //!< alias for list of active species
-        typedef alist::node_type         anode; //!< alias for node of active species
+        typedef sp_list::node_type         anode; //!< alias for node of active species
 
         //______________________________________________________________________
         //
@@ -29,7 +28,7 @@ namespace yack
         //! list of active species
         //
         //______________________________________________________________________
-        class active_list : public alist
+        class active_list : public sp_list
         {
         public:
             //__________________________________________________________________

@@ -7,6 +7,7 @@
 #include "yack/ptr/ark.hpp"
 #include "yack/data/list/meta.hpp"
 #include "yack/data/list/com.hpp"
+#include "yack/associative/addrbook.hpp"
 
 namespace yack
 {
@@ -16,7 +17,7 @@ namespace yack
         //______________________________________________________________________
         //
         //
-        //! species criterion within the reactor
+        //! species criterion
         //
         //______________________________________________________________________
         enum criterion {
@@ -75,11 +76,9 @@ namespace yack
                 return os;
             }
 
-
-
             //__________________________________________________________________
             //
-            // memners
+            // members
             //__________________________________________________________________
             const int    z;    //!< algebraic charge
             const size_t rank; //!< number of use
@@ -100,6 +99,7 @@ namespace yack
             explicit sp_list() throw(); //!< setup
             virtual ~sp_list() throw(); //!< cleanup
             void     sort()    throw(); //!< sort by increasing index
+            void     load(const addrbook &tribe); //!< load and sort
 
             //! compare by increasing indices
             static int node_compare(const sp_node *, const sp_node *) throw();

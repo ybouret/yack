@@ -56,18 +56,12 @@ namespace yack
             active_list &A = coerce(*working);
             A.release();
             merge_list_of<eq_node>::sort(*this,eq_node_compare);
+            addrbook tribe;
+            for(const eq_node *en=head;en;en=en->next)
             {
-                addrbook tribe;
-                for(const eq_node *en=head;en;en=en->next)
-                {
-                    (**en).update(tribe);
-                }
-                for(addrbook::const_iterator it=tribe.begin();it!=tribe.end();++it)
-                {
-                    A << static_cast<const species *>(*it);
-                }
+                (**en).update(tribe);
             }
-            merge_list_of<anode>::sort(A,sp_list::node_compare);
+            A.load(tribe);
         }
 
         void cluster:: build_army_with(const matrix<bool> &detached, const xmlog &xml)
