@@ -272,7 +272,7 @@ namespace yack
             }
             YACK_XMLOG(xml,"-- conservation  laws : " << Nq);
             YACK_XMLOG(xml,"-- equilibria         : " << singles.size() );
-            YACK_XMLOG(xml,"-- active species     : " << working->size  );
+            YACK_XMLOG(xml,"-- committed species  : " << genus->committed.size  );
             
             if(Nq)
             {
@@ -289,18 +289,8 @@ namespace yack
                         }
                     }
                 }
-                
-                
+
                 std::cerr << "\tQm=" << Qm << std::endl;
-                
-                cxx_array<int> Z(M);
-                for(const snode *node=corelib.head();node;node=node->next)
-                {
-                    const species &s = ***node;
-                    Z[*s] = s.z;
-                }
-                
-                std::cerr << "\tZ=" << Z << std::endl;
                 
                 
                 if(Nq+N<M)

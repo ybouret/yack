@@ -156,7 +156,7 @@ namespace yack
             }
             if(xml.verbose)
             {
-                for(const anode *an=(**this).working->head;an;an=an->next)
+                for(const sp_node *an=(**this).genus->committed.head;an;an=an->next)
                 {
                     const species &s = **an;
                     const size_t   j = *s;

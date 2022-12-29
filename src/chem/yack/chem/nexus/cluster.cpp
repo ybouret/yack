@@ -11,13 +11,14 @@ namespace yack
         eq_team(),
         next(0),
         prev(0),
-        working( new active_list()       ),
         canon(   new conservation_laws() ),
         cells(   new claw_teams  ),
         genus(   new eq_tier() ),
         army(    new eq_squads() ),
         wing(    new eq_squads() )
-        {}
+        {
+
+        }
 
         cluster::~cluster() throw() {}
 
@@ -54,7 +55,7 @@ namespace yack
         void cluster:: sort()
         {
             merge_list_of<eq_node>::sort(*this,eq_node_compare);
-            eq_tier::compose(coerce(*working),*this);
+            //eq_tier::compose(coerce(*working),*this);
         }
 
         void cluster:: build_army_with(const matrix<bool> &detached, const xmlog &xml)

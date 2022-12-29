@@ -84,7 +84,7 @@ namespace yack
                 for(cluster *cc=cls.head;cc;cc=cc->next)
                 {
                     cc->sort();
-                    YACK_XMLOG(xml,"cluster=" << *cc << " => " << cc->working);
+                    YACK_XMLOG(xml,"cluster=" << *cc << " => " << cc->genus->committed);
                 }
             }
 

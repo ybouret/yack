@@ -26,7 +26,6 @@ namespace yack
         singles( eqs ),
         lattice( singles ),
         next_en( NULL ),
-        working( new active_list(corelib.head()) ),
         M( corelib.size() ),
         N( singles.size() ),
         L(0),
@@ -119,9 +118,15 @@ namespace yack
                     K[ei] = eq.K(t);
                 }
 
+                //--------------------------------------------------------------
+                //
+                // compiling genus
+                //
+                //--------------------------------------------------------------
                 coerce(genus)->compile();
                 YACK_XMLOG(xml,"-- unbridled : " << genus->unbridled);
                 YACK_XMLOG(xml,"-- regulated : " << genus->regulated);
+                YACK_XMLOG(xml,"-- committed : " << genus->committed);
 
                 //----------------------------------------------------------
                 //
@@ -133,14 +138,13 @@ namespace yack
                 YACK_XMLOG(xml, "-- rank = " << rank << " / " << N);
                 if(rank<N) throw imported::exception(clid,"detected dependent equilibria");
                 
-                //singles.graphviz("singles.dot", corelib);
 
 
                 //--------------------------------------------------------------
                 //
                 // build wired (int at least one cluster)
                 //
-                //----------------------------------------------------------
+                //--------------------------------------------------------------
                 resolve_wired(xml); assert(wired.size>0);
 
                 //--------------------------------------------------------------
@@ -219,7 +223,7 @@ namespace yack
                     cc->build_wing_with(detached,xml);
                 
             }
-            
+
         }
 
         

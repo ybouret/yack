@@ -39,10 +39,8 @@ namespace yack
             // methods
             //__________________________________________________________________
 
-            //! extract all species into target
-            static void compose(sp_list &target, const eq_team &source);
-
-            //! compose unbridled and regulated
+            
+            //! compile species list once roaming and engaged are setup
             void        compile();
 
             //__________________________________________________________________
@@ -51,6 +49,7 @@ namespace yack
             //__________________________________________________________________
             const eq_team     roaming;   //!< roaming equilibiria
             const eq_team     bounded;   //!< bounded equilibria
+            const sp_list     committed; //!< non spectator species
             const sp_list     unbridled; //!< unbridled species from roaming
             const sp_list     regulated; //!< regulated species from bounded
 

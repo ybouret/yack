@@ -107,8 +107,7 @@ namespace yack
             YACK_XMLOG(xml,"   \\__unbridled = " << cc.genus->unbridled);
             YACK_XMLOG(xml,"    \\_regulated = " << cc.genus->regulated);
 
-            YACK_XMLOG(xml,"check: " << cc.working);
-            for(const anode *an = cc.working->head;an;an=an->next)
+            for(const sp_node *an = cc.genus->committed.head;an;an=an->next)
             {
                 if(C0[***an]<0) goto TRY_BALANCE;
             }

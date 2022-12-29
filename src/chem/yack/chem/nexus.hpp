@@ -5,7 +5,6 @@
 
 #include "yack/chem/library.hpp"
 #include "yack/chem/equilibria.hpp"
-#include "yack/chem/active.hpp"
 #include "yack/ios/xmlog.hpp"
 #include "yack/container/matrix.hpp"
 #include "yack/sequence/cxx-array.hpp"
@@ -77,7 +76,6 @@ namespace yack
             const equilibria &         singles;  //!< initial equilibria
             const equilibria           lattice;  //!< lattice of equilibria
             const enode * const        next_en;  //!< firt node of lattice after single
-            const active_list::pointer working;  //!< list of active species
             const size_t               M;        //!< corelib.size
             const size_t               N;        //!< singles.size
             const size_t               L;        //!< lattice.size
