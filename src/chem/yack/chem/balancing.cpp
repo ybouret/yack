@@ -121,43 +121,62 @@ namespace yack
                 const equilibrium &eq   = **en;
                 unsigned           flag = is_now_balanced;
 
+                //--------------------------------------------------------------
+                //
                 // interleaved scanning
+                //
+                //--------------------------------------------------------------
                 probe(reac,eq.reac->head,C0); if(reac.neg.size()) flag |= unbalanced_reac;
                 probe(prod,eq.prod->head,C0); if(prod.neg.size()) flag |= unbalanced_prod;
 
-                // check
+                //--------------------------------------------------------------
+                //
+                // analyze what is possible
+                //
+                //--------------------------------------------------------------
                 switch(flag)
                 {
+                        //------------------------------------------------------
+                        // blocked, ok or not, depending on c-laws
+                        //------------------------------------------------------
                     case unbalanced_both:
                         continue;
 
-                    case unbalanced_reac: {
+                        //------------------------------------------------------
+                        // negative reac(s), positive prod
+                        //------------------------------------------------------
+                    case unbalanced_reac:
                         assert(prod.lim.size>0);
                         assert(reac.neg.size()>0);
                         assert(prod.neg.size()<=0);
-                        reac.look_up(fade,prod);
-                        coerce(fade.xi) = -fade.xi;
-                        score(C0,eq);
+
+                        reac.look_up(fade,prod);       // analyze
+                        coerce(fade.xi) = -fade.xi;    // adjust
+                        score(C0,eq);                  // score
+
                         if(xml.verbose)
                             eqs.pad(*xml << eq.name,eq)
                             << balanced_msg[flag]  << reac.neg
                             << " | limited by prod: " << prod.lim
                             << " => " << fade << std::endl;
-                    } break;
+                        break;
 
-                    case unbalanced_prod: {
+                        //------------------------------------------------------
+                        // negative prod(s), positive reac
+                        //------------------------------------------------------
+                    case unbalanced_prod:
                         assert(reac.lim.size>0);
                         assert(prod.neg.size()>0);
                         assert(reac.neg.size()<=0);
 
-                        prod.look_up(fade,reac);
-                        score(C0,eq);
+                        prod.look_up(fade,reac); // analyze
+                        score(C0,eq);            // score
                         if(xml.verbose)
                             eqs.pad(*xml << eq.name,eq)
                             << balanced_msg[flag] <<  prod.neg
                             << " | limited by reac: " << reac.lim
                             << " => " << fade << std::endl;
-                    } break;
+                        break;
 
                     default:
                         assert(0==flag);
@@ -196,8 +215,11 @@ namespace yack
 
         const eq_squad * balancing:: champ(const eq_squad *squad, double &Gain)
         {
-
+            //------------------------------------------------------------------
+            //
             // find first squad
+            //
+            //------------------------------------------------------------------
             assert(NULL!=squad);
             while( !squad_includes_lead(*squad,lead) )
             {
@@ -208,7 +230,11 @@ namespace yack
             Gain                 = total(*Best);
             YACK_XMLOG(xml, " [+] " << std::setw(15) << Gain << " @" << *Best);
 
+            //------------------------------------------------------------------
+            //
             // find better squad
+            //
+            //------------------------------------------------------------------
             for(squad=squad->next;squad;squad=squad->next)
             {
                 if(!squad_includes_lead(*squad,lead) ) continue;;
@@ -221,6 +247,9 @@ namespace yack
                 }
             }
 
+            //------------------------------------------------------------------
+            // done
+            //------------------------------------------------------------------
             return Best;
         }
 
