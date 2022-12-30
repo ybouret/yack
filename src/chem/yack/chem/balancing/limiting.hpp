@@ -39,7 +39,14 @@ namespace yack
              */
 
             void upgrade(const double x, const species &s);
+
+
+            //! rebuild from C and first actor using negative concentrations
+            void ltz(const readable<double> &C,
+                     const actor            *curr);
+
             
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(limiting);

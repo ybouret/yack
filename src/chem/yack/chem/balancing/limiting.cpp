@@ -19,7 +19,7 @@ namespace yack
         void limiting:: upgrade(const double   x,
                                 const species &s)
         {
-            assert(x>=0);
+            //assert(x>=0);
             sp_repo &self = *this;
 
             // initialize first
@@ -48,6 +48,24 @@ namespace yack
             }
         }
 
+
+        void limiting:: ltz(const readable<double> &C,
+                            const actor            *curr)
+        {
+            destroy();
+            while(curr)
+            {
+                const species &s = **curr;
+                const double   c = C[*s];
+                if(c<0)
+                {
+                    upgrade(c/(curr->nu),s);
+                }
+                curr=curr->next;
+            }
+        }
+
+     
 
     }
 

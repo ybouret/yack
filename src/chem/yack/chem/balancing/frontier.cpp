@@ -21,6 +21,29 @@ namespace yack
             coerce(xi) = 0;
         }
 
+        void frontier:: reverse() throw()
+        {
+            coerce(xi) = -coerce(xi);
+        }
+
+        void frontier:: ldz(writable<double> & C) const throw()
+        {
+            for(const sp_knot *node=head;node;node=node->next)
+            {
+                C[ ****node ] = 0;
+            }
+        }
+
+        void frontier:: mov(writable<double> &C,
+                            const actor      *curr) const throw()
+        {
+            while(curr)
+            {
+                C[***curr] += xi * (curr->nu);
+                curr=curr->next;
+            }
+        }
+
 
         std::ostream & operator<<(std::ostream &os, const frontier &b)
         {
