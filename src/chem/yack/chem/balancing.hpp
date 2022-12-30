@@ -46,8 +46,9 @@ namespace yack
             eq_fund      eqIO;       //!< cache
             equalizer    reac;       //!< compute reac pos/neg
             equalizer    prod;       //!< compute prod pos/neg
+            tableau      Cres;       //!< resulting concentration
             rmatrix      Cbal;       //!< [LxM] balanced concentration matrix
-            frontier     fade;       //!< result to compute balananced concentrations and score
+            limiting     fade;       //!< result to compute balananced concentrations and score
             eq_repo      lead;       //!< possibilities
             tableau      gain;       //!< store gains
             raddops      xadd;       //!< for internal computation
@@ -62,6 +63,8 @@ namespace yack
             void            score(const readable<double> &C0, const equilibrium &);
             double          total(const eq_squad &);
             const eq_squad *champ(const eq_squad *, double &);
+            void            clean(writable<double> &C, const cluster &cc); //! clean roaming using fade
+
         };
 
 

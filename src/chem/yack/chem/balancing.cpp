@@ -23,6 +23,7 @@ namespace yack
         eqIO( new eq_pool() ),
         reac(usr.M,spIO),
         prod(usr.M,spIO),
+        Cres(usr.M),
         Cbal(usr.L,usr.L>0?usr.M:0),
         fade(spIO),
         lead(eqIO),
@@ -107,6 +108,7 @@ namespace yack
             YACK_XMLOG(xml,"   \\__unbridled = " << cc.genus->unbridled);
             YACK_XMLOG(xml,"    \\_regulated = " << cc.genus->regulated);
 
+        CHK_BALANCE:
             for(const sp_node *an = cc.genus->committed.head;an;an=an->next)
             {
                 if(C0[***an]<0) goto TRY_BALANCE;
@@ -215,8 +217,7 @@ namespace yack
                 YACK_XMLOG(xml, " [*] " << std::setw(15) << gain << " @" << *best);
 
                 std::cerr << C0 <<  " @C0" << std::endl;
-                tableau C1( (**this).M);
-                iota::load(C1,C0);
+                iota::load(Cres,C0);
                 for(const eq_node *node=best->head;node;node=node->next)
                 {
                     const equilibrium      &eq = **node;
@@ -229,7 +230,7 @@ namespace yack
                         switch(crit[j])
                         {
                             case conserved:
-                                C1[j] = Ci[j];
+                                Cres[j] = Ci[j];
                                 continue;
 
                             default:
@@ -237,7 +238,7 @@ namespace yack
                         }
                     }
                 }
-                std::cerr << C1 << " @C1" << std::endl;
+                std::cerr << Cres << " @C1" << std::endl;
 
 
                 for(const sp_node *sn=cc.genus->unbridled.head;sn;sn=sn->next)
@@ -255,13 +256,19 @@ namespace yack
                         xadd.push( -c0 );
                     }
 
-                    C1[j] = xadd.get();
+                    Cres[j] = xadd.get();
                 }
-                iota::save(C0, C1);
+                iota::save(C0, Cres);
                 std::cerr << C0 << " @C0" << std::endl;
             }
 
-            // roaming
+            clean(C0,cc);
+
+            goto CHK_BALANCE;
+        }
+
+        void balancing:: clean(writable<double> &C0, const cluster &cc)
+        {
             for(const eq_node  *en  = cc.genus->roaming.head;en;en=en->next)
             {
                 const equilibrium &eq   = **en;
@@ -294,13 +301,7 @@ namespace yack
                         continue;
                 }
 
-
-
-
             }
-
-
-            return false;
         }
 
         const eq_squad * balancing:: champ(const eq_squad *squad, double &Gain)
