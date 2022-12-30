@@ -106,6 +106,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(data_joint);
 
 
+    YACK_UTEST(arith_isqrt);
 
     YACK_UTEST(sync_lockable);
     YACK_UTEST(sync_primitive);
