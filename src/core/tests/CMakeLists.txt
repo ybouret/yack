@@ -242,6 +242,7 @@ add_test(apr               test-core  apr 100 3)
 add_test(aprimes           test-core  aprimes)
 add_test(apex:npd          test-core  apex_npd)
 add_test(alga              test-core  alga)
+add_test(apex:isqrt        test-core  apex_isqrt)
 
 add_test(ios:c-file     test-core ios_c_file)
 add_test(ios:streams    test-core ios_streams)

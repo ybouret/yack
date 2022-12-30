@@ -209,6 +209,7 @@ namespace yack
 
             inline natural abs()  const { return *this; }          //!< |n|
             inline natural mod2() const { return squared(*this); } //!< |n|^2
+            static natural sqrt(const natural &u);                 //!< isrqt(u)
 
 
             //__________________________________________________________________

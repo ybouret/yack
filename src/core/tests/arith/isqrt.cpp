@@ -42,6 +42,7 @@ YACK_UTEST(arith_isqrt)
         const uint64_t smax = isqrt(xmax);
         std::cerr << xmax << " => " << smax << std::endl; YACK_ASSERT(smax*smax<=xmax);
     }
+    
     for(uint64_t x=2; x<base2<uint32_t>::max_power_of_two;x *= x)
     {
         const uint64_t s = isqrt(x);

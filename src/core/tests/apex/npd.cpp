@@ -3,6 +3,8 @@
 #include "yack/utest/run.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/arith/prime.hpp"
+#include "yack/arith/isqrt.hpp"
+#include "yack/type/utils.hpp"
 
 using namespace yack;
 
@@ -42,11 +44,14 @@ YACK_UTEST(apex_npd)
     }
 
     size_t i=0;
-    for(size_t n=5;n<=1000;n+=2)
+    for(size_t n=5;n<=500;n+=2)
     {
+        i=0;
         if(check_prime(n,i))
         {
-            std::cerr << std::setw(8) << n << " @" << i << std::endl;
+            const size_t k = (i-5)/6;
+            std::cerr << std::setw(8) << n << " @" << i << "=5+6*" << k << std::endl;
+
         }
     }
 
