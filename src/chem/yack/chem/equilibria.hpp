@@ -97,11 +97,7 @@ namespace yack
             //__________________________________________________________________
             string make_name(const readable<int> &weight) const;
 
-            //__________________________________________________________________
-            //
-            //! save flow graph
-            //__________________________________________________________________
-            void graphviz(const string &filename, const library &lib) const;
+            
 
         private:
             YACK_DISABLE_ASSIGN(equilibria);

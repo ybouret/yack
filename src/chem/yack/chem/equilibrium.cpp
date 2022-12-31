@@ -33,35 +33,7 @@ namespace yack
             os << eq.content();
             return os;
         }
-
-#define COMMON ",style=\"bold,rounded\""
-        const char * equilibrium:: attr() const
-        {
-            if(reac->size)
-            {
-                if(prod->size)
-                {
-                    return ",shape=rectangle" COMMON;
-                }
-                else
-                {
-                    return ",shape=invtrapezium" COMMON;
-                }
-            }
-            else
-            {
-                if(prod->size)
-                {
-                    return ",shape=trapezium" COMMON;
-                }
-                else
-                {
-                    return ",shape=rectangle,style=\"dotted,bold\"";
-                }
-            }
-
-        }
-
+        
 
        
 
@@ -75,44 +47,6 @@ namespace yack
 
 
 
-#include "yack/chem/library.hpp"
 
-namespace yack
-{
-    namespace chemical
-    {
-
-        void   equilibrium:: vizlink(ios::ostream &fp, const library &lib) const
-        {
-            for(const actor *a=reac->head;a;a=a->next)
-            {
-                const species &mine = **a;
-                const species &s    = lib[mine.name];
-                s.link(fp,this);
-                if(a->nu>1)
-                {
-                    const string label = vformat("%u",unsigned(a->nu));
-                    s.add_label(fp << '[',label()) << ']';
-                }
-                end(fp);
-            }
-
-            for(const actor *a=prod->head;a;a=a->next)
-            {
-                const species &mine = **a;
-                const species &s    = lib[mine.name];
-                this->link(fp, &s);
-                if(a->nu>1)
-                {
-                    const string label = vformat("%u",unsigned(a->nu));
-                    s.add_label(fp << '[',label()) << ']';
-                }
-                end(fp);
-            }
-        }
-
-    }
-
-}
 
 

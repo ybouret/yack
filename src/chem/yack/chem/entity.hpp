@@ -6,7 +6,6 @@
 #include "yack/string.hpp"
 #include "yack/counted.hpp"
 #include "yack/large-object.hpp"
-#include "yack/ios/gv/vizible.hpp"
 
 namespace yack
 {
@@ -19,7 +18,7 @@ namespace yack
         //! named entity with index
         //
         //______________________________________________________________________
-        class entity : public large_object, public counted, public ios::vizible
+        class entity : public large_object, public counted
         {
         public:
             //__________________________________________________________________
@@ -41,7 +40,6 @@ namespace yack
                             const size_t idx) :
             large_object(),
             counted(),
-            ios::vizible(),
             name(uid),
             indx(idx)
             {
@@ -54,7 +52,6 @@ namespace yack
             //__________________________________________________________________
             size_t         operator*()         const throw(); //!< index
             const string & key()               const throw(); //!< name
-            ios::ostream & viz(ios::ostream &) const;         //!< write to graphViz : name+attr
 
             //__________________________________________________________________
             //
@@ -66,7 +63,6 @@ namespace yack
         private:
             YACK_DISABLE_ASSIGN(entity);
             const size_t indx;                    //!< index
-            virtual const char *attr() const = 0; //!< for viz: shape,style...
         };
     }
 

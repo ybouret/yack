@@ -15,7 +15,6 @@ namespace yack
         entity:: entity(const entity &other) :
         large_object(),
         counted(),
-        ios::vizible(),
         name(other.name),
         indx(other.indx)
         {
@@ -32,16 +31,7 @@ namespace yack
         }
 
 
-        ios::ostream & entity:: viz(ios::ostream &os) const
-        {
-            logo(os) << '[';
-            add_label(os,name());
-            os << attr();
-            os << ']';
-            end(os);
-            return os;
-        }
-
+        
     }
 
 }

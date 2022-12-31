@@ -39,8 +39,7 @@ namespace yack
             double             K(double)               const;                                 //!< non-virtual, checkin getK()
             const components & content()               const throw();                         //!< cast
             friend             std::ostream & operator<<(std::ostream &, const equilibrium&); //!< display
-            void               vizlink(ios::ostream &, const library &) const;                //!< link to registered species
-
+            
             //__________________________________________________________________
             //
             // C++
@@ -59,7 +58,6 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(equilibrium);
             virtual double      getK(double) const = 0;
-            virtual const char *attr()       const;
         };
         
     }
