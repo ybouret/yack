@@ -52,34 +52,43 @@ namespace yack
             static primes &prm   = primes::instance();
             natural        value = source;
 
+            //------------------------------------------------------------------
+            // check 0
+            //------------------------------------------------------------------
             if(value<=0) return;
             try {
 
+                //--------------------------------------------------------------
+                // check 1
+                //--------------------------------------------------------------
                 if(1==value) plist.push_back( new pnode(prm._1,1) );
 
-                // TODO: check max prime...
-
+                //--------------------------------------------------------------
+                // algorithm
+                //--------------------------------------------------------------
                 assert(value>0);
-                for(const prime_knot *knot = prm->head; knot; knot=knot->next )
+                for(const prime_knot *knot = prm->head;;knot=prm.next(knot))
                 {
-                    const natural &den = *knot;
+                    //std::cerr << "testing " << *knot << " against " << value << std::endl;
+                    const natural &den = *knot; if(den>value)  return;
                     size_t         n   = 0;
                 LOOK_UP:
                     {
-                        natural rem  = prm._0;
+                        natural rem;
                         natural quot = natural::quot(value,den,rem);
-                        if(rem==0)
-                        {
+                        if(rem.is<0>()) {
                             ++n;
                             value.xch(quot);
                             goto LOOK_UP;
                         }
                     }
+
                     if(n>0)
-                    {
                         plist.push_back( new  pnode(*knot,n) );
-                    }
+
                 }
+
+
 
             }
             catch(...)

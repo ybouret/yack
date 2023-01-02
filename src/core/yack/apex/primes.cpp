@@ -22,15 +22,15 @@ namespace yack
         _I(0),
         plist()
         {
-            //for(size_t i=0;i<core::primes::n8;++i)
-            for(size_t i=0;i<16;++i)
+            for(size_t i=0;i<core::primes::n8;++i)
+            //for(size_t i=0;i<16;++i)
             {
                 plist.push_back( new prime_knot(core::primes::p8[i]) );
             }
 
             for(size_t i=0;i<core::primes::n16;++i)
             {
-                //plist.push_back( new prime_knot(core::primes::p16[i]) );
+                plist.push_back( new prime_knot(core::primes::p16[i]) );
             }
 
             update();
@@ -75,7 +75,7 @@ namespace yack
         }
 
 
-        const prime_knot &primes:: next()
+        const prime_knot &primes:: search()
         {
             natural n = *plist.tail;
 
@@ -105,10 +105,10 @@ namespace yack
             return *p;
         }
 
-        void primes:: fill(const apn &n)
+        void primes:: mature(const apn &n)
         {
             if(n<=(*plist.tail)) return;
-            while( next() != n)
+            while( search() != n)
                 ;
             
         }
@@ -121,7 +121,7 @@ namespace yack
             {
                 if(node->_sq_>n)
                 {
-                    fill(n);
+                    mature(n);
                     return true;
                 }
                 if(n.is_divisible_by(*node)) return false;
@@ -130,15 +130,30 @@ namespace yack
             // use sieve
             while(true)
             {
-                const prime_knot &p = next();
+                const prime_knot &p = search();
                 if(p._sq_>n)
                 {
-                    fill(n);
+                    mature(n);
                     return true;
                 }
                 if(n.is_divisible_by(p)) return false;
             }
 
+        }
+
+        const prime_knot * primes:: next(const prime_knot *node)
+        {
+            YACK_LOCK(access);
+            assert(node);
+            assert(plist.owns(node));
+            if(plist.tail!=node)
+            {
+                return node->next;
+            }
+            else
+            {
+                return &search();
+            }
         }
 
 

@@ -93,8 +93,13 @@ namespace yack
             const prime_list & operator*()  const throw(); //!< access
 
 
-            bool is(const natural &n); //!< check
+            bool              is(const natural &n);     //!< check if is prime
+            const prime_knot *next(const prime_knot *); //!< next valid node or search, locked
 
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
             const natural _0; //!< pre-computed
             const natural _1; //!< pre-computed
             const natural _2; //!< pre-computed
@@ -110,9 +115,10 @@ namespace yack
             friend class singleton<primes>;
             explicit primes();
             virtual ~primes() throw();
-            void              update();          //!< update sieve starting point
-            const prime_knot &next();            //!< get next prime
-            void              fill(const apn &); //!< fill up to this value
+
+            void              update();            //!< update sieve starting point
+            const prime_knot &search();            //!< get next prime
+            void              mature(const apn &); //!< fill up to this value
 
             prime_list plist;
             
