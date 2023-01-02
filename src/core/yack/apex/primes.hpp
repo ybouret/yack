@@ -110,10 +110,11 @@ namespace yack
             friend class singleton<primes>;
             explicit primes();
             virtual ~primes() throw();
-            void     update();
+            void              update();
+            const prime_knot &next();
 
             prime_list plist;
-
+            
         };
     }
 }

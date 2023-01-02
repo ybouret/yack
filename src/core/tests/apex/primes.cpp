@@ -1,5 +1,6 @@
 #include "yack/apex/primes.hpp"
 #include "yack/utest/run.hpp"
+#include "yack/ios/icstream.hpp"
 
 using namespace yack;
 
@@ -13,24 +14,20 @@ YACK_UTEST(aprimes)
 
     std::cerr << "#primes=" << P->size << std::endl;
 
-    for(const apex::prime_knot *node=P->head;node;node=node->next)
     {
-        std::cerr << *node << " -> " << (*node)._sq_ << std::endl;
+        size_t count=0;
+        for(const apex::prime_knot *node=P->head;node;node=node->next)
+        {
+            ++count;
+            std::cerr << '#' << std::setw(5) << count << " : " <<  *node << std::endl;
+        }
+        std::cerr << "_I=" << P._I << std::endl;
     }
-    std::cerr << "_I=" << P._I << std::endl;
-    
+
+
     if(argc>1)
     {
-        apn n = apn::parse(argv[1]);
-        std::cerr << "n=" << n << std::endl;
-        if( P.is(n) )
-        {
-            std::cerr << "prime!" << std::endl;
-        }
-        else
-        {
-            std::cerr << "not prime!" << std::endl;
-        }
+        ios::icstream fp(argv[1]);
     }
 
 }
