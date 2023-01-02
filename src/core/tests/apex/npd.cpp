@@ -23,8 +23,11 @@ namespace
 
         for(i = 5; i*i <= n; i += 6)
         {
-            if ( (n%(q=i)) == 0 || (n % (q=(i + 2))) == 0)
-                return false;
+            q=i;
+            if( (n%q) == 0 ) return false;
+            q=i+2;
+            if( (n%q) == 0) return false;
+            //if ( (n%(q=i)) == 0 || (n % (q=(i + 2))) == 0) return false;
         }
 
         return true;
@@ -44,7 +47,6 @@ YACK_UTEST(apex_npd)
         std::cerr << d << std::endl;
     }
 
-    ios::ocstream fp("chkprm.dat");
 
     for(size_t n=5;n<=700;n+=2)
     {
@@ -54,8 +56,26 @@ YACK_UTEST(apex_npd)
         {
             const size_t k = (i-5)/6;
             const size_t s = isqrt(n);
-            std::cerr << std::setw(8) << n << " @" << i << "=5+6*" << k <<  " : sqrt: " << isqrt(n) << std::endl;
-            fp("%u %u %u %u\n", unsigned(n), unsigned(i), unsigned(s), unsigned(k) );
+            std::cerr << std::setw(8) << n << " @" << i << "=5+6*" << k <<  " : q=" << q << " / s=" << s;
+            if(s>=5)
+            {
+                const size_t rm5=(s-5)%6;
+                if(rm5<=0) {
+                    const size_t j5 = (s-5)/6;
+                    std::cerr << " j5=" << j5;
+                }
+            }
+
+            if(s>=7)
+            {
+                const size_t rm7=(s-7)%6;
+                if(rm7<=0) {
+                    const size_t j7 = (s-7)/6;
+                    std::cerr << " j7=" << j7;
+                }
+            }
+
+            std::cerr << std::endl;
         }
         else
         {
