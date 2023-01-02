@@ -201,7 +201,7 @@ YACK_UTEST(aprimes_compress64)
     apex::primes          & P    = apex::primes::instance();
     const apex::prime_knot *curr = P->head;
     curr = P.next(curr); YACK_CHECK(3==*curr);
-    ios::ocstream fp("p64.dat");
+    ios::ocstream fp("prime-db.inc");
     const size_t wpl = 4;
     size_t       cnt = 0;
     for(size_t idx = 1;idx<=num;++idx)
@@ -221,7 +221,7 @@ YACK_UTEST(aprimes_compress64)
                 uint64_t qw;
                 uint32_t dw[2];
             } alias = { endian::swap_be(u64) };
-            fp(" YACK_U64(%08x%08x)", endian::swap_be(alias.dw[0]), endian::swap_be(alias.dw[1]) );
+            fp(" YACK_U64(0x%08x%08x)", endian::swap_be(alias.dw[0]), endian::swap_be(alias.dw[1]) );
             if(idx<num) fp << ',';
             if(++cnt>=wpl)
             {
