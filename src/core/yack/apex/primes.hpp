@@ -110,8 +110,9 @@ namespace yack
             friend class singleton<primes>;
             explicit primes();
             virtual ~primes() throw();
-            void              update();
-            const prime_knot &next();
+            void              update();          //!< update sieve starting point
+            const prime_knot &next();            //!< get next prime
+            void              fill(const apn &); //!< fill up to this value
 
             prime_list plist;
             

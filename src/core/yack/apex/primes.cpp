@@ -105,21 +105,37 @@ namespace yack
             return *p;
         }
 
+        void primes:: fill(const apn &n)
+        {
+            if(n<=(*plist.tail)) return;
+            while( next() != n)
+                ;
+            
+        }
 
         bool primes:: is(const apn &n)
         {
-            // use sieve
-            const prime_knot *node = plist.head;
-            while(node && node->_sq_ <= n)
-            {
-                if(n.is_divisible_by(*node)) return false;
-                node=node->next;
-            }
 
+            // use known
+            for(const prime_knot *node=plist.head;node;node=node->next)
+            {
+                if(node->_sq_>n)
+                {
+                    fill(n);
+                    return true;
+                }
+                if(n.is_divisible_by(*node)) return false;
+            }
+            
+            // use sieve
             while(true)
             {
                 const prime_knot &p = next();
-                if(p._sq_>n)             return true;
+                if(p._sq_>n)
+                {
+                    fill(n);
+                    return true;
+                }
                 if(n.is_divisible_by(p)) return false;
             }
 
