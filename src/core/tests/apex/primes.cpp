@@ -178,7 +178,7 @@ namespace
 }
 
 #include "yack/ios/fmt/hexa.hpp"
-#include "yack/ios/encoder.hpp"
+#include "yack/system/endian.hpp"
 
 YACK_UTEST(aprimes_compress64)
 {
@@ -201,8 +201,10 @@ YACK_UTEST(aprimes_compress64)
     apex::primes          & P    = apex::primes::instance();
     const apex::prime_knot *curr = P->head;
     curr = P.next(curr); YACK_CHECK(3==*curr);
-    ios::ocstream fp("p64.bin");
-    for(size_t idx = 0;idx<num;++idx)
+    ios::ocstream fp("p64.dat");
+    const size_t wpl = 4;
+    size_t       cnt = 0;
+    for(size_t idx = 1;idx<=num;++idx)
     {
         const apex::prime_knot *next = P.next(curr);
         const apn               delta = *next - *curr; YACK_ASSERT(delta.is_divisible_by(2) );
@@ -213,7 +215,19 @@ YACK_UTEST(aprimes_compress64)
             const uint64_t  u64 = emit_s8(s8,bps);
             const ios::hexa x64(u64,true);
             std::cerr << "  0x" << x64 << std::endl;
-            ios::encoder::put(fp,u64);
+            //ios::encoder::put(fp,u64);
+            const union
+            {
+                uint64_t qw;
+                uint32_t dw[2];
+            } alias = { endian::swap_be(u64) };
+            fp(" YACK_U64(%08x%08x)", endian::swap_be(alias.dw[0]), endian::swap_be(alias.dw[1]) );
+            if(idx<num) fp << ',';
+            if(++cnt>=wpl)
+            {
+                fp << '\n';
+                cnt = 0;
+            }
             s8.free();
         }
         curr = next;
