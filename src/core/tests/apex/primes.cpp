@@ -24,7 +24,6 @@ YACK_UTEST(aprimes)
     YACK_SIZEOF(apn);
     YACK_SIZEOF(apex::prime_knot);
 
-    std::cerr << "#primes=" << P->size << std::endl;
 
     {
         size_t count=0;
@@ -33,7 +32,6 @@ YACK_UTEST(aprimes)
             ++count;
             std::cerr << '#' << std::setw(5) << count << " : " <<  *node << std::endl;
         }
-        std::cerr << "_I=" << P._I << std::endl;
     }
 
     vector<apn>     prm(1024*1024,as_capacity);
@@ -44,7 +42,7 @@ YACK_UTEST(aprimes)
             prm << first100[i];
         }
     }
-
+    
     if(argc>1)
     {
 
