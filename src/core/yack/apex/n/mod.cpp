@@ -111,6 +111,21 @@ namespace yack
 
         }
 
+        bool natural:: is_divisible_by(const natural &den) const
+        {
+            const handle  lhs(*this);
+            const handle  rhs(den);
+            const natural rem = mod(lhs,rhs);
+            return rem.is<0>();
+        }
+
+        bool natural:: is_divisible_by(const uint_type den) const
+        {
+            const handle  lhs(*this);
+            const handle  rhs(den);
+            const natural rem = mod(lhs,rhs);
+            return rem.is<0>();
+        }
     }
 
 }

@@ -34,6 +34,7 @@ namespace
     }
 }
 
+
 YACK_UTEST(apex_npd)
 {
     YACK_SIZEOF(apex::pnode);
@@ -48,14 +49,29 @@ YACK_UTEST(apex_npd)
     }
 
 
-    for(size_t n=3;n<=100;n+=2)
+    for(size_t n=3;n<=1000;n+=2)
     {
         size_t i=0;
         size_t q=0;
         if(check_prime(n,i,q))
         {
             const size_t s = isqrt(n);
-            std::cerr << std::setw(8) << n << " @"<< q << " | s=" << s << " | i=" << i << std::endl;;
+            std::cerr  << std::setw(8) << n
+            << " @ q=" << std::setw(8) << q
+            << " | s=" << std::setw(8) << s
+            << " | i=" << std::setw(8) << i;
+
+            if(s>=7)
+            {
+                size_t res7 = s;
+                while(0 != (res7-7)%6) --res7;
+                //size_t res5  = s;
+                //while(0 != (res5-5)%6) --res5;
+                std::cerr << ": out7=" << (res7-7)/6 << "->" << res7;
+            }
+            std::cerr << std::endl;
+
+
         }
         else
         {
@@ -63,10 +79,7 @@ YACK_UTEST(apex_npd)
         }
     }
 
-
-
-
-
+    
 
 
 }

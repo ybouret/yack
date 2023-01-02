@@ -11,6 +11,7 @@ namespace yack
 {
     namespace apex
     {
+        
         //______________________________________________________________________
         //
         //
@@ -96,12 +97,20 @@ namespace yack
 
             const natural _0; //!< pre-computed
             const natural _1; //!< pre-computed
+            const natural _2; //!< pre-computed
+            const natural _3; //!< pre-computed
+            const natural _4; //!< pre-computed
+            const natural _5; //!< pre-computed
+            const natural _6; //!< pre-computed
+            const natural _7; //!< pre-computed
+            const natural _I; //!< for sieve
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(primes);
             friend class singleton<primes>;
             explicit primes();
             virtual ~primes() throw();
+            void     update();
 
             prime_list plist;
 

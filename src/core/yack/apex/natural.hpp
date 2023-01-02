@@ -245,8 +245,9 @@ namespace yack
             
             //! numerator = quot * denominator + rem
             static natural quot(const natural &numerator, const natural &denominator, natural &rem);
-            
 
+            bool           is_divisible_by(const natural &) const;                          //!< test 0 reminder
+            bool           is_divisible_by(const uint_type) const;                          //!< test 0 reminder
             static natural gcd(const natural &a, const natural &b);                         //!< gcd
             static natural lcm(const natural &a, const natural &b);                         //!< lcm=(a*b)/gcd(a,b)
             static natural lcm_(const natural &a, const natural &b);                        //!< lcm for a>0, b>0

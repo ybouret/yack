@@ -142,6 +142,7 @@ namespace yack
             return quot(N,D,rem);
         }
 
+        
     }
 
 }
