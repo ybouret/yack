@@ -210,14 +210,12 @@ YACK_UTEST(aprimes_compress64)
         s8 << shift.cast_to<uint8_t>();
         if(s8.size()>=spw)
         {
-            const uint64_t u64 = emit_s8(s8,bps);
+            const uint64_t  u64 = emit_s8(s8,bps);
             const ios::hexa x64(u64,true);
-            std::cerr << "0x" << x64 << std::endl;
+            std::cerr << "  0x" << x64 << std::endl;
             ios::encoder::put(fp,u64);
             s8.free();
-
         }
-
         curr = next;
     }
     YACK_ASSERT(0==s8.size());
