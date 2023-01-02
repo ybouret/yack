@@ -1,6 +1,7 @@
 
 #include "yack/apex/primes.hpp"
-#include "yack/arith/prime.hpp"
+#include "yack/arith/prime-db.h"
+#include <cstring>
 
 namespace yack
 {
@@ -22,8 +23,27 @@ namespace yack
         _I(0),
         plist()
         {
+
+
+            plist.push_back( new prime_knot(2) );
+            plist.push_back( new prime_knot(3) );
+            {
+                uint8_t shift[16] = { 0 };
+                for(size_t i=0;i<yack_prime_db_size;++i)
+                {
+                    memset(shift,0,sizeof(shift));
+                    yack_prime_db_expand(shift,yack_prime_db_data[i]);
+                    for(size_t k=0;k<yack_prime_db_spw;++k)
+                    {
+                        const natural p = *plist.tail + uint_type( shift[k] );
+                        plist.push_back( new prime_knot(p) );
+                    }
+                }
+            }
+
+
+#if 0
             for(size_t i=0;i<core::primes::n8;++i)
-            //for(size_t i=0;i<16;++i)
             {
                 plist.push_back( new prime_knot(core::primes::p8[i]) );
             }
@@ -32,6 +52,7 @@ namespace yack
             {
                 plist.push_back( new prime_knot(core::primes::p16[i]) );
             }
+#endif
 
             update();
 

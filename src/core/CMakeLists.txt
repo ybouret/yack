@@ -28,7 +28,7 @@ install( FILES ${type_decl} DESTINATION include/yack/type )
 ## arith operation
 ##
 ########################################################################
-file(GLOB arith_impl yack/arith/*.cpp yack/arith/*.c)
+file(GLOB arith_impl yack/arith/*.cpp yack/arith/*.c yack/arith/*.inc)
 file(GLOB arith_decl yack/arith/*.hpp yack/arith/*.h)
 set(arith ${arith_impl} ${arith_decl})
 SOURCE_GROUP(arith FILES ${arith})

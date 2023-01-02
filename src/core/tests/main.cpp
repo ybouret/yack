@@ -137,8 +137,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(aprsa);
     YACK_UTEST(apr);
     YACK_UTEST(aprimes);
-    YACK_UTEST(aprimes_compress);
-    YACK_UTEST(aprimes_compress64);
+    YACK_UTEST(aprimes64);
     YACK_UTEST(apex_npd);
     YACK_UTEST(alga);
     YACK_UTEST(apex_isqrt);

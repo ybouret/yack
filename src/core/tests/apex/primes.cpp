@@ -94,6 +94,7 @@ YACK_UDONE()
 #include "yack/ios/ocstream.hpp"
 #include "yack/ios/ascii/convert.hpp"
 
+#if 0
 YACK_UTEST(aprimes_compress)
 {
     // testing encoding
@@ -160,12 +161,12 @@ YACK_UTEST(aprimes_compress)
 
 }
 YACK_UDONE()
+#endif
 
 namespace
 {
     static uint64_t emit_s8(const readable<uint8_t> &s8, const size_t bps)
     {
-        //std::cerr << "emitting #" << s8.size() << std::endl;
         uint64_t code = 0;
         for(size_t i=1;i<=s8.size();++i)
         {
@@ -180,7 +181,7 @@ namespace
 #include "yack/ios/fmt/hexa.hpp"
 #include "yack/system/endian.hpp"
 
-YACK_UTEST(aprimes_compress64)
+YACK_UTEST(aprimes64)
 {
     size_t       limit = 1024; if(argc>1) limit = ios::ascii::convert::to<size_t>(argv[1]);
     static const size_t word_size = 8;
@@ -234,7 +235,7 @@ YACK_UTEST(aprimes_compress64)
     }
     YACK_ASSERT(0==s8.size());
     std::cerr << "up to " << *curr << std::endl;
-
+    std::cerr << "use 'mv prime-db.inc src/core/yack/arith'" << std::endl;
 
 }
 YACK_UDONE()
