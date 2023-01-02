@@ -48,34 +48,14 @@ YACK_UTEST(apex_npd)
     }
 
 
-    for(size_t n=5;n<=700;n+=2)
+    for(size_t n=3;n<=100;n+=2)
     {
         size_t i=0;
         size_t q=0;
         if(check_prime(n,i,q))
         {
-            const size_t k = (i-5)/6;
             const size_t s = isqrt(n);
-            std::cerr << std::setw(8) << n << " @" << i << "=5+6*" << k <<  " : q=" << q << " / s=" << s;
-            if(s>=5)
-            {
-                const size_t rm5=(s-5)%6;
-                if(rm5<=0) {
-                    const size_t j5 = (s-5)/6;
-                    std::cerr << " j5=" << j5;
-                }
-            }
-
-            if(s>=7)
-            {
-                const size_t rm7=(s-7)%6;
-                if(rm7<=0) {
-                    const size_t j7 = (s-7)/6;
-                    std::cerr << " j7=" << j7;
-                }
-            }
-
-            std::cerr << std::endl;
+            std::cerr << std::setw(8) << n << " @"<< q << " | s=" << s << " | i=" << i << std::endl;;
         }
         else
         {
