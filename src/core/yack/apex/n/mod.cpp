@@ -34,6 +34,7 @@ namespace yack
             // trivial cases
             //
             //__________________________________________________________________
+            //std::cerr << "mod(" << numerator << "," << denominator << ")" << std::endl;
             switch( scmp(numerator,denominator) )
             {
                 case negative: return natural(numerator.entry,numerator.words);
@@ -119,7 +120,7 @@ namespace yack
             return rem.is<0>();
         }
 
-        bool natural:: is_divisible_by(const uint_type den) const
+        bool natural:: is_divisible_by(uint_type den) const
         {
             const handle  lhs(*this);
             const handle  rhs(den);

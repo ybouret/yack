@@ -168,7 +168,7 @@ add_test(memory:shelf      test-core memory_shelf)
 
 add_test(object          test-core object)
 add_test(large_object    test-core large_object)
-add_test(spot_object     test-croe spot_object)
+add_test(spot_object     test-core spot_object)
 
 add_test(data:list         test-core data_list)
 add_test(data:list:sort    test-core data_list_sort)
@@ -243,6 +243,8 @@ add_test(aprimes           test-core  aprimes ${HERE}/../../../var/1k.txt)
 add_test(apex:npd          test-core  apex_npd)
 add_test(alga              test-core  alga)
 add_test(apex:isqrt        test-core  apex_isqrt)
+add_test(aprimes_compress   test-core  aprimes_compress)
+add_test(aprimes_compress64 test-core  aprimes_compress64)
 
 add_test(ios:c-file     test-core ios_c_file)
 add_test(ios:streams    test-core ios_streams)

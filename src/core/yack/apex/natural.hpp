@@ -37,6 +37,10 @@ namespace yack
         //
         //
         //! drop-in unsigned replacement
+        /**
+         need to use MUTABLE uint_type in functions argument, since
+         it is used as local workspace for natural::handle!!
+         */
         //
         //______________________________________________________________________
         class natural : public number, public readable<uint8_t>
@@ -247,7 +251,7 @@ namespace yack
             static natural quot(const natural &numerator, const natural &denominator, natural &rem);
 
             bool           is_divisible_by(const natural &) const;                          //!< test 0 reminder
-            bool           is_divisible_by(const uint_type) const;                          //!< test 0 reminder
+            bool           is_divisible_by(uint_type)       const;                          //!< test 0 reminder
             static natural gcd(const natural &a, const natural &b);                         //!< gcd
             static natural lcm(const natural &a, const natural &b);                         //!< lcm=(a*b)/gcd(a,b)
             static natural lcm_(const natural &a, const natural &b);                        //!< lcm for a>0, b>0
@@ -414,12 +418,12 @@ namespace yack
                 std::ostream &display(std::ostream &) const; //!< helper
                 bool          is0() const throw();           //!< test if is 0
                 bool          is1() const throw();           //!< test if is 1
-                
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(handle);
             };
             
-            
+            friend std::ostream & operator << (std::ostream &, const natural::handle &);
+
             void     update() throw(); //!< from words and bytes
             void     zpad()   throw(); //!< after words to max_words
             explicit natural(const size_t num_words, const as_capacity_t &);  //!< capacity for num_words

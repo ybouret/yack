@@ -49,6 +49,11 @@ namespace yack
             return os;
         }
 
+        std::ostream & operator << (std::ostream &os, const natural:: handle &h)
+        {
+            return h.display(os);
+        }
+
 
         bool natural::handle::is0() const throw() { return words<=0; }
 
