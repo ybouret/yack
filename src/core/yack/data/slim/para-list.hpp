@@ -6,37 +6,72 @@
 #include "yack/data/slim/node.hpp"
 #include "yack/data/slim/ptr.hpp"
 #include "yack/data/list/cxx.hpp"
+#include "yack/data/list/sort.hpp"
 
 namespace yack
 {
     
-
+    //__________________________________________________________________________
+    //
+    //
+    //! list of pointers on persistent objects
+    //
+    //__________________________________________________________________________
     template <typename T>
     class para_list : public cxx_list_of< slim_node< slim_ptr<T> > >
     {
     public:
-        YACK_DECL_ARGS_(T,type);
-        typedef slim_ptr<T>            hook_type;
-        typedef slim_node<hook_type>   node_type;
-        typedef cxx_list_of<node_type> list_type;
+        //______________________________________________________________________
+        //
+        // types
+        //______________________________________________________________________
+        YACK_DECL_ARGS_(T,type);                   //!< aliases
+        typedef slim_ptr<T>            hook_type;  //!< alias
+        typedef slim_node<hook_type>   node_type;  //!< alias
+        typedef cxx_list_of<node_type> list_type;  //!< alias
 
-        inline explicit para_list() throw() : list_type() {}
-        inline virtual ~para_list() throw() {}
-        inline para_list(const para_list &_) : list_type(_) {}
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        inline explicit para_list() throw() : list_type() {}   //!< setup empty
+        inline virtual ~para_list() throw() {}                 //!< cleanup
+        inline para_list(const para_list &_) : list_type(_) {} //!< copy
 
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+
+        //! push_back wrapper for address of argument
         para_list & operator<<(type &obj) {
             this->push_back( new node_type(&obj,transmogrify) );
             return *this;
         }
 
+        //! push_front wrapper for address of argument
         para_list & operator>>(type &obj) {
             this->push_front( new node_type(&obj,transmogrify) );
             return *this;
         }
-        
+
+        //! sorting by arguments
+        template <typename FUNC> inline
+        void sort_with( FUNC &func )
+        {
+            srtcb<FUNC> proc = { func };
+            merge_list_of<node_type>::sort(*this,proc);
+        }
 
     private:
         YACK_DISABLE_ASSIGN(para_list);
+        template <typename FUNC> struct srtcb
+        {
+            FUNC &func;
+            inline int operator()(const node_type *lhs, const node_type *rhs) {
+                return func( ***lhs, ***rhs );
+            }
+        };
     };
 
 }

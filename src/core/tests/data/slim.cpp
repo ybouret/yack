@@ -80,7 +80,11 @@ YACK_UTEST(data_slim)
         sl << '!';
         sl >> "hello";
 
-        std::cerr << sl << std::endl;
+        std::cerr << "raw=" << sl << std::endl;
+        sl.sort_with( comparison::increasing<string> );
+        std::cerr << "srt=" << sl << std::endl;
+
+
 
         para_list<string>       mpl;
         para_list<const string> cpl;
@@ -90,22 +94,34 @@ YACK_UTEST(data_slim)
             std::cerr << "\t" << sl[i] << std::endl;
             string       &mr = sl[i];
             const string &cr = mr;
-            mpl << mr;
-            cpl << mr;cpl << cr;
+            mpl << mr; mpl >> mr;
+            cpl << mr; cpl << cr; cpl >> cr;
         }
-        std::cerr << "mpl=" << mpl << std::endl;
-        std::cerr << "cpl=" << cpl << std::endl;
+        std::cerr << "raw para:" << std::endl;
+        std::cerr << "\tmpl=" << mpl << std::endl;
+        std::cerr << "\tcpl=" << cpl << std::endl;
 
 
+        mpl.sort_with( comparison::increasing<string> );
+        cpl.sort_with( comparison::increasing<string> );
+        std::cerr << "srt para:" << std::endl;
+        std::cerr << "\tmpl=" << mpl << std::endl;
+        std::cerr << "\tcpl=" << cpl << std::endl;
 
-
-        slim_pool<string> sp;
-
-        sp.reserve(10);
-
-        while(sl.size) {
-            sp.zstore( sl.pop_front() );
+        {
+            slim_pool< slim_list<string>::node_type > sp;
+            sp.reserve(10);
+            while(sl.size) {
+                sp.zstore( sl.pop_front() );
+            }
         }
+
+        {
+            slim_pool< para_list<string>::node_type> psp;
+            while(mpl.size)
+                psp.zstore( mpl.pop_back() );
+        }
+
 
     }
 
