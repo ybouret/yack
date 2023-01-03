@@ -24,7 +24,7 @@ YACK_UTEST(aprimes)
     YACK_SIZEOF(apn);
     YACK_SIZEOF(apex::prime_knot);
 
-
+    if(false)
     {
         size_t count=0;
         for(const apex::prime_knot *node=P->head;node;node=node->next)
@@ -75,7 +75,7 @@ YACK_UTEST(aprimes)
         {
             const apn &p = prm[i];
             YACK_ASSERT(P.is(p));
-            if(++count>=1000)
+            if(++count>=100)
             {
                 (std::cerr << '.').flush();
                 count = 0;
@@ -94,74 +94,7 @@ YACK_UDONE()
 #include "yack/ios/ocstream.hpp"
 #include "yack/ios/ascii/convert.hpp"
 
-#if 0
-YACK_UTEST(aprimes_compress)
-{
-    // testing encoding
-    size_t limit = 1024;
-    if(argc>1) limit = ios::ascii::convert::to<size_t>(argv[1]);
 
-    apex::primes          & P    = apex::primes::instance();
-    const apex::prime_knot *curr = P->head;
-    curr = P.next(curr); YACK_CHECK(3==*curr);
-
-
-    size_t count = 0;
-    ios::ocstream fp("aprimes-comp.dat");
-    const size_t bpp    = 6;
-    const size_t card16 = 16/bpp;
-    const size_t loss16 = 16 - bpp*card16;
-    const size_t card32 = 32/bpp;
-    const size_t loss32 = 32 - bpp*card32;
-    const size_t card64 = 64/bpp;
-    const size_t loss64 = 64 - bpp*card64;
-    std::cerr << "Storing #" << card16 << " on 16 bits, loosing #" << double(loss16)/card16 << " bits per shift" << std::endl;
-    std::cerr << "Storing #" << card32 << " on 32 bits, loosing #" << double(loss32)/card32 << " bits per shift" << std::endl;
-    std::cerr << "Storing #" << card64 << " on 64 bits, loosing #" << double(loss64)/card64 << " bits per shift" << std::endl;
-
-
-
-    size_t n16 = 0;
-    size_t n32 = 0;
-    size_t n64 = 0;
-    while(true)
-    {
-        const apex::prime_knot *next = P.next(curr);
-        const apn               delta = *next - *curr; YACK_ASSERT(delta.is_divisible_by(2) );
-        const apn               shift = (delta/2)-1;
-        const uint64_t p64 = next->cast_to<uint64_t>();
-        const unsigned d64 = delta.cast_to<unsigned>();
-        const unsigned s64 = shift.cast_to<unsigned>();
-        const size_t   b64 = shift.bits();
-        if(b64>bpp) break;
-
-        ++count;
-        n16 = count; while(n16%card16) ++n16; n16 /= card16; const size_t bytes16 = n16 * 2;
-        n32 = count; while(n32%card32) ++n32; n32 /= card32; const size_t bytes32 = n32 * 4;
-        n64 = count; while(n64%card64) ++n64; n64 /= card64; const size_t bytes64 = n64 * 8;
-
-
-        if(bytes64>limit)
-        {
-            --count;
-            break;
-        }
-        std::cerr << "delta=" << std::setw(4) << d64 << " (:" << std::setw(4) << shift << "#" << b64 << ") from " << *curr << " to " << *next << std::endl;
-        std::cerr << "bytes16=" << bytes16 << ", bytes32=" << bytes32 << ", bytes64=" << bytes64 << std::endl;
-
-
-        fp("%llu %llu %lu\n", (unsigned long long)p64, (unsigned long long)s64, (unsigned long)b64);
-
-        curr = next;
-
-    }
-
-    std::cerr << "Encoded #shift=" << count << " with bpp=" << bpp << std::endl;
-    std::cerr << "Up to " << *(curr->prev) << std::endl;
-
-}
-YACK_UDONE()
-#endif
 
 namespace
 {

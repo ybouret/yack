@@ -108,7 +108,7 @@ namespace yack
             const natural _5; //!< pre-computed
             const natural _6; //!< pre-computed
             const natural _7; //!< pre-computed
-            const natural _I; //!< for sieve
+            const natural _I; //!< for sieve: _I = _5 + (isqrt(last)-_7)/_6
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(primes);

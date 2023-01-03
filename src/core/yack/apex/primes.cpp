@@ -11,6 +11,9 @@ namespace yack
 
         prime_knot:: ~prime_knot() throw() {}
 
+
+        static const uint8_t first16[16] = { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53 };
+
         primes:: primes() : singleton<primes>(),
         _0(0),
         _1(1),
@@ -41,19 +44,14 @@ namespace yack
                 }
             }
 
-
-#if 0
-            for(size_t i=0;i<core::primes::n8;++i)
+            if(plist.size<16)
             {
-                plist.push_back( new prime_knot(core::primes::p8[i]) );
+                plist.release();
+                for(size_t i=0;i<16;++i)
+                {
+                    plist.push_back( new prime_knot( first16[i] ) );
+                }
             }
-
-            for(size_t i=0;i<core::primes::n16;++i)
-            {
-                plist.push_back( new prime_knot(core::primes::p16[i]) );
-            }
-#endif
-
             update();
 
         }
