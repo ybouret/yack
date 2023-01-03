@@ -12,7 +12,7 @@ namespace yack
     //__________________________________________________________________________
     //
     //
-    //! handle listing and single/shared deposit
+    //! handle list and single/shared deposit
     //
     //__________________________________________________________________________
     template <typename NODE, typename ZPOOL>
@@ -96,7 +96,8 @@ namespace yack
     private:
         YACK_DISABLE_ASSIGN(slim_manifest);
         cxx_list_of<NODE>  listing;
-
+        
+        
     public:
         ZPOOL              deposit; //!< deposit of zombie nodes
 
