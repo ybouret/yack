@@ -7,11 +7,11 @@ const yack_prime_db_word yack_prime_db_data[] =
 };
 
 #define YACK_PRIME_DB_BPS 6
-
+#define YACK_PRIME_DB_SPW ( (sizeof(yack_prime_db_word)*8)/YACK_PRIME_DB_BPS )
 const size_t yack_prime_db_size = sizeof(yack_prime_db_data)/sizeof(yack_prime_db_data[0]);
 const size_t yack_prime_db_bps = YACK_PRIME_DB_BPS;
-const size_t yack_prime_db_spw = (sizeof(yack_prime_db_word)*8)/YACK_PRIME_DB_BPS;
-const size_t yack_prime_db_num = yack_prime_db_spw *yack_prime_db_size;
+const size_t yack_prime_db_spw = YACK_PRIME_DB_SPW;
+const size_t yack_prime_db_num = YACK_PRIME_DB_SPW * yack_prime_db_size;
 
 
 void yack_prime_db_expand(uint8_t shift[], yack_prime_db_word u)
