@@ -13,6 +13,7 @@ namespace yack
     class slim_list : public cxx_list_of< slim_node<T> >
     {
     public:
+        YACK_DECL_ARGS_(T,type);
         typedef slim_node<T>           node_type;
         typedef cxx_list_of<node_type> list_type;
 
@@ -32,7 +33,11 @@ namespace yack
             return *this;
         }
 
-
+        inline type & operator[](const size_t indx) throw() {
+            assert(indx>0); assert(indx<=this->size);
+            return **(this->get(indx));
+        }
+        
         
     private:
         YACK_DISABLE_ASSIGN(slim_list);

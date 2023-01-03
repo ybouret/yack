@@ -64,6 +64,13 @@ YACK_UTEST(data_slim)
 
     std::cerr << sl << std::endl;
 
+    for(size_t i=sl.size;i>0;--i)
+    {
+        std::cerr << sl[i] << std::endl;
+    }
+
+
+
 
 
 }
