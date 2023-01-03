@@ -72,20 +72,13 @@ namespace yack
         template <typename FUNC> inline
         void sort_with( FUNC &func )
         {
-            srtcb<FUNC> proc = { func };
+            kernel::primary_sort_callback<node_type,FUNC> proc = { func };
             merge_list_of<node_type>::sort(*this,proc);
         }
 
         
     private:
         YACK_DISABLE_ASSIGN(slim_list);
-        template <typename FUNC> struct srtcb
-        {
-            FUNC &func;
-            inline int operator()(const node_type *lhs, const node_type *rhs) {
-                return func( **lhs, **rhs );
-            }
-        };
     };
 
 }

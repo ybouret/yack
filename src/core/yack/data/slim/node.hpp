@@ -79,6 +79,31 @@ namespace yack
         YACK_DISABLE_ASSIGN(slim_node);
     };
 
+    namespace kernel
+    {
+        template <typename NODE, typename FUNC>
+        struct primary_sort_callback
+        {
+            FUNC &func;
+            inline int operator()(const NODE *lhs, const NODE *rhs)
+            {
+                assert(lhs); assert(rhs);
+                return func(**lhs, **rhs);
+            }
+        };
+        
+        template <typename NODE, typename FUNC>
+        struct replica_sort_callback
+        {
+            FUNC &func;
+            inline int operator()(const NODE *lhs, const NODE *rhs)
+            {
+                assert(lhs); assert(rhs);
+                return func(***lhs, ***rhs);
+            }
+        };
+        
+    }
 }
 
 

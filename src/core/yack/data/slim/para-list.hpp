@@ -26,8 +26,8 @@ namespace yack
         // types
         //______________________________________________________________________
         YACK_DECL_ARGS_(T,type);                   //!< aliases
-        typedef slim_ptr<T>            hook_type;  //!< alias
-        typedef slim_node<hook_type>   node_type;  //!< alias
+        typedef slim_ptr<T>            data_type;  //!< alias
+        typedef slim_node<data_type>   node_type;  //!< alias
         typedef cxx_list_of<node_type> list_type;  //!< alias
 
         //______________________________________________________________________
@@ -59,19 +59,12 @@ namespace yack
         template <typename FUNC> inline
         void sort_with( FUNC &func )
         {
-            srtcb<FUNC> proc = { func };
+            kernel::replica_sort_callback<node_type,FUNC> proc = { func };
             merge_list_of<node_type>::sort(*this,proc);
         }
 
     private:
         YACK_DISABLE_ASSIGN(para_list);
-        template <typename FUNC> struct srtcb
-        {
-            FUNC &func;
-            inline int operator()(const node_type *lhs, const node_type *rhs) {
-                return func( ***lhs, ***rhs );
-            }
-        };
     };
 
 }
