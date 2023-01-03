@@ -4,6 +4,8 @@
 #include "yack/string.hpp"
 #include "yack/sequence/vector.hpp"
 #include "yack/string/tokenizer.hpp"
+#include "yack/ios/ocstream.hpp"
+#include "yack/system/env.hpp"
 
 using namespace yack;
 
@@ -86,12 +88,44 @@ YACK_UTEST(aprimes)
     //std::cerr << *P << std::endl;
     std::cerr << "#known=" << P->size << std::endl;
 
+    if( environment::flag("TEST") )
+    {
+        // up to 1357201 for 6 bits
+        // #words=10407, bytes=83256
+        typedef uint64_t word_type;
+        const size_t word_size = sizeof(word_type);
+        const size_t word_bits = 8 * word_size;
+        const size_t bps       = 6;               //!< bits per shift
+        const size_t spw       = word_bits/bps;   //!< shifts per word
+        size_t       shifts    = 0;
+        {
+            apex::primes          & P    = apex::primes::instance();
+            const apex::prime_knot *curr = P->head;
+            curr = P.next(curr); YACK_CHECK(3==*curr);
+            while(true)
+            {
+                const apex::prime_knot *next = P.next(curr);
+                const apn               delta = *next - *curr; YACK_ASSERT(delta.is_divisible_by(2) );
+                const apn               shift = (delta/2)-1;
+                const size_t            sbits = shift.bits();
+                std::cerr << *curr << " -> " << *next << " : shift=" << std::setw(5) << shift.cast_to<uint64_t>() << " | bits=" <<  std::setw(5) << sbits << std::endl;
+                if(sbits>6)
+                    break;
 
+                curr=next;
+                ++shifts;
+            }
+        }
+        std::cerr << "#shift=" << shifts << std::endl;
+        size_t rcount = shifts;
+        while(rcount%spw) ++rcount;
+        const size_t words = rcount/spw;
+        std::cerr << "#words=" << words  << ", bytes=" << words * word_size << std::endl;
+    }
 
 }
 YACK_UDONE()
 
-#include "yack/ios/ocstream.hpp"
 #include "yack/ios/ascii/convert.hpp"
 
 
