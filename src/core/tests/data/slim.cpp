@@ -10,8 +10,18 @@ using namespace  yack;
 YACK_UTEST(data_slim)
 {
 
+
     YACK_SIZEOF(slim_node<string>);
     YACK_SIZEOF(slim_node<int>);
+    std::cerr << std::endl;
+
+    YACK_SIZEOF(slim_list<int>);
+    YACK_SIZEOF(slim_list<string>);
+    std::cerr << std::endl;
+
+    YACK_SIZEOF(slim_pool<int>);
+    YACK_SIZEOF(slim_pool<string>);
+    std::cerr << std::endl;
 
     const string world = "world";
 
