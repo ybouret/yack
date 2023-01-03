@@ -24,7 +24,7 @@ namespace yack
             on_init();
         }
 
-        socket::const_interface &socket:: bulk() const throw() { return self; }
+        socket::const_inward &socket:: bulk() const throw() { return self; }
 
         const socket_key &socket::key() const throw()
         {

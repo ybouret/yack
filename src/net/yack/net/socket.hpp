@@ -46,7 +46,7 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(socket);
-            virtual const_interface  &bulk() const throw();
+            virtual const_inward  &bulk() const throw();
 
             void on_init() const throw();
             void on_quit() const throw();

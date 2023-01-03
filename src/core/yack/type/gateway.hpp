@@ -21,17 +21,17 @@ namespace yack
         //
         // types
         //______________________________________________________________________
-        YACK_DECL_ARGS_(T,interface); //!< aliases
+        YACK_DECL_ARGS_(T,inward); //!< aliases
 
         //______________________________________________________________________
         //
         // methods
         //______________________________________________________________________
 
-        inline interface       & operator*()        throw() { return (interface&) bulk(); } //!< access
-        inline const_interface & operator*()  const throw() { return              bulk(); } //!< access
-        inline interface       * operator->()       throw() { return (interface*)&bulk(); } //!< access
-        inline const_interface * operator->() const throw() { return             &bulk(); } //!< access
+        inline inward       & operator*()        throw() { return (inward&) bulk(); } //!< access
+        inline const_inward & operator*()  const throw() { return           bulk(); } //!< access
+        inline inward       * operator->()       throw() { return (inward*)&bulk(); } //!< access
+        inline const_inward * operator->() const throw() { return          &bulk(); } //!< access
 
         //______________________________________________________________________
         //
@@ -44,7 +44,7 @@ namespace yack
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(gateway);
-        virtual const_interface &bulk() const throw() = 0;
+        virtual const_inward &bulk() const throw() = 0;
     };
 
 }

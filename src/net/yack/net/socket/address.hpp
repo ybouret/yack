@@ -62,7 +62,7 @@ namespace yack
             void                   *entry;
             memory::workplace<IPv6> where;
             void clear() throw();
-            virtual const_interface & bulk()    const throw();
+            virtual const_inward & bulk()    const throw();
 
         };
     }
