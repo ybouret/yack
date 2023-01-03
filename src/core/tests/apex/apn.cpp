@@ -14,16 +14,15 @@ YACK_UTEST(apn)
     randomized::rand_  ran;
 
     {
-        apn _0(0); std::cerr << "_0=" << _0 << std::endl;
-        apn _1(1); std::cerr << "_1=" << _1 << std::endl;
-        apn _2(2); std::cerr << "_2=" << _2 << std::endl;
+        apn _0(0);   std::cerr << "_0=" << _0 << std::endl;
+        apn _1(1);   std::cerr << "_1=" << _1 << std::endl;
+        apn _2(2);   std::cerr << "_2=" << _2 << std::endl;
         apn _10(10); std::cerr << "_10=" << _10 << std::endl;
         YACK_CHECK(_0.is<0>());
         YACK_CHECK(_1.is<1>());
         YACK_CHECK(_2.is<2>());
         YACK_CHECK(_10.is<10>());
 
-        return 0;
     }
 
     

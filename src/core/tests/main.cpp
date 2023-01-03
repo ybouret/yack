@@ -126,6 +126,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(fft_xbr_info);
 
     YACK_UTEST(apex_mem);
+    YACK_UTEST(apex_info);
     YACK_UTEST(apn);
     YACK_UTEST(apz);
     YACK_UTEST(apq);

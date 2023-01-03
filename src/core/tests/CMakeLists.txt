@@ -230,6 +230,7 @@ add_test(fft:xbr8      test-core  fft_xbr8  0.02)
 add_test(fft:xbr64     test-core  fft_xbr64 0.02)
 
 add_test(apex:mem          test-core  apex_mem)
+add_test(apex:info         test-core  apex_info)
 add_test(apn               test-core  apn)
 add_test(apex:ari          test-core  apex_ari)
 add_test(apex:io           test-core  apex_io)
