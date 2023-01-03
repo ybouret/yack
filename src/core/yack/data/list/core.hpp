@@ -17,7 +17,6 @@ namespace yack
         NODE  *head; //!< head node
         NODE  *tail; //!< tail node
         size_t size; //!< number of nodes
-        
     };
 
     //__________________________________________________________________________

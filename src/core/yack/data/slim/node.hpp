@@ -11,8 +11,15 @@
 
 namespace yack
 {
-#define  YACK_SLIM_NODE_CTOR() object(), next(0), prev(0)
 
+#define  YACK_SLIM_NODE_CTOR() object(), next(0), prev(0) //!< helper to construct slim_node
+
+    //__________________________________________________________________________
+    //
+    //
+    //! node holding data for list/pool alive or zombie
+    //
+    //__________________________________________________________________________
     template <typename T>
     class slim_node : public object
     {
@@ -45,14 +52,15 @@ namespace yack
         slim_node * zcreate()  { return static_cast<slim_node *>( object::zacquire<slim_node>() ); } //!< create zombie node
         void        zdelete(slim_node *zombie) throw() { assert(zombie); object::zrelease(zombie); } //!< delete zombie node
 
+        //! display wrapper
         inline friend std::ostream & operator<<(std::ostream &os, const slim_node &self) { return os << self.data; }
 
         //______________________________________________________________________
         //
         // members
         //______________________________________________________________________
-        slim_node *next;
-        slim_node *prev;
+        slim_node *next; //!< for list/pool
+        slim_node *prev; //!< for list
         
     private:
         mutable_type data;
