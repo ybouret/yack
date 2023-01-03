@@ -16,6 +16,11 @@ YACK_UTEST(data_slim)
     YACK_SIZEOF(slim_node<int>);
     std::cerr << std::endl;
 
+
+    YACK_SIZEOF(slim_node< slim_ptr<string> > );
+    YACK_SIZEOF(slim_node< slim_ptr<int> >    );
+    std::cerr << std::endl;
+
     YACK_SIZEOF(slim_list<int>);
     YACK_SIZEOF(slim_list<string>);
     std::cerr << std::endl;
