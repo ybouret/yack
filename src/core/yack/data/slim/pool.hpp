@@ -71,6 +71,19 @@ namespace yack
         YACK_DISABLE_COPY_AND_ASSIGN(slim_pool);
     };
 
+    template <typename NODE>
+    class slim_hook 
+    {
+    public:
+        inline  slim_hook() throw() : impl() {}
+        inline ~slim_hook() throw() {}
+
+    private:
+        slim_pool<NODE> impl;
+        YACK_DISABLE_ASSIGN(slim_hook);
+    };
+
+
 
 }
 

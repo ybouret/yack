@@ -8,6 +8,7 @@
 #include "yack/ptr/auto.hpp"
 #include "yack/string.hpp"
 #include "yack/concurrent/mutex.hpp"
+#include "yack/data/slim/manifest.hpp"
 
 using namespace  yack;
 
@@ -141,7 +142,20 @@ YACK_UTEST(data_slim)
     }
 
 
+    {
+        typedef slim_node<int>   iNode;
+        typedef slim_hook<iNode> iHook;
+        typedef slim_bank<iNode> iBank;
+        typedef iBank::pointer   iFund;
 
+        typedef slim_manifest<iNode,iHook> iSingle;
+        typedef slim_manifest<iNode,iFund> iShared;
+
+        iFund   fund = new iBank();
+        iSingle single;
+        iShared shared(fund);
+        
+    }
 
 
 }
