@@ -1,4 +1,5 @@
 #include "yack/data/slim/list.hpp"
+#include "yack/data/slim/pool.hpp"
 #include "yack/data/slim/ptr.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/ptr/auto.hpp"
@@ -56,17 +57,24 @@ YACK_UTEST(data_slim)
     }
 
 
-    slim_list<string> sl;
-
-    sl << world;
-    sl << '!';
-    sl >> "hello";
-
-    std::cerr << sl << std::endl;
-
-    for(size_t i=sl.size;i>0;--i)
     {
-        std::cerr << sl[i] << std::endl;
+        slim_list<string> sl;
+
+        sl << world;
+        sl << '!';
+        sl >> "hello";
+
+        std::cerr << sl << std::endl;
+
+        for(size_t i=sl.size;i>0;--i)
+        {
+            std::cerr << "\t" << sl[i] << std::endl;
+        }
+
+
+        slim_pool<string> sp;
+
+        sp.reserve(10);
     }
 
 

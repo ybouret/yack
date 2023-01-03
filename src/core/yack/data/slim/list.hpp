@@ -37,7 +37,12 @@ namespace yack
             assert(indx>0); assert(indx<=this->size);
             return **(this->get(indx));
         }
-        
+
+        inline const_type & operator[](const size_t indx) const throw() {
+            assert(indx>0); assert(indx<=this->size);
+            return **(this->get(indx));
+        }
+
         
     private:
         YACK_DISABLE_ASSIGN(slim_list);
