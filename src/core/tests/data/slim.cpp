@@ -17,7 +17,7 @@ YACK_UTEST(data_slim)
         auto_ptr< slim_node<string> > ps2 = new slim_node<string>("hello",transmogrify);
         const string world = "world";
         auto_ptr< slim_node<string> > ps3 = new slim_node<string>(world,transmogrify);
-        auto_ptr< slim_node<string> > ps4 = new slim_node<string>('y',transmogrify);
+        auto_ptr< slim_node<string> > ps4 = new slim_node<string>('A',transmogrify);
 
         std::cerr << ps1 << std::endl;
         std::cerr << ps2 << std::endl;
@@ -45,7 +45,15 @@ YACK_UTEST(data_slim)
         std::cerr << *csp3 << std::endl;
     }
 
-    
+    {
+        char chr[] = { 'y', 'e', 's', 0 };
+        slim_node< slim_ptr<char> > pc;
+        std::cerr << pc << std::endl;
+
+        slim_node< slim_ptr<char> > pc0( &chr[0],transmogrify);
+        std::cerr << pc0 << std::endl;
+    }
+
 
 
 }
