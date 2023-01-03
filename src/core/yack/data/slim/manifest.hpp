@@ -77,22 +77,17 @@ namespace yack
 
         //! merge back a copy of a (possibly alien) list
         template <typename KNOT> inline
-        slim_manifest & operator<<(const list_of<KNOT> &other)
-        {
-            list_of<NODE> l;
-            listing.merge_back(populate(l,other));
+        slim_manifest & operator<<(const list_of<KNOT> &other) {
+            list_of<NODE> l; listing.merge_back(populate(l,other));
             return *this;
         }
 
         //! merge front a copy of a (possibly alien) list
         template <typename KNOT> inline
-        slim_manifest & operator>>(const list_of<KNOT> &other)
-        {
-            list_of<NODE> l;
-            listing.merge_front(populate(l,other));
+        slim_manifest & operator>>(const list_of<KNOT> &other) {
+            list_of<NODE> l; listing.merge_front(populate(l,other));
             return *this;
         }
-
 
         //! zombify listing content
         inline void free() throw() { deposit->zstore(listing); }
