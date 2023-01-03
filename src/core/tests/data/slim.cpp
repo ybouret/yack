@@ -1,4 +1,5 @@
 #include "yack/data/slim/list.hpp"
+#include "yack/data/slim/para-list.hpp"
 #include "yack/data/slim/pool.hpp"
 #include "yack/data/slim/ptr.hpp"
 #include "yack/utest/run.hpp"
@@ -80,6 +81,9 @@ YACK_UTEST(data_slim)
         {
             std::cerr << "\t" << sl[i] << std::endl;
         }
+
+        para_list<string>       mpl;
+        para_list<const string> cpl;
 
 
         slim_pool<string> sp;
