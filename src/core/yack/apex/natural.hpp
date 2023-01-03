@@ -51,21 +51,28 @@ namespace yack
             // types and definitions
             //__________________________________________________________________
             static const char clid[]; //!< "apn"
-            
-            typedef unsigned_for<YACK_APEX_TYPE>::type       core_type; //!< native type
-            typedef unsigned_int< sizeof(core_type)/2>::type word_type; //!< internal type
+
+            //------------------------------------------------------------------
+            // defining core(=native type) and internal type
+            //------------------------------------------------------------------
+            typedef unsigned_for<YACK_APEX_TYPE>::type        core_type; //!< native type
+            typedef unsigned_int< sizeof(core_type)/2 >::type word_type; //!< internal type
             
             static const size_t core_size = sizeof(core_type);          //!< native type size
             static const size_t core_bits = sizeof(core_type) << 3;     //!< native type bits
-            
+
+            //------------------------------------------------------------------
             // internal storage
+            //------------------------------------------------------------------
             static const size_t     word_size = sizeof(word_type);                //!< internal type size
             static const size_t     word_bits = sizeof(word_type) << 3;           //!< internal type bits
             static const size_t     word_exp2 = ilog2<word_size>::value;          //!< word_size = 2^word_exp2
             static const core_type  word_base = core_type(1) << word_bits;        //!< 2^[8|16|32] on larger type
             static const core_type  word_maxi = integral_for<word_type>::maximum; //!< maximum  for core_type
 
+            //------------------------------------------------------------------
             // internal parameters
+            //------------------------------------------------------------------
             static  const size_t    min_words_bytes = 2 * sizeof(uint_type);          //!< minimal memory, in bytes
             static  const size_t    min_words_size  = min_words_bytes >> word_exp2;   //!< minimal memory, in words
             static  const size_t    min_words_exp2  = ilog2<min_words_size>::value;   //!< shift for allocating
