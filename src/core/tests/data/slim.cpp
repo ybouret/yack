@@ -241,8 +241,8 @@ YACK_UTEST(data_slim)
         
         for(size_t i=0;i<5;++i)
         {
-            single << &arr[i];
-            shared << &arr[i];
+            single << arr[i]; single >> arr[i];
+            shared << arr[i]; shared >> arr[i];
         }
         
         std::cerr << "single=" << single << std::endl;
@@ -250,6 +250,11 @@ YACK_UTEST(data_slim)
         single += shared;
         single.sort_with(comparison::increasing<int>);
         std::cerr << "single=" << single << std::endl;
+        for(size_t i=0;i<5;++i)
+        {
+            arr[i] += 2;
+        }
+        std::cerr << "single=" << single << std::endl;        
     }
     
 }

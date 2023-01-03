@@ -81,10 +81,13 @@ namespace yack
 
     namespace kernel
     {
+        //! helper to sort slim_node<T>
         template <typename NODE, typename FUNC>
         struct primary_sort_callback
         {
-            FUNC &func;
+            FUNC &func; //!< comparison
+                        
+            //! call
             inline int operator()(const NODE *lhs, const NODE *rhs)
             {
                 assert(lhs); assert(rhs);
@@ -92,10 +95,13 @@ namespace yack
             }
         };
         
+        //! helper to sort slim_node< slim_ptr<T> >
         template <typename NODE, typename FUNC>
         struct replica_sort_callback
         {
-            FUNC &func;
+            FUNC &func; //!< comparison
+                        
+            //! call
             inline int operator()(const NODE *lhs, const NODE *rhs)
             {
                 assert(lhs); assert(rhs);

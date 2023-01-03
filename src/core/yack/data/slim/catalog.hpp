@@ -58,6 +58,7 @@ namespace yack
         // management methods
         //______________________________________________________________________
 
+        
         //! push_back wrapper for an element
         template <typename U> inline
         slim_catalog & operator<<(const U &u) {
@@ -81,8 +82,7 @@ namespace yack
         }
 
         
-
-        //! zombify listing content
+        //! zombify content
         inline void free() throw() { repo->zstore(*this); }
         
         //______________________________________________________________________
@@ -91,9 +91,9 @@ namespace yack
         //______________________________________________________________________
         ZPOOL              repo; //!< repository of zombie nodes
         
-    private:
-        YACK_DISABLE_ASSIGN(slim_catalog);
+    protected:
         
+        //! instantiate a new node with compatible argument
         template <typename U> inline
         NODE *create(const U &u)
         {
@@ -102,6 +102,10 @@ namespace yack
             catch(...) { repo->zstore(node); throw;   }
         }
 
+    private:
+        YACK_DISABLE_ASSIGN(slim_catalog);
+        
+       
         inline void duplicate(const list_of<NODE> &other)
         {
             try
