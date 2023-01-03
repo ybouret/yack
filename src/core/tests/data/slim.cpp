@@ -7,6 +7,7 @@
 #include "yack/utest/run.hpp"
 #include "yack/ptr/auto.hpp"
 #include "yack/string.hpp"
+#include "yack/concurrent/mutex.hpp"
 
 using namespace  yack;
 
@@ -34,6 +35,7 @@ YACK_UTEST(data_slim)
     YACK_SIZEOF(slim_bank<int>);
     YACK_SIZEOF(slim_bank<string>);
     YACK_SIZEOF(concurrent::mutex);
+
     std::cerr << std::endl;
 
     const string world = "world";
@@ -129,11 +131,11 @@ YACK_UTEST(data_slim)
                 psp.zstore( mpl.pop_back() );
         }
 
-        concurrent::mutex::verbose = true;
         {
             slim_bank< para_list<const string>::node_type > psp;
+            psp.reserve(3);
+            psp.zstore(cpl);
         }
-        concurrent::mutex::verbose = false;
 
 
     }
