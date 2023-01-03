@@ -51,7 +51,7 @@ namespace yack
             return *this;
         }
 
-        socket_address:: const_type & socket_address:: bulk() const throw()
+        socket_address:: const_interface & socket_address:: bulk() const throw()
         {
             const socket_addr *myself = NULL;
             switch(which)

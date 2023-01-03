@@ -21,26 +21,30 @@ namespace yack
         //
         // types
         //______________________________________________________________________
-        YACK_DECL_ARGS_(T,type); //!< aliases
+        YACK_DECL_ARGS_(T,interface); //!< aliases
 
-        //__________________________________________________________________________
+        //______________________________________________________________________
         //
         // methods
-        //__________________________________________________________________________
+        //______________________________________________________________________
 
-        inline virtual     ~gateway()         throw() {}                         //!< cleanup
-        inline type       & operator*()       throw() { return (type&)bulk(); }  //!< access
-        inline const_type & operator*() const throw() { return bulk();        }  //!< access
-        inline type       * operator->() throw() { return (type*) &bulk(); }     //!< acess
-        inline const_type * operator->() const throw() { return   &bulk(); }     //!< access
+        inline interface       & operator*()        throw() { return (interface&) bulk(); } //!< access
+        inline const_interface & operator*()  const throw() { return              bulk(); } //!< access
+        inline interface       * operator->()       throw() { return (interface*)&bulk(); } //!< access
+        inline const_interface * operator->() const throw() { return             &bulk(); } //!< access
 
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        inline virtual ~gateway() throw() {}                         //!< cleanup
 
     protected:
         inline explicit gateway() throw() {} //!< setup
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(gateway);
-        virtual const_type &bulk() const throw() = 0;
+        virtual const_interface &bulk() const throw() = 0;
     };
 
 }

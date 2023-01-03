@@ -109,6 +109,11 @@ set(data_hash ${data_hash_impl} ${data_hash_decl})
 SOURCE_GROUP(data/hash FILES ${data_hash})
 install( FILES ${data_hash_decl} DESTINATION include/yack/data/hash )
 
+file(GLOB data_slim_impl yack/data/slim/*.cpp)
+file(GLOB data_slim_decl yack/data/slim/*.hpp)
+set(data_slim ${data_slim_impl} ${data_slim_decl})
+SOURCE_GROUP(data/slim FILES ${data_slim})
+install( FILES ${data_slim_decl} DESTINATION include/yack/data/slim )
 
 ########################################################################
 ##
@@ -642,7 +647,7 @@ ${type}
 ${arith}
 ${check}
 ${system}
-${data} ${data_list} ${data_pool} ${data_small} ${data_suffix} ${data_hash}
+${data} ${data_list} ${data_pool} ${data_small} ${data_suffix} ${data_hash} ${data_slim}
 ${container} ${container_matrix} ${container_iterator} ${container_tuple}
 ${sequence}
 ${ordered}

@@ -16,7 +16,7 @@ namespace
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(dummy);
         int mine;
-        virtual const_type & bulk() const throw() { return mine; }
+        virtual const_interface & bulk() const throw() { return mine; }
     };
 
 }
