@@ -7,6 +7,7 @@
 #include "yack/data/slim/node.hpp"
 #include "yack/container/releasable.hpp"
 #include "yack/data/pool.hpp"
+#include "yack/data/list.hpp"
 
 namespace yack
 {
@@ -31,8 +32,8 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline explicit slim_pool() throw() : pool_type() {} //!< setup empty
-        inline virtual ~slim_pool() throw() { release(); }   //!< cleanup
+        inline explicit slim_pool() throw() : pool_type(), releasable() {} //!< setup empty
+        inline virtual ~slim_pool() throw() { release(); }                 //!< cleanup
 
 
         //______________________________________________________________________
@@ -55,13 +56,18 @@ namespace yack
             this->store( node_type::zombify(alive) );
         }
 
+        inline void zstore(list_of<NODE> &alive) throw()
+        {
+            while(alive.size) zstore( alive.pop_back() );
+        }
+
         //! query and existent/new zombie node
         inline node_type *zquery()
         {
             return this->size ? this->query() : node_type::zcreate();
         }
 
-        
+
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(slim_pool);
     };
