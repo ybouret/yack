@@ -60,6 +60,12 @@ namespace yack
             while(alive.size) zstore( alive.pop_back() );
         }
 
+        //! delete all alive, called by destructors
+        virtual void  zfinal(list_of<NODE> &alive) throw()
+        {
+            while(alive.size) delete alive.pop_back();
+        }
+
         //! query and existent/new zombie node
         inline virtual node_type *zquery()
         {
@@ -71,12 +77,34 @@ namespace yack
         YACK_DISABLE_COPY_AND_ASSIGN(slim_pool);
     };
 
+    //__________________________________________________________________________
+    //
+    //
+    //! pseudo pointer on a slim_pool, to use with manifest
+    //
+    //__________________________________________________________________________
     template <typename NODE>
     class slim_hook 
     {
     public:
-        inline  slim_hook() throw() : impl() {}
-        inline ~slim_hook() throw() {}
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        inline  slim_hook() throw() : impl() {} //!< setup
+        inline ~slim_hook() throw()          {} //!< cleanup
+
+        //! copy: start a new pool
+        inline  slim_hook(const slim_hook &) throw() : impl() {}
+
+        //______________________________________________________________________
+        //
+        // access
+        //______________________________________________________________________
+        inline slim_pool<NODE>       & operator*()        throw() { return  impl; } //!< access
+        inline const slim_pool<NODE> & operator*()  const throw() { return  impl; } //!< access
+        inline slim_pool<NODE>       * operator->()       throw() { return &impl; } //!< access
+        inline const slim_pool<NODE> * operator->() const throw() { return &impl; } //!< access
 
     private:
         slim_pool<NODE> impl;

@@ -80,7 +80,7 @@ namespace yack
         // C++
         //______________________________________________________________________
         inline explicit slim_bank() throw() : kernel::slim_bank(), pool_type()  {}  //!< setup empty
-        inline virtual ~slim_bank() throw() { release(); }                          //!< cleanup
+        inline virtual ~slim_bank() throw() { release(); assert(0==this->size); }   //!< cleanup
 
 
         //______________________________________________________________________
@@ -91,7 +91,7 @@ namespace yack
         //! interface: releasable
         inline virtual void release() throw() {
             YACK_LOCK(**this);
-            while(this->size) node_type::zrelease(this->query());
+            while(this->size) node_type::zdelete(this->query());
         }
 
         //! reserve zombie nodes
@@ -109,6 +109,13 @@ namespace yack
 
         //! zombify and store an entire list
         inline void zstore(list_of<NODE> &alive) throw()
+        {
+            YACK_LOCK(**this);
+            while(alive.size) zstore_unlocked( alive.pop_back() );
+        }
+
+        //! fetch all alive when called by destructor
+        virtual void  zfinal(list_of<NODE> &alive) throw()
         {
             YACK_LOCK(**this);
             while(alive.size) zstore_unlocked( alive.pop_back() );

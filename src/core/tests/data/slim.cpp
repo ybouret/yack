@@ -14,7 +14,7 @@ using namespace  yack;
 
 YACK_UTEST(data_slim)
 {
-
+    randomized::rand_ ran;
 
     YACK_SIZEOF(slim_node<string>);
     YACK_SIZEOF(slim_node<int>);
@@ -152,9 +152,47 @@ YACK_UTEST(data_slim)
         typedef slim_manifest<iNode,iFund> iShared;
 
         iFund   fund = new iBank();
-        iSingle single;
-        iShared shared(fund);
-        
+        {
+            iSingle single;
+            iShared shared(fund);
+
+            for(size_t i=0;i<10;++i)
+            {
+                const int j = static_cast<int>(ran.in(-10,10));
+                if(ran.choice())
+                {
+                    single << j;
+                    shared << j;
+                }
+                else
+                {
+                    single >> j;
+                    shared >> j;
+                }
+            }
+
+            std::cerr << "single=" << *single << std::endl;
+            std::cerr << "shared=" << *shared << std::endl;
+
+            {
+                iSingle single2(single);
+                iShared shared2(shared);
+            }
+
+            single << *shared;
+            std::cerr << "single: " << *single << std::endl;
+            single >> *single;
+            std::cerr << "single: " << *single << std::endl;
+
+        }
+
+        std::cerr << "#fund=" << fund->size << std::endl;
+
+
+
+
+
+
     }
 
 
