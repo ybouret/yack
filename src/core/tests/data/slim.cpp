@@ -8,7 +8,7 @@
 #include "yack/ptr/auto.hpp"
 #include "yack/string.hpp"
 #include "yack/concurrent/mutex.hpp"
-#include "yack/data/slim/manifest.hpp"
+#include "yack/data/slim/catalog.hpp"
 
 using namespace  yack;
 
@@ -148,8 +148,8 @@ YACK_UTEST(data_slim)
         typedef slim_bank<iNode> iBank;
         typedef iBank::pointer   iFund;
 
-        typedef slim_manifest<iNode,iHook> iSingle;
-        typedef slim_manifest<iNode,iFund> iShared;
+        typedef slim_catalog<iNode,iHook> iSingle;
+        typedef slim_catalog<iNode,iFund> iShared;
 
         iFund   fund = new iBank();
         {
@@ -171,18 +171,17 @@ YACK_UTEST(data_slim)
                 }
             }
 
-            std::cerr << "single=" << *single << std::endl;
-            std::cerr << "shared=" << *shared << std::endl;
+            std::cerr << "single=" << single << std::endl;
+            std::cerr << "shared=" << shared << std::endl;
 
             {
                 iSingle single2(single);
                 iShared shared2(shared);
             }
 
-            single << *shared;
-            std::cerr << "single: " << *single << std::endl;
-            single >> *single;
-            std::cerr << "single: " << *single << std::endl;
+            single += shared;
+            std::cerr << "single: " << single << std::endl;
+            
 
         }
 

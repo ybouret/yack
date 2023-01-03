@@ -1,8 +1,8 @@
 
 //! \file
 
-#ifndef YACK_DATA_SLIM_MANIFEST_INCLUDED
-#define YACK_DATA_SLIM_MANIFEST_INCLUDED 1
+#ifndef YACK_DATA_SLIM_CATALOG_INCLUDED
+#define YACK_DATA_SLIM_CATALOG_INCLUDED 1
 
 #include "yack/data/slim/zpool.hpp"
 
@@ -16,45 +16,44 @@ namespace yack
     //
     //__________________________________________________________________________
     template <typename NODE, typename ZPOOL>
-    class slim_manifest
+    class slim_catalog : public  cxx_list_of<NODE>
     {
     public:
         //______________________________________________________________________
         //
         // types
         //______________________________________________________________________
-        typedef NODE node_type; //!< alias
-
+        typedef NODE node_type;              //!< alias
+        typedef cxx_list_of<NODE> base_type; //!< alias
+        using base_type::push_back;
+        using base_type::push_front;
+        using base_type::merge_back;
+        using base_type::merge_front;
+        
         //______________________________________________________________________
         //
         // C++
         //______________________________________________________________________
 
         //! cleanup
-        inline virtual ~slim_manifest() throw() { deposit->zfinal(listing); }
+        inline virtual ~slim_catalog() throw() { repo->zfinal(*this); }
 
         //! setup empty: OK with slim_hook
-        inline explicit slim_manifest() throw() : listing(), deposit() {}
+        inline explicit slim_catalog() throw() : base_type(), repo() {}
 
         //! setup with shared: OK with slim_bank::pointer
-        inline explicit slim_manifest(const ZPOOL &shared) throw() :
-        listing(), deposit(shared) {}
+        inline explicit slim_catalog(const ZPOOL &shared) throw() :
+        base_type(), repo(shared) {}
 
         //! copy by duplication
-        inline slim_manifest(const slim_manifest &other) :
-        listing(),
-        deposit(other.deposit)
+        inline slim_catalog(const slim_catalog &other) :
+        base_type(),
+        repo(other.repo)
         {
-            duplicate(other.listing);
+            duplicate(other);
         }
 
-        //______________________________________________________________________
-        //
-        // access methods
-        //______________________________________________________________________
-        inline const list_of<NODE> & operator*()  const throw() { return  listing; } //!< access
-        inline const list_of<NODE> * operator->() const throw() { return &listing; } //!< access
-
+        
         //______________________________________________________________________
         //
         // management methods
@@ -62,52 +61,46 @@ namespace yack
 
         //! push_back wrapper for an element
         template <typename U> inline
-        slim_manifest & operator<<(const U &u) {
-            listing.push_back( create(u) );
+        slim_catalog & operator<<(const U &u) {
+            push_back( create(u) );
             return *this;
         }
 
 
         //! push_front wrapper for an element
         template <typename U> inline
-        slim_manifest & operator>>(const U &u) {
-            listing.push_front( create(u) );
+        slim_catalog & operator>>(const U &u) {
+            push_front( create(u) );
             return *this;
         }
 
         //! merge back a copy of a (possibly alien) list
         template <typename KNOT> inline
-        slim_manifest & operator<<(const list_of<KNOT> &other) {
-            list_of<NODE> l; listing.merge_back(populate(l,other));
+        slim_catalog & operator += (const list_of<KNOT> &other) {
+            list_of<NODE> l; merge_back(populate(l,other));
             return *this;
         }
 
-        //! merge front a copy of a (possibly alien) list
-        template <typename KNOT> inline
-        slim_manifest & operator>>(const list_of<KNOT> &other) {
-            list_of<NODE> l; listing.merge_front(populate(l,other));
-            return *this;
-        }
+        
 
         //! zombify listing content
-        inline void free() throw() { deposit->zstore(listing); }
-
-
-    private:
-        YACK_DISABLE_ASSIGN(slim_manifest);
-        cxx_list_of<NODE>  listing;
+        inline void free() throw() { repo->zstore(*this); }
         
+        //______________________________________________________________________
+        //
+        // members
+        //______________________________________________________________________
+        ZPOOL              repo; //!< repository of zombie nodes
         
-    public:
-        ZPOOL              deposit; //!< deposit of zombie nodes
-
     private:
+        YACK_DISABLE_ASSIGN(slim_catalog);
+        
         template <typename U> inline
         NODE *create(const U &u)
         {
-            NODE *node =  deposit->zquery();
+            NODE *node =  repo->zquery();
             try { return new(node) NODE(u,transmogrify); }
-            catch(...) { deposit->zstore(node); throw;   }
+            catch(...) { repo->zstore(node); throw;   }
         }
 
         inline void duplicate(const list_of<NODE> &other)
@@ -115,7 +108,7 @@ namespace yack
             try
             {
                 for(const node_type *node=other.head;node;node=node->next)
-                    listing.push_back( create(**node) );
+                    push_back( create(**node) );
             }
             catch(...) { free(); throw; }
         }
@@ -129,7 +122,7 @@ namespace yack
                     l.push_back( create(**knot) );
                 return l;
             }
-            catch(...) { deposit->zstore(l); throw; }
+            catch(...) { repo->zstore(l); throw; }
         }
 
 
