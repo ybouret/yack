@@ -24,7 +24,16 @@ namespace yack
         inline virtual ~para_list() throw() {}
         inline para_list(const para_list &_) : list_type(_) {}
 
+        para_list & operator<<(type &obj) {
+            this->push_back( new node_type(&obj,transmogrify) );
+            return *this;
+        }
 
+        para_list & operator>>(type &obj) {
+            this->push_front( new node_type(&obj,transmogrify) );
+            return *this;
+        }
+        
 
     private:
         YACK_DISABLE_ASSIGN(para_list);

@@ -82,13 +82,21 @@ YACK_UTEST(data_slim)
 
         std::cerr << sl << std::endl;
 
+        para_list<string>       mpl;
+        para_list<const string> cpl;
+
         for(size_t i=sl.size;i>0;--i)
         {
             std::cerr << "\t" << sl[i] << std::endl;
+            string       &mr = sl[i];
+            const string &cr = mr;
+            mpl << mr;
+            cpl << mr;cpl << cr;
         }
+        std::cerr << "mpl=" << mpl << std::endl;
+        std::cerr << "cpl=" << cpl << std::endl;
 
-        para_list<string>       mpl;
-        para_list<const string> cpl;
+
 
 
         slim_pool<string> sp;
