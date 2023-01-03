@@ -13,7 +13,7 @@ namespace yack
 
         typedef uint64_t uint_type; //!< integral unigned type
         typedef int64_t  int_type;  //!< integral signed type
-        
+        typedef uint16_t exp2_t;    //!< to hold exponents
     }
 
 }

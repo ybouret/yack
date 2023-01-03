@@ -8,6 +8,7 @@
 #include "yack/arith/base2.hpp"
 #include "yack/data/pool/core.hpp"
 #include "yack/arith/align.hpp"
+#include "yack/apex/types.hpp"
 
 namespace yack
 {
@@ -50,9 +51,9 @@ namespace yack
             
 
             static const size_t min_block_size = sizeof(piece);                    //!< minimal block size
-            static const size_t min_block_exp2 = ilog2<min_block_size>::value;     //!< min_block_size = 2^min_block_exp2
+            static const exp2_t min_block_exp2 = ilog2<min_block_size>::value;     //!< min_block_size = 2^min_block_exp2
             static const size_t max_block_size = base2<size_t>::max_power_of_two;  //!< maximal block size
-            static const size_t max_block_exp2 = base2<size_t>::max_shift;         //!< max_block_size = 2^max_block_exp2
+            static const exp2_t max_block_exp2 = base2<size_t>::max_shift;         //!< max_block_size = 2^max_block_exp2
             static const size_t repositories   = 1+max_block_exp2-min_block_exp2;  //!< all possible block sizes
             static const size_t repo_raw_bytes = repositories*sizeof(repository);  //!< alias
             static const size_t repo_bytes = YACK_ALIGN_TO(void *,repo_raw_bytes); //!< alias
@@ -70,8 +71,8 @@ namespace yack
             //
             // memory methods
             //__________________________________________________________________
-            void *acquire_unlocked(size_t &block_exp2);                                 //!< acquire zeroed block, adjust block_exp2
-            void  release_unlocked(void *block_addr, const size_t  block_exp2) throw(); //!< release a previously acquire block
+            void *acquire_unlocked(exp2_t &block_exp2);                                //!< acquire zeroed block, adjust block_exp2
+            void  release_unlocked(void *block_addr, const exp2_t block_exp2) throw(); //!< release a previously acquire block
 
             //__________________________________________________________________
             //

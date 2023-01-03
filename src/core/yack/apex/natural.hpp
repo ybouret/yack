@@ -79,6 +79,8 @@ namespace yack
             static  const size_t    words_per_uint  = sizeof(uint_type)>>word_exp2;   //!< words per unit
             static  size_t          words_exp2_for(const size_t nw);                  //!< compute exponent such that nw <= 2^exponent
 
+            
+
             //! number of words to use fft
             static  const size_t    shift_to_fft = 512;
 
@@ -403,13 +405,13 @@ namespace yack
         private:
             friend class integer;
 
-            size_t       bytes;          //!< current byte
-            size_t       words;          //!< current words
-            const size_t max_words_exp2; //!< words <= 2^max_words_exp2
-            const size_t max_bytes_exp2; //!< bytes <= 2^max_bytes_exp2
-            word_type   *word;           //!< least significant word address
-            const size_t max_words;      //!< 1 << max_words_exp2
-            const size_t max_bytes;      //!< 1 << max_bytes_exp2
+            size_t        bytes;          //!< current byte
+            size_t        words;          //!< current words
+            const exp2_t  max_words_exp2; //!< words <= 2^max_words_exp2
+            const exp2_t  max_bytes_exp2; //!< bytes <= 2^max_bytes_exp2
+            word_type   * word;           //!< least significant word address
+            const size_t  max_words;      //!< 1 << max_words_exp2
+            const size_t  max_bytes;      //!< 1 << max_bytes_exp2
             
             class handle {
             public:

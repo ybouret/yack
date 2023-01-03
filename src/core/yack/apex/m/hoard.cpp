@@ -69,7 +69,7 @@ namespace yack
         }
 
 
-        void * hoard:: acquire_unlocked(size_t &block_exp2)
+        void * hoard:: acquire_unlocked(exp2_t &block_exp2)
         {
             if(block_exp2>max_block_exp2) throw libc::exception(ENOMEM,"memory limit exceeded in apex");
             if(block_exp2<min_block_exp2) block_exp2 = min_block_exp2;
@@ -98,7 +98,7 @@ namespace yack
             
         }
 
-        void hoard:: release_unlocked(void *block_addr, const size_t block_exp2) throw()
+        void hoard:: release_unlocked(void *block_addr, const exp2_t block_exp2) throw()
         {
             assert(NULL!=block_addr);
             assert(block_exp2>=min_block_exp2);

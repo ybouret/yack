@@ -7,6 +7,7 @@
 
 #include "yack/singleton.hpp"
 #include "yack/apex/m/archon-longevity.hpp"
+#include "yack/apex/types.hpp"
 #include <iostream>
 
 namespace yack
@@ -39,8 +40,8 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            void *acquire(size_t &block_exp2);                            //!< locked acquire
-            void  release(void   *block_addr, size_t block_exp2) throw(); //!< locked release
+            void *acquire(exp2_t &block_exp2);                            //!< locked acquire
+            void  release(void   *block_addr, exp2_t block_exp2) throw(); //!< locked release
 
             //__________________________________________________________________
             //
@@ -49,7 +50,7 @@ namespace yack
 
             //! acquire a field of 1<<items_exp2 items
             template <typename T> static inline
-            T *acquire_field(size_t &items_exp2, size_t &block_exp2)
+            T *acquire_field(exp2_t &items_exp2, exp2_t &block_exp2)
             {
                 static archon      &self  = instance();
                 static const size_t shift = ilog2_of<T>::value;
@@ -69,7 +70,7 @@ namespace yack
 
             //! release a field of 1<<items_exp2 items
             template <typename T> static inline
-            void release_field(T * &entry, size_t &items_exp2, size_t &block_exp2) throw()
+            void release_field(T * &entry, exp2_t &items_exp2, exp2_t &block_exp2) throw()
             {
                 assert(entry);
                 assert(items_exp2+ilog2_of<T>::value==block_exp2);
@@ -133,8 +134,8 @@ namespace yack
                 const size_t size; //!< in items
 
             private:
-                const size_t items_exp2; //!< size = 1 << items_exp2
-                const size_t block_exp2; //!< items_exp2 + log2(sizeof(T))
+                const exp2_t items_exp2; //!< size = 1 << items_exp2
+                const exp2_t block_exp2; //!< items_exp2 + log2(sizeof(T))
                 T           *block_addr; //!< memory
                 YACK_DISABLE_COPY_AND_ASSIGN(tableau);
             };
@@ -145,7 +146,6 @@ namespace yack
             virtual ~archon() throw();
             friend class singleton<archon>;
             hoard *cache; //!< internal cache
-
         };
 
 

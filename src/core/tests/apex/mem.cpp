@@ -11,8 +11,8 @@ namespace
 
     struct block
     {
-        void   *addr;
-        size_t  exp2;
+        void         *addr;
+        apex::exp2_t  exp2;
     };
     
 }
@@ -45,8 +45,8 @@ YACK_UTEST(apex_mem)
         {
             for(size_t i=0;i<nblock;++i)
             {
-                const size_t org = ran.leq(10);
-                block       &blk = blocks[i];
+                const apex::exp2_t org = static_cast<apex::exp2_t>(ran.leq(10));
+                block             &blk = blocks[i];
                 blk.addr  = H.acquire_unlocked( (blk.exp2=org) );
                 YACK_ASSERT(blk.exp2>=apex::hoard::min_block_exp2);
             }
