@@ -75,6 +75,11 @@ YACK_UTEST(data_slim)
         slim_pool<string> sp;
 
         sp.reserve(10);
+
+        while(sl.size) {
+            sp.zstore( sl.pop_front() );
+        }
+
     }
 
 
