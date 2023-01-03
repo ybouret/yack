@@ -18,7 +18,7 @@ const size_t yack_prime_db_num  = YACK_PRIME_DB_SPW * YACK_PRIME_DB_SIZE;
 
 void yack_prime_db_expand(uint8_t shift[], yack_prime_db_word u)
 {
-    static const uint64_t mask = (1<<yack_prime_db_bps)-1;
+    static const uint64_t mask = (1<< YACK_PRIME_DB_BPS)-1;
     size_t i=yack_prime_db_spw;
     while(i-- > 0)
     {
