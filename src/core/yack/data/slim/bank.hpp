@@ -24,19 +24,30 @@ namespace yack
         //______________________________________________________________________
         class slim_bank :
         public object,
-        public counted,
-        public releasable
+        public counted 
         {
         public:
+            //__________________________________________________________________
+            //
+            // definitions
+            //__________________________________________________________________
             static const char * const clid;    //!< "slim_bank"
             static bool              &verbose; //!< on concurrent::mutex::verbose
             
-            virtual ~slim_bank() throw();
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            lockable & operator*() throw(); //!< access to internal mutex
 
-            lockable & operator*() throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~slim_bank() throw(); //!< cleanup
 
         protected:
-            explicit slim_bank();
+            explicit slim_bank();         //!< setup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(slim_bank);
@@ -44,19 +55,25 @@ namespace yack
         };
     }
 
+    //__________________________________________________________________________
+    //
+    //
+    //! shared bank of zombie nodes
+    //
+    //__________________________________________________________________________
     template <typename NODE>
     class slim_bank :
     public kernel::slim_bank,
-    public pool_of<NODE>
+    public slim_zpool<NODE>
     {
     public:
         //______________________________________________________________________
         //
         // types
         //______________________________________________________________________
-        typedef NODE               node_type; //!< alias
-        typedef pool_of<node_type> pool_type; //!< alias
-        typedef arc_ptr<slim_bank> pointer;   //!< alias
+        typedef NODE                  node_type; //!< alias
+        typedef slim_zpool<node_type> pool_type; //!< alias
+        typedef arc_ptr<slim_bank>    pointer;   //!< alias
 
         //______________________________________________________________________
         //
@@ -90,6 +107,7 @@ namespace yack
             zstore_unlocked(alive);
         }
 
+        //! zombify and store an entire list
         inline void zstore(list_of<NODE> &alive) throw()
         {
             YACK_LOCK(**this);

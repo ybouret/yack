@@ -15,7 +15,7 @@ namespace yack
         }
 
         slim_bank:: slim_bank() :
-        object(), counted(), releasable(), sync( object::zacquire<concurrent::mutex>() )
+        object(), counted(), sync( object::zacquire<concurrent::mutex>() )
         {
             try {
                 new (sync) concurrent::mutex(clid);

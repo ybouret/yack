@@ -5,9 +5,7 @@
 #define YACK_DATA_SLIM_POOL_INCLUDED 1
 
 #include "yack/data/slim/node.hpp"
-#include "yack/container/releasable.hpp"
-#include "yack/data/pool.hpp"
-#include "yack/data/list.hpp"
+#include "yack/data/slim/zpool.hpp"
 
 namespace yack
 {
@@ -18,22 +16,22 @@ namespace yack
     //
     //__________________________________________________________________________
     template <typename NODE>
-    class slim_pool : public pool_of<NODE>, public releasable
+    class slim_pool : public slim_zpool<NODE>
     {
     public:
         //______________________________________________________________________
         //
         // types
         //______________________________________________________________________
-        typedef NODE               node_type; //!< alias
-        typedef pool_of<node_type> pool_type; //!< alias
+        typedef NODE                  node_type; //!< alias
+        typedef slim_zpool<node_type> pool_type; //!< alias
 
         //______________________________________________________________________
         //
         // C++
         //______________________________________________________________________
-        inline explicit slim_pool() throw() : pool_type(), releasable() {} //!< setup empty
-        inline virtual ~slim_pool() throw() { release(); }                 //!< cleanup
+        inline explicit slim_pool() throw() : pool_type()  {} //!< setup empty
+        inline virtual ~slim_pool() throw()  { release(); }   //!< cleanup
 
 
         //______________________________________________________________________
@@ -47,22 +45,23 @@ namespace yack
         }
 
         //! reserve zombie nodes
-        inline void reserve(size_t n) throw() {
+        inline virtual void reserve(size_t n) throw() {
             while(n-- > 0) this->store( node_type::zcreate() );
         }
 
         //! zombify and store an alive node
-        inline void zstore(node_type *alive) throw() {
+        inline virtual void zstore(node_type *alive) throw() {
             this->store( node_type::zombify(alive) );
         }
 
-        inline void zstore(list_of<NODE> &alive) throw()
+        //! zombify and store an entire list
+        inline virtual void zstore(list_of<NODE> &alive) throw()
         {
             while(alive.size) zstore( alive.pop_back() );
         }
 
         //! query and existent/new zombie node
-        inline node_type *zquery()
+        inline virtual node_type *zquery()
         {
             return this->size ? this->query() : node_type::zcreate();
         }
