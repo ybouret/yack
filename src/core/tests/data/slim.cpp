@@ -1,4 +1,4 @@
-#include "yack/data/slim/node.hpp"
+#include "yack/data/slim/list.hpp"
 #include "yack/data/slim/ptr.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/ptr/auto.hpp"
@@ -12,10 +12,11 @@ YACK_UTEST(data_slim)
     YACK_SIZEOF(slim_node<string>);
     YACK_SIZEOF(slim_node<int>);
 
+    const string world = "world";
+
     {
         auto_ptr< slim_node<string> > ps1 = new slim_node<string>();
         auto_ptr< slim_node<string> > ps2 = new slim_node<string>("hello",transmogrify);
-        const string world = "world";
         auto_ptr< slim_node<string> > ps3 = new slim_node<string>(world,transmogrify);
         auto_ptr< slim_node<string> > ps4 = new slim_node<string>('A',transmogrify);
 
@@ -53,6 +54,15 @@ YACK_UTEST(data_slim)
         slim_node< slim_ptr<char> > pc0( &chr[0],transmogrify);
         std::cerr << pc0 << std::endl;
     }
+
+
+    slim_list<string> sl;
+
+    sl << world;
+    sl << '!';
+    sl >> "hello";
+
+    std::cerr << sl << std::endl;
 
 
 
