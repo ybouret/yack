@@ -19,6 +19,11 @@ namespace yack
     class slim_warden
     {
     public:
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+
         //! initialize with node and its source
         inline  slim_warden(NODE *knot, CATALOG &source) throw() : node(knot), pool(source.cache) {}
 
@@ -40,6 +45,7 @@ namespace yack
         inline NODE *       operator->()       throw() { assert(node); return  node; } //!< access
         inline const NODE * operator->() const throw() { assert(node); return  node; } //!< access
 
+        //! forward display
         inline friend std::ostream & operator<<(std::ostream &os, const slim_warden &self)
         {
             return self.node ? (os << *self.node) : (os << kernel::slim_ptr_nil);

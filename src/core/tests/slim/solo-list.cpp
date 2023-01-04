@@ -17,7 +17,6 @@ YACK_UTEST(slim_solo_list)
     for(size_t i=5+ran.leq(5);i>0;--i)
     {
         const apn n(ran,1+ran.leq(16));
-        //std::cerr << "n=" << n << std::endl;
         const apn m(ran,1+ran.leq(16));
         ml << n; ml >> m;
         cl << n; cl >> m;
