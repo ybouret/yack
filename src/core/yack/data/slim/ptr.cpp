@@ -1,5 +1,5 @@
 
-#include "yack/data/slim/ptr.hpp"
+#include "yack/data/slim/ptr-nil.hpp"
 
 namespace yack
 {

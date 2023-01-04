@@ -4,7 +4,8 @@
 #define YACK_DATA_SLIM_CATALOG_INCLUDED 1
 
 #include "yack/data/slim/zpool.hpp"
-#include "yack/data/list/cxx.hpp"
+#include "yack/data/slim/warden.hpp"
+#include "yack/data/list.hpp"
 
 namespace yack
 {
@@ -12,19 +13,27 @@ namespace yack
     //__________________________________________________________________________
     //
     //
-    //! handle list and single/shared deposit
+    //! manage list and single/shared cache
     //
     //__________________________________________________________________________
     template <typename NODE, typename ZPOOL>
-    class slim_catalog : public  cxx_list_of<NODE>
+    class slim_catalog : public  list_of<NODE>
     {
     public:
         //______________________________________________________________________
         //
         // types
         //______________________________________________________________________
-        typedef NODE node_type;              //!< alias
-        typedef cxx_list_of<NODE> base_type; //!< alias
+        typedef NODE                        node_type; //!< alias
+        typedef list_of<NODE>               base_type; //!< alias
+        typedef ZPOOL                       pool_type; //!< alias
+        typedef slim_catalog<NODE,ZPOOL>    this_type; //!< alias
+        typedef slim_warden<NODE,this_type> warden_type; //!< alias
+
+        //______________________________________________________________________
+        //
+        // using...
+        //______________________________________________________________________
         using base_type::push_back;
         using base_type::push_front;
         using base_type::merge_back;
@@ -47,11 +56,7 @@ namespace yack
 
         //! copy by duplication
         inline slim_catalog(const slim_catalog &other) :
-        base_type(),
-        cache(other.cache)
-        {
-            duplicate(other);
-        }
+        base_type(), cache(other.cache) { duplicate(other); }
 
         
         //______________________________________________________________________
@@ -83,6 +88,7 @@ namespace yack
         }
 
         
+
         //! zombify content
         inline void free() throw() { cache->zstore(*this); }
         
@@ -90,7 +96,7 @@ namespace yack
         //
         // members
         //______________________________________________________________________
-        ZPOOL              cache; //!< cache of zombie nodes
+        pool_type           cache; //!< cache of zombie nodes
         
     protected:
         

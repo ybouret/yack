@@ -1,17 +1,14 @@
-
+//! \file
 
 #ifndef YACK_DATA_SLIM_PTR_INCLUDED
 #define YACK_DATA_SLIM_PTR_INCLUDED 1
 
 #include "yack/type/args.hpp"
+#include "yack/data/slim/ptr-nil.hpp"
 #include <ostream>
 
 namespace yack
 {
-    namespace kernel
-    {
-        extern const char slim_ptr_nil[]; //!< output for empty slim_ptr
-    }
 
     //__________________________________________________________________________
     //
@@ -45,8 +42,8 @@ namespace yack
         inline  bool is_empty() const throw() { return 0==pointee; } //!< test if is empty
         inline  bool is_valid() const throw() { return 0!=pointee; } //!< test if is valid
 
-        type &       operator*()       throw() { assert(pointee); return              *pointee; } //!< access
-        const_type & operator*() const throw() { assert(pointee); return (const_type&)*pointee; } //!< access, const
+        inline type &       operator*()       throw() { assert(pointee); return              *pointee; } //!< access
+        inline const_type & operator*() const throw() { assert(pointee); return (const_type&)*pointee; } //!< access, const
 
         //! display wrapper
         inline friend std::ostream & operator<<(std::ostream &os, const slim_ptr &self)

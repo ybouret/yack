@@ -4,7 +4,6 @@
 #include "../main.hpp"
 
 
-
 using namespace  yack;
 
 YACK_UTEST(slim_coop_list)
@@ -38,6 +37,10 @@ YACK_UTEST(slim_coop_list)
         cl.sort_with(comparison::decreasing<apn>);
         std::cerr << ml << std::endl;
         std::cerr << cl << std::endl;
+
+        ml_type::warden_type keep(ml.pop_front(),ml);
+        std::cerr << "front was " << keep << std::endl;
+
     }
 
     std::cerr << "#fund: " << ml_fund->size << " / " << cl_fund->size << std::endl;

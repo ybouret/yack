@@ -39,6 +39,11 @@ YACK_UTEST(slim_coop_repo)
     std::cerr << "mr=" << mr << std::endl;
     std::cerr << "cr=" << cr << std::endl;
 
+    coop_repo<apq>::warden_type keep(mr.pop_front(),mr);
+    std::cerr << "front was " << keep << std::endl;
+
+
+
     YACK_SIZEOF(coop_repo<apq>::node_type);
 
 }
