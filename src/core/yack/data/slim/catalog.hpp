@@ -4,6 +4,7 @@
 #define YACK_DATA_SLIM_CATALOG_INCLUDED 1
 
 #include "yack/data/slim/zpool.hpp"
+#include "yack/data/list/cxx.hpp"
 
 namespace yack
 {
@@ -35,19 +36,19 @@ namespace yack
         //______________________________________________________________________
 
         //! cleanup
-        inline virtual ~slim_catalog() throw() { repo->zfinal(*this); }
+        inline virtual ~slim_catalog() throw() { cache->zfinal(*this); }
 
         //! setup empty: OK with slim_hook
-        inline explicit slim_catalog() throw() : base_type(), repo() {}
+        inline explicit slim_catalog() throw() : base_type(), cache() {}
 
         //! setup with shared: OK with slim_bank::pointer
         inline explicit slim_catalog(const ZPOOL &shared) throw() :
-        base_type(), repo(shared) {}
+        base_type(), cache(shared) {}
 
         //! copy by duplication
         inline slim_catalog(const slim_catalog &other) :
         base_type(),
-        repo(other.repo)
+        cache(other.cache)
         {
             duplicate(other);
         }
@@ -83,13 +84,13 @@ namespace yack
 
         
         //! zombify content
-        inline void free() throw() { repo->zstore(*this); }
+        inline void free() throw() { cache->zstore(*this); }
         
         //______________________________________________________________________
         //
         // members
         //______________________________________________________________________
-        ZPOOL              repo; //!< repository of zombie nodes
+        ZPOOL              cache; //!< cache of zombie nodes
         
     protected:
         
@@ -97,9 +98,9 @@ namespace yack
         template <typename U> inline
         NODE *create(const U &u)
         {
-            NODE *node =  repo->zquery();
+            NODE *node =  cache->zquery();
             try { return new(node) NODE(u,transmogrify); }
-            catch(...) { repo->zstore(node); throw;   }
+            catch(...) { cache->zstore(node); throw;   }
         }
 
     private:
@@ -125,7 +126,7 @@ namespace yack
                     l.push_back( create(**knot) );
                 return l;
             }
-            catch(...) { repo->zstore(l); throw; }
+            catch(...) { cache->zstore(l); throw; }
         }
 
 

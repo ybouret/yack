@@ -70,7 +70,6 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(data_pool);
     YACK_UTEST(data_pool_sort);
     YACK_UTEST(data_small);
-    YACK_UTEST(data_slim);
     YACK_UTEST(data_matrix);
     YACK_UTEST(data_sequence);
     YACK_UTEST(data_cxx_series);
@@ -105,6 +104,8 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(data_set);
     YACK_UTEST(data_joint);
 
+    YACK_UTEST(slim_build);
+    YACK_UTEST(slim_solo_list);
 
     YACK_UTEST(arith_isqrt);
 

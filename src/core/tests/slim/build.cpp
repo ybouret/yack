@@ -18,7 +18,7 @@
 
 using namespace  yack;
 
-YACK_UTEST(data_slim)
+YACK_UTEST(slim_build)
 {
     randomized::rand_ ran;
     

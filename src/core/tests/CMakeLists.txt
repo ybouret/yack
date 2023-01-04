@@ -11,6 +11,10 @@ source_group(memory FILES ${memory} )
 file(GLOB data data/*.cpp)
 source_group(data FILES ${data} )
 
+file(GLOB slim slim/*.cpp)
+source_group(slim FILES ${slim} )
+
+
 file(GLOB sync sync/*.cpp)
 source_group(sync FILES ${sync} )
 
@@ -72,6 +76,7 @@ ${base}
 ${type}
 ${memory}
 ${data}
+${slim}
 ${sync}
 ${arith}
 ${apex}
@@ -176,7 +181,6 @@ add_test(data:list:ordered test-core data_list_ordered)
 add_test(data:pool         test-core data_pool)
 add_test(data:pool:sort    test-core data_pool_sort)
 add_test(data:small        test-core data_small)
-add_test(data:slim         test-core data_slim)
 add_test(data:matrix       test-core data_matrix)
 add_test(data:sequence     test-core data_sequence)
 add_test(data:cxx_series   test-core data_cxx_series)
@@ -210,6 +214,10 @@ add_test(data:roll         test-core data_roll)
 add_test(data:bunch        test-core data_bunch)
 add_test(data:set          test-core data_set)
 add_test(data:joint        test-core data_joint)
+
+add_test(slim:build         test-core slim_build)
+add_test(slim:solo:list     test-core slim_solo_list)
+
 
 
 add_test(sync:lockable  test-core sync_lockable)

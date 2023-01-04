@@ -4,6 +4,7 @@
 #define YACK_DATA_SLIM_REGISTRY_INCLUDED 1
 
 #include "yack/data/slim/catalog.hpp"
+#include "yack/data/list/sort.hpp"
 
 namespace yack
 {
