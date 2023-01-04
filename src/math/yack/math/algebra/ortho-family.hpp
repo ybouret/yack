@@ -25,9 +25,11 @@ namespace yack
             template <typename T> static inline
             bool make(matrix<apz> &Q, const matrix<T> &P, const bool univocal)
             {
-                matrix<apq> PP(P,transmogrify);
                 matrix<apq> QQ(Q.rows,Q.cols);
-                if(!make(QQ,PP)) return false;
+                {
+                    matrix<apq> PP(P,transmogrify);
+                    if(!make(QQ,PP)) return false;
+                }
                 if(univocal) alga::univocal_rows(QQ); else alga::simplify_rows(QQ);
                 Q.apply(numerator_of,QQ);
                 return true;
@@ -38,9 +40,11 @@ namespace yack
             template <typename T, typename U> static inline
             bool build(matrix<T> &Q, const matrix<U> &P, const bool univocal)
             {
-                matrix<apq> PP(P,transmogrify);
                 matrix<apq> QQ(Q.rows,Q.cols);
-                if(!make(QQ,PP)) return false;
+                {
+                    matrix<apq> PP(P,transmogrify);
+                    if(!make(QQ,PP)) return false;
+                }
                 if(univocal) alga::univocal_rows(QQ); else alga::simplify_rows(QQ);
                 Q.apply(numerator_to<T>,QQ);
                 return true;
