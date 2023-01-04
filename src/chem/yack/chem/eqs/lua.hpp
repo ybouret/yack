@@ -1,5 +1,4 @@
-
-//! \file
+     //! \file
 
 #ifndef YACK_CHEMICAL_EQS_LUA_INCLUDED
 #define YACK_CHEMICAL_EQS_LUA_INCLUDED 1
@@ -39,7 +38,7 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            Lua::VM vm;
+            Lua::VM vm; //!< Lua Virtual Machine
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(luaEquilibria);
