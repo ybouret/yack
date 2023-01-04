@@ -51,6 +51,19 @@ namespace yack
             return self.pointee ? (os<<*self.pointee) : (os<<kernel::slim_ptr_nil);
         }
 
+        //! test pointee equalitry
+        inline friend bool operator==(const slim_ptr &lhs, const slim_ptr &rhs) throw()
+        {
+            return lhs.pointee == rhs.pointee;
+        }
+
+        //! test pointee difference
+        inline friend bool operator!=(const slim_ptr &lhs, const slim_ptr &rhs) throw()
+        {
+            return lhs.pointee != rhs.pointee;
+        }
+
+
     private:
         mutable_type *pointee;
         YACK_DISABLE_ASSIGN(slim_ptr);

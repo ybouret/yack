@@ -1,7 +1,7 @@
 #include "yack/data/slim/solo-list.hpp"
 #include "yack/utest/run.hpp"
 #include "../main.hpp"
-
+#include "yack/data/list/ops.hpp"
 
 
 using namespace  yack;
@@ -24,6 +24,7 @@ YACK_UTEST(slim_solo_list)
 
     std::cerr << ml << std::endl;
     std::cerr << cl << std::endl;
+    YACK_CHECK( list_ops::are_equal(ml,cl) );
 
     ml.sort_with(comparison::increasing<apn>);
     cl.sort_with(comparison::decreasing<apn>);

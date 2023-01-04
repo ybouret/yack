@@ -2,7 +2,7 @@
 #include "yack/utest/run.hpp"
 #include "yack/apex.hpp"
 #include "yack/sequence/vector.hpp"
-
+#include "yack/data/list/ops.hpp"
 
 using namespace  yack;
 
@@ -29,6 +29,12 @@ YACK_UTEST(slim_solo_repo)
 
     std::cerr << "mr=" << mr << std::endl;
     std::cerr << "cr=" << cr << std::endl;
+
+    {
+        const solo_repo<apq> mr2 = mr;
+        YACK_CHECK( list_ops::are_equal(mr2,mr) );
+    }
+
 
     mr.sort_with(comparison::increasing<apq>);
     cr.sort_with(comparison::decreasing<apq>);
