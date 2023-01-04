@@ -32,8 +32,8 @@ namespace yack
         // C++
         //______________________________________________________________________
         inline explicit slim_coop(const fund_type &fund) throw() : catalog_t(fund) {} //!< setup with user's banck
-        inline virtual ~slim_coop() throw() {}                                        //!< cleanup
-        inline          slim_coop(const slim_coop &other) : catalog_t(other) {}       //!< delegate copy
+        inline virtual ~slim_coop()                      throw()                   {} //!< cleanup
+        inline          slim_coop(const slim_coop &other) : catalog_t(other)       {} //!< delegate copy
 
     private:
         YACK_DISABLE_ASSIGN(slim_coop);
