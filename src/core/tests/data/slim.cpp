@@ -258,13 +258,22 @@ YACK_UTEST(data_slim)
     }
 
     {
-        typedef slim_solo<double, slim_node<double>, slim_registry> solo_registry;
+        typedef slim_solo<double, slim_node<double>,             slim_registry> solo_registry;
+        typedef slim_solo<double, slim_node< slim_ptr<double> >, slim_manifest> solo_manifest;
+
+        double arr[4] = { 1,2,3,4 };
 
         solo_registry sreg;
+        solo_manifest sman;
         sreg << 10.0 << 11.1 << 12.2;
         std::cerr << "sreg=" << sreg << std::endl;
         sreg.sort_with(comparison::decreasing<double>);
         std::cerr << "sreg=" << sreg << std::endl;
+
+        sman << arr[3] << arr[2] << arr[0] << arr[1];
+        std::cerr << "sman=" << sman << std::endl;
+        sman.sort_with(comparison::increasing<double>);
+        std::cerr << "sman=" << sman << std::endl;
 
         
     }
