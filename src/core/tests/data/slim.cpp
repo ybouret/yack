@@ -32,14 +32,13 @@ YACK_UTEST(data_slim)
     YACK_SIZEOF(slim_list<string>);
     std::cerr << std::endl;
     
-    YACK_SIZEOF(slim_pool<int>);
-    YACK_SIZEOF(slim_pool<string>);
+	YACK_SIZEOF(slim_pool < slim_node<int>   > );
+    YACK_SIZEOF(slim_pool< slim_node<string> > );
     std::cerr << std::endl;
     
-    YACK_SIZEOF(slim_bank<int>);
-    YACK_SIZEOF(slim_bank<string>);
-    
-    std::cerr << std::endl;
+	YACK_SIZEOF(slim_bank< slim_node<int>   >);
+	YACK_SIZEOF(slim_bank< slim_node<string> >);
+	std::cerr << std::endl;
     
     const string world = "world";
     
