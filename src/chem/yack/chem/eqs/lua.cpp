@@ -17,7 +17,7 @@ namespace yack
         {
         }
 
-        luaEquilibria:: luaEquilibria() : equilibria(), Lua::VM( new Lua::State() )
+        luaEquilibria:: luaEquilibria() : equilibria(), vm( new Lua::State() )
         {
         }
         
@@ -109,7 +109,7 @@ namespace yack
         
         void luaEquilibria:: create_eq_for(library &lib, vector<string> &word)
         {
-            Lua::State &lvm   = **this;
+            Lua::State &lvm   = *vm;
             string     &first = word[1];
            
             const string &eid = first;
@@ -118,7 +118,7 @@ namespace yack
             
             const string &Kxp = word[3]; assert(Kxp.size()>0);
             const size_t  idx = size()+1;
-            equilibrium  *pEq = isdigit(Kxp[1]) ? YACK_NEW_EQ( const_equilibrium(eid,idx,lvm.eval<double>(Kxp)) ) : YACK_NEW_EQ( luaEquilibrium(eid,idx,*this,Kxp) );
+            equilibrium  *pEq = isdigit(Kxp[1]) ? YACK_NEW_EQ( const_equilibrium(eid,idx,lvm.eval<double>(Kxp)) ) : YACK_NEW_EQ( luaEquilibrium(eid,idx,vm,Kxp) );
             equilibrium  &usr = use(pEq);
             usr(lib,word[2]);
             

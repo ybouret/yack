@@ -38,14 +38,16 @@ namespace yack
         using base_type::push_front;
         using base_type::merge_back;
         using base_type::merge_front;
-        
+        using base_type::pop_back;
+        using base_type::pop_front;
+
         //______________________________________________________________________
         //
         // C++
         //______________________________________________________________________
 
         //! cleanup
-        inline virtual ~slim_catalog() throw() { cache->zfinal(*this); }
+        inline virtual ~slim_catalog() throw() { cache->zfinal(*this); assert(0==this->size);}
 
         //! setup empty: OK with slim_hook
         inline explicit slim_catalog() throw() : base_type(), cache() {}
@@ -87,11 +89,11 @@ namespace yack
             return *this;
         }
 
-        
+        inline void zfront() throw() { cache->zstore( pop_front() ); } //!< zombify head
+        inline void zback()  throw() { cache->zstore( pop_back()  ); } //!< zombify tail
+        inline void free()   throw() { cache->zstore( *this       ); assert(0==this->size); } //!< zombify content
+        inline void pluck()  throw() { cache->zfinal( *this       ); assert(0==this->size); } //!< depending on cache
 
-        //! zombify content
-        inline void free() throw() { cache->zstore(*this); }
-        
         //______________________________________________________________________
         //
         // members

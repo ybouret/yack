@@ -14,7 +14,7 @@ YACK_UTEST(eq)
     rmulops           xmul;
     raddops           xadd;
 
-    eqs->dostring("function f(t) return 1.1+math.cos(t) end");
+    eqs.vm->dostring("function f(t) return 1.1+math.cos(t) end");
     
     for(int i=1;i<argc;++i)
     {

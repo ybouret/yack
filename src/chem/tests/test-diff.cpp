@@ -14,8 +14,8 @@ YACK_UTEST(diff)
     rmulops           xmul;
     raddops           xadd;
 
-    eqs->dostring("alpha=2.1");
-    const double alpha = eqs->get<double>("alpha");
+    eqs.vm->dostring("alpha=2.1");
+    const double alpha = eqs.vm->get<double>("alpha");
     eqs(lib,"@Eq:-2[A]-2[B]+[C]+3[D]:3^3/2^4*alpha^4");
 
     std::cerr << lib << std::endl;

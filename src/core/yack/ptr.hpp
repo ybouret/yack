@@ -5,6 +5,7 @@
 
 #include "yack/ptr/ptr.hpp"
 #include "yack/type/args.hpp"
+#include <iostream>
 
 namespace yack
 {
@@ -35,8 +36,7 @@ namespace yack
         inline const_type * operator->() const throw() { return pointee; }                   //!< transistie access, const
 
         //! smart display
-        template <typename OSTREAM> inline
-        friend OSTREAM & operator<<(OSTREAM &os, const ptr<T> &self)
+        inline friend std::ostream & operator<<(std::ostream &os, const ptr<T> &self)
         {
             if(self.pointee) { os << *self.pointee; } else { os << nil; }
             return os;

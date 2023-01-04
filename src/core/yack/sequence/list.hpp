@@ -8,15 +8,8 @@
 #include "yack/container/as-capacity.hpp"
 #include "yack/container/sequence.hpp"
 #include "yack/container/writable.hpp"
-#include "yack/type/destruct.hpp"
-#include "yack/type/out-of-reach.hpp"
-#include "yack/type/args.hpp"
-#include "yack/data/list.hpp"
-#include "yack/data/list/sort.hpp"
-#include "yack/data/pool.hpp"
-#include "yack/data/nodes-comparison.hpp"
-#include "yack/object.hpp"
 #include "yack/container/iterator/linked.hpp"
+#include "yack/data/slim/solo-list.hpp"
 
 namespace yack
 {
@@ -40,22 +33,9 @@ namespace yack
         // types and definitions
         //______________________________________________________________________
         YACK_DECL_ARGS(T,type); //!< aliases
+        typedef solo_list<T>                  impl_type; //!< implementation
+        typedef typename impl_type::node_type node_type; //!< alias
 
-        //! doubly linked node+data
-        class node_type
-        {
-        public:
-            inline  node_type(const_type &args) : next(0), prev(0), data(args) {} //!< setup
-            inline ~node_type() throw() { assert(0==next); assert(0==prev); }     //!< cleanup
-            inline type       &operator*() throw()       { return data; }         //!< access
-            inline const_type &operator*() const throw() { return data; }         //!< access, const
-
-            node_type *next; //!< for list
-            node_type *prev; //!< for list
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(node_type);
-            type data;
-        };
 
         //______________________________________________________________________
         //
@@ -63,41 +43,30 @@ namespace yack
         //______________________________________________________________________
 
         //! default setup empty
-        inline explicit list() throw() : sequence<T>(), writable<T>(), alive(), cache() {}
+        inline explicit list() throw() : sequence<T>(), writable<T>(), impl() {}
 
         //! cleanup is release
         inline virtual ~list() throw() { release(); }
 
         //! setup empty, with capacity
         inline explicit list(const size_t n, const as_capacity_t &) throw() :
-        sequence<T>(), writable<T>(), alive(), cache()
+        sequence<T>(), writable<T>(), impl()
         {
-            reserve(n);
+            impl.cache->reserve(n);
         }
 
         //! setup with size and default value
         inline explicit list(size_t n, param_type args) :
-        sequence<T>(), writable<T>(), alive(), cache()
+        sequence<T>(), writable<T>(), impl()
         {
-            try
-            {
-                while(n-- > 0) alive.push_back( build(args) );
-            }
-            catch(...) { kill_(); throw; }
-
+            while(n-- > 0) impl << args;
         }
 
 
         //! hard copy of other list
-        inline list(const list &other) :
-        sequence<T>(), writable<T>(), alive(), cache()
+        inline list(const list &other) : sequence<T>(), writable<T>(), impl(other.impl)
         {
-            try
-            {
-                for(const node_type *node=other.alive.head;node;node=node->next)
-                    alive.push_back( build(**node) );
-            }
-            catch(...) { kill_(); throw; }
+
         }
 
 
@@ -105,39 +74,43 @@ namespace yack
         //
         // collection interface
         //______________________________________________________________________
-        inline virtual size_t      size()     const throw() { return alive.size; }              //!< alive size
+        inline virtual size_t      size()     const throw() { return impl.size; }              //!< alive size
         inline virtual const char *category() const throw() { return kernel::list_category; }   //!< categiry
 
         //______________________________________________________________________
         //
         // releasable interface
         //______________________________________________________________________
-        inline virtual void     release()         throw() { trim_(); kill_(); }  //!< release all nodes
+        inline virtual void     release()         throw()
+        {
+            impl.pluck();
+            impl.cache->release();
+        }  //!< release all nodes
 
         //______________________________________________________________________
         //
         // container interface
         //______________________________________________________________________
-        inline virtual size_t   capacity()  const throw() { return alive.size+cache.size; }                       //!< alive+cache
-        inline virtual size_t   available() const throw() { return cache.size; }                                  //!< cache only
-        inline virtual void     free()            throw() { free_();           }                                  //!< remove alive
-        inline virtual void     reserve(size_t n) { while(n-- > 0) cache.store( object::zacquire<node_type>()); } //!< append zombie node into cache
+        inline virtual size_t   capacity()  const throw() { return impl.size+impl.cache->size; } //!< alive+cache
+        inline virtual size_t   available() const throw() { return impl.cache->size; }           //!< cache only
+        inline virtual void     free()            throw() { impl.free(); }                       //!< remove alive
+        inline virtual void     reserve(size_t n)         { impl.cache->reserve(n); }            //!< append zombie node into cache
 
         //______________________________________________________________________
         //
         // writable interface
         //______________________________________________________________________
-        inline type       & operator[](const size_t indx) throw()       { return **alive.get(indx); } //!< slow access
-        inline const_type & operator[](const size_t indx) const throw() { return **alive.get(indx); } //!< slow access
+        inline type       & operator[](const size_t indx) throw()       { return **impl.get(indx); } //!< slow access
+        inline const_type & operator[](const size_t indx) const throw() { return **impl.get(indx); } //!< slow access
 
         //______________________________________________________________________
         //
         //! sequence interface
         //______________________________________________________________________
-        inline virtual void push_back(param_type args)  { alive.push_back( build(args) ); } //!< push back
-        inline virtual void push_front(param_type args) { alive.push_front( build(args)); } //!< push front
-        inline virtual void pop_back()  throw() { free_(alive.pop_back());  }               //!< pop back
-        inline virtual void pop_front() throw() { free_(alive.pop_front()); }               //!< pop front
+        inline virtual void push_back(param_type args)  { impl << args; } //!< push back
+        inline virtual void push_front(param_type args) { impl >> args; } //!< push front
+        inline virtual void pop_back()  throw() { impl.zback();   }       //!< pop back
+        inline virtual void pop_front() throw() { impl.zfront();  }       //!< pop front
 
 
         //______________________________________________________________________
@@ -147,74 +120,49 @@ namespace yack
         template <typename COMPARE_DATA> inline
         void sort(COMPARE_DATA &compare_data)
         {
-            nodes_comparison<node_type,COMPARE_DATA> compare_nodes = { compare_data };
-            merge_list_of<node_type>::sort(alive,compare_nodes);
+            impl.sort_with(compare_data);
         }
 
         //______________________________________________________________________
         //
         //! reverse nodes
         //______________________________________________________________________
-        inline void reverse() throw() { alive.reverse(); }
+        inline void reverse() throw() { impl.reverse(); }
 
         //______________________________________________________________________
         //
         // read only helpers
         //______________________________________________________________________
 
-        inline const node_type *head() const throw() { return alive.head; } //!< direct access
-        inline const node_type *tail() const throw() { return alive.tail; } //!< direct access
+        inline const node_type *head() const throw() { return impl.head; } //!< direct access
+        inline const node_type *tail() const throw() { return impl.tail; } //!< direct access
 
     private:
         YACK_DISABLE_ASSIGN(list);
-        list_of<node_type> alive;
-        pool_of<node_type> cache;
+        impl_type impl;
 
-        inline void free_( node_type *node )
-        {
-            assert(node);
-            cache.store( out_of_reach::naught( destructed(node) ) );
-        }
-
-        inline void free_() throw() { while(alive.size>0) free_(alive.pop_back()); }
-        inline void kill_() throw() { while(alive.size>0) object::zrelease( destructed(alive.pop_back()) ); }
-        inline void trim_() throw() { while(cache.size>0) object::zrelease(cache.query()); }
-
-        inline node_type *build(const_type &args)
-        {
-            node_type *node = cache.size ? cache.query() : object::zacquire<node_type>();
-            try
-            {
-                return new (node) node_type(args);
-            }
-            catch(...)
-            {
-                cache.store(node);
-                throw;
-            }
-        }
 
         inline virtual const_type *_front() const throw()
-        { assert(alive.head); return & (**alive.head); }
+        { assert(impl.head); return & (**impl.head); }
         
         inline virtual const_type *_back() const throw()
-        { assert(alive.tail); return & (**alive.tail); }
+        { assert(impl.tail); return & (**impl.tail); }
 
     public:
         typedef iterating::linked<type,node_type,iterating::forward> iterator;                           //!< forward iterator
-        inline  iterator begin() throw() { return alive.head; }                                          //!< forward iterator begin
+        inline  iterator begin() throw() { return impl.head; }                                          //!< forward iterator begin
         inline  iterator end()   throw() { return 0;          }                                          //!< forward iterator end
 
         typedef iterating::linked<const_type,const node_type,iterating::forward> const_iterator;         //!< const forward iterator
-        inline  const_iterator begin() const throw() { return alive.head; }                              //!< const forward iterator begin
+        inline  const_iterator begin() const throw() { return impl.head; }                              //!< const forward iterator begin
         inline  const_iterator end()   const throw() { return 0;          }                              //!< const forward iterator end
 
         typedef iterating::linked<type,node_type,iterating::reverse> reverse_iterator;                   //!< reverse iterator
-        inline  reverse_iterator rbegin() throw() { return alive.tail; }                                 //!< reverse iterator begin
+        inline  reverse_iterator rbegin() throw() { return impl.tail; }                                 //!< reverse iterator begin
         inline  reverse_iterator rend()   throw() { return 0;          }                                 //!< reverse iterator end
 
         typedef iterating::linked<const_type,const node_type,iterating::reverse> const_reverse_iterator; //!< const reverse iterator
-        inline  const_reverse_iterator rbegin() const throw() { return alive.tail; }                     //!< const reverse iterator begin
+        inline  const_reverse_iterator rbegin() const throw() { return impl.tail; }                     //!< const reverse iterator begin
         inline  const_reverse_iterator rend()   const throw() { return 0;          }                     //!< const reverse iterator end
     };
     

@@ -34,6 +34,7 @@ namespace yack
         inline virtual ~slim_solo() throw()                         {} //!< cleanup
         inline slim_solo(const slim_solo &other) : catalog_t(other) {} //!< delegate copy
 
+        
     private:
         YACK_DISABLE_ASSIGN(slim_solo);
     };

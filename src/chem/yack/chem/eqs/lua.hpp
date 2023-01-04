@@ -18,7 +18,7 @@ namespace yack
         //! equilibira with Lua parser/evaluator
         //
         //______________________________________________________________________
-        class luaEquilibria : public equilibria, public Lua::VM
+        class luaEquilibria : public equilibria
         {
         public:
             //__________________________________________________________________
@@ -35,6 +35,11 @@ namespace yack
             void operator()(library &, const string &info); //!< parse species/equilibrium/named
             void operator()(library &, const char   *info); //!< parse helper
 
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            Lua::VM vm;
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(luaEquilibria);
