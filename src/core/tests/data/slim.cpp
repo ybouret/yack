@@ -11,6 +11,8 @@
 #include "yack/data/slim/manifest.hpp"
 
 #include "yack/data/slim/solo.hpp"
+#include "yack/data/slim/coop.hpp"
+
 
 
 using namespace  yack;
@@ -274,8 +276,18 @@ YACK_UTEST(data_slim)
         std::cerr << "sman=" << sman << std::endl;
         sman.sort_with(comparison::increasing<double>);
         std::cerr << "sman=" << sman << std::endl;
+    }
 
-        
+    {
+        typedef slim_coop<string, slim_node<string>, slim_registry> coop_registry;
+
+        coop_registry::fund_type fund = new coop_registry::bank_type();
+
+        coop_registry creg(fund);
+        creg << "Hello" << world << '!';
+        std::cerr << creg << std::endl;
+
+
     }
 
 }
