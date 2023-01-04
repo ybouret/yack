@@ -61,7 +61,7 @@ namespace yack
         
         
     private:
-        typedef list_of<NODE> sub_list; //!< internal ty
+        typedef list_of<NODE> sub_list; //!< internal type
 
         //! merge two sorted list
         template <typename LIST, typename COMPARE_NODES>

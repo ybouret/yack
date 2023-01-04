@@ -8,10 +8,19 @@
 
 namespace yack
 {
-
+    //__________________________________________________________________________
+    //
+    //
+    //! operation on list
+    //
+    //__________________________________________________________________________
     struct list_ops
     {
-
+        
+        //______________________________________________________________________
+        //
+        //! test node-wise equality
+        //______________________________________________________________________
         template <typename LHS, typename RHS> static inline
         bool are_equal(const list_of<LHS> &lhs, const list_of<RHS> &rhs)
         {
@@ -27,11 +36,15 @@ namespace yack
                 while(n-- > 0)
                 {
                     if( **l != **r ) return false;
+                    l=l->next;
+                    r=r->next;
                 }
-                
                 return true;
             }
         }
+        
+        
+        
 
     };
 
