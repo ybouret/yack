@@ -10,6 +10,7 @@ using namespace  yack;
 
 YACK_UTEST(slim_solo_repo)
 {
+#if 1
     randomized::rand_ ran;
 
     vector<apq>       db;
@@ -39,5 +40,6 @@ YACK_UTEST(slim_solo_repo)
     std::cerr << "cr=" << cr << std::endl;
 
     YACK_SIZEOF(solo_repo<apq>::node_type);
+#endif
 }
 YACK_UDONE()

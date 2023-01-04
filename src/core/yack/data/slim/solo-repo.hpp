@@ -17,16 +17,16 @@ namespace yack
     //
     //__________________________________________________________________________
     template <typename T>
-    class solo_repo : public slim_solo<T, slim_node< slim_ptr<T> >, slim_manifest >
+    class solo_repo : public slim_solo<T, slim_node< slim_ptr<T> >, yack::slim_manifest >
     {
     public:
         //______________________________________________________________________
         //
         // types
         //______________________________________________________________________
-        typedef slim_ptr<T>                          data_type; //!< alias
-        typedef slim_node<data_type>                 node_type; //!< alias
-        typedef slim_solo<T,node_type,slim_manifest> body_type; //!< alias
+        typedef slim_ptr<T>                                data_type; //!< alias
+        typedef slim_node<data_type>                       node_type; //!< alias
+        typedef slim_solo<T,node_type,yack::slim_manifest> body_type; //!< alias
 
         //______________________________________________________________________
         //
