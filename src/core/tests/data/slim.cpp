@@ -13,6 +13,7 @@
 #include "yack/data/slim/solo.hpp"
 #include "yack/data/slim/coop.hpp"
 
+#include "yack/sequence/vector.hpp"
 
 
 using namespace  yack;
@@ -287,6 +288,25 @@ YACK_UTEST(data_slim)
         creg << "Hello" << world << '!';
         std::cerr << creg << std::endl;
 
+        vector<string> db;
+        db << "1.first";
+        db << "2.second";
+        db << "3.third";
+        std::cerr << "db=" << db << std::endl;
+
+
+        typedef slim_coop<const string, slim_node< slim_ptr<const string> >, slim_manifest> coop_manifest;
+        coop_manifest:: fund_type fund2 = new coop_manifest:: bank_type();
+
+        coop_manifest cman(fund2);
+        for(size_t i=db.size();i>0;--i)
+        {
+            cman << db[i];
+        }
+
+        std::cerr << "cman=" << cman << std::endl;
+        cman.sort_with(comparison::increasing<string>);
+        std::cerr << "cman=" << cman << std::endl;
 
     }
 
