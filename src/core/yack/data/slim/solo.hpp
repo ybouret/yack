@@ -9,7 +9,7 @@ namespace yack
 {
 
     template <typename T, typename NODE, template <typename,typename> class CATALOG>
-    class slim_solo : CATALOG< T,slim_hook<NODE> >
+    class slim_solo : public CATALOG< T,slim_hook<NODE> >
     {
     public:
         typedef NODE                 node_type;

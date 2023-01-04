@@ -261,7 +261,12 @@ YACK_UTEST(data_slim)
         typedef slim_solo<double, slim_node<double>, slim_registry> solo_registry;
 
         solo_registry sreg;
+        sreg << 10.0 << 11.1 << 12.2;
+        std::cerr << "sreg=" << sreg << std::endl;
+        sreg.sort_with(comparison::decreasing<double>);
+        std::cerr << "sreg=" << sreg << std::endl;
 
+        
     }
 
 }
