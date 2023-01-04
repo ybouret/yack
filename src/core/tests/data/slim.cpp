@@ -7,9 +7,11 @@
 #include "yack/utest/run.hpp"
 #include "yack/ptr/auto.hpp"
 #include "yack/string.hpp"
-#include "yack/concurrent/mutex.hpp"
 #include "yack/data/slim/registry.hpp"
 #include "yack/data/slim/manifest.hpp"
+
+#include "yack/data/slim/solo.hpp"
+
 
 using namespace  yack;
 
@@ -36,7 +38,6 @@ YACK_UTEST(data_slim)
     
     YACK_SIZEOF(slim_bank<int>);
     YACK_SIZEOF(slim_bank<string>);
-    YACK_SIZEOF(concurrent::mutex);
     
     std::cerr << std::endl;
     

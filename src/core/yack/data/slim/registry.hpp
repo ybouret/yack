@@ -11,7 +11,7 @@ namespace yack
     //__________________________________________________________________________
     //
     //
-    //! registry = catalog of types
+    //! registry = catalog of objects
     //
     //__________________________________________________________________________
     template <typename T, typename ZPOOL>
