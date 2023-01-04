@@ -5,6 +5,7 @@
 
 #include "yack/data/slim/catalog.hpp"
 #include "yack/data/slim/ptr.hpp"
+#include "yack/data/list/sort.hpp"
 
 namespace yack
 {

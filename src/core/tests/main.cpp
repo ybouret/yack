@@ -106,6 +106,7 @@ YACK_UTEST_DECL(256)
 
     YACK_UTEST(slim_build);
     YACK_UTEST(slim_solo_list);
+    YACK_UTEST(slim_solo_repo);
 
     YACK_UTEST(arith_isqrt);
 

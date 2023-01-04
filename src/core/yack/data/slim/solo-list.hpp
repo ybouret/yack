@@ -10,16 +10,30 @@
 namespace yack
 {
 
+    //__________________________________________________________________________
+    //
+    //
+    //! list of objects with internal cache
+    //
+    //__________________________________________________________________________
     template <typename T>
     class solo_list : public slim_solo<T, slim_node<T>, slim_registry >
     {
     public:
-        typedef slim_node<T>                         node_type;
-        typedef slim_solo<T,node_type,slim_registry> body_type;
+        //______________________________________________________________________
+        //
+        // types
+        //______________________________________________________________________
+        typedef slim_node<T>                         node_type; //!< alias
+        typedef slim_solo<T,node_type,slim_registry> body_type; //!< alias
 
-        inline explicit solo_list() throw()  : body_type()  {}
-        inline virtual ~solo_list() throw()                 {}
-        inline solo_list(const solo_list &_) : body_type(_) {}
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        inline explicit solo_list() throw()  : body_type()  {} //!< setup
+        inline virtual ~solo_list() throw()                 {} //!< cleanup
+        inline solo_list(const solo_list &_) : body_type(_) {} //!< delegate copy
 
     private:
         YACK_DISABLE_ASSIGN(solo_list);

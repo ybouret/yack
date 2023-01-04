@@ -217,7 +217,7 @@ add_test(data:joint        test-core data_joint)
 
 add_test(slim:build         test-core slim_build)
 add_test(slim:solo:list     test-core slim_solo_list)
-
+add_test(slim:solo:repo     test-core slim_solo_repo)
 
 
 add_test(sync:lockable  test-core sync_lockable)
