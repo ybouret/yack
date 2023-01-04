@@ -14,7 +14,7 @@ namespace yack
     //__________________________________________________________________________
     //
     //
-    //! list of objects with internal cache
+    //! list of objects with shared cache
     //
     //__________________________________________________________________________
     template <typename T>
