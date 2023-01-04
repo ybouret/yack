@@ -43,8 +43,35 @@ namespace yack
             }
         }
         
-        
-        
+        //! search an ORDERED list
+        /**
+         \param l list of NODEs
+         \param x value to match
+         \param p matching or previous node
+         */
+        template <typename NODE, typename T> static inline
+        bool search(const list_of<NODE> &l,
+                    const T             &x,
+                    NODE               *&p)
+        {
+            p = 0;
+            switch(l.size)
+            {
+                case 0: return false;
+                case 1:
+                    switch( __sign::of(x,**l.head) )
+                    {
+                        case negative:             return false;
+                        case __zero__: p = l.head; return true;
+                        case positive: p = l.head; return false;
+                    }
+                default:
+                    break;
+            }
+            assert(l.size>=2);
+            exit(0);
+            return false;
+        }
 
     };
 

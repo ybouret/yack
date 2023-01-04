@@ -220,6 +220,7 @@ add_test(slim:solo:list     test-core slim_solo_list)
 add_test(slim:solo:repo     test-core slim_solo_repo)
 add_test(slim:coop:list     test-core slim_coop_list)
 add_test(slim:coop:repo     test-core slim_coop_repo)
+add_test(slim:ops           test-core slim-ops)
 
 
 add_test(sync:lockable  test-core sync_lockable)
