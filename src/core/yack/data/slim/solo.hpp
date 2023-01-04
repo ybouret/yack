@@ -15,7 +15,7 @@ namespace yack
     //
     //__________________________________________________________________________
     template <typename T, typename NODE, template <typename,typename> class CATALOG>
-    class slim_solo : public CATALOG< T,slim_hook<NODE> >
+    class slim_solo : public CATALOG< T,slim_hook<NODE> >, public releasable
     {
     public:
         //______________________________________________________________________
@@ -34,7 +34,17 @@ namespace yack
         inline virtual ~slim_solo() throw()                         {} //!< cleanup
         inline slim_solo(const slim_solo &other) : catalog_t(other) {} //!< delegate copy
 
-        
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+
+        //! release content and cacje
+        inline virtual void release() throw() {
+            this->prune(); assert(this->size==0);
+            this->cache->release(); assert(this->cache->size==0);
+        }
+
     private:
         YACK_DISABLE_ASSIGN(slim_solo);
     };

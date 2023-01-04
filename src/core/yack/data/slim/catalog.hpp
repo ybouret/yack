@@ -89,10 +89,10 @@ namespace yack
             return *this;
         }
 
-        inline void zfront() throw() { cache->zstore( pop_front() ); } //!< zombify head
-        inline void zback()  throw() { cache->zstore( pop_back()  ); } //!< zombify tail
-        inline void free()   throw() { cache->zstore( *this       ); assert(0==this->size); } //!< zombify content
-        inline void pluck()  throw() { cache->zfinal( *this       ); assert(0==this->size); } //!< depending on cache
+        inline void zfront() throw() { assert(this->size>0); cache->zstore( pop_front() ); } //!< zombify head
+        inline void zback()  throw() { assert(this->size>0); cache->zstore( pop_back()  ); } //!< zombify tail
+        inline void free()   throw() { cache->zstore( *this ); assert(0==this->size); }      //!< zombify content
+        inline void prune()  throw() { cache->zfinal( *this ); assert(0==this->size); }      //!< depending on cache
 
         //______________________________________________________________________
         //

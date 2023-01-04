@@ -1,5 +1,3 @@
-
-
 //! \file
 
 #ifndef YACK_LIST_INCLUDED
@@ -75,17 +73,13 @@ namespace yack
         // collection interface
         //______________________________________________________________________
         inline virtual size_t      size()     const throw() { return impl.size; }              //!< alive size
-        inline virtual const char *category() const throw() { return kernel::list_category; }   //!< categiry
+        inline virtual const char *category() const throw() { return kernel::list_category; }  //!< category
 
         //______________________________________________________________________
         //
         // releasable interface
         //______________________________________________________________________
-        inline virtual void     release()         throw()
-        {
-            impl.pluck();
-            impl.cache->release();
-        }  //!< release all nodes
+        inline virtual void     release()           throw() { impl.release(); }  //!< release all nodes
 
         //______________________________________________________________________
         //
@@ -93,7 +87,7 @@ namespace yack
         //______________________________________________________________________
         inline virtual size_t   capacity()  const throw() { return impl.size+impl.cache->size; } //!< alive+cache
         inline virtual size_t   available() const throw() { return impl.cache->size; }           //!< cache only
-        inline virtual void     free()            throw() { impl.free(); }                       //!< remove alive
+        inline virtual void     free()            throw() { impl.free(); }                       //!< remove content into cache
         inline virtual void     reserve(size_t n)         { impl.cache->reserve(n); }            //!< append zombie node into cache
 
         //______________________________________________________________________
