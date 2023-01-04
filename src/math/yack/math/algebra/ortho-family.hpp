@@ -38,11 +38,11 @@ namespace yack
             template <typename T, typename U> static inline
             bool build(matrix<T> &Q, const matrix<U> &P, const bool univocal)
             {
-                matrix<apq> _P(P,transmogrify);
-                matrix<apq> _Q(Q.rows,Q.cols);
-                if(!make(_Q,_P)) return false;
-                if(univocal) alga::univocal_rows(_Q); else alga::simplify_rows(_Q);
-                Q.apply(numerator_to<T>,_Q);
+                matrix<apq> PP(P,transmogrify);
+                matrix<apq> QQ(Q.rows,Q.cols);
+                if(!make(QQ,PP)) return false;
+                if(univocal) alga::univocal_rows(QQ); else alga::simplify_rows(QQ);
+                Q.apply(numerator_to<T>,QQ);
                 return true;
             }
 
