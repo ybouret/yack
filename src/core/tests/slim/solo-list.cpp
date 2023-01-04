@@ -1,10 +1,7 @@
-
 #include "yack/data/slim/solo-list.hpp"
 #include "yack/utest/run.hpp"
 #include "../main.hpp"
 
-
-#include "yack/sequence/vector.hpp"
 
 
 using namespace  yack;
