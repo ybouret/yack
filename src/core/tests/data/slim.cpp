@@ -257,6 +257,13 @@ YACK_UTEST(data_slim)
         }
         std::cerr << "single=" << single << std::endl;        
     }
-    
+
+    {
+        typedef slim_solo<double, slim_node<double>, slim_registry> solo_registry;
+
+        solo_registry sreg;
+
+    }
+
 }
 YACK_UDONE()

@@ -12,11 +12,16 @@ namespace yack
     class slim_solo : CATALOG< T,slim_hook<NODE> >
     {
     public:
-        explicit slim_solo() throw() {}
-        virtual ~slim_solo() throw() {}
+        typedef NODE                 node_type;
+        typedef slim_hook<node_type> hook_type;
+        typedef CATALOG<T,hook_type> catalog_t;
+
+        inline explicit slim_solo() throw() : catalog_t() {}
+        inline virtual ~slim_solo() throw() {}
+        inline slim_solo(const slim_solo &other) : catalog_t(other) {}
 
     private:
-        YACK_DISABLE_COPY_AND_ASSIGN(slim_solo);
+        YACK_DISABLE_ASSIGN(slim_solo);
     };
 
 }
