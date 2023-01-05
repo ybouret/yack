@@ -55,6 +55,23 @@ namespace yack
             return *this;
         }
 
+        //! consistency
+        inline void free() throw() { this->release(); }
+        
+        
+        template <typename U>
+        void ins_next(node_type *mine, const U &args)
+        {
+            this->insert_after(mine, new node_type(args,transmogrify) );
+        }
+        
+        template <typename U>
+        void ins_prev(node_type *mine, const U &args)
+        {
+            this->insert_before(mine, new node_type(args,transmogrify) );
+        }
+        
+        
         //! slow access
         inline type & operator[](const size_t indx) throw() {
             assert(indx>0); assert(indx<=this->size);

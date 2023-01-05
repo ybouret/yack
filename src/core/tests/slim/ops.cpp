@@ -6,6 +6,11 @@
 #include "yack/utest/run.hpp"
 
 using namespace yack;
+template <typename LIST>
+void process(LIST &L)
+{
+    L.free();
+}
 
 YACK_UTEST(slim_ops)
 {
@@ -15,6 +20,11 @@ YACK_UTEST(slim_ops)
     coop_list<int> coopList(fund);
     
     typedef slim_node<int> node_t;
+    
+    process(dataList);
+    process(soloList);
+    process(coopList);
+    
     
     node_t *p=0;
     int     i=1;
@@ -26,7 +36,7 @@ YACK_UTEST(slim_ops)
     {
         if(p)
         {
-            dataList.insert_after(p,new node_t(i,transmogrify));
+            dataList.ins_next(p,i);
         }
         else
         {
