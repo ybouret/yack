@@ -51,6 +51,33 @@ namespace yack
             merge_list_of<node_type>::sort(*this,proc);
         }
         
+        //! push_back wrapper for an element
+        template <typename U> inline
+        slim_registry & operator<<(const U &u) {
+            this->push_back( this->create(u) );
+            return *this;
+        }
+        
+        
+        //! push_front wrapper for an element
+        template <typename U> inline
+        slim_registry & operator>>(const U &u) {
+            this->push_front( this->create(u) );
+            return *this;
+        }
+        
+        template <typename U>
+        void ins_next(node_type *mine, const U &args)
+        {
+            this->insert_after(mine, this->create(args) );
+        }
+        
+        template <typename U>
+        void ins_prev(node_type *mine, const U &args)
+        {
+            this->insert_before(mine, this->create(args) );
+        }
+        
     private:
         YACK_DISABLE_ASSIGN(slim_registry);
     };

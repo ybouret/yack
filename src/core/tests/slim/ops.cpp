@@ -9,15 +9,22 @@ using namespace yack;
 template <typename LIST>
 void process(LIST &L)
 {
-    L.free();
+    typedef typename LIST::node_type node_t;
+    L.erase();
+    
+    node_t *p = 0;
+    int     i = 1;
+    YACK_CHECK(!list_ops::search(L,i,p));
+    
+    
 }
 
 YACK_UTEST(slim_ops)
 {
     coop_list<int>::fund_type fund = new coop_list<int>::bank_type();
-    slim_list<int> dataList;
-    solo_list<int> soloList;
-    coop_list<int> coopList(fund);
+    slim_list<int>            dataList;
+    solo_list<int>            soloList;
+    coop_list<int>            coopList(fund);
     
     typedef slim_node<int> node_t;
     
@@ -26,23 +33,7 @@ YACK_UTEST(slim_ops)
     process(coopList);
     
     
-    node_t *p=0;
-    int     i=1;
-    if( list_ops::search(dataList,i,p) )
-    {
-        
-    }
-    else
-    {
-        if(p)
-        {
-            dataList.ins_next(p,i);
-        }
-        else
-        {
-            dataList >> i;
-        }
-    }
+    
     
     
 }

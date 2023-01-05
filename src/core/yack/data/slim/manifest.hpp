@@ -73,6 +73,16 @@ namespace yack
             return *this;
         }
         
+        void ins_next(node_type *mine, type &obj)
+        {
+            this->insert_after(mine, this->create(&obj) );
+        }
+        
+        void ins_prev(node_type *mine, type &obj)
+        {
+            this->insert_before(mine, this->create(&obj) );
+        }
+        
         
         
     private:

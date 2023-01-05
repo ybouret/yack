@@ -55,8 +55,8 @@ namespace yack
             return *this;
         }
 
-        //! consistency
-        inline void free() throw() { this->release(); }
+        //! erase content
+        inline void erase() throw() { this->release(); }
         
         
         template <typename U>

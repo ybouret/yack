@@ -87,7 +87,7 @@ namespace yack
         //______________________________________________________________________
         inline virtual size_t   capacity()  const throw() { return impl.size+impl.cache->size; } //!< alive+cache
         inline virtual size_t   available() const throw() { return impl.cache->size; }           //!< cache only
-        inline virtual void     free()            throw() { impl.free(); }                       //!< remove content into cache
+        inline virtual void     free()            throw() { impl.erase(); }                      //!< remove content into cache
         inline virtual void     reserve(size_t n)         { impl.cache->reserve(n); }            //!< append zombie node into cache
 
         //______________________________________________________________________

@@ -166,13 +166,13 @@ YACK_UTEST(slim_build)
                 const int j = static_cast<int>(ran.in(-10,10));
                 if(ran.choice())
                 {
-                    single << j;
-                    shared << j;
+                    single.annex(j);
+                    shared.annex(j);
                 }
                 else
                 {
-                    single >> j;
-                    shared >> j;
+                    single.shove(j);
+                    shared.shove(j);
                 }
             }
             

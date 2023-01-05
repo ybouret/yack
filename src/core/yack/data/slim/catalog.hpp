@@ -65,22 +65,16 @@ namespace yack
         //
         // management methods
         //______________________________________________________________________
-
+       
         
-        //! push_back wrapper for an element
         template <typename U> inline
-        slim_catalog & operator<<(const U &u) {
-            push_back( create(u) );
-            return *this;
-        }
-
-
-        //! push_front wrapper for an element
+        node_type *annex(const U &u) { return push_back( create(u) ); }
+        
         template <typename U> inline
-        slim_catalog & operator>>(const U &u) {
-            push_front( create(u) );
-            return *this;
-        }
+        node_type *shove(const U &u) { return push_front( create(u) ); }
+        
+        
+        
 
         //! merge back a copy of a (possibly alien) list
         template <typename KNOT> inline
@@ -91,7 +85,7 @@ namespace yack
 
         inline void zfront() throw() { assert(this->size>0); cache->zstore( pop_front() ); } //!< zombify head
         inline void zback()  throw() { assert(this->size>0); cache->zstore( pop_back()  ); } //!< zombify tail
-        inline void free()   throw() { cache->zstore( *this ); assert(0==this->size); }      //!< zombify content
+        inline void erase()  throw() { cache->zstore( *this ); assert(0==this->size); }      //!< zombify content
         inline void prune()  throw() { cache->zfinal( *this ); assert(0==this->size); }      //!< depending on cache
 
         //______________________________________________________________________
@@ -122,7 +116,7 @@ namespace yack
                 for(const node_type *node=other.head;node;node=node->next)
                     push_back( create(**node) );
             }
-            catch(...) { free(); throw; }
+            catch(...) { erase(); throw; }
         }
 
         template <typename KNOT> inline
