@@ -66,17 +66,7 @@ namespace yack
             return *this;
         }
         
-        template <typename U>
-        void ins_next(node_type *mine, const U &args)
-        {
-            this->insert_after(mine, this->create(args) );
-        }
-        
-        template <typename U>
-        void ins_prev(node_type *mine, const U &args)
-        {
-            this->insert_before(mine, this->create(args) );
-        }
+      
         
     private:
         YACK_DISABLE_ASSIGN(slim_registry);

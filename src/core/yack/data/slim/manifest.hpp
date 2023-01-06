@@ -59,28 +59,30 @@ namespace yack
             merge_list_of<node_type>::sort(*this,proc);
         }
         
-        //! override push_back
+        //! override push_back address
         slim_manifest & operator<<(type &obj)
         {
             this->push_back( this->create( &obj ) );
             return *this;
         }
         
-        //! override push_front
+        //! override push_front address
         slim_manifest & operator>>(type &obj)
         {
             this->push_front( this->create( &obj ) );
             return *this;
         }
-        
-        void ins_next(node_type *mine, type &obj)
+
+        //! insert new address after mine, return node
+        node_type *ins_next(node_type *mine, type &obj)
         {
-            this->insert_after(mine, this->create(&obj) );
+            return this->insert_after(mine, this->create(&obj) );
         }
-        
-        void ins_prev(node_type *mine, type &obj)
+
+        //! insert new address before mine, return node
+        node_type *ins_prev(node_type *mine, type &obj)
         {
-            this->insert_before(mine, this->create(&obj) );
+            return this->insert_before(mine, this->create(&obj) );
         }
         
         

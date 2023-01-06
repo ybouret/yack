@@ -66,14 +66,27 @@ namespace yack
         // management methods
         //______________________________________________________________________
        
-        
+        //! push back value, return node
         template <typename U> inline
         node_type *annex(const U &u) { return push_back( create(u) ); }
-        
+
+        //! push front value, return node
         template <typename U> inline
         node_type *shove(const U &u) { return push_front( create(u) ); }
-        
-        
+
+        //! insert new node after mine, return node
+        template <typename U>
+        node_type *after(node_type *mine, const U &args)
+        {
+            return this->insert_after(mine, create(args) );
+        }
+
+        //! insert new node before mine, return node
+        template <typename U>
+        node_type *ahead(node_type *mine, const U &args)
+        {
+            return this->insert_before(mine, create(args) );
+        }
         
 
         //! merge back a copy of a (possibly alien) list

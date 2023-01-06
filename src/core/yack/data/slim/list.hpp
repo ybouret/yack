@@ -28,6 +28,11 @@ namespace yack
         typedef slim_node<T>           node_type;  //!< alias
         typedef cxx_list_of<node_type> list_type;  //!< alias
 
+        using list_type::push_back;
+        using list_type::pop_back;
+        using list_type::push_front;
+        using list_type::pop_front;
+
         //______________________________________________________________________
         //
         // C++
@@ -41,34 +46,46 @@ namespace yack
         // methods
         //______________________________________________________________________
 
+        //! push back new value, return node
+        template <typename U> inline
+        node_type *annex(const U &u) { return push_back( new node_type(u,transmogrify) ); }
+
+
+        //! push front new value, return node
+        template <typename U> inline
+        node_type *shove(const U &u) { return push_front( new node_type(u,transmogrify) ); }
+
         //! push_back wrapper
         template <typename U>
         slim_list & operator<<(const U &args) {
-            this->push_back( new node_type(args,transmogrify) );
+            (void) push_back( new node_type(args,transmogrify) );
             return *this;
         }
 
         //! push_front wrapper
         template <typename U>
         slim_list & operator>>(const U &args) {
-            this->push_front( new node_type(args,transmogrify) );
+            (void) push_front( new node_type(args,transmogrify) );
             return *this;
         }
 
         //! erase content
         inline void erase() throw() { this->release(); }
         
-        
+
+        //! insert new node after mine, return node
         template <typename U>
-        void ins_next(node_type *mine, const U &args)
+        node_type * after(node_type *mine, const U &args)
         {
-            this->insert_after(mine, new node_type(args,transmogrify) );
+            return this->insert_after(mine, new node_type(args,transmogrify) );
         }
-        
+
+
+        //! insert new node before mine, return node
         template <typename U>
-        void ins_prev(node_type *mine, const U &args)
+        node_type *ahead(node_type *mine, const U &args)
         {
-            this->insert_before(mine, new node_type(args,transmogrify) );
+           return this->insert_before(mine, new node_type(args,transmogrify) );
         }
         
         

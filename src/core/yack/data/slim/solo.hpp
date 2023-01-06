@@ -32,7 +32,8 @@ namespace yack
         //______________________________________________________________________
         inline explicit slim_solo() throw() : catalog_t()           {} //!< setup empty
         inline virtual ~slim_solo() throw()                         {} //!< cleanup
-        inline slim_solo(const slim_solo &other) : catalog_t(other) {} //!< delegate copy
+        inline slim_solo(const slim_solo &other) :
+        catalog_t(other), releasable() {} //!< delegate copy
 
         //______________________________________________________________________
         //
