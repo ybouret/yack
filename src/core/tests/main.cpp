@@ -114,6 +114,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(dinky_znone);
     YACK_UTEST(dinky_zsolo);
     YACK_UTEST(dinky_zcoop);
+    YACK_UTEST(dinky_zproxy);
 
     YACK_UTEST(arith_isqrt);
 
