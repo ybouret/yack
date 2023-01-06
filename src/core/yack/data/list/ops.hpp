@@ -132,8 +132,7 @@ namespace yack
 
         //______________________________________________________________________
         //
-        //! strictly increasing
-        //
+        //! check if is strictly increasing
         //______________________________________________________________________
         template <typename NODE> static inline
         bool is_increasing(const list_of<NODE> &L) {
