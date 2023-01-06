@@ -115,6 +115,13 @@ set(data_slim ${data_slim_impl} ${data_slim_decl})
 SOURCE_GROUP(data/slim FILES ${data_slim})
 install( FILES ${data_slim_decl} DESTINATION include/yack/data/slim )
 
+file(GLOB data_dinky_impl yack/data/dinky/*.cpp)
+file(GLOB data_dinky_decl yack/data/dinky/*.hpp)
+set(data_dinky ${data_dinky_impl} ${data_dinky_decl})
+SOURCE_GROUP(data/dinky FILES ${data_dinky})
+install( FILES ${data_dinky_decl} DESTINATION include/yack/data/dinky )
+
+
 ########################################################################
 ##
 ## container   
@@ -647,7 +654,7 @@ ${type}
 ${arith}
 ${check}
 ${system}
-${data} ${data_list} ${data_pool} ${data_small} ${data_suffix} ${data_hash} ${data_slim}
+${data} ${data_list} ${data_pool} ${data_small} ${data_suffix} ${data_hash} ${data_slim} ${data_dinky}
 ${container} ${container_matrix} ${container_iterator} ${container_tuple}
 ${sequence}
 ${ordered}

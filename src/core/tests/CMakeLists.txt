@@ -15,6 +15,9 @@ file(GLOB slim slim/*.cpp)
 source_group(slim FILES ${slim} )
 
 
+file(GLOB dinky dinky/*.cpp)
+source_group(dinky FILES ${dinky} )
+
 file(GLOB sync sync/*.cpp)
 source_group(sync FILES ${sync} )
 
@@ -77,6 +80,7 @@ ${type}
 ${memory}
 ${data}
 ${slim}
+${dinky}
 ${sync}
 ${arith}
 ${apex}
@@ -220,8 +224,9 @@ add_test(slim:solo:list     test-core slim_solo_list)
 add_test(slim:solo:repo     test-core slim_solo_repo)
 add_test(slim:coop:list     test-core slim_coop_list)
 add_test(slim:coop:repo     test-core slim_coop_repo)
-add_test(slim:ops           test-core slim-ops)
+add_test(slim:ops           test-core slim_ops)
 
+add_test(dinky:zcache       test-core dinky_zcache)
 
 add_test(sync:lockable  test-core sync_lockable)
 add_test(sync:primitive test-core sync_primitive)

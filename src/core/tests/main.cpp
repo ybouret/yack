@@ -111,6 +111,8 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(slim_coop_repo);
     YACK_UTEST(slim_ops);
 
+    YACK_UTEST(dinky_zcache);
+
     YACK_UTEST(arith_isqrt);
 
     YACK_UTEST(sync_lockable);
