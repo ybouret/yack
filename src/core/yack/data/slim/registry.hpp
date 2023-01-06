@@ -66,7 +66,18 @@ namespace yack
             return *this;
         }
         
-      
+        //! cut head and return its value
+        inline T pop_head() {
+            assert(this->head);
+            T res = **(this->head); this->cut_head(); return res;
+        }
+
+        //! cut tail and return its value
+        inline T pop_tail() {
+            assert(this->tail);
+            T res = **(this->tail); this->cut_tail(); return res;
+        }
+
         
     private:
         YACK_DISABLE_ASSIGN(slim_registry);

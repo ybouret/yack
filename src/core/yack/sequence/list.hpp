@@ -101,10 +101,10 @@ namespace yack
         //
         //! sequence interface
         //______________________________________________________________________
-        inline virtual void push_back(param_type args)  { impl << args; } //!< push back
-        inline virtual void push_front(param_type args) { impl >> args; } //!< push front
-        inline virtual void pop_back()  throw() { impl.zback();   }       //!< pop back
-        inline virtual void pop_front() throw() { impl.zfront();  }       //!< pop front
+        inline virtual void push_back(param_type args)  { impl << args; }    //!< push back
+        inline virtual void push_front(param_type args) { impl >> args; }    //!< push front
+        inline virtual void pop_back()  throw()         { impl.cut_tail(); } //!< pop back
+        inline virtual void pop_front() throw()         { impl.cut_head(); } //!< pop front
 
 
         //______________________________________________________________________

@@ -94,7 +94,29 @@ namespace yack
             delete this->pop(node);
         }
 
-        
+        //! cut tail node
+        inline void cut_tail() throw() {
+            delete this->pop_back();
+        }
+
+        //! cut head node
+        inline void cut_head() throw() {
+            delete this->pop_front();
+        }
+
+        //! cut head and return its value
+        inline type pop_head() {
+            assert(this->head);
+            type res = **(this->head); this->cut_head(); return res;
+        }
+
+        //! cut tail and return its value
+        inline type pop_tail() {
+            assert(this->tail);
+            type res = **(this->tail); this->cut_tail(); return res;
+        }
+
+
         //! slow access
         inline type & operator[](const size_t indx) throw() {
             assert(indx>0); assert(indx<=this->size);

@@ -36,14 +36,18 @@ void process(LIST &L, randomized::bits &ran)
         }
         std::cerr << L << std::endl;
 
+        std::cerr << "\thead=" << L.pop_head() << std::endl;
+        std::cerr << "\ttail=" << L.pop_tail() << std::endl;
+
+
         randomized::shuffle::tableau(k,ran);
 
         while(k.size())
         {
             const int i = k.back();
             k.pop_back();
-            YACK_ASSERT(list_ops::search(L,i,p));
-            L.pluck(p);
+            if(list_ops::search(L,i,p))
+                L.pluck(p);
         }
 
     }

@@ -94,6 +94,16 @@ namespace yack
             cache->zstore( this->pop(node) );
         }
 
+        //! cut tail node
+        inline void cut_tail() throw()
+        {
+            cache->zstore( pop_back() );
+        }
+
+        //! cut head node
+        inline void cut_head() throw() {
+            cache->zstore( pop_front() );
+        }
 
         //! merge back a copy of a (possibly alien) list
         template <typename KNOT> inline
@@ -102,8 +112,6 @@ namespace yack
             return *this;
         }
 
-        inline void zfront() throw() { assert(this->size>0); cache->zstore( pop_front() ); } //!< zombify head
-        inline void zback()  throw() { assert(this->size>0); cache->zstore( pop_back()  ); } //!< zombify tail
         inline void erase()  throw() { cache->zstore( *this ); assert(0==this->size); }      //!< zombify content
         inline void prune()  throw() { cache->zfinal( *this ); assert(0==this->size); }      //!< depending on cache
 
