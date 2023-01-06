@@ -87,7 +87,13 @@ namespace yack
         {
             return this->insert_before(mine, create(args) );
         }
-        
+
+        //! remove a node
+        inline void pluck(node_type *node) throw()
+        {
+            cache->zstore( this->pop(node) );
+        }
+
 
         //! merge back a copy of a (possibly alien) list
         template <typename KNOT> inline

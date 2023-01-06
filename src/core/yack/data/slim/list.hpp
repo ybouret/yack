@@ -87,7 +87,13 @@ namespace yack
         {
            return this->insert_before(mine, new node_type(args,transmogrify) );
         }
-        
+
+        //! pluck node
+        inline void pluck(node_type *node) throw()
+        {
+            delete this->pop(node);
+        }
+
         
         //! slow access
         inline type & operator[](const size_t indx) throw() {
