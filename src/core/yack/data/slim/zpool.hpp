@@ -29,7 +29,6 @@ namespace yack
         virtual void  reserve(size_t)                 = 0; //!< reserve zombies
         virtual void  zstore(NODE *) throw()          = 0; //!< zombify and store one node
         virtual void  zstore(list_of<NODE> &) throw() = 0; //!< zombify and store an entire list
-        virtual void  zfinal(list_of<NODE> &) throw() = 0; //!< zombify or delete nodes, according to class
         virtual NODE *zquery()                        = 0; //!< query/create a zombie NODE
 
         //______________________________________________________________________

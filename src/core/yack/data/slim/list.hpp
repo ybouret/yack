@@ -4,7 +4,7 @@
 #define YACK_DATA_SLIM_LIST_INCLUDED 1
 
 #include "yack/data/slim/node.hpp"
-#include "yack/data/list/cxx.hpp"
+#include "yack/data/slim/root.hpp"
 #include "yack/data/list/sort.hpp"
 
 namespace yack
@@ -13,11 +13,11 @@ namespace yack
     //__________________________________________________________________________
     //
     //
-    //! list of alive slim_node<T>
+    //! list of alive slim_node<T>, can be mixed with cxx_list_of< slim_node<T> >
     //
     //__________________________________________________________________________
     template <typename T>
-    class slim_list : public cxx_list_of< slim_node<T> >
+    class slim_list : public  slim_root< slim_node<T> > 
     {
     public:
         //______________________________________________________________________
@@ -25,26 +25,28 @@ namespace yack
         // types
         //______________________________________________________________________
         YACK_DECL_ARGS_(T,type);                   //!< aliases
-        typedef slim_node<T>           node_type;  //!< alias
-        typedef cxx_list_of<node_type> list_type;  //!< alias
+        typedef slim_node<T>         node_type;  //!< alias
+        typedef slim_root<node_type> list_type;  //!< alias
 
         using list_type::push_back;
         using list_type::pop_back;
         using list_type::push_front;
         using list_type::pop_front;
+        using list_type::clear;
 
         //______________________________________________________________________
         //
         // C++
         //______________________________________________________________________
         inline explicit slim_list() throw() : list_type() {}   //!< setup empty
-        inline virtual ~slim_list() throw() {}                 //!< cleanup
+        inline virtual ~slim_list() throw()  {  clear(); }     //!< cleanup
         inline slim_list(const slim_list &_) : list_type(_) {} //!< copy
 
         //______________________________________________________________________
         //
         // methods
         //______________________________________________________________________
+
 
         //! push back new value, return node
         template <typename U> inline
@@ -69,10 +71,7 @@ namespace yack
             return *this;
         }
 
-        //! erase content
-        inline void erase() throw() { this->release(); }
         
-
         //! insert new node after mine, return node
         template <typename U>
         node_type * after(node_type *mine, const U &args)
@@ -88,21 +87,7 @@ namespace yack
            return this->insert_before(mine, new node_type(args,transmogrify) );
         }
 
-        //! pluck node
-        inline void pluck(node_type *node) throw()
-        {
-            delete this->pop(node);
-        }
-
-        //! cut tail node
-        inline void cut_tail() throw() {
-            delete this->pop_back();
-        }
-
-        //! cut head node
-        inline void cut_head() throw() {
-            delete this->pop_front();
-        }
+        
 
         //! cut head and return its value
         inline type pop_head() {
@@ -141,6 +126,8 @@ namespace yack
         
     private:
         YACK_DISABLE_ASSIGN(slim_list);
+        virtual void kill_one(node_type *node) throw() { assert(node); delete node; }
+        virtual void kill_all()                throw() { while(this->size) delete pop_back(); }
     };
 
 }

@@ -60,12 +60,7 @@ namespace yack
             while(alive.size) zstore( alive.pop_back() );
         }
 
-        //! delete all alive, called by destructors
-        virtual void  zfinal(list_of<NODE> &alive) throw()
-        {
-            while(alive.size) delete alive.pop_back();
-        }
-
+        
         //! query and existent/new zombie node
         inline virtual node_type *zquery()
         {

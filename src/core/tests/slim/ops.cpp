@@ -16,7 +16,7 @@ void process(LIST &L, randomized::bits &ran)
     vector<int> k;
     for(size_t iter=10;iter>0;--iter)
     {
-        L.erase();
+        L.clear();
         k.free();
         const size_t max_size = 4 + ran.leq(10);
         while( L.size < max_size)
@@ -47,11 +47,14 @@ void process(LIST &L, randomized::bits &ran)
             const int i = k.back();
             k.pop_back();
             if(list_ops::search(L,i,p))
-                L.pluck(p);
+                L.cut_node(p);
         }
+
+        for(int i=0;i<10;++i) L << i;
 
     }
 
+    L.clear();
 
 
 }

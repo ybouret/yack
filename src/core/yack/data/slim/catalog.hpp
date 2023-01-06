@@ -5,7 +5,7 @@
 
 #include "yack/data/slim/zpool.hpp"
 #include "yack/data/slim/warden.hpp"
-#include "yack/data/list.hpp"
+#include "yack/data/slim/root.hpp"
 
 namespace yack
 {
@@ -17,7 +17,7 @@ namespace yack
     //
     //__________________________________________________________________________
     template <typename NODE, typename ZPOOL>
-    class slim_catalog : public  list_of<NODE>
+    class slim_catalog : public  slim_root<NODE>
     {
     public:
         //______________________________________________________________________
@@ -25,7 +25,7 @@ namespace yack
         // types
         //______________________________________________________________________
         typedef NODE                        node_type; //!< alias
-        typedef list_of<NODE>               base_type; //!< alias
+        typedef slim_root<NODE>             base_type; //!< alias
         typedef ZPOOL                       pool_type; //!< alias
         typedef slim_catalog<NODE,ZPOOL>    this_type; //!< alias
         typedef slim_warden<NODE,this_type> warden_type; //!< alias
@@ -40,6 +40,7 @@ namespace yack
         using base_type::merge_front;
         using base_type::pop_back;
         using base_type::pop_front;
+        using base_type::pop;
 
         //______________________________________________________________________
         //
@@ -47,7 +48,7 @@ namespace yack
         //______________________________________________________________________
 
         //! cleanup
-        inline virtual ~slim_catalog() throw() { cache->zfinal(*this); assert(0==this->size);}
+        inline virtual ~slim_catalog() throw() { cache->zstore(*this); }
 
         //! setup empty: OK with slim_hook
         inline explicit slim_catalog() throw() : base_type(), cache() {}
@@ -88,22 +89,7 @@ namespace yack
             return this->insert_before(mine, create(args) );
         }
 
-        //! remove a node
-        inline void pluck(node_type *node) throw()
-        {
-            cache->zstore( this->pop(node) );
-        }
-
-        //! cut tail node
-        inline void cut_tail() throw()
-        {
-            cache->zstore( pop_back() );
-        }
-
-        //! cut head node
-        inline void cut_head() throw() {
-            cache->zstore( pop_front() );
-        }
+       
 
         //! merge back a copy of a (possibly alien) list
         template <typename KNOT> inline
@@ -112,9 +98,7 @@ namespace yack
             return *this;
         }
 
-        inline void erase()  throw() { cache->zstore( *this ); assert(0==this->size); }      //!< zombify content
-        inline void prune()  throw() { cache->zfinal( *this ); assert(0==this->size); }      //!< depending on cache
-
+        
         //______________________________________________________________________
         //
         // members
@@ -134,8 +118,9 @@ namespace yack
 
     private:
         YACK_DISABLE_ASSIGN(slim_catalog);
-        
-       
+        virtual void kill_one(node_type *node) throw() { assert(node); cache->zstore(node); }
+        virtual void kill_all()                throw() { cache->zstore(*this);              }
+
         inline void duplicate(const list_of<NODE> &other)
         {
             try
@@ -143,7 +128,7 @@ namespace yack
                 for(const node_type *node=other.head;node;node=node->next)
                     push_back( create(**node) );
             }
-            catch(...) { erase(); throw; }
+            catch(...) { kill_all(); throw; }
         }
 
         template <typename KNOT> inline
