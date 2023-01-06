@@ -4,6 +4,7 @@
 #include "yack/data/list/ops.hpp"
 #include "yack/sequence/vector.hpp"
 #include "yack/utest/run.hpp"
+#include "yack/randomized/shuffle.hpp"
 
 using namespace yack;
 template <typename LIST>
@@ -35,6 +36,8 @@ void process(LIST &L, randomized::bits &ran)
         }
         std::cerr << L << std::endl;
 
+        randomized::shuffle::tableau(k,ran);
+
         while(k.size())
         {
             const int i = k.back();
@@ -62,8 +65,8 @@ YACK_UTEST(slim_ops)
     process(dataList,ran); std::cerr << std::endl;
     process(soloList,ran); std::cerr << std::endl;
     process(coopList,ran);
-    
-    
+    std::cerr << "#fund=" << fund->size << std::endl;
+    std::cerr << "#solo=" << soloList.cache->size << std::endl;
     
     
     
