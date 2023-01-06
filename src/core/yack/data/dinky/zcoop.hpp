@@ -19,15 +19,13 @@ namespace yack
     
     namespace kernel
     {
+        //! base class for zcoop
         class zcoop : public object, public counted
         {
         public:
-            virtual ~zcoop() throw();
-            
-            lockable & operator*() throw();
-            
-        protected:
-            explicit zcoop();
+            lockable & operator*() throw(); //!< get mutex
+            virtual   ~zcoop() throw();     //!< cleanup
+            explicit   zcoop();             //!< setup with internal mutex
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(zcoop);
@@ -35,35 +33,58 @@ namespace yack
         };
     }
     
+    //__________________________________________________________________________
+    //
+    //
+    //! coop-cache: cache for cooperative lists
+    //
+    //__________________________________________________________________________
     template <typename NODE>
     class zcoop : public kernel::zcoop, zcache<NODE>
     {
     public:
-        typedef arc_ptr< zcoop<NODE> > pointer;
+        //______________________________________________________________________
+        //
+        // types
+        //______________________________________________________________________
+        typedef arc_ptr< zcoop<NODE> > pointer; //!< alias
         
-        inline explicit zcoop()  : kernel::zcoop(), zcache<NODE>() {}
-        inline virtual ~zcoop() throw() { mercy(); }
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        inline explicit zcoop()  : kernel::zcoop(), zcache<NODE>() {} //!< setup
+        inline virtual ~zcoop() throw() { mercy(); } //!< cleanup
         
-        inline virtual void   release()       throw() { mercy(); }
-        inline virtual size_t stowage() const throw() { return pool.size; }
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+        inline virtual void   release()       throw() { mercy(); }          //!< locked release
+        inline virtual size_t stowage() const throw() { return pool.size; } //!< current reseve
+                                                                            
+        //! lock and reserve zombies
         inline virtual void   reserve(size_t n)
         {
             YACK_LOCK(**this);
             while(n-- > 0) pool.store( object::zacquire<NODE>() );
         }
         
+        //! locked query existing of new zombie NODE
         inline virtual NODE * zquery()
         {
             YACK_LOCK(**this);
             return pool.size ? pool.query() : object::zacquire<NODE>();
         }
         
+        //! locked storage of existing zombie NODE
         inline virtual void   zstore(NODE *node) throw()
         {
             YACK_LOCK(**this);
             pool.store(node);
         }
         
+        //! locked devouring or live list
         inline virtual void   devour(list_of<NODE> &live) throw()
         {
             YACK_LOCK(**this);

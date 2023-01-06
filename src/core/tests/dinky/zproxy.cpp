@@ -24,7 +24,6 @@ namespace
 
 YACK_UTEST(dinky_zproxy)
 {
-    
     YACK_SIZEOF(znone<node_t>);
     YACK_SIZEOF(zsolo<node_t>);
     YACK_SIZEOF(zcoop<node_t>);

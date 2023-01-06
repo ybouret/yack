@@ -7,15 +7,29 @@
 
 namespace yack
 {
+    //__________________________________________________________________________
+    //
+    //
+    //! proxy to convert class into pointer like
+    //
+    //__________________________________________________________________________
     template <typename HOST>
     class zproxy
     {
     public:
-        explicit zproxy() throw() {}
-        virtual ~zproxy() throw() {}
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        explicit zproxy() throw() {} //!< setup
+        virtual ~zproxy() throw() {} //!< cleanup
         
-        inline HOST *       operator->()       throw() { return &host; }
-        inline const HOST & operator->() const throw() { return &host; }
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+        inline HOST *       operator->()       throw() { return &host; } //!< access
+        inline const HOST & operator->() const throw() { return &host; } //!< access
         
     private:
         HOST host;
