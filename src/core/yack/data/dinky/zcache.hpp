@@ -16,11 +16,17 @@ namespace yack
     class zcache : public releasable
     {
     public:
+        
+        // NODE interface
         virtual void   zstore(NODE *)  throw()         = 0; //!< store a zombie node
         virtual NODE  *zquery()                        = 0; //!< query a new zombie node
         virtual void   devour(list_of<NODE> &) throw() = 0;
+       
+        // cache management
         virtual size_t stowage() const throw()         = 0; //!< available
         virtual void   reserve(size_t)                 = 0;
+        
+        //C++
         inline virtual ~zcache() throw() {}
         
     protected:

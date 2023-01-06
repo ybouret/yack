@@ -20,6 +20,7 @@ namespace yack
         inline virtual void   release() throw() {}
         inline virtual size_t stowage() const throw() { return 0; }
         inline virtual void   reserve(size_t) {}
+        
         inline virtual NODE * zquery() { return object::zacquire<NODE>(); }
         inline virtual void   zstore(NODE *node) throw() { object::zrelease(node); }
         inline virtual void   devour(list_of<NODE> &live) throw()

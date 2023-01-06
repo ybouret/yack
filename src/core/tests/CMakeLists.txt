@@ -226,7 +226,9 @@ add_test(slim:coop:list     test-core slim_coop_list)
 add_test(slim:coop:repo     test-core slim_coop_repo)
 add_test(slim:ops           test-core slim_ops)
 
-add_test(dinky:zcache       test-core dinky_zcache)
+add_test(dinky:znone       test-core dinky_znone)
+add_test(dinky:zsolo       test-core dinky_zsolo)
+add_test(dinky:zcoop       test-core dinky_zcoop)
 
 add_test(sync:lockable  test-core sync_lockable)
 add_test(sync:primitive test-core sync_primitive)
