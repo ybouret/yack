@@ -8,6 +8,8 @@
 
 #include "yack/utest/run.hpp"
 
+#include "yack/sequence/vector.hpp"
+
 using namespace yack;
 
 namespace
@@ -18,11 +20,28 @@ namespace
 
 YACK_UTEST(dinky_manifest)
 {
-    typedef dinky_node< dinky_ptr<int> > node_t;
+    randomized::rand_ ran;
+    typedef dinky_node< dinky_ptr<const int> > node_t;
     zcoop<node_t>::proxy fund = new zcoop<node_t>();
+    
+    
+    vector<int> arr;
+    
+    for(size_t i=2+ran.leq(10);i>0;--i)
+    {
+        arr << static_cast<int>( ran.in(-100,100) );
+    }
     
     dinky_manifest<int,znone> rn;
     dinky_manifest<int,zsolo> rs;
-    dinky_manifest<int,zcoop> rc(fund);
+    dinky_manifest<const int,zcoop> rc(fund);
+    
+    for(size_t i=arr.size();i>0;--i)
+    {
+        rn.annex( &arr[i] );
+        rs.annex( &arr[i] );
+        rc.annex( &arr[i] );
+    }
+    
 }
 YACK_UDONE()
