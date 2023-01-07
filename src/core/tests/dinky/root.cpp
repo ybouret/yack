@@ -16,7 +16,7 @@ namespace
     typedef dinky_node<int> node_t;
     typedef dinky_root<node_t, zproxy< znone<node_t> > > bare_root;
     typedef dinky_root<node_t, zproxy< zsolo<node_t> > > solo_root;
-    typedef dinky_root<node_t, zcoop<node_t>::pointer  > coop_root;
+    typedef dinky_root<node_t, zcoop<node_t>::proxy  >   coop_root;
 
     typedef dinky_node< dinky_ptr<int> > pnode_t;
     typedef dinky_root<pnode_t, zproxy< znone<pnode_t> > > para_bare_root;
@@ -26,8 +26,8 @@ namespace
 
 YACK_UTEST(dinky_root)
 {
-    randomized::rand_ ran;
-    zcoop<node_t>::pointer fund = new zcoop<node_t>();
+    randomized::rand_    ran;
+    zcoop<node_t>::proxy fund = new zcoop<node_t>();
     
     bare_root rb;
     solo_root rs;

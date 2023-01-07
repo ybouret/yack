@@ -6,6 +6,7 @@
 #define YACK_DINKY_ZSOLO_INCLUDED 1
 
 #include "yack/data/dinky/zcache.hpp"
+#include "yack/data/dinky/zproxy.hpp"
 #include "yack/object.hpp"
 #include "yack/data/pool.hpp"
 
@@ -21,6 +22,8 @@ namespace yack
     class zsolo : public zcache<NODE>
     {
     public:
+        typedef zproxy< zsolo<NODE> > proxy;
+        
         //______________________________________________________________________
         //
         // C++

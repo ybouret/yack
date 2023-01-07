@@ -230,6 +230,8 @@ add_test(dinky:znone       test-core dinky_znone)
 add_test(dinky:zsolo       test-core dinky_zsolo)
 add_test(dinky:zcoop       test-core dinky_zcoop)
 add_test(dinky:zproxy      test-core dinky_zproxy)
+add_test(dinky:registry    test-core dinky_registry)
+add_test(dinky:manifest    test-core dinky_manifest)
 
 add_test(sync:lockable  test-core sync_lockable)
 add_test(sync:primitive test-core sync_primitive)

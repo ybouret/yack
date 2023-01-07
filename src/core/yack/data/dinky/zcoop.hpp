@@ -47,7 +47,7 @@ namespace yack
         //
         // types
         //______________________________________________________________________
-        typedef arc_ptr< zcoop<NODE> > pointer; //!< alias
+        typedef arc_ptr< zcoop<NODE> > proxy; //!< alias
         
         //______________________________________________________________________
         //

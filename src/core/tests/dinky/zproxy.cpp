@@ -28,9 +28,9 @@ YACK_UTEST(dinky_zproxy)
     YACK_SIZEOF(zsolo<node_t>);
     YACK_SIZEOF(zcoop<node_t>);
 
-    zproxy< znone<node_t> > znone_proxy;
-    zproxy< zsolo<node_t> > zsolo_proxy;
-    zcoop<node_t>::pointer  zcoop_proxy = new zcoop<node_t>();
+    znone<node_t>::proxy  znone_proxy;
+    zsolo<node_t>::proxy  zsolo_proxy;
+    zcoop<node_t>::proxy  zcoop_proxy = new zcoop<node_t>();
     zcheck(znone_proxy);
     zcheck(zsolo_proxy);
     zcheck(zcoop_proxy);

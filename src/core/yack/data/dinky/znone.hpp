@@ -5,6 +5,7 @@
 #define YACK_DINKY_ZNONE_INCLUDED 1
 
 #include "yack/data/dinky/zcache.hpp"
+#include "yack/data/dinky/zproxy.hpp"
 #include "yack/object.hpp"
 
 namespace yack
@@ -20,6 +21,8 @@ namespace yack
     class znone : public zcache<NODE>
     {
     public:
+        typedef zproxy< znone<NODE> > proxy;
+        
         //______________________________________________________________________
         //
         // C++
