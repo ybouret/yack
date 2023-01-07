@@ -43,5 +43,10 @@ YACK_UTEST(dinky_manifest)
         rc.annex( &arr[i] );
     }
     
+    std::cerr << rn << std::endl;
+    std::cerr << rs << std::endl;
+    std::cerr << rc << std::endl;
+
+    
 }
 YACK_UDONE()
