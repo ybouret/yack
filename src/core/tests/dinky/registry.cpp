@@ -20,9 +20,9 @@ YACK_UTEST(dinky_registry)
     typedef dinky_node<int> node_t;
     zcoop<node_t>::proxy fund = new zcoop<node_t>();
 
-    dinky_registry<int, znone<node_t>::proxy> rn;
-    dinky_registry<int, zsolo<node_t>::proxy> rs;
-    dinky_registry<int, zcoop<node_t>::proxy> rc(fund);
+    dinky_registry<int,znone> rn;
+    dinky_registry<int,zsolo> rs;
+    dinky_registry<int,zcoop> rc(fund);
     
 
 }

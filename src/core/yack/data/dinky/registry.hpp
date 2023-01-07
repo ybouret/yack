@@ -10,15 +10,18 @@
 namespace yack
 {
     
-    template <typename T, typename ZPROXY>
-    class dinky_registry : public dinky_root<dinky_node<T>,ZPROXY>
+    template <typename T, template <typename> class ZPOOL>
+    class  dinky_registry :
+    public dinky_root<dinky_node<T>, typename ZPOOL< dinky_node<T> >::proxy >
     {
     public:
-        typedef dinky_node<T> node_type;
-        typedef dinky_root<node_type,ZPROXY> root_type;
+        typedef dinky_node<T>                    node_type;
+        typedef ZPOOL<node_type>                 zpool_type;
+        typedef typename zpool_type::proxy       proxy_type;
+        typedef dinky_root<node_type,proxy_type> root_type;
         
         inline explicit dinky_registry() throw() : root_type() {}
-        inline explicit dinky_registry(const ZPROXY &user) throw() : root_type(user) {}
+        inline explicit dinky_registry(const proxy_type &user) throw() : root_type(user) {}
         inline virtual ~dinky_registry() throw() {}
         
         
