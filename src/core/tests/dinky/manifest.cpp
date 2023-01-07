@@ -18,6 +18,11 @@ namespace
 
 YACK_UTEST(dinky_manifest)
 {
+    typedef dinky_node< dinky_ptr<int> > node_t;
+    zcoop<node_t>::proxy fund = new zcoop<node_t>();
     
+    dinky_manifest<int,znone> rn;
+    dinky_manifest<int,zsolo> rs;
+    dinky_manifest<int,zcoop> rc(fund);
 }
 YACK_UDONE()
