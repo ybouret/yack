@@ -58,8 +58,10 @@ YACK_UTEST(dinky_root)
     {
         prb.annex( &arr[i] );
     }
-    std::cerr << "prb=" << prb << std::endl;
+    std::cerr << "prb  = " << prb << std::endl;
     
-    
+    para_bare_root prb2 = prb;
+    std::cerr << "prb2 = " << prb2 << std::endl;
+
 }
 YACK_UDONE()
