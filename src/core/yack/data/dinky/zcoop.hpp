@@ -40,7 +40,7 @@ namespace yack
     //
     //__________________________________________________________________________
     template <typename NODE>
-    class zcoop : public kernel::zcoop, zcache<NODE>
+    class zcoop : public kernel::zcoop, public zcache<NODE>
     {
     public:
         //______________________________________________________________________

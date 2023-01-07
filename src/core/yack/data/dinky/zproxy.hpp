@@ -21,8 +21,9 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        explicit zproxy() throw() {} //!< setup
-        virtual ~zproxy() throw() {} //!< cleanup
+        inline explicit zproxy() throw()      {} //!< setup
+        inline virtual ~zproxy() throw()      {} //!< cleanup
+        inline zproxy(const zproxy &) throw() {} //!< copy is do nothing...
         
         //______________________________________________________________________
         //
@@ -33,7 +34,7 @@ namespace yack
         
     private:
         HOST host;
-        YACK_DISABLE_COPY_AND_ASSIGN(zproxy);
+        YACK_DISABLE_ASSIGN(zproxy);
     };
 }
 

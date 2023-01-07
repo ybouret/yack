@@ -38,19 +38,8 @@ namespace yack
         
         //______________________________________________________________________
         //
-        // C++
+        // methods
         //______________________________________________________________________
-        inline virtual ~zcache() throw() {} //!< cleanup
-        
-    protected:
-        inline explicit zcache() throw() : releasable() {} //!< setup/
-        
-        //! turn live into zombie
-        inline static NODE *turn(NODE *live) throw()
-        {
-            assert(live);
-            return static_cast<NODE *>(out_of_reach:: naught( destructed(live) ));
-        }
         
         //! make a live dinky_node
         template <typename U> inline
@@ -65,6 +54,22 @@ namespace yack
                 zstore(node);
                 throw;
             }
+        }
+        
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        inline virtual ~zcache() throw() {} //!< cleanup
+        
+    protected:
+        inline explicit zcache() throw() : releasable() {} //!< setup/
+        
+        //! turn live into zombie
+        inline static NODE *turn(NODE *live) throw()
+        {
+            assert(live);
+            return static_cast<NODE *>(out_of_reach:: naught( destructed(live) ));
         }
         
     private:
