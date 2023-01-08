@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_DINKY_ROOT_INCLUDED

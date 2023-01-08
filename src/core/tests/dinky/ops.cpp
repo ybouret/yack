@@ -59,7 +59,7 @@ void process(LIST &L, randomized::bits &ran)
 
 }
 
-YACK_UTEST(slim_ops)
+YACK_UTEST(dinky_ops)
 {
     randomized::rand_ ran;
 

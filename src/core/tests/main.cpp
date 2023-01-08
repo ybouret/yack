@@ -109,7 +109,6 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(slim_solo_repo);
     YACK_UTEST(slim_coop_list);
     YACK_UTEST(slim_coop_repo);
-    YACK_UTEST(slim_ops);
 
     YACK_UTEST(dinky_znone);
     YACK_UTEST(dinky_zsolo);
@@ -118,6 +117,10 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(dinky_root);
     YACK_UTEST(dinky_registry);
     YACK_UTEST(dinky_manifest);
+    YACK_UTEST(dinky_ops);
+    YACK_UTEST(dinky_core_list);
+    YACK_UTEST(dinky_core_repo);
+
 
     YACK_UTEST(arith_isqrt);
 
