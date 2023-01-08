@@ -24,10 +24,23 @@ namespace yack
         typedef ZPOOL<node_type>                 zpool_type;
         typedef typename zpool_type::proxy       proxy_type;
         typedef dinky_root<node_type,proxy_type> root_type;
+        typedef typename root_type::list_type    list_type;
         
         inline explicit dinky_manifest() throw() : root_type() {}
         inline explicit dinky_manifest(const proxy_type &user) throw() : root_type(user) {}
         inline virtual ~dinky_manifest() throw() {}
+        
+        template <typename U> inline
+        dinky_manifest & operator<<(const U &u) {
+            this->push_back( this->cache->create(&u) );
+            return *this;
+        }
+        
+        template <typename U> inline
+        dinky_manifest & operator>>(const U &u) {
+            this->push_front( this->create(&u) );
+            return *this;
+        }
         
         
     private:

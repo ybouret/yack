@@ -56,6 +56,13 @@ namespace yack
             }
         }
         
+        //! turn live into zombie
+        inline static NODE *turn(NODE *live) throw()
+        {
+            assert(live);
+            return static_cast<NODE *>(out_of_reach:: naught( destructed(live) ));
+        }
+        
         //______________________________________________________________________
         //
         // C++
@@ -65,12 +72,7 @@ namespace yack
     protected:
         inline explicit zcache() throw() : releasable() {} //!< setup/
         
-        //! turn live into zombie
-        inline static NODE *turn(NODE *live) throw()
-        {
-            assert(live);
-            return static_cast<NODE *>(out_of_reach:: naught( destructed(live) ));
-        }
+        
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(zcache);

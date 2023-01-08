@@ -38,7 +38,7 @@ YACK_UTEST(dinky_manifest)
     
     for(size_t i=arr.size();i>0;--i)
     {
-        rn.annex( &arr[i] );
+        rn.annex( &arr[i] ); 
         rs.annex( &arr[i] );
         rc.annex( &arr[i] );
     }

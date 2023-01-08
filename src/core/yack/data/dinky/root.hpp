@@ -24,6 +24,10 @@ namespace yack
         
         using list_type::push_back;
         using list_type::push_front;
+        using list_type::pop;
+        using list_type::pop_back;
+        using list_type::pop_front;
+        using list_type::size;
 
         //______________________________________________________________________
         //
@@ -50,8 +54,33 @@ namespace yack
         //
         // methods
         //______________________________________________________________________
-        template <typename U> void annex(const U &u) { push_back(  cache->create(u) ); }
-        template <typename U> void shove(const U &u) { push_front( cache->create(u) ); }
+        template <typename U> inline void annex(const U &u) { push_back(  cache->create(u) ); }
+        template <typename U> inline void shove(const U &u) { push_front( cache->create(u) ); }
+        
+        inline void cut(NODE *node) throw() {
+            assert(node);
+            cache->zstore( cache->turn(node) );
+        }
+        
+        inline void cut_back() throw()
+        {
+            assert(size);
+            cache->zstore( cache->turn( pop_back() ) );
+        }
+        
+        inline void cut_front() throw()
+        {
+            assert(size);
+            cache->zstore( cache->turn( pop_front() ) );
+        }
+        
+        inline dinky_root & operator+=(const dinky_root &source)
+        {
+            list_of<NODE> target;
+            replicate(target,source);
+            this->merge_back(target);
+            return *this;
+        }
         
         //______________________________________________________________________
         //
