@@ -8,9 +8,9 @@ using namespace yack;
 
 YACK_UTEST(dinky_solo_list)
 {
-    randomized::rand_             ran;
-    dinky_solo_list<unit_t>       mcl;
-    dinky_solo_list<const unit_t> ccl;
+    randomized::rand_       ran;
+    solo_list<unit_t>       mcl;
+    solo_list<const unit_t> ccl;
     
     for(size_t i=2+ran.leq(10);i>0;--i)
     {

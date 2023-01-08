@@ -10,8 +10,8 @@ YACK_UTEST(dinky_core_repo)
     randomized::rand_ ran;
     cxx_array<string> str(3+ran.leq(10));
     
-    dinky_core_repo<string>       mcr;
-    dinky_core_repo<const string> ccr;
+    core_repo<string>       mcr;
+    core_repo<const string> ccr;
 
     
     for(size_t i=str.size();i>0;--i)

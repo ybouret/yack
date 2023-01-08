@@ -15,7 +15,7 @@ namespace yack
     //
     //__________________________________________________________________________
     template <typename T>
-    class dinky_solo_list : public dinky_registry<T,zsolo>
+    class solo_list : public dinky_registry<T,zsolo>
     {
     public:
         //______________________________________________________________________
@@ -28,13 +28,13 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline  explicit dinky_solo_list() throw() :        self_type()  {} //!< setup
-        inline  virtual ~dinky_solo_list() throw()                       {} //!< cleanup
-        inline  dinky_solo_list(const dinky_solo_list &_) : self_type(_) {} //!< copy
+        inline  explicit solo_list() throw()  : self_type()  {} //!< setup
+        inline  virtual ~solo_list() throw()                 {} //!< cleanup
+        inline  solo_list(const solo_list &_) : self_type(_) {} //!< copy
         
         
     private:
-        YACK_DISABLE_ASSIGN(dinky_solo_list);
+        YACK_DISABLE_ASSIGN(solo_list);
     };
 }
 

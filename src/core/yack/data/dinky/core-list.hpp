@@ -16,7 +16,7 @@ namespace yack
     //
     //__________________________________________________________________________
     template <typename T>
-    class dinky_core_list : public dinky_registry<T,znone>
+    class  core_list : public dinky_registry<T,znone>
     {
     public:
         //______________________________________________________________________
@@ -29,13 +29,13 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline  explicit dinky_core_list() throw() :        self_type()  {} //!< setup
-        inline  virtual ~dinky_core_list() throw()                       {} //!< cleanup
-        inline  dinky_core_list(const dinky_core_list &_) : self_type(_) {} //!< copy
+        inline  explicit core_list() throw() :  self_type()  {} //!< setup
+        inline  virtual ~core_list() throw()                 {} //!< cleanup
+        inline  core_list(const core_list &_) : self_type(_) {} //!< copy
         
         
     private:
-        YACK_DISABLE_ASSIGN(dinky_core_list);
+        YACK_DISABLE_ASSIGN(core_list);
     };
 }
 

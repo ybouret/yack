@@ -15,7 +15,7 @@ namespace yack
     //
     //__________________________________________________________________________
     template <typename T>
-    class dinky_core_repo : public dinky_manifest<T,znone>
+    class core_repo : public dinky_manifest<T,znone>
     {
     public:
         //______________________________________________________________________
@@ -28,13 +28,13 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline  explicit dinky_core_repo() throw() :        self_type()  {} //!< setup
-        inline  virtual ~dinky_core_repo() throw()                       {} //!< cleanup
-        inline  dinky_core_repo(const dinky_core_repo &_) : self_type(_) {} //!< copy
+        inline  explicit core_repo() throw()  : self_type()  {} //!< setup
+        inline  virtual ~core_repo() throw()                 {} //!< cleanup
+        inline  core_repo(const core_repo &_) : self_type(_) {} //!< copy
         
         
     private:
-        YACK_DISABLE_ASSIGN(dinky_core_repo);
+        YACK_DISABLE_ASSIGN(core_repo);
     };
 }
 

@@ -9,8 +9,8 @@ using namespace yack;
 
 YACK_UTEST(dinky_coop_list)
 {
-    randomized::rand_               ran;
-    typedef dinky_coop_list<unit_t> mlist;
+    randomized::rand_         ran;
+    typedef coop_list<unit_t> mlist;
     mlist::proxy_type mproxy = new mlist::zpool_type();
     mlist             mcl(mproxy);
     

@@ -16,7 +16,7 @@ namespace yack
     //
     //__________________________________________________________________________
     template <typename T>
-    class dinky_coop_list : public dinky_registry<T,zcoop>
+    class coop_list : public dinky_registry<T,zcoop>
     {
     public:
         //______________________________________________________________________
@@ -31,13 +31,13 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline  explicit dinky_coop_list(const proxy_type &_) throw() : self_type(_)  {} //!< setup
-        inline  virtual ~dinky_coop_list() throw()                                    {} //!< cleanup
-        inline  dinky_coop_list(const dinky_coop_list &_) : self_type(_)              {} //!< copy
+        inline  explicit coop_list(const proxy_type &_) throw() : self_type(_)  {} //!< setup
+        inline  virtual ~coop_list() throw()                                    {} //!< cleanup
+        inline  coop_list(const coop_list &_) : self_type(_)                    {} //!< copy
         
         
     private:
-        YACK_DISABLE_ASSIGN(dinky_coop_list);
+        YACK_DISABLE_ASSIGN(coop_list);
     };
 }
 

@@ -11,8 +11,8 @@ YACK_UTEST(dinky_solo_repo)
     randomized::rand_ ran;
     cxx_array<string> str(3+ran.leq(10));
     
-    dinky_solo_repo<string>       mcr;
-    dinky_solo_repo<const string> ccr;
+    solo_repo<string>       mcr;
+    solo_repo<const string> ccr;
     
     
     for(size_t i=str.size();i>0;--i)

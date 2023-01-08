@@ -63,10 +63,10 @@ YACK_UTEST(dinky_ops)
 {
     randomized::rand_ ran;
 
-    dinky_coop_list<int>::proxy_type fund = new dinky_coop_list<int>::zpool_type();
-    dinky_core_list<int>            dataList;
-    dinky_solo_list<int>            soloList;
-    dinky_coop_list<int>            coopList(fund);
+    coop_list<int>::proxy_type fund = new coop_list<int>::zpool_type();
+    core_list<int>             dataList;
+    solo_list<int>             soloList;
+    coop_list<int>             coopList(fund);
     
 
     process(dataList,ran); std::cerr << std::endl; 

@@ -7,9 +7,9 @@ using namespace yack;
 
 YACK_UTEST(dinky_core_list)
 {
-    randomized::rand_             ran;
-    dinky_core_list<unit_t>       mcl;
-    dinky_core_list<const unit_t> ccl;
+    randomized::rand_       ran;
+    core_list<unit_t>       mcl;
+    core_list<const unit_t> ccl;
     
     for(size_t i=2+ran.leq(10);i>0;--i)
     {
