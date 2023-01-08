@@ -86,12 +86,14 @@ namespace yack
             cache->zstore( cache->turn( pop_front() ) );
         }
         
+        //! insert new node after mine
         template <typename U>
         inline void after(node_type *mine, const U &u)
         {
             this->insert_after(mine, cache->create(u) );
         }
         
+        //! insert new node ahead of mine
         template <typename U>
         inline void ahead(node_type *mine, const U &u)
         {

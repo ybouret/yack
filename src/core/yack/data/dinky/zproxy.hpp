@@ -21,9 +21,9 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline explicit zproxy() throw()      {} //!< setup
-        inline virtual ~zproxy() throw()      {} //!< cleanup
-        inline zproxy(const zproxy &) throw() {} //!< copy is do nothing...
+        inline explicit zproxy() throw() : host()      {} //!< setup
+        inline virtual ~zproxy() throw()               {} //!< cleanup
+        inline zproxy(const zproxy &) throw() : host() {} //!< copy is do nothing...
         
         //______________________________________________________________________
         //

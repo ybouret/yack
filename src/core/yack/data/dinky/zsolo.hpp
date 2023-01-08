@@ -32,8 +32,8 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline explicit zsolo() throw() : zcache<NODE>() {} //!< setup
-        inline virtual ~zsolo() throw() { mercy(); }        //!< cleanup
+        inline explicit zsolo() throw() : zcache<NODE>(), pool() {} //!< setup
+        inline virtual ~zsolo() throw() { mercy(); }                //!< cleanup
         
         //______________________________________________________________________
         //

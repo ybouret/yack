@@ -53,7 +53,7 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline explicit zcoop()  : kernel::zcoop(), zcache<NODE>() {} //!< setup
+        inline explicit zcoop()  : kernel::zcoop(), zcache<NODE>(), pool() {} //!< setup
         inline virtual ~zcoop() throw() { mercy(); } //!< cleanup
         
         //______________________________________________________________________
