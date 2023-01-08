@@ -42,7 +42,7 @@ namespace yack
                 return true;
             }
         }
-
+        
         //______________________________________________________________________
         //
         //! search an ORDERED list
@@ -108,9 +108,9 @@ namespace yack
             //------------------------------------------------------------------
             // look up now (x>**head) and (x<**tail)
             //------------------------------------------------------------------
-        TRY_NEXT:
-            NODE *nx = lo->next; assert(nx);
-            if(nx==up) {
+        STEP_FORWARD:
+            NODE *fw = lo->next; assert(fw);
+            if(fw==up) {
                 // found the interval
                 p = lo;
                 return false;
@@ -118,14 +118,14 @@ namespace yack
             else
             {
                 // check status
-                switch( __sign::of(x,**nx) )
+                switch( __sign::of(x,**fw) )
                 {
-                    case __zero__: p=nx; return true;    // found @nx
-                    case negative: p=lo; return false;   // between lo and nx
-                    case positive: lo=nx; break;
+                    case __zero__: p  = fw; return true;    // found @nx
+                    case negative: p  = lo; return false;   // between lo and nx
+                    case positive: lo = fw; break;
                 }
 
-                goto TRY_NEXT; // forward
+                goto STEP_FORWARD; // forward
             }
             
         }

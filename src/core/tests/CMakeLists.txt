@@ -11,10 +11,6 @@ source_group(memory FILES ${memory} )
 file(GLOB data data/*.cpp)
 source_group(data FILES ${data} )
 
-file(GLOB slim slim/*.cpp)
-source_group(slim FILES ${slim} )
-
-
 file(GLOB dinky dinky/*.cpp)
 source_group(dinky FILES ${dinky} )
 
@@ -79,7 +75,6 @@ ${base}
 ${type}
 ${memory}
 ${data}
-${slim}
 ${dinky}
 ${sync}
 ${arith}
@@ -218,12 +213,6 @@ add_test(data:roll         test-core data_roll)
 add_test(data:bunch        test-core data_bunch)
 add_test(data:set          test-core data_set)
 add_test(data:joint        test-core data_joint)
-
-add_test(slim:build         test-core slim_build)
-add_test(slim:solo:list     test-core slim_solo_list)
-add_test(slim:solo:repo     test-core slim_solo_repo)
-add_test(slim:coop:list     test-core slim_coop_list)
-add_test(slim:coop:repo     test-core slim_coop_repo)
 
 add_test(dinky:znone       test-core dinky_znone)
 add_test(dinky:zsolo       test-core dinky_zsolo)

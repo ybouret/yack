@@ -104,12 +104,6 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(data_set);
     YACK_UTEST(data_joint);
 
-    YACK_UTEST(slim_build);
-    YACK_UTEST(slim_solo_list);
-    YACK_UTEST(slim_solo_repo);
-    YACK_UTEST(slim_coop_list);
-    YACK_UTEST(slim_coop_repo);
-
     YACK_UTEST(dinky_znone);
     YACK_UTEST(dinky_zsolo);
     YACK_UTEST(dinky_zcoop);
