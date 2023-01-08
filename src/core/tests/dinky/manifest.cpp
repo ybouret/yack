@@ -47,6 +47,9 @@ YACK_UTEST(dinky_manifest)
     std::cerr << rs << std::endl;
     std::cerr << rc << std::endl;
 
+    rn.sort_with(comparison::increasing<int>);
+    std::cerr << rn << std::endl;
+    
     
     
 }

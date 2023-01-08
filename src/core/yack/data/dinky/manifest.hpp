@@ -8,6 +8,7 @@
 #include "yack/data/dinky/node.hpp"
 #include "yack/data/dinky/ptr.hpp"
 #include "yack/data/dinky/root.hpp"
+#include "yack/data/list/sort.hpp"
 
 namespace yack
 {
@@ -42,6 +43,12 @@ namespace yack
             return *this;
         }
         
+        template <typename FUNC> inline
+        void sort_with( FUNC &func )
+        {
+            kernel::replica_sort_callback<node_type,FUNC> cb = { func };
+            merge_list_of<node_type>::sort(*this,cb);
+        }
         
     private:
         YACK_DISABLE_ASSIGN(dinky_manifest);
