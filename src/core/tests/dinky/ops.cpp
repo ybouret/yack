@@ -1,6 +1,6 @@
-#include "yack/data/slim/solo-list.hpp"
-#include "yack/data/slim/coop-list.hpp"
-#include "yack/data/slim/list.hpp"
+#include "yack/data/dinky/solo-list.hpp"
+#include "yack/data/dinky/coop-list.hpp"
+#include "yack/data/dinky/core-list.hpp"
 #include "yack/data/list/ops.hpp"
 #include "yack/sequence/vector.hpp"
 #include "yack/utest/run.hpp"
@@ -47,11 +47,11 @@ void process(LIST &L, randomized::bits &ran)
             const int i = k.back();
             k.pop_back();
             if(list_ops::search(L,i,p))
-                L.cut_node(p);
+                L.cut(p);
         }
 
         for(int i=0;i<10;++i) L << i;
-
+        std::cerr << "L=" << L << std::endl;
     }
 
     L.clear();
@@ -63,17 +63,17 @@ YACK_UTEST(dinky_ops)
 {
     randomized::rand_ ran;
 
-    coop_list<int>::fund_type fund = new coop_list<int>::bank_type();
-    slim_list<int>            dataList;
-    solo_list<int>            soloList;
-    coop_list<int>            coopList(fund);
+    dinky_coop_list<int>::proxy_type fund = new dinky_coop_list<int>::zpool_type();
+    dinky_core_list<int>            dataList;
+    dinky_solo_list<int>            soloList;
+    dinky_coop_list<int>            coopList(fund);
     
 
-    process(dataList,ran); std::cerr << std::endl;
+    process(dataList,ran); std::cerr << std::endl; 
     process(soloList,ran); std::cerr << std::endl;
     process(coopList,ran);
-    std::cerr << "#fund=" << fund->size << std::endl;
-    std::cerr << "#solo=" << soloList.cache->size << std::endl;
+    std::cerr << "#fund=" << fund->stowage()  << std::endl;
+    std::cerr << "#solo=" << soloList.ready() << std::endl;
     
     
     

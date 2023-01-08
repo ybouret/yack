@@ -58,6 +58,16 @@ namespace yack
             return *this;
         }
         
+        //! pop head value
+        inline T pop_head() { assert(this->head);
+            T res = **(this->head); this->cut_head(); return res;
+        }
+        
+        //! pop tail value
+        inline T pop_tail() { assert(this->tail);
+            T res = **(this->tail); this->cut_tail(); return res;
+        }
+        
         //! sort
         template <typename FUNC> inline
         void sort_with( FUNC &func )

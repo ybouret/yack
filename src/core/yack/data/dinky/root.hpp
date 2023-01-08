@@ -59,29 +59,43 @@ namespace yack
         //______________________________________________________________________
        
         //! push back
-        template <typename U> inline void annex(const U &u) { push_back(  cache->create(u) ); }
+        template <typename U>
+        inline void annex(const U &u) { push_back(  cache->create(u) ); }
         
         //! push front
-        template <typename U> inline void shove(const U &u) { push_front( cache->create(u) ); }
+        template <typename U>
+        inline void shove(const U &u) { push_front( cache->create(u) ); }
         
         //! remove node
         inline void cut(NODE *node) throw() {
             assert(node);
-            cache->zstore( cache->turn(node) );
+            cache->zstore( cache->turn( pop(node) ) );
         }
         
         //! remove back
-        inline void cut_back() throw()
+        inline void cut_tail() throw()
         {
             assert(size);
             cache->zstore( cache->turn( pop_back() ) );
         }
         
         //! remove front
-        inline void cut_front() throw()
+        inline void cut_head() throw()
         {
             assert(size);
             cache->zstore( cache->turn( pop_front() ) );
+        }
+        
+        template <typename U>
+        inline void after(node_type *mine, const U &u)
+        {
+            this->insert_after(mine, cache->create(u) );
+        }
+        
+        template <typename U>
+        inline void ahead(node_type *mine, const U &u)
+        {
+            this->insert_before(mine, cache->create(u) );
         }
         
         //! merge back copy

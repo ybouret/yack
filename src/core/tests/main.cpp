@@ -122,6 +122,8 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(dinky_core_repo);
     YACK_UTEST(dinky_solo_list);
     YACK_UTEST(dinky_solo_repo);
+    YACK_UTEST(dinky_coop_list);
+    YACK_UTEST(dinky_coop_repo);
 
 
     YACK_UTEST(arith_isqrt);
