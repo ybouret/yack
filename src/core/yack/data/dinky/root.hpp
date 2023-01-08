@@ -93,6 +93,19 @@ namespace yack
             return *this;
         }
         
+        //! clear alive NODEs
+        inline void clear() throw()
+        {
+            cache->devour(*this);
+        }
+        
+        //! avalailable zombies
+        inline size_t ready() const throw()
+        {
+            return coerce(cache)->stowage();
+        }
+        
+        
         //______________________________________________________________________
         //
         // members

@@ -234,6 +234,9 @@ add_test(dinky:manifest    test-core dinky_manifest)
 add_test(dinky:ops         test-core dinky_ops)
 add_test(dinky:core:list   test-core dinky_core_list)
 add_test(dinky:core:repo   test-core dinky_core_repo)
+add_test(dinky:solo:list   test-core dinky_solo_list)
+add_test(dinky:solo:repo   test-core dinky_solo_repo)
+
 
 add_test(sync:lockable  test-core sync_lockable)
 add_test(sync:primitive test-core sync_primitive)
