@@ -108,16 +108,12 @@ namespace yack
         }
         
         //! clear alive NODEs
-        inline void clear() throw()
-        {
-            cache->devour(*this);
-        }
+        inline void   clear() throw() { cache->devour(*this); }
         
         //! avalailable zombies
-        inline size_t ready() const throw()
-        {
-            return coerce(cache)->stowage();
-        }
+        inline size_t ready() const throw() { return coerce(cache)->stowage(); }
+        
+        
         
         
         //______________________________________________________________________

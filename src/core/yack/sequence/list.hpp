@@ -7,7 +7,7 @@
 #include "yack/container/sequence.hpp"
 #include "yack/container/writable.hpp"
 #include "yack/container/iterator/linked.hpp"
-#include "yack/data/slim/solo-list.hpp"
+#include "yack/data/dinky/solo-list.hpp"
 
 namespace yack
 {
@@ -85,10 +85,10 @@ namespace yack
         //
         // container interface
         //______________________________________________________________________
-        inline virtual size_t   capacity()  const throw() { return impl.size+impl.cache->size; } //!< alive+cache
-        inline virtual size_t   available() const throw() { return impl.cache->size; }           //!< cache only
-        inline virtual void     free()            throw() { impl.clear();            }            //!< remove content into cache
-        inline virtual void     reserve(size_t n)         { impl.cache->reserve(n); }            //!< append zombie node into cache
+        inline virtual size_t   capacity()  const throw() { return impl.size+impl.ready(); } //!< alive+cache
+        inline virtual size_t   available() const throw() { return impl.ready(); }           //!< cache only
+        inline virtual void     free()            throw() { impl.clear();           }        //!< remove content into cache
+        inline virtual void     reserve(size_t n)         { impl.cache->reserve(n); }        //!< append zombie node into cache
 
         //______________________________________________________________________
         //
@@ -144,19 +144,19 @@ namespace yack
 
     public:
         typedef iterating::linked<type,node_type,iterating::forward> iterator;                           //!< forward iterator
-        inline  iterator begin() throw() { return impl.head; }                                          //!< forward iterator begin
+        inline  iterator begin() throw() { return impl.head; }                                           //!< forward iterator begin
         inline  iterator end()   throw() { return 0;          }                                          //!< forward iterator end
 
         typedef iterating::linked<const_type,const node_type,iterating::forward> const_iterator;         //!< const forward iterator
-        inline  const_iterator begin() const throw() { return impl.head; }                              //!< const forward iterator begin
+        inline  const_iterator begin() const throw() { return impl.head; }                               //!< const forward iterator begin
         inline  const_iterator end()   const throw() { return 0;          }                              //!< const forward iterator end
 
         typedef iterating::linked<type,node_type,iterating::reverse> reverse_iterator;                   //!< reverse iterator
-        inline  reverse_iterator rbegin() throw() { return impl.tail; }                                 //!< reverse iterator begin
+        inline  reverse_iterator rbegin() throw() { return impl.tail; }                                  //!< reverse iterator begin
         inline  reverse_iterator rend()   throw() { return 0;          }                                 //!< reverse iterator end
 
         typedef iterating::linked<const_type,const node_type,iterating::reverse> const_reverse_iterator; //!< const reverse iterator
-        inline  const_reverse_iterator rbegin() const throw() { return impl.tail; }                     //!< const reverse iterator begin
+        inline  const_reverse_iterator rbegin() const throw() { return impl.tail; }                      //!< const reverse iterator begin
         inline  const_reverse_iterator rend()   const throw() { return 0;          }                     //!< const reverse iterator end
     };
     
