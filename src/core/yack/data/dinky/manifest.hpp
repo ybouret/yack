@@ -32,13 +32,13 @@ namespace yack
         
         template <typename U> inline
         dinky_manifest & operator<<(const U &u) {
-            this->push_back( this->cache->create(&u) );
+            this->push_back( this->cache->create( (U*)&u) );
             return *this;
         }
         
         template <typename U> inline
         dinky_manifest & operator>>(const U &u) {
-            this->push_front( this->create(&u) );
+            this->push_back( this->cache->create( (U*)&u) );
             return *this;
         }
         

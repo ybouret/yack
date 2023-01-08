@@ -38,15 +38,16 @@ YACK_UTEST(dinky_manifest)
     
     for(size_t i=arr.size();i>0;--i)
     {
-        rn.annex( &arr[i] ); 
-        rs.annex( &arr[i] );
-        rc.annex( &arr[i] );
+        rn << arr[i]; rn >> arr[i];
+        rs << arr[i]; rs >> arr[i];
+        rc << arr[i]; rc >> arr[i];
     }
     
     std::cerr << rn << std::endl;
     std::cerr << rs << std::endl;
     std::cerr << rc << std::endl;
 
+    
     
 }
 YACK_UDONE()
