@@ -18,8 +18,12 @@ namespace yack
     class dinky_root : public list_of<NODE>
     {
     public:
-        typedef NODE          node_type;
-        typedef list_of<NODE> list_type;
+        //______________________________________________________________________
+        //
+        // types
+        //______________________________________________________________________
+        typedef NODE          node_type; //!< alias
+        typedef list_of<NODE> list_type; //!< alias
         
         using list_type::push_back;
         using list_type::push_front;
@@ -53,26 +57,34 @@ namespace yack
         //
         // methods
         //______________________________________________________________________
+       
+        //! push back
         template <typename U> inline void annex(const U &u) { push_back(  cache->create(u) ); }
+        
+        //! push front
         template <typename U> inline void shove(const U &u) { push_front( cache->create(u) ); }
         
+        //! remove node
         inline void cut(NODE *node) throw() {
             assert(node);
             cache->zstore( cache->turn(node) );
         }
         
+        //! remove back
         inline void cut_back() throw()
         {
             assert(size);
             cache->zstore( cache->turn( pop_back() ) );
         }
         
+        //! remove front
         inline void cut_front() throw()
         {
             assert(size);
             cache->zstore( cache->turn( pop_front() ) );
         }
         
+        //! merge back copy
         inline dinky_root & operator+=(const dinky_root &source)
         {
             list_of<NODE> target;
@@ -85,7 +97,7 @@ namespace yack
         //
         // members
         //______________________________________________________________________
-        ZPROXY cache;
+        ZPROXY cache; //!< cache with zproxy API
         
     private:
         YACK_DISABLE_ASSIGN(dinky_root);

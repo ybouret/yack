@@ -13,36 +13,58 @@
 namespace yack
 {
     
-#define YACK_DINKY_MANIFEST_NODE dinky_node< dinky_ptr<T> >
     
+#define YACK_DINKY_MANIFEST_NODE dinky_node< dinky_ptr<T> > //!< helper for syntax
+    
+    //__________________________________________________________________________
+    //
+    //
+    //! manifest of addresses
+    //
+    //__________________________________________________________________________
     template <typename T, template <typename> class ZPOOL>
     class  dinky_manifest :
     public dinky_root< YACK_DINKY_MANIFEST_NODE, typename ZPOOL< YACK_DINKY_MANIFEST_NODE >::proxy >
     {
     public:
-        typedef dinky_ptr<T>                     data_type;
-        typedef dinky_node<data_type>            node_type;
-        typedef ZPOOL<node_type>                 zpool_type;
-        typedef typename zpool_type::proxy       proxy_type;
-        typedef dinky_root<node_type,proxy_type> root_type;
-        typedef typename root_type::list_type    list_type;
+        //______________________________________________________________________
+        //
+        // types
+        //______________________________________________________________________
+        typedef dinky_ptr<T>                     data_type;  //!< alias
+        typedef dinky_node<data_type>            node_type;  //!< alias
+        typedef ZPOOL<node_type>                 zpool_type; //!< alias
+        typedef typename zpool_type::proxy       proxy_type; //!< alias
+        typedef dinky_root<node_type,proxy_type> root_type;  //!< alias
+        typedef typename root_type::list_type    list_type;  //!< alias
         
-        inline explicit dinky_manifest() throw() : root_type() {}
-        inline explicit dinky_manifest(const proxy_type &user) throw() : root_type(user) {}
-        inline virtual ~dinky_manifest() throw() {}
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        inline explicit dinky_manifest() throw() : root_type()                           {} //!< setup empty
+        inline explicit dinky_manifest(const proxy_type &user) throw() : root_type(user) {} //!< setup with cache
+        inline virtual ~dinky_manifest() throw()                                         {} //!< cleanup
         
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+        //! push back
         template <typename U> inline
         dinky_manifest & operator<<(const U &u) {
-            this->push_back( this->cache->create( (U*)&u) );
+            this->annex( (U*)&u );
             return *this;
         }
         
+        //! push front
         template <typename U> inline
         dinky_manifest & operator>>(const U &u) {
-            this->push_back( this->cache->create( (U*)&u) );
+            this->shove( (U*)&u );
             return *this;
         }
         
+        //! sort
         template <typename FUNC> inline
         void sort_with( FUNC &func )
         {

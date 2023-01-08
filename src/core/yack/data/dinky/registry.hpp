@@ -10,34 +10,55 @@
 
 namespace yack
 {
-    
+    //__________________________________________________________________________
+    //
+    //
+    //! registry of type
+    //
+    //__________________________________________________________________________
     template <typename T, template <typename> class ZPOOL>
     class  dinky_registry :
     public dinky_root<dinky_node<T>, typename ZPOOL< dinky_node<T> >::proxy >
     {
     public:
-        typedef dinky_node<T>                    node_type;
-        typedef ZPOOL<node_type>                 zpool_type;
-        typedef typename zpool_type::proxy       proxy_type;
-        typedef dinky_root<node_type,proxy_type> root_type;
-        typedef typename root_type::list_type    list_type;
+        //______________________________________________________________________
+        //
+        // types
+        //______________________________________________________________________
+        typedef dinky_node<T>                    node_type;  //!< alias
+        typedef ZPOOL<node_type>                 zpool_type; //!< alias
+        typedef typename zpool_type::proxy       proxy_type; //!< alias
+        typedef dinky_root<node_type,proxy_type> root_type;  //!< alias
+        typedef typename root_type::list_type    list_type;  //!< alias
 
-        inline explicit dinky_registry() throw() : root_type() {}
-        inline explicit dinky_registry(const proxy_type &user) throw() : root_type(user) {}
-        inline virtual ~dinky_registry() throw() {}
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        inline explicit dinky_registry() throw() : root_type()                           {} //!< setup
+        inline explicit dinky_registry(const proxy_type &user) throw() : root_type(user) {} //!< setup with cache
+        inline virtual ~dinky_registry() throw() {}                                         //!< cleanu[
         
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+      
+        //! push back
         template <typename U> inline
         dinky_registry & operator<<(const U &u) {
-            this->push_back( this->cache->create(u) );
+            this->annex(u);
             return *this;
         }
         
+        //! push front
         template <typename U> inline
         dinky_registry & operator>>(const U &u) {
-            this->push_front( this->cache->create(u) );
+            this->shove(u);
             return *this;
         }
         
+        //! sort
         template <typename FUNC> inline
         void sort_with( FUNC &func )
         {
