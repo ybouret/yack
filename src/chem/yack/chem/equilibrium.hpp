@@ -4,7 +4,6 @@
 #define YACK_CHEMICAL_EQ_INCLUDED 1
 
 #include "yack/chem/components.hpp"
-#include "yack/data/list/meta-repo.hpp"
 
 namespace yack
 {

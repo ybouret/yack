@@ -11,7 +11,6 @@
 #include "yack/math/adder.hpp"
 #include "yack/memory/workplace.hpp"
 #include "yack/data/bare.hpp"
-#include "yack/data/list/com.hpp"
 
 namespace yack
 {
