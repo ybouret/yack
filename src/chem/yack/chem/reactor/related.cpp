@@ -23,6 +23,7 @@ namespace yack
         {
             YACK_XMLSUB(xml, "related" );
             
+            
             // build global matrix of related
             matrix<bool> related(N,N);
             for(size_t i=1;i<=N;++i)
@@ -36,6 +37,9 @@ namespace yack
                 }
             }
             eqs(std::cerr,"",related);
+            
+            // build clusters
+            
             
         }
 

@@ -12,13 +12,24 @@ namespace yack {
         class cluster : public object
         {
         public:
+            typedef cxx_list_of<cluster> list;
             explicit cluster() throw();
             virtual ~cluster() throw();
             
-            
+            cluster *next;
+            cluster *prev;
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(cluster);
+        };
+        
+        class clusters : public object, public cluster::list
+        {
+        public:
+            explicit clusters() throw();
+            virtual ~clusters() throw();
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(clusters);
         };
         
     }

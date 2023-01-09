@@ -19,7 +19,7 @@ namespace yack {
         //! reactor
         //
         //______________________________________________________________________
-        class reactor
+        class reactor 
         {
         public:
             //__________________________________________________________________
@@ -53,8 +53,8 @@ namespace yack {
             const size_t        M;   //!< total species
             const size_t        N;   //!< number of single
             const matrix<int>   Nu;  //!< global topology
-
-
+            
+            
 
         private:
             const lockable::scope libLock;
