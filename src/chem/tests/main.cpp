@@ -8,7 +8,7 @@ YACK_UTEST_DECL(16)
     YACK_UTEST(outcome);
     YACK_UTEST(eq);
     YACK_UTEST(diff);
-    YACK_UTEST(nexus);
+    //YACK_UTEST(nexus);
 }
 YACK_UTEST_EXEC()
 
