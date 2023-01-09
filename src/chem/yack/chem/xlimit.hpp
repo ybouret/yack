@@ -26,7 +26,7 @@ namespace yack
             //
             // types
             //__________________________________________________________________
-            typedef memory::workplace<xlimit> field;
+            typedef memory::workplace<xlimit> field; //!< memory for xlimit
 
             //__________________________________________________________________
             //
@@ -39,8 +39,6 @@ namespace yack
             // methods
             //__________________________________________________________________
             const  actor  & operator*() const throw();       //!< get id
-            static xlimit * make(field &, const actor &, const double x) throw();
-
 
             //__________________________________________________________________
             //

@@ -29,7 +29,7 @@ namespace yack
         class xlimits
         {
         public:
-            typedef memory::workplace<xlimits> field;
+            typedef memory::workplace<xlimits> field; //!< memory for xlimits
 
             //__________________________________________________________________
             //
@@ -65,14 +65,16 @@ namespace yack
             ~xlimits() throw();
         };
 
+        //! memory fields to gather xlimits
         class xlimits_io : public xlimits::field
         {
         public:
-            explicit xlimits_io() throw() : xlimits::field(), reac(), prod() {}
-            virtual ~xlimits_io() throw() {}
 
-            xlimit::field reac;
-            xlimit::field prod;
+            explicit xlimits_io() throw() : xlimits::field(), reac(), prod() {} //!< setup
+            virtual ~xlimits_io() throw() {} //!< cleanup
+
+            xlimit::field reac; //!< for reac
+            xlimit::field prod; //!< for prod
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(xlimits_io);

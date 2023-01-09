@@ -80,7 +80,6 @@ namespace yack
 
             const xlimit     *genuine_limit(xlimit::field &xl, const readable<double> &C) const throw(); //!< test all actors
 
-            //const xlimit     *primary_limit(const readable<double> &C) const throw(); //!< test all primary actors
             
             //! display
             friend std::ostream & operator<<(std::ostream &, const actors &);
