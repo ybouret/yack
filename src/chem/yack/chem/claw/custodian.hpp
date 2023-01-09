@@ -3,7 +3,7 @@
 #ifndef YACK_CHEMICAL_CUSTODIAN_INCLUDED
 #define YACK_CHEMICAL_CUSTODIAN_INCLUDED 1
 
-#include "yack/chem/nexus.hpp"
+#include "yack/chem/nexus/nexus.hpp"
 #include "yack/type/authority.hpp"
 
 

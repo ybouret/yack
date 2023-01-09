@@ -1,5 +1,5 @@
 
-#include "yack/chem/nexus.hpp"
+#include "yack/chem/nexus/nexus.hpp"
 #include "yack/system/imported.hpp"
 #include "yack/apex/alga.hpp"
 #include "yack/math/iota.hpp"

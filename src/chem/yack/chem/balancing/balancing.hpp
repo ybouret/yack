@@ -4,7 +4,7 @@
 #ifndef YACK_CHEMICAL_BALANCING_INCLUDED
 #define YACK_CHEMICAL_BALANCING_INCLUDED 1
 
-#include "yack/chem/nexus.hpp"
+#include "yack/chem/nexus/nexus.hpp"
 #include "yack/type/authority.hpp"
 #include "yack/chem/balancing/equalizer.hpp"
 #include "yack/chem/eqs/repo.hpp"

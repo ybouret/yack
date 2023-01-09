@@ -1,5 +1,5 @@
 #include "yack/chem/claw/custodian.hpp"
-#include "yack/chem/balancing.hpp"
+#include "yack/chem/balancing/balancing.hpp"
 
 #include "yack/chem/eqs/lua.hpp"
 #include "yack/system/env.hpp"

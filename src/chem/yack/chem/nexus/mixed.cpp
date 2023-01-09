@@ -1,5 +1,5 @@
 
-#include "yack/chem/nexus.hpp"
+#include "yack/chem/nexus/nexus.hpp"
 #include "yack/sequence/cxx-array.hpp"
 
 namespace yack

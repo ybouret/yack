@@ -1,5 +1,5 @@
 
-#include "yack/chem/nexus.hpp"
+#include "yack/chem/nexus/nexus.hpp"
 #include "yack/math/iota.hpp"
 #include "yack/raven/qbranch.hpp"
 #include "yack/math/algebra/ortho-family.hpp"

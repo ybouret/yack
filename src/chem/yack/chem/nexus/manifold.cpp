@@ -1,4 +1,4 @@
-#include "yack/chem/nexus.hpp"
+#include "yack/chem/nexus/nexus.hpp"
 #include "yack/math/iota.hpp"
 #include "yack/sequence/bunch.hpp"
 #include "yack/raven/qbranch.hpp"

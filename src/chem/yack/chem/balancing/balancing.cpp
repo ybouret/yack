@@ -1,5 +1,5 @@
 
-#include "yack/chem/balancing.hpp"
+#include "yack/chem/balancing/balancing.hpp"
 #include "yack/math/iota.hpp"
 #include "yack/ptr/auto.hpp"
 #include "yack/type/utils.hpp"
