@@ -15,6 +15,8 @@ namespace yack
                           const double t0) :
         lib(lib_),
         eqs(eqs_),
+        all(),
+        act(lib.head()),
         M(lib.size()),
         N(eqs.size()),
 
@@ -23,6 +25,10 @@ namespace yack
         libLock(lib_),
         eqsLock(eqs_)
         {
+            const xmlog xml("reactor",std::cerr,entity::verbose);
+            YACK_XMLSUB(xml,"initialize");
+
+            std::cerr << *act << std::endl;
 
         }
 

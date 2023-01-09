@@ -28,5 +28,7 @@ YACK_UTEST(reactor)
     std::cerr << eqs << std::endl;
     std::cerr << std::endl;
 
+    reactor cs(lib,eqs,0.0);
+
 }
 YACK_UDONE()

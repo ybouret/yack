@@ -21,7 +21,7 @@ namespace yack
             explicit active_list() throw();
             virtual ~active_list() throw();
             explicit active_list(const snode *);
-
+            
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(active_list);

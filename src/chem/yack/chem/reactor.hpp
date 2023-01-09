@@ -6,6 +6,8 @@
 #include "yack/chem/library.hpp"
 #include "yack/chem/equilibria.hpp"
 #include "yack/container/matrix.hpp"
+#include "yack/chem/active.hpp"
+#include "yack/ios/xmlog.hpp"
 
 namespace yack {
 
@@ -20,8 +22,10 @@ namespace yack {
 
             virtual ~reactor() throw();
 
-            const library    &lib;
-            const equilibria &eqs;
+            const library    &lib; //!< libray
+            const equilibria &eqs; //!< singles
+            const equilibria  all; //!< lattice
+            const active_list act; //!< active species
             const size_t      M;
             const size_t      N;
             const matrix<int> Nu; //!< global topology
