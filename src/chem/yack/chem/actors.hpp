@@ -121,7 +121,6 @@ namespace yack
        
         private:
             mutable memory::workplace<xlimit>  wlim; //!< data for xlimit, standard
-            //mutable memory::workplace<xlimit>  wbal; //!< data for xlimit, balancing
             YACK_DISABLE_COPY_AND_ASSIGN(actors);
         };
 
