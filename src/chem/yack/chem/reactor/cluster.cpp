@@ -18,3 +18,19 @@ namespace yack
         
     }
 }
+
+namespace yack
+{
+    namespace chemical
+    {
+        clusters:: clusters() throw() : object()
+        {
+        }
+        
+        clusters:: ~clusters() throw()
+        {
+        }
+        
+    }
+    
+}

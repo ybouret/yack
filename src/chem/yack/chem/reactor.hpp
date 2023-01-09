@@ -47,13 +47,13 @@ namespace yack {
             //
             // members
             //__________________________________________________________________
-            const library      &lib; //!< library
-            const equilibria   &eqs; //!< singles
-            const active_ptr    act; //!< active species
-            const size_t        M;   //!< total species
-            const size_t        N;   //!< number of single
-            const matrix<int>   Nu;  //!< global topology
-            
+            const library      &lib;    //!< library
+            const equilibria   &eqs;    //!< singles
+            const active_ptr    act;    //!< active species
+            const size_t        M;      //!< total species
+            const size_t        N;      //!< number of single
+            const matrix<int>   Nu;     //!< global topology
+            const clusters      linked; //!< clusters of linked equilibria
             
 
         private:
