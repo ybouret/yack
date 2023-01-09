@@ -5,7 +5,6 @@
 
 #include "yack/chem/entity.hpp"
 #include "yack/ptr/ark.hpp"
-#include "yack/data/dinky/core-repo.hpp"
 
 namespace yack
 {
@@ -85,7 +84,6 @@ namespace yack
             YACK_DISABLE_ASSIGN(species);
         };
 
-        
 
 
     }
