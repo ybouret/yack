@@ -38,8 +38,10 @@ YACK_UTEST(actors)
 
     ops.ld1();
     std::cerr << "Prod=" << prod.mass_action(C,ops) << std::endl;
-    
-    const xlimit *rlim = reac.genuine_limit(C);
+
+    xlimit::field xf;
+
+    const xlimit *rlim = reac.genuine_limit(xf,C);
     if(rlim)
     {
         std::cerr << "rlim: " << rlim->xi << " by " << (*(rlim->id)).name << std::endl;
@@ -49,7 +51,7 @@ YACK_UTEST(actors)
         std::cerr << "no rlim" << std::endl;
     }
     
-    const xlimit *plim = prod.genuine_limit(C);
+    const xlimit *plim = prod.genuine_limit(xf,C);
     if(plim)
     {
         std::cerr << "plim: " << plim->xi << " by " << (*(plim->id)).name << std::endl;

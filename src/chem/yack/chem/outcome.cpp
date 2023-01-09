@@ -141,6 +141,7 @@ namespace yack
             //------------------------------------------------------------------
             MassActionF      F  = { comp, K, Cend, xmul, 0 };
             double           AX = -1; // absolute Xi, must decrease at each turn
+            xlimits_io       xio;
 
             //------------------------------------------------------------------
             //
@@ -166,7 +167,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             {
-                const xlimits &       xlms = comp.genuine_limits(Cend,0);
+                const xlimits &       xlms = comp.genuine_limits(xio,Cend,0);
                 const xlimit  * const rlim = xlms.reac;
                 const xlimit  * const plim = xlms.prod;
 

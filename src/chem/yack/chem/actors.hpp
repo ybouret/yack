@@ -9,7 +9,6 @@
 #include "yack/data/list/cxx.hpp"
 #include "yack/math/multiplier.hpp"
 #include "yack/math/adder.hpp"
-#include "yack/memory/workplace.hpp"
 #include "yack/data/bare.hpp"
 
 namespace yack
@@ -79,8 +78,9 @@ namespace yack
             void  mov_(writable<double> &C, const double xi) const throw();
 
 
-            const xlimit     *genuine_limit(const readable<double> &C) const throw(); //!< test all actors
-            const xlimit     *primary_limit(const readable<double> &C) const throw(); //!< test all primary actors
+            const xlimit     *genuine_limit(xlimit::field &xl, const readable<double> &C) const throw(); //!< test all actors
+
+            //const xlimit     *primary_limit(const readable<double> &C) const throw(); //!< test all primary actors
             
             //! display
             friend std::ostream & operator<<(std::ostream &, const actors &);
@@ -120,7 +120,6 @@ namespace yack
             const cxx_list_of<actor>           crew; //!< actors
        
         private:
-            mutable memory::workplace<xlimit>  wlim; //!< data for xlimit, standard
             YACK_DISABLE_COPY_AND_ASSIGN(actors);
         };
 

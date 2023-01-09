@@ -36,9 +36,10 @@ YACK_UTEST(components)
     bring::fill(C,ran);
     std::cerr << "C=" << C << std::endl;
     lib(std::cerr << "C=", "", C);
-    
-    std::cerr << comp.genuine_limits(C,lib.maxlen)  << std::endl;
-    std::cerr << water.genuine_limits(C,lib.maxlen) << std::endl;
+
+    xlimits_io xio;
+    std::cerr << comp.genuine_limits(xio,C,lib.maxlen)  << std::endl;
+    std::cerr << water.genuine_limits(xio,C,lib.maxlen) << std::endl;
 
     rmulops ops;
     

@@ -29,6 +29,8 @@ namespace yack
         class xlimits
         {
         public:
+            typedef memory::workplace<xlimits> field;
+
             //__________________________________________________________________
             //
             // C++
@@ -41,6 +43,8 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
+            
+
             //! display
             friend std::ostream & operator<<(std::ostream &, const xlimits &);
 
@@ -60,6 +64,20 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(xlimits);
             ~xlimits() throw();
         };
+
+        class xlimits_io : public xlimits::field
+        {
+        public:
+            explicit xlimits_io() throw() : xlimits::field(), reac(), prod() {}
+            virtual ~xlimits_io() throw() {}
+
+            xlimit::field reac;
+            xlimit::field prod;
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(xlimits_io);
+        };
+
     }
     
 }

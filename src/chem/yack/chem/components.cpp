@@ -89,16 +89,17 @@ namespace yack
         }
 
         
-        const xlimits & components:: genuine_limits(const readable<double> &C, const size_t w) const throw()
+        const xlimits & components:: genuine_limits(xlimits_io &xio, const readable<double> &C, const size_t w) const throw()
         {
-            return * new ( *xlm ) xlimits(reac.genuine_limit(C),prod.genuine_limit(C),w);
+            return * new (*xio) xlimits( reac.genuine_limit(xio.reac,C),prod.genuine_limit(xio.prod,C),w);
         }
 
+#if 0
         const xlimits & components:: primary_limits(const readable<double> &C, const size_t w) const throw()
         {
             return * new ( *xlm ) xlimits(reac.primary_limit(C),prod.primary_limit(C),w);
         }
-
+#endif
         
 
         static inline

@@ -5,6 +5,7 @@
 #define YACK_CHEMICAL_XLIMIT_INCLUDED 1
 
 #include "yack/chem/species.hpp"
+#include "yack/memory/workplace.hpp"
 
 namespace yack
 {
@@ -23,6 +24,12 @@ namespace yack
         public:
             //__________________________________________________________________
             //
+            // types
+            //__________________________________________________________________
+            typedef memory::workplace<xlimit> field;
+
+            //__________________________________________________________________
+            //
             // C++
             //__________________________________________________________________
             xlimit(const actor &, const double x) throw(); //!< setup with x >= 0
@@ -31,7 +38,9 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            const actor & operator*() const throw();       //!< get id
+            const  actor  & operator*() const throw();       //!< get id
+            static xlimit * make(field &, const actor &, const double x) throw();
+
 
             //__________________________________________________________________
             //

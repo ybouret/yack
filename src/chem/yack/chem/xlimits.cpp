@@ -45,6 +45,7 @@ namespace yack
         wmax(wm)
         {
         }
+
         
         static inline void  show_id(std::ostream &os,
                                     const actor  &a,

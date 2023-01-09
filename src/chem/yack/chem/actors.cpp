@@ -16,8 +16,7 @@ namespace yack
         actors:: actors() throw() :
         molecularity(0),
         algebraic_Z(0),
-        crew(),
-        wlim()
+        crew()
         {
 
         }
@@ -159,7 +158,7 @@ namespace yack
 
         
 
-
+#if 0
         const xlimit *actors:: genuine_limit(const readable<double> &C) const throw()
         {
             const actor *a = crew.head;
@@ -183,7 +182,33 @@ namespace yack
                 return NULL;
             }
         }
+#endif
 
+        const xlimit     * actors:: genuine_limit(xlimit::field &xl, const readable<double> &C) const throw()
+        {
+            const actor *a = crew.head;
+            if(a)
+            {
+                const actor *id = a;
+                double       xi = C[***a]/a->nu;
+                for(a=a->next;a;a=a->next)
+                {
+                    const double xi_tmp = C[***a]/a->nu;
+                    if(xi_tmp<xi)
+                    {
+                        xi = xi_tmp;
+                        id = a;
+                    }
+                }
+                return new (*xl) xlimit(*id,xi);
+            }
+            else
+            {
+                return NULL;
+            }
+        }
+
+#if 0
         const xlimit *actors:: primary_limit(const readable<double> &C) const throw()
         {
             const actor *a  = crew.head;
@@ -222,10 +247,8 @@ namespace yack
                 return NULL;
             }
 
-
-
         }
-
+#endif
 
         
         std::ostream & operator<<(std::ostream &os, const actors &A)
