@@ -82,7 +82,6 @@ namespace yack
             
         private:
             YACK_DISABLE_ASSIGN(species);
-            virtual const char *attr() const;
         };
 
         

@@ -29,23 +29,7 @@ namespace yack
             os("%.15g",C[ **this ]);
             return os;
         }
-
-        const char * species:: attr() const
-        {
-            switch(rank)
-            {
-                case 0:
-                    return ",shape=oval,style=dotted";
-
-                case 1:
-                    return ",shape=oval,style=bold";
-
-                default:
-                    break;
-            }
-            return ",shape=oval";
-        }
-
+        
 
 
     }
