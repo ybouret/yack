@@ -96,8 +96,8 @@ YACK_UTEST(data_set)
 
     std::cerr << "Inserting On Size=1, Lower" << std::endl;
     ids.free();
-    YACK_ASSERT(ids.insert(10));
-    YACK_ASSERT(ids.insert(1));
+    YACK_ASSERT(ids.insert(10)); std::cerr << *ids << std::endl;
+    YACK_ASSERT(ids.insert(1));  std::cerr << *ids << std::endl;
     YACK_ASSERT(ids.contains(10));
     YACK_ASSERT(ids.contains(1));
     YACK_ASSERT(!ids.contains(0));
