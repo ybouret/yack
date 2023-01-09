@@ -5,6 +5,7 @@
 
 #include "yack/chem/entity.hpp"
 #include "yack/ptr/ark.hpp"
+#include "yack/data/dinky/core-repo.hpp"
 
 namespace yack
 {
@@ -19,8 +20,8 @@ namespace yack
         //______________________________________________________________________
         enum criterion {
             conserved, //!< in regular equilibri(um|a) only
-            unbounded, //!< involved in at least a degenerate equilibrium
-            spectator  //!< species will null rank
+            unbounded, //!< involved in at least a roaming equilibrium
+            spectator  //!< species with null rank
         };
 
 
@@ -85,6 +86,7 @@ namespace yack
         };
 
         
+
 
     }
 }

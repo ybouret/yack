@@ -21,10 +21,18 @@ set(chem_eqs ${chem_eqs_decl} ${chem_eqs_srcs})
 SOURCE_GROUP(chem/eqs FILES ${chem_eqs})
 install( FILES ${chem_eqs_decl} DESTINATION include/yack/chem/eqs )
 
+#reactor
+file(GLOB chem_reactor_decl yack/chem/reactor/*.hpp)
+file(GLOB chem_reactor_srcs yack/chem/reactor/*.cpp)
+set(chem_reactor ${chem_reactor_decl} ${chem_reactor_srcs})
+SOURCE_GROUP(chem/reactor FILES ${chem_reactor})
+install( FILES ${chem_reactor_decl} DESTINATION include/yack/chem/reactor )
+
 add_library(yack-chem STATIC
 ${chem_main}
 ${chem_designer}
 ${chem_eqs}
+${chem_reactor}
 )
 
 install( TARGETS yack-chem ARCHIVE DESTINATION lib )

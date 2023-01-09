@@ -15,15 +15,12 @@ namespace yack
         entity:: entity(const entity &other) :
         large_object(),
         counted(),
-        name(other.name),
-        indx(other.indx)
+        indexed(other),
+        name(other.name)
         {
         }
         
-        size_t entity:: operator*() const throw()
-        {
-            return indx;
-        }
+        
 
         const string & entity:: key() const throw()
         {

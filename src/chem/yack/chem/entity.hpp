@@ -3,6 +3,7 @@
 #ifndef YACK_CHEMICAL_ENTITY_INCLUDED
 #define YACK_CHEMICAL_ENTITY_INCLUDED 1
 
+#include "yack/chem/indexed.hpp"
 #include "yack/string.hpp"
 #include "yack/counted.hpp"
 #include "yack/large-object.hpp"
@@ -18,7 +19,7 @@ namespace yack
         //! named entity with index
         //
         //______________________________________________________________________
-        class entity : public large_object, public counted
+        class entity : public large_object, public counted, public indexed
         {
         public:
             //__________________________________________________________________
@@ -40,17 +41,15 @@ namespace yack
                             const size_t idx) :
             large_object(),
             counted(),
-            name(uid),
-            indx(idx)
+            indexed(idx),
+            name(uid)
             {
-                assert(indx>0);
             }
             
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            size_t         operator*()         const throw(); //!< index
             const string & key()               const throw(); //!< name
 
             //__________________________________________________________________
@@ -62,7 +61,6 @@ namespace yack
 
         private:
             YACK_DISABLE_ASSIGN(entity);
-            const size_t indx;                    //!< index
         };
     }
 
