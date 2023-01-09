@@ -1,5 +1,7 @@
 
 #include "yack/chem/reactor.hpp"
+#include "yack/apex/alga.hpp"
+#include "yack/system/imported.hpp"
 
 namespace yack
 {
@@ -10,12 +12,15 @@ namespace yack
         }
 
 
+
+        const char * const reactor:: clid    = "[reactor]";
+        bool &             reactor:: verbose = entity::verbose;
+
         reactor:: reactor(library     &lib_,
                           equilibria  &eqs_,
                           const double t0) :
         lib(lib_),
         eqs(eqs_),
-        all(),
         act(lib.head()),
         M(lib.size()),
         N(eqs.size()),
@@ -25,11 +30,34 @@ namespace yack
         libLock(lib_),
         eqsLock(eqs_)
         {
-            const xmlog xml("reactor",std::cerr,entity::verbose);
+            const xmlog xml(clid,std::cerr,verbose);
             YACK_XMLSUB(xml,"initialize");
 
-            std::cerr << *act << std::endl;
+            {
+                YACK_XMLSUB(xml, "library");
+                YACK_XMLOG(xml,lib);
+            }
 
+            {
+                YACK_XMLSUB(xml, "equilibria");
+                YACK_XMLOG(xml,eqs);
+            }
+
+            YACK_XMLOG(xml, "active=" << *act);
+
+            if(N>0)
+            {
+                for(const enode *en=eqs.head();en;en=en->next)
+                {
+                    const equilibrium &eq = ***en;
+                    const size_t       ei = *eq;
+                    eq.fill(coerce(Nu)[ei]);
+                }
+                YACK_XMLOG(xml, "Nu=" << Nu);
+                const size_t rank = alga::rank(Nu);
+                if(rank<N) throw imported::exception(clid,"only %u independent equilibria/%u", unsigned(rank), unsigned(N) );
+
+            }
         }
 
     }

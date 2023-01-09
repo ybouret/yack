@@ -15,7 +15,9 @@ namespace yack
             alist & self = *this;
             for(;sn;sn=sn->next)
             {
-                self << ***sn;
+                const species &s = ***sn;
+                if(s.rank)
+                    self << s;
             }
         }
 

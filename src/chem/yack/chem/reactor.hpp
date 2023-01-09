@@ -13,22 +13,47 @@ namespace yack {
 
     namespace chemical {
 
+        //______________________________________________________________________
+        //
+        //
+        //! reactor
+        //
+        //______________________________________________________________________
         class reactor
         {
         public:
+            //__________________________________________________________________
+            //
+            // types and definition
+            //__________________________________________________________________
+            static const char * const clid;     //!< "[reactor]"
+            static bool              &verbose;  //!< global
+
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+
+            //! full setup
             explicit reactor(library     &lib_,
                              equilibria  &eqs_,
                              const double t0);
 
+            //! cleanup
             virtual ~reactor() throw();
 
-            const library    &lib; //!< libray
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const library    &lib; //!< library
             const equilibria &eqs; //!< singles
-            const equilibria  all; //!< lattice
             const active_list act; //!< active species
-            const size_t      M;
-            const size_t      N;
-            const matrix<int> Nu; //!< global topology
+            const size_t      M;   //!< total species
+            const size_t      N;   //!< number of single
+            const matrix<int> Nu;  //!< global topology
+
+
 
         private:
             const lockable::scope libLock;

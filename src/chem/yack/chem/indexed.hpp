@@ -10,16 +10,19 @@ namespace yack
     namespace chemical
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! indexed type
+        //
+        //______________________________________________________________________
         class indexed
         {
         public:
             explicit indexed(const size_t) throw(); //!< with positive index
             virtual ~indexed() throw();             //!< cleanup
             indexed(const indexed &) throw();       //!< copy
-
-            size_t operator*() const throw();
-
-            
+            size_t operator*() const throw();       //!< get index
 
         private:
             const size_t indx_;
