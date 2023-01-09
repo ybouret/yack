@@ -21,7 +21,9 @@ namespace yack
                           const double t0) :
         lib(lib_),
         eqs(eqs_),
-        act(lib.head()),
+        
+        act( new active_list(lib.head()) ),
+        
         M(lib.size()),
         N(eqs.size()),
 
@@ -43,10 +45,11 @@ namespace yack
                 YACK_XMLOG(xml,eqs);
             }
 
-            YACK_XMLOG(xml, "active=" << *act);
+            YACK_XMLOG(xml, "active=" << **act);
 
             if(N>0)
             {
+                // build global topology
                 for(const enode *en=eqs.head();en;en=en->next)
                 {
                     const equilibrium &eq = ***en;
@@ -56,7 +59,9 @@ namespace yack
                 YACK_XMLOG(xml, "Nu=" << Nu);
                 const size_t rank = alga::rank(Nu);
                 if(rank<N) throw imported::exception(clid,"only %u independent equilibria/%u", unsigned(rank), unsigned(N) );
-
+                
+                build_related(xml);
+                
             }
         }
 

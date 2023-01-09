@@ -1,0 +1,45 @@
+
+#include "yack/chem/reactor.hpp"
+#include "yack/apex/alga.hpp"
+#include "yack/system/imported.hpp"
+
+namespace yack
+{
+    namespace chemical
+    {
+        
+        static inline
+        bool have_common_species(const readable<int> &lhs,
+                                 const readable<int> &rhs) throw()
+        {
+            for(size_t i=lhs.size();i>0;--i)
+            {
+                if(lhs[i] && rhs[i]) return true;
+            }
+            return false;
+        }
+        
+        void reactor:: build_related(const xmlog &xml)
+        {
+            YACK_XMLSUB(xml, "related" );
+            
+            // build global matrix of related
+            matrix<bool> related(N,N);
+            for(size_t i=1;i<=N;++i)
+            {
+                related[i][i] = true;
+                const readable<int> &ni = Nu[i];
+                for(size_t j=i+1;j<=N;++j)
+                {
+                    const readable<int> &nj = Nu[j];
+                    related[i][j] = related[j][i] = have_common_species(ni,nj);
+                }
+            }
+            eqs(std::cerr,"",related);
+            
+        }
+
+    }
+    
+}
+
