@@ -23,9 +23,9 @@ namespace yack
         //
         //______________________________________________________________________
         typedef data_set<size_t>   qList; //!< list of indices
-        typedef ds_zpool<size_t>   qBank; //!< bank of indices
-        typedef ds_node<size_t>    qNode; //!< for list of indices
-        typedef qBank::pointer     qFund; //!< shared bank of indices
+        typedef qList::bank_type   qBank; //!< bank of indices
+        typedef qList::node_type   qNode; //!< for list of indices
+        typedef qList::fund_type   qFund; //!< shared bank of indices
 
         //______________________________________________________________________
         //
@@ -268,7 +268,7 @@ namespace yack
                         const matrix<T>  &mu) const
             {
                 assert(ready->size>0);
-                qList             span(basis.cache); // preparing a list of spanned indice
+                qList             span(basis->cache); // preparing a list of spanned indice
                 {
                     //----------------------------------------------------------
                     //

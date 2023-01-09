@@ -37,8 +37,9 @@ namespace yack
         //______________________________________________________________________
         inline explicit dinky_registry() throw() : root_type()                           {} //!< setup
         inline explicit dinky_registry(const proxy_type &user) throw() : root_type(user) {} //!< setup with cache
-        inline virtual ~dinky_registry() throw() {}                                         //!< cleanu[
-        
+        inline virtual ~dinky_registry() throw()                                         {} //!< cleanup
+        inline          dinky_registry(const dinky_registry &_) : root_type(_)           {} //!< copy
+
         //______________________________________________________________________
         //
         // methods
@@ -58,13 +59,13 @@ namespace yack
             return *this;
         }
         
-        //! pop head value
-        inline T pop_head() { assert(this->head);
+        //! pull head value
+        inline T pull_head() { assert(this->head);
             T res = **(this->head); this->cut_head(); return res;
         }
         
-        //! pop tail value
-        inline T pop_tail() { assert(this->tail);
+        //! pull tail value
+        inline T pull_tail() { assert(this->tail);
             T res = **(this->tail); this->cut_tail(); return res;
         }
         

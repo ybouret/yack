@@ -36,8 +36,8 @@ void process(LIST &L, randomized::bits &ran)
         }
         std::cerr << L << std::endl;
 
-        std::cerr << "\thead=" << L.pop_head() << std::endl;
-        std::cerr << "\ttail=" << L.pop_tail() << std::endl;
+        std::cerr << "\thead=" << L.pull_head() << std::endl;
+        std::cerr << "\ttail=" << L.pull_tail() << std::endl;
 
 
         randomized::shuffle::tableau(k,ran);

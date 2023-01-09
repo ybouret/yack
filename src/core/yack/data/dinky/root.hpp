@@ -47,7 +47,7 @@ namespace yack
         inline virtual ~dinky_root() throw() { cache->devour(*this); }
         
         //! copy
-        inline dinky_root(dinky_root &other) :
+        inline dinky_root(const dinky_root &other) :
         list_type(), cache(other.cache)
         {
             replicate(*this,other);

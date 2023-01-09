@@ -40,7 +40,7 @@ namespace
                 count = 0;
             }
 
-            for(const ds_node<int> *node=ids->head;node;node=node->next)
+            for(const data_set<int>::node_type *node=ids->head;node;node=node->next)
             {
                 if(node->next)
                 {
@@ -58,8 +58,8 @@ namespace
 
         for(size_t iter=0;iter<10;++iter)
         {
-            data_set<int> sub( ids.cache );
-            for(const ds_node<int> *node=ids->head;node;node=node->next)
+            data_set<int> sub( ids->cache );
+            for(const data_set<int>::node_type *node=ids->head;node;node=node->next)
             {
                 if( ran.to<double>() < 0.4 ) sub.ensure( **node );
             }
@@ -81,7 +81,7 @@ YACK_UTEST(data_set)
 {
     randomized::rand_ ran;
 
-    ds_zpool<int>::pointer izp = new ds_zpool<int>();
+    data_set<int>::fund_type izp = new data_set<int>::bank_type();
     izp->reserve(100);
 
     data_set<int> ids( izp );
