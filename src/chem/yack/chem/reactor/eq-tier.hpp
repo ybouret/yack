@@ -50,12 +50,20 @@ namespace yack {
             //
             // methods
             //__________________________________________________________________
+
+            //! specific display
             friend std::ostream & operator<<(std::ostream &, const eq_group &);
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(eq_group) throw();
         };
 
+        //______________________________________________________________________
+        //
+        //
+        //! making tiers depending on equilibria chracterictics
+        //
+        //______________________________________________________________________
         class eq_tier : public object
         {
         public:

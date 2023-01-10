@@ -23,9 +23,9 @@ namespace yack {
             //
             // types and definition
             //__________________________________________________________________
-            static const char * const clid;     //!< "[reactor]"
-            static bool              &verbose;  //!< global
-            typedef auto_ptr<const clusters>    clusters_ptr;
+            static const char * const        clid;         //!< "[reactor]"
+            static bool                     &verbose;      //!< global
+            typedef auto_ptr<const clusters> clusters_ptr; //!< alias
 
             //__________________________________________________________________
             //

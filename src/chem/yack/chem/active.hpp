@@ -24,10 +24,10 @@ namespace yack
         class alist : public alist_
         {
         public:
-            typedef auto_ptr<const alist> ptr;
-            explicit alist() throw();      //!< setup empty
-            virtual ~alist() throw();      //!< cleanup
-            explicit alist(const snode *); //!< from library
+            typedef auto_ptr<const alist> ptr; //!< alias
+            explicit alist() throw();          //!< setup empty
+            virtual ~alist() throw();          //!< cleanup
+            explicit alist(const snode *);     //!< from library
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(alist);

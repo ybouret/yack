@@ -14,14 +14,16 @@ namespace yack
         }
         
         cluster:: cluster(const equilibrium &first) :
-        object(),
+        large_object(),
         latch(),
         next(0),
         prev(0),
         alive( new alist()   ),
         group( new glist()   ),
-        genus( new eq_tier() ),
         breed( new sp_tier() ),
+        genus( new eq_tier() ),
+        sdict( new udict()   ),
+        edict( new udict()   ),
         gvidx(0)
         {
             coerce( *group ) << first;
@@ -80,7 +82,28 @@ namespace yack
         }
 
 
-      
+#if 0
+        static const char build_dict_fn[] = "cluster dictionary";
+
+        template <typename NODE>
+        static inline
+        void build_dict(udict      &dict,
+                        const NODE *node,
+                        const char *kind)
+        {
+            assert(kind);
+            for(;node;node=node->next)
+            {
+                const entity &e = node->host;
+                const size_t  i = *e;
+                const size_t  I = **node;
+                if(!dict.insert(i,I)) {
+                    throw imported::exception(build_dict_fn,"multiple %s index",kind);
+                }
+            }
+        }
+#endif
+
         void cluster:: compile(const xmlog &xml, const unsigned igv)
         {
 
@@ -90,6 +113,14 @@ namespace yack
 
             collect_alive();
             create_system();
+
+            //build_dict( coerce(*edict), (*group)->head, "equilibrium");
+            //build_dict( coerce(*sdict), (*alive)->head, "species");
+
+            //coerce( *sdict ).record( (*alive)->head );
+
+
+
             YACK_XMLOG(xml,"-- alive     : " << **alive);
             YACK_XMLOG(xml,"-- bounded   : " << genus->bounded);
             YACK_XMLOG(xml,"-- roaming   : " << genus->roaming);

@@ -38,9 +38,16 @@ YACK_UTEST(reactor)
     YACK_SIZEOF(reactor);
     YACK_SIZEOF(sp_repo);
     YACK_SIZEOF(eq_group);
+    YACK_SIZEOF(sp_group);
     YACK_SIZEOF(eq_tier);
+    YACK_SIZEOF(sp_tier);
+    YACK_SIZEOF(umap);
+    YACK_SIZEOF(udict);
+    
+
 
     {
+
         ios::ocstream fp("reactor.dot");
         ios::vizible::digraph_init(fp,"G");
         for(const cluster *cl=cs.linked->head;cl;cl=cl->next)
