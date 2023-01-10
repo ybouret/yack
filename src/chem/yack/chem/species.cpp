@@ -29,8 +29,8 @@ namespace yack
             os("%.15g",C[ **this ]);
             return os;
         }
-        
 
+        
 
     }
 

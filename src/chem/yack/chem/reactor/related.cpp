@@ -66,9 +66,12 @@ namespace yack
             }
             std::cerr << linked << std::endl;
 
-            for(cluster *cl = linked->head;cl;cl=cl->next)
             {
-                cl->compile(xml);
+                unsigned C = 0;
+                for(cluster *cl = linked->head;cl;cl=cl->next)
+                {
+                    cl->compile(xml,C++);
+                }
             }
 
         }

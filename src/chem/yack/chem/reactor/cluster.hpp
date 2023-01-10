@@ -97,8 +97,14 @@ namespace yack {
             //! display
             friend std::ostream & operator<<( std::ostream & , const cluster & );
 
-            void compile(const xmlog &);
+            void compile(const xmlog &, const unsigned);
             
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            void viz(ios::ostream &fp) const;
 
             //__________________________________________________________________
             //
@@ -109,6 +115,7 @@ namespace yack {
             const alist::ptr      alive;  //!< alive.size = M
             const auto_ptr<glist> group;  //!< group.size = N
             const eq_tier::ptr    genus;  //!< categorie
+            const unsigned        gvidx;  //!< graphivz index
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(cluster);

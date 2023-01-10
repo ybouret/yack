@@ -7,6 +7,7 @@
 #include "yack/string.hpp"
 #include "yack/counted.hpp"
 #include "yack/large-object.hpp"
+#include "yack/ios/gv/vizible.hpp"
 
 namespace yack
 {
@@ -19,7 +20,11 @@ namespace yack
         //! named entity with index
         //
         //______________________________________________________________________
-        class entity : public large_object, public counted, public indexed
+        class entity :
+        public large_object,
+        public counted,
+        public indexed,
+        public ios::vizible
         {
         public:
             //__________________________________________________________________

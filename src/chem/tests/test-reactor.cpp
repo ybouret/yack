@@ -30,6 +30,7 @@ YACK_UTEST(reactor)
 
     reactor cs(lib,eqs,0.0);
 
+    YACK_SIZEOF(entity);
     YACK_SIZEOF(alist);
     YACK_SIZEOF(glist);
     YACK_SIZEOF(cluster);
@@ -38,6 +39,19 @@ YACK_UTEST(reactor)
     YACK_SIZEOF(sp_repo);
     YACK_SIZEOF(eq_group);
     YACK_SIZEOF(eq_tier);
-    
+
+    {
+        ios::ocstream fp("reactor.dot");
+        ios::vizible::digraph_init(fp,"G");
+        for(const cluster *cl=cs.linked->head;cl;cl=cl->next)
+        {
+            cl->viz(fp);
+        }
+
+        ios::vizible::digraph_quit(fp);
+    }
+
+    ios::vizible::render("reactor.dot");
+
 }
 YACK_UDONE()

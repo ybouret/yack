@@ -20,7 +20,8 @@ namespace yack
         prev(0),
         alive( new alist() ),
         group( new glist() ),
-        genus( new eq_tier() )
+        genus( new eq_tier() ),
+        gvidx(0)
         {
             coerce( *group ) << first;
         }
@@ -175,8 +176,9 @@ namespace yack
 
         }
 
-        void cluster:: compile(const xmlog &xml)
+        void cluster:: compile(const xmlog &xml, const unsigned igv)
         {
+
             YACK_XMLSUB(xml,"cluster::compile");
             if( latched() ) throw imported::exception(clid,"compile(already latched)");
             YACK_XMLOG(xml,"-- group: " << *this);
@@ -187,7 +189,55 @@ namespace yack
             collect_genus();
             YACK_XMLOG(xml,"-- : " << genus->roaming);
 
+            coerce(gvidx) = igv;
             lock();
+        }
+
+
+        void cluster:: viz(ios::ostream &fp) const
+        {
+            fp << "subgraph cluster_";
+            fp("%u",gvidx);
+            fp << " {\n";
+            // write all species
+            for(const anode *an=(*alive)->head;an;an=an->next)
+            {
+                const species &s = an->host;
+                s.logo(fp) << '[';
+                s.add_label(fp,s.name());
+                s.end(fp << ']');
+            }
+
+            // write all equilibria
+            for(const gnode *gn=(*group)->head;gn;gn=gn->next)
+            {
+                const equilibrium &eq = gn->host;
+                eq.logo(fp) << '[';
+                eq.add_label(fp,eq.name());
+                eq.end(fp << ']');
+
+                for(const actor *a = eq.reac->head; a;a=a->next)
+                {
+                    const species &s = **a;
+                    const unsigned nu = a->nu;
+                    s.link(fp,&eq);
+                    if(nu>1) fp("[label=\"%u\"]",nu);
+                    s.end(fp);
+                }
+
+                for(const actor *a = eq.prod->head; a;a=a->next)
+                {
+                    const species &s = **a;
+                    const unsigned nu = a->nu;
+                    eq.link(fp,&s);
+                    if(nu>1) fp("[label=\"%u\"]",nu);
+                    eq.end(fp);
+                }
+
+
+            }
+
+            fp << "}\n";
         }
 
 

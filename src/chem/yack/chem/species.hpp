@@ -12,18 +12,6 @@ namespace yack
     namespace chemical
     {
 
-        //______________________________________________________________________
-        //
-        //
-        //! species criterion
-        //
-        //______________________________________________________________________
-        enum criterion {
-            conserved, //!< in regular equilibri(um|a) only
-            unbounded, //!< involved in at least a roaming equilibrium
-            spectator  //!< species with null rank
-        };
-
 
         //______________________________________________________________________
         //
@@ -73,6 +61,8 @@ namespace yack
                 os << self.name;
                 return os;
             }
+
+            
 
             //__________________________________________________________________
             //
