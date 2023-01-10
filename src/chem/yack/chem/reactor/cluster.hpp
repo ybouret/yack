@@ -6,6 +6,7 @@
 #include "yack/chem/reactor/eq-tier.hpp"
 #include "yack/chem/reactor/sp-tier.hpp"
 #include "yack/chem/reactor/udict.hpp"
+#include "yack/chem/reactor/claws.hpp"
 #include "yack/ios/xmlog.hpp"
 #include "yack/container/matrix.hpp"
 
@@ -14,51 +15,7 @@ namespace yack {
     
     namespace chemical {
 
-        class claw : public object
-        {
-        public:
-            explicit claw() throw() : object(), next(0), prev(0), crew() {}
-            virtual ~claw() throw() {}
-
-            const list_of<actor> & operator*()  const throw() { return crew; }
-            const list_of<actor> * operator->() const throw() { return &crew; }
-
-            void add(const species  &sp,
-                     const unsigned  cf) {
-                crew.push_back( new actor(sp,cf) );
-            }
-
-            friend std::ostream & operator<<(std::ostream &os, const claw &self)
-            {
-                os << '(';
-                assert(self->size>=2);
-                const actor *a = self->head;
-                a->display_first(os);
-                for(a=a->next;a;a=a->next) a->display_extra(os);
-                os << ')';
-                return os;
-            }
-
-            claw *next;
-            claw *prev;
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(claw);
-            cxx_list_of<actor> crew;
-        };
-
-        typedef cxx_list_of<claw> claws_;
-        
-        class claws : public object, public claws_
-        {
-        public:
-            typedef auto_ptr<const claws>  ptr;
-
-            explicit claws() throw() : object(), claws_() {}
-            virtual ~claws() throw() {}
-
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(claws);
-        };
+       
 
 
         

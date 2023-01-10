@@ -39,8 +39,8 @@ namespace yack {
             //
             // C++
             //__________________________________________________________________
-            explicit sp_tier() : conserved( new sp_group() ), unbounded( new sp_group() ) {}
-            virtual ~sp_tier() throw() {}
+            explicit sp_tier();          //!< setup
+            virtual ~sp_tier() throw();  //!< cleanup
 
             //__________________________________________________________________
             //
