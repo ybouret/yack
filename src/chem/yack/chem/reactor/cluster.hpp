@@ -66,7 +66,22 @@ namespace yack {
 
         typedef core_repo<const anode> sp_group;
         typedef sp_group::node_type    sp_gnode;
-        
+
+        class sp_tier : public object
+        {
+        public:
+            typedef auto_ptr<const sp_tier> ptr;
+
+            explicit sp_tier() : conserved( new sp_group() ), unbounded( new sp_group() ) {}
+            virtual ~sp_tier() throw() {}
+
+            const auto_ptr<sp_group> conserved;
+            const auto_ptr<sp_group> unbounded;
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(sp_tier);
+        };
+
 
 
 
@@ -120,7 +135,8 @@ namespace yack {
             cluster              *prev;   //!< for list
             const alist::ptr      alive;  //!< alive.size = M
             const auto_ptr<glist> group;  //!< group.size = N
-            const eq_tier::ptr    genus;  //!< categorie
+            const eq_tier::ptr    genus;  //!< category for equilibria
+            const sp_tier::ptr    breed;  //!< category for species
             const unsigned        gvidx;  //!< graphivz index
 
         private:
