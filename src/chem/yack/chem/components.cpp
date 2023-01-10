@@ -55,13 +55,15 @@ namespace yack
         }
 
 
-        void components:: update(addrbook &tribe) const
+        bool components:: update(addrbook &tribe) const
         {
+            bool flag = false;
             for(const cnode *cn=head();cn;cn=cn->next)
             {
                 const species &s = ****cn;
-                tribe.ensure(&s);
+                if(tribe.insert(&s)) flag = true;
             }
+            return flag;
         }
 
 

@@ -165,8 +165,8 @@ namespace yack
             //! move C with computed extent
             void move(writable<double> &C, const double xi) const throw();
 
-            //! ensure each species is registered in tribe
-            void update(addrbook &tribe) const;
+            //! return true is new species were inserted
+            bool update(addrbook &tribe) const;
 
             //! fill topology
             template <typename T> inline void fill(writable<T> &nu) const

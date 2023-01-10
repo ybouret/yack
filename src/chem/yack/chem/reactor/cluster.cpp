@@ -127,15 +127,27 @@ namespace yack
             return true;
         }
 
+        static inline
+        bool is_special(const equilibrium &eq, const addrbook &tribe) throw()
+        {
+            return are_all_unbounded(eq.reac,tribe) || are_all_unbounded(eq.prod,tribe);
+        }
+
+
+
         void cluster:: collect_genus()
         {
+
+            sp_repo  unbounded;
+            eq_group remaining;
+
+            eq_group & roaming = coerce( *(genus->roaming) );
+            eq_group & bounded = coerce( *(genus->bounded) );
+            eq_group & special = coerce( *(genus->special) );
+
             //------------------------------------------------------------------
             // first pass: collect obvious roaming eqs and species
             //------------------------------------------------------------------
-            sp_repo    unbounded;
-            eq_group & roaming = coerce( *(genus->roaming) );
-            eq_group & bounded = coerce( *(genus->bounded) );
-
             addrbook   tribe;
             for(const gnode *gn = (*group)->head; gn; gn=gn->next )
             {
@@ -147,32 +159,31 @@ namespace yack
                 }
                 else
                 {
-                    bounded << *gn;
+                    remaining  << *gn;
                 }
             }
-            populate(unbounded,tribe);
-
 
             //------------------------------------------------------------------
-            // second pass: if all reactants or all productss of a bounded
-            // equilibria are unbounded, then bounded->roaming
+            // second pass: processing remaining to detect more unbounded
             //------------------------------------------------------------------
-            std::cerr << "bounded=" << bounded << std::endl;
-            std::cerr << "roaming=" << roaming << std::endl;
-
-            for(eq_gnode *node=bounded.head;node;node=node->next)
+        SECOND_PASS:
+            for(const eq_gnode *node=remaining.head;node;node=node->next)
             {
                 const equilibrium &eq = (***node).host;
-                if( are_all_unbounded(eq.reac,tribe) )
+                if(is_special(eq,tribe))
                 {
-                    std::cerr << "all reac of " << eq.name << " are unbounded!" << std::endl;
-                }
-
-                if( are_all_unbounded(eq.prod,tribe) )
-                {
-                    std::cerr << "all prod of " << eq.name << " are unbounded!" << std::endl;
+                    if(eq.update(tribe))
+                    {
+                        // updated list of species
+                        goto SECOND_PASS;
+                    }
                 }
             }
+
+
+
+
+
 
         }
 

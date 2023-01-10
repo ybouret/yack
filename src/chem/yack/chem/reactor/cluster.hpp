@@ -48,11 +48,17 @@ namespace yack {
         public:
             typedef auto_ptr<const eq_tier> ptr;
 
-            explicit eq_tier() : bounded( new eq_group() ), roaming( new eq_group() ) {}
+            explicit eq_tier() :
+            bounded( new eq_group() ),
+            roaming( new eq_group() ),
+            special( new eq_group() )
+            {}
+            
             virtual ~eq_tier() throw() {}
 
-            const auto_ptr<eq_group> bounded;
-            const auto_ptr<eq_group> roaming;
+            const auto_ptr<eq_group> bounded; //!< at least one conserved species in both sides
+            const auto_ptr<eq_group> roaming; //!< prod only or reac only
+            const auto_ptr<eq_group> special; //!< all reac or all prod, or both are unbounded
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(eq_tier);
