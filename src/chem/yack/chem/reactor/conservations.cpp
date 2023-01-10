@@ -179,6 +179,31 @@ namespace yack
                 }
             }
 
+            if(cb->size)
+            {
+                YACK_XMLSUB(xml,"canon");
+                claws &L = coerce( *canon );
+
+                // expanding constraints
+                for(const collector::entry *ep=cb->head;ep;ep=ep->next)
+                {
+                    claw *l = L.push_back( new claw() );
+                    const cxx_array<unsigned> &coef = *ep;
+                    for(const sp_gnode *sn=breed->conserved->head;sn;sn=sn->next)
+                    {
+                        const anode     &an = ***sn;
+                        const size_t     J  = *an;
+                        const unsigned   cf = coef[J];
+                        if(cf) {
+                            const species   &sp = an.host;
+                            //std::cerr << "\t+" << sp.name << " * " << cf << std::endl;
+                            l->add(sp,cf);
+                        }
+                    }
+                    YACK_XMLOG(xml, "0=d" << *l);
+                }
+            }
+
 
 
         }
