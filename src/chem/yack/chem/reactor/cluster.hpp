@@ -141,7 +141,9 @@ namespace yack {
             YACK_DISABLE_COPY_AND_ASSIGN(cluster);
             std::ostream & display(std::ostream &) const;
             void collect_alive();
-            void collect_genus();
+            void create_system();
+            void conservations(const xmlog &xml);
+            
         };
 
 
