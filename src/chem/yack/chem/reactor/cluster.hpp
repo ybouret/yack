@@ -1,8 +1,9 @@
+//! \file
 
 #ifndef YACK_CHEMICAL_CLUSTER_INCLUDED
 #define YACK_CHEMICAL_CLUSTER_INCLUDED 1
 
-#include "yack/chem/equilibria.hpp"
+#include "yack/chem/reactor/eq-tier.hpp"
 #include "yack/chem/active.hpp"
 #include "yack/ios/xmlog.hpp"
 #include "yack/container/matrix.hpp"
@@ -11,58 +12,6 @@ namespace yack {
     
     namespace chemical {
 
-
-        typedef sub_node<equilibrium> gnode; //!< alias
-        typedef sub_list<equilibrium> glist; //!< alias
-
-        typedef core_repo<const gnode> eq_group_;
-        typedef eq_group_::node_type    eq_gnode;
-
-        class eq_group : public object, public eq_group_
-        {
-        public:
-            explicit eq_group() throw() : object(), eq_group_() {}
-            virtual ~eq_group() throw() {}
-
-            friend std::ostream & operator<<(std::ostream &os, const eq_group &self)
-            {
-                os << "{ ";
-                const eq_gnode *node=self.head;
-                if(node)
-                {
-                    os << (***node).host.name;
-                    for(node=node->next;node;node=node->next)
-                    {
-                        os << ", " << (***node).host.name;
-                    }
-                }
-                return os << " }";
-            }
-
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(eq_group) throw();
-        };
-
-        class eq_tier : public object
-        {
-        public:
-            typedef auto_ptr<const eq_tier> ptr;
-
-            explicit eq_tier() :
-            bounded( new eq_group() ),
-            roaming( new eq_group() ),
-            special( new eq_group() )
-            {}
-            
-            virtual ~eq_tier() throw() {}
-
-            const auto_ptr<eq_group> bounded; //!< at least one conserved species in both sides
-            const auto_ptr<eq_group> roaming; //!< prod only or reac only
-            const auto_ptr<eq_group> special; //!< all reac or all prod, or both are unbounded
-
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(eq_tier);
-        };
 
         typedef core_repo<const anode> sp_group;
         typedef sp_group::node_type    sp_gnode;
