@@ -64,8 +64,7 @@ namespace yack
                     if(!ok) cc.push_back( new cluster(eq) );
                 }
             }
-            std::cerr << linked << std::endl;
-
+            
             {
                 unsigned C = 0;
                 for(cluster *cl = linked->head;cl;cl=cl->next)
