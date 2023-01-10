@@ -17,12 +17,18 @@ namespace yack {
 
 }
 
+#include <cstring>
 
 namespace yack {
 
     namespace chemical {
 
-        udict:: udict() : fwd( new umap() ), rev( new umap() ) {}
+        udict:: udict(const char *which) : fwd( new umap() ), rev( new umap() )
+        {
+            assert(which);
+            memset(kind,0,sizeof(kind));
+            std::cerr << "sizeof(kind)=" << sizeof(kind) << std::endl;
+        }
 
         udict:: ~udict() throw()
         {

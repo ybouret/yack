@@ -32,7 +32,7 @@ namespace yack {
         public:
             typedef auto_ptr<const udict> ptr;
             
-            explicit udict();
+            explicit udict(const char *which);
             virtual ~udict() throw();
 
             template <typename NODE>

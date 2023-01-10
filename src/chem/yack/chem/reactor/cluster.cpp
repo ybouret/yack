@@ -22,8 +22,8 @@ namespace yack
         group( new glist()   ),
         breed( new sp_tier() ),
         genus( new eq_tier() ),
-        sdict( new udict()   ),
-        edict( new udict()   ),
+        sdict( new udict("species")     ),
+        edict( new udict("equilibrium") ),
         gvidx(0)
         {
             coerce( *group ) << first;
