@@ -6,7 +6,7 @@ namespace yack
     namespace chemical
     {
 
-        claw::  claw() throw() : object(), next(0), prev(0), crew() {}
+        claw::  claw(const size_t i) throw() : object(), indexed(i), next(0), prev(0), crew() {}
         claw:: ~claw() throw() {}
 
 
@@ -16,7 +16,6 @@ namespace yack
             crew.push_back( new actor(sp,cf) );
         }
 
-        const list_of<actor> & claw:: operator*()  const throw() { return  crew; }
         const list_of<actor> * claw:: operator->() const throw() { return &crew; }
 
         std::ostream & operator<<(std::ostream &os, const claw &self)
@@ -29,6 +28,18 @@ namespace yack
             os << ')';
             return os;
         }
+
+
+        size_t claw:: span() const throw()
+        {
+            size_t res = 0;
+            for(const actor *a=crew.head;a;a=a->next)
+            {
+                res = max_of<size_t>(res, ***a );
+            }
+            return res;
+        }
+
     }
 }
 
@@ -38,6 +49,18 @@ namespace yack
     {
         claws::  claws() throw() : object(), claws_() {}
         claws:: ~claws() throw() {}
+
+
+        size_t claws:: span() const throw()
+        {
+            size_t res = 0;
+            for(const claw *cl = head; cl; cl=cl->next)
+            {
+                res = max_of(res,cl->span());
+            }
+            return res;
+        }
+
     }
 
 }

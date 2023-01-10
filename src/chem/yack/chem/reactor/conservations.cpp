@@ -17,6 +17,7 @@ namespace yack
 
         namespace {
 
+            //! compress ortho family
             template <typename T>
             static inline
             void compressQ(matrix<T> &Q, const matrix<T> &Q0)
@@ -45,6 +46,7 @@ namespace yack
                     iota::load(Q[j],Q0[indx[j]]);
             }
 
+            //! collect valid combinations from RAVEn
             class collector : public bunch<unsigned>
             {
             public:
@@ -56,9 +58,7 @@ namespace yack
                 {
                 }
 
-                virtual ~collector() throw()
-                {
-                }
+                virtual ~collector() throw() { }
 
                 bool validate(const readable<apz> &v) const throw()
                 {
@@ -121,8 +121,8 @@ namespace yack
                 // orthogonal space to local topology
                 //
                 //----------------------------------------------------------
-                matrix<int>  Q;
-                const size_t ker = m-n;
+                matrix<int>  Q;         // matrix to compute
+                const size_t ker = m-n; // null space dimension = rank(Q)
                 {
                     //----------------------------------------------------------
                     //
@@ -184,24 +184,47 @@ namespace yack
                 YACK_XMLSUB(xml,"canon");
                 claws &L = coerce( *canon );
 
+                //--------------------------------------------------------------
                 // expanding constraints
-                for(const collector::entry *ep=cb->head;ep;ep=ep->next)
+                //--------------------------------------------------------------
                 {
-                    claw *l = L.push_back( new claw() );
-                    const cxx_array<unsigned> &coef = *ep;
-                    for(const sp_gnode *sn=breed->conserved->head;sn;sn=sn->next)
+                    size_t i = 0;
+                    for(const collector::entry *ep=cb->head;ep;ep=ep->next)
                     {
-                        const anode     &an = ***sn;
-                        const size_t     J  = *an;
-                        const unsigned   cf = coef[J];
-                        if(cf) {
-                            const species   &sp = an.host;
-                            //std::cerr << "\t+" << sp.name << " * " << cf << std::endl;
-                            l->add(sp,cf);
+                        claw                      *cl = L.push_back( new claw(++i) );
+                        const cxx_array<unsigned> &cf = *ep;
+                        for(const sp_gnode *sn=breed->conserved->head;sn;sn=sn->next)
+                        {
+                            const anode     &an = ***sn;
+                            const size_t     J  = *an;
+                            const unsigned   w  = cf[J];
+                            if(w) {
+                                const species   &sp = an.host;
+                                //std::cerr << "\t+" << sp.name << " * " << cf << std::endl;
+                                cl->add(sp,w);
+                            }
                         }
+                        YACK_XMLOG(xml, "0=d" << *cl);
                     }
-                    YACK_XMLOG(xml, "0=d" << *l);
                 }
+
+                //--------------------------------------------------------------
+                // grouping constraints
+                //--------------------------------------------------------------
+                const size_t Mq = L.span();
+                matrix<bool> attached(Mq,Mq);
+                for(const claw *node=L.head;node;node=node->next)
+                {
+                    const size_t    i = **node;
+                    writable<bool> &A = attached[i];
+                    A[i] = true;
+                    for(const claw *scan=node->next;scan;scan=scan->next)
+                    {
+                        const size_t j = **scan; assert(i!=j);
+                        A[j] = attached[j][i] = scan->attached_to(*node);
+                    }
+                }
+                std::cerr << "attached=" << attached << std::endl;
             }
 
 
