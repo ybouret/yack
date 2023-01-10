@@ -11,17 +11,6 @@ namespace yack
     namespace chemical
     {
 
-        const char * feature_to_text(const feature kind) throw()
-        {
-            switch(kind)
-            {
-                case undefined: return "undefined";
-                case both_ways: return "both ways";
-                case part_only: return "part only";
-                case join_only: return "join only";
-            }
-            return yack_unknown;
-        }
 
         const char * components:: state_text(const state s) throw()
         {
@@ -44,7 +33,6 @@ namespace yack
         reac(),
         prod(),
         d_nu(0),
-        kind(undefined),
         cdb(),
         xlm()
         {
@@ -67,12 +55,12 @@ namespace yack
         }
 
 
-        void components:: update(lexicon<size_t> &tribe) const
+        void components:: update(addrbook &tribe) const
         {
             for(const cnode *cn=head();cn;cn=cn->next)
             {
                 const species &s = ****cn;
-                tribe.ensure(*s);
+                tribe.ensure(&s);
             }
         }
 
@@ -94,41 +82,6 @@ namespace yack
             return * new (*xio) xlimits( reac.genuine_limit(xio.reac,C),prod.genuine_limit(xio.prod,C),w);
         }
 
-#if 0
-        const xlimits & components:: primary_limits(const readable<double> &C, const size_t w) const throw()
-        {
-            return * new ( *xlm ) xlimits(reac.primary_limit(C),prod.primary_limit(C),w);
-        }
-#endif
-        
-
-        static inline
-        feature kind_for(const actors &reac, const actors &prod) throw()
-        {
-            if(reac->size)
-            {
-                if(prod->size)
-                {
-                    return both_ways;
-                }
-                else
-                {
-                    return join_only;
-                }
-            }
-            else
-            {
-                if(prod->size)
-                {
-                    return part_only;
-                }
-                else
-                {
-                    return undefined;
-                }
-            }
-
-        }
         
         void components:: operator()(const species &sp,
                                      const int      nu)
@@ -175,7 +128,6 @@ namespace yack
             //------------------------------------------------------------------
             ++(coerce(sp.rank));
             coerce(d_nu) = int(prod.molecularity) - int(reac.molecularity);
-            coerce(kind) = kind_for(reac,prod);
         }
         
         double components:: mass_action(const double            K,

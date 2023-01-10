@@ -5,8 +5,6 @@
 
 #include "yack/chem/library.hpp"
 #include "yack/chem/reactor/cluster.hpp"
-#include "yack/container/matrix.hpp"
-#include "yack/chem/active.hpp"
 
 namespace yack {
 
@@ -28,6 +26,7 @@ namespace yack {
             static const char * const clid;     //!< "[reactor]"
             static bool              &verbose;  //!< global
             typedef auto_ptr<const clusters>    clusters_ptr;
+
             //__________________________________________________________________
             //
             // C++

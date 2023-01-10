@@ -21,46 +21,56 @@ namespace yack
         
         void reactor:: build_related(const xmlog &xml)
         {
-            YACK_XMLSUB(xml, "related" );
+            YACK_XMLSUB(xml, "cluster::related" );
             
-            //------------------------------------------------------------------
-            // build global matrix of related
-            //------------------------------------------------------------------
-            matrix<bool> related(N,N);
-            for(size_t i=1;i<=N;++i)
-            {
-                related[i][i] = true;
-                const readable<int> &ni = Nu[i];
-                for(size_t j=i+1;j<=N;++j)
-                {
-                    const readable<int> &nj = Nu[j];
-                    related[i][j] = related[j][i] = have_common_species(ni,nj);
-                }
-            }
-            eqs(std::cerr,"",related);
 
-            //------------------------------------------------------------------
-            // build clusters
-            //------------------------------------------------------------------
-            clusters        & cc = coerce( *linked );
-            for(const enode * en = eqs.head();en;en=en->next)
             {
-                const equilibrium &eq = ***en;
-                bool               ok = false;
-                for(cluster *cl=cc.head;cl;cl=cl->next)
+                //--------------------------------------------------------------
+                // build global matrix of related
+                //--------------------------------------------------------------
+                matrix<bool> related(N,N);
+                for(size_t i=1;i<=N;++i)
                 {
-                    if( cl->linked_with(eq,related) ) {
-                        cl->grow(eq);
-                        ok = true;
-                        break;
+                    related[i][i] = true;
+                    const readable<int> &ni = Nu[i];
+                    for(size_t j=i+1;j<=N;++j)
+                    {
+                        const readable<int> &nj = Nu[j];
+                        related[i][j] = related[j][i] = have_common_species(ni,nj);
                     }
                 }
+                if(verbose)
+                {
+                    eqs(std::cerr, "",related);
+                }
 
-                if(!ok) cc.push_back( new cluster(eq) );
+                //--------------------------------------------------------------
+                // build clusters
+                //--------------------------------------------------------------
+                clusters        & cc = coerce( *linked );
+                for(const enode * en = eqs.head();en;en=en->next)
+                {
+                    const equilibrium &eq = ***en;
+                    bool               ok = false;
+                    for(cluster *cl=cc.head;cl;cl=cl->next)
+                    {
+                        if( cl->linked_with(eq,related) ) {
+                            cl->grow(eq);
+                            ok = true;
+                            break;
+                        }
+                    }
+
+                    if(!ok) cc.push_back( new cluster(eq) );
+                }
+            }
+            std::cerr << linked << std::endl;
+
+            for(cluster *cl = linked->head;cl;cl=cl->next)
+            {
+                cl->compile(xml);
             }
 
-            std::cerr << cc << std::endl;
-            
         }
 
     }

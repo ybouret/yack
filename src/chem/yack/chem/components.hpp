@@ -8,7 +8,7 @@
 #include "yack/chem/component.hpp"
 #include "yack/chem/xlimits.hpp"
 #include "yack/associative/suffix/set.hpp"
-#include "yack/associative/lexicon.hpp"
+#include "yack/associative/addrbook.hpp"
 
 
 namespace yack
@@ -18,21 +18,7 @@ namespace yack
     namespace chemical
     {
 
-        //______________________________________________________________________
-        //
-        //
-        //! features for components
-        //
-        //______________________________________________________________________
-        enum feature {
-            join_only, //!< reactants <=>
-            both_ways, //!< reactants <=> products
-            part_only, //!<           <=> products
-            undefined  //!<           <=>
-        };
 
-        //! convert feature to text
-        const char * feature_to_text(const feature kind) throw();
 
         //______________________________________________________________________
         //
@@ -180,7 +166,7 @@ namespace yack
             void move(writable<double> &C, const double xi) const throw();
 
             //! ensure each species is registered in tribe
-            void update(lexicon<size_t> &tribe) const;
+            void update(addrbook &tribe) const;
 
             //! fill topology
             template <typename T> inline void fill(writable<T> &nu) const
@@ -253,7 +239,6 @@ namespace yack
             const actors  reac; //!< reactants, nu<0
             const actors  prod; //!< products,  nu>0
             const int     d_nu; //!< prod.molecularity - reac.molecularity
-            const feature kind; //!< depending on reac/prod
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(components);
