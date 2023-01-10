@@ -22,12 +22,14 @@ namespace yack
         lib(lib_),
         eqs(eqs_),
         
-        act( new active_list(lib.head()) ),
+        act( new alist(lib.head()) ),
         
         M(lib.size()),
         N(eqs.size()),
 
         Nu(N,N>0?M:0),
+
+        linked( new clusters() ),
 
         libLock(lib_),
         eqsLock(eqs_)

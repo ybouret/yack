@@ -6,13 +6,13 @@ namespace yack
     namespace chemical
     {
 
-        active_list::  active_list() throw() : alist() {}
-        active_list:: ~active_list() throw() {}
+        alist::  alist() throw() : alist_() {}
+        alist:: ~alist() throw() {}
 
 
-        active_list:: active_list(const snode *sn) : alist()
+        alist:: alist(const snode *sn) : alist_()
         {
-            alist & self = *this;
+            alist_ & self = *this;
             for(;sn;sn=sn->next)
             {
                 const species &s = ***sn;

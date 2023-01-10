@@ -7,7 +7,6 @@
 #include "yack/chem/reactor/cluster.hpp"
 #include "yack/container/matrix.hpp"
 #include "yack/chem/active.hpp"
-#include "yack/ptr/auto.hpp"
 
 namespace yack {
 
@@ -28,8 +27,7 @@ namespace yack {
             //__________________________________________________________________
             static const char * const clid;     //!< "[reactor]"
             static bool              &verbose;  //!< global
-            typedef auto_ptr<const active_list> active_ptr;
-            
+            typedef auto_ptr<const clusters>    clusters_ptr;
             //__________________________________________________________________
             //
             // C++
@@ -49,11 +47,11 @@ namespace yack {
             //__________________________________________________________________
             const library      &lib;    //!< library
             const equilibria   &eqs;    //!< singles
-            const active_ptr    act;    //!< active species
+            const alist::ptr    act;    //!< active species
             const size_t        M;      //!< total species
             const size_t        N;      //!< number of single
             const matrix<int>   Nu;     //!< global topology
-            const clusters      linked; //!< clusters of linked equilibria
+            const clusters_ptr  linked; //!< clusters of linked equilibria
             
 
         private:

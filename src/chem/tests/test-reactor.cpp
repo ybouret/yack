@@ -30,9 +30,11 @@ YACK_UTEST(reactor)
 
     reactor cs(lib,eqs,0.0);
 
-    YACK_SIZEOF(active_list);
+    YACK_SIZEOF(alist);
+    YACK_SIZEOF(glist);
     YACK_SIZEOF(cluster);
     YACK_SIZEOF(clusters);
+    YACK_SIZEOF(reactor);
 
     
 }

@@ -23,8 +23,9 @@ namespace yack
         {
             YACK_XMLSUB(xml, "related" );
             
-            
+            //------------------------------------------------------------------
             // build global matrix of related
+            //------------------------------------------------------------------
             matrix<bool> related(N,N);
             for(size_t i=1;i<=N;++i)
             {
@@ -37,9 +38,28 @@ namespace yack
                 }
             }
             eqs(std::cerr,"",related);
-            
+
+            //------------------------------------------------------------------
             // build clusters
-            
+            //------------------------------------------------------------------
+            clusters        & cc = coerce( *linked );
+            for(const enode * en = eqs.head();en;en=en->next)
+            {
+                const equilibrium &eq = ***en;
+                bool               ok = false;
+                for(cluster *cl=cc.head;cl;cl=cl->next)
+                {
+                    if( cl->linked_with(eq,related) ) {
+                        cl->grow(eq);
+                        ok = true;
+                        break;
+                    }
+                }
+
+                if(!ok) cc.push_back( new cluster(eq) );
+            }
+
+            std::cerr << cc << std::endl;
             
         }
 

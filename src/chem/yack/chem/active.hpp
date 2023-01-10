@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_CHEMICAL_ACTIVE_INCLUDED
@@ -6,14 +5,15 @@
 
 #include "yack/chem/sub-list.hpp"
 #include "yack/chem/library.hpp"
+#include "yack/ptr/auto.hpp"
 
 namespace yack
 {
     namespace chemical
     {
 
-        typedef sub_list<species> alist; //!< alias
-        typedef sub_node<species> anode; //!< alias
+        typedef sub_list<species> alist_; //!< alias
+        typedef sub_node<species> anode;  //!< alias
 
         //______________________________________________________________________
         //
@@ -21,15 +21,16 @@ namespace yack
         //! sub list of active species
         //
         //______________________________________________________________________
-        class active_list : public object, public alist
+        class alist : public alist_
         {
         public:
-            explicit active_list() throw();      //!< setup empty
-            virtual ~active_list() throw();      //!< cleanup
-            explicit active_list(const snode *); //!< from library
+            typedef auto_ptr<const alist> ptr;
+            explicit alist() throw();      //!< setup empty
+            virtual ~alist() throw();      //!< cleanup
+            explicit alist(const snode *); //!< from library
             
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(active_list);
+            YACK_DISABLE_COPY_AND_ASSIGN(alist);
         };
 
 

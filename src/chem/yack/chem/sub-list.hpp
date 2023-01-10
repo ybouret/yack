@@ -74,7 +74,7 @@ namespace yack
         //
         //______________________________________________________________________
         template <typename T>
-        class sub_list
+        class sub_list : public object
         {
         public:
             //__________________________________________________________________
