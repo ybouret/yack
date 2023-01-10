@@ -26,7 +26,7 @@ namespace yack {
 
             friend std::ostream & operator<<(std::ostream &os, const eq_group &self)
             {
-                os << '{';
+                os << "{ ";
                 const eq_gnode *node=self.head;
                 if(node)
                 {
@@ -36,7 +36,7 @@ namespace yack {
                         os << ", " << (***node).host.name;
                     }
                 }
-                return os << '}';
+                return os << " }";
             }
 
         private:
@@ -82,9 +82,7 @@ namespace yack {
             YACK_DISABLE_COPY_AND_ASSIGN(sp_tier);
         };
 
-
-
-
+        
 
         //______________________________________________________________________
         //

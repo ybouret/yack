@@ -220,18 +220,18 @@ namespace yack
 
             YACK_XMLSUB(xml,"cluster::compile");
             if( latched() ) throw imported::exception(clid,"compile(already latched)");
-            YACK_XMLOG(xml,"-- group: " << *this);
+            YACK_XMLOG(xml,"-- group     : " << *this);
 
             collect_alive();
-            YACK_XMLOG(xml,"-- alive: " << **alive);
+            YACK_XMLOG(xml,"-- alive     : " << **alive);
 
             collect_genus();
-            YACK_XMLOG(xml,"-- bounded: " << genus->bounded);
-            YACK_XMLOG(xml,"-- roaming: " << genus->roaming);
-            YACK_XMLOG(xml,"-- special: " << genus->special);
+            YACK_XMLOG(xml,"-- bounded   : " << genus->bounded);
+            YACK_XMLOG(xml,"-- roaming   : " << genus->roaming);
+            YACK_XMLOG(xml,"-- special   : " << genus->special);
 
-            YACK_XMLOG(xml,"-- conserved: " << breed->conserved);
-            YACK_XMLOG(xml,"-- unbounded: " << breed->unbounded);
+            YACK_XMLOG(xml,"-- conserved : " << breed->conserved);
+            YACK_XMLOG(xml,"-- unbounded : " << breed->unbounded);
 
 
             coerce(gvidx) = igv;
@@ -297,9 +297,7 @@ namespace yack
                 sp_viz(fp,s, ", shape=rectangle");
             }
 
-
-
-
+            
             // write all equilibria
             for(const eq_gnode *en=genus->bounded->head;en;en=en->next)
             {
