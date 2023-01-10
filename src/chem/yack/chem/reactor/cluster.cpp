@@ -138,7 +138,6 @@ namespace yack
         void cluster:: collect_genus()
         {
 
-            sp_repo  unbounded;
             eq_group remaining;
 
             eq_group & roaming = coerce( *(genus->roaming) );
@@ -166,18 +165,34 @@ namespace yack
             //------------------------------------------------------------------
             // second pass: processing remaining to detect more unbounded
             //------------------------------------------------------------------
-        SECOND_PASS:
-            for(const eq_gnode *node=remaining.head;node;node=node->next)
             {
-                const equilibrium &eq = (***node).host;
-                if(is_special(eq,tribe))
+            SECOND_PASS:
+                for(const eq_gnode *node=remaining.head;node;node=node->next)
                 {
-                    if(eq.update(tribe))
+                    const equilibrium &eq = (***node).host;
+                    if(is_special(eq,tribe))
                     {
-                        // updated list of species
-                        goto SECOND_PASS;
+                        if(eq.update(tribe))
+                        {
+                            // updated list of species
+                            goto SECOND_PASS;
+                        }
                     }
                 }
+            }
+
+
+            //------------------------------------------------------------------
+            // third pass: dispatch remaining
+            //------------------------------------------------------------------
+            while( remaining.size )
+            {
+                eq_gnode          *gn = remaining.pop_front();
+                const equilibrium &eq = (***gn).host;
+                if(is_special(eq,tribe))
+                    special.push_back(gn);
+                else
+                    bounded.push_back(gn);
             }
 
 
@@ -198,7 +213,9 @@ namespace yack
             YACK_XMLOG(xml,"-- alive: " << **alive);
 
             collect_genus();
-            YACK_XMLOG(xml,"-- : " << genus->roaming);
+            YACK_XMLOG(xml,"-- bounded: " << genus->bounded);
+            YACK_XMLOG(xml,"-- roaming: " << genus->roaming);
+            YACK_XMLOG(xml,"-- special: " << genus->special);
 
             coerce(gvidx) = igv;
             lock();
