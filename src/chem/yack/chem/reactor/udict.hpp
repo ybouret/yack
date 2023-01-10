@@ -12,29 +12,53 @@ namespace yack {
 
     namespace chemical {
         
-        typedef suffix_map<size_t,size_t> umap_;
+        typedef suffix_map<size_t,size_t> umap_; //!< alias
 
+        //______________________________________________________________________
+        //
+        //
+        //! single look up table
+        //
+        //______________________________________________________________________
         class umap: public large_object, public umap_
         {
         public:
-            typedef auto_ptr<const umap> ptr;
-            explicit umap() throw();
-            virtual ~umap() throw();
-
+            typedef auto_ptr<const umap> ptr; //!< alias
+            explicit umap() throw();          //!< setup
+            virtual ~umap() throw();          //!< cleanup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(umap);
         };
 
-
+        //______________________________________________________________________
+        //
+        //
+        //! dictionay: forward and reverse look up tables
+        //
+        //______________________________________________________________________
         class udict : public object
         {
         public:
-            typedef auto_ptr<const udict> ptr;
-            
-            explicit udict(const char *which);
-            virtual ~udict() throw();
+            //__________________________________________________________________
+            //
+            // types
+            //__________________________________________________________________
+            typedef auto_ptr<const udict> ptr; //!< alias
 
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit udict(const char *which); //!< setup with name
+            virtual ~udict() throw();          //!< cleanup
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
+            //! build tables form an initial sub_node
             template <typename NODE>
             void record(const NODE *node) {
                 for(;node;node=node->next)
@@ -42,22 +66,21 @@ namespace yack {
                     const indexed &x = node->host;
                     const size_t   i = *x;
                     const size_t   I = **node;
-                    if( !coerce(*fwd).insert(i,I) ) throw_multiple_forward();
-                    if( !coerce(*rev).insert(I,i) ) throw_multiple_reverse();
+                    if( !coerce(*fwd).insert(i,I) ) throw_multiple_forward(i);
+                    if( !coerce(*rev).insert(I,i) ) throw_multiple_reverse(I);
                 }
             }
 
-
-
-
-            const umap::ptr fwd;
-            const umap::ptr rev;
+            size_t forward(const size_t) const; //!< global to local
+            size_t reverse(const size_t) const; //!< local to global
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(udict);
-            char kind[64 - (2*sizeof(umap::ptr)+sizeof(object))];
-            void throw_multiple_forward() const;
-            void throw_multiple_reverse() const;
+            const umap::ptr fwd;
+            const umap::ptr rev;
+            char            kind[64 - (2*sizeof(umap::ptr)+sizeof(object))];
+            void throw_multiple_forward(const size_t ) const;
+            void throw_multiple_reverse(const size_t ) const;
 
 
         };

@@ -100,6 +100,9 @@ namespace yack
             //! max index of components
             size_t         span() const throw();
 
+            //! query is species is used
+            const component *query(const species &s) const throw();
+
             //! limits from all the components
             const xlimits &genuine_limits(xlimits_io             &xio,
                                           const readable<double> &C,
@@ -248,9 +251,7 @@ namespace yack
             // private members
             //__________________________________________________________________
             components_set                     cdb; //!< components database
-            mutable memory::workplace<xlimits> xlm; //!< workplace for xlimits
             
-
         };
         
     }

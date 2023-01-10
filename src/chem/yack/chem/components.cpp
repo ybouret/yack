@@ -33,8 +33,7 @@ namespace yack
         reac(),
         prod(),
         d_nu(0),
-        cdb(),
-        xlm()
+        cdb()  
         {
             
         }
@@ -52,6 +51,19 @@ namespace yack
             prod.display_compact(os,C);
             os << ' ' << '}';
             return os;
+        }
+
+
+        const component * components::query(const species &s) const throw()
+        {
+            const component::pointer *ppC = cdb.search(s.name);
+            if(ppC) {
+                return & **ppC;
+            }
+            else {
+                return NULL;
+            }
+
         }
 
 

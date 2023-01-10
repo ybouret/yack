@@ -67,7 +67,7 @@ namespace yack {
             const alist::ptr      alive;  //!< alive.size = M
             const auto_ptr<glist> group;  //!< group.size = N
             const sp_tier::ptr    breed;  //!< category for species
-            const eq_tier::ptr    genus;  //!< category for equilibria
+            const eq_tier::ptr    genus;  //!< category for equilibrium
             const udict::ptr      sdict;  //!< dictionary for species
             const udict::ptr      edict;  //!< dictionary for eqs
             const unsigned        gvidx;  //!< graphivz index

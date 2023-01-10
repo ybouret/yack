@@ -117,7 +117,8 @@ namespace yack
             //build_dict( coerce(*edict), (*group)->head, "equilibrium");
             //build_dict( coerce(*sdict), (*alive)->head, "species");
 
-            //coerce( *sdict ).record( (*alive)->head );
+            coerce( *sdict ).record( (*alive)->head );
+            coerce( *edict ).record( (*group)->head );
 
 
 
@@ -128,8 +129,10 @@ namespace yack
             YACK_XMLOG(xml,"-- conserved : " << breed->conserved);
             YACK_XMLOG(xml,"-- unbounded : " << breed->unbounded);
 
-
             coerce(gvidx) = igv;
+
+            conservations(xml);
+
             lock();
         }
 
