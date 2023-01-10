@@ -35,7 +35,9 @@ YACK_UTEST(reactor)
     YACK_SIZEOF(cluster);
     YACK_SIZEOF(clusters);
     YACK_SIZEOF(reactor);
-
+    YACK_SIZEOF(sp_repo);
+    YACK_SIZEOF(eq_group);
+    YACK_SIZEOF(eq_tier);
     
 }
 YACK_UDONE()

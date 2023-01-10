@@ -15,6 +15,56 @@ namespace yack {
         typedef sub_node<equilibrium> gnode; //!< alias
         typedef sub_list<equilibrium> glist; //!< alias
 
+        typedef core_repo<const gnode> eq_group_;
+        typedef eq_group_::node_type    eq_gnode;
+
+        class eq_group : public object, public eq_group_
+        {
+        public:
+            explicit eq_group() throw() : object(), eq_group_() {}
+            virtual ~eq_group() throw() {}
+
+            friend std::ostream & operator<<(std::ostream &os, const eq_group &self)
+            {
+                os << '{';
+                const eq_gnode *node=self.head;
+                if(node)
+                {
+                    os << (***node).host.name;
+                    for(node=node->next;node;node=node->next)
+                    {
+                        os << ", " << (***node).host.name;
+                    }
+                }
+                return os << '}';
+            }
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(eq_group) throw();
+        };
+
+        class eq_tier : public object
+        {
+        public:
+            typedef auto_ptr<const eq_tier> ptr;
+
+            explicit eq_tier() : bounded( new eq_group() ), roaming( new eq_group() ) {}
+            virtual ~eq_tier() throw() {}
+
+            const auto_ptr<eq_group> bounded;
+            const auto_ptr<eq_group> roaming;
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(eq_tier);
+        };
+
+        typedef core_repo<const anode> sp_group;
+        typedef sp_group::node_type    sp_gnode;
+        
+
+
+
+
         //______________________________________________________________________
         //
         //
@@ -32,13 +82,6 @@ namespace yack {
             //__________________________________________________________________
             explicit cluster(const equilibrium &first);
             virtual ~cluster() throw();
-
-            //__________________________________________________________________
-            //
-            // access
-            //__________________________________________________________________
-            const list_of<gnode> * operator->() const throw();
-            const list_of<gnode> & operator*()  const throw();
 
             //__________________________________________________________________
             //
@@ -61,18 +104,20 @@ namespace yack {
             //
             // member
             //__________________________________________________________________
-            cluster              *next;
-            cluster              *prev;
-            const alist::ptr      act;
-
+            cluster              *next;   //!< for clusters
+            cluster              *prev;   //!< for list
+            const alist::ptr      alive;  //!< alive.size = M
+            const auto_ptr<glist> group;  //!< group.size = N
+            const eq_tier::ptr    genus;  //!< categorie
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(cluster);
-            const auto_ptr<glist> grp;
             std::ostream & display(std::ostream &) const;
-            void collect_active();
+            void collect_alive();
+            void collect_genus();
         };
-        
+
+
         class clusters : public object, public cxx_list_of<cluster>
         {
         public:

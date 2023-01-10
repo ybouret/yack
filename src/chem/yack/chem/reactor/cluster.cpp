@@ -18,26 +18,17 @@ namespace yack
         latch(),
         next(0),
         prev(0),
-        act( new alist() ),
-        grp( new glist() )
+        alive( new alist() ),
+        group( new glist() ),
+        genus( new eq_tier() )
         {
-            coerce( *grp ) << first;
+            coerce( *group ) << first;
         }
 
-
-        const list_of<gnode> * cluster:: operator->() const throw()
-        {
-            return & (**grp);
-        }
-
-        const list_of<gnode> & cluster:: operator*() const throw()
-        {
-            return (**grp);
-        }
-
+        
         bool  cluster:: owns(const equilibrium &eq) const throw()
         {
-            for(const gnode *gn=(**grp).head;gn;gn=gn->next)
+            for(const gnode *gn=(**group).head;gn;gn=gn->next)
             {
                 if( &(gn->host) == &eq ) return true;
             }
@@ -48,7 +39,7 @@ namespace yack
         {
             if( latched() ) throw imported::exception(clid,"grow(already latched)");
             assert(!owns(eq));
-            coerce( *grp ) << eq;
+            coerce( *group ) << eq;
         }
 
         bool cluster:: linked_with(const equilibrium  &eq,
@@ -56,7 +47,7 @@ namespace yack
         {
             assert( !owns(eq) );
             const readable<bool> &chk = related[ *eq ];
-            for(const gnode *gn=(**grp).head;gn;gn=gn->next)
+            for(const gnode *gn=(**group).head;gn;gn=gn->next)
             {
                 if( chk[ *(gn->host) ] ) return true;
             }
@@ -71,7 +62,7 @@ namespace yack
         std::ostream & cluster:: display(std::ostream &os) const
         {
             os << '[';
-            const gnode *gn = (**grp).head;
+            const gnode *gn = (**group).head;
             if(gn)
             {
                 show_gnode(*gn,os);
@@ -92,7 +83,15 @@ namespace yack
             return comparison::increasing(*lhs,*rhs);
         }
 
-        void cluster:: collect_active()
+
+        static inline void populate(sp_repo &slist, const addrbook &tribe)
+        {
+            for(addrbook::const_iterator it=tribe.begin();it!=tribe.end();++it)
+                slist << *static_cast<const species *>(*it);
+            slist.sort_with(compare_sp);
+        }
+
+        void cluster:: collect_alive()
         {
 
             sp_repo slist;
@@ -102,38 +101,91 @@ namespace yack
             //------------------------------------------------------------------
             {
                 addrbook tribe;
-                for(const gnode *gn = (*grp)->head;gn;gn=gn->next)
+                for(const gnode *gn = (*group)->head;gn;gn=gn->next)
                     gn->host.update(tribe);
-
-
-                for(addrbook::const_iterator it=tribe.begin();it!=tribe.end();++it)
-                    slist << *static_cast<const species *>(*it);
+                populate(slist,tribe);
             }
-
-            //------------------------------------------------------------------
-            // ensure sorted by index
-            //------------------------------------------------------------------
-            slist.sort_with(compare_sp);
 
             //------------------------------------------------------------------
             // transfert to active list
             //------------------------------------------------------------------
-            alist &my = coerce( *act );
+            alist &my = coerce( *alive );
             for(const sp_node *sn=slist.head;sn;sn=sn->next)
-            {
                 my << ***sn;
+        }
+
+        static inline
+        bool are_all_unbounded(const actors   &players,
+                               const addrbook &tribe) throw()
+        {
+            for(const actor *a=players->head;a;a=a->next)
+            {
+                const species &s = **a;
+                if( !tribe.search(&s) ) return false;
             }
+            return true;
+        }
+
+        void cluster:: collect_genus()
+        {
+            //------------------------------------------------------------------
+            // first pass: collect obvious roaming eqs and species
+            //------------------------------------------------------------------
+            sp_repo    unbounded;
+            eq_group & roaming = coerce( *(genus->roaming) );
+            eq_group & bounded = coerce( *(genus->bounded) );
+
+            addrbook   tribe;
+            for(const gnode *gn = (*group)->head; gn; gn=gn->next )
+            {
+                const equilibrium &eq = gn->host;
+                if(eq.reac->size<=0 || eq.prod->size<=0)
+                {
+                    roaming << *gn;
+                    eq.update(tribe);
+                }
+                else
+                {
+                    bounded << *gn;
+                }
+            }
+            populate(unbounded,tribe);
+
+
+            //------------------------------------------------------------------
+            // second pass: if all reactants or all productss of a bounded
+            // equilibria are unbounded, then bounded->roaming
+            //------------------------------------------------------------------
+            std::cerr << "bounded=" << bounded << std::endl;
+            std::cerr << "roaming=" << roaming << std::endl;
+
+            for(eq_gnode *node=bounded.head;node;node=node->next)
+            {
+                const equilibrium &eq = (***node).host;
+                if( are_all_unbounded(eq.reac,tribe) )
+                {
+                    std::cerr << "all reac of " << eq.name << " are unbounded!" << std::endl;
+                }
+
+                if( are_all_unbounded(eq.prod,tribe) )
+                {
+                    std::cerr << "all prod of " << eq.name << " are unbounded!" << std::endl;
+                }
+            }
+
         }
 
         void cluster:: compile(const xmlog &xml)
         {
             YACK_XMLSUB(xml,"cluster::compile");
             if( latched() ) throw imported::exception(clid,"compile(already latched)");
-            YACK_XMLOG(xml,"-- " << *this);
+            YACK_XMLOG(xml,"-- group: " << *this);
 
-            collect_active();
-            YACK_XMLOG(xml,"-- " << **act);
+            collect_alive();
+            YACK_XMLOG(xml,"-- alive: " << **alive);
 
+            collect_genus();
+            YACK_XMLOG(xml,"-- : " << genus->roaming);
 
             lock();
         }
