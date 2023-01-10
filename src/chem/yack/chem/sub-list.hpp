@@ -15,7 +15,12 @@ namespace yack
         //______________________________________________________________________
         //
         //
-        //! node for sub list: host+indexed
+        //! node for sub list: host+(sub)indexed
+        /**
+         - dedicated for the use in cluster to compress phase space
+         - '**this' will return the sub index
+         - '*(this->host)' will return the main index
+         */
         //
         //______________________________________________________________________
         template <typename T>
@@ -95,8 +100,8 @@ namespace yack
             //
             // access
             //__________________________________________________________________
-            const list_type * operator->() const throw() { return &L; } //!< access, const
-            const list_type & operator*()  const throw() { return  L; } //!< access, const
+            inline const list_type * operator->() const throw() { return &L; } //!< access, const
+            inline const list_type & operator*()  const throw() { return  L; } //!< access, const
 
             //__________________________________________________________________
             //
@@ -116,7 +121,7 @@ namespace yack
             {
                 for(const node_type *node=L.head;node;node=node->next)
                 {
-                    const size_t   j = *(node->host);
+                    const size_t j = *(node->host);
                     target[j] = source[j];
 
                 }
@@ -128,7 +133,7 @@ namespace yack
             {
                 for(const node_type *node=L.head;node;node=node->next)
                 {
-                    const size_t   j = ***node;
+                    const size_t j = ***node;
                     target[j] = source[j];
                 }
             }

@@ -46,6 +46,43 @@ namespace yack
                     iota::load(Q[j],Q0[indx[j]]);
             }
 
+            static inline unsigned sum_of(const readable<unsigned> &arr) throw()
+            {
+                unsigned res = 0;
+                for(size_t i=arr.size();i>0;--i)
+                {
+                    res += arr[i];
+                }
+                return res;
+            }
+            
+            static inline int compare_cb(const readable<unsigned> &lhs,
+                                           const readable<unsigned> &rhs) throw()
+            {
+                
+                assert(lhs.size()==rhs.size());
+                const unsigned lsum = sum_of(lhs);
+                const unsigned rsum = sum_of(rhs);
+                
+                if(lsum<rsum)
+                {
+                    return -1;
+                }
+                else
+                {
+                    if(rsum<lsum)
+                    {
+                        return 1;
+                    }
+                    else
+                    {
+                        return comparison::lexicographic(lhs,rhs);
+                    }
+                        
+                }
+                
+            }
+            
             //! collect valid combinations from RAVEn
             class collector : public bunch<unsigned>
             {
@@ -182,6 +219,7 @@ namespace yack
             if(cb->size)
             {
                 YACK_XMLSUB(xml,"canon");
+                cb.sort_with(compare_cb);
                 claws &L = coerce( *canon );
 
                 //--------------------------------------------------------------
@@ -204,24 +242,24 @@ namespace yack
                                 cl->add(sp,w);
                             }
                         }
-                        YACK_XMLOG(xml, "0=d" << *cl);
+                        YACK_XMLOG(xml, cf << " => 0=d" << *cl);
                     }
                 }
-
+                assert(cb->size==canon->size);
+                
                 //--------------------------------------------------------------
                 // grouping constraints
                 //--------------------------------------------------------------
-                const size_t Mq = L.span();
-                matrix<bool> attached(Mq,Mq);
+                const size_t Nq = canon->size;
+                matrix<bool> attached(Nq,Nq);
                 for(const claw *node=L.head;node;node=node->next)
                 {
-                    const size_t    i = **node;
-                    writable<bool> &A = attached[i];
-                    A[i] = true;
+                    const size_t i = **node;
+                    attached[i][i] = true;
                     for(const claw *scan=node->next;scan;scan=scan->next)
                     {
                         const size_t j = **scan; assert(i!=j);
-                        A[j] = attached[j][i] = scan->attached_to(*node);
+                        attached[i][j] = attached[j][i] = scan->attached_to(*node);
                     }
                 }
                 std::cerr << "attached=" << attached << std::endl;
