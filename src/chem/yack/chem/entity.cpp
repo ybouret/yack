@@ -16,6 +16,7 @@ namespace yack
         large_object(),
         counted(),
         indexed(other),
+        ios::vizible(),
         name(other.name)
         {
         }
