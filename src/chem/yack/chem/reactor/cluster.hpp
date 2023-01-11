@@ -6,7 +6,7 @@
 #include "yack/chem/reactor/eq-tier.hpp"
 #include "yack/chem/reactor/sp-tier.hpp"
 #include "yack/chem/reactor/udict.hpp"
-#include "yack/chem/reactor/claws.hpp"
+#include "yack/chem/reactor/cl-groups.hpp"
 #include "yack/ios/xmlog.hpp"
 #include "yack/container/matrix.hpp"
 
@@ -68,9 +68,10 @@ namespace yack {
             const auto_ptr<glist> group;  //!< group.size = N
             const sp_tier::ptr    breed;  //!< category for species
             const eq_tier::ptr    genus;  //!< category for equilibrium
-            const udict::ptr      sdict;  //!< dictionary for species
-            const udict::ptr      edict;  //!< dictionary for eqs
+            const udict::ptr      sDict;  //!< dictionary for species
+            const udict::ptr      eDict;  //!< dictionary for eqs
             const claws::ptr      canon;  //!< c-laws to follow
+            const cl_groups::ptr  clamp;  //!< groups of independent c-laws
             const unsigned        gvidx;  //!< graphivz index
 
         private:

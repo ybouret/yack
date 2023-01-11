@@ -4,7 +4,6 @@
 #define YACK_CHEMICAL_CLAWS_INCLUDED 1
 
 #include "yack/chem/actor.hpp"
-#include "yack/data/dinky/core-repo.hpp"
 #include "yack/data/list/cxx.hpp"
 #include "yack/ptr/auto.hpp"
 
@@ -34,30 +33,14 @@ namespace yack
             // methods
             //__________________________________________________________________
             const list_of<actor> * operator->() const throw(); //!< access
-            void add(const species  &, const unsigned);        //!< add a new species
+            void   add(const species &, const unsigned);       //!< add a new species
+            size_t span()                    const throw();    //!< maximum of species index
+            bool   contains(const species &) const throw();    //!< check if species is in use
+            bool   attached_to(const claw &) const throw();    //!< check is a species is shared
+
 
             //! specific display
             friend std::ostream & operator<<(std::ostream &, const claw &);
-
-            //! maximum of species index
-            size_t span() const throw();
-
-            bool contains(const species &s) const throw() {
-                for(const actor *a=crew.head;a;a=a->next)
-                {
-                    if( &s == & **a ) return true;
-                }
-                return false;
-            }
-
-            bool attached_to(const claw &other) const throw()
-            {
-                for(const actor *a=other->head;a;a=a->next)
-                {
-                    if(contains(**a)) return true;
-                }
-                return false;
-            }
 
             //__________________________________________________________________
             //
@@ -109,6 +92,8 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(claws);
         };
+
+     
 
     }
 }

@@ -29,6 +29,22 @@ namespace yack
             return os;
         }
 
+        bool claw:: contains(const species &s) const throw() {
+            for(const actor *a=crew.head;a;a=a->next)
+            {
+                if( &s == & **a ) return true;
+            }
+            return false;
+        }
+
+        bool claw:: attached_to(const claw &other) const throw()
+        {
+            for(const actor *a=other->head;a;a=a->next)
+            {
+                if(contains(**a)) return true;
+            }
+            return false;
+        }
 
         size_t claw:: span() const throw()
         {

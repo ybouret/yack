@@ -6,6 +6,7 @@
 #include "yack/sequence/cxx-series.hpp"
 #include "yack/math/iota.hpp"
 #include "yack/sequence/bunch.hpp"
+#include "yack/string/plural.hpp"
 
 namespace yack
 {
@@ -17,7 +18,11 @@ namespace yack
 
         namespace {
 
+            //------------------------------------------------------------------
+            //
             //! compress ortho family
+            //
+            //------------------------------------------------------------------
             template <typename T>
             static inline
             void compressQ(matrix<T> &Q, const matrix<T> &Q0)
@@ -57,7 +62,7 @@ namespace yack
             }
             
             static inline int compare_cb(const readable<unsigned> &lhs,
-                                           const readable<unsigned> &rhs) throw()
+                                         const readable<unsigned> &rhs) throw()
             {
                 
                 assert(lhs.size()==rhs.size());
@@ -76,9 +81,9 @@ namespace yack
                     }
                     else
                     {
-                        return comparison::lexicographic(lhs,rhs);
+                        return -comparison::lexicographic(lhs,rhs);
                     }
-                        
+
                 }
                 
             }
@@ -238,7 +243,6 @@ namespace yack
                             const unsigned   w  = cf[J];
                             if(w) {
                                 const species   &sp = an.host;
-                                //std::cerr << "\t+" << sp.name << " * " << cf << std::endl;
                                 cl->add(sp,w);
                             }
                         }
@@ -250,19 +254,13 @@ namespace yack
                 //--------------------------------------------------------------
                 // grouping constraints
                 //--------------------------------------------------------------
-                const size_t Nq = canon->size;
-                matrix<bool> attached(Nq,Nq);
-                for(const claw *node=L.head;node;node=node->next)
                 {
-                    const size_t i = **node;
-                    attached[i][i] = true;
-                    for(const claw *scan=node->next;scan;scan=scan->next)
-                    {
-                        const size_t j = **scan; assert(i!=j);
-                        attached[i][j] = attached[j][i] = scan->attached_to(*node);
-                    }
+                    for(const claw *cl=canon->head;cl;cl=cl->next)
+                        coerce( *clamp ).recruit(*cl);
+
+                    YACK_XMLOG(xml, "|_found " << clamp->size << " independent group" << plural::s(clamp->size) );
                 }
-                std::cerr << "attached=" << attached << std::endl;
+
             }
 
 

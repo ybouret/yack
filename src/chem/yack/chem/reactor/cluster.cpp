@@ -22,9 +22,10 @@ namespace yack
         group( new glist()   ),
         breed( new sp_tier() ),
         genus( new eq_tier() ),
-        sdict( new udict("species")     ),
-        edict( new udict("equilibrium") ),
+        sDict( new udict("species")     ),
+        eDict( new udict("equilibrium") ),
         canon( new claws() ),
+        clamp( new cl_groups() ),
         gvidx(0)
         {
             coerce( *group ) << first;
@@ -83,28 +84,7 @@ namespace yack
         }
 
 
-#if 0
-        static const char build_dict_fn[] = "cluster dictionary";
-
-        template <typename NODE>
-        static inline
-        void build_dict(udict      &dict,
-                        const NODE *node,
-                        const char *kind)
-        {
-            assert(kind);
-            for(;node;node=node->next)
-            {
-                const entity &e = node->host;
-                const size_t  i = *e;
-                const size_t  I = **node;
-                if(!dict.insert(i,I)) {
-                    throw imported::exception(build_dict_fn,"multiple %s index",kind);
-                }
-            }
-        }
-#endif
-
+        
         void cluster:: compile(const xmlog &xml, const unsigned igv)
         {
 
@@ -115,11 +95,9 @@ namespace yack
             collect_alive();
             create_system();
 
-            //build_dict( coerce(*edict), (*group)->head, "equilibrium");
-            //build_dict( coerce(*sdict), (*alive)->head, "species");
 
-            coerce( *sdict ).record( (*alive)->head );
-            coerce( *edict ).record( (*group)->head );
+            coerce( *sDict ).record( (*alive)->head );
+            coerce( *eDict ).record( (*group)->head );
 
 
 
