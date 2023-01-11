@@ -47,12 +47,12 @@ namespace yack {
             const library      &lib;    //!< library
             const equilibria   &eqs;    //!< singles
             const alist::ptr    act;    //!< active species, compress indices
-            const size_t        M;      //!< total species
-            const size_t        N;      //!< number of single
-            const matrix<int>   Nu;     //!< global topology
-            const clusters_ptr  linked; //!< clusters of linked equilibria
-            const size_t        Nq;     //!< number of conservations
-
+            const size_t           M;      //!< total species
+            const size_t           N;      //!< number of single
+            const matrix<int>      Nu;     //!< global topology
+            const clusters_ptr     linked; //!< clusters of linked equilibria
+            const size_t           Nq;     //!< number of conservations
+            const matrix<unsigned> Qm;     //!< [Nq:M] matrix of conservations
         private:
             const lockable::scope libLock;
             const lockable::scope eqsLock;
