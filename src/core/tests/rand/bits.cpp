@@ -37,11 +37,11 @@ namespace
     void do_stats( SEQUENCE &seq, const char *kind )
     {
         typedef typename SEQUENCE::mutable_type type;
-
+        math::adder<type> xadd;
         std::cerr << "<" << kind << "/" << rtti::name<type>() << ">" << std::endl;
-        type ave = statistical::average<type>::of(seq);
+        type ave = statistical::average<type>::of(seq,xadd);
         std::cerr << "\taverage = " << ave << std::endl;
-        type sig = sqrt(statistical::variance<type>::of(seq,ave) );
+        type sig = sqrt( statistical::variance<type>::of(seq,ave,xadd) );
         std::cerr << "\tstd_dev = " << sig << std::endl;
 
 

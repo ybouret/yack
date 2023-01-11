@@ -56,6 +56,7 @@ namespace yack
             using self_type::push;
             using self_type::resume;
             using self_type::ld;
+            using self_type::pop;
 
             //__________________________________________________________________
             //
@@ -74,13 +75,10 @@ namespace yack
             inline T get()
             {
                 if(size()<=0)
-                {
                     return 0;
-                }
                 else
                 {
-                    while(size()>1)
-                    {
+                    while(size()>1) {
                         mutable_type tmp = pull();
                         tmp += pull();
                         ld(tmp);
@@ -89,6 +87,34 @@ namespace yack
                     return pull();
                 }
             }
+
+            //! get median
+            inline T median() {
+                const size_t n = size();
+                switch(n)
+                {
+                    case 0: return 0;
+                    case 1: return pull();
+                    default:
+                        break;
+                }
+
+                if( 0!=(n&1) )
+                {
+                    for(size_t h = n>>1;h>0;--h) pop();
+                    return pull();
+                }
+                else
+                {
+                    for(size_t h= (n>>1)-1;h>0;--h) pop();
+                    const T x1 = pull();
+                    const T x2 = pull();
+                    return (x1+x2)/2;
+                }
+            }
+
+           
+
 
             //__________________________________________________________________
             //
@@ -115,12 +141,7 @@ namespace yack
             template <typename ARRAY> inline
             T tableau(ARRAY &arr)
             {
-                const size_t n = arr.size();
-                resume(n);
-                for(size_t i=n;i>0;--i)
-                {
-                     ld(arr[i]);
-                }
+                fetch(arr);
                 return get();
             }
 
@@ -128,12 +149,7 @@ namespace yack
             template <typename U> inline
             T tableau(const U arr[], const size_t n)
             {
-                assert(yack_good(arr,n));
-                resume(n);
-                for(size_t i=0;i<n;++i)
-                {
-                    (*this) += arr[i];
-                }
+                legacy(arr,n);
                 return get();
             }
 
@@ -279,9 +295,46 @@ namespace yack
                 return get();
             }
 
+            //! C-style arr[0..n-1]
+            template <typename U> inline
+            T median(const U arr[], const size_t n)
+            {
+                legacy(arr,n);
+                return median();
+            }
+
+            //! C++ style arr[1..m]
+            template <typename ARRAY> inline
+            T median(ARRAY &arr)
+            {
+                fetch(arr); return median();
+            }
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(adder);
+
+            //! C++ arr[1..size]
+            template <typename ARRAY> inline T fetch(ARRAY &arr)
+            {
+                const size_t n = arr.size();
+                resume(n);
+                for(size_t i=n;i>0;--i)
+                {
+                    ld(arr[i]);
+                }
+            }
+
+            //! C arr[0..n-1]
+            template <typename U> inline void legacy(const U arr[], const size_t n)
+            {
+                assert(yack_good(arr,n));
+                resume(n);
+                for(size_t i=0;i<n;++i)
+                {
+                    (*this) += arr[i];
+                }
+            }
+
         };
 
     }
