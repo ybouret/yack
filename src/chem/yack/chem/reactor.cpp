@@ -31,6 +31,8 @@ namespace yack
 
         linked( new clusters() ),
 
+        Nq(0),
+
         libLock(lib_),
         eqsLock(eqs_)
         {
@@ -63,7 +65,14 @@ namespace yack
                 if(rank<N) throw imported::exception(clid,"only %u independent equilibria/%u", unsigned(rank), unsigned(N) );
                 
                 build_related(xml);
-                
+
+                for(const cluster *cc=linked->head;cc;cc=cc->next)
+                {
+                    coerce(Nq) += cc->canon->size;
+                }
+                YACK_XMLOG(xml, "Nq=" << Nq);
+
+
             }
         }
 
