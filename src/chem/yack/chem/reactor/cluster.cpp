@@ -25,7 +25,8 @@ namespace yack
         sDict( new udict("species")     ),
         eDict( new udict("equilibrium") ),
         canon( new claws() ),
-        clamp( new cl_groups() ),
+        clamp( new cl_groups()  ),
+        graph( new equilibria() ),
         gvidx(0)
         {
             coerce( *group ) << first;
@@ -86,7 +87,9 @@ namespace yack
 
         
         
-        void cluster:: compile(const xmlog &xml, const unsigned igv)
+        void cluster:: compile(const xmlog       &xml,
+                               const matrix<int> &Nu,
+                               const unsigned     igv)
         {
 
             YACK_XMLSUB(xml,"cluster::compile");
@@ -112,7 +115,7 @@ namespace yack
             coerce(gvidx) = igv;
 
             conservations(xml);
-            make_manifold(xml);
+            make_manifold(xml,Nu);
             lock();
         }
 

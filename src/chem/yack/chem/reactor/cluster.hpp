@@ -25,7 +25,8 @@ namespace yack {
         {
         public:
             static const char * const clid; //!< "chemical::cluster"
-
+            typedef auto_ptr<const equilibria> eqs_ptr;
+            
             //__________________________________________________________________
             //
             // C++
@@ -48,7 +49,8 @@ namespace yack {
             friend std::ostream & operator<<( std::ostream & , const cluster & );
 
             //! compile once built
-            void compile(const xmlog &,
+            void compile(const xmlog       &,
+                         const matrix<int> &Nu,
                          const unsigned);
             
 
@@ -72,6 +74,7 @@ namespace yack {
             const udict::ptr      eDict;  //!< dictionary for eqs
             const claws::ptr      canon;  //!< c-laws to follow
             const cl_groups::ptr  clamp;  //!< groups of independent c-laws
+            const eqs_ptr         graph;  //!< all
             const unsigned        gvidx;  //!< graphivz index
 
         private:
@@ -80,7 +83,7 @@ namespace yack {
             void collect_alive();
             void create_system();
             void conservations(const xmlog &xml);
-            void make_manifold(const xmlog &xml);
+            void make_manifold(const xmlog &xml, const matrix<int> &Nu);
         };
 
 

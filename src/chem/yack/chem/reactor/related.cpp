@@ -69,7 +69,7 @@ namespace yack
                 unsigned C = 0;
                 for(cluster *cl = linked->head;cl;cl=cl->next)
                 {
-                    cl->compile(xml,C++);
+                    cl->compile(xml,Nu,C++);
                 }
             }
 
