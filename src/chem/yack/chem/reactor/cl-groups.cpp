@@ -23,7 +23,7 @@ namespace yack
             for(const node_type *node=head;node;node=node->next)
             {
                 const claw &mine = ***node;
-                if(mine.attached_to(cl)) return true;
+                if(mine.is_linked_to(cl)) return true;
             }
             return false;
         }

@@ -1,12 +1,22 @@
 
 #include "yack/chem/reactor/claws.hpp"
+#include "yack/math/iota.hpp"
 
 namespace yack
 {
+    using namespace math;
+
     namespace chemical
     {
 
-        claw::  claw(const size_t i) throw() : object(), indexed(i), next(0), prev(0), crew() {}
+        claw::  claw(const size_t i) throw() :
+        object(),
+        indexed(i),
+        next(0),
+        prev(0),
+        nrm2(0),
+        crew()
+        {}
         claw:: ~claw() throw() {}
 
 
@@ -37,7 +47,7 @@ namespace yack
             return false;
         }
 
-        bool claw:: attached_to(const claw &other) const throw()
+        bool claw:: is_linked_to(const claw &other) const throw()
         {
             for(const actor *a=other->head;a;a=a->next)
             {
@@ -54,6 +64,44 @@ namespace yack
                 res = max_of<size_t>(res, ***a );
             }
             return res;
+        }
+
+        void claw:: finalize() throw()
+        {
+            coerce(nrm2) = 0;
+            for(const actor *a=crew.head;a;a=a->next)
+            {
+                coerce(nrm2) += squared(a->nu);
+            }
+        }
+
+        bool claw:: excess(const readable<double> &Corg,
+                           writable<double>       &Cout,
+                           raddops                &xadd) const
+        {
+            xadd.ldz();
+            for(const actor *a=crew.head;a;a=a->next)
+            {
+                xadd.push( Corg[***a] * a->nu );
+            }
+            const double xs = xadd.get();
+            if(xs<0)
+            {
+                const double xc = -xs;
+                iota::load(Cout,Corg);
+                xadd.ldz();
+                for(const actor *a=crew.head;a;a=a->next)
+                {
+                    const double d = (xc * a->nu) / nrm2;
+                    Cout[***a] += d;
+                    xadd.push(d);
+                }
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
     }

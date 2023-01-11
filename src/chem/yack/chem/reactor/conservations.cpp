@@ -252,12 +252,14 @@ namespace yack
                 assert(cb->size==canon->size);
                 
                 //--------------------------------------------------------------
-                // grouping constraints
+                // finalizing and grouping constraints
                 //--------------------------------------------------------------
                 {
-                    for(const claw *cl=canon->head;cl;cl=cl->next)
+                    for(claw *cl=canon->head;cl;cl=cl->next)
+                    {
                         coerce( *clamp ).recruit(*cl);
-
+                        cl->finalize();
+                    }
                     YACK_XMLOG(xml, "|_found " << clamp->size << " independent group" << plural::s(clamp->size) );
                 }
 

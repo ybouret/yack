@@ -75,8 +75,8 @@ namespace yack
 
                 if(Nq)
                 {
-                    matrix<unsigned> &Q = coerce(Qm); Q.make(Nq,M);
-                    size_t            i = 0;
+                    matrix<unsigned>  &Q = coerce(Qm); Q.make(Nq,M);
+                    size_t             i = 0;
                     for(const cluster *cc=linked->head;cc;cc=cc->next)
                     {
                         for(const claw *cl = cc->canon->head;cl;cl=cl->next)

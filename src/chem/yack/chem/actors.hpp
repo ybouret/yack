@@ -5,10 +5,9 @@
 #define YACK_CHEMICAL_ACTORS_INCLUDED 1
 
 #include "yack/chem/actor.hpp"
+#include "yack/chem/types.hpp"
 #include "yack/chem/xlimit.hpp"
 #include "yack/data/list/cxx.hpp"
-#include "yack/math/multiplier.hpp"
-#include "yack/math/adder.hpp"
 #include "yack/data/bare.hpp"
 
 namespace yack
@@ -17,15 +16,7 @@ namespace yack
     {
 
 
-        //______________________________________________________________________
-        //
-        //
-        // global definitions
-        //
-        //______________________________________________________________________
-        typedef math::multiplier<double> rmulops; //!< alias
-        typedef math::adder<double>      raddops; //!< alias
-
+       
         //______________________________________________________________________
         //
         //
