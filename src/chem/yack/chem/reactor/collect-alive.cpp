@@ -1,4 +1,5 @@
 #include "yack/chem/reactor/cluster.hpp"
+#include "yack/system/imported.hpp"
 
 namespace yack
 {
@@ -21,6 +22,8 @@ namespace yack
         void cluster:: collect_alive()
         {
 
+            assert( (*group)->size > 0);
+            
             sp_repo slist;
 
             //------------------------------------------------------------------
@@ -39,6 +42,13 @@ namespace yack
             alist &my = coerce( *alive );
             for(const sp_node *sn=slist.head;sn;sn=sn->next)
                 my << ***sn;
+            
+            const size_t m = my->size;
+            const size_t n = (*group)->size;
+            if(my->size<(*group)->size)
+            {
+                throw imported::exception(clid,"#alive=%u < #group=%u", unsigned(m), unsigned(n) );
+            }
         }
 
     }

@@ -18,10 +18,10 @@ namespace yack
         latch(),
         next(0),
         prev(0),
-        alive( new alist()   ),
-        group( new glist()   ),
-        breed( new sp_tier() ),
-        genus( new eq_tier() ),
+        alive( new alist()              ),
+        group( new glist()              ),
+        breed( new sp_tier()            ),
+        genus( new eq_tier()            ),
         sDict( new udict("species")     ),
         eDict( new udict("equilibrium") ),
         canon( new claws() ),
@@ -112,7 +112,7 @@ namespace yack
             coerce(gvidx) = igv;
 
             conservations(xml);
-
+            make_manifold(xml);
             lock();
         }
 

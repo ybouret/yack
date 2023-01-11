@@ -80,7 +80,7 @@ namespace yack {
             void collect_alive();
             void create_system();
             void conservations(const xmlog &xml);
-            
+            void make_manifold(const xmlog &xml);
         };
 
 
