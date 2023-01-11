@@ -56,6 +56,7 @@ namespace yack
                         raddops                &xadd) const;
 
 
+            //! output colorized graph of conservation
             void viz(ios::ostream &) const;
 
             //__________________________________________________________________

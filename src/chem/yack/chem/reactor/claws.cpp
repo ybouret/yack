@@ -120,11 +120,11 @@ namespace yack
                 const species &A = **a;
                 const species &B = **(a->next);
                 const size_t   i = **this;
-                const size_t   c = 1 + (i%10);
+                const size_t   c = 1 + (i%7);
                 A.logo(fp);
                 fp << " -> ";
                 B.logo(fp);
-                fp("[arrowhead=odot,arrowtail=odot,dir=both,color=\"/spectral10/%u\"]",unsigned(c));
+                fp("[arrowhead=odot,arrowtail=odot,dir=both,color=\"/dark27/%u\"]",unsigned(c));
                 A.end(fp);
             }
         }
