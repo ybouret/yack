@@ -26,7 +26,6 @@ namespace yack
         eDict( new udict("equilibrium") ),
         canon( new claws() ),
         clamp( new cl_groups()  ),
-        graph( new equilibria() ),
         gvidx(0)
         {
             coerce( *group ) << first;

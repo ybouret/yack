@@ -74,7 +74,6 @@ namespace yack {
             const udict::ptr      eDict;  //!< dictionary for eqs
             const claws::ptr      canon;  //!< c-laws to follow
             const cl_groups::ptr  clamp;  //!< groups of independent c-laws
-            const eqs_ptr         graph;  //!< all
             const unsigned        gvidx;  //!< graphivz index
 
         private:
