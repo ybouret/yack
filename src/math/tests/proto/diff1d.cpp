@@ -1,32 +1,64 @@
 #include "yack/utest/run.hpp"
 #include "yack/randomized/mt19937.hpp"
+#include "yack/randomized/park-miller.hpp"
 #include "yack/randomized/gaussian.hpp"
 
 #include "yack/sequence/vector.hpp"
 #include "yack/ios/ocstream.hpp"
-#include "yack/sequence/stats.hpp"
+#include "yack/math/adder.hpp"
 
 using namespace yack;
-//using namespace math;
+using namespace math;
 
+double X2(const readable<double> &x, const double mu, adder<double> &xadd )
+{
+    const size_t n = x.size(); YACK_ASSERT(n>0);
+    xadd.resume(n);
+    for(size_t i=n;i>0;--i) {
+        xadd.ld( squared(x[i]-mu) );
+    }
+    return xadd.get()/n;
+}
 
 YACK_UTEST(proto_diff1d)
 {
-    randomized::shared_bits      sran = new randomized::mt19937();
-    randomized::gaussian<double> gran( sran );
+    size_t         N     = 50000;
+    size_t         every = 500;
 
-    size_t         N = 10000;
-    vector<double> x(N);
+    //randomized::shared_bits      sran = new randomized::mt19937();
+    //randomized::shared_bits      sran = new randomized::rand_();
+    randomized::shared_bits      sran = new randomized::ParkMiller();
+    randomized::gaussian<double> gran( sran );
+    adder<double>                xadd(N);
+
+    vector<double> x(N,as_capacity);
     ios::ocstream  fp("diff1d.dat");
-    x[1] = 0;
+    ios::ocstream  fd("diff1d-stat.dat");
+    x << 0;
     fp("1 %g\n",x[1]);
+    size_t count = 1;
     for(size_t i=2;i<=N;++i)
     {
-        x[i] = x[i-1] + gran();
-        fp("%lu %.15g\n",static_cast<unsigned long>(i), x[i]);
+        const double xold = x.back();
+        //x <<  xold + (sran->choice() ? 1 : -1);
+        x << xold + gran();
+        YACK_ASSERT(i==x.size());
+        fp("%lu %.15g\n",static_cast<unsigned long>(i), x.back());
+        fp.flush();
+        
+        if(++count>=every)
+        {
+            const double mu = xadd.tableau(x)/x.size();
+            const double x2 = X2(x,mu,xadd);
+            fd("%lu %.15g %.15g\n",static_cast<unsigned long>(i), mu, x2);
+            fd.flush();
+            count=0;
+            std::cerr << "#" << x.size() << std::endl;
+        }
     }
 
-    
+
+
 
 }
 YACK_UDONE()

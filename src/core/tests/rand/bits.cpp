@@ -96,6 +96,13 @@ namespace
         ge(hsphere);
         std::cerr << "hsphere: " << hsphere << std::endl;
 
+        size_t np=0,nn=0;
+        for(size_t i=0;i<N;++i)
+        {
+            if( ran.choice() ) ++np; else ++nn;
+        }
+        std::cerr << "choice: " << np/double(N) << " | " << nn/double(N) << std::endl;
+
     }
 
 }

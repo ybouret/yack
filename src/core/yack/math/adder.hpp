@@ -322,6 +322,7 @@ namespace yack
                 {
                     ld(arr[i]);
                 }
+                assert(size()==n);
             }
 
             //! C arr[0..n-1]
@@ -331,8 +332,9 @@ namespace yack
                 resume(n);
                 for(size_t i=0;i<n;++i)
                 {
-                    (*this) += arr[i];
+                    ld(arr[i]);
                 }
+                assert(size()==n);
             }
 
         };
