@@ -29,7 +29,8 @@ namespace yack
         U(dims,dims),
         V(dims,dims),
         study(dims),
-        fdjac(0)
+        fdjac(0),
+        xadd(dims)
         {
         }
 
@@ -49,7 +50,7 @@ namespace yack
             static const real_t half(0.5);
             for(size_t i=FF.size();i>0;--i)
                 VV[i] = squared(FF[i]);
-            return sorted::sum(VV,sorted::by_value) * half;
+            return xadd.tableau(VV)*half;
         }
 
         template <>
@@ -132,7 +133,7 @@ namespace yack
             // evaluate decrease rate of the control function
             //
             //------------------------------------------------------------------
-            real_t sigma = -sorted::sum(VV, sorted::by_abs_value);
+            real_t sigma = -xadd.tableau(VV);
             YACK_ZIRCON_PRINTLN("S     = " << S);
             YACK_ZIRCON_PRINTLN("sigma = " << sigma);
             if(sigma<=0)

@@ -27,7 +27,8 @@ namespace yack
 
             assert(n>0);
             assert(n<=mutual_size());
-            const comp_t fac = two/n;
+            adder<real_t> xadd(n);
+            const comp_t  fact = two/n;
 
             for(size_t j=0;j<n;)
             {
@@ -37,7 +38,7 @@ namespace yack
                     ++k;
                     p[k] = f[k]*cos(x);
                 }
-                c[++j]= static_cast<real_t>( fac*sorted::sum(p,sorted::by_abs_value) );
+                c[++j]= static_cast<real_t>( fact*xadd.tableau(p) );
             }
         }
 

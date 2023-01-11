@@ -4,7 +4,6 @@
 #include "yack/math/numeric.hpp"
 #include "yack/math/tao/v3.hpp"
 #include "yack/type/utils.hpp"
-#include "yack/sort/sum.hpp"
 #include <cerrno>
 #include <cmath>
 

@@ -1,5 +1,5 @@
 #include "yack/math/data/chebyshev.hpp"
-#include "yack/sort/sum.hpp"
+#include "yack/math/adder.hpp"
 
 #define real_t float
 #define comp_t double

@@ -9,6 +9,7 @@
 #include "yack/math/algebra/svd.hpp"
 #include "yack/ios/ocstream.hpp"
 #include "yack/math/triplet.hpp"
+#include "yack/math/adder.hpp"
 #include <cmath>
 
 namespace yack
@@ -107,6 +108,7 @@ namespace yack
             matrix<T>   V;     //!< for svd
             svd<T>      study; //!< study definition by svd
             jacobian<T> fdjac; //!< finite difference jacobian, with inital scaling
+            adder<T>    xadd;  //!< for sums
 
             //! prepare memory
             void setup(size_t dims);
