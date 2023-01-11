@@ -94,5 +94,16 @@ namespace yack
             }
         }
 
+
+        size_t reactor:: max_claws_per_cluster() const throw()
+        {
+            size_t res = 0;
+            for(const cluster *cc=linked->head;cc;cc=cc->next) {
+                res = max_of(res,cc->canon->size);
+            }
+            return res;
+        }
+
+
     }
 }

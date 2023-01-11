@@ -56,15 +56,7 @@ namespace yack
             return false;
         }
 
-        size_t claw:: span() const throw()
-        {
-            size_t res = 0;
-            for(const actor *a=crew.head;a;a=a->next)
-            {
-                res = max_of<size_t>(res, ***a );
-            }
-            return res;
-        }
+
 
         void claw:: finalize() throw()
         {
@@ -139,16 +131,7 @@ namespace yack
         claws::  claws() throw() : object(), claws_() {}
         claws:: ~claws() throw() {}
 
-
-        size_t claws:: span() const throw()
-        {
-            size_t res = 0;
-            for(const claw *cl = head; cl; cl=cl->next)
-            {
-                res = max_of(res,cl->span());
-            }
-            return res;
-        }
+        
 
     }
 

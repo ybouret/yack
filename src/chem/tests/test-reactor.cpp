@@ -1,4 +1,4 @@
-#include "yack/chem/reactor.hpp"
+#include "yack/chem/reactor/custodian.hpp"
 #include "yack/chem/eqs/lua.hpp"
 #include "yack/system/env.hpp"
 #include "yack/utest/run.hpp"
@@ -43,7 +43,8 @@ YACK_UTEST(reactor)
     YACK_SIZEOF(sp_tier);
     YACK_SIZEOF(umap);
     YACK_SIZEOF(udict);
-    
+    YACK_SIZEOF(custodian);
+
 
 
     {
@@ -59,6 +60,29 @@ YACK_UTEST(reactor)
     }
 
     ios::vizible::render("reactor.dot");
+
+
+    vector<double> C(cs.M+2);
+
+    for(size_t i=cs.M;i>0;--i)
+    {
+        C[i] = lib.concentration(ran);
+        if(ran.choice()) C[i] = -C[i];
+    }
+
+    custodian guard(cs);
+
+    cs.lib(std::cerr,"",C);
+
+    if(guard.corrected(C))
+    {
+        std::cerr << "corrected" << std::endl;
+    }
+    else
+    {
+        std::cerr << "was ok" << std::endl;
+    }
+
 
 }
 YACK_UDONE()

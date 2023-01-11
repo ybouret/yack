@@ -35,7 +35,6 @@ namespace yack
             //__________________________________________________________________
             const list_of<actor> * operator->() const throw(); //!< access
             void   add(const species &, const unsigned);       //!< add a new species
-            size_t span()                       const throw(); //!< maximum of species index
             bool   contains(const species &)    const throw(); //!< check if species is in use
             void   finalize()                         throw(); //!< compute nrm2
             bool   is_linked_to(const claw &)   const throw(); //!< check is a species is shared
@@ -101,11 +100,7 @@ namespace yack
             explicit claws() throw(); //!< setup
             virtual ~claws() throw(); //!< cleanup
 
-            //__________________________________________________________________
-            //
-            // methods
-            //__________________________________________________________________
-            size_t span() const throw(); //!< max of spans
+            
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(claws);

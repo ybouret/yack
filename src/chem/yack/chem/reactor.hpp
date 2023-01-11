@@ -40,6 +40,9 @@ namespace yack {
             //! cleanup
             virtual ~reactor() throw();
 
+            //! maximum size of a group of a conservation laws within a cluster
+            size_t max_claws_per_cluster() const throw();
+
             //__________________________________________________________________
             //
             // members
