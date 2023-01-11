@@ -80,6 +80,11 @@ namespace yack
                 eq_viz(fp,(***en).host,",shape=octagon,style=dashed");
             }
 
+            // write conservation laws
+            for(const claw *cl=canon->head;cl;cl=cl->next)
+            {
+                cl->viz(fp);
+            }
 
             fp << "}\n";
         }

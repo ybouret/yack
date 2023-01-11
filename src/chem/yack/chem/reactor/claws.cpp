@@ -107,6 +107,31 @@ namespace yack
     }
 }
 
+#include "yack/ios/ostream.hpp"
+
+namespace yack
+{
+    namespace chemical
+    {
+        void claw:: viz(ios::ostream &fp) const
+        {
+            for(const actor *a=crew.head;a&&a->next;a=a->next)
+            {
+                const species &A = **a;
+                const species &B = **(a->next);
+                const size_t   i = **this;
+                const size_t   c = 1 + (i%10);
+                A.logo(fp);
+                fp << " -> ";
+                B.logo(fp);
+                fp("[arrowhead=odot,arrowtail=odot,dir=both,color=\"/spectral10/%u\"]",unsigned(c));
+                A.end(fp);
+            }
+        }
+
+    }
+}
+
 namespace yack
 {
     namespace chemical

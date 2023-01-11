@@ -55,6 +55,9 @@ namespace yack
                         writable<double>       &Cout,
                         raddops                &xadd) const;
 
+
+            void viz(ios::ostream &) const;
+
             //__________________________________________________________________
             //
             // members
