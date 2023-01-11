@@ -58,8 +58,11 @@ namespace yack
         {
             assert(cg.size<=nc);
 
-
+            //------------------------------------------------------------------
+            //
             // initialize
+            //
+            //------------------------------------------------------------------
             sr.clear();
             for(const cl_node *node=cg.head;node;node=node->next)
             {
@@ -73,23 +76,40 @@ namespace yack
                 }
             }
 
+            //------------------------------------------------------------------
+            //
             // check no excess
+            //
+            //------------------------------------------------------------------
             if(sr.size<=0) return false;
 
-            core_repo<const claw> cstk;
+            // temporary stack for algorithm
+            cl_repo cstk;
 
+            //------------------------------------------------------------------
+            //
+            // cycling over corrections
+            //
+            //------------------------------------------------------------------
             while(true)
             {
                 assert(sr.size>0);
 
+                //--------------------------------------------------------------
+                //
                 // find and apply minimal correction
-
+                //
+                //--------------------------------------------------------------
                 {
+                    //----------------------------------------------------------
                     // initialize search
+                    //----------------------------------------------------------
                     cl_node *best = sr.head;
                     double   tiny = xs[ ****best ];
 
+                    //----------------------------------------------------------
                     // find smaller correction
+                    //----------------------------------------------------------
                     for(cl_node *node=best->next;node;node=node->next)
                     {
                         const double temp = xs[****node];
@@ -101,39 +121,55 @@ namespace yack
 
                     std::cerr << " (*) " << std::setw(15) << tiny << " @" << *best << std::endl;
 
+                    //----------------------------------------------------------
                     // query winning
+                    //----------------------------------------------------------
                     const claw             &cwin = ***best;
                     const size_t            iwin = *cwin;
                     const readable<double> &Cwin = Cs[iwin];
 
+                    //----------------------------------------------------------
                     // update dC
+                    //----------------------------------------------------------
                     for(const actor *a = cwin->head;a;a=a->next)
                     {
                         const size_t j = ***a;
                         dC[j] += Cwin[j] - C0[j];
                     }
                     std::cerr << "dC is now " << dC << std::endl;
+
+                    //----------------------------------------------------------
+                    // update C0 and remove best
+                    //----------------------------------------------------------
                     iota::save(C0,Cwin);
                     sr.cut(best);
                 }
 
                 if(sr.size<=0) return true;
 
+                //--------------------------------------------------------------
+                //
                 // recompute status without former best
+                //
+                //--------------------------------------------------------------
                 while(sr.size)
                 {
                     const claw  &cl = ***(sr.head);
                     const size_t ic = *cl;
                     if( cl.excess(C0, Cs[ic], io) )
                     {
+                        //------------------------------------------------------
                         // keep head
+                        //------------------------------------------------------
                         cstk.push_back( sr.pop_front() );
                         xs[ic] = io.get();
                         std::cerr << " (+) " << std::setw(15) << xs[ic] << " @" << cl << std::endl;
                     }
                     else
                     {
+                        //------------------------------------------------------
                         // discard head
+                        //------------------------------------------------------
                         sr.cut_head();
                     }
                 }
@@ -146,7 +182,6 @@ namespace yack
             }
 
 
-            return true;
 
         }
 

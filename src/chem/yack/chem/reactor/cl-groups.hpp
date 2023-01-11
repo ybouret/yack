@@ -18,7 +18,7 @@ namespace yack
         //
         //______________________________________________________________________
         typedef core_repo<const claw> cl_repo;
-        typedef cl_repo::node_type    cl_node;
+        typedef cl_repo::node_type    cl_node; //!< alias
 
 
         //______________________________________________________________________

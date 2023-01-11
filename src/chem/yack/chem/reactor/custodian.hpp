@@ -11,14 +11,40 @@ namespace yack
 {
     namespace chemical
     {
-
+        //______________________________________________________________________
+        //
+        //
+        //! custodian of conservation laws
+        //
+        //______________________________________________________________________
         class custodian : public large_object
         {
         public:
 
-            explicit custodian(const reactor &);
-            virtual ~custodian() throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit custodian(const reactor &); //!< setup
+            virtual ~custodian() throw();        //!< cleanup
 
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            void reset_all() throw(); //!< cleanup, mostly for debug
+
+            //! correct all groups of laws
+            /**
+             - if true, then C0 is updated and dC is the total injected correction
+             */
+            bool corrected(writable<double> &C0);
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
             const reactor        &cs; //!< persistent reactor
             const size_t          nc; //!< max number of claws/cluster
             cxx_array<double>     xs; //!< excess scores
@@ -27,8 +53,6 @@ namespace yack
             cxx_array<double>     dC; //!< corrected
             raddops               io; //!< internal
 
-            void reset_all() throw();
-            bool corrected(writable<double> &C0);
 
 
 
