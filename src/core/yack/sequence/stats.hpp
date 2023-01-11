@@ -4,10 +4,7 @@
 #define YACK_DATA_STATS_INCLUDED 1
 
 #include "yack/sequence/vector.hpp"
-#include "yack/sort/heap.hpp"
-#include "yack/comparison.hpp"
 #include "yack/math/adder.hpp"
-#include <cmath>
 
 namespace yack
 {

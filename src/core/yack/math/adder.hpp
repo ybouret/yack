@@ -314,7 +314,7 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(adder);
 
             //! C++ arr[1..size]
-            template <typename ARRAY> inline T fetch(ARRAY &arr)
+            template <typename ARRAY> inline void fetch(ARRAY &arr)
             {
                 const size_t n = arr.size();
                 resume(n);

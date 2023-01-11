@@ -4,11 +4,12 @@
 #include "yack/randomized/gaussian.hpp"
 
 #include "yack/sort/heap.hpp"
+#include "yack/math/adder.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/ios/ocstream.hpp"
 
 using namespace yack;
-//using namespace math;
+using namespace math;
 
 namespace
 {
@@ -33,7 +34,9 @@ namespace
                 fp("%.15g %.15g\n", d[i], double(i)/(n+1));
             }
         }
-        std::cerr << "D=" << sorted::sum(d,sorted::by_value)/n << std::endl;
+
+        adder<double> xadd;
+        std::cerr << "D=" << xadd.tableau(d)/n << std::endl;
     }
 
 
