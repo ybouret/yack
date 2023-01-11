@@ -46,5 +46,8 @@ YACK_UTEST_DECL(80)
     YACK_UTEST(fitting_gls);
     YACK_UTEST(fitting_ode);
     YACK_UTEST(fitting_ode2);
+
+    YACK_UTEST(proto_diff1d);
+
 }
 YACK_UTEST_EXEC()

@@ -28,6 +28,8 @@ source_group(fitting FILES ${fitting})
 file(GLOB geometry geometry/*.cpp)
 source_group(geometry FILES ${geometry})
 
+file(GLOB proto proto/*.cpp)
+source_group(proto FILES ${proto})
 
 add_executable(test-math main.cpp
 ${global}
@@ -39,6 +41,7 @@ ${fcn}
 ${data}
 ${geometry}
 ${fitting}
+${proto}
 )
 
 target_link_libraries(test-math yack-math yack-lua++ yack-lua)
@@ -102,5 +105,6 @@ add_test(fitting:gls     test-math fitting_gls)
 add_test(fitting:ode     test-math fitting_ode)
 add_test(fitting:ode2    test-math fitting_ode2)
 
- 
+add_test(proto:diff1d    test-math proto_diff1d)
+
 
