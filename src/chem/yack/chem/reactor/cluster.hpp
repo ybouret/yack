@@ -4,41 +4,16 @@
 #define YACK_CHEMICAL_CLUSTER_INCLUDED 1
 
 #include "yack/chem/reactor/eq-tier.hpp"
-#include "yack/chem/reactor/eq-repo.hpp"
 #include "yack/chem/reactor/sp-tier.hpp"
 #include "yack/chem/reactor/udict.hpp"
 #include "yack/chem/reactor/cl-groups.hpp"
+#include "yack/chem/reactor/gvector.hpp"
 #include "yack/ios/xmlog.hpp"
 #include "yack/container/matrix.hpp"
-
 
 namespace yack {
     
     namespace chemical {
-
-       
-
-        typedef vector<eq_repo::ptr,memory::dyadic> gvector_;
-
-        class gvector : public object, public gvector_
-        {
-        public:
-            typedef auto_ptr<const gvector> ptr;
-            explicit gvector() : gvector_(8,as_capacity) { grow(); }
-            virtual ~gvector() throw() {}
-
-            eq_repo & degree(const size_t n) {
-                while( size() < n )
-                    grow();
-                return *( (*this)[n] );
-             }
-
-
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(gvector);
-            void grow() { const eq_repo::ptr tmp = new eq_repo(); push_back(tmp); }
-        };
-
 
         //______________________________________________________________________
         //
