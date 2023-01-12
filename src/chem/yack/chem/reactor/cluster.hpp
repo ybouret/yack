@@ -6,7 +6,7 @@
 #include "yack/chem/reactor/eq-tier.hpp"
 #include "yack/chem/reactor/sp-tier.hpp"
 #include "yack/chem/reactor/udict.hpp"
-#include "yack/chem/reactor/cl-groups.hpp"
+#include "yack/chem/reactor/conservation/groups.hpp"
 #include "yack/chem/reactor/gvector.hpp"
 #include "yack/ios/xmlog.hpp"
 #include "yack/container/matrix.hpp"
