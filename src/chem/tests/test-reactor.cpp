@@ -51,20 +51,7 @@ YACK_UTEST(reactor)
     YACK_SIZEOF(gvector::type);
 
 
-
-    {
-
-        ios::ocstream fp("reactor.dot");
-        ios::vizible::digraph_init(fp,"G");
-        for(const cluster *cl=cs.linked->head;cl;cl=cl->next)
-        {
-            cl->viz(fp);
-        }
-        cs.viz_obs(fp);
-        ios::vizible::digraph_quit(fp);
-    }
-
-    ios::vizible::render("reactor.dot");
+    cs.graphViz("reactor");
 
     return 0;
 

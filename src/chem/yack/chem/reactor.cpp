@@ -165,6 +165,14 @@ namespace yack
             return res;
         }
 
+        size_t reactor:: max_degree() const throw()
+        {
+            size_t res = 0;
+            for(const cluster *cc=linked->head;cc;cc=cc->next) {
+                res = max_of(res,cc->cross->size());
+            }
+            return res;
+        }
 
       
 

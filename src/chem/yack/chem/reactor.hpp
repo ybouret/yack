@@ -46,6 +46,12 @@ namespace yack {
             //! save spectator ions
             void viz_obs(ios::ostream &fp) const;
 
+            //! save all layouts
+            void graphViz(const string &root) const;
+
+            //! maximum degree of crossed equilibria
+            size_t max_degree() const throw();
+
             //__________________________________________________________________
             //
             // members

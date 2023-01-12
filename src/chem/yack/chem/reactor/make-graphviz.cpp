@@ -133,6 +133,47 @@ namespace yack
             }
             fp << " }\n";
         }
+
+
+        void reactor:: graphViz(const string &root) const
+        {
+            // core system
+            {
+                const string fn = root + ".dot";
+                {
+                    ios::ocstream fp(fn);
+                    ios::vizible::digraph_init(fp,"G");
+                    for(const cluster *cl=linked->head;cl;cl=cl->next)
+                    {
+                        cl->viz(fp);
+                    }
+                    viz_obs(fp);
+                    ios::vizible::digraph_quit(fp);
+                }
+                ios::vizible::render(fn);
+            }
+
+            // cross system
+            const size_t nd = max_degree();
+            for(size_t i=2;i<=nd;++i)
+            {
+                const string fn = root + vformat("%u",unsigned(i)) + ".dot";
+                {
+                    ios::ocstream fp(fn);
+                    ios::vizible::digraph_init(fp,"G");
+                    for(const cluster *cl=linked->head;cl;cl=cl->next)
+                    {
+                        const gvector &gvec = *(cl->cross);
+                        if(gvec.size()>=i) {
+                            gvec[i]->viz(fp,*(cl->alive),cl->gvidx);
+                        }
+                    }
+                    ios::vizible::digraph_quit(fp);
+                }
+                ios::vizible::render(fn);
+            }
+        }
+
     }
 }
 
