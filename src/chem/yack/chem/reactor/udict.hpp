@@ -74,6 +74,7 @@ namespace yack {
             size_t forward(const size_t) const; //!< global to local
             size_t reverse(const size_t) const; //!< local to global
 
+            //! expand source into target using reverse mapping
             template <typename TARGET, typename SOURCE> inline
             void expand(TARGET &target, SOURCE &source) const {
                 for(size_t I=target.size();I>0;--I) target[I] = 0;

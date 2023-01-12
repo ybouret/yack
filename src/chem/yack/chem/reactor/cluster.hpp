@@ -4,6 +4,7 @@
 #define YACK_CHEMICAL_CLUSTER_INCLUDED 1
 
 #include "yack/chem/reactor/eq-tier.hpp"
+#include "yack/chem/reactor/eq-repo.hpp"
 #include "yack/chem/reactor/sp-tier.hpp"
 #include "yack/chem/reactor/udict.hpp"
 #include "yack/chem/reactor/cl-groups.hpp"
@@ -15,32 +16,7 @@ namespace yack {
     
     namespace chemical {
 
-        typedef core_repo<const equilibrium>   eq_repo_;
-        typedef eq_repo_::node_type            eq_node;
-        class eq_repo : public object, public counted, public eq_repo_
-        {
-        public:
-            typedef  arc_ptr<eq_repo> ptr;
-            explicit eq_repo() throw() : object(), counted(), eq_repo_()  {}
-            virtual ~eq_repo() throw() {}
-
-            friend std::ostream & operator<<(std::ostream &os, const eq_repo &self) {
-                os << "<< ";
-                node_type *node = self.head;
-                if(node)
-                {
-                    os << (***node).name;
-                    for(node=node->next;node;node=node->next) {
-                        os << ", " << (***node).name;
-                    }
-                }
-                os << " >>";
-                return os;
-            }
-
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(eq_repo);
-        };
+       
 
         typedef vector<eq_repo::ptr,memory::dyadic> gvector_;
 

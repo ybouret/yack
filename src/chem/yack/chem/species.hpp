@@ -76,9 +76,9 @@ namespace yack
             YACK_DISABLE_ASSIGN(species);
         };
 
-        typedef core_repo<const species> sp_repo; //!< alias
-        typedef sp_repo::node_type       sp_node; //!< alias
-        typedef auto_ptr<const sp_repo>  sp_repo_ptr;
+        typedef core_repo<const species> sp_repo;     //!< alias
+        typedef sp_repo::node_type       sp_node;     //!< alias
+        typedef auto_ptr<const sp_repo>  sp_repo_ptr; //!< alias
 
     }
 }
