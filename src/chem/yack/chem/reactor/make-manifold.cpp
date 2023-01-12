@@ -218,7 +218,8 @@ namespace yack
                     for(const eq_node *node=er.head;node;node=node->next)
                     {
                         const equilibrium &eq = ***node;
-                        YACK_XMLOG(xml,eq.name);
+                        all.pad(*xml << eq.name, eq) << " : " << (const components &)eq << std::endl;
+                        //YACK_XMLOG(xml,eq.name);
                     }
                 }
             }
