@@ -15,6 +15,29 @@ namespace yack {
     
     namespace chemical {
 
+
+        typedef vector<glist_ptr,memory::dyadic> gvector_;
+
+        class gvector : public object, public gvector_
+        {
+        public:
+            typedef auto_ptr<const gvector> ptr;
+            explicit gvector() : gvector_(8,as_capacity) {}
+            virtual ~gvector() throw() {}
+
+            glist & degree(const size_t n) {
+                while( size() < n ) {
+                    const glist_ptr tmp = new glist();
+                    push_back(tmp);
+                }
+                return *((*this)[n]);
+            }
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(gvector);
+        };
+
+
         //______________________________________________________________________
         //
         //
@@ -71,13 +94,14 @@ namespace yack {
             cluster              *next;   //!< for clusters
             cluster              *prev;   //!< for list
             const alist::ptr      alive;  //!< alive.size = M
-            const auto_ptr<glist> group;  //!< group.size = N+manifold
+            const glist_ptr       group;  //!< group.size = N+manifold
             const sp_tier::ptr    breed;  //!< category for species
             const eq_tier::ptr    genus;  //!< category for equilibria
             const udict::ptr      sDict;  //!< dictionary for species
             const udict::ptr      eDict;  //!< dictionary for eqs
             const claws::ptr      canon;  //!< c-laws to follow
             const cl_groups::ptr  clamp;  //!< groups of independent c-laws
+            const gvector::ptr    cross;  //!< number of mixed equilibria
             const unsigned        gvidx;  //!< graphivz index
 
         private:

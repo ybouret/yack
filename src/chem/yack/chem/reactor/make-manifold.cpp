@@ -177,28 +177,31 @@ namespace yack
             
             //------------------------------------------------------------------
             //
-            // creating mixed equilibria
+            // creating cross/mixed equilibria
             //
             //------------------------------------------------------------------
-
-
-            glist          gmixed;
             {
+                gvector       &gcross = coerce( *cross );
                 cxx_array<int> weight(Nu.rows);
                 cxx_array<int> stoich(Nu.cols);
                 {
                     size_t imix=1;
                     for(const collector::entry *ep=cw->head;ep;ep=ep->next,++imix)
                     {
-                        const readable<int> &native = *ep;
-                        eDict->expand(weight,native);
-                        qbranch::assess(stoich, weight, Nu);
-                        const equilibrium &eq = promote_mixed(weight,stoich,K,lib,eqs,all);
+                        const readable<int> &native = *ep;                                   // native weights
+                        eDict->expand(weight,native);                                        // global weights
+                        qbranch::assess(stoich, weight, Nu);                                 // derive stoich coefficients
+                        const equilibrium &eq = promote_mixed(weight,stoich,K,lib,eqs,all);  // create mixed equlibrium
+                        const size_t       dg = qselect::count_valid(weight);                // degree
+                        gcross.degree(dg) << eq;                                             // register degree
+
+
+
+
+
                         const components  &cm = eq;
-                        const size_t       dg = qselect::count_valid(weight);
                         std::cerr << "u" << imix << " : |" << native << "|=" << dg << " => " << stoich << " : " << eq.name << " : " << cm << std::endl;
-                        
-                        gmixed << eq;
+                        coerce(*group) << eq;
                     }
                 }
             }

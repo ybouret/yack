@@ -26,9 +26,11 @@ namespace yack
         eDict( new udict("equilibrium") ),
         canon( new claws() ),
         clamp( new cl_groups()  ),
+        cross( new gvector()    ),
         gvidx(0)
         {
             coerce( *group ) << first;
+            coerce( *cross ) << group;
         }
 
         
