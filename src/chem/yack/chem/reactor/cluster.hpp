@@ -71,7 +71,7 @@ namespace yack {
             cluster              *next;   //!< for clusters
             cluster              *prev;   //!< for list
             const alist::ptr      alive;  //!< alive.size = M
-            const auto_ptr<glist> group;  //!< group.size = N
+            const auto_ptr<glist> group;  //!< group.size = N+manifold
             const sp_tier::ptr    breed;  //!< category for species
             const eq_tier::ptr    genus;  //!< category for equilibria
             const udict::ptr      sDict;  //!< dictionary for species

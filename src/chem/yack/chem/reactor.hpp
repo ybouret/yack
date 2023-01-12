@@ -43,7 +43,7 @@ namespace yack {
             //! maximum size of a group of a conservation laws within a cluster
             size_t max_claws_per_cluster() const throw();
 
-
+            void viz_obs(ios::ostream &fp) const;
 
             //__________________________________________________________________
             //
@@ -54,14 +54,15 @@ namespace yack {
             const equilibria        all;   //!< lattice
             const readable<double> &K;     //!< user's memory for K
             const alist::ptr       act;    //!< active species, compress indices
-            const size_t           M;      //!< total species
-            const size_t           N;      //!< number of single
-            const matrix<int>      Nu;     //!< global topology
-            const clusters_ptr     linked; //!< clusters of linked equilibria
-            const size_t           Nq;     //!< number of conservations
-            const matrix<unsigned> Qm;     //!< [Nq:M] matrix of conservations
-            const size_t           L;      //!< lattice size = all.size()
-            const enode * const    el;     //!< first node of mixed equilibria
+            const auto_ptr<sp_repo> obs;    //!< spectator species
+            const size_t            M;      //!< total species
+            const size_t            N;      //!< number of single
+            const matrix<int>       Nu;     //!< global topology
+            const clusters_ptr      linked; //!< clusters of linked equilibria
+            const size_t            Nq;     //!< number of conservations
+            const matrix<unsigned>  Qm;     //!< [Nq:M] matrix of conservations
+            const size_t            L;      //!< lattice size = all.size()
+            const enode * const     el;     //!< first node of mixed equilibria
             
         private:
             const lockable::scope libLock;

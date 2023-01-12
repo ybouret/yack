@@ -58,7 +58,7 @@ YACK_UTEST(reactor)
         {
             cl->viz(fp);
         }
-
+        cs.viz_obs(fp);
         ios::vizible::digraph_quit(fp);
     }
 

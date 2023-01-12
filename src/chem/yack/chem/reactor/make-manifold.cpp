@@ -181,21 +181,30 @@ namespace yack
             //
             //------------------------------------------------------------------
 
-            cxx_array<int> weight(Nu.rows);
-            cxx_array<int> stoich(Nu.cols);
+
+            glist          gmixed;
             {
-                size_t imix=1;
-                for(const collector::entry *ep=cw->head;ep;ep=ep->next,++imix)
+                cxx_array<int> weight(Nu.rows);
+                cxx_array<int> stoich(Nu.cols);
                 {
-                    const readable<int> &native = *ep;
-                    eDict->expand(weight,native);
-                    qbranch::assess(stoich, weight, Nu);
-                    const equilibrium &eq = promote_mixed(weight,stoich,K,lib,eqs,all);
-                    const components  &cm = eq;
-                    const size_t       dg = qselect::count_valid(weight);
-                    std::cerr << "u" << imix << " : |" << native << "|=" << dg << " => " << stoich << " : " << eq.name << " : " << cm << std::endl;
+                    size_t imix=1;
+                    for(const collector::entry *ep=cw->head;ep;ep=ep->next,++imix)
+                    {
+                        const readable<int> &native = *ep;
+                        eDict->expand(weight,native);
+                        qbranch::assess(stoich, weight, Nu);
+                        const equilibrium &eq = promote_mixed(weight,stoich,K,lib,eqs,all);
+                        const components  &cm = eq;
+                        const size_t       dg = qselect::count_valid(weight);
+                        std::cerr << "u" << imix << " : |" << native << "|=" << dg << " => " << stoich << " : " << eq.name << " : " << cm << std::endl;
+                        
+                        gmixed << eq;
+                    }
                 }
             }
+
+
+
 
         }
         

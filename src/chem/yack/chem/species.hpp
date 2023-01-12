@@ -6,6 +6,7 @@
 #include "yack/chem/entity.hpp"
 #include "yack/ptr/ark.hpp"
 #include "yack/data/dinky/core-repo.hpp"
+#include "yack/ptr/auto.hpp"
 
 namespace yack
 {
@@ -77,6 +78,7 @@ namespace yack
 
         typedef core_repo<const species> sp_repo; //!< alias
         typedef sp_repo::node_type       sp_node; //!< alias
+        typedef auto_ptr<const sp_repo>  sp_repo_ptr;
 
     }
 }

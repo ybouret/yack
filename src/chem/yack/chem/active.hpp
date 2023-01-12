@@ -27,8 +27,9 @@ namespace yack
             typedef auto_ptr<const alist> ptr; //!< alias
             explicit alist() throw();          //!< setup empty
             virtual ~alist() throw();          //!< cleanup
-            explicit alist(const snode *);     //!< from library
-            
+            explicit alist(const snode *);     //!< active from library
+
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(alist);
         };

@@ -16,7 +16,7 @@ namespace yack
             for(;sn;sn=sn->next)
             {
                 const species &s = ***sn;
-                if(s.rank)
+                if(s.rank>0)
                     self << s;
             }
         }

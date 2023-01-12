@@ -44,6 +44,8 @@ namespace yack
             }
         }
 
+
+
         void cluster:: viz(ios::ostream &fp) const
         {
             fp << "subgraph cluster_";
@@ -93,3 +95,27 @@ namespace yack
 
 }
 
+#include "yack/chem/reactor.hpp"
+
+namespace yack
+{
+    namespace chemical
+    {
+        void reactor:: viz_obs(ios::ostream &fp) const
+        {
+            const sp_node *node = obs->head;
+            if(node)
+            {
+                const unsigned idx = linked->tail ? linked->tail->gvidx + 1 : 0;
+                fp << "subgraph cluster_";
+                fp("%u",idx);
+                fp << " {\n";
+                for(;node;node=node->next) {
+                    const species &s = ***node;
+                    sp_viz(fp,s, ", shape=rectangle,style=dashed");
+                }
+                fp << " }\n";
+            }
+        }
+    }
+}

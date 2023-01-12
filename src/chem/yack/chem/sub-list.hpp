@@ -6,6 +6,7 @@
 
 #include "yack/chem/indexed.hpp"
 #include "yack/object.hpp"
+#include "yack/counted.hpp"
 #include "yack/data/list/cxx.hpp"
 
 namespace yack
@@ -79,7 +80,7 @@ namespace yack
         //
         //______________________________________________________________________
         template <typename T>
-        class sub_list : public object
+        class sub_list : public object, public counted
         {
         public:
             //__________________________________________________________________

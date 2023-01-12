@@ -26,7 +26,7 @@ namespace yack
         K(K_),
 
         act( new alist(lib.head()) ),
-        
+        obs( new sp_repo() ),
         M(lib.size()),
         N(eqs.size()),
 
@@ -56,7 +56,14 @@ namespace yack
                 YACK_XMLOG(xml,eqs);
             }
 
-            YACK_XMLOG(xml, "active=" << **act);
+
+            for(const snode *sn=lib.head();sn;sn=sn->next) {
+                const species &sp = ***sn;
+                if(sp.rank<=0) coerce(*obs) << sp;
+            }
+            YACK_XMLOG(xml, "active    = " << **act);
+            YACK_XMLOG(xml, "spectator = " << *obs);
+
 
             if(N>0)
             {
@@ -89,18 +96,22 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 {
+#if 0
                     cxx_array<size_t> ranks(M);
                     for(const snode *sn=lib.head();sn;sn=sn->next)
                     {
                         const species &s = ***sn;
                         ranks[*s] = s.rank;
                     }
+#endif
                     build_related(xml);
+#if 0
                     for(const snode *sn=lib.head();sn;sn=sn->next)
                     {
                         const species &s = ***sn;
                         coerce(s.rank) = ranks[*s];
                     }
+#endif
                 }
 
                 // finalize
@@ -152,6 +163,9 @@ namespace yack
             }
             return res;
         }
+
+
+      
 
 
     }
