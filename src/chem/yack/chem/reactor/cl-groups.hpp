@@ -3,7 +3,7 @@
 #ifndef YACK_CHEMICAL_CL_GROUPS_INCLUDED
 #define YACK_CHEMICAL_CL_GROUPS_INCLUDED 1
 
-#include "yack/chem/reactor/claws.hpp"
+#include "yack/chem/reactor/conservation/laws.hpp"
 #include "yack/data/dinky/core-repo.hpp"
 #include "yack/container/matrix.hpp"
 

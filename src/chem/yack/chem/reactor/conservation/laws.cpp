@@ -1,4 +1,4 @@
-#include "yack/chem/reactor/claws.hpp"
+#include "yack/chem/reactor/conservation/laws.hpp"
 
 namespace yack
 {
@@ -6,9 +6,7 @@ namespace yack
     {
         claws::  claws() throw() : object(), claws_() {}
         claws:: ~claws() throw() {}
-
         
-
     }
 
 }
