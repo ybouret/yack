@@ -28,11 +28,18 @@ set(chem_reactor ${chem_reactor_decl} ${chem_reactor_srcs})
 SOURCE_GROUP(chem/reactor FILES ${chem_reactor})
 install( FILES ${chem_reactor_decl} DESTINATION include/yack/chem/reactor )
 
+#reactor_conservation
+file(GLOB chem_reactor_conservation_decl yack/chem/reactor/conservation/*.hpp)
+file(GLOB chem_reactor_conservation_srcs yack/chem/reactor/conservation/*.cpp)
+set(chem_reactor_conservation ${chem_reactor_conservation_decl} ${chem_reactor_conservation_srcs})
+SOURCE_GROUP(chem/reactor/conservation FILES ${chem_reactor_conservation})
+install( FILES ${chem_reactor_conservation_decl} DESTINATION include/yack/chem/reactor/conservation )
+
 add_library(yack-chem STATIC
 ${chem_main}
 ${chem_designer}
 ${chem_eqs}
-${chem_reactor}
+${chem_reactor} ${chem_reactor_conservation}
 )
 
 install( TARGETS yack-chem ARCHIVE DESTINATION lib )
