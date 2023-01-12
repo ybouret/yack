@@ -77,7 +77,7 @@ namespace yack {
             const udict::ptr      eDict;  //!< dictionary for eqs
             const claws::ptr      canon;  //!< c-laws to follow
             const cl_groups::ptr  clamp;  //!< groups of independent c-laws
-            const gvector::ptr    cross;  //!< number of mixed equilibria
+            const gvector::ptr    cross;  //!< number of cross/mixed equilibria per degree
             const unsigned        gvidx;  //!< graphivz index
 
         private:
