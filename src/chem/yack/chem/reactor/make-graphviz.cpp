@@ -134,7 +134,7 @@ namespace yack
             for(sub_list<species>::node_type *node=act->head;node;node=node->next)
             {
                 const species &sp = node->host;
-                sp_viz(fp,sp, ", shape=rectangle");
+                sp_viz(fp,sp, ", shape=egg");
             }
 
             // write equilibria
@@ -147,7 +147,7 @@ namespace yack
                 fp << " edge  [" << color << ", font" << color << "];\n";
                 
                 const equilibrium &eq = ***node;
-                eq_viz(fp,eq,",shape=oval,style=bold");
+                eq_viz(fp,eq,",shape=box,style=bold");
             }
 
             fp << " }\n";

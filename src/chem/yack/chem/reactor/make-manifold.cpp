@@ -213,7 +213,7 @@ namespace yack
                 YACK_XMLSUB(xml,"hierarchy");
                 for(size_t i=1;i<=cross->size();++i) {
                     const eq_repo &er    = *((*cross)[i]);
-                    const string   level = vformat("cross#%u@%u",unsigned(i),unsigned(er.size));
+                    const string   level = vformat("|level#%u|=%u",unsigned(i),unsigned(er.size));
                     YACK_XMLSUB(xml,level);
                     for(const eq_node *node=er.head;node;node=node->next)
                     {
@@ -222,9 +222,6 @@ namespace yack
                     }
                 }
             }
-
-
-
 
         }
         
