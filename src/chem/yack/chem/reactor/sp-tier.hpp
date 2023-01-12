@@ -4,7 +4,6 @@
 #define YACK_CHEMICAL_SP_TIER_INCLUDED 1
 
 #include "yack/chem/active.hpp"
-#include "yack/chem/sub-list.hpp"
 #include "yack/ptr/auto.hpp"
 
 namespace yack {

@@ -69,8 +69,8 @@ namespace yack {
             //__________________________________________________________________
             cluster              *next;   //!< for clusters
             cluster              *prev;   //!< for list
-            const alist::ptr      alive;  //!< alive.size = M
-            const auto_ptr<glist> group;  //!< group.size = N+manifold
+            const alist::ptr      alive;  //!< alive.size
+            const auto_ptr<glist> group;  //!< group.size, initial+manifold
             const sp_tier::ptr    breed;  //!< category for species
             const eq_tier::ptr    genus;  //!< category for equilibria
             const udict::ptr      sDict;  //!< dictionary for species
@@ -82,7 +82,7 @@ namespace yack {
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(cluster);
-            std::ostream & display(std::ostream &) const;
+            std::ostream &      display(std::ostream &) const;
             void                collect_alive();
             void                create_system();
             void                conservations(const xmlog &xml);
@@ -92,7 +92,6 @@ namespace yack {
                                               const library          &lib,
                                               const equilibria       &eqs,
                                               equilibria             &all);
-
             const equilibrium & promote_mixed(const readable<int>    &weight,
                                               const readable<int>    &stoich,
                                               const readable<double> &K,

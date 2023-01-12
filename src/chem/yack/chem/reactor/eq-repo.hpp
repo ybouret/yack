@@ -5,6 +5,7 @@
 
 #include "yack/chem/equilibria.hpp"
 #include "yack/data/dinky/core-repo.hpp"
+#include "yack/chem/sub-list.hpp"
 
 namespace yack {
 
@@ -36,13 +37,26 @@ namespace yack {
 
             //__________________________________________________________________
             //
-            // types and definitions
+            // C++
             //__________________________________________________________________
             explicit eq_repo() throw(); //!< setup
             virtual ~eq_repo() throw(); //!< cleanup
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
             //! display
             friend std::ostream & operator<<(std::ostream &, const eq_repo &);
+
+
+            //! viz
+            void viz(ios::ostream            &fp,
+                     const sub_list<species> &act,
+                     const unsigned           igv) const;
+
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(eq_repo);

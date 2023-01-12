@@ -117,5 +117,22 @@ namespace yack
                 fp << " }\n";
             }
         }
+
+
+        void eq_repo:: viz(ios::ostream            &fp,
+                           const sub_list<species> &act,
+                           const unsigned int       igv) const
+        {
+            fp << "subgraph cluster_";
+            fp("%u",igv);
+            fp << " {\n";
+            for(sub_list<species>::node_type *node=act->head;node;node=node->next)
+            {
+                const species &sp = node->host;
+                sp_viz(fp,sp, ", shape=rectangle");
+            }
+            fp << " }\n";
+        }
     }
 }
+
