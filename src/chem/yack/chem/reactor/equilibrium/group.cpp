@@ -1,6 +1,6 @@
 
 
-#include "yack/chem/reactor/eq-tier.hpp"
+#include "yack/chem/reactor/equilibrium/group.hpp"
 
 namespace yack {
 
@@ -29,22 +29,3 @@ namespace yack {
     }
 
 }
-
-
-namespace yack {
-
-    namespace chemical {
-        
-        eq_tier:: ~eq_tier() throw() {}
-
-
-        eq_tier:: eq_tier() :
-        bounded( new eq_group() ),
-        roaming( new eq_group() ),
-        special( new eq_group() )
-        {}
-
-    }
-
-}
-

@@ -1,5 +1,5 @@
 
-#include "yack/chem/reactor/eq-repo.hpp"
+#include "yack/chem/reactor/equilibrium/repo.hpp"
 
 namespace yack {
 

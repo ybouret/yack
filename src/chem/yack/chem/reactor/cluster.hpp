@@ -3,11 +3,11 @@
 #ifndef YACK_CHEMICAL_CLUSTER_INCLUDED
 #define YACK_CHEMICAL_CLUSTER_INCLUDED 1
 
-#include "yack/chem/reactor/eq-tier.hpp"
+#include "yack/chem/reactor/equilibrium/tier.hpp"
+#include "yack/chem/reactor/equilibrium/ledger.hpp"
 #include "yack/chem/reactor/sp-tier.hpp"
 #include "yack/chem/reactor/udict.hpp"
 #include "yack/chem/reactor/conservation/groups.hpp"
-#include "yack/chem/reactor/gvector.hpp"
 #include "yack/ios/xmlog.hpp"
 #include "yack/container/matrix.hpp"
 
@@ -86,7 +86,10 @@ namespace yack {
             const claws::ptr      canon;  //!< conservation laws to follow
             const clots::ptr      claim;  //!< groups of independent laws, for custodian
 
-            const gvector::ptr    cross;  //!< number of cross/mixed equilibria per degree from manifold
+            //------------------------------------------------------------------
+            // misceallenous
+            //------------------------------------------------------------------
+            const ledger::ptr     cross;  //!< number of cross/mixed equilibria per degree from manifold
             const unsigned        gvidx;  //!< graphivz index
 
         private:

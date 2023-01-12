@@ -47,8 +47,8 @@ YACK_UTEST(reactor)
     YACK_SIZEOF(umap);
     YACK_SIZEOF(udict);
     YACK_SIZEOF(custodian);
-    YACK_SIZEOF(gvector);
-    YACK_SIZEOF(gvector::type);
+    YACK_SIZEOF(ledger);
+    YACK_SIZEOF(ledger::type);
 
 
     cs.graphViz("reactor");

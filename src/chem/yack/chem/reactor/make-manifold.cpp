@@ -190,7 +190,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             {
-                gvector       &gcross = coerce( *cross );
+                ledger        &gcross = coerce( *cross );
                 cxx_array<int> weight(Nu.rows);
                 cxx_array<int> stoich(Nu.cols);
                 {
@@ -219,7 +219,6 @@ namespace yack
                     {
                         const equilibrium &eq = ***node;
                         all.pad(*xml << eq.name, eq) << " : " << (const components &)eq << std::endl;
-                        //YACK_XMLOG(xml,eq.name);
                     }
                 }
             }

@@ -1,61 +1,57 @@
+
 //! \file
 
-#ifndef YACK_CHEMICAL_CLAW_TEAMS_INCLUDED
-#define YACK_CHEMICAL_CLAW_TEAMS_INCLUDED 1
+#ifndef YACK_CHEMICAL_GVECTOR_INCLUDED
+#define YACK_CHEMICAL_GVECTOR_INCLUDED 1
 
-#include "yack/chem/claw/team.hpp"
-#include "yack/ptr/auto.hpp"
+#include "yack/chem/reactor/equilibrium/repo.hpp"
 
-namespace yack
-{
-    namespace chemical
-    {
-        //______________________________________________________________________
-        //
-        //
-        //! base class for teams of interlinked conservation laws
-        //
-        //______________________________________________________________________
-        typedef cxx_list_of<claw_team> claw_teams_; //!< alias
+namespace yack {
 
+    namespace chemical {
 
         //______________________________________________________________________
         //
         //
-        //! independant teams for a cluster
+        //! base class for a group of equilibria
         //
         //______________________________________________________________________
-        class claw_teams : public object, public claw_teams_
+        typedef vector<eq_repo::ptr,memory::dyadic> ledger_;
+
+        //______________________________________________________________________
+        //
+        //
+        //! ledger of shared list of equilibria
+        //
+        //______________________________________________________________________
+        class ledger : public object, public ledger_
         {
         public:
             //__________________________________________________________________
             //
             // types
             //__________________________________________________________________
-            typedef auto_ptr<const claw_teams> pointer; //!< alias
+            typedef auto_ptr<const ledger> ptr; //!< alias
 
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            explicit claw_teams() throw(); //!< setup empty
-            virtual ~claw_teams() throw(); //!< cleanup
+            explicit ledger();          //!< setup with first list
+            virtual ~ledger() throw();  //!< cleanup
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
 
-            //! recruit a law: create or add to a team, update structure
-            void recruit(const conservation_law &law);
-
-            
+            //! ensure list of degree n exists, return content
+            eq_repo & degree(const size_t n);
 
 
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(claw_teams);
-            bool merged(const conservation_law &law);
-            void reduce() throw();
+            YACK_DISABLE_COPY_AND_ASSIGN(ledger);
+            void grow();
         };
     }
 

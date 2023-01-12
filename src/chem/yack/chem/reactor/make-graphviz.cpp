@@ -182,7 +182,7 @@ namespace yack
                     ios::vizible::digraph_init(fp,"G");
                     for(const cluster *cl=linked->head;cl;cl=cl->next)
                     {
-                        const gvector &gvec = *(cl->cross);
+                        const ledger &gvec = *(cl->cross);
                         if(gvec.size()>=i) {
                             gvec[i]->viz(fp,*(cl->alive),cl->gvidx);
                         }

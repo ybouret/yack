@@ -1,23 +1,22 @@
-
-#include "yack/chem/reactor/gvector.hpp"
+#include "yack/chem/reactor/equilibrium/ledger.hpp"
 
 namespace yack {
 
     namespace chemical {
 
 
-        void gvector:: grow()
+        void ledger:: grow()
         {
             const eq_repo::ptr tmp = new eq_repo();
             push_back(tmp);
         }
 
-        gvector::  gvector() : gvector_(8,as_capacity) { grow(); }
+        ledger::  ledger() : ledger_(8,as_capacity) { grow(); }
 
-        gvector:: ~gvector() throw() {}
+        ledger:: ~ledger() throw() {}
 
 
-        eq_repo & gvector:: degree(const size_t n) {
+        eq_repo & ledger:: degree(const size_t n) {
             while( size() < n )
                 grow();
             return *( (*this)[n] );
