@@ -1,5 +1,5 @@
 #include "yack/math/api.hpp"
-#include <cmath>
+#include <cstdlib>
 
 namespace yack
 {
@@ -17,7 +17,7 @@ namespace yack
         template <>
         int abs_of<int>(const int &x)
         {
-            return std::abs(x);
+            return  abs(x);
         }
 
     }
