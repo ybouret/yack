@@ -28,8 +28,11 @@ YACK_UTEST(reactor)
     std::cerr << eqs << std::endl;
     std::cerr << std::endl;
 
-    reactor cs(lib,eqs,0.0);
+    vector<double> K;
+    reactor cs(lib,eqs,K);
 
+
+    
     YACK_SIZEOF(entity);
     YACK_SIZEOF(alist);
     YACK_SIZEOF(glist);
@@ -61,6 +64,7 @@ YACK_UTEST(reactor)
 
     ios::vizible::render("reactor.dot");
 
+    return 0;
 
     vector<double> C(cs.M+2);
 

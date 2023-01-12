@@ -49,9 +49,13 @@ namespace yack {
             friend std::ostream & operator<<( std::ostream & , const cluster & );
 
             //! compile once built
-            void compile(const xmlog       &,
-                         const matrix<int> &Nu,
-                         const unsigned);
+            void compile(const xmlog            &xml,
+                         const matrix<int>      &Nu,
+                         const readable<double> &K,
+                         const library          &lib,
+                         const equilibria       &eqs,
+                         equilibria             &all,
+                         const unsigned          igv);
             
 
             //__________________________________________________________________
@@ -69,7 +73,7 @@ namespace yack {
             const alist::ptr      alive;  //!< alive.size = M
             const auto_ptr<glist> group;  //!< group.size = N
             const sp_tier::ptr    breed;  //!< category for species
-            const eq_tier::ptr    genus;  //!< category for equilibrium
+            const eq_tier::ptr    genus;  //!< category for equilibria
             const udict::ptr      sDict;  //!< dictionary for species
             const udict::ptr      eDict;  //!< dictionary for eqs
             const claws::ptr      canon;  //!< c-laws to follow
@@ -79,10 +83,23 @@ namespace yack {
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(cluster);
             std::ostream & display(std::ostream &) const;
-            void collect_alive();
-            void create_system();
-            void conservations(const xmlog &xml);
-            void make_manifold(const xmlog &xml, const matrix<int> &Nu);
+            void                collect_alive();
+            void                create_system();
+            void                conservations(const xmlog &xml);
+            void                make_manifold(const xmlog            &xml,
+                                              const matrix<int>      &Nu,
+                                              const readable<double> &K,
+                                              const library          &lib,
+                                              const equilibria       &eqs,
+                                              equilibria             &all);
+
+            const equilibrium & promote_mixed(const readable<int>    &weight,
+                                              const readable<int>    &stoich,
+                                              const readable<double> &K,
+                                              const library          &lib,
+                                              const equilibria       &eqs,
+                                              equilibria             &all);
+            
         };
 
 

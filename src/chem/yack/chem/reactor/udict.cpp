@@ -55,7 +55,7 @@ namespace yack {
 
         size_t udict:: reverse(const size_t I) const
         {
-            const size_t *i = fwd->search(I); if(!i)  throw imported::exception(fn,"no %s reverse index %u",kind,unsigned(I));
+            const size_t *i = rev->search(I); if(!i)  throw imported::exception(fn,"no %s reverse index %u",kind,unsigned(I));
             return *i;
         }
 

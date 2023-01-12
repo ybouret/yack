@@ -64,15 +64,22 @@ namespace yack {
                 for(;node;node=node->next)
                 {
                     const indexed &x = node->host;
-                    const size_t   i = *x;
-                    const size_t   I = **node;
-                    if( !coerce(*fwd).insert(i,I) ) throw_multiple_forward(i);
-                    if( !coerce(*rev).insert(I,i) ) throw_multiple_reverse(I);
+                    const size_t   I = *x;     //!< global
+                    const size_t   i = **node; //!< local
+                    if( !coerce(*fwd).insert(I,i) ) throw_multiple_forward(I);
+                    if( !coerce(*rev).insert(i,I) ) throw_multiple_reverse(i);
                 }
             }
 
             size_t forward(const size_t) const; //!< global to local
             size_t reverse(const size_t) const; //!< local to global
+
+            template <typename TARGET, typename SOURCE> inline
+            void expand(TARGET &target, SOURCE &source) const {
+                for(size_t I=target.size();I>0;--I) target[I] = 0;
+                for(size_t i=source.size();i>0;--i) target[ reverse(i) ] = source[i];
+            }
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(udict);

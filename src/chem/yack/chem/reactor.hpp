@@ -33,9 +33,9 @@ namespace yack {
             //__________________________________________________________________
 
             //! full setup
-            explicit reactor(library     &lib_,
-                             equilibria  &eqs_,
-                             const double t0);
+            explicit reactor(library                &lib_,
+                             equilibria             &eqs_,
+                             const readable<double> &K_);
 
             //! cleanup
             virtual ~reactor() throw();
@@ -43,19 +43,26 @@ namespace yack {
             //! maximum size of a group of a conservation laws within a cluster
             size_t max_claws_per_cluster() const throw();
 
+
+
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
-            const library      &lib;    //!< library
-            const equilibria   &eqs;    //!< singles
-            const alist::ptr    act;    //!< active species, compress indices
+            const library          &lib;   //!< library
+            const equilibria       &eqs;   //!< singles
+            const equilibria        all;   //!< lattice
+            const readable<double> &K;     //!< user's memory for K
+            const alist::ptr       act;    //!< active species, compress indices
             const size_t           M;      //!< total species
             const size_t           N;      //!< number of single
             const matrix<int>      Nu;     //!< global topology
             const clusters_ptr     linked; //!< clusters of linked equilibria
             const size_t           Nq;     //!< number of conservations
             const matrix<unsigned> Qm;     //!< [Nq:M] matrix of conservations
+            const size_t           L;      //!< lattice size = all.size()
+            const enode * const    el;     //!< first node of mixed equilibria
+            
         private:
             const lockable::scope libLock;
             const lockable::scope eqsLock;

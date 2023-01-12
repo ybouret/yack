@@ -86,9 +86,13 @@ namespace yack
 
         
         
-        void cluster:: compile(const xmlog       &xml,
-                               const matrix<int> &Nu,
-                               const unsigned     igv)
+        void cluster:: compile(const xmlog            &xml,
+                               const matrix<int>      &Nu,
+                               const readable<double> &K,
+                               const library          &lib,
+                               const equilibria       &eqs,
+                               equilibria             &all,
+                               const unsigned          igv)
         {
 
             YACK_XMLSUB(xml,"cluster::compile");
@@ -102,8 +106,7 @@ namespace yack
             coerce( *sDict ).record( (*alive)->head );
             coerce( *eDict ).record( (*group)->head );
 
-
-
+            
             YACK_XMLOG(xml,"-- alive     : " << **alive);
             YACK_XMLOG(xml,"-- bounded   : " << genus->bounded);
             YACK_XMLOG(xml,"-- roaming   : " << genus->roaming);
@@ -114,7 +117,7 @@ namespace yack
             coerce(gvidx) = igv;
 
             conservations(xml);
-            make_manifold(xml,Nu);
+            make_manifold(xml,Nu,K,lib,eqs,all);
             lock();
         }
 

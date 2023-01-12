@@ -51,11 +51,9 @@ namespace yack
             solo_repo<const claw> sr; //!< repository for algorithm
             matrix<double>        Cs; //!< storage of concentrations
             cxx_array<double>     dC; //!< corrected
-            raddops               io; //!< internal
+            raddops               io; //!< internal additions
 
-
-
-
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(custodian);
             bool corrected(writable<double>    &C0,
