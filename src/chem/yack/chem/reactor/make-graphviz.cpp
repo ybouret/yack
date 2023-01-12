@@ -51,6 +51,7 @@ namespace yack
             fp << "subgraph cluster_";
             fp("%u",gvidx);
             fp << " {\n";
+            fp << "style=bold;\n";
 
             // write all species
             for(const sp_gnode *sn=breed->conserved->head;sn;sn=sn->next)
@@ -110,6 +111,7 @@ namespace yack
                 fp << "subgraph cluster_";
                 fp("%u",idx);
                 fp << " {\n";
+                fp << "style=\"bold,dashed\";\n";
                 for(;node;node=node->next) {
                     const species &s = ***node;
                     sp_viz(fp,s, ", shape=rectangle,style=dashed");
@@ -126,11 +128,28 @@ namespace yack
             fp << "subgraph cluster_";
             fp("%u",igv);
             fp << " {\n";
+            fp << "style=bold;\n";
+
+            // write species
             for(sub_list<species>::node_type *node=act->head;node;node=node->next)
             {
                 const species &sp = node->host;
                 sp_viz(fp,sp, ", shape=rectangle");
             }
+
+            // write equilibria
+            size_t count=0;
+            for(const eq_node *node = head; node; node=node->next)
+            {
+                const unsigned c = unsigned( 1 + (count++ % 7) ); assert(c>=1); assert(c<=7);
+                const string color = vformat("color=\"/dark27/%u\"",c);
+                fp << " node  [" << color << "];\n";
+                fp << " edge  [" << color << ", font" << color << "];\n";
+                
+                const equilibrium &eq = ***node;
+                eq_viz(fp,eq,",shape=oval,style=bold");
+            }
+
             fp << " }\n";
         }
 
