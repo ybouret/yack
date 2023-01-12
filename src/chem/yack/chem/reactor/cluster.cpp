@@ -30,7 +30,7 @@ namespace yack
         gvidx(0)
         {
             coerce( *group ) << first;
-            coerce( *cross ) << group;
+            
         }
 
         
@@ -109,10 +109,13 @@ namespace yack
             coerce( *eDict ).record( (*group)->head );
 
             
+
             YACK_XMLOG(xml,"-- alive     : " << **alive);
+
             YACK_XMLOG(xml,"-- bounded   : " << genus->bounded);
             YACK_XMLOG(xml,"-- roaming   : " << genus->roaming);
             YACK_XMLOG(xml,"-- special   : " << genus->special);
+            
             YACK_XMLOG(xml,"-- conserved : " << breed->conserved);
             YACK_XMLOG(xml,"-- unbounded : " << breed->unbounded);
 

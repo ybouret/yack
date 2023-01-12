@@ -15,26 +15,52 @@ namespace yack {
     
     namespace chemical {
 
+        typedef core_repo<const equilibrium>   eq_repo_;
+        typedef eq_repo_::node_type            eq_node;
+        class eq_repo : public object, public counted, public eq_repo_
+        {
+        public:
+            typedef  arc_ptr<eq_repo> ptr;
+            explicit eq_repo() throw() : object(), counted(), eq_repo_()  {}
+            virtual ~eq_repo() throw() {}
 
-        typedef vector<glist_ptr,memory::dyadic> gvector_;
+            friend std::ostream & operator<<(std::ostream &os, const eq_repo &self) {
+                os << "<< ";
+                node_type *node = self.head;
+                if(node)
+                {
+                    os << (***node).name;
+                    for(node=node->next;node;node=node->next) {
+                        os << ", " << (***node).name;
+                    }
+                }
+                os << " >>";
+                return os;
+            }
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(eq_repo);
+        };
+
+        typedef vector<eq_repo::ptr,memory::dyadic> gvector_;
 
         class gvector : public object, public gvector_
         {
         public:
             typedef auto_ptr<const gvector> ptr;
-            explicit gvector() : gvector_(8,as_capacity) {}
+            explicit gvector() : gvector_(8,as_capacity) { grow(); }
             virtual ~gvector() throw() {}
 
-            glist & degree(const size_t n) {
-                while( size() < n ) {
-                    const glist_ptr tmp = new glist();
-                    push_back(tmp);
-                }
-                return *((*this)[n]);
-            }
+            eq_repo & degree(const size_t n) {
+                while( size() < n )
+                    grow();
+                return *( (*this)[n] );
+             }
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(gvector);
+            void grow() { const eq_repo::ptr tmp = new eq_repo(); push_back(tmp); }
         };
 
 
@@ -48,7 +74,6 @@ namespace yack {
         {
         public:
             static const char * const clid; //!< "chemical::cluster"
-            typedef auto_ptr<const equilibria> eqs_ptr;
             
             //__________________________________________________________________
             //
@@ -94,7 +119,7 @@ namespace yack {
             cluster              *next;   //!< for clusters
             cluster              *prev;   //!< for list
             const alist::ptr      alive;  //!< alive.size = M
-            const glist_ptr       group;  //!< group.size = N+manifold
+            const auto_ptr<glist> group;  //!< group.size = N+manifold
             const sp_tier::ptr    breed;  //!< category for species
             const eq_tier::ptr    genus;  //!< category for equilibria
             const udict::ptr      sDict;  //!< dictionary for species

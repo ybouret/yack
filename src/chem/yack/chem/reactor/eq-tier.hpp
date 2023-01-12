@@ -20,8 +20,7 @@ namespace yack {
         //______________________________________________________________________
         typedef sub_node<equilibrium>    gnode; //!< alias
         typedef sub_list<equilibrium>    glist; //!< alias
-        typedef arc_ptr<glist>           glist_ptr; //!< alias
-
+        
         //______________________________________________________________________
         //
         //

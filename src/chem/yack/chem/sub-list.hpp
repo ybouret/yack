@@ -139,7 +139,6 @@ namespace yack
                 }
             }
 
-
         private:
             cxx_list_of<node_type> L;
         };

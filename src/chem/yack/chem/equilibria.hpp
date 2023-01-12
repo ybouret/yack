@@ -26,7 +26,7 @@ namespace yack
         //! set of equilibria
         //
         //______________________________________________________________________
-        class equilibria : public large_object, public gathering
+        class equilibria : public gathering
         {
         public:
             //__________________________________________________________________

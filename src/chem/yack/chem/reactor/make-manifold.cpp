@@ -165,7 +165,16 @@ namespace yack
                 case  1: YACK_XMLOG(xml, "-- standalone <" << (*group)->head->host.name << ">" ); return;
                 default: break;
             }
-            
+
+            //------------------------------------------------------------------
+            //
+            // register first degree eq
+            //
+            //------------------------------------------------------------------
+            for(const glist::node_type *node=grp->head;node;node=node->next) {
+                coerce( *(cross->front()) ) << node->host;
+            }
+
             //------------------------------------------------------------------
             //
             // build manifold by RAVEn on local topology
@@ -192,16 +201,24 @@ namespace yack
                         eDict->expand(weight,native);                                        // global weights
                         qbranch::assess(stoich, weight, Nu);                                 // derive stoich coefficients
                         const equilibrium &eq = promote_mixed(weight,stoich,K,lib,eqs,all);  // create mixed equlibrium
-                        const size_t       dg = qselect::count_valid(weight);                // degree
+                        const size_t       dg = qselect::count_valid(weight); assert(dg>=2); // degree
                         gcross.degree(dg) << eq;                                             // register degree
+                        coerce(*group)    << eq;                                             // append to group
+                    }
+                }
+            }
 
-
-
-
-
-                        const components  &cm = eq;
-                        std::cerr << "u" << imix << " : |" << native << "|=" << dg << " => " << stoich << " : " << eq.name << " : " << cm << std::endl;
-                        coerce(*group) << eq;
+            if(xml.verbose)
+            {
+                YACK_XMLSUB(xml,"hierarchy");
+                for(size_t i=1;i<=cross->size();++i) {
+                    const eq_repo &er    = *((*cross)[i]);
+                    const string   level = vformat("cross#%u@%u",unsigned(i),unsigned(er.size));
+                    YACK_XMLSUB(xml,level);
+                    for(const eq_node *node=er.head;node;node=node->next)
+                    {
+                        const equilibrium &eq = ***node;
+                        YACK_XMLOG(xml,eq.name);
                     }
                 }
             }

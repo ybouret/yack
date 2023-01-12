@@ -141,10 +141,11 @@ namespace yack
 
                 YACK_XMLOG(xml, "-- lattice:");
                 coerce(L) = all.size();
-                YACK_XMLOG(xml, "L  = " << L);
+                YACK_XMLOG(xml, "L  = " << L << " N = " << N);
                 const enode *en = all.head();  for(size_t i=N;i>0;--i) en=en->next;
                 coerce(el) = en;
-                if(verbose) {
+
+                if(false && verbose) {
                     for(en=el;en;en=en->next) {
                         const equilibrium &eq = ***en;
                         const components  &cm = eq;
