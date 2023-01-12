@@ -80,7 +80,9 @@ namespace yack {
             const udict::ptr      sDict;  //!< LUTs for species
             const udict::ptr      eDict;  //!< LUTs for equilibria
 
+            //------------------------------------------------------------------
             // describing conservation laws
+            //------------------------------------------------------------------
             const claws::ptr      canon;  //!< conservation laws to follow
             const clots::ptr      claim;  //!< groups of independent laws, for custodian
 
