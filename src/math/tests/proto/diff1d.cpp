@@ -25,9 +25,9 @@ YACK_UTEST(proto_diff1d)
     size_t         N     = 50000;
     size_t         every = 500;
 
-    //randomized::shared_bits      sran = new randomized::mt19937();
+    randomized::shared_bits      sran = new randomized::mt19937();
     //randomized::shared_bits      sran = new randomized::rand_();
-    randomized::shared_bits      sran = new randomized::ParkMiller();
+    //randomized::shared_bits      sran = new randomized::ParkMiller();
     randomized::gaussian<double> gran( sran );
     adder<double>                xadd(N);
 
@@ -40,8 +40,8 @@ YACK_UTEST(proto_diff1d)
     for(size_t i=2;i<=N;++i)
     {
         const double xold = x.back();
-        //x <<  xold + (sran->choice() ? 1 : -1);
-        x << xold + gran();
+        x <<  xold + (sran->choice() ? 1.0 : -1.0);
+        //x << xold + gran();
         YACK_ASSERT(i==x.size());
         fp("%lu %.15g\n",static_cast<unsigned long>(i), x.back());
         fp.flush();
