@@ -24,34 +24,35 @@ namespace yack
         //______________________________________________________________________
         //
         //
-        //! group of interdpendent conservation laws
+        //! group of interdependent conservation laws
         //
         //______________________________________________________________________
-        class cl_group : public object, public cl_repo
+        class clot : public object, public cl_repo
         {
         public:
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            explicit cl_group(const claw &); //!< create with first c-law
-            virtual ~cl_group()     throw(); //!< cleanup
+            explicit clot(const claw &); //!< create with first conservation law
+            virtual ~clot()     throw(); //!< cleanup
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            bool     attached_to(const claw     &) const throw(); //!< test attached to c-law
-            bool     attached_to(const cl_group &) const throw(); //!< test attached to another group
+            bool     attached_to(const claw &) const throw(); //!< test attached to c-law
+            bool     attached_to(const clot &) const throw(); //!< test attached to another group
 
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
-            cl_group *next; //!< for list
-            cl_group *prev; //!< for list
+            clot *next; //!< for list
+            clot *prev; //!< for list
+
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(cl_group);
+            YACK_DISABLE_COPY_AND_ASSIGN(clot);
         };
     }
 

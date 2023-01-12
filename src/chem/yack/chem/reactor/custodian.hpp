@@ -57,7 +57,7 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(custodian);
             bool corrected(writable<double>    &C0,
-                           const cl_group      &cg);
+                           const clot          &cg);
         };
 
     }

@@ -10,37 +10,28 @@ namespace yack
     namespace chemical
     {
         
-        
-        //______________________________________________________________________
-        //
-        //
-        //! base class list for groups of independent c-laws
-        //
-        //______________________________________________________________________
-        typedef cxx_list_of<cl_group> cl_groups_;
-
 
         //______________________________________________________________________
         //
         //
-        //! groups of independent c-laws
+        //! groups of independent conservation lots
         //
         //______________________________________________________________________
-        class cl_groups : public object, public cl_groups_
+        class clots : public object, public cxx_list_of<clot>
         {
         public:
             //__________________________________________________________________
             //
             // types
             //__________________________________________________________________
-            typedef auto_ptr<const cl_groups> ptr; //!< alias
+            typedef auto_ptr<const clots> ptr; //!< alias
 
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            explicit cl_groups() throw(); //!< setup
-            virtual ~cl_groups() throw(); //!< cleanup
+            explicit clots() throw(); //!< setup
+            virtual ~clots() throw(); //!< cleanup
 
             //__________________________________________________________________
             //
@@ -52,7 +43,7 @@ namespace yack
 
 
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(cl_groups);
+            YACK_DISABLE_COPY_AND_ASSIGN(clots);
         };
 
     }

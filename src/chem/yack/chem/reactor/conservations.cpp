@@ -257,10 +257,10 @@ namespace yack
                 {
                     for(claw *cl=canon->head;cl;cl=cl->next)
                     {
-                        coerce( *clamp ).recruit(*cl);
+                        coerce( *claim ).recruit(*cl);
                         cl->finalize();
                     }
-                    YACK_XMLOG(xml, "|_found " << clamp->size << " independent group" << plural::s(clamp->size) );
+                    YACK_XMLOG(xml, "|_found " << claim->size << " independent group" << plural::s(claim->size) );
                 }
 
             }

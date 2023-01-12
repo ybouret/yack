@@ -5,18 +5,18 @@ namespace yack
 {
     namespace chemical
     {
-        cl_groups:: cl_groups() throw() :
+        clots:: clots() throw() :
         object(),
-        cl_groups_()
+        cxx_list_of<clot>()
         {
 
         }
 
-        cl_groups:: ~cl_groups() throw()
+        clots:: ~clots() throw()
         {
         }
 
-        void cl_groups:: recruit(const claw &cl)
+        void clots:: recruit(const claw &cl)
         {
             //------------------------------------------------------------------
             //
@@ -24,7 +24,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             bool direct = false;
-            for(cl_group *g=head;g;g=g->next)
+            for(clot *g=head;g;g=g->next)
             {
                 if(g->attached_to(cl)) {
                     direct = true;
@@ -38,18 +38,18 @@ namespace yack
                 //--------------------------------------------------------------
                 // create new group
                 //--------------------------------------------------------------
-                push_back( new cl_group(cl) );
+                push_back( new clot(cl) );
             }
             else
             {
                 //--------------------------------------------------------------
                 // recompile
                 //--------------------------------------------------------------
-                cl_groups_ temp;
+                cxx_list_of<clot> temp;
                 while(size)
                 {
-                    auto_ptr<cl_group> g = pop_front();
-                    for(cl_group *h=temp.head;h;h=h->next)
+                    auto_ptr<clot> g = pop_front();
+                    for(clot *h=temp.head;h;h=h->next)
                     {
                         if(h->attached_to(*g))
                         {

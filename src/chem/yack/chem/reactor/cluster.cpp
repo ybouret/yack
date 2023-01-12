@@ -24,9 +24,9 @@ namespace yack
         genus( new eq_tier()            ),
         sDict( new udict("species")     ),
         eDict( new udict("equilibrium") ),
-        canon( new claws() ),
-        clamp( new cl_groups()  ),
-        cross( new gvector()    ),
+        canon( new claws()   ),
+        claim( new clots()   ),
+        cross( new gvector() ),
         gvidx(0)
         {
             coerce( *group ) << first;

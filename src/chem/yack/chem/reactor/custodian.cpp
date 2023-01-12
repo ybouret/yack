@@ -42,7 +42,7 @@ namespace yack
             bool did = false;
             for(const cluster *cc=cs.linked->head;cc;cc=cc->next)
             {
-                for(const cl_group *cg=cc->clamp->head;cg;cg=cg->next)
+                for(const clot *cg=cc->claim->head;cg;cg=cg->next)
                 {
                     if( corrected(C0,*cg) ) {
                         did = true;
@@ -54,7 +54,7 @@ namespace yack
 
 
         bool custodian:: corrected(writable<double> &C0,
-                                   const cl_group   &cg)
+                                   const clot       &cg)
         {
             assert(cg.size<=nc);
 

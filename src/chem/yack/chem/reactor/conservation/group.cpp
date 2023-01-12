@@ -5,7 +5,7 @@ namespace yack
     namespace chemical
     {
 
-        cl_group:: cl_group(const claw &first) :
+        clot:: clot(const claw &first) :
         cl_repo(),
         next(0),
         prev(0)
@@ -13,11 +13,11 @@ namespace yack
             (*this) << first;
         }
 
-        cl_group:: ~cl_group() throw()
+        clot:: ~clot() throw()
         {
         }
 
-        bool cl_group:: attached_to(const claw &cl) const throw()
+        bool clot:: attached_to(const claw &cl) const throw()
         {
             for(const node_type *node=head;node;node=node->next)
             {
@@ -27,7 +27,7 @@ namespace yack
             return false;
         }
 
-        bool cl_group:: attached_to(const cl_group &g) const throw()
+        bool clot:: attached_to(const clot &g) const throw()
         {
             assert( &g != this );
             for(const node_type *node=g.head;node;node=node->next)

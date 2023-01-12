@@ -69,14 +69,21 @@ namespace yack {
             //__________________________________________________________________
             cluster              *next;   //!< for clusters
             cluster              *prev;   //!< for list
+
+            //------------------------------------------------------------------
+            // describing species and equilibria
+            //------------------------------------------------------------------
             const alist::ptr      alive;  //!< alive.size, fixed from the begining
             const auto_ptr<glist> group;  //!< group.size, initial+manifold
             const sp_tier::ptr    breed;  //!< category for species
             const eq_tier::ptr    genus;  //!< category for equilibria
             const udict::ptr      sDict;  //!< LUTs for species
             const udict::ptr      eDict;  //!< LUTs for equilibria
+
+            // describing conservation laws
             const claws::ptr      canon;  //!< conservation laws to follow
-            const cl_groups::ptr  clamp;  //!< groups of independent laws, for custodian
+            const clots::ptr      claim;  //!< groups of independent laws, for custodian
+
             const gvector::ptr    cross;  //!< number of cross/mixed equilibria per degree from manifold
             const unsigned        gvidx;  //!< graphivz index
 
