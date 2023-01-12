@@ -1,5 +1,5 @@
 
-#include "yack/chem/reactor/sp-tier.hpp"
+#include "yack/chem/reactor/species/tier.hpp"
 
 namespace yack {
 

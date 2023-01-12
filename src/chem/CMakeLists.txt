@@ -42,11 +42,18 @@ set(chem_reactor_equilibrium ${chem_reactor_equilibrium_decl} ${chem_reactor_equ
 SOURCE_GROUP(chem/reactor/equilibrium FILES ${chem_reactor_equilibrium})
 install( FILES ${chem_reactor_equilibrium_decl} DESTINATION include/yack/chem/reactor/equilibrium )
 
+#reactor/species
+file(GLOB chem_reactor_species_decl yack/chem/reactor/species/*.hpp)
+file(GLOB chem_reactor_species_srcs yack/chem/reactor/species/*.cpp)
+set(chem_reactor_species ${chem_reactor_species_decl} ${chem_reactor_species_srcs})
+SOURCE_GROUP(chem/reactor/species FILES ${chem_reactor_species})
+install( FILES ${chem_reactor_species_decl} DESTINATION include/yack/chem/reactor/species )
+
 add_library(yack-chem STATIC
 ${chem_main}
 ${chem_designer}
 ${chem_eqs}
-${chem_reactor} ${chem_reactor_conservation} ${chem_reactor_equilibrium}
+${chem_reactor} ${chem_reactor_conservation} ${chem_reactor_equilibrium} ${chem_reactor_species} 
 )
 
 install( TARGETS yack-chem ARCHIVE DESTINATION lib )

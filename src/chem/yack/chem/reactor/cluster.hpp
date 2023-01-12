@@ -5,9 +5,9 @@
 
 #include "yack/chem/reactor/equilibrium/tier.hpp"
 #include "yack/chem/reactor/equilibrium/ledger.hpp"
-#include "yack/chem/reactor/sp-tier.hpp"
-#include "yack/chem/reactor/udict.hpp"
+#include "yack/chem/reactor/species/tier.hpp"
 #include "yack/chem/reactor/conservation/groups.hpp"
+#include "yack/chem/reactor/udict.hpp"
 #include "yack/ios/xmlog.hpp"
 #include "yack/container/matrix.hpp"
 
