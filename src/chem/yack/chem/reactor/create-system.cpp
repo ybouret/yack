@@ -1,91 +1,57 @@
 #include "yack/chem/reactor/cluster.hpp"
+#include "yack/system/imported.hpp"
 
 namespace yack
 {
     namespace chemical
     {
         
-        static inline
-        bool are_all_unbounded(const actors   &players,
-                               const addrbook &tribe) throw()
-        {
-            for(const actor *a=players->head;a;a=a->next)
-            {
-                const species &s = **a;
-                if( !tribe.search(&s) ) return false;
-            }
-            return true;
-        }
-
-        static inline
-        bool is_special(const equilibrium &eq, const addrbook &tribe) throw()
-        {
-            return are_all_unbounded(eq.reac,tribe) || are_all_unbounded(eq.prod,tribe);
-        }
 
 
         void cluster:: create_system()
         {
 
-            eq_group  remaining;
-
-            eq_group & roaming = coerce( *(genus->roaming) );
-            eq_group & bounded = coerce( *(genus->bounded) );
-            eq_group & special = coerce( *(genus->special) );
+            eq_group & delimited = coerce( *(genus->delimited) );
+            eq_group & reac_only = coerce( *(genus->reac_only) );
+            eq_group & prod_only = coerce( *(genus->prod_only) );
 
             //------------------------------------------------------------------
-            // first pass: collect obvious roaming eqs and species
+            // first pass: obvious classification, collect unboundned
             //------------------------------------------------------------------
             addrbook   tribe;
             for(const gnode *gn = (*group)->head; gn; gn=gn->next )
             {
                 const equilibrium &eq = gn->host;
-                if(eq.reac->size<=0 || eq.prod->size<=0)
+                if(eq.reac->size<=0)
                 {
-                    roaming << *gn;
-                    eq.update(tribe);
-                }
-                else
-                {
-                    remaining  << *gn;
-                }
-            }
-
-            //------------------------------------------------------------------
-            // second pass: processing remaining to detect more unbounded
-            //------------------------------------------------------------------
-            {
-            SECOND_PASS:
-                for(const eq_gnode *node=remaining.head;node;node=node->next)
-                {
-                    const equilibrium &eq = (***node).host;
-                    if(is_special(eq,tribe))
+                    if(eq.prod->size<=0)
                     {
-                        if(eq.update(tribe))
-                        {
-                            // updated list of species
-                            goto SECOND_PASS;
-                        }
+                        throw imported::exception(clid,"undefined <%s>", eq.name() );
+                    }
+                    else
+                    {
+                        reac_only << *gn;
+                        eq.update(tribe);
                     }
                 }
-            }
-
-
-            //------------------------------------------------------------------
-            // third pass: dispatch remaining
-            //------------------------------------------------------------------
-            while( remaining.size )
-            {
-                eq_gnode          *gn = remaining.pop_front();
-                const equilibrium &eq = (***gn).host;
-                if(is_special(eq,tribe))
-                    special.push_back(gn);
                 else
-                    bounded.push_back(gn);
+                {
+                    if(eq.prod->size<=0)
+                    {
+                        prod_only << *gn;
+                        eq.update(tribe);
+                    }
+                    else
+                    {
+                        delimited << *gn;
+                    }
+                }
+
             }
 
+
             //------------------------------------------------------------------
-            // finalize: dispatch species
+            // second pass: dispatch species
             //------------------------------------------------------------------
             for(const anode *sn = (*alive)->head; sn; sn=sn->next )
             {

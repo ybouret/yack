@@ -57,30 +57,30 @@ namespace yack
             for(const sp_gnode *sn=breed->conserved->head;sn;sn=sn->next)
             {
                 const species &s = (***sn).host;
-                sp_viz(fp,s, ", shape=rectangle,style=filled");
+                sp_viz(fp,s, ", shape=egg,style=filled");
             }
 
             for(const sp_gnode *sn=breed->unbounded->head;sn;sn=sn->next)
             {
                 const species &s = (***sn).host;
-                sp_viz(fp,s, ", shape=rectangle");
+                sp_viz(fp,s, ", shape=egg");
             }
 
 
             // write all equilibria
-            for(const eq_gnode *en=genus->bounded->head;en;en=en->next)
+            for(const eq_gnode *en=genus->delimited->head;en;en=en->next)
             {
                 eq_viz(fp,(***en).host,",shape=oval,style=bold");
             }
 
-            for(const eq_gnode *en=genus->roaming->head;en;en=en->next)
+            for(const eq_gnode *en=genus->reac_only->head;en;en=en->next)
             {
-                eq_viz(fp,(***en).host,",shape=octagon");
+                eq_viz(fp,(***en).host,",shape=house");
             }
 
-            for(const eq_gnode *en=genus->special->head;en;en=en->next)
+            for(const eq_gnode *en=genus->prod_only->head;en;en=en->next)
             {
-                eq_viz(fp,(***en).host,",shape=octagon,style=dashed");
+                eq_viz(fp,(***en).host,",shape=invhouse");
             }
 
             // write conservation laws

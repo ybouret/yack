@@ -35,10 +35,10 @@ namespace yack {
             //
             // members
             //__________________________________________________________________
-            const auto_ptr<eq_group> bounded; //!< at least one conserved species in both sides
-            const auto_ptr<eq_group> roaming; //!< prod only or reac only
-            const auto_ptr<eq_group> special; //!< all reac or all prod, or both are unbounded
-
+            const auto_ptr<eq_group> delimited; //!< at least one conserved species in both sides
+            const auto_ptr<eq_group> reac_only; //!< only reactants
+            const auto_ptr<eq_group> prod_only; //!< only products
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(eq_tier);
         };

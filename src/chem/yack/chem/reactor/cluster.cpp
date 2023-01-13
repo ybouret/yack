@@ -112,9 +112,9 @@ namespace yack
 
             YACK_XMLOG(xml,"-- alive     : " << **alive);
 
-            YACK_XMLOG(xml,"-- bounded   : " << genus->bounded);
-            YACK_XMLOG(xml,"-- roaming   : " << genus->roaming);
-            YACK_XMLOG(xml,"-- special   : " << genus->special);
+            YACK_XMLOG(xml,"-- delimited : " << genus->delimited);
+            YACK_XMLOG(xml,"-- reac_only : " << genus->reac_only);
+            YACK_XMLOG(xml,"-- prod_only : " << genus->prod_only);
             
             YACK_XMLOG(xml,"-- conserved : " << breed->conserved);
             YACK_XMLOG(xml,"-- unbounded : " << breed->unbounded);

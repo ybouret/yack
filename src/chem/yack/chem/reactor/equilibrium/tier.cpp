@@ -11,9 +11,9 @@ namespace yack {
 
 
         eq_tier:: eq_tier() :
-        bounded( new eq_group() ),
-        roaming( new eq_group() ),
-        special( new eq_group() )
+        delimited( new eq_group() ),
+        reac_only( new eq_group() ),
+        prod_only( new eq_group() )
         {}
 
     }

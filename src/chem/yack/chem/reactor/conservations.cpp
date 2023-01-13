@@ -146,7 +146,7 @@ namespace yack
             YACK_XMLSUB(xml,fn);
 
 
-            const size_t n = genus->bounded->size;
+            const size_t n = genus->delimited->size;
 
             if(n<=0) {
                 YACK_XMLOG(xml, "no bounded equilibrium");
@@ -174,7 +174,7 @@ namespace yack
                     matrix<int>  nu(n,m);
                     {
                         size_t i=1;
-                        for(const eq_gnode *en=genus->bounded->head;en;en=en->next)
+                        for(const eq_gnode *en=genus->delimited->head;en;en=en->next)
                         {
                             // get equilibrium
                             const equilibrium  &eq = (***en).host;
