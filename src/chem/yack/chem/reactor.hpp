@@ -76,7 +76,7 @@ namespace yack {
             const lockable::scope eqsLock;
             
             void build_related(const xmlog &);
-            
+            void create_squads(const xmlog &);
             YACK_DISABLE_COPY_AND_ASSIGN(reactor);
         };
 

@@ -89,8 +89,9 @@ namespace yack
         }
 
 
-        
-        
+
+
+
         void cluster:: compile(const xmlog            &xml,
                                const matrix<int>      &Nu,
                                const readable<double> &K,
@@ -127,7 +128,9 @@ namespace yack
 
             conservations(xml);
             make_manifold(xml,Nu,K,lib,eqs,all);
-            make_detached(xml,all);
+
+            
+            //make_detached(xml,all);
             lock();
         }
 

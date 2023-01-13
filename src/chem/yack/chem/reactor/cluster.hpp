@@ -56,7 +56,12 @@ namespace yack {
                          const equilibria       &eqs,
                          equilibria             &all,
                          const unsigned          igv);
-            
+
+            //! shape platoon from detached matrix
+            void make_detached(const xmlog        &xml,
+                               squads             &platoon,
+                               const matrix<bool> &detached,
+                               const char * const  info);
 
             //__________________________________________________________________
             //
@@ -118,9 +123,9 @@ namespace yack {
                                               const library          &lib,
                                               const equilibria       &eqs,
                                               equilibria             &all);
-            void                make_detached(const xmlog      &xml,
-                                              const equilibria &all);
 
+
+            
         };
 
 
