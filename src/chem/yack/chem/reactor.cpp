@@ -282,6 +282,8 @@ namespace yack
             YACK_XMLOG(xml, "-- create one wing per cluster");
             //
             //------------------------------------------------------------------
+            all(std::cerr << "soften=","",topology);
+
             fill_detached(detached,topology); //if(xml.verbose) all(*xml << "detached=","",detached);
 
             for(cluster *cc=linked->head;cc;cc=cc->next)
