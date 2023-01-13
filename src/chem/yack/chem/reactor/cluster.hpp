@@ -5,6 +5,7 @@
 
 #include "yack/chem/reactor/equilibrium/tier.hpp"
 #include "yack/chem/reactor/equilibrium/ledger.hpp"
+#include "yack/chem/reactor/equilibrium/squads.hpp"
 #include "yack/chem/reactor/species/tier.hpp"
 #include "yack/chem/reactor/conservation/groups.hpp"
 #include "yack/chem/reactor/types/udict.hpp"
@@ -17,7 +18,6 @@ namespace yack {
     
     namespace chemical {
 
-     
         //______________________________________________________________________
         //
         //
@@ -89,6 +89,12 @@ namespace yack {
             //------------------------------------------------------------------
             const claws::ptr      canon;  //!< conservation laws to follow
             const clots::ptr      claim;  //!< groups of independent laws, for custodian
+
+            //------------------------------------------------------------------
+            // describing detached equilibria
+            //------------------------------------------------------------------
+            const squads::ptr     sq1;
+            const squads::ptr     sq2;
 
             //------------------------------------------------------------------
             // misceallenous
