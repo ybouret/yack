@@ -224,25 +224,71 @@ namespace yack
         void reactor:: create_squads(const xmlog &xml)
         {
             YACK_XMLSUB(xml,"squads");
+
+            //------------------------------------------------------------------
+            //
+            // initialize
+            //
+            //------------------------------------------------------------------
             const size_t dim = all.size();
             matrix<bool> detached(dim,dim);
             matrix<int>  topology(dim,Nu.cols);
+            eq_repo_     assembly;
 
+            //------------------------------------------------------------------
+            //
             YACK_XMLOG(xml, "-- create global topology");
+            //
+            //------------------------------------------------------------------
             for(const enode *en=all.head();en;en=en->next)
             {
                 const equilibrium &eq = ***en;
                 eq.fill(topology[*eq]);
             }
-            fill_detached(detached,topology);
-            if(xml.verbose)
+            fill_detached(detached,topology); //if(xml.verbose) all(*xml << "detached=","",detached);
+
+
+            //------------------------------------------------------------------
+            //
+            YACK_XMLOG(xml, "-- create one army per cluster");
+            //
+            //------------------------------------------------------------------
+            for(cluster *cc=linked->head;cc;cc=cc->next)
             {
-                all(*xml << "detached=","",detached);
+                //--------------------------------------------------------------
+                // make army
+                //--------------------------------------------------------------
+                cc->assemble_all_group(assembly);                // create assembly
+                coerce( *(cc->army) ).shape(assembly,detached);  // assembly+detached => army
+
+                cc->army->print(xml,"cluster::army");
+
+                //--------------------------------------------------------------
+                // soften topology
+                //--------------------------------------------------------------
+                for(const sp_gnode *sn=cc->breed->unbounded->head;sn;sn=sn->next)
+                {
+                    const species &s  = (***sn).host;
+                    const size_t   j  = *s;
+                    for(size_t i=dim;i>0;--i) {
+                        topology[i][j] = 0;
+                    }
+                    YACK_XMLOG(xml, "discarding '" << s.name << "'");
+                }
             }
+
+            //------------------------------------------------------------------
+            //
+            YACK_XMLOG(xml, "-- create one wing per cluster");
+            //
+            //------------------------------------------------------------------
+            fill_detached(detached,topology); //if(xml.verbose) all(*xml << "detached=","",detached);
 
             for(cluster *cc=linked->head;cc;cc=cc->next)
             {
-                cc->make_detached(xml, coerce( *(cc->army) ),detached, "cluster::army");
+                cc->assemble_delimited(assembly);                // create assembly
+                coerce( *(cc->wing) ).shape(assembly,detached);  // assembly+detached => wing
+                cc->wing->print(xml,"cluster::wing");
             }
 
         }

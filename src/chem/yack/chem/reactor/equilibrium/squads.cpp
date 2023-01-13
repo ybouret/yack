@@ -1,5 +1,6 @@
 
 #include "yack/chem/reactor/equilibrium/squads.hpp"
+#include "yack/ios/xmlog.hpp"
 
 namespace yack {
 
@@ -14,9 +15,6 @@ namespace yack {
 
         void squads:: shape(const eq_repo_ &assembly, const matrix<bool> &detached)
         {
-
-            assert(assembly.size<=detached.rows);
-            assert(assembly.size<=detached.cols);
 
             // initialize
             for(const eq_node *en=assembly.head;en;en=en->next)
@@ -40,6 +38,19 @@ namespace yack {
 
             // sort
             merge_list_of<squad>::sort(*this,squad::compare);
+        }
+
+        void squads:: print(const xmlog &xml, const char * const info) const
+        {
+            if(xml.verbose)
+            {
+                YACK_XMLSUB(xml,info);
+                for(const squad *sq = head;sq;sq=sq->next)
+                {
+                    *xml << *sq << std::endl;
+                }
+            }
+
         }
 
     }

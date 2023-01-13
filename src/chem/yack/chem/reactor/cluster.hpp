@@ -63,6 +63,10 @@ namespace yack {
                                const matrix<bool> &detached,
                                const char * const  info);
 
+
+            void assemble_all_group(eq_repo_ &assembly) const;
+            void assemble_delimited(eq_repo_ &assembly) const;
+
             //__________________________________________________________________
             //
             // methods
