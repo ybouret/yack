@@ -10,13 +10,45 @@ namespace yack {
 
     namespace chemical
     {
+        //______________________________________________________________________
+        //
+        //
+        // types for frontier sqq
+        //
+        //______________________________________________________________________
+        typedef coop_repo<const species> sp_para; //!< shared list of species
+        typedef sp_para::zpool_type      sp_bank; //!< alias
+        typedef sp_para::proxy_type      sp_fund; //!< alias
 
-        
-        class frontier
+        //______________________________________________________________________
+        //
+        //
+        //! list of vanishing species at given xi
+        //
+        //______________________________________________________________________
+        class frontier : public sp_para
         {
         public:
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit frontier(const sp_fund &) throw();
+            virtual ~frontier() throw();
 
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            double   xi; //!< at xi, species will vanish
+            
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(frontier);
