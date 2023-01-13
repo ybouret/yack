@@ -1,6 +1,6 @@
 
 #ifndef YACK_CHEMICAL_EQ_GROUP_INCLUDED
-#define YACK_CHEMICAL_EQ_GROUO_INCLUDED 1
+#define YACK_CHEMICAL_EQ_GROUP_INCLUDED 1
 
 #include "yack/chem/equilibria.hpp"
 #include "yack/chem/sub-list.hpp"
@@ -39,6 +39,12 @@ namespace yack {
         public:
             //__________________________________________________________________
             //
+            // types
+            //__________________________________________________________________
+            typedef auto_ptr<const eq_group> ptr; //!< alias
+            
+            //__________________________________________________________________
+            //
             // C++
             //__________________________________________________________________
             explicit eq_group() throw();
@@ -48,11 +54,8 @@ namespace yack {
             //
             // methods
             //__________________________________________________________________
-
-            //! specific display
-            friend std::ostream & operator<<(std::ostream &, const eq_group &);
-
-            void stamp() throw(); //!< set core to current size
+            YACK_PROTO_OSTREAM(eq_group); //!< specific display
+            void stamp() throw();         //!< set core to current size
 
             //__________________________________________________________________
             //

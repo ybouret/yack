@@ -31,13 +31,14 @@ namespace yack {
             //
             // methods
             //__________________________________________________________________
-            squad *clone() const; //!< return new squad(*this)
-            friend std::ostream &operator<<(std::ostream &, const squad &);
+            squad *clone() const;                                       //!< return new squad(*this)
+            YACK_PROTO_OSTREAM(squad);                                  //!< display
+            static int compare(const squad * , const squad * ) throw(); //!< lexicographic
+
+            //! accept equilibrium with higher index and detached of all
             bool   accepts(const equilibrium  &eq,
                            const matrix<bool> &detached) const throw();
 
-            //! lexicographic compare
-            static int compare(const squad *lhs, const squad *rhs) throw();
 
             //__________________________________________________________________
             //

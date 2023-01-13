@@ -4,6 +4,7 @@
 #define YACK_CHEMICAL_EQ_TIER_INCLUDED 1
 
 #include "yack/chem/reactor/equilibrium/group.hpp"
+#include "yack/chem/reactor/equilibrium/repo.hpp"
 
 namespace yack {
 
@@ -35,15 +36,16 @@ namespace yack {
             //
             // method
             //__________________________________________________________________
-            void dispatch(const gnode *gn); //!< according to reac/prod
+            bool dispatch(const gnode *gn); //!< according to reac/prod, return true if new roaming
 
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
-            const auto_ptr<eq_group> delimited; //!< at least one conserved species in both sides
-            const auto_ptr<eq_group> reac_only; //!< only reactants
-            const auto_ptr<eq_group> prod_only; //!< only products
+            const eq_group::ptr      delimited; //!< at least one conserved species in both sides
+            const eq_group::ptr      reac_only; //!< only reactants
+            const eq_group::ptr      prod_only; //!< only products
+            const auto_ptr<eq_repo>  balancing; //!< for balancing, without roaming
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(eq_tier);

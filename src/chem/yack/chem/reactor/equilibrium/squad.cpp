@@ -49,7 +49,13 @@ namespace yack {
             const equilibrium &lhs = ***tail;
             const size_t l = *lhs;
             const size_t r = *rhs;
-            return (r>l) && detached[l][r];
+            if(r<=l) return false;
+            const readable<bool> &ok = detached[l];
+            for(const eq_node *mine=head;mine;mine=mine->next)
+            {
+                if( ! ok[ ****mine ] ) return false;
+            }
+            return true;
         }
 
         int squad:: compare(const squad *lhs, const squad *rhs) throw()

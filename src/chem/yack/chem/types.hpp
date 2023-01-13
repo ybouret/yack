@@ -6,6 +6,7 @@
 
 #include "yack/math/multiplier.hpp"
 #include "yack/math/adder.hpp"
+#include "yack/proto-ostream.hpp"
 
 namespace yack
 {

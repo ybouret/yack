@@ -32,10 +32,13 @@ namespace yack {
             //
             // methods
             //__________________________________________________________________
+
+            //!  squads from assembly of equilibria and their detached state
             void shape(const eq_repo_     &assembly,
                        const matrix<bool> &detached);
 
-            void print(const xmlog &xml, const char * const info) const;
+            //! print squads
+            void print(const xmlog &xml, const char * const mark) const;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(squads);

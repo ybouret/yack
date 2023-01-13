@@ -77,70 +77,105 @@ namespace yack
                 YACK_DISABLE_COPY_AND_ASSIGN(collector);
             };
 
-        }
 
 
-        static inline
-        void compute_local_topology(matrix<int>       &nu,
-                                    const glist       &grp,
-                                    const alist       &act,
-                                    const matrix<int> &Nu) throw()
-        {
-            for(const gnode *en=grp->head;en;en=en->next)
+
+            static inline
+            void compute_local_topology(matrix<int>       &nu,
+                                        const glist       &grp,
+                                        const alist       &act,
+                                        const matrix<int> &Nu) throw()
             {
-                const equilibrium   &eq = en->host;
-                const size_t         eI = *eq;
-                const size_t         ei = **en;
-                const readable<int> &nI = Nu[eI];
-                writable<int>       &ni = nu[ei];
-                for(const anode *sn=act->head;sn;sn=sn->next)
+                for(const gnode *en=grp->head;en;en=en->next)
                 {
-                    const species &sp = sn->host;
-                    const size_t   sJ = *sp;
-                    const size_t   sj = **sn;
-                    ni[sj] = nI[sJ];
-                }
-            }
-        }
-
-
-        static inline
-        void build_manifold(const xmlog       &xml,
-                            collector         &cw,
-                            const glist       &grp,
-                            const alist       &act,
-                            const matrix<int> &Nu)
-        {
-            {
-                const size_t n = grp->size; assert(n>0);  // equilibria
-                const size_t m = act->size; assert(m>=n); // species
-                matrix<int>  mu;                          // compressed transposed topoplogy
-
-                //--------------------------------------------------------------
-                // compute local topology and its transposed
-                //--------------------------------------------------------------
-                {
-                    matrix<int>  nu(n,m);
-                    compute_local_topology(nu,grp,act,Nu);
-                    YACK_XMLOG(xml, "nu=" << nu);
-                    if(n!=alga::rank(nu))            throw imported::exception(cluster::clid,"invalid topology rank");
-                    if(n!=qselect::compress(mu,nu))  throw imported::exception(cluster::clid,"invalid transposed rank");
-                    YACK_XMLOG(xml, "mu=" << mu);
-                }
-
-                //--------------------------------------------------------------
-                // use RAVEn
-                //--------------------------------------------------------------
-                {
-                    qbranch qgen;
-                    qgen.batch(mu,n,keep_more_than_two<int>,cw);
+                    const equilibrium   &eq = en->host;
+                    const size_t         eI = *eq;
+                    const size_t         ei = **en;
+                    const readable<int> &nI = Nu[eI];
+                    writable<int>       &ni = nu[ei];
+                    for(const anode *sn=act->head;sn;sn=sn->next)
+                    {
+                        const species &sp = sn->host;
+                        const size_t   sJ = *sp;
+                        const size_t   sj = **sn;
+                        ni[sj] = nI[sJ];
+                    }
                 }
             }
 
-            //--------------------------------------------------------------
-            // finalize
-            //--------------------------------------------------------------
-            cw.organize();
+
+            static inline
+            void build_manifold(const xmlog       &xml,
+                                collector         &cw,
+                                const glist       &grp,
+                                const alist       &act,
+                                const matrix<int> &Nu)
+            {
+                {
+                    const size_t n = grp->size; assert(n>0);  // equilibria
+                    const size_t m = act->size; assert(m>=n); // species
+                    matrix<int>  mu;                          // compressed transposed topoplogy
+
+                    //----------------------------------------------------------
+                    // compute local topology and its transposed
+                    //----------------------------------------------------------
+                    {
+                        matrix<int>  nu(n,m);
+                        compute_local_topology(nu,grp,act,Nu);
+                        YACK_XMLOG(xml, "nu=" << nu);
+                        if(n!=alga::rank(nu))            throw imported::exception(cluster::clid,"invalid topology rank");
+                        if(n!=qselect::compress(mu,nu))  throw imported::exception(cluster::clid,"invalid transposed rank");
+                        YACK_XMLOG(xml, "mu=" << mu);
+                    }
+
+                    //----------------------------------------------------------
+                    // use RAVEn
+                    //----------------------------------------------------------
+                    {
+                        qbranch qgen;
+                        qgen.batch(mu,n,keep_more_than_two<int>,cw);
+                    }
+                }
+
+                //--------------------------------------------------------------
+                // finalize
+                //--------------------------------------------------------------
+                cw.organize();
+
+            }
+
+
+            static inline
+            void populate(addrbook &roaming, const eq_gnode *node)
+            {
+                for(;node;node=node->next)
+                {
+                    const equilibrium &eq = (***node).host;
+                    roaming.ensure( &eq );
+                }
+            }
+
+            static inline
+            void populate(eq_repo_ &balance, const eq_gnode *node)
+            {
+                for(;node;node=node->next)
+                {
+                    const equilibrium &eq = (***node).host;
+                    balance << eq;
+                }
+            }
+
+            static inline
+            bool has_roaming(const readable<int> &native,
+                             const gnode         *node,
+                             const addrbook      &roaming)
+            {
+                for(size_t i=native.size();i>0;--i,node=node->next)
+                {
+                    if( native[**node] && roaming.search( &(node->host)) ) return true;
+                }
+                return false;
+            }
 
         }
 
@@ -168,12 +203,12 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // register first degree eq
+            // register first degree equilibria
             //
             //------------------------------------------------------------------
-            for(const glist::node_type *node=grp->head;node;node=node->next) {
+            for(const glist::node_type *node=grp->head;node;node=node->next)
                 coerce( *(cross->front()) ) << node->host;
-            }
+
 
             //------------------------------------------------------------------
             //
@@ -193,6 +228,12 @@ namespace yack
                 ledger        &layout = coerce( *cross );
                 cxx_array<int> weight(Nu.rows);
                 cxx_array<int> stoich(Nu.cols);
+                addrbook       roaming;
+                eq_repo       &balance = coerce( *(genus->balancing) );
+                populate(roaming,genus->prod_only->head);
+                populate(roaming,genus->reac_only->head);
+                populate(balance,genus->delimited->head);
+
                 {
                     size_t imix=1;
                     for(const collector::entry *ep=cw->head;ep;ep=ep->next,++imix)
@@ -204,11 +245,16 @@ namespace yack
                         const size_t       dg = qselect::count_valid(weight); assert(dg>=2); // degree
                         layout.degree(dg) << eq;                                             // register degree
                         coerce(*group)    << eq;                                             // append to group
-                        coerce(*genus).dispatch((*group)->tail);                             // classify new eq
+                        if( coerce(*genus).dispatch((*group)->tail) ) roaming.ensure(&eq);   // classifying and updating
+
+                        // check if kept for balance
+                        if( !has_roaming(native, (*group)->head,roaming) )
+                            balance << eq;
                     }
                 }
             }
 
+            
             if(xml.verbose)
             {
                 YACK_XMLSUB(xml,"hierarchy");
@@ -220,6 +266,13 @@ namespace yack
                     {
                         const equilibrium &eq = ***node;
                         all.pad(*xml << eq.name, eq) << " : " << (const components &)eq << std::endl;
+                    }
+                }
+                {
+                    YACK_XMLSUB(xml, "balancing");
+                    for(const eq_node *node=genus->balancing->head;node;node=node->next)
+                    {
+                        YACK_XMLOG(xml, " (*) <" << (***node).name << ">");
                     }
                 }
             }

@@ -223,7 +223,7 @@ namespace yack
 
         void reactor:: create_squads(const xmlog &xml)
         {
-            YACK_XMLSUB(xml,"squads");
+            YACK_XMLSUB(xml,"cluster::squads");
 
             //------------------------------------------------------------------
             //
@@ -237,7 +237,7 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            YACK_XMLOG(xml, "-- create global topology");
+            YACK_XMLOG(xml, "--> create global topology");
             //
             //------------------------------------------------------------------
             for(const enode *en=all.head();en;en=en->next)
@@ -250,7 +250,7 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            YACK_XMLOG(xml, "-- create one army per cluster");
+            YACK_XMLOG(xml, "--> create one army per cluster");
             //
             //------------------------------------------------------------------
             for(cluster *cc=linked->head;cc;cc=cc->next)
@@ -264,7 +264,7 @@ namespace yack
                 cc->army->print(xml,"cluster::army");
 
                 //--------------------------------------------------------------
-                // soften topology
+                // soften topology: removing unbounded species
                 //--------------------------------------------------------------
                 for(const sp_gnode *sn=cc->breed->unbounded->head;sn;sn=sn->next)
                 {
@@ -273,23 +273,20 @@ namespace yack
                     for(size_t i=dim;i>0;--i) {
                         topology[i][j] = 0;
                     }
-                    YACK_XMLOG(xml, "discarding '" << s.name << "'");
+                    YACK_XMLOG(xml, " (-) '" << s.name << "'");
                 }
             }
 
             //------------------------------------------------------------------
             //
-            YACK_XMLOG(xml, "-- create one wing per cluster");
+            YACK_XMLOG(xml, "--> create one wing per cluster");
+            // using only balancing equilibria
             //
             //------------------------------------------------------------------
-            all(std::cerr << "soften=","",topology);
-
-            fill_detached(detached,topology); //if(xml.verbose) all(*xml << "detached=","",detached);
-
+            fill_detached(detached,topology);
             for(cluster *cc=linked->head;cc;cc=cc->next)
             {
-                cc->assemble_delimited(assembly);                // create assembly
-                coerce( *(cc->wing) ).shape(assembly,detached);  // assembly+detached => wing
+                coerce( *(cc->wing) ).shape(*(cc->genus->balancing),detached);  // assembly+detached => wing
                 cc->wing->print(xml,"cluster::wing");
             }
 

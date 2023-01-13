@@ -56,17 +56,10 @@ namespace yack {
                          const equilibria       &eqs,
                          equilibria             &all,
                          const unsigned          igv);
-
-            //! shape platoon from detached matrix
-            void make_detached(const xmlog        &xml,
-                               squads             &platoon,
-                               const matrix<bool> &detached,
-                               const char * const  info);
-
-
+            
+            //! convert group into simple repo
             void assemble_all_group(eq_repo_ &assembly) const;
-            void assemble_delimited(eq_repo_ &assembly) const;
-
+            
             //__________________________________________________________________
             //
             // methods
