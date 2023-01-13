@@ -35,8 +35,8 @@ namespace yack {
             //
             // method
             //__________________________________________________________________
-            void dispatch(const gnode *gn);
-            
+            void dispatch(const gnode *gn); //!< according to reac/prod
+
             //__________________________________________________________________
             //
             // members

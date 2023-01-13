@@ -16,10 +16,16 @@ namespace yack {
     
     namespace chemical {
 
+        //! arrays of booleans
         class booleans : public object, public cxx_array<bool> {
         public:
-            typedef auto_ptr<const booleans> ptr;
+
+            typedef auto_ptr<const booleans> ptr; //!< alias
+
+            //! setup
             explicit booleans(const size_t n, const bool f) : object(), cxx_array<bool>(n,f) {}
+
+            //! cleanup
             virtual ~booleans() throw() {}
 
         private:
