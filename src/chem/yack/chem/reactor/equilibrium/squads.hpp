@@ -5,6 +5,7 @@
 #define YACK_CHEMICAL_EQ_SQUADS_INCLUDED 1
 
 #include "yack/chem/reactor/equilibrium/squad.hpp"
+#include "yack/container/matrix.hpp"
 
 namespace yack {
 
@@ -27,6 +28,13 @@ namespace yack {
             //__________________________________________________________________
             explicit squads() throw(); //!< setup
             virtual ~squads() throw(); //!< cleanup
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            void shape(const eq_repo_     &assembly,
+                       const matrix<bool> &detached);
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(squads);

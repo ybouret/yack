@@ -11,14 +11,29 @@ namespace yack
         {
             static const char * const fn = "cluster::make_detached";
             YACK_XMLSUB(xml,fn);
+
+            //------------------------------------------------------------------
+            //
+            // prepare resources
+            //
+            //------------------------------------------------------------------
             const glist &grp = *group;
             const size_t n   = grp->size; assert(n>0);
 
             matrix<bool> detached(n,n); detached.ld(false);
+            eq_repo_     assembly;
+
+            //------------------------------------------------------------------
+            //
+            // form strict detached matrix
+            //
+            //------------------------------------------------------------------
+            YACK_XMLOG(xml, "-- building detached matrix");
             for(const gnode *gn=grp->head;gn;gn=gn->next)
             {
-                const equilibrium &g  = gn->host;
+                const equilibrium &g = gn->host;
                 const size_t       i = **gn;
+                assembly << g;
                 for(const gnode *hn=gn->next;hn;hn=hn->next)
                 {
                     const equilibrium &h = hn->host;
@@ -38,6 +53,16 @@ namespace yack
                 }
             }
 
+            //------------------------------------------------------------------
+            //
+            // build army
+            //
+            //------------------------------------------------------------------
+            YACK_XMLOG(xml, "-- building army of squads");
+            coerce(*army).shape(assembly,detached);
+
+
+            
 
         }
     }

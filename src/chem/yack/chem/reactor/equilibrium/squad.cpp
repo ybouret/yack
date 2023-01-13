@@ -20,6 +20,22 @@ namespace yack {
         squad * squad:: clone() const {
             return new squad(*this);
         }
+
+        std::ostream &operator<<(std::ostream &os, const squad &self)
+        {
+            os << "|> ";
+            const eq_node *node = self.head;
+            if(node)
+            {
+                os << (***node).name;
+                for(node=node->next;node;node=node->next) {
+                    os << ", " << (***node).name;
+                }
+            }
+            os << " <|";
+            return os;
+        }
+
     }
 
 }

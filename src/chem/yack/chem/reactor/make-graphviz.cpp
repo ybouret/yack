@@ -70,7 +70,7 @@ namespace yack
             // write all equilibria
             for(const eq_gnode *en=genus->delimited->head;en;en=en->next)
             {
-                eq_viz(fp,(***en).host,",shape=oval,style=bold");
+                eq_viz(fp,(***en).host,",shape=box,style=bold");
             }
 
             for(const eq_gnode *en=genus->reac_only->head;en;en=en->next)

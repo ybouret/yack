@@ -11,8 +11,6 @@
 #include "yack/chem/reactor/types/udict.hpp"
 #include "yack/chem/reactor/types/booleans.hpp"
 #include "yack/ios/xmlog.hpp"
-#include "yack/container/matrix.hpp"
-#include "yack/sequence/cxx-array.hpp"
 
 namespace yack {
     

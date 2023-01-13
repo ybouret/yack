@@ -26,12 +26,12 @@ namespace yack {
             virtual ~squad() throw();                 //!< cleanup
             squad(const squad &);                     //!< full copy
 
-
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
             squad *clone() const; //!< return new squad(*this)
+            friend std::ostream &operator<<(std::ostream &, const squad &);
 
             //__________________________________________________________________
             //

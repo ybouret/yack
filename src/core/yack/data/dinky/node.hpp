@@ -45,9 +45,11 @@ namespace yack
         //
         // access methods
         //______________________________________________________________________
-        inline type       & operator*()       throw() { return               data; } //!< access
-        inline const_type & operator*() const throw() { return (const_type &)data; } //!< access
-        
+        inline type       & operator*()        throw() { return               data;  } //!< access
+        inline const_type & operator*()  const throw() { return (const_type &)data;  } //!< access
+        inline type       * operator->()       throw() { return               &data; } //!< access
+        inline const_type * operator->() const throw() { return (const type *)&data; } //!< access
+
         //! display wrapper
         inline friend std::ostream & operator<<(std::ostream &os, const dinky_node &self) { return os << self.data; }
         
