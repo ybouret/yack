@@ -28,6 +28,13 @@ set(chem_reactor ${chem_reactor_decl} ${chem_reactor_srcs})
 SOURCE_GROUP(chem/reactor FILES ${chem_reactor})
 install( FILES ${chem_reactor_decl} DESTINATION include/yack/chem/reactor )
 
+#reactor/types
+file(GLOB chem_reactor_types_decl yack/chem/reactor/types/*.hpp)
+file(GLOB chem_reactor_types_srcs yack/chem/reactor/types/*.cpp)
+set(chem_reactor_types ${chem_reactor_types_decl} ${chem_reactor_types_srcs})
+SOURCE_GROUP(chem/reactor/types FILES ${chem_reactor_types})
+install( FILES ${chem_reactor_types_decl} DESTINATION include/yack/chem/reactor/types )
+
 #reactor/conservation
 file(GLOB chem_reactor_conservation_decl yack/chem/reactor/conservation/*.hpp)
 file(GLOB chem_reactor_conservation_srcs yack/chem/reactor/conservation/*.cpp)
@@ -49,11 +56,18 @@ set(chem_reactor_species ${chem_reactor_species_decl} ${chem_reactor_species_src
 SOURCE_GROUP(chem/reactor/species FILES ${chem_reactor_species})
 install( FILES ${chem_reactor_species_decl} DESTINATION include/yack/chem/reactor/species )
 
+#reactor/balance
+file(GLOB chem_reactor_balance_decl yack/chem/reactor/balance/*.hpp)
+file(GLOB chem_reactor_balance_srcs yack/chem/reactor/balance/*.cpp)
+set(chem_reactor_balance ${chem_reactor_balance_decl} ${chem_reactor_balance_srcs})
+SOURCE_GROUP(chem/reactor/balance FILES ${chem_reactor_balance})
+install( FILES ${chem_reactor_balance_decl} DESTINATION include/yack/chem/reactor/balance )
+
 add_library(yack-chem STATIC
 ${chem_main}
 ${chem_designer}
 ${chem_eqs}
-${chem_reactor} ${chem_reactor_conservation} ${chem_reactor_equilibrium} ${chem_reactor_species} 
+${chem_reactor} ${chem_reactor_types} ${chem_reactor_conservation} ${chem_reactor_equilibrium} ${chem_reactor_species} ${chem_reactor_balance} 
 )
 
 install( TARGETS yack-chem ARCHIVE DESTINATION lib )

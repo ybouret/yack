@@ -7,7 +7,8 @@
 #include "yack/chem/reactor/equilibrium/ledger.hpp"
 #include "yack/chem/reactor/species/tier.hpp"
 #include "yack/chem/reactor/conservation/groups.hpp"
-#include "yack/chem/reactor/udict.hpp"
+#include "yack/chem/reactor/types/udict.hpp"
+#include "yack/chem/reactor/types/booleans.hpp"
 #include "yack/ios/xmlog.hpp"
 #include "yack/container/matrix.hpp"
 #include "yack/sequence/cxx-array.hpp"
@@ -16,22 +17,7 @@ namespace yack {
     
     namespace chemical {
 
-        //! arrays of booleans
-        class booleans : public object, public cxx_array<bool> {
-        public:
-
-            typedef auto_ptr<const booleans> ptr; //!< alias
-
-            //! setup
-            explicit booleans(const size_t n, const bool f) : object(), cxx_array<bool>(n,f) {}
-
-            //! cleanup
-            virtual ~booleans() throw() {}
-
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(booleans);
-        };
-
+     
         //______________________________________________________________________
         //
         //

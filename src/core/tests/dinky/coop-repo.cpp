@@ -12,7 +12,7 @@ YACK_UTEST(dinky_coop_repo)
     randomized::rand_ ran;
     cxx_array<string> str(3+ran.leq(10));
     
-    typedef dinky_coop_repo<const string> csr_type;
+    typedef coop_repo<const string> csr_type;
     csr_type::proxy_type cache = new csr_type::zpool_type();
     csr_type ccr(cache);
     
