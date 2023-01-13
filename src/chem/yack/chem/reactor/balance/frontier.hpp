@@ -33,10 +33,9 @@ namespace yack {
             //
             // C++
             //__________________________________________________________________
-            explicit frontier(const sp_fund &) throw();
-            virtual ~frontier() throw();
-
-
+            explicit frontier(const sp_fund &) throw(); //!< setup
+            virtual ~frontier()                throw(); //!< cleanup
+            
             //__________________________________________________________________
             //
             // methods

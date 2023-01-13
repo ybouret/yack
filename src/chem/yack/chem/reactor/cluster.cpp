@@ -19,15 +19,17 @@ namespace yack
         next(0),
         prev(0),
         alive( new alist()              ),
-        fixed(NULL),
+        fixed( NULL                     ),
         group( new glist()              ),
         breed( new sp_tier()            ),
         genus( new eq_tier()            ),
         sDict( new udict("species")     ),
         eDict( new udict("equilibrium") ),
-        canon( new claws()   ),
-        claim( new clots()   ),
-        cross( new ledger()  ),
+        canon( new claws()              ),
+        claim( new clots()              ),
+        army(  new squads()             ),
+        wing(  new squads()             ),
+        cross( new ledger()             ),
         gvidx(0)
         {
             coerce( *group ) << first;
@@ -125,7 +127,7 @@ namespace yack
 
             conservations(xml);
             make_manifold(xml,Nu,K,lib,eqs,all);
-            make_detached(xml);
+            make_detached(xml,all);
             lock();
         }
 

@@ -44,6 +44,7 @@ namespace yack
         //______________________________________________________________________
         inline explicit dinky_manifest() throw() : root_type()                           {} //!< setup empty
         inline explicit dinky_manifest(const proxy_type &user) throw() : root_type(user) {} //!< setup with cache
+        inline explicit dinky_manifest(const dinky_manifest &_) : root_type(_)           {} //!< copy
         inline virtual ~dinky_manifest() throw()                                         {} //!< cleanup
         
         //______________________________________________________________________

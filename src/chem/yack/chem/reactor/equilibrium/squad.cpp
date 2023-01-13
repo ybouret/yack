@@ -15,6 +15,11 @@ namespace yack {
             (*this) << first;
         }
 
+        squad:: squad(const squad &other) : object(), eq_repo_(other), next(0), prev(0) {}
+
+        squad * squad:: clone() const {
+            return new squad(*this);
+        }
     }
 
 }

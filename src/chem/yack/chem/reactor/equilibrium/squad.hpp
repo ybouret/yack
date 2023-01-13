@@ -22,8 +22,16 @@ namespace yack {
             //
             // C++
             //__________________________________________________________________
-            explicit squad(const equilibrium &first);
-            virtual ~squad() throw();
+            explicit squad(const equilibrium &first); //!< setup
+            virtual ~squad() throw();                 //!< cleanup
+            squad(const squad &);                     //!< full copy
+
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            squad *clone() const; //!< return new squad(*this)
 
             //__________________________________________________________________
             //
@@ -33,7 +41,7 @@ namespace yack {
             squad *prev; //!< for list
 
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(squad);
+            YACK_DISABLE_ASSIGN(squad);
         };
         
     }

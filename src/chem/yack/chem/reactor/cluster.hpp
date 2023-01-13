@@ -93,8 +93,8 @@ namespace yack {
             //------------------------------------------------------------------
             // describing detached equilibria
             //------------------------------------------------------------------
-            const squads::ptr     sq1;
-            const squads::ptr     sq2;
+            const squads::ptr     army; //!< all detached for solving
+            const squads::ptr     wing; //!< all detached for balancing
 
             //------------------------------------------------------------------
             // misceallenous
@@ -120,7 +120,8 @@ namespace yack {
                                               const library          &lib,
                                               const equilibria       &eqs,
                                               equilibria             &all);
-            void                make_detached(const xmlog &xml);
+            void                make_detached(const xmlog      &xml,
+                                              const equilibria &all);
 
         };
 
