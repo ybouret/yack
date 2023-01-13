@@ -54,6 +54,7 @@ namespace yack {
             //! viz
             void viz(ios::ostream            &fp,
                      const sub_list<species> &act,
+                     const readable<bool>    &flg,
                      const unsigned           igv) const;
 
 

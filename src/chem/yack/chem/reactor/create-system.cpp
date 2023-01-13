@@ -59,6 +59,7 @@ namespace yack
                 if( tribe.search(&s) )
                 {
                     coerce( *(breed->unbounded) ) << *sn;
+                    coerce( *fixed )[ **sn ] = false;
                 }
                 else
                 {

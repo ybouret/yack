@@ -10,10 +10,21 @@
 #include "yack/chem/reactor/udict.hpp"
 #include "yack/ios/xmlog.hpp"
 #include "yack/container/matrix.hpp"
+#include "yack/sequence/cxx-array.hpp"
 
 namespace yack {
     
     namespace chemical {
+
+        class booleans : public object, public cxx_array<bool> {
+        public:
+            typedef auto_ptr<const booleans> ptr;
+            explicit booleans(const size_t n, const bool f) : object(), cxx_array<bool>(n,f) {}
+            virtual ~booleans() throw() {}
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(booleans);
+        };
 
         //______________________________________________________________________
         //
@@ -25,7 +36,7 @@ namespace yack {
         {
         public:
             static const char * const clid; //!< "chemical::cluster"
-            
+
             //__________________________________________________________________
             //
             // C++
@@ -74,6 +85,7 @@ namespace yack {
             // describing species and equilibria
             //------------------------------------------------------------------
             const alist::ptr      alive;  //!< alive.size, fixed from the begining
+            const booleans::ptr   fixed;  //!< true if conserved
             const auto_ptr<glist> group;  //!< group.size, initial+manifold
             const sp_tier::ptr    breed;  //!< category for species
             const eq_tier::ptr    genus;  //!< category for equilibria

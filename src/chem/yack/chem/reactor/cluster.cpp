@@ -19,6 +19,7 @@ namespace yack
         next(0),
         prev(0),
         alive( new alist()              ),
+        fixed(NULL),
         group( new glist()              ),
         breed( new sp_tier()            ),
         genus( new eq_tier()            ),
@@ -111,6 +112,7 @@ namespace yack
             
 
             YACK_XMLOG(xml,"-- alive     : " << **alive);
+            YACK_XMLOG(xml,"-- fixed     : " <<   fixed);
 
             YACK_XMLOG(xml,"-- delimited : " << genus->delimited);
             YACK_XMLOG(xml,"-- reac_only : " << genus->reac_only);

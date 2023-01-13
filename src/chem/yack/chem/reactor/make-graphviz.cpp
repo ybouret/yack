@@ -123,6 +123,7 @@ namespace yack
 
         void eq_repo:: viz(ios::ostream            &fp,
                            const sub_list<species> &act,
+                           const readable<bool>    &flg,
                            const unsigned int       igv) const
         {
             fp << "subgraph cluster_";
@@ -134,7 +135,8 @@ namespace yack
             for(sub_list<species>::node_type *node=act->head;node;node=node->next)
             {
                 const species &sp = node->host;
-                sp_viz(fp,sp, ", shape=egg");
+                const char    *id = flg[ **node ] ? ", shape=egg,style=filled" : ", shape=egg";
+                sp_viz(fp,sp,id);
             }
 
             // write equilibria
@@ -184,7 +186,7 @@ namespace yack
                     {
                         const ledger &gvec = *(cl->cross);
                         if(gvec.size()>=i) {
-                            gvec[i]->viz(fp,*(cl->alive),cl->gvidx);
+                            gvec[i]->viz(fp,*(cl->alive),*(cl->fixed),cl->gvidx);
                         }
                     }
                     ios::vizible::digraph_quit(fp);

@@ -190,7 +190,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             {
-                ledger        &gcross = coerce( *cross );
+                ledger        &layout = coerce( *cross );
                 cxx_array<int> weight(Nu.rows);
                 cxx_array<int> stoich(Nu.cols);
                 {
@@ -202,8 +202,9 @@ namespace yack
                         qbranch::assess(stoich, weight, Nu);                                 // derive stoich coefficients
                         const equilibrium &eq = promote_mixed(weight,stoich,K,lib,eqs,all);  // create mixed equlibrium
                         const size_t       dg = qselect::count_valid(weight); assert(dg>=2); // degree
-                        gcross.degree(dg) << eq;                                             // register degree
+                        layout.degree(dg) << eq;                                             // register degree
                         coerce(*group)    << eq;                                             // append to group
+                        coerce(*genus).dispatch((*group)->tail);                             // classify new eq
                     }
                 }
             }
