@@ -52,6 +52,14 @@ namespace yack {
             //! specific display
             friend std::ostream & operator<<(std::ostream &, const eq_group &);
 
+            void stamp() throw(); //!< set core to current size
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const size_t core; //!< number belonging to the core system
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(eq_group) throw();
         };

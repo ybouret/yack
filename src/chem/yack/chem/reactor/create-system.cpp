@@ -49,6 +49,11 @@ namespace yack
 
             }
 
+            delimited.stamp();
+            reac_only.stamp();
+            prod_only.stamp();
+            
+
 
             //------------------------------------------------------------------
             // second pass: dispatch species

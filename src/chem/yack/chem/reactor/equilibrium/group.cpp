@@ -7,7 +7,7 @@ namespace yack {
     namespace chemical {
 
 
-        eq_group::  eq_group() throw() : object(), eq_group_() {}
+        eq_group::  eq_group() throw() : object(), eq_group_(), core(0) {}
         eq_group:: ~eq_group() throw() {}
 
 
@@ -24,6 +24,11 @@ namespace yack {
                 }
             }
             return os << " }";
+        }
+
+        void eq_group:: stamp() throw()
+        {
+            coerce(core) = size;
         }
 
     }

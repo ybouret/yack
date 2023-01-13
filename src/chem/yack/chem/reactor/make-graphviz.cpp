@@ -68,17 +68,20 @@ namespace yack
 
 
             // write all equilibria
-            for(const eq_gnode *en=genus->delimited->head;en;en=en->next)
+            size_t count=0;
+            for(const eq_gnode *en=genus->delimited->head;en && (++count<=genus->delimited->core);en=en->next)
             {
                 eq_viz(fp,(***en).host,",shape=box,style=bold");
             }
 
-            for(const eq_gnode *en=genus->reac_only->head;en;en=en->next)
+            count = 0;
+            for(const eq_gnode *en=genus->reac_only->head;en && (++count<=genus->reac_only->core);en=en->next)
             {
                 eq_viz(fp,(***en).host,",shape=house");
             }
 
-            for(const eq_gnode *en=genus->prod_only->head;en;en=en->next)
+            count = 0;
+            for(const eq_gnode *en=genus->prod_only->head;en && (++count<=genus->reac_only->core);en=en->next)
             {
                 eq_viz(fp,(***en).host,",shape=invhouse");
             }
