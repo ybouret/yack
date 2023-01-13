@@ -120,7 +120,8 @@ namespace yack {
                                               const library          &lib,
                                               const equilibria       &eqs,
                                               equilibria             &all);
-            
+            void                make_detached(const xmlog &xml);
+
         };
 
 
