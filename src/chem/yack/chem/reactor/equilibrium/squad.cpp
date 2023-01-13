@@ -21,20 +21,62 @@ namespace yack {
             return new squad(*this);
         }
 
+
+        static inline void show(std::ostream &os, const eq_node *node)
+        {
+            assert(node);
+            os << '<' << (***node).name << '>';
+        }
+
         std::ostream &operator<<(std::ostream &os, const squad &self)
         {
-            os << "|> ";
+            os << "| ";
             const eq_node *node = self.head;
             if(node)
             {
-                os << (***node).name;
-                for(node=node->next;node;node=node->next) {
-                    os << ", " << (***node).name;
-                }
+                show(os,node);
+                for(node=node->next;node;node=node->next)
+                    show(os<<", ",node);
             }
-            os << " <|";
+            os << " |";
             return os;
         }
+
+        bool squad:: accepts(const equilibrium  &rhs,
+                             const matrix<bool> &detached) const throw()
+        {
+            assert(size>0);
+            const equilibrium &lhs = ***tail;
+            const size_t l = *lhs;
+            const size_t r = *rhs;
+            return (r>l) && detached[l][r];
+        }
+
+        int squad:: compare(const squad *lhs, const squad *rhs) throw()
+        {
+            switch( __sign::of(lhs->size,rhs->size) )
+            {
+                case negative: return -1;
+                case positive: return  1;
+                default:
+                    break;
+            }
+
+            for(const eq_node *l=lhs->head, *r=rhs->head;l;l=l->next,r=r->next)
+            {
+                assert(l); assert(r);
+                switch( __sign::of(****l,****r) )
+                {
+                    case negative: return -1;
+                    case positive: return  1;
+                    case __zero__: continue;
+                }
+
+            }
+
+            return 0;
+        }
+
 
     }
 

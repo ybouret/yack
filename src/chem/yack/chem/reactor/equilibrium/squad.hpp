@@ -4,6 +4,7 @@
 #define YACK_CHEMICAL_EQ_SQUAD_INCLUDED 1
 
 #include "yack/chem/reactor/equilibrium/repo.hpp"
+#include "yack/container/matrix.hpp"
 
 namespace yack {
 
@@ -32,6 +33,11 @@ namespace yack {
             //__________________________________________________________________
             squad *clone() const; //!< return new squad(*this)
             friend std::ostream &operator<<(std::ostream &, const squad &);
+            bool   accepts(const equilibrium  &eq,
+                           const matrix<bool> &detached) const throw();
+
+            //! lexicographic compare
+            static int compare(const squad *lhs, const squad *rhs) throw();
 
             //__________________________________________________________________
             //

@@ -7,7 +7,8 @@ namespace yack
     namespace chemical
     {
 
-        void cluster:: make_detached(const xmlog &xml, const equilibria &all)
+        void cluster:: make_detached(const xmlog      &xml,
+                                     const equilibria &all)
         {
             static const char * const fn = "cluster::make_detached";
             YACK_XMLSUB(xml,fn);
@@ -18,8 +19,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             const glist &grp = *group;
-            const size_t n   = grp->size; assert(n>0);
-
+            const size_t n   = all.size();
             matrix<bool> detached(n,n); detached.ld(false);
             eq_repo_     assembly;
 
@@ -44,7 +44,7 @@ namespace yack
                 }
             }
 
-            if(xml.verbose) {
+            if(false&&xml.verbose) {
                 for(const gnode *gn=grp->head;gn;gn=gn->next)
                 {
                     const equilibrium &g  = gn->host;
@@ -60,7 +60,13 @@ namespace yack
             //------------------------------------------------------------------
             YACK_XMLOG(xml, "-- building army of squads");
             coerce(*army).shape(assembly,detached);
-
+            if(xml.verbose)
+            {
+                for(const squad *sq = army->head;sq;sq=sq->next)
+                {
+                    *xml << *sq << std::endl;
+                }
+            }
 
             
 

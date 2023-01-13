@@ -15,8 +15,8 @@ namespace yack {
         void squads:: shape(const eq_repo_ &assembly, const matrix<bool> &detached)
         {
 
-            assert(assembly.size==detached.rows);
-            assert(assembly.size==detached.cols);
+            assert(assembly.size<=detached.rows);
+            assert(assembly.size<=detached.cols);
 
             // initialize
             for(const eq_node *en=assembly.head;en;en=en->next)
@@ -24,11 +24,22 @@ namespace yack {
                 const equilibrium &eq = ***en;
                 push_back( new squad(eq) );
             }
-            
-            std::cerr << *this << std::endl;
 
+            // try to grow with each
+            for(const eq_node *en=assembly.head;en;en=en->next)
+            {
+                const equilibrium &eq = ***en;
+                for(squad *sq=head;sq;sq=sq->next)
+                {
+                    if( sq->accepts(eq,detached) )
+                    {
+                        (*push_front( sq->clone() )) << eq;
+                    }
+                }
+            }
 
-
+            // sort
+            merge_list_of<squad>::sort(*this,squad::compare);
         }
 
     }
