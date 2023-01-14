@@ -67,6 +67,22 @@ namespace yack
         const_iterator begin() const throw() { return (**this).head; } //!< forward iterator begin
         const_iterator end()   const throw() { return NULL; }          //!< forward itetator end
 
+        //! display content
+        inline friend std::ostream & operator<<(std::ostream &os, const lexicon &self)
+        {
+            os << "{ ";
+            const knot_type *knot = (*self).head;
+            if(knot) {
+                os << **knot;
+                for(knot=knot->next;knot;knot=knot->next)
+                {
+                    os << ", " << **knot;
+                }
+            }
+            os << " }";
+            return os;
+        }
+
     private:
         YACK_DISABLE_ASSIGN(lexicon);
     };

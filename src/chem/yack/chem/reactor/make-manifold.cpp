@@ -4,6 +4,7 @@
 #include "yack/raven/qbranch.hpp"
 #include "yack/raven/qselect.hpp"
 #include "yack/sequence/bunch.hpp"
+#include "yack/associative/lexicon.hpp"
 
 namespace yack
 {
@@ -13,26 +14,31 @@ namespace yack
     {
         namespace {
 
-            // select more than two coefficients
+            //------------------------------------------------------------------
+            //
+            //! select more than two coefficients
+            //
+            //------------------------------------------------------------------
             template <typename T> static inline
             bool keep_more_than_two(const readable<T> &cf) throw()
             {
                 return qselect::count_valid(cf) >= 2;
             }
 
+            //------------------------------------------------------------------
+            //
             //! local collector
+            //
+            //------------------------------------------------------------------
             class collector : public bunch<int>
             {
             public:
                 explicit collector(const size_t w) : bunch<int>(w) {}
                 virtual ~collector() throw() {}
 
-                void operator()(const qvector &cf)
-                {
+                void operator()(const qvector &cf) {
                     if( qselect::count_valid(  cf.cast_to(work) ) >= 2 )
-                    {
                         ensure(work);
-                    }
                 }
 
                 static inline int norm1(const readable<int> &arr) throw()
@@ -67,24 +73,23 @@ namespace yack
                     }
                 }
 
-                inline void organize()
-                {
-                    sort_with(compare);
-                }
-
+                inline void organize() { sort_with(compare); }
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(collector);
             };
 
 
-
-
+            //------------------------------------------------------------------
+            //
+            //! global to local topology
+            //
+            //------------------------------------------------------------------
             static inline
-            void compute_local_topology(matrix<int>       &nu,
-                                        const glist       &grp,
-                                        const alist       &act,
-                                        const matrix<int> &Nu) throw()
+            void global_to_local_topology(matrix<int>       &nu,
+                                          const glist       &grp,
+                                          const alist       &act,
+                                          const matrix<int> &Nu) throw()
             {
                 for(const gnode *en=grp->head;en;en=en->next)
                 {
@@ -103,7 +108,11 @@ namespace yack
                 }
             }
 
-
+            //------------------------------------------------------------------
+            //
+            //! build manifold from eqs/species selection
+            //
+            //------------------------------------------------------------------
             static inline
             void build_manifold(const xmlog       &xml,
                                 collector         &cw,
@@ -121,7 +130,7 @@ namespace yack
                     //----------------------------------------------------------
                     {
                         matrix<int>  nu(n,m);
-                        compute_local_topology(nu,grp,act,Nu);
+                        global_to_local_topology(nu,grp,act,Nu);
                         YACK_XMLOG(xml, "nu=" << nu);
                         if(n!=alga::rank(nu))            throw imported::exception(cluster::clid,"invalid topology rank");
                         if(n!=qselect::compress(mu,nu))  throw imported::exception(cluster::clid,"invalid transposed rank");
@@ -144,7 +153,11 @@ namespace yack
 
             }
 
-
+            //------------------------------------------------------------------
+            //
+            //! populate roaming from a set of equilibria
+            //
+            //------------------------------------------------------------------
             static inline
             void populate(addrbook &roaming, const eq_gnode *node)
             {
@@ -155,6 +168,11 @@ namespace yack
                 }
             }
 
+            //------------------------------------------------------------------
+            //
+            //! populate balance from a set of equilibria
+            //
+            //------------------------------------------------------------------
             static inline
             void populate(eq_repo_ &balance, const eq_gnode *node)
             {
@@ -165,6 +183,11 @@ namespace yack
                 }
             }
 
+            //------------------------------------------------------------------
+            //
+            //! detect if a native (local) equilibrium is roaming
+            //
+            //------------------------------------------------------------------
             static inline
             bool has_roaming(const readable<int> &native,
                              const gnode         *node,
@@ -179,6 +202,34 @@ namespace yack
 
         }
 
+
+        typedef lexicon<size_t> lexicon_type;
+
+        //! store INDICES of not null coefficients
+        static inline
+        void store(lexicon_type  &sto, const readable<int> &nu)
+        {
+            for(size_t j=nu.size();j>0;--j)
+            {
+                const int coef = nu[j];
+                if(coef) sto.ensure(j);
+            }
+        }
+
+        //! store all not zero coefficients INDICES
+        static inline
+        void store(lexicon_type        &sto,
+                   const readable<int> &weight,
+                   const matrix<int>   &Nu)
+        {
+            sto.free();
+            for(size_t i=weight.size();i>0;--i)
+            {
+                if( weight[i] ) store(sto,Nu[i]);
+            }
+        }
+
+
         void cluster:: make_manifold(const xmlog            &xml,
                                      const matrix<int>      &Nu,
                                      const readable<double> &K,
@@ -188,6 +239,7 @@ namespace yack
         {
             YACK_XMLSUB(xml,"cluster::make_manifold");
             const glist &grp = *group;
+
             //------------------------------------------------------------------
             //
             // check status
@@ -203,7 +255,7 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // register first degree equilibria
+            // register first degree equilibria (primary layout)
             //
             //------------------------------------------------------------------
             for(const glist::node_type *node=grp->head;node;node=node->next)
@@ -225,33 +277,53 @@ namespace yack
             //
             //------------------------------------------------------------------
             {
-                ledger        &layout = coerce( *cross );
-                cxx_array<int> weight(Nu.rows);
-                cxx_array<int> stoich(Nu.cols);
-                addrbook       roaming;
-                eq_repo       &balance = coerce( *(genus->balancing) );
+                ledger        &layout = coerce( *cross );              // register layouts
+                cxx_array<int> weight(Nu.rows);                        // global weight
+                cxx_array<int> stoich(Nu.cols);                        // global stoich
+                addrbook       roaming;                                // roaming equilibria
+                eq_repo       &balance = coerce( *(genus->balancing) );// equilibria used for balancing
                 populate(roaming,genus->prod_only->head);
                 populate(roaming,genus->reac_only->head);
                 populate(balance,genus->delimited->head);
-
+                lexicon_type sto;
+                for(const collector::entry *ep=cw->head;ep;ep=ep->next)
                 {
-                    size_t imix=1;
-                    for(const collector::entry *ep=cw->head;ep;ep=ep->next,++imix)
-                    {
-                        const readable<int> &native = *ep;                                   // native weights
-                        eDict->expand(weight,native);                                        // global weights
-                        qbranch::assess(stoich, weight, Nu);                                 // derive stoich coefficients
-                        const equilibrium &eq = promote_mixed(weight,stoich,K,lib,eqs,all);  // create mixed equlibrium
-                        const size_t       dg = qselect::count_valid(weight); assert(dg>=2); // degree
-                        layout.degree(dg) << eq;                                             // register degree
-                        coerce(*group)    << eq;                                             // append to group
-                        if( coerce(*genus).dispatch((*group)->tail) ) roaming.ensure(&eq);   // classifying and updating
+                    //----------------------------------------------------------
+                    // get native weights from RAVEn
+                    //----------------------------------------------------------
+                    const readable<int> &native = *ep;
 
-                        // check if kept for balance
-                        if( !has_roaming(native, (*group)->head,roaming) )
-                            balance << eq;
-                    }
+                    //----------------------------------------------------------
+                    // expand native weights to global weights
+                    //----------------------------------------------------------
+                    eDict->expand(weight,native);
+
+
+                    //----------------------------------------------------------
+                    // register all used species by their index
+                    //----------------------------------------------------------
+                    store(sto,weight,Nu);
+
+                    //----------------------------------------------------------
+                    // derive the new stoichiometry
+                    //----------------------------------------------------------
+                    qbranch::assess(stoich, weight, Nu);
+
+                    std::cerr << "sto=" << sto << "/" << stoich << std::endl;
+                    exit(0);
+
+
+                    const equilibrium &eq = promote_mixed(weight,stoich,K,lib,eqs,all);  // create mixed equlibrium
+                    const size_t       dg = qselect::count_valid(weight); assert(dg>=2); // degree
+                    layout.degree(dg) << eq;                                             // register degree
+                    coerce(*group)    << eq;                                             // append to group
+                    if( coerce(*genus).dispatch((*group)->tail) ) roaming.ensure(&eq);   // classifying and updating
+
+                    // check if kept for balance
+                    if( !has_roaming(native, (*group)->head,roaming) )
+                        balance << eq;
                 }
+
             }
 
             
