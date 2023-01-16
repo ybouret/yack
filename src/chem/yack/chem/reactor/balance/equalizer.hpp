@@ -6,12 +6,24 @@
 
 #include "yack/chem/reactor/balance/frontier.hpp"
 #include "yack/chem/reactor.hpp"
+#include "yack/sequence/cxx-series.hpp"
 
 namespace yack {
 
     namespace chemical
     {
-        
+        class frontiers : public cxx_series<frontier>
+        {
+        public:
+            typedef cxx_series<frontier> base_type;
+
+            explicit frontiers(const size_t n) : base_type(n) {}
+            virtual ~frontiers() throw() {}
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(frontiers);
+        };
+
 
         //______________________________________________________________________
         //
