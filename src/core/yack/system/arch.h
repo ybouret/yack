@@ -35,7 +35,7 @@
 
 #if defined(YACK_MICROSOFT)
 
-#ifdef defined(_M_IX86)
+#if defined(_M_IX86)
 #define YACK_ARCHITECTURE "i386"
 #define YACK_NATIVE_BITS     32
 #endif
