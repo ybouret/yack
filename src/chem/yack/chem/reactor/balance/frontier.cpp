@@ -11,7 +11,14 @@ namespace yack {
         }
 
         frontier:: frontier(const sp_fund &fund) throw() : sp_para(fund), xi(0) {}
+
+        frontier:: frontier(const frontier &other) :
+        sp_para(other),
+        xi(0)
+        {
+        }
         
+
 
         void frontier:: remove() throw()
         {

@@ -52,6 +52,9 @@ namespace yack {
             //! maximum degree of crossed equilibria
             size_t max_degree() const throw();
 
+            //! maximum actors
+            size_t max_actors() const throw();
+
             //__________________________________________________________________
             //
             // members

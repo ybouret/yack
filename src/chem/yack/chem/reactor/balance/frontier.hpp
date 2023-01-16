@@ -26,16 +26,16 @@ namespace yack {
         //! list of vanishing species at given xi
         //
         //______________________________________________________________________
-        class frontier : public sp_para
+        class frontier :  public sp_para
         {
         public:
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            explicit frontier(const sp_fund &) throw(); //!< setup
-            virtual ~frontier()                throw(); //!< cleanup
-            
+            frontier(const sp_fund &) throw();  //!< setup
+            ~frontier()                throw(); //!< cleanup
+            frontier(const frontier &);         //!< copy
             //__________________________________________________________________
             //
             // methods
@@ -55,7 +55,7 @@ namespace yack {
             
 
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(frontier);
+            YACK_DISABLE_ASSIGN(frontier);
         };
     }
 

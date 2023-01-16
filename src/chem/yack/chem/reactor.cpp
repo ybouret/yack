@@ -169,6 +169,8 @@ namespace yack
                 //--------------------------------------------------------------
                 create_squads(xml);
 
+                YACK_XMLOG(xml, "-- max actors: " << max_actors() );
+
             }
         }
 
@@ -190,6 +192,19 @@ namespace yack
             }
             return res;
         }
+
+        size_t reactor:: max_actors() const throw()
+        {
+            size_t res = 0;
+            for(const enode *en=all.head();en;en=en->next)
+            {
+                const equilibrium &eq = ***en;
+                res = max_of(res,eq.reac->size);
+                res = max_of(res,eq.prod->size);
+            }
+            return res;
+        }
+
 
 
         namespace

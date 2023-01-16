@@ -51,6 +51,7 @@ YACK_UTEST(reactor)
     YACK_SIZEOF(custodian);
     YACK_SIZEOF(ledger);
     YACK_SIZEOF(ledger::type);
+    YACK_SIZEOF(frontier);
 
 
     cs.graphViz("reactor");
