@@ -3,6 +3,7 @@
 
 YACK_UTEST_DECL(256)
 {
+    YACK_UTEST(native);
     YACK_UTEST(crc32);
     YACK_UTEST(error);
     YACK_UTEST(cstring);

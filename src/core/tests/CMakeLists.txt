@@ -109,6 +109,7 @@ DEPENDS test-core
 COMMENT "[YACK] test [DSO]")
 
 enable_testing()
+add_test(native  test-core native)
 add_test(crc32   test-core crc32)
 add_test(error   test-core error 0 1 2 3)
 add_test(excp    test-core excp)

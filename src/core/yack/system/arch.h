@@ -23,10 +23,12 @@
 
 #if defined(__i386__)
 #define YACK_ARCHITECTURE "i386"
+#define YACK_NATIVE_BITS   32
 #endif
 
 #if defined(__x86_64__)
 #define YACK_ARCHITECTURE "amd64"
+#define YACK_NATIVE_BITS     64
 #endif
 
 #endif
@@ -35,10 +37,12 @@
 
 #idef defined(_M_IX86)
 #define YACK_ARCHITECTURE "i386"
+#define YACK_NATIVE_BITS     32
 #endif
 
 #if defined(_M_AMD64)
 #define YACK_ARCHITECTURE "amd64"
+#define YACK_NATIVE_BITS     64
 #endif
 
 
@@ -48,5 +52,8 @@
 #error "YACK_ARCHITECTURE was not found"
 #endif
 
+#if !defined(YACK_NATIVE_BITS)
+#error "YACK_NATIVE_BITS was not found"
+#endif
 
 #endif
