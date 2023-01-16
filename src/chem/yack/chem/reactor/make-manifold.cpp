@@ -5,6 +5,7 @@
 #include "yack/raven/qselect.hpp"
 #include "yack/sequence/bunch.hpp"
 #include "yack/associative/lexicon.hpp"
+#include "yack/data/dinky/solo-repo.hpp"
 
 namespace yack
 {
@@ -33,14 +34,38 @@ namespace yack
             class collector : public bunch<int>
             {
             public:
-                explicit collector(const size_t w) : bunch<int>(w) {}
+                //--------------------------------------------------------------
+                //
+                // C++
+                //
+                //--------------------------------------------------------------
+                explicit collector(const size_t w) :
+                bunch<int>(w)
+                {}
+
                 virtual ~collector() throw() {}
 
+                //--------------------------------------------------------------
+                //
+                // callback for RAVEn
+                //
+                //--------------------------------------------------------------
                 void operator()(const qvector &cf) {
                     if( qselect::count_valid(  cf.cast_to(work) ) >= 2 )
-                        ensure(work);
+                    {
+                        const readable<int> &native = work;
+                        ensure(native);
+                    }
                 }
 
+
+                //--------------------------------------------------------------
+                // sort by norm1 and lexicographic
+                //--------------------------------------------------------------
+                inline void organize() { sort_with(compare); }
+
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(collector);
                 static inline int norm1(const readable<int> &arr) throw()
                 {
                     int sum = 0;
@@ -72,11 +97,6 @@ namespace yack
                         }
                     }
                 }
-
-                inline void organize() { sort_with(compare); }
-
-            private:
-                YACK_DISABLE_COPY_AND_ASSIGN(collector);
             };
 
 
@@ -229,20 +249,6 @@ namespace yack
             }
         }
 
-        static inline
-        bool is_usefull(const readable<int> &stoich,
-                        const lexicon_type  &sto) throw()
-        {
-            for(size_t i=stoich.size();i>0;--i)
-            {
-                if( 0==stoich[i] && sto.search(i) )
-                {
-                    // species disappeared
-                    return true;
-                }
-            }
-            return false;
-        }
 
 
         void cluster:: make_manifold(const xmlog            &xml,
@@ -300,7 +306,11 @@ namespace yack
                 populate(roaming,genus->prod_only->head);
                 populate(roaming,genus->reac_only->head);
                 populate(balance,genus->delimited->head);
-                lexicon_type sto;
+
+                const alist             &act = *alive;
+                lexicon_type             sto;
+                solo_repo<const species> zap(act->size);
+
                 for(const collector::entry *ep=cw->head;ep;ep=ep->next)
                 {
                     //----------------------------------------------------------
@@ -324,20 +334,25 @@ namespace yack
                     //----------------------------------------------------------
                     qbranch::assess(stoich, weight, Nu);
 
-
-
-                    std::cerr << "sto=" << sto << "/" << stoich << std::endl;
-
-                    if(!is_usefull(stoich,sto))
-                    {
-                        std::cerr << "[USELESS]" << std::endl;
-                        exit(0);
-                    }
-
                     //----------------------------------------------------------
                     // check that is is useful...
                     //----------------------------------------------------------
+                    zap.clear();
+                    for(const anode *an=act->head;an;an=an->next)
+                    {
+                        const species &s = an->host;
+                        const size_t   j = *s;
+                        if( (0==stoich[j]) && sto.search(j) ) zap << s;
+                    }
 
+                    if(zap.size)
+                    {
+                        std::cerr << "[usefull]" << zap << std::endl;
+                    }
+                    else
+                    {
+                        std::cerr << "[useless]" << std::endl;
+                    }
 
 
 
