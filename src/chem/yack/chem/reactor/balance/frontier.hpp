@@ -5,6 +5,7 @@
 
 #include "yack/chem/actors.hpp"
 #include "yack/data/dinky/coop-repo.hpp"
+#include "yack/system/arch.h"
 
 namespace yack {
 
@@ -56,6 +57,9 @@ namespace yack {
 
         private:
             YACK_DISABLE_ASSIGN(frontier);
+#if 64 == YACK_NATIVE_BITS
+            const double unused;
+#endif
         };
     }
 

@@ -10,11 +10,20 @@ namespace yack {
         {
         }
 
-        frontier:: frontier(const sp_fund &fund) throw() : sp_para(fund), xi(0) {}
+        frontier:: frontier(const sp_fund &fund) throw() :
+        sp_para(fund),
+        xi(0)
+#if 64 == YACK_NATIVE_BITS
+        , unused(0)
+#endif
+        {}
 
         frontier:: frontier(const frontier &other) :
         sp_para(other),
         xi(0)
+#if 64 == YACK_NATIVE_BITS
+        , unused(0)
+#endif
         {
         }
         
