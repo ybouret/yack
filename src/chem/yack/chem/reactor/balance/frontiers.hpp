@@ -19,6 +19,8 @@ namespace yack {
             explicit frontiers(const size_t);
             virtual ~frontiers()     throw();
 
+
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(frontiers);
         };
