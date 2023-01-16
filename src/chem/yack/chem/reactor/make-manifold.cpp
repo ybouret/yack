@@ -225,8 +225,23 @@ namespace yack
             sto.free();
             for(size_t i=weight.size();i>0;--i)
             {
-                if( weight[i] ) store(sto,Nu[i]);
+                if( weight[i] ) store(sto,Nu[i]); // extrac indices
             }
+        }
+
+        static inline
+        bool is_usefull(const readable<int> &stoich,
+                        const lexicon_type  &sto) throw()
+        {
+            for(size_t i=stoich.size();i>0;--i)
+            {
+                if( 0==stoich[i] && sto.search(i) )
+                {
+                    // species disappeared
+                    return true;
+                }
+            }
+            return false;
         }
 
 
@@ -309,8 +324,21 @@ namespace yack
                     //----------------------------------------------------------
                     qbranch::assess(stoich, weight, Nu);
 
+
+
                     std::cerr << "sto=" << sto << "/" << stoich << std::endl;
-                    exit(0);
+
+                    if(!is_usefull(stoich,sto))
+                    {
+                        std::cerr << "[USELESS]" << std::endl;
+                        exit(0);
+                    }
+
+                    //----------------------------------------------------------
+                    // check that is is useful...
+                    //----------------------------------------------------------
+
+
 
 
                     const equilibrium &eq = promote_mixed(weight,stoich,K,lib,eqs,all);  // create mixed equlibrium
