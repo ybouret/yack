@@ -36,7 +36,10 @@ namespace yack {
 
             //! adjust [reac|prod]_only using single fence
             void adjust(writable<double> &C);
-
+            
+            void comply(writable<double> &C);
+            
+            
             //__________________________________________________________________
             //
             // members
@@ -49,9 +52,13 @@ namespace yack {
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(equalizer);
-            void adjust(writable<double> &C, const cluster &cc);
             void adjust_reac(writable<double> &C, const eq_group  &reac_only);
             void adjust_prod(writable<double> &C, const eq_group  &prod_only);
+            void adjust(writable<double> &C, const cluster &cc);
+            void comply(writable<double> &C, const cluster &cc);
+
+            
+            
          };
 
     }

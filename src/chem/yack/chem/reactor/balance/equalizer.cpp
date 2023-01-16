@@ -80,6 +80,28 @@ namespace yack {
             }
         }
 
+        
+        void equalizer:: comply(writable<double> &C)
+        {
+            for(const cluster *cc=cs.linked->head;cc;cc=cc->next)
+            {
+                comply(C,*cc);
+            }
+        }
+
+        void equalizer:: comply(writable<double> &C,
+                                const cluster    &cc)
+        {
+            
+            // compute all balancing
+            for(const eq_node *node = (*(cc.genus->balancing)).head;node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                reac.probe(C,eq.reac,*this);
+                prod.probe(C,eq.prod,*this);
+            }
+        }
+        
 
     }
 

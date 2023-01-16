@@ -16,7 +16,29 @@ namespace yack {
         {
         }
 
-        
+        void boundaries:: probe(const readable<double> &C,
+                                const actors           &A,
+                                const sp_fund          &F)
+        {
+            limiting.free();
+            amending.free();
+            for(const actor *a=A->head;a;a=a->next)
+            {
+                const species &s = **a;
+                const size_t   j = *s;
+                const double   c = C[j];
+                if(c>=0)
+                {
+                    // that's a limiting concentration
+                    limiting(c/a->nu,s,F);
+                }
+                else
+                {
+                    // that's an amending concentration
+                    amending(c/a->nu,s,F);
+                }
+            }
+        }
 
     }
 

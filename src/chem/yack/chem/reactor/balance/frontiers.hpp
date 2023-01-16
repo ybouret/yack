@@ -22,7 +22,7 @@ namespace yack {
         public:
             //__________________________________________________________________
             //
-            // C++
+            // types
             //__________________________________________________________________
             typedef cxx_series<frontier,memory::dyadic> base_type; //!< base class
 
@@ -33,7 +33,12 @@ namespace yack {
             explicit frontiers(const size_t); //!< setup with capacity
             virtual ~frontiers()     throw(); //!< setup with capacity
 
-
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            void operator()(const double xi, const species &sp, const sp_fund &F);
+            
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(frontiers);
