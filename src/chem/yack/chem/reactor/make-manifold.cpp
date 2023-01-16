@@ -325,7 +325,7 @@ namespace yack
 
 
                     //----------------------------------------------------------
-                    // register all used species by their index
+                    // register all used species by their INDEX
                     //----------------------------------------------------------
                     store(sto,weight,Nu);
 
@@ -335,7 +335,7 @@ namespace yack
                     qbranch::assess(stoich, weight, Nu);
 
                     //----------------------------------------------------------
-                    // check that is is useful...
+                    // check one or more species disappeared
                     //----------------------------------------------------------
                     zap.clear();
                     for(const anode *an=act->head;an;an=an->next)
@@ -352,6 +352,7 @@ namespace yack
                     else
                     {
                         std::cerr << "[useless]" << std::endl;
+                        continue;
                     }
 
 
