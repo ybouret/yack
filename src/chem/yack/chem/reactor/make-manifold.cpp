@@ -352,12 +352,12 @@ namespace yack
                     // update system
                     //
                     //----------------------------------------------------------
-                    const equilibrium &eq = promote_mixed(weight,stoich,K,lib,eqs,all);  // create mixed equlibrium
-                    const size_t       dg = qselect::count_valid(weight); assert(dg>=2); // degree
-                    layout.degree(dg) << eq;                                             // register degree
-                    coerce(*group)    << eq;                                             // append to group
+                    const equilibrium &eq = promote_mixed(weight,stoich,K,lib,eqs,all);  // create mixed equilibrium
+                    const size_t       dg = qselect::count_valid(weight); assert(dg>=2); // compute the degree
+                    layout.degree(dg) << eq;                                             // register in proper layout
+                    coerce(*group)    << eq;                                             // append to local group
                     if( coerce(*genus).dispatch((*group)->tail) ) roaming.ensure(&eq);   // classifying and updating
-                    if( !has_roaming(native, (*group)->head,roaming) ) balance << eq;    // check if kept for balance
+                    if( !has_roaming(native, (*group)->head,roaming) ) balance << eq;    // check if kept for balance : no roaming eq insisde
                     coerce(*static_cast<const sp_repo *>(eq.info)).swap_with(zap);       // assign zeroed species
                 }
 
