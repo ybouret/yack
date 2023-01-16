@@ -37,11 +37,21 @@ namespace yack
         {
             
         }
-        
+
+        static const char xsep[] = " <=> ";
+
         std::ostream & operator<<(std::ostream &os, const components &comp)
         {
-            os << comp.reac << " <=> " << comp.prod;
+            os << comp.reac << xsep << comp.prod;
             return os;
+        }
+
+        string components:: to_string() const
+        {
+            string res = reac.to_string();
+            res += xsep;
+            res += prod.to_string();
+            return res;
         }
 
         std::ostream & components:: display_compact(std::ostream &os, const readable<double> &C) const

@@ -30,6 +30,20 @@ namespace yack
             return os;
         }
 
+        std::ostream & operator<<(std::ostream &os, const species &self)
+        {
+            os << self.name;
+            return os;
+        }
+
+        string species::to_string() const
+        {
+            string res(name.size()+2,as_capacity);
+            res += '[';
+            res += name;
+            res += ']';
+            return res;
+        }
         
 
     }

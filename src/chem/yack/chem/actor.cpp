@@ -40,7 +40,8 @@ namespace yack
             }
             os << '[' << sp.name << ']';
         }
-        
+
+
         void actor:: display_extra(std::ostream &os) const
         {
             os << '+';
@@ -50,6 +51,27 @@ namespace yack
             }
             os << '[' << sp.name << ']';
         }
+
+        string actor:: to_first() const
+        {
+            string res;
+            if(nu>1) {
+                res += vformat("%u",nu);
+            }
+            res += sp.to_string();
+            return res;
+        }
+
+        string actor:: to_extra() const
+        {
+            string res = '+';
+            if(nu>1) {
+                res += vformat("%u",nu);
+            }
+            res += sp.to_string();
+            return res;
+        }
+
 
 
         void actor:: display_compact(std::ostream &os, const readable<double> &C) const

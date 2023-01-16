@@ -44,12 +44,14 @@ namespace yack
             // C++
             //__________________________________________________________________
             virtual ~equilibrium() throw();  //!< cleanup
-            
+
+            const void *info; //!< reserved
+
         protected:
             //! set from name + index
             template <typename NAME> inline
             explicit equilibrium(const NAME &uid, const size_t idx) :
-            entity(uid,idx), components()
+            entity(uid,idx), components(), info(0)
             {
             }
             

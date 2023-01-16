@@ -7,6 +7,7 @@
 #include "yack/ptr/ark.hpp"
 #include "yack/data/dinky/core-repo.hpp"
 #include "yack/ptr/auto.hpp"
+#include "yack/proto-ostream.hpp"
 
 namespace yack
 {
@@ -49,21 +50,16 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            
+
+            YACK_PROTO_OSTREAM(species); //! display as name
+            string to_string() const;    //!< '[name]'
+
             //! write formated concentration
             std::ostream &  frame(std::ostream &os, const readable<double> &C) const;
 
             //! write formated concentration
             ios::ostream &  frame(ios::ostream &os, const readable<double> &C) const;
 
-            //! display as name
-            friend std::ostream & operator<<(std::ostream &os, const species &self)
-            {
-                os << self.name;
-                return os;
-            }
-
-            
 
             //__________________________________________________________________
             //

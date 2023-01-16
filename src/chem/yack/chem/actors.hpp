@@ -73,7 +73,10 @@ namespace yack
 
             
             //! display
-            friend std::ostream & operator<<(std::ostream &, const actors &);
+            YACK_PROTO_OSTREAM(actors);
+
+            //! to string
+            string to_string() const;
 
             //! check that any of the acting concentration is negative
             bool are_genuinely_blocked_by(const readable<double> &C) const throw();

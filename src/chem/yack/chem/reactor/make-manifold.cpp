@@ -356,16 +356,16 @@ namespace yack
                     }
 
 
-
+                    //----------------------------------------------------------
+                    // update system
+                    //----------------------------------------------------------
                     const equilibrium &eq = promote_mixed(weight,stoich,K,lib,eqs,all);  // create mixed equlibrium
                     const size_t       dg = qselect::count_valid(weight); assert(dg>=2); // degree
                     layout.degree(dg) << eq;                                             // register degree
                     coerce(*group)    << eq;                                             // append to group
                     if( coerce(*genus).dispatch((*group)->tail) ) roaming.ensure(&eq);   // classifying and updating
-
-                    // check if kept for balance
-                    if( !has_roaming(native, (*group)->head,roaming) )
-                        balance << eq;
+                    if( !has_roaming(native, (*group)->head,roaming) ) balance << eq;    // check if kept for balance
+                    coerce(*static_cast<const sp_repo *>(eq.info)).swap_with(zap);       // assign zeroed species
                 }
 
             }
@@ -378,12 +378,32 @@ namespace yack
                     const eq_repo &er    = *((*cross)[i]);
                     const string   level = vformat("|level#%u|=%u",unsigned(i),unsigned(er.size));
                     YACK_XMLSUB(xml,level);
+
+                    // table of textual components
+                    vector<string> strings(er.size,as_capacity);
+                    size_t         str_max = 0;
                     for(const eq_node *node=er.head;node;node=node->next)
                     {
+                        const components  &cm = ***node;
+                        strings << cm.to_string();
+                        str_max = max_of(str_max,strings.back().size());
+                    }
+
+                    size_t istr = 1;
+                    for(const eq_node *node=er.head;node;node=node->next,++istr)
+                    {
                         const equilibrium &eq = ***node;
-                        all.pad(*xml << eq.name, eq) << " : " << (const components &)eq << std::endl;
+                        const string      &es = strings[istr];
+                        all.pad(*xml << eq.name, eq) << " : " << strings[istr];
+                        if(i>1)
+                        {
+                            for(size_t j=es.size();j<=str_max;++j) std::cerr << ' ';
+                            std::cerr << "| \\ " << *static_cast<const sp_repo *>(eq.info);
+                        }
+                        std::cerr << std::endl;
                     }
                 }
+
                 {
                     YACK_XMLSUB(xml, "balancing");
                     for(const eq_node *node=genus->balancing->head;node;node=node->next)

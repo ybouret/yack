@@ -50,7 +50,10 @@ namespace yack
             //!  "[sp.name]=C[*s]"
             void display_compact(std::ostream &, const readable<double> &C) const;
 
-            
+            string to_first() const;
+            string to_extra() const;
+
+
             //__________________________________________________________________
             //
             // members

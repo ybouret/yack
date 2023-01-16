@@ -270,6 +270,26 @@ namespace yack
         }
 
 
+        string actors :: to_string() const
+        {
+            string res;
+            const actor *a = crew.head;
+            if(a)
+            {
+                res = a->to_first();
+                for(a=a->next;a;a=a->next)
+                {
+                    res += a->to_extra();
+                }
+            }
+            else
+            {
+                res += '.';
+            }
+            return res;
+        }
+
+
         void actors:: display_compact(std::ostream &os, const readable<double> &C) const
         {
             for(const actor *a = crew.head;a;a=a->next)

@@ -111,7 +111,10 @@ namespace yack
             
 
             //! display reac <=> prod
-            friend std::ostream & operator<<(std::ostream &, const components &);
+            YACK_PROTO_OSTREAM(components);
+
+            //! make a string
+            string to_string() const;
 
             //! compute mass action for a given constant
             double mass_action(const double            K,

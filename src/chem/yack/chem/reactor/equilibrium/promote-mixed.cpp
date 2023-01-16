@@ -12,36 +12,39 @@ namespace yack
             class mixed_equilibrium : public equilibrium
             {
             public:
+
+                inline explicit mixed_equilibrium(const string           &uid,
+                                                  const size_t            idx,
+                                                  const readable<double> &myK,
+                                                  const readable<int>    &arr) :
+                equilibrium(uid,idx),
+                K_core(myK),
+                K_eval(),
+                weight(arr,transmogrify),
+                zeroed()
+                {
+                    info = &zeroed;
+                }
+
                 virtual ~mixed_equilibrium() throw()
                 {
                 }
                 
-                const readable<double> &Ktab;
-                mutable rmulops         xmul;
-                const cxx_array<int>    coef;
-                
-                explicit mixed_equilibrium(const string           &uid,
-                                           const size_t            idx,
-                                           const readable<double> &myK,
-                                           const readable<int>    &arr) :
-                equilibrium(uid,idx),
-                Ktab(myK),
-                xmul(),
-                coef(arr,transmogrify)
-                {
-                    
-                }
+                const readable<double> & K_core;
+                mutable rmulops          K_eval;
+                const cxx_array<int>     weight;
+                const sp_repo            zeroed;
                 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(mixed_equilibrium);
                 virtual double getK(double) const
                 {
-                    xmul.ld1();
-                    for(size_t j=coef.size();j>0;--j)
+                    K_eval.ld1();
+                    for(size_t j=weight.size();j>0;--j)
                     {
-                        xmul.ipower(Ktab[j],coef[j]);
+                        K_eval.ipower(K_core[j],weight[j]);
                     }
-                    return xmul.query();
+                    return K_eval.query();
                 }
             };
         }
