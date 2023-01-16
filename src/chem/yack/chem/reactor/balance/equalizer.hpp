@@ -12,18 +12,44 @@ namespace yack {
     namespace chemical
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! equalizing algorithm
+        //
+        //______________________________________________________________________
         class equalizer : public sp_fund
         {
         public:
-            virtual ~equalizer() throw();
-            explicit equalizer();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~equalizer() throw();        //!< cleanup
+            explicit equalizer(const reactor &); //!< setup
 
-            frontier       fence;  //!< single fence
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
 
-            
+            //! adjust [reac|prod]_only using single fence
+            void adjust(writable<double> &C);
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const reactor &cs; //!< persistent reactor
+            frontier       sf; //!< single fence
+
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(equalizer);
-        };
+            void adjust(writable<double> &C, const cluster &cc);
+            void adjust_reac(writable<double> &C, const eq_group  &reac_only);
+            void adjust_prod(writable<double> &C, const eq_group  &prod_only);
+         };
 
     }
 

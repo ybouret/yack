@@ -30,7 +30,7 @@ namespace yack
                     }
                     else
                     {
-                        reac_only << *gn;
+                        prod_only << *gn;
                         eq.update(tribe);
                     }
                 }
@@ -38,7 +38,7 @@ namespace yack
                 {
                     if(eq.prod->size<=0)
                     {
-                        prod_only << *gn;
+                        reac_only << *gn;
                         eq.update(tribe);
                     }
                     else

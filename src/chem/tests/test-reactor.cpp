@@ -64,6 +64,8 @@ YACK_UTEST(reactor)
         if(ran.choice()) C[i] = -C[i];
     }
 
+    lib(std::cerr,"",C);
+
     if(false)
     {
         custodian guard(cs);
@@ -80,7 +82,9 @@ YACK_UTEST(reactor)
         }
     }
 
-    equalizer eqz;
+    equalizer eqz(cs);
+    eqz.adjust(C);
+    lib(std::cerr,"",C);
 
 }
 YACK_UDONE()

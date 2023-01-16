@@ -40,7 +40,12 @@ namespace yack {
             //
             // methods
             //__________________________________________________________________
-            
+
+
+            void remove() throw();                                   //!< xi=0, clear()
+            bool adjust(const readable<double> &C, const actors &A); //!< adjustement in case of negative value(s) for actors
+            void vanish(writable<double> &C) const throw();          //!< set all registered species to exactly zero
+            YACK_PROTO_OSTREAM(frontier);                            //!< display
 
             //__________________________________________________________________
             //
