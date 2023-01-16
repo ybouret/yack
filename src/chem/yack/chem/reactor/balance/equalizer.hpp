@@ -12,16 +12,35 @@ namespace yack {
 
     namespace chemical
     {
-        class frontiers : public cxx_series<frontier>
+        class frontiers : public cxx_series<frontier,memory::dyadic>
         {
         public:
-            typedef cxx_series<frontier> base_type;
+            typedef cxx_series<frontier,memory::dyadic> base_type;
 
             explicit frontiers(const size_t n) : base_type(n) {}
             virtual ~frontiers() throw() {}
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(frontiers);
+        };
+
+        class boundaries
+        {
+        public:
+            explicit boundaries(const size_t m) :
+            limiting(m),
+            amending(m)
+            {
+            }
+
+
+            virtual ~boundaries() throw() {}
+
+            frontiers limiting; //!< from positive concentration
+            frontiers amending; //!< from negative concentration
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(boundaries);
         };
 
 
@@ -53,10 +72,12 @@ namespace yack {
             //
             // members
             //__________________________________________________________________
-            const reactor &cs; //!< persistent reactor
-            frontier       sf; //!< single fence
-
-
+            const reactor &cs;    //!< persistent reactor
+            const size_t   mx;    //!< max actors
+            frontier       sf;    //!< single fence
+            boundaries     reac;  //!< boundaries from reactant
+            boundaries     prod;  //!< boundaries from products
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(equalizer);
             void adjust(writable<double> &C, const cluster &cc);

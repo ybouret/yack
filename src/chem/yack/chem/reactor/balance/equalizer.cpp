@@ -13,7 +13,10 @@ namespace yack {
         equalizer:: equalizer(const reactor &_) :
         sp_fund( new sp_bank() ),
         cs(_),
-        sf( *this )
+        mx(cs.max_actors()),
+        sf( *this ),
+        reac(mx),
+        prod(mx)
         {
         }
 
