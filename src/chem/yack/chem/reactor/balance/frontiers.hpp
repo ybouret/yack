@@ -11,13 +11,27 @@ namespace yack {
     namespace chemical
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! assembly of frontiers, ranked
+        //
+        //______________________________________________________________________
         class frontiers : public cxx_series<frontier,memory::dyadic>
         {
         public:
-            typedef cxx_series<frontier,memory::dyadic> base_type;
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            typedef cxx_series<frontier,memory::dyadic> base_type; //!< base class
 
-            explicit frontiers(const size_t);
-            virtual ~frontiers()     throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit frontiers(const size_t); //!< setup with capacity
+            virtual ~frontiers()     throw(); //!< setup with capacity
 
 
 

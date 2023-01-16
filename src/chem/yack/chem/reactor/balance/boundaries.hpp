@@ -11,12 +11,27 @@ namespace yack {
     namespace chemical
     {
 
+
+        //______________________________________________________________________
+        //
+        //
+        //! assembly of frontiers, ranked
+        //
+        //______________________________________________________________________
         class boundaries
         {
         public:
-            boundaries(const size_t m);
-            ~boundaries() throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            boundaries(const size_t m); //!< setup with capacities
+            ~boundaries() throw();      //!< cleanup
 
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
             frontiers limiting; //!< from positive concentration
             frontiers amending; //!< from negative concentration
 

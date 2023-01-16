@@ -126,11 +126,21 @@ namespace yack {
         };
 
 
+        //______________________________________________________________________
+        //
+        //
+        //! list of independent clusters
+        //
+        //______________________________________________________________________
         class clusters : public object, public cxx_list_of<cluster>
         {
         public:
-            explicit clusters() throw();
-            virtual ~clusters() throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit clusters() throw(); //!< setup
+            virtual ~clusters() throw(); //!< cleanup
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(clusters);
         };
