@@ -348,7 +348,9 @@ namespace yack
 
 
                     //----------------------------------------------------------
+                    //
                     // update system
+                    //
                     //----------------------------------------------------------
                     const equilibrium &eq = promote_mixed(weight,stoich,K,lib,eqs,all);  // create mixed equlibrium
                     const size_t       dg = qselect::count_valid(weight); assert(dg>=2); // degree
