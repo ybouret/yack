@@ -1,4 +1,6 @@
 #include "yack/chem/reactor/conservation/custodian.hpp"
+#include "yack/chem/reactor/balance/equalizer.hpp"
+
 #include "yack/chem/eqs/lua.hpp"
 #include "yack/system/env.hpp"
 #include "yack/utest/run.hpp"
@@ -53,7 +55,6 @@ YACK_UTEST(reactor)
 
     cs.graphViz("reactor");
 
-    return 0;
 
     vector<double> C(cs.M+2);
 
@@ -63,19 +64,23 @@ YACK_UTEST(reactor)
         if(ran.choice()) C[i] = -C[i];
     }
 
-    custodian guard(cs);
-
-    cs.lib(std::cerr,"",C);
-
-    if(guard.corrected(C))
+    if(false)
     {
-        std::cerr << "corrected" << std::endl;
-    }
-    else
-    {
-        std::cerr << "was ok" << std::endl;
+        custodian guard(cs);
+
+        cs.lib(std::cerr,"",C);
+
+        if(guard.corrected(C))
+        {
+            std::cerr << "corrected" << std::endl;
+        }
+        else
+        {
+            std::cerr << "was ok" << std::endl;
+        }
     }
 
+    equalizer eqz;
 
 }
 YACK_UDONE()

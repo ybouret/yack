@@ -382,6 +382,7 @@ namespace yack
                         str_max = max_of(str_max,strings.back().size());
                     }
 
+                    // display using table
                     size_t istr = 1;
                     for(const eq_node *node=er.head;node;node=node->next,++istr)
                     {
