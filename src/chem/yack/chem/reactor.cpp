@@ -245,7 +245,7 @@ namespace yack
                 const equilibrium &eq = ***en;
                 eq.fill(topology[*eq]);
             }
-            fill_detached(detached,topology); //if(xml.verbose) all(*xml << "detached=","",detached);
+            fill_detached(detached,topology); if(xml.verbose) all(*xml << "detached=","",detached);
 
 
             //------------------------------------------------------------------

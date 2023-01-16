@@ -335,7 +335,7 @@ namespace yack
                     qbranch::assess(stoich, weight, Nu);
 
                     //----------------------------------------------------------
-                    // check one or more species disappeared
+                    // check if one or more species disappeared
                     //----------------------------------------------------------
                     zap.clear();
                     for(const anode *an=act->head;an;an=an->next)
@@ -344,16 +344,7 @@ namespace yack
                         const size_t   j = *s;
                         if( (0==stoich[j]) && sto.search(j) ) zap << s;
                     }
-
-                    if(zap.size)
-                    {
-                        //std::cerr << "[usefull]" << zap << std::endl;
-                    }
-                    else
-                    {
-                        //std::cerr << "[useless]" << std::endl;
-                        continue;
-                    }
+                    if(zap.size<=0) continue;
 
 
                     //----------------------------------------------------------
