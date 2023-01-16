@@ -347,11 +347,11 @@ namespace yack
 
                     if(zap.size)
                     {
-                        std::cerr << "[usefull]" << zap << std::endl;
+                        //std::cerr << "[usefull]" << zap << std::endl;
                     }
                     else
                     {
-                        std::cerr << "[useless]" << std::endl;
+                        //std::cerr << "[useless]" << std::endl;
                         continue;
                     }
 
@@ -398,7 +398,7 @@ namespace yack
                         if(i>1)
                         {
                             for(size_t j=es.size();j<=str_max;++j) std::cerr << ' ';
-                            std::cerr << "| \\ " << *static_cast<const sp_repo *>(eq.info);
+                            std::cerr << "| (-) " << *static_cast<const sp_repo *>(eq.info);
                         }
                         std::cerr << std::endl;
                     }

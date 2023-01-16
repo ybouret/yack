@@ -51,7 +51,7 @@ namespace yack
             // methods
             //__________________________________________________________________
 
-            YACK_PROTO_OSTREAM(species); //! display as name
+            YACK_PROTO_OSTREAM(species); //!< display as name
             string to_string() const;    //!< '[name]'
 
             //! write formated concentration
