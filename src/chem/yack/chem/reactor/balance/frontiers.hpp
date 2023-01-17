@@ -37,11 +37,12 @@ namespace yack {
             //
             // methods
             //__________________________________________________________________
-            void operator()(const double xi, const species &sp, const sp_fund &F);
+            void operator()(const double xi, const species &sp, const sp_fund &fn);
             
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(frontiers);
+            frontier *create(const double xi, const species &sp, const sp_fund &F);
         };
 
     }

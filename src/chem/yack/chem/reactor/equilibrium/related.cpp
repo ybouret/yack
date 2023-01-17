@@ -61,7 +61,7 @@ namespace yack
                         }
                     }
 
-                    if(!ok) cc.push_back( new cluster(eq) );
+                    if(!ok) cc.push_back( new cluster(eq,fixed) );
                 }
             }
             

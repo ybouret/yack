@@ -93,12 +93,14 @@ namespace yack {
                                 const cluster    &cc)
         {
             
-            // compute all balancing
+            // compute all balancing equilibria
             for(const eq_node *node = (*(cc.genus->balancing)).head;node;node=node->next)
             {
                 const equilibrium &eq = ***node;
-                reac.probe(C,eq.reac,*this);
-                prod.probe(C,eq.prod,*this);
+                reac.probe(C,eq.reac,*this,*cs.fixed);
+                prod.probe(C,eq.prod,*this,*cs.fixed);
+                std::cerr << eq.name << " : " << eq.content() << std::endl;
+                std::cerr << "reac: limiting: " << reac.limiting << " | amending: " << reac.amending << std::endl;
             }
         }
         

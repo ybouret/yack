@@ -13,13 +13,14 @@ namespace yack
         {
         }
         
-        cluster:: cluster(const equilibrium &first) :
+        cluster:: cluster(const equilibrium   &first,
+                          const booleans::ptr &flags) :
         large_object(),
         latch(),
         next(0),
         prev(0),
         alive( new alist()              ),
-        fixed( NULL                     ),
+        fixed( flags                    ),
         group( new glist()              ),
         breed( new sp_tier()            ),
         genus( new eq_tier()            ),
@@ -130,7 +131,6 @@ namespace yack
             make_manifold(xml,Nu,K,lib,eqs,all);
 
             
-            //make_detached(xml,all);
             lock();
         }
 

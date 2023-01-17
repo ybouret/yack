@@ -16,16 +16,17 @@ namespace yack {
         {
         }
 
-        void boundaries:: probe(const readable<double> &C,
-                                const actors           &A,
-                                const sp_fund          &F)
+        void boundaries:: probe(const readable<double>  &C,
+                                const actors            &A,
+                                const sp_fund           &F,
+                                const readable<bool>    &B)
         {
             limiting.free();
             amending.free();
             for(const actor *a=A->head;a;a=a->next)
             {
                 const species &s = **a;
-                const size_t   j = *s;
+                const size_t   j = *s;    if(!B[j]) continue;
                 const double   c = C[j];
                 if(c>=0)
                 {

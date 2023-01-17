@@ -32,7 +32,8 @@ namespace yack
 
         Nu(N,N>0?M:0),
 
-        linked( new clusters() ),
+        fixed(  new booleans(M,true) ),
+        linked( new clusters()       ),
 
         Nq(0),
         Qm(),
@@ -59,7 +60,11 @@ namespace yack
 
             for(const snode *sn=lib.head();sn;sn=sn->next) {
                 const species &sp = ***sn;
-                if(sp.rank<=0) coerce(*obs) << sp;
+                if(sp.rank<=0)
+                {
+                    coerce(*obs) << sp;
+                    coerce((*fixed)[*sp]) = false;
+                }
             }
             YACK_XMLOG(xml, "active    = " << **act);
             YACK_XMLOG(xml, "spectator = " << *obs);
@@ -95,24 +100,7 @@ namespace yack
                 // build all clusters
                 //
                 //--------------------------------------------------------------
-                {
-#if 0
-                    cxx_array<size_t> ranks(M);
-                    for(const snode *sn=lib.head();sn;sn=sn->next)
-                    {
-                        const species &s = ***sn;
-                        ranks[*s] = s.rank;
-                    }
-#endif
-                    build_related(xml);
-#if 0
-                    for(const snode *sn=lib.head();sn;sn=sn->next)
-                    {
-                        const species &s = ***sn;
-                        coerce(s.rank) = ranks[*s];
-                    }
-#endif
-                }
+                build_related(xml);
 
                 //--------------------------------------------------------------
                 //
@@ -171,6 +159,11 @@ namespace yack
 
                 YACK_XMLOG(xml, "-- max actors: " << max_actors() );
 
+            }
+
+            if(verbose)
+            {
+                lib(*xml << "fixed=" , "", *fixed);
             }
         }
 

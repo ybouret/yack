@@ -50,8 +50,6 @@ namespace yack
                 throw imported::exception(clid,"#alive=%u < #group=%u", unsigned(m), unsigned(n) );
             }
 
-            coerce(fixed) = new booleans(m,true);
-
         }
 
     }

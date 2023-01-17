@@ -4,6 +4,7 @@
 #define YACK_CHEMICAL_REACTOR_INCLUDED 1
 
 #include "yack/chem/library.hpp"
+#include "yack/chem/reactor/types/booleans.hpp"
 #include "yack/chem/reactor/cluster.hpp"
 
 namespace yack {
@@ -63,11 +64,12 @@ namespace yack {
             const equilibria       &eqs;   //!< singles
             const equilibria        all;   //!< lattice
             const readable<double> &K;     //!< user's memory for K
-            const alist::ptr       act;    //!< active species, compress indices
+            const alist::ptr        act;    //!< active species, compress indices
             const auto_ptr<sp_repo> obs;    //!< spectator species
             const size_t            M;      //!< total species
             const size_t            N;      //!< number of single
             const matrix<int>       Nu;     //!< global topology
+            const booleans::ptr     fixed;  //!< bounded species
             const clusters_ptr      linked; //!< clusters of linked equilibria
             const size_t            Nq;     //!< number of conservations
             const matrix<unsigned>  Qm;     //!< [Nq:M] matrix of conservations

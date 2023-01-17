@@ -31,8 +31,9 @@ namespace yack {
             //
             // C++
             //__________________________________________________________________
-            explicit cluster(const equilibrium &first); //!< setup with first equilibrium
-            virtual ~cluster() throw();                 //!< cleanup
+            explicit cluster(const equilibrium   &first,
+                             const booleans::ptr &flags); //!< setup with first equilibrium and fixed flags
+            virtual ~cluster() throw();                  //!< cleanup
 
             //__________________________________________________________________
             //

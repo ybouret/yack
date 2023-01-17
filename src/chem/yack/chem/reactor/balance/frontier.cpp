@@ -28,7 +28,6 @@ namespace yack {
         }
         
 
-
         void frontier:: remove() throw()
         {
             xi = 0;

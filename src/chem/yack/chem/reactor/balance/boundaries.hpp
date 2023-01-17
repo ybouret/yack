@@ -32,9 +32,18 @@ namespace yack {
             //
             // methods
             //__________________________________________________________________
+
+            //! probe limiting/amending extents
+            /**
+             \param C concentration
+             \param A actors: reac/prod
+             \param F shared fund
+             \param B conserved flag
+             */
             void probe(const readable<double> &C,
                        const actors           &A,
-                       const sp_fund          &F);
+                       const sp_fund          &F,
+                       const readable<bool>   &B);
             
             //__________________________________________________________________
             //

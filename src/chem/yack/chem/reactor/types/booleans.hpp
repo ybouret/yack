@@ -4,8 +4,9 @@
 #define YACK_CHEMICAL_BOOLEANS_INCLUDED 1
 
 #include "yack/object.hpp"
+#include "yack/counted.hpp"
 #include "yack/sequence/cxx-array.hpp"
-#include "yack/ptr/auto.hpp"
+#include "yack/ptr/arc.hpp"
 
 namespace yack {
 
@@ -15,11 +16,11 @@ namespace yack {
         //
         //! arrays of booleans
         //______________________________________________________________________
-        class booleans : public object, public cxx_array<bool>
+        class booleans : public object, public counted, public cxx_array<bool>
         {
         public:
 
-            typedef  auto_ptr<const booleans> ptr;       //!< alias
+            typedef  arc_ptr<const booleans> ptr;       //!< alias
             explicit booleans(const size_t, const bool); //!< setup
             virtual ~booleans() throw();                 //!< cleanup
             
