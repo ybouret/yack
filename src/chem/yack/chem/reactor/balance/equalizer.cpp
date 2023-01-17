@@ -100,10 +100,15 @@ namespace yack {
             {
                 const equilibrium &eq = ***node;
                 YACK_XMLSUB(xml,eq.name);
-                YACK_XMLOG(xml,eq.content());
                 reac.probe(C,eq.reac,*this,*cs.fixed);
                 prod.probe(C,eq.prod,*this,*cs.fixed);
-                std::cerr << "reac: limiting: " << reac.limiting << " | amending: " << reac.amending << std::endl;
+                YACK_XMLOG(xml, "|_ reac: " << eq.reac);
+                YACK_XMLOG(xml, " |_limiting: " << reac.limiting);
+                YACK_XMLOG(xml, " |_amending: " << reac.amending);
+                YACK_XMLOG(xml, "|_ prod: " << eq.prod);
+                YACK_XMLOG(xml, " |_limiting: " << prod.limiting);
+                YACK_XMLOG(xml, " |_amending: " << prod.amending);
+
             }
         }
         

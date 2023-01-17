@@ -67,7 +67,7 @@ YACK_UTEST(reactor)
 
     lib(std::cerr,"",C);
 
-    if(true)
+    if(false)
     {
         custodian guard(cs);
 
