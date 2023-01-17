@@ -6,6 +6,18 @@ namespace yack {
     namespace chemical
     {
 
+        const char * equalizer:: status_text(const status s) throw()
+        {
+            switch(s)
+            {
+                case balanced: return "balanced";
+                case bad_reac: return "bad_reac";
+                case bad_prod: return "bad_prod";
+                case bad_both: return "bad_both";
+            }
+            return yack_unknown;
+        }
+
         equalizer:: ~equalizer() throw() {}
 
 
@@ -89,6 +101,38 @@ namespace yack {
                 comply(C,*cc,xml);
         }
 
+        equalizer::status equalizer:: probe(const readable<double> &C, const equilibrium &eq)
+        {
+            const bool amend_reac = reac.probe(C,eq.reac,*this,*cs.fixed);
+            const bool amend_prod = prod.probe(C,eq.prod,*this,*cs.fixed);
+
+            if(amend_reac)
+            {
+                if(amend_prod)
+                {
+                    return bad_both;
+                }
+                else
+                {
+                    return bad_reac;
+                }
+            }
+            else
+            {
+                if(amend_prod)
+                {
+                    return bad_prod;
+                }
+                else
+                {
+                    return balanced;
+                }
+            }
+
+
+        }
+
+
         void equalizer:: comply(writable<double> &C,
                                 const cluster    &cc,
                                 const xmlog      &xml)
@@ -118,20 +162,41 @@ namespace yack {
             for(const eq_node *node = (*(cc.genus->balancing)).head;node;node=node->next)
             {
                 const equilibrium &eq = ***node;
+                const status       st = probe(C,eq);
                 YACK_XMLSUB(xml,eq.name);
-                reac.probe(C,eq.reac,*this,*cs.fixed);
-                prod.probe(C,eq.prod,*this,*cs.fixed);
-                YACK_XMLOG(xml, "|_reactant  : " << eq.reac);
-                YACK_XMLOG(xml, " |_limiting : " << reac.limiting);
-                YACK_XMLOG(xml, " |_amending : " << reac.amending);
-                YACK_XMLOG(xml, "|_product   : " << eq.prod);
-                YACK_XMLOG(xml, " |_limiting : " << prod.limiting);
-                YACK_XMLOG(xml, " |_amending : " << prod.amending);
+                YACK_XMLOG(xml, "-- " << status_text(st) << " --" );
+                switch(st)
+                {
+                    case balanced: continue;
+                    case bad_reac:
+                        YACK_XMLOG(xml, " |_amending reac: " << reac.amending);
+                        YACK_XMLOG(xml, " |_limiting prod: " << prod.limiting);
+                        break;
 
+                    case bad_prod:
+                        comply_prod(C,eq,xml);
+                        break;
+
+                    case bad_both:
+                        YACK_XMLOG(xml, " |_amending reac: " << reac.amending);
+                        YACK_XMLOG(xml, " |_limiting prod: " << prod.limiting);
+                        YACK_XMLOG(xml, " |_amending prod: " << prod.amending);
+                        YACK_XMLOG(xml, " |_limiting reac: " << reac.limiting);
+                        break;
+
+                }
 
             }
         }
         
+
+        void equalizer:: comply_prod(const readable<double> &C,
+                                     const equilibrium      &eq,
+                                     const xmlog            &xml)
+        {
+            YACK_XMLOG(xml, " |_amending prod: " << prod.amending);
+            YACK_XMLOG(xml, " |_limiting reac: " << reac.limiting);
+        }
 
     }
 

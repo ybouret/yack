@@ -16,7 +16,7 @@ namespace yack {
         {
         }
 
-        void boundaries:: probe(const readable<double>  &C,
+        bool boundaries:: probe(const readable<double>  &C,
                                 const actors            &A,
                                 const sp_fund           &F,
                                 const readable<bool>    &B)
@@ -39,6 +39,8 @@ namespace yack {
                     amending((-c)/a->nu,s,F);
                 }
             }
+
+            return amending.size()>0;
         }
 
     }

@@ -39,8 +39,9 @@ namespace yack {
              \param A actors: reac/prod
              \param F shared fund
              \param B conserved flag
+             \return true if amending was was
              */
-            void probe(const readable<double> &C,
+            bool probe(const readable<double> &C,
                        const actors           &A,
                        const sp_fund          &F,
                        const readable<bool>   &B);

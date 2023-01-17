@@ -11,7 +11,7 @@ namespace yack {
 
     namespace chemical
     {
-      
+
         
         //______________________________________________________________________
         //
@@ -22,6 +22,16 @@ namespace yack {
         class equalizer : public sp_fund
         {
         public:
+
+            enum status {
+                balanced,
+                bad_reac,
+                bad_prod,
+                bad_both
+            };
+
+            static const char * status_text(const status) throw();
+
             //__________________________________________________________________
             //
             // C++
@@ -57,6 +67,11 @@ namespace yack {
             void adjust(writable<double> &C, const cluster &cc);
             void comply(writable<double> &C, const cluster &cc, const xmlog &xml);
 
+            status probe(const readable<double> &C, const equilibrium &eq);
+
+            void   comply_prod(const readable<double> &C,
+                               const equilibrium      &eq,
+                               const xmlog            &xml);
             
             
          };
