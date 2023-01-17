@@ -1,6 +1,7 @@
 
 #include "yack/chem/reactor/conservation/custodian.hpp"
 #include "yack/math/iota.hpp"
+#include "yack/type/boolean.h"
 #include <iomanip>
 
 namespace yack
@@ -37,14 +38,17 @@ namespace yack
 
         bool custodian:: corrected(writable<double> &C0)
         {
+            const xmlog xml("[reactor.custodian]", std::cerr, reactor::verbose);
+            YACK_XMLSUB(xml,"correcting");
             assert(C0.size()>=cs.M);
             dC.ld(0);
             bool did = false;
             for(const cluster *cc=cs.linked->head;cc;cc=cc->next)
             {
+                YACK_XMLSUB(xml, "cluster");
                 for(const clot *cg=cc->claim->head;cg;cg=cg->next)
                 {
-                    if( corrected(C0,*cg) ) {
+                    if( corrected(C0,*cg,xml) ) {
                         did = true;
                     }
                 }
@@ -54,7 +58,8 @@ namespace yack
 
 
         bool custodian:: corrected(writable<double> &C0,
-                                   const clot       &cg)
+                                   const clot       &cg,
+                                   const xmlog      &xml)
         {
             assert(cg.size<=nc);
 
@@ -72,7 +77,7 @@ namespace yack
                 {
                     sr    << cl;
                     xs[ic] = io.get();
-                    std::cerr << " (+) " << std::setw(15) << xs[ic] << " @" << cl << std::endl;
+                    YACK_XMLOG(xml," (+) " << std::setw(15) << xs[ic] << " @" << cl);
                 }
             }
 
@@ -119,7 +124,7 @@ namespace yack
                         }
                     }
 
-                    std::cerr << " (*) " << std::setw(15) << tiny << " @" << *best << std::endl;
+                    YACK_XMLOG(xml," (*) " << std::setw(15) << tiny << " @" << *best);
 
                     //----------------------------------------------------------
                     // query winning
@@ -136,8 +141,7 @@ namespace yack
                         const size_t j = ***a;
                         dC[j] += Cwin[j] - C0[j];
                     }
-                    std::cerr << "dC is now " << dC << std::endl;
-
+                    YACK_XMLOG(xml,"--> dC=" << dC);
                     //----------------------------------------------------------
                     // update C0 and remove best
                     //----------------------------------------------------------
@@ -163,7 +167,7 @@ namespace yack
                         //------------------------------------------------------
                         cstk.push_back( sr.pop_front() );
                         xs[ic] = io.get();
-                        std::cerr << " (+) " << std::setw(15) << xs[ic] << " @" << cl << std::endl;
+                        YACK_XMLOG(xml," (+) " << std::setw(15) << xs[ic] << " @" << cl);
                     }
                     else
                     {
