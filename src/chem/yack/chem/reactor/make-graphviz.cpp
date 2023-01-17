@@ -81,7 +81,7 @@ namespace yack
             }
 
             count = 0;
-            for(const eq_gnode *en=genus->prod_only->head;en && (++count<=genus->reac_only->core);en=en->next)
+            for(const eq_gnode *en=genus->prod_only->head;en && (++count<=genus->prod_only->core);en=en->next)
             {
                 eq_viz(fp,(***en).host,",shape=invhouse");
             }
