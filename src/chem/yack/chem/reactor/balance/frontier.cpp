@@ -8,6 +8,9 @@ namespace yack {
 
         frontier:: ~frontier() throw()
         {
+#if 64 == YACK_NATIVE_BITS
+            coerce(unused) = 0;
+#endif
         }
 
         frontier:: frontier(const sp_fund &fund) throw() :
@@ -28,10 +31,47 @@ namespace yack {
         }
         
 
-        void frontier:: remove() throw()
+        void frontier:: free() throw()
         {
             xi = 0;
             clear();
+        }
+
+        frontier & frontier:: operator=(const frontier &other)
+        {
+            sp_para temp(other);
+            swap_with(temp);
+            xi = other.xi;
+            return *this;
+        }
+
+
+        void frontier:: operator()(const double xx, const species &s) {
+            assert(xx>=0);
+
+            if(size<=0) {
+                xi = xx;
+                (*this) << s;
+            }
+            else
+            {
+                switch( __sign::of(xx,xi) )
+                {
+                    case negative:
+                        xi = xx;
+                        clear();
+                        (*this) << s;
+                        return;
+
+                    case __zero__:
+                        (*this) << s;
+                        return;
+
+                    case positive:
+                        return;
+                }
+            }
+
         }
 
         void frontier:: vanish(writable<double> &C) const throw()
@@ -43,10 +83,9 @@ namespace yack {
             }
         }
 
-
         bool frontier:: adjust(const readable<double> &C, const actors &A)
         {
-            remove();
+            free();
 
             //------------------------------------------------------------------
             // find fist negative value

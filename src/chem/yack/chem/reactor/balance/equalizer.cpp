@@ -1,5 +1,7 @@
 #include "yack/chem/reactor/balance/equalizer.hpp"
+#include "yack/system/imported.hpp"
 #include "yack/math/iota.hpp"
+
 #include <iomanip>
 
 namespace yack {
@@ -29,8 +31,8 @@ namespace yack {
         cs(_),
         mx(cs.max_actors()),
         sf( *this ),
-        reac(mx),
-        prod(mx),
+        reac(mx,*this),
+        prod(mx,*this),
         Ceqz(cs.L,cs.L?cs.M:0)
         {
         }
@@ -173,7 +175,7 @@ namespace yack {
                     case balanced: continue;
                     case bad_reac:
                         YACK_XMLOG(xml, " |_amending reac: " << reac.amending);
-                        YACK_XMLOG(xml, " |_limiting prod: " << prod.limiting);
+                        YACK_XMLOG(xml, " |_limiting prod:  " << prod.limiting);
                         break;
 
                     case bad_prod:
@@ -182,30 +184,132 @@ namespace yack {
 
                     case bad_both:
                         YACK_XMLOG(xml, " |_amending reac: " << reac.amending);
-                        YACK_XMLOG(xml, " |_limiting prod: " << prod.limiting);
+                        YACK_XMLOG(xml, " |_limiting prod:  " << prod.limiting);
                         YACK_XMLOG(xml, " |_amending prod: " << prod.amending);
-                        YACK_XMLOG(xml, " |_limiting reac: " << reac.limiting);
+                        YACK_XMLOG(xml, " |_limiting reac:  " << reac.limiting);
                         break;
 
                 }
 
             }
         }
-        
+
+
+        void equalizer:: locate_single_fence(frontier        &sf,
+                                             const frontier  &limiting,
+                                             const frontiers &amending,
+                                             const xmlog     &xml)
+        {
+            static const char pfx[] = " | --> ";
+
+            assert(amending.size()>0);
+            sf.free();
+            if(limiting.size<=0)
+            {
+                //--------------------------------------------------------------
+                //
+                // take the biggest amending!
+                //
+                //--------------------------------------------------------------
+                sf =  amending.back();
+                YACK_XMLOG(xml, pfx << "greatest at " << sf);
+            }
+            else
+            {
+                //--------------------------------------------------------------
+                //
+                // generic case: test w.r.t front amending
+                //
+                //--------------------------------------------------------------
+                const size_t n  =  amending.size();
+                const double xx =  limiting.xi;
+                switch( __sign::of(xx,amending.front().xi) )
+                {
+                    case negative:
+                        sf = limiting;
+                        YACK_XMLOG(xml,pfx << "best effort " << sf << " [won't solve]");
+                        return;
+
+                    case __zero__:
+                        (sf = limiting) += amending.front();
+                        YACK_XMLOG(xml,pfx << "match first " << sf);
+                        return;
+
+                    case positive:
+                        if(n<=1)
+                        {
+                            sf =  amending.front();
+                            YACK_XMLOG(xml,pfx << "solve last  " << sf << " [unique species]");
+                            return;
+                        }
+                        break;
+                }
+
+                assert(amending.size()>=2);
+
+                //--------------------------------------------------------------
+                //
+                // generic case: test w.r.t back amending
+                //
+                //--------------------------------------------------------------
+                switch( __sign::of(xx,amending.back().xi) )
+                {
+                    case positive:
+                        sf = amending.back();
+                        YACK_XMLOG(xml,pfx << "solve last  " << sf);
+                        return;
+
+                    case __zero__:
+                        (sf = limiting) +=  amending.back();
+                        YACK_XMLOG(xml,pfx << "match last  " << sf);
+                        return;
+
+                    case negative:
+                        break;
+                }
+
+                for(size_t i=2;i<n;++i)
+                {
+                    const frontier &af = amending[i];
+
+                    switch( __sign::of(xx,af.xi) )
+                    {
+                        case negative:
+                            sf = amending[i-1];
+                            YACK_XMLOG(xml,pfx << "solve core  " << sf << " #" << i-1) ;
+                            break;
+
+                        case __zero__:
+                            (sf = limiting) += af;
+                            YACK_XMLOG(xml,pfx << "match core  " << sf << " #" << i);
+                            break;
+
+                        case positive:
+                            continue;
+                    }
+
+                }
+
+                if( !sf.size ) throw imported::exception("equalizer::locate","corrupted look up!!");
+
+
+
+            }
+
+        }
 
         void equalizer:: comply_prod(const readable<double> &C,
                                      const equilibrium      &eq,
                                      const xmlog            &xml)
         {
-            YACK_XMLOG(xml, " |_amending prod: " << prod.amending);
-            YACK_XMLOG(xml, " |_limiting reac: " << reac.limiting);
+            YACK_XMLOG(xml, " |_amending prod: "  << prod.amending); assert(prod.amending.size());
+            YACK_XMLOG(xml, " |_limiting reac:  " << reac.limiting);
 
             const size_t      ei = *eq;
             writable<double> &Ci = Ceqz[ei];
             iota::load(Ci,C);
-            const frontier &mx = reac.limiting.front();
-            const double    xx = mx.xi;
-            YACK_XMLOG(xml, " max extent = " << mx);
+            locate_single_fence(sf,reac.limiting,prod.amending,xml);
+
 
         }
 

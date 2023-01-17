@@ -73,7 +73,12 @@ namespace yack {
                                const equilibrium      &eq,
                                const xmlog            &xml);
             
-            
+
+            static void locate_single_fence(frontier        &sf,
+                                            const frontier  &limiting,
+                                            const frontiers &amending,
+                                            const xmlog     &xml);
+
          };
 
     }

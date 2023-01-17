@@ -6,8 +6,8 @@ namespace yack {
     namespace chemical
     {
 
-        boundaries:: boundaries(const size_t m) :
-        limiting(m),
+        boundaries:: boundaries(const size_t m, const sp_fund &f) :
+        limiting(f),
         amending(m)
         {
         }
@@ -31,7 +31,7 @@ namespace yack {
                 if(c>=0)
                 {
                     // that's a limiting concentration
-                    limiting(c/a->nu,s,F);
+                    limiting(c/a->nu,s);
                 }
                 else
                 {

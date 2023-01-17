@@ -25,8 +25,8 @@ namespace yack {
             //
             // C++
             //__________________________________________________________________
-            boundaries(const size_t m); //!< setup with capacities
-            ~boundaries() throw();      //!< cleanup
+            boundaries(const size_t m, const sp_fund &); //!< setup with capacities
+            ~boundaries() throw();                       //!< cleanup
 
             //__________________________________________________________________
             //
@@ -50,7 +50,7 @@ namespace yack {
             //
             // members
             //__________________________________________________________________
-            frontiers limiting; //!< from positive concentration
+            frontier  limiting; //!< single limiting
             frontiers amending; //!< from negative concentration
 
         private:
