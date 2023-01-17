@@ -87,6 +87,6 @@ YACK_UTEST(reactor)
     eqz.adjust(C);
     lib(std::cerr,"",C);
     eqz.comply(C);
-
+    
 }
 YACK_UDONE()

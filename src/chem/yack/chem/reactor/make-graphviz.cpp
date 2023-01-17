@@ -158,12 +158,49 @@ namespace yack
             fp << " }\n";
         }
 
+    }
+
+}
+
+
+#include "yack/fs/local/fs.hpp"
+#include "yack/jive/pattern/matching.hpp"
+
+namespace yack
+{
+    namespace chemical
+    {
+
+        static inline void remove_png(const string &root,
+                                      vfs          &fs)
+        {
+            vector<string>         path;
+            {
+                const string           expr  = root + "[:digit:]*" + "\\.png";
+                jive::matching         match = expr;
+                const string           here  = vfs::get_dir_name(root);
+                auto_ptr<vfs::scanner> scan  = fs.open_folder(here);
+                vfs::entry            *ep    = 0;
+                while(NULL!=(ep=scan->next()))
+                {
+                    auto_ptr<vfs::entry> keep(ep);
+                    if(!ep->is_reg()) continue;
+                    if(match.exactly(ep->base)) path << *(ep->path);
+                }
+            }
+            //std::cerr << "bad=" << path << std::endl;
+            for(size_t i=path.size();i>0;--i) fs.try_remove_file(path[i]);
+        }
 
         void reactor:: graphViz(const string &root) const
         {
+            static localFS &fs = localFS::instance();
+
             // core system
             {
                 const string fn = root + ".dot";
+                fs.try_remove_file(fn);
+                remove_png(root,fs);
                 {
                     ios::ocstream fp(fn);
                     ios::vizible::digraph_init(fp,"G");
