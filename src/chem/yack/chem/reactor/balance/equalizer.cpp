@@ -1,6 +1,5 @@
-
-
 #include "yack/chem/reactor/balance/equalizer.hpp"
+#include <iomanip>
 
 namespace yack {
 
@@ -97,15 +96,24 @@ namespace yack {
 
             YACK_XMLSUB(xml,"cluster");
 
+            bool run = false;
             for(const sp_gnode *sn = cc.breed->conserved->head;sn;sn=sn->next)
             {
                 const species &s = (***sn).host;
-                if(C[*s]<0) goto CYCLE;
+                const double   c = C[*s];
+                if(c<0)
+                {
+                    run = true;
+                    if(xml.verbose) {
+                        cs.lib.pad(*xml << " (-) " << '[' << s.name  << ']',s) << " = " << std::setw(15) << c << std::endl;
+                    }
+                }
             }
 
-            return;
+            if(!run)
+                return;
 
-        CYCLE:
+        //CYCLE:
             // compute all balancing equilibria
             for(const eq_node *node = (*(cc.genus->balancing)).head;node;node=node->next)
             {
@@ -119,6 +127,8 @@ namespace yack {
                 YACK_XMLOG(xml, "|_product   : " << eq.prod);
                 YACK_XMLOG(xml, " |_limiting : " << prod.limiting);
                 YACK_XMLOG(xml, " |_amending : " << prod.amending);
+
+
             }
         }
         
