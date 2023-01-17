@@ -48,7 +48,8 @@ namespace yack {
             frontier       sf;    //!< single fence
             boundaries     reac;  //!< boundaries from reactant
             boundaries     prod;  //!< boundaries from products
-            
+            matrix<double> Ceqz;  //!< [NxM]
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(equalizer);
             void adjust_reac(writable<double> &C, const eq_group  &reac_only);

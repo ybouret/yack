@@ -16,7 +16,8 @@ namespace yack {
         mx(cs.max_actors()),
         sf( *this ),
         reac(mx),
-        prod(mx)
+        prod(mx),
+        Ceqz(cs.L,cs.L?cs.M:0)
         {
         }
 
