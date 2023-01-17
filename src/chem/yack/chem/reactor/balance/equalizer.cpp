@@ -1,7 +1,10 @@
 #include "yack/chem/reactor/balance/equalizer.hpp"
+#include "yack/math/iota.hpp"
 #include <iomanip>
 
 namespace yack {
+
+    using namespace math;
 
     namespace chemical
     {
@@ -196,6 +199,14 @@ namespace yack {
         {
             YACK_XMLOG(xml, " |_amending prod: " << prod.amending);
             YACK_XMLOG(xml, " |_limiting reac: " << reac.limiting);
+
+            const size_t      ei = *eq;
+            writable<double> &Ci = Ceqz[ei];
+            iota::load(Ci,C);
+            const frontier &mx = reac.limiting.front();
+            const double    xx = mx.xi;
+            YACK_XMLOG(xml, " max extent = " << mx);
+
         }
 
     }

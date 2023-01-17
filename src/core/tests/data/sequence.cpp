@@ -170,13 +170,13 @@ YACK_UTEST(data_sequence)
     is.add<int>(4);
     std::cerr << "is=" << is << std::endl;
 
-    is.pop();
+    is.pop_back();
 
     cxx_series<string,memory::dyadic> ss(20);
 
     ss.add<const char *>("toto");
     std::cerr << "ss=" << ss << std::endl;
-    ss.pop();
+    ss.pop_back();
 
     
 

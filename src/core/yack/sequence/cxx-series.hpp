@@ -176,7 +176,7 @@ namespace yack
         }
 
         //! pop/clean last item
-        inline void pop() throw()
+        inline void pop_back() throw()
         {
             assert(count>0);
             out_of_reach::naught( destructed( &basis[--coerce(count)] ) );
@@ -184,7 +184,7 @@ namespace yack
 
         //! pop all
         inline void free() throw() {
-            while(count>0) pop();
+            while(count>0) pop_back();
         }
 
 
@@ -199,6 +199,11 @@ namespace yack
             out_of_reach::naught( &basis[--coerce(count)] );
         }
 
+        inline type       &front() throw()       { assert(size()>0); return *basis; }
+        inline const_type &front() const throw() { assert(size()>0); return *basis; }
+
+        inline type       &back() throw()       { assert(size()>0); return entry[count]; }
+        inline const_type &back() const throw() { assert(size()>0); return entry[count]; }
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(cxx_series);
