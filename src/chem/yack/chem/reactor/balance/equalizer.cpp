@@ -173,14 +173,8 @@ namespace yack {
                 switch(st)
                 {
                     case balanced: continue;
-                    case bad_reac:
-                        YACK_XMLOG(xml, " |_amending reac: " << reac.amending);
-                        YACK_XMLOG(xml, " |_limiting prod:  " << prod.limiting);
-                        break;
-
-                    case bad_prod:
-                        comply_prod(C,eq,xml);
-                        break;
+                    case bad_reac: comply_reac(C,eq,xml); break;
+                    case bad_prod: comply_prod(C,eq,xml); break;
 
                     case bad_both:
                         YACK_XMLOG(xml, " |_amending reac: " << reac.amending);
@@ -309,8 +303,20 @@ namespace yack {
             writable<double> &Ci = Ceqz[ei];
             iota::load(Ci,C);
             locate_single_fence(sf,reac.limiting,prod.amending,xml);
+        }
 
 
+        void equalizer:: comply_reac(const readable<double> &C,
+                                     const equilibrium      &eq,
+                                     const xmlog            &xml)
+        {
+            YACK_XMLOG(xml, " |_amending reac: "  << reac.amending); assert(reac.amending.size());
+            YACK_XMLOG(xml, " |_limiting prod:  " << prod.limiting);
+
+            const size_t      ei = *eq;
+            writable<double> &Ci = Ceqz[ei];
+            iota::load(Ci,C);
+            locate_single_fence(sf,prod.limiting,reac.amending,xml);
         }
 
     }

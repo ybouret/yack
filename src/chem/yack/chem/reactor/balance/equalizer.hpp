@@ -74,6 +74,10 @@ namespace yack {
                                const xmlog            &xml);
             
 
+            void   comply_reac(const readable<double> &C,
+                               const equilibrium      &eq,
+                               const xmlog            &xml);
+
             static void locate_single_fence(frontier        &sf,
                                             const frontier  &limiting,
                                             const frontiers &amending,
