@@ -83,14 +83,15 @@ namespace yack {
         
         void equalizer:: comply(writable<double> &C)
         {
+            const xmlog xml("[reactor.equalizer]",std::cerr,reactor::verbose);
+            YACK_XMLSUB(xml,"comply");
             for(const cluster *cc=cs.linked->head;cc;cc=cc->next)
-            {
-                comply(C,*cc);
-            }
+                comply(C,*cc,xml);
         }
 
         void equalizer:: comply(writable<double> &C,
-                                const cluster    &cc)
+                                const cluster    &cc,
+                                const xmlog      &xml)
         {
             
             // compute all balancing equilibria

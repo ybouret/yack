@@ -28,16 +28,15 @@ namespace yack {
             //__________________________________________________________________
             virtual ~equalizer() throw();        //!< cleanup
             explicit equalizer(const reactor &); //!< setup
-
+            
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
 
-            //! adjust [reac|prod]_only using single fence
-            void adjust(writable<double> &C);
-            
-            void comply(writable<double> &C);
+
+            void adjust(writable<double> &C); //!< adjust [reac|prod]_only using single fence
+            void comply(writable<double> &C); 
             
             
             //__________________________________________________________________
@@ -55,7 +54,7 @@ namespace yack {
             void adjust_reac(writable<double> &C, const eq_group  &reac_only);
             void adjust_prod(writable<double> &C, const eq_group  &prod_only);
             void adjust(writable<double> &C, const cluster &cc);
-            void comply(writable<double> &C, const cluster &cc);
+            void comply(writable<double> &C, const cluster &cc, const xmlog &xml);
 
             
             
