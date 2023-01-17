@@ -83,7 +83,7 @@ namespace yack {
         
         void equalizer:: comply(writable<double> &C)
         {
-            const xmlog xml("[reactor.equalizer]",std::cerr,reactor::verbose);
+            const xmlog xml("[equalizer]",std::cerr,reactor::verbose);
             YACK_XMLSUB(xml,"comply");
             for(const cluster *cc=cs.linked->head;cc;cc=cc->next)
                 comply(C,*cc,xml);
@@ -95,6 +95,16 @@ namespace yack {
         {
 
             YACK_XMLSUB(xml,"cluster");
+
+            for(const sp_gnode *sn = cc.breed->conserved->head;sn;sn=sn->next)
+            {
+                const species &s = (***sn).host;
+                if(C[*s]<0) goto CYCLE;
+            }
+
+            return;
+
+        CYCLE:
             // compute all balancing equilibria
             for(const eq_node *node = (*(cc.genus->balancing)).head;node;node=node->next)
             {
@@ -108,7 +118,6 @@ namespace yack {
                 YACK_XMLOG(xml, "|_product   : " << eq.prod);
                 YACK_XMLOG(xml, " |_limiting : " << prod.limiting);
                 YACK_XMLOG(xml, " |_amending : " << prod.amending);
-
             }
         }
         

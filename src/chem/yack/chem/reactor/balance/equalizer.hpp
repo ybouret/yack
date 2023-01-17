@@ -36,7 +36,7 @@ namespace yack {
 
 
             void adjust(writable<double> &C); //!< adjust [reac|prod]_only using single fence
-            void comply(writable<double> &C); 
+            void comply(writable<double> &C); //!< comply to maximum positivity of conserved species
             
             
             //__________________________________________________________________
