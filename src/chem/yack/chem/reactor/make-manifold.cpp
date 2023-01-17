@@ -270,7 +270,7 @@ namespace yack
             switch(n)
             {
                 case  0: throw imported::exception(clid,"unexpected empty cluster!!");
-                case  1: YACK_XMLOG(xml, "-- standalone <" << (*group)->head->host.name << ">" ); return;
+                //case  1: YACK_XMLOG(xml, "-- standalone <" << (*group)->head->host.name << ">" ); return;
                 default: break;
             }
 
@@ -361,6 +361,9 @@ namespace yack
                     coerce(*static_cast<const sp_repo *>(eq.info)).swap_with(zap);       // assign zeroed species
                 }
 
+                std::cerr << genus->prod_only << std::endl;
+                std::cerr << genus->reac_only << std::endl;
+
             }
 
             
@@ -405,6 +408,7 @@ namespace yack
                         YACK_XMLOG(xml, " (*) <" << (***node).name << ">");
                     }
                 }
+                exit(0);
             }
 
         }

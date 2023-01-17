@@ -65,7 +65,7 @@ YACK_UTEST(reactor)
         if(ran.choice()) C[i] = -C[i];
     }
 
-    lib(std::cerr,"",C);
+    lib(std::cerr << "Cini=","",C);
 
     if(false)
     {
@@ -85,7 +85,7 @@ YACK_UTEST(reactor)
 
     equalizer eqz(cs);
     eqz.adjust(C);
-    lib(std::cerr,"",C);
+    lib(std::cerr << "Cadj=","",C);
     eqz.comply(C);
     
 }
