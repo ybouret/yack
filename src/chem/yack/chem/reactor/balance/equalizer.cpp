@@ -11,6 +11,24 @@ namespace yack {
     namespace chemical
     {
 
+        equalizer:: er_type:: er_type(const size_t n) : er_type_(n) {}
+        equalizer:: er_type:: ~er_type() throw() {}
+
+        std::ostream & operator<<( std::ostream &os, const equalizer::er_type &self )
+        {
+            os << '{';
+            const eq_node *node = self.head;
+            if(node) {
+                os << '<' << (***node).name << '>';
+                for(node=node->next;node;node=node->next)
+                {
+                    os << ", " <<'<' << (***node).name << '>';
+                }
+            }
+            os << '}';
+            return os;
+        }
+
         const char * equalizer:: status_text(const status s) throw()
         {
             switch(s)
@@ -34,7 +52,8 @@ namespace yack {
         reac(mx,*this),
         prod(mx,*this),
         used(cs.N),
-        Ceqz(cs.L,cs.L?cs.M:0)
+        Ceqz(cs.L,cs.L?cs.M:0),
+        gain(cs.L,0.0)
         {
         }
 
@@ -146,6 +165,7 @@ namespace yack {
 
             YACK_XMLSUB(xml,"cluster");
 
+            // detect negative conserved species
             bool run = false;
             for(const sp_gnode *sn = cc.breed->conserved->head;sn;sn=sn->next)
             {
@@ -178,15 +198,22 @@ namespace yack {
                     case bad_prod: used << comply_prod(C,eq,xml); break;
 
                     case bad_both:
-                        YACK_XMLOG(xml, " |_amending reac: " << reac.amending);
-                        YACK_XMLOG(xml, " |_limiting prod:  " << prod.limiting);
-                        YACK_XMLOG(xml, " |_amending prod: " << prod.amending);
-                        YACK_XMLOG(xml, " |_limiting reac:  " << reac.limiting);
+                        //YACK_XMLOG(xml, " |_amending reac: " << reac.amending);
+                        //YACK_XMLOG(xml, " |_limiting prod:  " << prod.limiting);
+                        //YACK_XMLOG(xml, " |_amending prod: " << prod.amending);
+                        //YACK_XMLOG(xml, " |_limiting reac:  " << reac.limiting);
                         break;
 
                 }
             }
 
+            if( used.size <= 0)
+            {
+                std::cerr << "stalled..." << std::endl;
+                exit(0);
+            }
+            std::cerr << "used=" << used << std::endl;
+            
 
         }
 
@@ -227,17 +254,27 @@ namespace yack {
             const size_t      ei = *eq;
             writable<double> &Ci = Ceqz[ei];
             const double      xx = F.xi;
+
             iota::load(Ci,C);
+            xadd.ldz();
+
             for(const cnode *cn = eq.head(); cn; cn=cn->next)
             {
                 const component &cm = ***cn;
                 const species   &sp = *cm;
-                Ci[*sp] += cm.nu * xx;
+                const size_t      j = *sp;
+                const double     dc = cm.nu * xx;
+                const double     c0 = Ci[j];
+                const double     c1 = Ci[j] += dc;
+                xadd.push(  min_of(c1,0.0) );
+                xadd.push( -min_of(c0,0.0) );
             }
             F.vanish(Ci);
+            gain[ei] = xadd.get();
             if(xml.verbose)
             {
                 eq.display_compact(*xml << " | ",Ci,*cs.fixed) << std::endl;
+                *xml <<" | gain = " << std::setw(15) << gain[ei] << std::endl;
             }
         }
 
@@ -248,7 +285,9 @@ namespace yack {
         {
             static const char pfx[] = " | --> ";
 
+            YACK_XMLOG(xml, pfx  << "locate single fence in " << amending);
             assert(amending.size()>0);
+            assert(amending.are_increasing());
             sf.free();
             if(limiting.size<=0)
             {
@@ -314,29 +353,41 @@ namespace yack {
                         break;
                 }
 
-                for(size_t i=2;i<n;++i)
+                assert(xx>amending.front().xi);
+                assert(xx<amending.back().xi);
+
+                size_t jlo = 1;
+                size_t jup = n;
+
+            LOOK_UP:
+                assert(xx>amending[jlo].xi);
+                assert(xx<amending[jup].xi);
+                if(jup-jlo<=1)
                 {
-                    const frontier &af = amending[i];
-
-                    switch( __sign::of(xx,af.xi) )
-                    {
-                        case negative:
-                            sf = amending[i-1];
-                            YACK_XMLOG(xml,pfx << "solve core  " << sf << " #" << i-1) ;
-                            break;
-
-                        case __zero__:
-                            (sf = limiting) += af;
-                            YACK_XMLOG(xml,pfx << "match core  " << sf << " #" << i);
-                            break;
-
-                        case positive:
-                            continue;
-                    }
-
+                    sf = amending[jlo];
+                    YACK_XMLOG(xml,pfx << "solve core  " << sf << " #" << jlo) ;
+                    return;
                 }
 
-                if( !sf.size ) throw imported::exception("equalizer::locate","corrupted look up!!");
+                const size_t     jnx = jlo+1; assert(jnx<=jup);
+                const frontier  &af  = amending[jnx];
+                switch( __sign::of(xx,af.xi) )
+                {
+                    case negative:
+                        sf = amending[jlo];
+                        YACK_XMLOG(xml,pfx << "solve core  " << sf << " #" << jlo) ;
+                        return;
+
+                    case __zero__:
+                        (sf = limiting) += af;
+                        YACK_XMLOG(xml,pfx << "match core  " << sf << " #" << jnx);
+                        break;
+
+                    case positive:
+                        jlo=jnx;
+                        goto LOOK_UP;
+                }
+
 
 
 

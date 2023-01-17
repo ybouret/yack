@@ -23,7 +23,15 @@ namespace yack {
         class equalizer : public sp_fund
         {
         public:
-            typedef solo_repo<const equilibrium> er_type;
+
+            typedef solo_repo<const equilibrium> er_type_;
+            class er_type : public er_type_ {
+            public:
+                explicit er_type(const size_t n);
+                virtual ~er_type() throw();
+                YACK_PROTO_OSTREAM(er_type);
+            };
+
 
             enum status {
                 balanced,
@@ -60,9 +68,11 @@ namespace yack {
             frontier       sf;    //!< single fence
             boundaries     reac;  //!< boundaries from reactant
             boundaries     prod;  //!< boundaries from products
-            er_type        used;  //!< used equilibria for a cycle
-            matrix<double> Ceqz;  //!< [NxM]
-
+            er_type           used;  //!< used equilibria for a cycle
+            matrix<double>    Ceqz;  //!< [LxM]
+            cxx_array<double> gain;  //!< [L]
+            raddops           xadd;  //!< to compute scores
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(equalizer);
             void adjust_reac(writable<double> &C, const eq_group  &reac_only);
