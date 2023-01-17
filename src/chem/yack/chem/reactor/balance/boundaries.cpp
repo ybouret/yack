@@ -36,7 +36,7 @@ namespace yack {
                 else
                 {
                     // that's an amending concentration
-                    amending(c/a->nu,s,F);
+                    amending((-c)/a->nu,s,F);
                 }
             }
         }

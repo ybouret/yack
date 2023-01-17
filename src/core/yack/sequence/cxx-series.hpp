@@ -187,6 +187,19 @@ namespace yack
             while(count>0) pop();
         }
 
+
+        //! remove an item
+        inline void suppress(const size_t indx) throw()
+        {
+            assert(indx>=1);
+            assert(indx<=size());
+            mutable_type *target = entry+indx;
+            destruct(target);
+            out_of_reach::move(target,target+1,(count-indx)*sizeof(T));
+            out_of_reach::naught( &basis[--coerce(count)] );
+        }
+
+
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(cxx_series);
         const size_t      bytes; //!< allocated bytes

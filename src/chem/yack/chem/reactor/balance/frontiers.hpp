@@ -37,8 +37,13 @@ namespace yack {
             //
             // methods
             //__________________________________________________________________
+
+            //! insert new value/species in increasing order
             void operator()(const double xi, const species &sp, const sp_fund &fn);
-            
+
+            //! checking
+            bool are_increasing() const throw();
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(frontiers);

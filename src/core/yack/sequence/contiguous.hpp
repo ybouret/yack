@@ -28,8 +28,8 @@ namespace yack
         //
         // types and definitions
         //______________________________________________________________________
-        typedef typename writable<T>::type       type;        //!< alias
-        typedef typename writable<T>::const_type const_type;  //!< alias
+        typedef typename writable<T>::type       type;           //!< alias
+        typedef typename writable<T>::const_type const_type;     //!< alias
         using writable<T>::size;
 
 
