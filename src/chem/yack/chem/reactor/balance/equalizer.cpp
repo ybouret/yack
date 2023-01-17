@@ -189,15 +189,24 @@ namespace yack {
             {
                 const equilibrium &eq = ***node;
                 const status       st = probe(C,eq);
-                YACK_XMLSUB(xml,eq.name);
-                YACK_XMLOG(xml, "-- " << status_text(st) << " --" );
+
                 switch(st)
                 {
                     case balanced: continue;
-                    case bad_reac: used << comply_reac(C,eq,xml); break;
-                    case bad_prod: used << comply_prod(C,eq,xml); break;
+                    case bad_reac: {
+                        YACK_XMLSUB(xml,eq.name);
+                        YACK_XMLOG(xml, "-- " << status_text(st) << " --" );
+                        used << comply_reac(C,eq,xml);
+                    } break;
+
+                    case bad_prod: {
+                        YACK_XMLSUB(xml,eq.name);
+                        YACK_XMLOG(xml, "-- " << status_text(st) << " --" );
+                        used << comply_prod(C,eq,xml);
+                    } break;
 
                     case bad_both:
+                        YACK_XMLOG(xml, "-- " << status_text(st) << " --" );
                         //YACK_XMLOG(xml, " |_amending reac: " << reac.amending);
                         //YACK_XMLOG(xml, " |_limiting prod:  " << prod.limiting);
                         //YACK_XMLOG(xml, " |_amending prod: " << prod.amending);
