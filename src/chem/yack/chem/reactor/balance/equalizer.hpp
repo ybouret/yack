@@ -6,6 +6,7 @@
 
 #include "yack/chem/reactor/balance/boundaries.hpp"
 #include "yack/chem/reactor.hpp"
+#include "yack/data/dinky/solo-repo.hpp"
 
 namespace yack {
 
@@ -22,6 +23,7 @@ namespace yack {
         class equalizer : public sp_fund
         {
         public:
+            typedef solo_repo<const equilibrium> er_type;
 
             enum status {
                 balanced,
@@ -58,6 +60,7 @@ namespace yack {
             frontier       sf;    //!< single fence
             boundaries     reac;  //!< boundaries from reactant
             boundaries     prod;  //!< boundaries from products
+            er_type        used;  //!< used equilibria for a cycle
             matrix<double> Ceqz;  //!< [NxM]
 
         private:
@@ -69,21 +72,26 @@ namespace yack {
 
             status probe(const readable<double> &C, const equilibrium &eq);
 
-            void   comply_prod(const readable<double> &C,
-                               const equilibrium      &eq,
-                               const xmlog            &xml);
+            const equilibrium & comply_prod(const readable<double> &C,
+                                            const equilibrium      &eq,
+                                            const xmlog            &xml);
             
 
-            void   comply_reac(const readable<double> &C,
-                               const equilibrium      &eq,
-                               const xmlog            &xml);
+            const equilibrium &comply_reac(const readable<double> &C,
+                                           const equilibrium      &eq,
+                                           const xmlog            &xml);
+
+            void comply_move(const frontier         &F,
+                             const readable<double> &C,
+                             const equilibrium      &eq,
+                             const xmlog            &xml);
 
             static void locate_single_fence(frontier        &sf,
                                             const frontier  &limiting,
                                             const frontiers &amending,
                                             const xmlog     &xml);
 
-         };
+        };
 
     }
 

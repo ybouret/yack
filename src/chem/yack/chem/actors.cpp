@@ -299,6 +299,17 @@ namespace yack
             
         }
 
+        void actors:: display_compact(std::ostream &os, const readable<double> &C, const readable<bool> &flag) const
+        {
+            for(const actor *a = crew.head;a;a=a->next)
+            {
+                const species &s = **a;
+                if(flag[*s])
+                    a->display_compact(os << ' ',C);
+            }
+
+        }
+
 
         
     }

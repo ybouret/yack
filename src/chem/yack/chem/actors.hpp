@@ -93,6 +93,8 @@ namespace yack
             //! display list of compact associated concentrations
             void display_compact(std::ostream &, const readable<double> &C) const;
 
+            //! display list of compact associated concentrations
+            void display_compact(std::ostream &, const readable<double> &C, const readable<bool> &flag) const;
 
             //! fill array with coefficients at their position
             template <typename T> inline

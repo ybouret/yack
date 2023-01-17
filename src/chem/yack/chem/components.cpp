@@ -63,6 +63,16 @@ namespace yack
             return os;
         }
 
+        std::ostream & components:: display_compact(std::ostream &os, const readable<double> &C, const readable<bool> &flag) const
+        {
+            os << '{';
+            reac.display_compact(os,C,flag);
+            prod.display_compact(os,C,flag);
+            os << ' ' << '}';
+            return os;
+        }
+
+
 
         const component * components::query(const species &s) const throw()
         {

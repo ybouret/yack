@@ -33,6 +33,7 @@ namespace yack {
         sf( *this ),
         reac(mx,*this),
         prod(mx,*this),
+        used(cs.N),
         Ceqz(cs.L,cs.L?cs.M:0)
         {
         }
@@ -162,8 +163,8 @@ namespace yack {
             if(!run)
                 return;
 
-        //CYCLE:
             // compute all balancing equilibria
+            used.clear();
             for(const eq_node *node = (*(cc.genus->balancing)).head;node;node=node->next)
             {
                 const equilibrium &eq = ***node;
@@ -173,8 +174,8 @@ namespace yack {
                 switch(st)
                 {
                     case balanced: continue;
-                    case bad_reac: comply_reac(C,eq,xml); break;
-                    case bad_prod: comply_prod(C,eq,xml); break;
+                    case bad_reac: used << comply_reac(C,eq,xml); break;
+                    case bad_prod: used << comply_prod(C,eq,xml); break;
 
                     case bad_both:
                         YACK_XMLOG(xml, " |_amending reac: " << reac.amending);
@@ -184,10 +185,61 @@ namespace yack {
                         break;
 
                 }
-
             }
+
+
         }
 
+
+        const equilibrium & equalizer:: comply_prod(const readable<double> &C,
+                                                    const equilibrium      &eq,
+                                                    const xmlog            &xml)
+        {
+            YACK_XMLOG(xml, " |_amending prod: "  << prod.amending); assert(prod.amending.size());
+            YACK_XMLOG(xml, " |_limiting reac:  " << reac.limiting);
+
+            frontier fwd(*this);
+            locate_single_fence(fwd,reac.limiting,prod.amending,xml);
+            comply_move(fwd,C,eq,xml);
+            return eq;
+        }
+
+
+        const equilibrium & equalizer:: comply_reac(const readable<double> &C,
+                                                    const equilibrium      &eq,
+                                                    const xmlog            &xml)
+        {
+            YACK_XMLOG(xml, " |_amending reac: "  << reac.amending); assert(reac.amending.size());
+            YACK_XMLOG(xml, " |_limiting prod:  " << prod.limiting);
+
+            frontier rev(*this);
+            locate_single_fence(rev,prod.limiting,reac.amending,xml);
+            rev.xi = -rev.xi;
+            comply_move(rev,C,eq,xml);
+            return eq;
+        }
+
+        void  equalizer::  comply_move(const frontier         &F,
+                                       const readable<double> &C,
+                                       const equilibrium      &eq,
+                                       const xmlog            &xml)
+        {
+            const size_t      ei = *eq;
+            writable<double> &Ci = Ceqz[ei];
+            const double      xx = F.xi;
+            iota::load(Ci,C);
+            for(const cnode *cn = eq.head(); cn; cn=cn->next)
+            {
+                const component &cm = ***cn;
+                const species   &sp = *cm;
+                Ci[*sp] += cm.nu * xx;
+            }
+            F.vanish(Ci);
+            if(xml.verbose)
+            {
+                eq.display_compact(*xml << " | ",Ci,*cs.fixed) << std::endl;
+            }
+        }
 
         void equalizer:: locate_single_fence(frontier        &sf,
                                              const frontier  &limiting,
@@ -292,32 +344,6 @@ namespace yack {
 
         }
 
-        void equalizer:: comply_prod(const readable<double> &C,
-                                     const equilibrium      &eq,
-                                     const xmlog            &xml)
-        {
-            YACK_XMLOG(xml, " |_amending prod: "  << prod.amending); assert(prod.amending.size());
-            YACK_XMLOG(xml, " |_limiting reac:  " << reac.limiting);
-
-            const size_t      ei = *eq;
-            writable<double> &Ci = Ceqz[ei];
-            iota::load(Ci,C);
-            locate_single_fence(sf,reac.limiting,prod.amending,xml);
-        }
-
-
-        void equalizer:: comply_reac(const readable<double> &C,
-                                     const equilibrium      &eq,
-                                     const xmlog            &xml)
-        {
-            YACK_XMLOG(xml, " |_amending reac: "  << reac.amending); assert(reac.amending.size());
-            YACK_XMLOG(xml, " |_limiting prod:  " << prod.limiting);
-
-            const size_t      ei = *eq;
-            writable<double> &Ci = Ceqz[ei];
-            iota::load(Ci,C);
-            locate_single_fence(sf,prod.limiting,reac.amending,xml);
-        }
 
     }
 

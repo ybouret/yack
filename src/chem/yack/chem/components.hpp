@@ -236,7 +236,9 @@ namespace yack
             
             //! display list of associated concentrations
             std::ostream & display_compact(std::ostream &os, const readable<double> &C) const;
-            
+
+            //! display list of associated conserved species
+            std::ostream & display_compact(std::ostream &os, const readable<double> &C, const readable<bool> &flag) const;
             
             //__________________________________________________________________
             //
