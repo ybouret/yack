@@ -91,7 +91,7 @@ namespace yack
             //------------------------------------------------------------------
             //
             YACK_XMLOG(xml, "--> create one wing per cluster");
-            // using only delimited equilibria
+            // using only balancing equilibria
             //
             //------------------------------------------------------------------
             fill_detached(detached,topology);

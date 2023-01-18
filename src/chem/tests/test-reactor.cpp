@@ -32,7 +32,6 @@ YACK_UTEST(reactor)
 
     vector<double> K;
     reactor cs(lib,eqs,K);
-    return 0;
     
 
     
@@ -55,7 +54,7 @@ YACK_UTEST(reactor)
     YACK_SIZEOF(frontier);
 
 
-    //cs.graphViz("reactor");
+    cs.graphViz("reactor");
 
 
     vector<double> C(cs.M+2);
@@ -84,10 +83,12 @@ YACK_UTEST(reactor)
         }
     }
 
-    equalizer eqz(cs);
-    eqz.adjust(C);
-    lib(std::cerr << "Cadj=","",C);
-    eqz.comply(C);
-    
+    {
+        const xmlog xml("[equalizer]",std::cerr,reactor::verbose);
+        equalizer eqz(cs);
+        eqz.adjust(C,xml);
+        lib(std::cerr << "Cadj=","",C);
+        //eqz.comply(C);
+    }
 }
 YACK_UDONE()

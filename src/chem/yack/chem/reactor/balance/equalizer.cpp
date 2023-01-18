@@ -48,23 +48,24 @@ namespace yack {
         sp_fund( new sp_bank() ),
         cs(_),
         mx(cs.max_actors()),
-        sf( *this ),
+        wall( *this ),
         reac(mx,*this),
         prod(mx,*this),
         used(cs.N),
         Ceqz(cs.L,cs.L?cs.M:0),
-        gain(cs.L,0.0)
+        gain(cs.L,0.0),
+        xadd()
         {
         }
 
-        void equalizer:: adjust_reac(writable<double> &C, const eq_group &reac_only)
+        void equalizer:: adjust_reac(writable<double> &C, const eq_group &reac_only, const xmlog &xml)
         {
             for(const eq_gnode *gn=reac_only.head;gn;gn=gn->next)
             {
                 const equilibrium &eq = (***gn).host; assert(eq.reac->size>0); assert(eq.prod->size<=0);
-                if(sf.adjust(C,eq.reac))
+                if(wall.adjust(C,eq.reac))
                 {
-                    const double     xi = sf.xi;
+                    const double     xi = wall.xi;
                     for(const cnode *cn = eq.head();cn;cn=cn->next)
                     {
                         const component &a = ***cn; assert(a.nu<0);
@@ -72,20 +73,25 @@ namespace yack {
                         const size_t     j = *s;
                         C[j] = max_of<double>( C[j] + (-a.nu) * xi, 0.0);
                     }
-                    sf.vanish(C);
+                    wall.vanish(C);
+                    if(xml.verbose)
+                    {
+                        *xml << "-- with <" << eq.name << "> " << wall << " : ";
+                        eq.display_compact(std::cerr,C) << std::endl;
+                    }
                 }
             }
 
         }
 
-        void equalizer:: adjust_prod(writable<double> &C, const eq_group &prod_only)
+        void equalizer:: adjust_prod(writable<double> &C, const eq_group &prod_only, const xmlog &xml)
         {
             for(const eq_gnode *gn=prod_only.head;gn;gn=gn->next)
             {
                 const equilibrium &eq = (***gn).host; assert(eq.prod->size>0); assert(eq.reac->size<=0);
-                if(sf.adjust(C,eq.prod))
+                if(wall.adjust(C,eq.prod))
                 {
-                    const double     xi = sf.xi;
+                    const double     xi = wall.xi;
                     for(const cnode *cn = eq.head();cn;cn=cn->next)
                     {
                         const component &a = ***cn; assert(a.nu>0);
@@ -93,7 +99,12 @@ namespace yack {
                         const size_t     j = *s;
                         C[j] = max_of<double>( C[j] + a.nu * xi, 0.0);
                     }
-                    sf.vanish(C);
+                    wall.vanish(C);
+                    if(xml.verbose)
+                    {
+                        *xml << "-- with <" << eq.name << "> " << wall << " : ";
+                        eq.display_compact(std::cerr,C) << std::endl;
+                    }
                 }
             }
 
@@ -103,25 +114,23 @@ namespace yack {
 
 
         void equalizer:: adjust(writable<double> &C,
-                                const cluster    &cc)
+                                const cluster    &cc,
+                                const xmlog      &xml)
         {
-#warning TODO
-            //adjust_reac(C,*(cc.genus->reac_only));
-            //adjust_prod(C,*(cc.genus->prod_only));
+            adjust_reac(C,*(cc.replica->genus->reac_only),xml);
+            adjust_prod(C,*(cc.replica->genus->prod_only),xml);
         }
 
-        void equalizer:: adjust(writable<double> &C)
+        void equalizer:: adjust(writable<double> &C, const xmlog &xml)
         {
+            YACK_XMLSUB(xml, "equalizer::adjust" );
             for(const cluster *cc=cs.linked->head;cc;cc=cc->next)
-            {
-                adjust(C,*cc);
-            }
+                adjust(C,*cc,xml);
         }
 
         
-        void equalizer:: comply(writable<double> &C)
+        void equalizer:: comply(writable<double> &C, const xmlog &xml)
         {
-            const xmlog xml("[equalizer]",std::cerr,reactor::verbose);
             YACK_XMLSUB(xml,"comply");
             for(const cluster *cc=cs.linked->head;cc;cc=cc->next)
                 comply(C,*cc,xml);

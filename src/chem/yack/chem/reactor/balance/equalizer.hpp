@@ -24,22 +24,27 @@ namespace yack {
         {
         public:
 
+            //! base class for private respository
             typedef solo_repo<const equilibrium> er_type_;
+
+            //! private repository of equilibria for algorithm
             class er_type : public er_type_ {
             public:
-                explicit er_type(const size_t n);
-                virtual ~er_type() throw();
-                YACK_PROTO_OSTREAM(er_type);
+                explicit er_type(const size_t n); //!< setup
+                virtual ~er_type() throw();       //!< cleanup
+                YACK_PROTO_OSTREAM(er_type);      //!< display
             };
 
 
+            //! comply result
             enum status {
-                balanced,
-                bad_reac,
-                bad_prod,
-                bad_both
+                balanced, //!< equilibrium is balanced
+                bad_reac, //!< equilibriun has bad reactant(s)
+                bad_prod, //!< equilibrium has bad product(s)
+                bad_both  //!< equilibrium has bad both reactant(s) and product(s)
             };
 
+            //! humar readable status
             static const char * status_text(const status) throw();
 
             //__________________________________________________________________
@@ -54,20 +59,19 @@ namespace yack {
             // methods
             //__________________________________________________________________
 
-
-            void adjust(writable<double> &C); //!< adjust [reac|prod]_only using single fence
-            void comply(writable<double> &C); //!< comply to maximum positivity of conserved species
+            void adjust(writable<double> &C, const xmlog &xml); //!< adjust [reac|prod]_only using single fence
+            void comply(writable<double> &C, const xmlog &xml); //!< comply to maximum positivity of conserved species
             
             
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
-            const reactor &cs;    //!< persistent reactor
-            const size_t   mx;    //!< max actors
-            frontier       sf;    //!< single fence
-            boundaries     reac;  //!< boundaries from reactant
-            boundaries     prod;  //!< boundaries from products
+            const reactor    &cs;    //!< persistent reactor
+            const size_t      mx;    //!< max actors for all the eqs
+            frontier          wall;  //!< single wall 
+            boundaries        reac;  //!< boundaries from reactant
+            boundaries        prod;  //!< boundaries from products
             er_type           used;  //!< used equilibria for a cycle
             matrix<double>    Ceqz;  //!< [LxM]
             cxx_array<double> gain;  //!< [L]
@@ -75,9 +79,9 @@ namespace yack {
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(equalizer);
-            void adjust_reac(writable<double> &C, const eq_group  &reac_only);
-            void adjust_prod(writable<double> &C, const eq_group  &prod_only);
-            void adjust(writable<double> &C, const cluster &cc);
+            void adjust_reac(writable<double> &C, const eq_group  &reac_only, const xmlog &xml);
+            void adjust_prod(writable<double> &C, const eq_group  &prod_only, const xmlog &xml);
+            void adjust(writable<double> &C, const cluster &cc, const xmlog &xml);
             void comply(writable<double> &C, const cluster &cc, const xmlog &xml);
 
             status probe(const readable<double> &C, const equilibrium &eq);

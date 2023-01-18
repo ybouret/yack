@@ -63,7 +63,7 @@ namespace yack
                     if(eq.reac->size<=0)
                     {
                         if(eq.prod->size<=0) throw imported::exception(clid,"empty <%s>", eq.name() );
-                        reac_only << *node;
+                        prod_only << *node;
                         eq.update(nomadic);
                         roaming.ensure(&eq);
                     }
@@ -71,7 +71,7 @@ namespace yack
                     {
                         if(eq.prod->size<=0)
                         {
-                            prod_only << *node;
+                            reac_only << *node;
                             eq.update(nomadic);
                             roaming.ensure(&eq);
                         }

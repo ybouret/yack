@@ -36,6 +36,8 @@ namespace yack {
             //
             // methods
             //__________________________________________________________________
+
+            //! display lists
             void display(const xmlog &xml, const char * const pfx) const;
 
             //__________________________________________________________________
