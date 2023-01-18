@@ -16,7 +16,8 @@ namespace yack {
         delimited( new eq_group() ),
         reac_only( new eq_group() ),
         prod_only( new eq_group() ),
-        undefined( new eq_group() )
+        undefined( new eq_group() ),
+        balancing( new eq_repo()  )
         {}
 
 
@@ -40,6 +41,10 @@ namespace yack {
 
             if(delimited->size) {
                 YACK_XMLOG(xml, "-- " << pfx << ".delimited = " << delimited);
+            }
+            
+            if(balancing->size) {
+                YACK_XMLOG(xml, "-- " << pfx << ".balancing = " << balancing);
             }
 
         }

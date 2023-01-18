@@ -47,9 +47,8 @@ namespace yack {
             // methods
             //__________________________________________________________________
 
-            //! display
-            friend std::ostream & operator<<(std::ostream &, const eq_repo &);
-
+            YACK_PROTO_OSTREAM(eq_repo); //!< display
+            
 
             //! viz
             void viz(ios::ostream            &fp,

@@ -36,7 +36,6 @@ namespace yack
         void reactor:: create_squads(const xmlog &xml)
         {
             YACK_XMLSUB(xml,"cluster::squads");
-#if 0
             //------------------------------------------------------------------
             //
             // initialize
@@ -78,7 +77,7 @@ namespace yack
                 //--------------------------------------------------------------
                 // soften topology: removing unbounded species
                 //--------------------------------------------------------------
-                for(const sp_gnode *sn=cc->breed->unbounded->head;sn;sn=sn->next)
+                for(const sp_gnode *sn=cc->replica->breed->unbounded->head;sn;sn=sn->next)
                 {
                     const species &s  = (***sn).host;
                     const size_t   j  = *s;
@@ -92,16 +91,15 @@ namespace yack
             //------------------------------------------------------------------
             //
             YACK_XMLOG(xml, "--> create one wing per cluster");
-            // using only balancing equilibria
+            // using only delimited equilibria
             //
             //------------------------------------------------------------------
             fill_detached(detached,topology);
             for(cluster *cc=linked->head;cc;cc=cc->next)
             {
-                coerce( *(cc->wing) ).shape(*(cc->genus->balancing),detached);  // assembly+detached => wing
+                coerce( *(cc->wing) ).shape(*(cc->replica->genus->balancing),detached);  // assembly+detached => wing
                 cc->wing->print(xml,"cluster::wing");
             }
-#endif
         }
 
         

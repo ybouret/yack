@@ -86,7 +86,9 @@ namespace yack {
             
             //! convert group into simple repo
             void assemble_all_group(eq_repo_ &assembly) const;
+
             
+
             //__________________________________________________________________
             //
             // methods

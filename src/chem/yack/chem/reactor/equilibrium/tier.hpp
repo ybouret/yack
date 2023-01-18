@@ -46,7 +46,8 @@ namespace yack {
             const eq_group::ptr      reac_only; //!< only reactants
             const eq_group::ptr      prod_only; //!< only products
             const eq_group::ptr      undefined; //!< two ways with unbounded species
-
+            const eq_repo::ptr       balancing; //!< delimited without roaming
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(eq_tier);
         };

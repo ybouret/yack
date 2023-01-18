@@ -1,23 +1,42 @@
 #include "yack/chem/reactor/cluster.hpp"
 #include "yack/system/imported.hpp"
 
+#include <cstring>
+
 namespace yack
 {
 
     namespace chemical
     {
 
-
-        static inline
-        bool has_conserved_species(const actors   &A,
-                                   const addrbook &nomadic) throw()
+        namespace
         {
-            for(const actor *a=A->head;a;a=a->next)
+            static inline
+            bool has_conserved_species(const actors   &A,
+                                       const addrbook &nomadic) throw()
             {
-                const species &s = **a;
-                if( !nomadic.search(&s) ) return true;
+                for(const actor *a=A->head;a;a=a->next)
+                {
+                    const species &s = **a;
+                    if( !nomadic.search(&s) ) return true;
+                }
+                return false;
             }
-            return false;
+
+
+            static inline
+            bool has_roaming(const equilibrium &lhs, const addrbook &roaming) throw()
+            {
+                const string &lid = lhs.name;
+                std::cerr << "\t\t Checking " << lid << std::endl;
+                for(addrbook::const_iterator it=roaming.begin();it!=roaming.end();++it)
+                {
+                    const equilibrium &rhs = *static_cast<const equilibrium *>(*it);
+                    const string      &rid = rhs.name;
+                    if(rid.size()<=lid.size() && NULL!=strstr(lid(),rid()) ) return true;
+                }
+                return false;
+            }
         }
 
         void cluster:: consolidating(const xmlog &xml)
@@ -89,16 +108,19 @@ namespace yack
 
 
 
-
             {
                 eq_group    &delimited = coerce(*(replica->genus->delimited));
                 eq_group    &undefined = coerce(*(replica->genus->undefined));
+                eq_repo_    &balancing = coerce(*(replica->genus->balancing));
+
                 for(const glist::node_type *node=grp->head;node;node=node->next)
                 {
                     const equilibrium &eq = node->host; if(roaming.search(&eq)) continue;
                     if( has_conserved_species(eq.reac,nomadic) && has_conserved_species(eq.prod,nomadic) )
                     {
                         delimited << *node;
+                        if(!has_roaming(eq,roaming))
+                            balancing << eq;
                     }
                     else
                     {

@@ -11,7 +11,7 @@ namespace yack {
 
 
         std::ostream & operator<<(std::ostream &os, const eq_repo &self) {
-            os << "<< ";
+            os << "{ ";
             eq_node *node = self.head;
             if(node)
             {
@@ -20,7 +20,7 @@ namespace yack {
                     os << ", " << (***node).name;
                 }
             }
-            os << " >>";
+            os << " }";
             return os;
         }
 

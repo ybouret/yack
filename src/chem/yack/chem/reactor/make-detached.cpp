@@ -13,6 +13,8 @@ namespace yack
             for(const gnode *gn=(*group)->head;gn;gn=gn->next)
                 assembly << gn->host;
         }
+
+
         
     }
 
