@@ -24,6 +24,8 @@ namespace yack
         group( new glist()              ),
         breed( new sp_tier()            ),
         genus( new eq_tier()            ),
+        primary( new scene()            ),
+        replica( new scene()            ),
         sDict( new udict("species")     ),
         eDict( new udict("equilibrium") ),
         canon( new claws()              ),

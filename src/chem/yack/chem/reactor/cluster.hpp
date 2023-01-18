@@ -16,6 +16,21 @@ namespace yack {
     
     namespace chemical {
 
+        class scene : public object
+        {
+        public:
+            typedef auto_ptr<const scene> ptr;
+            
+            explicit scene() : breed( new sp_tier() ), genus( new eq_tier() ) {}
+            virtual ~scene() throw() {}
+
+            const sp_tier::ptr    breed;  //!< category for species
+            const eq_tier::ptr    genus;  //!< category for equilibria
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(scene);
+        };
+
         //______________________________________________________________________
         //
         //
@@ -87,8 +102,11 @@ namespace yack {
             const auto_ptr<glist> group;  //!< group.size, initial+manifold
             const sp_tier::ptr    breed;  //!< category for species
             const eq_tier::ptr    genus;  //!< category for equilibria
-            const udict::ptr      sDict;  //!< LUTs for species
-            const udict::ptr      eDict;  //!< LUTs for equilibria
+            const scene::ptr      primary; //!< primary scene
+            const scene::ptr      replica; //!< replica scene
+            const udict::ptr      sDict;  //!< LUTs for species, from alive
+            const udict::ptr      eDict;  //!< LUTs for equilibria, from group
+
 
             //------------------------------------------------------------------
             // describing conservation laws
