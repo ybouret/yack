@@ -32,11 +32,7 @@ namespace yack {
             explicit eq_tier();          //!< setup
             virtual ~eq_tier() throw();  //!< cleanup
 
-            //__________________________________________________________________
-            //
-            // method
-            //__________________________________________________________________
-            bool dispatch(const gnode *gn); //!< according to reac/prod, return true if new roaming
+            
 
             //__________________________________________________________________
             //
@@ -45,7 +41,8 @@ namespace yack {
             const eq_group::ptr      delimited; //!< at least one conserved species in both sides
             const eq_group::ptr      reac_only; //!< only reactants
             const eq_group::ptr      prod_only; //!< only products
-            
+            const eq_group::ptr      undefined; //!< two ways with unbounded species
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(eq_tier);
         };

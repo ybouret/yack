@@ -14,9 +14,14 @@ namespace yack
             const glist &grp = *group;
             const alist &act = *alive;
 
-            addrbook     tribe;
+            addrbook     roaming; // equilibria
+            addrbook     nomadic; // species
 
+            //------------------------------------------------------------------
+            //
             // finding reac_only/prod_only
+            //
+            //------------------------------------------------------------------
             {
                 eq_group    &reac_only = coerce(*(replica->genus->reac_only));
                 eq_group    &prod_only = coerce(*(replica->genus->prod_only));
@@ -27,14 +32,16 @@ namespace yack
                     {
                         if(eq.prod->size<=0) throw imported::exception(clid,"empty <%s>", eq.name() );
                         reac_only << *node;
-                        eq.update(tribe);
+                        eq.update(nomadic);
+                        roaming.ensure(&eq);
                     }
                     else
                     {
                         if(eq.prod->size<=0)
                         {
                             prod_only << *node;
-                            eq.update(tribe);
+                            eq.update(nomadic);
+                            roaming.ensure(&eq);
                         }
                     }
                 }
@@ -43,8 +50,11 @@ namespace yack
                 std::cerr << "prod_only: " << prod_only << std::endl;
             }
 
-
-            // updating from tribe
+            //------------------------------------------------------------------
+            //
+            // updating from nomadic
+            //
+            //------------------------------------------------------------------
             {
                 sp_group &unbounded = coerce( *(replica->breed->unbounded) );
                 sp_group &conserved = coerce( *(replica->breed->conserved) );
@@ -52,7 +62,7 @@ namespace yack
                 for(const anode *node=act->head;node;node=node->next)
                 {
                     const species &sp = node->host;
-                    if(tribe.search(&sp))
+                    if(nomadic.search(&sp))
                     {
                         unbounded << *node;
                         coerce(*fixed)[ *sp ] = false;
@@ -66,8 +76,10 @@ namespace yack
 
                 std::cerr << "conserved=" << conserved << std::endl;
                 std::cerr << "unbounded=" << unbounded << std::endl;
-
             }
+
+
+
 
 
         }
