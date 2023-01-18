@@ -32,7 +32,8 @@ YACK_UTEST(reactor)
 
     vector<double> K;
     reactor cs(lib,eqs,K);
-
+    return 0;
+    
 
     
     YACK_SIZEOF(entity);

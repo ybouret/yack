@@ -1,8 +1,6 @@
-
 #include "yack/chem/reactor.hpp"
 #include "yack/apex/alga.hpp"
 #include "yack/system/imported.hpp"
-#include "yack/sequence/cxx-array.hpp"
 
 namespace yack
 {
@@ -107,48 +105,14 @@ namespace yack
                 // finalize conservations
                 //
                 //--------------------------------------------------------------
-                for(const cluster *cc=linked->head;cc;cc=cc->next)
-                    coerce(Nq) += cc->canon->size;
-
-                YACK_XMLOG(xml, "-- conservations:");
-                YACK_XMLOG(xml, "Nq = " << Nq);
-
-                if(Nq)
-                {
-                    matrix<unsigned>  &Q = coerce(Qm); Q.make(Nq,M);
-                    size_t             i = 0;
-                    for(const cluster *cc=linked->head;cc;cc=cc->next)
-                    {
-                        for(const claw *cl = cc->canon->head;cl;cl=cl->next)
-                        {
-                            writable<unsigned> &q = Q[++i];
-                            for(const actor *a = (*cl)->head; a; a=a->next)
-                            {
-                                q[***a] = a->nu;
-                            }
-                        }
-                    }
-                    YACK_XMLOG(xml, "Qm = " << Qm);
-                }
+                compile_claws(xml);
 
                 //--------------------------------------------------------------
                 //
                 // finalize lattice parameters
                 //
                 //--------------------------------------------------------------
-                YACK_XMLOG(xml, "-- lattice:");
-                coerce(L) = all.size();
-                YACK_XMLOG(xml, "L  = " << L << " / N = " << N);
-                const enode *en = all.head();  for(size_t i=N;i>0;--i) en=en->next;
-                coerce(el) = en;
-
-                if(false && verbose) {
-                    for(en=el;en;en=en->next) {
-                        const equilibrium &eq = ***en;
-                        const components  &cm = eq;
-                        all.pad(*xml << eq.name, eq) << " : " << cm << std::endl;
-                    }
-                }
+                setup_lattice(xml);
 
                 //--------------------------------------------------------------
                 //
@@ -156,14 +120,29 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 create_squads(xml);
-
                 YACK_XMLOG(xml, "-- max actors: " << max_actors() );
-
             }
 
             if(verbose)
             {
                 lib(*xml << "fixed=" , "", *fixed);
+            }
+        }
+
+        void reactor:: setup_lattice(const xmlog &xml)
+        {
+            YACK_XMLOG(xml, "-- lattice:");
+            coerce(L) = all.size();
+            YACK_XMLOG(xml, "L  = " << L << " / N = " << N);
+            const enode *en = all.head();  for(size_t i=N;i>0;--i) en=en->next;
+            coerce(el) = en;
+
+            if(false && verbose) {
+                for(en=el;en;en=en->next) {
+                    const equilibrium &eq = ***en;
+                    const components  &cm = eq;
+                    all.pad(*xml << eq.name, eq) << " : " << cm << std::endl;
+                }
             }
         }
 

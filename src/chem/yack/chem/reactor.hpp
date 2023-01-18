@@ -69,7 +69,7 @@ namespace yack {
             const size_t            M;      //!< total species
             const size_t            N;      //!< number of single
             const matrix<int>       Nu;     //!< global topology
-            const booleans::ptr     fixed;  //!< bounded species
+            const booleans::ptr     fixed;  //!< bounded species, global
             const clusters_ptr      linked; //!< clusters of linked equilibria
             const size_t            Nq;     //!< number of conservations
             const matrix<unsigned>  Qm;     //!< [Nq:M] matrix of conservations
@@ -80,7 +80,9 @@ namespace yack {
             const lockable::scope libLock;
             const lockable::scope eqsLock;
             
-            void build_related(const xmlog &);
+            void build_related(const xmlog &); //!< build clusters
+            void compile_claws(const xmlog &);
+            void setup_lattice(const xmlog &);
             void create_squads(const xmlog &);
             YACK_DISABLE_COPY_AND_ASSIGN(reactor);
         };

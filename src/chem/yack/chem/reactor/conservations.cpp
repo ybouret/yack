@@ -144,8 +144,6 @@ namespace yack
         {
             static const char * const fn = "cluster::conservations";
             YACK_XMLSUB(xml,fn);
-
-
             const size_t n = genus->delimited->size;
 
             if(n<=0) {
@@ -215,7 +213,7 @@ namespace yack
 
 
                 {
-                    YACK_XMLSUB(xml, "RAVEn");
+                    YACK_XMLSUB(xml, "cluster::RAVEn");
                     qbranch  source;
                     source.batch(Q,ker,cb);
                 }
@@ -262,7 +260,10 @@ namespace yack
                     }
                     YACK_XMLOG(xml, "|_found " << claim->size << " independent group" << plural::s(claim->size) );
                 }
-
+            }
+            else
+            {
+                YACK_XMLOG(xml, "-- no conservation law" );
             }
 
 

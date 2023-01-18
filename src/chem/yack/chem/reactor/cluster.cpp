@@ -106,7 +106,7 @@ namespace yack
             if( latched() ) throw imported::exception(clid,"compile(already latched)");
 
             {
-                YACK_XMLSUB(xml,"initial");
+                YACK_XMLSUB(xml,"cluster::startup");
                 YACK_XMLOG(xml,"-- group     : " << *this);
 
                 //--------------------------------------------------------------
@@ -137,9 +137,10 @@ namespace yack
                 YACK_XMLOG(xml,"-- unbounded : " << breed->unbounded);
             }
             coerce(gvidx) = igv;
-            exit(0);
 
             conservations(xml);
+
+            exit(0);
             make_manifold(xml,Nu,K,lib,eqs,all);
 
             

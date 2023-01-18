@@ -53,7 +53,7 @@ namespace yack {
             /**
              - collect_alive() : alive from group
              - ignite_system() : init breed and genus, with stamping
-
+             - conservations() : deduce conservation laws
              */
             void compile(const xmlog            &xml,
                          const matrix<int>      &Nu,
