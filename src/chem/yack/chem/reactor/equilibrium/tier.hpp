@@ -45,7 +45,6 @@ namespace yack {
             const eq_group::ptr      delimited; //!< at least one conserved species in both sides
             const eq_group::ptr      reac_only; //!< only reactants
             const eq_group::ptr      prod_only; //!< only products
-            const auto_ptr<eq_repo>  balancing; //!< for balancing, without roaming
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(eq_tier);

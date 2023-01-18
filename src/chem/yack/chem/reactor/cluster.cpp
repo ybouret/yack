@@ -22,8 +22,6 @@ namespace yack
         alive( new alist()              ),
         fixed( flags                    ),
         group( new glist()              ),
-        breed( new sp_tier()            ),
-        genus( new eq_tier()            ),
         primary( new scene()            ),
         replica( new scene()            ),
         sDict( new udict("species")     ),
@@ -108,7 +106,7 @@ namespace yack
             if( latched() ) throw imported::exception(clid,"compile(already latched)");
 
             {
-                YACK_XMLSUB(xml,"cluster::startup");
+                YACK_XMLSUB(xml,"cluster::primary");
                 YACK_XMLOG(xml,"-- group     : " << *this);
 
                 //--------------------------------------------------------------
@@ -129,22 +127,23 @@ namespace yack
 
 
                 YACK_XMLOG(xml,"-- alive     : " << **alive);
-                YACK_XMLOG(xml,"-- fixed     : " <<   fixed);
+                //YACK_XMLOG(xml,"-- fixed     : " <<   fixed);
 
-                YACK_XMLOG(xml,"-- delimited : " << genus->delimited);
-                YACK_XMLOG(xml,"-- reac_only : " << genus->reac_only);
-                YACK_XMLOG(xml,"-- prod_only : " << genus->prod_only);
+                YACK_XMLOG(xml,"-- delimited : " << primary->genus->delimited);
+                YACK_XMLOG(xml,"-- reac_only : " << primary->genus->reac_only);
+                YACK_XMLOG(xml,"-- prod_only : " << primary->genus->prod_only);
 
-                YACK_XMLOG(xml,"-- conserved : " << breed->conserved);
-                YACK_XMLOG(xml,"-- unbounded : " << breed->unbounded);
+                YACK_XMLOG(xml,"-- conserved : " << primary->breed->conserved);
+                YACK_XMLOG(xml,"-- unbounded : " << primary->breed->unbounded);
             }
             coerce(gvidx) = igv;
+
 
             // build conservation laws
             conservations(xml);
 
             // build manifold
-            make_manifold(xml,Nu,K,lib,eqs,all);
+            //make_manifold(xml,Nu,K,lib,eqs,all);
 
             
             lock();

@@ -49,12 +49,7 @@ namespace yack
 
             }
 
-            delimited.stamp();
-            reac_only.stamp();
-            prod_only.stamp();
             
-
-
             //------------------------------------------------------------------
             // second pass: dispatch species
             //------------------------------------------------------------------
@@ -64,7 +59,7 @@ namespace yack
                 if( tribe.search(&s) )
                 {
                     coerce( *(primary->breed->unbounded) ) << *sn;
-                    coerce( *fixed )[ *s ] = false;
+                    //coerce( *fixed )[ *s ] = false;
                 }
                 else
                 {

@@ -97,15 +97,13 @@ namespace yack {
             //------------------------------------------------------------------
             // describing species and equilibria
             //------------------------------------------------------------------
-            const alist::ptr      alive;  //!< alive.size, from the begining
-            const booleans::ptr   fixed;  //!< true if conserved
-            const auto_ptr<glist> group;  //!< group.size, initial+manifold
-            const sp_tier::ptr    breed;  //!< category for species
-            const eq_tier::ptr    genus;  //!< category for equilibria
+            const alist::ptr      alive;   //!< alive.size, from the begining
+            const booleans::ptr   fixed;   //!< true if conserved
+            const auto_ptr<glist> group;   //!< group.size, initial+manifold
             const scene::ptr      primary; //!< primary scene
             const scene::ptr      replica; //!< replica scene
-            const udict::ptr      sDict;  //!< LUTs for species, from alive
-            const udict::ptr      eDict;  //!< LUTs for equilibria, from group
+            const udict::ptr      sDict;   //!< LUTs for species, from alive
+            const udict::ptr      eDict;   //!< LUTs for equilibria, from group
 
 
             //------------------------------------------------------------------

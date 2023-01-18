@@ -144,13 +144,13 @@ namespace yack
         {
             static const char * const fn = "cluster::conservations";
             YACK_XMLSUB(xml,fn);
-            const size_t n = genus->delimited->size;
+            const size_t n = primary->genus->delimited->size;
 
             if(n<=0) {
                 YACK_XMLOG(xml, "no bounded equilibrium");
                 return;
             }
-            assert(breed->conserved->size);
+            assert(primary->breed->conserved->size);
 
             const size_t m   = (*alive)->size;
             collector    cb(m,xml);
@@ -172,7 +172,7 @@ namespace yack
                     matrix<int>  nu(n,m);
                     {
                         size_t i=1;
-                        for(const eq_gnode *en=genus->delimited->head;en;en=en->next)
+                        for(const eq_gnode *en=primary->genus->delimited->head;en;en=en->next)
                         {
                             // get equilibrium
                             const equilibrium  &eq = (***en).host;
@@ -180,7 +180,7 @@ namespace yack
                             size_t              ns = 0;
 
                             // look up for conserved species
-                            for(const sp_gnode *sn=breed->conserved->head;sn;sn=sn->next)
+                            for(const sp_gnode *sn=primary->breed->conserved->head;sn;sn=sn->next)
                             {
                                 const anode     &an = ***sn;
                                 const species   &sp = an.host;
@@ -234,7 +234,7 @@ namespace yack
                     {
                         claw                      *cl = L.push_back( new claw(++i) );
                         const cxx_array<unsigned> &cf = *ep;
-                        for(const sp_gnode *sn=breed->conserved->head;sn;sn=sn->next)
+                        for(const sp_gnode *sn=primary->breed->conserved->head;sn;sn=sn->next)
                         {
                             const anode     &an = ***sn;
                             const size_t     J  = *an;

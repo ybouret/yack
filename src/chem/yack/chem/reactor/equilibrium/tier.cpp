@@ -13,8 +13,7 @@ namespace yack {
         eq_tier:: eq_tier() :
         delimited( new eq_group() ),
         reac_only( new eq_group() ),
-        prod_only( new eq_group() ),
-        balancing( new eq_repo()  )
+        prod_only( new eq_group() ) 
         {}
 
         bool eq_tier:: dispatch(const gnode *gn)

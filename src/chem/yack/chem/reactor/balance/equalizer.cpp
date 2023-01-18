@@ -105,8 +105,9 @@ namespace yack {
         void equalizer:: adjust(writable<double> &C,
                                 const cluster    &cc)
         {
-            adjust_reac(C,*(cc.genus->reac_only));
-            adjust_prod(C,*(cc.genus->prod_only));
+#warning TODO
+            //adjust_reac(C,*(cc.genus->reac_only));
+            //adjust_prod(C,*(cc.genus->prod_only));
         }
 
         void equalizer:: adjust(writable<double> &C)
@@ -167,7 +168,7 @@ namespace yack {
 
             // detect negative conserved species
             bool run = false;
-            for(const sp_gnode *sn = cc.breed->conserved->head;sn;sn=sn->next)
+            for(const sp_gnode *sn = cc.replica->breed->conserved->head;sn;sn=sn->next)
             {
                 const species &s = (***sn).host;
                 const double   c = C[*s];
@@ -185,7 +186,7 @@ namespace yack {
 
             // compute all balancing equilibria
             used.clear();
-            for(const eq_node *node = (*(cc.genus->balancing)).head;node;node=node->next)
+            for(const eq_node *node = NULL /* (*(cc.genus->balancing)).head */;node;node=node->next)
             {
                 const equilibrium &eq = ***node;
                 const status       st = probe(C,eq);

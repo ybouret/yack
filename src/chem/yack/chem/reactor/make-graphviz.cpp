@@ -54,13 +54,13 @@ namespace yack
             fp << "style=bold;\n";
 
             // write all species
-            for(const sp_gnode *sn=breed->conserved->head;sn;sn=sn->next)
+            for(const sp_gnode *sn=primary->breed->conserved->head;sn;sn=sn->next)
             {
                 const species &s = (***sn).host;
                 sp_viz(fp,s, ", shape=egg,style=filled");
             }
 
-            for(const sp_gnode *sn=breed->unbounded->head;sn;sn=sn->next)
+            for(const sp_gnode *sn=primary->breed->unbounded->head;sn;sn=sn->next)
             {
                 const species &s = (***sn).host;
                 sp_viz(fp,s, ", shape=egg");
@@ -68,20 +68,17 @@ namespace yack
 
 
             // write all equilibria
-            size_t count=0;
-            for(const eq_gnode *en=genus->delimited->head;en && (++count<=genus->delimited->core);en=en->next)
+            for(const eq_gnode *en=primary->genus->delimited->head;en;en=en->next)
             {
                 eq_viz(fp,(***en).host,",shape=box,style=bold");
             }
 
-            count = 0;
-            for(const eq_gnode *en=genus->reac_only->head;en && (++count<=genus->reac_only->core);en=en->next)
+            for(const eq_gnode *en=primary->genus->reac_only->head;en;en=en->next)
             {
                 eq_viz(fp,(***en).host,",shape=house");
             }
 
-            count = 0;
-            for(const eq_gnode *en=genus->prod_only->head;en && (++count<=genus->prod_only->core);en=en->next)
+            for(const eq_gnode *en=primary->genus->prod_only->head;en;en=en->next)
             {
                 eq_viz(fp,(***en).host,",shape=invhouse");
             }

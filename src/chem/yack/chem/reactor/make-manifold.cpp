@@ -292,6 +292,7 @@ namespace yack
             // creating cross/mixed equilibria
             //
             //------------------------------------------------------------------
+#if 0
             {
                 ledger        &layout = coerce( *cross );              // register layouts
                 cxx_array<int> weight(Nu.rows);                        // global weight
@@ -360,6 +361,7 @@ namespace yack
                 std::cerr << genus->reac_only << std::endl;
 
             }
+#endif
 
             
             if(xml.verbose)
@@ -398,10 +400,8 @@ namespace yack
 
                 {
                     YACK_XMLSUB(xml, "balancing");
-                    for(const eq_node *node=genus->balancing->head;node;node=node->next)
-                    {
-                        YACK_XMLOG(xml, " (*) <" << (***node).name << ">");
-                    }
+                    //for(const eq_node *node=genus->balancing->head;node;node=node->next)
+                    //YACK_XMLOG(xml, " (*) <" << (***node).name << ">");
                 }
             }
 

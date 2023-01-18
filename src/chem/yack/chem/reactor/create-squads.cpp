@@ -36,7 +36,7 @@ namespace yack
         void reactor:: create_squads(const xmlog &xml)
         {
             YACK_XMLSUB(xml,"cluster::squads");
-
+#if 0
             //------------------------------------------------------------------
             //
             // initialize
@@ -101,7 +101,7 @@ namespace yack
                 coerce( *(cc->wing) ).shape(*(cc->genus->balancing),detached);  // assembly+detached => wing
                 cc->wing->print(xml,"cluster::wing");
             }
-
+#endif
         }
 
         
