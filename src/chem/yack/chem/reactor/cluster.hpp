@@ -67,7 +67,7 @@ namespace yack {
             //! compile once built
             /**
              - collect_alive() : alive from group
-             - ignite_system() : init breed and genus, with stamping
+             - ignite_system() : init PRIMARY breed and genus
              - conservations() : deduce conservation laws
              */
             void compile(const xmlog            &xml,

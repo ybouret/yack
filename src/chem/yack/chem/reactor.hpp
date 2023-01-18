@@ -80,8 +80,8 @@ namespace yack {
             const lockable::scope libLock;
             const lockable::scope eqsLock;
             
-            void build_related(const xmlog &); //!< build clusters
-            void compile_claws(const xmlog &);
+            void build_related(const xmlog &); //!< build related clusters in linked
+            void compile_claws(const xmlog &); //!< compile claws
             void setup_lattice(const xmlog &);
             void create_squads(const xmlog &);
             YACK_DISABLE_COPY_AND_ASSIGN(reactor);

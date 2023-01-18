@@ -140,6 +140,7 @@ namespace yack
                                 const alist       &act,
                                 const matrix<int> &Nu)
             {
+                YACK_XMLSUB(xml,"cluster::RAVEn");
                 {
                     const size_t n = grp->size; assert(n>0);  // equilibria
                     const size_t m = act->size; assert(m>=n); // species
@@ -245,7 +246,7 @@ namespace yack
             sto.free();
             for(size_t i=weight.size();i>0;--i)
             {
-                if( weight[i] ) store(sto,Nu[i]); // extrac indices
+                if( weight[i] ) store(sto,Nu[i]); // extract INDICES
             }
         }
 
@@ -274,9 +275,11 @@ namespace yack
             // register first degree equilibria (primary layout)
             //
             //------------------------------------------------------------------
+            YACK_XMLOG(xml, "-- populating primary layout");
             for(const glist::node_type *node=grp->head;node;node=node->next)
+            {
                 coerce( *(cross->front()) ) << node->host;
-
+            }
 
             //------------------------------------------------------------------
             //
@@ -285,6 +288,66 @@ namespace yack
             //------------------------------------------------------------------
             collector    cw(n);
             build_manifold(xml,cw,grp,*alive,Nu);
+
+
+            {
+                ledger                  &layout = coerce( *cross );              // register layouts
+                cxx_array<int>           weight(Nu.rows);                        // global weight
+                cxx_array<int>           stoich(Nu.cols);                        // global stoich
+                const alist             &act = *alive;
+                lexicon_type             sto;
+                solo_repo<const species> zap(act->size);
+
+                for(const collector::entry *ep=cw->head;ep;ep=ep->next)
+                {
+                    //----------------------------------------------------------
+                    // get native weights from RAVEn
+                    //----------------------------------------------------------
+                    const readable<int> &native = *ep;
+
+                    //----------------------------------------------------------
+                    // expand native weights to global weights
+                    //----------------------------------------------------------
+                    eDict->expand(weight,native);
+
+                    //----------------------------------------------------------
+                    // register all used species by their INDEX
+                    //----------------------------------------------------------
+                    store(sto,weight,Nu);
+
+                    //----------------------------------------------------------
+                    // derive the new stoichiometry
+                    //----------------------------------------------------------
+                    qbranch::assess(stoich, weight, Nu);
+
+                    //----------------------------------------------------------
+                    // check if one or more species disappeared
+                    //----------------------------------------------------------
+                    zap.clear();
+                    for(const anode *an=act->head;an;an=an->next)
+                    {
+                        const species &s = an->host;
+                        const size_t   j = *s;
+                        if( (0==stoich[j]) && sto.search(j) ) zap << s;
+                    }
+                    if(zap.size<=0) continue;
+
+                    //----------------------------------------------------------
+                    // ok
+                    //----------------------------------------------------------
+                    const equilibrium &eq = promote_mixed(weight,stoich,K,lib,eqs,all);  // create mixed equilibrium
+                    const size_t       dg = qselect::count_valid(weight); assert(dg>=2); // compute the degree
+                    layout.degree(dg) << eq;                                             // register in proper layout
+                    coerce(*group)    << eq;                                             // append to local group
+                    coerce(*static_cast<const sp_repo *>(eq.info)).swap_with(zap);       // store info
+                }
+
+            }
+
+
+            {
+
+            }
 
             
             //------------------------------------------------------------------
@@ -366,7 +429,7 @@ namespace yack
             
             if(xml.verbose)
             {
-                YACK_XMLSUB(xml,"hierarchy");
+                YACK_XMLSUB(xml,"cluster::hierarchy");
                 for(size_t i=1;i<=cross->size();++i) {
                     const eq_repo &er    = *((*cross)[i]);
                     const string   level = vformat("|level#%u|=%u",unsigned(i),unsigned(er.size));
@@ -399,7 +462,7 @@ namespace yack
                 }
 
                 {
-                    YACK_XMLSUB(xml, "balancing");
+                    //YACK_XMLSUB(xml, "balancing");
                     //for(const eq_node *node=genus->balancing->head;node;node=node->next)
                     //YACK_XMLOG(xml, " (*) <" << (***node).name << ">");
                 }

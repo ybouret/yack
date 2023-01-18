@@ -143,7 +143,7 @@ namespace yack
             conservations(xml);
 
             // build manifold
-            //make_manifold(xml,Nu,K,lib,eqs,all);
+            make_manifold(xml,Nu,K,lib,eqs,all);
 
             
             lock();
