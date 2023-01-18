@@ -127,14 +127,9 @@ namespace yack
 
 
                 YACK_XMLOG(xml,"-- alive     : " << **alive);
-                //YACK_XMLOG(xml,"-- fixed     : " <<   fixed);
 
-                YACK_XMLOG(xml,"-- delimited : " << primary->genus->delimited);
-                YACK_XMLOG(xml,"-- reac_only : " << primary->genus->reac_only);
-                YACK_XMLOG(xml,"-- prod_only : " << primary->genus->prod_only);
+                primary->display(xml, "primary");
 
-                YACK_XMLOG(xml,"-- conserved : " << primary->breed->conserved);
-                YACK_XMLOG(xml,"-- unbounded : " << primary->breed->unbounded);
             }
             coerce(gvidx) = igv;
 

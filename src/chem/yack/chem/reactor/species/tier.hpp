@@ -5,6 +5,7 @@
 
 #include "yack/chem/active.hpp"
 #include "yack/ptr/auto.hpp"
+#include "yack/ios/xmlog.hpp"
 
 namespace yack {
 
@@ -40,6 +41,13 @@ namespace yack {
             //__________________________________________________________________
             explicit sp_tier();          //!< setup
             virtual ~sp_tier() throw();  //!< cleanup
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            void display(const xmlog &xml, const char * const pfx) const;
+
 
             //__________________________________________________________________
             //

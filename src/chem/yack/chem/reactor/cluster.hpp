@@ -24,6 +24,12 @@ namespace yack {
             explicit scene() : breed( new sp_tier() ), genus( new eq_tier() ) {}
             virtual ~scene() throw() {}
 
+            void display(const xmlog &xml, const char * const pfx) const {
+                YACK_XMLSUB(xml,"cluster::scene");
+                breed->display(xml,pfx);
+                genus->display(xml,pfx);
+            }
+
             const sp_tier::ptr    breed;  //!< category for species
             const eq_tier::ptr    genus;  //!< category for equilibria
 
@@ -146,7 +152,7 @@ namespace yack {
                                               equilibria             &all);
 
             void                consolidating(const xmlog &xml);
-            
+
             
         };
 

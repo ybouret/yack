@@ -7,6 +7,19 @@ namespace yack
     namespace chemical
     {
 
+
+        static inline
+        bool has_conserved_species(const actors   &A,
+                                   const addrbook &nomadic) throw()
+        {
+            for(const actor *a=A->head;a;a=a->next)
+            {
+                const species &s = **a;
+                if( !nomadic.search(&s) ) return true;
+            }
+            return false;
+        }
+
         void cluster:: consolidating(const xmlog &xml)
         {
             YACK_XMLSUB(xml,"cluster::consolidating");
@@ -46,8 +59,7 @@ namespace yack
                     }
                 }
 
-                std::cerr << "reac_only: " << reac_only << std::endl;
-                std::cerr << "prod_only: " << prod_only << std::endl;
+
             }
 
             //------------------------------------------------------------------
@@ -73,14 +85,30 @@ namespace yack
                         assert(true==(*fixed)[*sp]);
                     }
                 }
-
-                std::cerr << "conserved=" << conserved << std::endl;
-                std::cerr << "unbounded=" << unbounded << std::endl;
             }
 
 
 
 
+            {
+                eq_group    &delimited = coerce(*(replica->genus->delimited));
+                eq_group    &undefined = coerce(*(replica->genus->undefined));
+                for(const glist::node_type *node=grp->head;node;node=node->next)
+                {
+                    const equilibrium &eq = node->host; if(roaming.search(&eq)) continue;
+                    if( has_conserved_species(eq.reac,nomadic) && has_conserved_species(eq.prod,nomadic) )
+                    {
+                        delimited << *node;
+                    }
+                    else
+                    {
+                        undefined << *node;
+                    }
+                }
+            }
+
+
+            replica->display(xml, "replica");
 
         }
     }
