@@ -46,7 +46,7 @@ add_test(grammar      test-jive grammar)
 add_test(parser       test-jive parser)
 add_test(eval         test-jive eval)
 
-
+add_test(vfs          test-jive vfs)
 
 
 

@@ -7,6 +7,7 @@
 #include "yack/string.hpp"
 #include "yack/data/list/cxx.hpp"
 #include "yack/ptr/arc.hpp"
+#include "yack/ptr/auto.hpp"
 
 namespace yack
 {
@@ -182,6 +183,29 @@ namespace yack
         //______________________________________________________________________
         void create_subdirectory(const string &path); //!< mkdir -p path
         void create_subdirectory(const char   *path); //!< mkdir -p path, alias
+
+
+        //______________________________________________________________________
+        //
+        // non-virtual interface: query entries
+        //______________________________________________________________________
+
+        //! append to entries the matching paths
+        template <typename PATH, typename PROC> inline
+        void query(entries &elist, PATH &path, PROC &proc)
+        {
+            auto_ptr<scanner> scan = open_folder(path);
+            entry            *ep   = 0;
+            while(NULL!=(ep=scan->next()))
+            {
+                auto_ptr<entry> eap = ep;
+                if(!eap->is_reg())   continue;
+                if(!proc(eap->base)) continue;
+                elist.push_back(eap.yield());
+            }
+        }
+
+
 
         //______________________________________________________________________
         //
