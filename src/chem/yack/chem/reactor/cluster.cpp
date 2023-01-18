@@ -145,6 +145,8 @@ namespace yack
             // build manifold
             make_manifold(xml,Nu,K,lib,eqs,all);
 
+            // consolidate from full group
+            consolidating(xml);
             
             lock();
         }

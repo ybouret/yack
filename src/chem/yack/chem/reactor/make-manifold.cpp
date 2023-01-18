@@ -171,54 +171,6 @@ namespace yack
                 // finalize
                 //--------------------------------------------------------------
                 cw.organize();
-
-            }
-
-            //------------------------------------------------------------------
-            //
-            //! populate roaming from a set of equilibria
-            //
-            //------------------------------------------------------------------
-            static inline
-            void populate(addrbook &roaming, const eq_gnode *node)
-            {
-                for(;node;node=node->next)
-                {
-                    const equilibrium &eq = (***node).host;
-                    roaming.ensure( &eq );
-                }
-            }
-
-            //------------------------------------------------------------------
-            //
-            //! populate balance from a set of equilibria
-            //
-            //------------------------------------------------------------------
-            static inline
-            void populate(eq_repo_ &balance, const eq_gnode *node)
-            {
-                for(;node;node=node->next)
-                {
-                    const equilibrium &eq = (***node).host;
-                    balance << eq;
-                }
-            }
-
-            //------------------------------------------------------------------
-            //
-            //! detect if a native (local) equilibrium is roaming
-            //
-            //------------------------------------------------------------------
-            static inline
-            bool has_roaming(const readable<int> &native,
-                             const gnode         *node,
-                             const addrbook      &roaming)
-            {
-                for(size_t i=native.size();i>0;--i,node=node->next)
-                {
-                    if( native[**node] && roaming.search( &(node->host)) ) return true;
-                }
-                return false;
             }
 
         }
@@ -345,88 +297,6 @@ namespace yack
             }
 
 
-            {
-
-            }
-
-            
-            //------------------------------------------------------------------
-            //
-            // creating cross/mixed equilibria
-            //
-            //------------------------------------------------------------------
-#if 0
-            {
-                ledger        &layout = coerce( *cross );              // register layouts
-                cxx_array<int> weight(Nu.rows);                        // global weight
-                cxx_array<int> stoich(Nu.cols);                        // global stoich
-                addrbook       roaming;                                // roaming equilibria
-                eq_repo       &balance = coerce( *(genus->balancing) );// equilibria used for balancing
-                populate(roaming,genus->prod_only->head);
-                populate(roaming,genus->reac_only->head);
-                populate(balance,genus->delimited->head);
-
-                const alist             &act = *alive;
-                lexicon_type             sto;
-                solo_repo<const species> zap(act->size);
-
-                for(const collector::entry *ep=cw->head;ep;ep=ep->next)
-                {
-                    //----------------------------------------------------------
-                    // get native weights from RAVEn
-                    //----------------------------------------------------------
-                    const readable<int> &native = *ep;
-
-                    //----------------------------------------------------------
-                    // expand native weights to global weights
-                    //----------------------------------------------------------
-                    eDict->expand(weight,native);
-
-
-                    //----------------------------------------------------------
-                    // register all used species by their INDEX
-                    //----------------------------------------------------------
-                    store(sto,weight,Nu);
-
-                    //----------------------------------------------------------
-                    // derive the new stoichiometry
-                    //----------------------------------------------------------
-                    qbranch::assess(stoich, weight, Nu);
-
-                    //----------------------------------------------------------
-                    // check if one or more species disappeared
-                    //----------------------------------------------------------
-                    zap.clear();
-                    for(const anode *an=act->head;an;an=an->next)
-                    {
-                        const species &s = an->host;
-                        const size_t   j = *s;
-                        if( (0==stoich[j]) && sto.search(j) ) zap << s;
-                    }
-                    if(zap.size<=0) continue;
-
-
-                    //----------------------------------------------------------
-                    //
-                    // update system
-                    //
-                    //----------------------------------------------------------
-                    const equilibrium &eq = promote_mixed(weight,stoich,K,lib,eqs,all);  // create mixed equilibrium
-                    const size_t       dg = qselect::count_valid(weight); assert(dg>=2); // compute the degree
-                    layout.degree(dg) << eq;                                             // register in proper layout
-                    coerce(*group)    << eq;                                             // append to local group
-                    if( coerce(*genus).dispatch((*group)->tail) ) roaming.ensure(&eq);   // classifying and updating
-                    if( !has_roaming(native, (*group)->head,roaming) ) balance << eq;    // check if kept for balance : no roaming eq insisde
-                    coerce(*static_cast<const sp_repo *>(eq.info)).swap_with(zap);       // assign zeroed species
-                }
-
-                std::cerr << genus->prod_only << std::endl;
-                std::cerr << genus->reac_only << std::endl;
-
-            }
-#endif
-
-            
             if(xml.verbose)
             {
                 YACK_XMLSUB(xml,"cluster::hierarchy");
@@ -460,13 +330,8 @@ namespace yack
                         std::cerr << std::endl;
                     }
                 }
-
-                {
-                    //YACK_XMLSUB(xml, "balancing");
-                    //for(const eq_node *node=genus->balancing->head;node;node=node->next)
-                    //YACK_XMLOG(xml, " (*) <" << (***node).name << ">");
-                }
             }
+
 
         }
         

@@ -130,12 +130,14 @@ namespace yack {
             void                collect_alive();
             void                ignite_system();
             void                conservations(const xmlog &xml);
+
             void                make_manifold(const xmlog            &xml,
                                               const matrix<int>      &Nu,
                                               const readable<double> &K,
                                               const library          &lib,
                                               const equilibria       &eqs,
                                               equilibria             &all);
+
             const equilibrium & promote_mixed(const readable<int>    &weight,
                                               const readable<int>    &stoich,
                                               const readable<double> &K,
@@ -143,7 +145,8 @@ namespace yack {
                                               const equilibria       &eqs,
                                               equilibria             &all);
 
-
+            void                consolidating(const xmlog &xml);
+            
             
         };
 
