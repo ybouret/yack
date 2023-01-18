@@ -88,7 +88,7 @@ YACK_UTEST(reactor)
         equalizer eqz(cs);
         eqz.adjust(C,xml);
         lib(std::cerr << "Cadj=","",C);
-        //eqz.comply(C);
+        eqz.comply(C,xml);
     }
 }
 YACK_UDONE()

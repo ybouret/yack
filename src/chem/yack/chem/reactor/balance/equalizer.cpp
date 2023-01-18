@@ -131,7 +131,7 @@ namespace yack {
         
         void equalizer:: comply(writable<double> &C, const xmlog &xml)
         {
-            YACK_XMLSUB(xml,"comply");
+            YACK_XMLSUB(xml,"equalizer::comply");
             for(const cluster *cc=cs.linked->head;cc;cc=cc->next)
                 comply(C,*cc,xml);
         }
@@ -175,7 +175,11 @@ namespace yack {
 
             YACK_XMLSUB(xml,"cluster");
 
+            //------------------------------------------------------------------
+            //
             // detect negative conserved species
+            //
+            //------------------------------------------------------------------
             bool run = false;
             for(const sp_gnode *sn = cc.replica->breed->conserved->head;sn;sn=sn->next)
             {
@@ -193,9 +197,13 @@ namespace yack {
             if(!run)
                 return;
 
+            //------------------------------------------------------------------
+            //
             // compute all balancing equilibria
+            //
+            //------------------------------------------------------------------
             used.clear();
-            for(const eq_node *node = NULL /* (*(cc.genus->balancing)).head */;node;node=node->next)
+            for(const eq_node *node = (*(cc.replica->genus->balancing)).head ;node;node=node->next)
             {
                 const equilibrium &eq = ***node;
                 const status       st = probe(C,eq);
