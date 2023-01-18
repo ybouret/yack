@@ -266,14 +266,9 @@ namespace yack
             // check status
             //
             //------------------------------------------------------------------
-            const size_t n = grp->size; assert(n>0);
-            switch(n)
-            {
-                case  0: throw imported::exception(clid,"unexpected empty cluster!!");
-                //case  1: YACK_XMLOG(xml, "-- standalone <" << (*group)->head->host.name << ">" ); return;
-                default: break;
-            }
-
+            const size_t n = grp->size;
+            if(n<=0) throw imported::exception(clid,"unexpected empty cluster!!");
+            
             //------------------------------------------------------------------
             //
             // register first degree equilibria (primary layout)
@@ -408,7 +403,6 @@ namespace yack
                         YACK_XMLOG(xml, " (*) <" << (***node).name << ">");
                     }
                 }
-                exit(0);
             }
 
         }

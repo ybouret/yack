@@ -138,9 +138,10 @@ namespace yack
             }
             coerce(gvidx) = igv;
 
+            // build conservation laws
             conservations(xml);
 
-            exit(0);
+            // build manifold
             make_manifold(xml,Nu,K,lib,eqs,all);
 
             
