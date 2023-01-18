@@ -8,6 +8,7 @@
 #include "yack/data/list/cxx.hpp"
 #include "yack/ptr/arc.hpp"
 #include "yack/ptr/auto.hpp"
+#include "yack/proto-ostream.hpp"
 
 namespace yack
 {
@@ -85,6 +86,7 @@ namespace yack
             bool is_reg() const throw(); //!< check if regular
             bool is_dir() const throw(); //!< check if directory
             bool is_lnk() const throw(); //!< check if link
+            YACK_PROTO_OSTREAM(entry);   //!< display
 
             //__________________________________________________________________
             //
@@ -190,10 +192,11 @@ namespace yack
         // non-virtual interface: query entries
         //______________________________________________________________________
 
-        //! append to entries the matching paths
+        //! store entries with matching paths
         template <typename PATH, typename PROC> inline
         void query(entries &elist, PATH &path, PROC &proc)
         {
+            elist.release();
             auto_ptr<scanner> scan = open_folder(path);
             entry            *ep   = 0;
             while(NULL!=(ep=scan->next()))

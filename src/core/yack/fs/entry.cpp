@@ -51,5 +51,11 @@ namespace yack
     }
 
 
+    std::ostream & operator<<(std::ostream &os, const vfs::entry &ep)
+    {
+        os << '\'' << ep.path << '\'';
+        return os;
+    }
+
 }
 
