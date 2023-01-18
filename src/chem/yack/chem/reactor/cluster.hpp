@@ -16,20 +16,44 @@ namespace yack {
     
     namespace chemical {
 
+        //______________________________________________________________________
+        //
+        //
+        //! scene of species and equilibria
+        //
+        //______________________________________________________________________
         class scene : public object
         {
         public:
-            typedef auto_ptr<const scene> ptr;
-            
-            explicit scene() : breed( new sp_tier() ), genus( new eq_tier() ) {}
-            virtual ~scene() throw() {}
+            //__________________________________________________________________
+            //
+            // types
+            //__________________________________________________________________
+            typedef auto_ptr<const scene> ptr; //!< alias
 
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit scene() : breed( new sp_tier() ), genus( new eq_tier() ) {} //!< setup
+            virtual ~scene() throw() {} //!< cleanup
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
+            //! specific display
             void display(const xmlog &xml, const char * const pfx) const {
                 YACK_XMLSUB(xml,"cluster::scene");
                 breed->display(xml,pfx);
                 genus->display(xml,pfx);
             }
 
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
             const sp_tier::ptr    breed;  //!< category for species
             const eq_tier::ptr    genus;  //!< category for equilibria
 
@@ -46,6 +70,10 @@ namespace yack {
         class cluster : public large_object, public latch
         {
         public:
+            //__________________________________________________________________
+            //
+            // definitions
+            //__________________________________________________________________
             static const char * const clid; //!< "chemical::cluster"
 
             //__________________________________________________________________

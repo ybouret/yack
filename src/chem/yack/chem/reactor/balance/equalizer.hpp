@@ -13,7 +13,23 @@ namespace yack {
     namespace chemical
     {
 
-        
+
+        typedef solo_repo<const squad> sq_repo_; //!< base class for private respository
+        typedef sq_repo_::node_type    sq_node;  //!< alias
+
+
+
+        //! private repository of equilibria for algorithm
+        class sq_repo : public sq_repo_ {
+        public:
+            explicit sq_repo(const size_t n); //!< setup
+            virtual ~sq_repo() throw();       //!< cleanup
+            
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(sq_repo);
+        };
+
+
         //______________________________________________________________________
         //
         //
@@ -23,18 +39,6 @@ namespace yack {
         class equalizer : public sp_fund
         {
         public:
-
-            //! base class for private respository
-            typedef solo_repo<const equilibrium> er_type_;
-
-            //! private repository of equilibria for algorithm
-            class er_type : public er_type_ {
-            public:
-                explicit er_type(const size_t n); //!< setup
-                virtual ~er_type() throw();       //!< cleanup
-                YACK_PROTO_OSTREAM(er_type);      //!< display
-            };
-
 
             //! comply result
             enum status {
@@ -72,7 +76,8 @@ namespace yack {
             frontier          wall;  //!< single wall 
             boundaries        reac;  //!< boundaries from reactant
             boundaries        prod;  //!< boundaries from products
-            er_type           used;  //!< used equilibria for a cycle
+            addrbook          eqdb;  //!< used
+            sq_repo           pick;  //!< compatible squads
             matrix<double>    Ceqz;  //!< [LxM]
             cxx_array<double> gain;  //!< [L]
             raddops           xadd;  //!< to compute scores
@@ -104,6 +109,11 @@ namespace yack {
                                             const frontier  &limiting,
                                             const frontiers &amending,
                                             const xmlog     &xml);
+
+            bool is_complying(const squad &) const throw();
+
+            double gain_of(const squad &sq);
+
 
         };
 

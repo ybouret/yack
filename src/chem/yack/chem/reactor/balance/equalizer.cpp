@@ -11,23 +11,9 @@ namespace yack {
     namespace chemical
     {
 
-        equalizer:: er_type:: er_type(const size_t n) : er_type_(n) {}
-        equalizer:: er_type:: ~er_type() throw() {}
+        sq_repo::  sq_repo(const size_t n) : sq_repo_(n) {}
+        sq_repo:: ~sq_repo() throw() {}
 
-        std::ostream & operator<<( std::ostream &os, const equalizer::er_type &self )
-        {
-            os << '{';
-            const eq_node *node = self.head;
-            if(node) {
-                os << '<' << (***node).name << '>';
-                for(node=node->next;node;node=node->next)
-                {
-                    os << ", " <<'<' << (***node).name << '>';
-                }
-            }
-            os << '}';
-            return os;
-        }
 
         const char * equalizer:: status_text(const status s) throw()
         {
@@ -51,7 +37,8 @@ namespace yack {
         wall( *this ),
         reac(mx,*this),
         prod(mx,*this),
-        used(cs.N),
+        eqdb(),
+        pick(cs.N),
         Ceqz(cs.L,cs.L?cs.M:0),
         gain(cs.L,0.0),
         xadd()
@@ -167,19 +154,32 @@ namespace yack {
 
         }
 
+        bool equalizer:: is_complying(const squad &sq) const throw()
+        {
+            for(const eq_node *node=sq.head;node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                if( !eqdb.search(&eq) ) return false;
+            }
+            return true;
+        }
+
+        
+
 
         void equalizer:: comply(writable<double> &C,
                                 const cluster    &cc,
                                 const xmlog      &xml)
         {
 
-            YACK_XMLSUB(xml,"cluster");
+            YACK_XMLSUB(xml,"equalizer::cluster");
 
             //------------------------------------------------------------------
             //
             // detect negative conserved species
             //
             //------------------------------------------------------------------
+            YACK_XMLOG(xml, "-- inspecting negative species");
             bool run = false;
             for(const sp_gnode *sn = cc.replica->breed->conserved->head;sn;sn=sn->next)
             {
@@ -195,14 +195,18 @@ namespace yack {
             }
 
             if(!run)
+            {
+                YACK_XMLOG(xml, "-- all good!");
                 return;
+            }
 
             //------------------------------------------------------------------
             //
             // compute all balancing equilibria
             //
             //------------------------------------------------------------------
-            used.clear();
+            YACK_XMLOG(xml, "-- looking for balancing equilibira");
+            eqdb.free();
             for(const eq_node *node = (*(cc.replica->genus->balancing)).head ;node;node=node->next)
             {
                 const equilibrium &eq = ***node;
@@ -214,13 +218,13 @@ namespace yack {
                     case bad_reac: {
                         YACK_XMLSUB(xml,eq.name);
                         YACK_XMLOG(xml, "-- " << status_text(st) << " --" );
-                        used << comply_reac(C,eq,xml);
+                        eqdb.ensure(&comply_reac(C,eq,xml));
                     } break;
 
                     case bad_prod: {
                         YACK_XMLSUB(xml,eq.name);
                         YACK_XMLOG(xml, "-- " << status_text(st) << " --" );
-                        used << comply_prod(C,eq,xml);
+                        eqdb.ensure(&comply_prod(C,eq,xml));
                     } break;
 
                     case bad_both:
@@ -234,19 +238,51 @@ namespace yack {
                 }
             }
 
-            if( used.size <= 0)
+            if( eqdb->size <= 0)
             {
                 std::cerr << "stalled..." << std::endl;
                 exit(0);
             }
-            std::cerr << "used=" << used << std::endl;
 
+            YACK_XMLOG(xml, "-- collecting balancing squads");
+            pick.clear();
             for(const squad *sq=cc.wing->head;sq;sq=sq->next)
             {
-                std::cerr << "Testing " << *sq << std::endl;
+                if(is_complying(*sq))
+                {
+                    pick << *sq;
+                }
             }
+            std::cerr << "pick=" << pick << std::endl;
+            assert(pick.size>0);
+            const sq_node *Best = pick.head;
+            double         Gain = gain_of(***Best);
+            YACK_XMLOG(xml, " (+) " << std::setw(15) << Gain << " @" << ***Best);
+            for(const sq_node *node=Best->next;node;node=node->next)
+            {
+                const double temp = gain_of(***node);
+                const bool   ok   = temp>Gain;
+                YACK_XMLOG(xml, (ok?" (+) " : " (-) ") << std::setw(15) << temp << " @" << ***node );
+                if(ok) {
+                    Gain = temp;
+                    Best = node;
+                }
+            }
+            YACK_XMLOG(xml, " (*) " << std::setw(15) << Gain << " @" << ***Best);
 
 
+
+        }
+
+        double equalizer:: gain_of(const squad &sq)
+        {
+            xadd.ldz();
+            for(const eq_node *node=sq.head;node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                xadd.push( gain[*eq] );
+            }
+            return xadd.get();
         }
 
 
@@ -279,7 +315,7 @@ namespace yack {
         }
 
         void  equalizer::  comply_move(const frontier         &F,
-                                       const readable<double> &C,
+                                       const readable<double> &C0,
                                        const equilibrium      &eq,
                                        const xmlog            &xml)
         {
@@ -287,21 +323,42 @@ namespace yack {
             writable<double> &Ci = Ceqz[ei];
             const double      xx = F.xi;
 
-            iota::load(Ci,C);
-            xadd.ldz();
+            iota::load(Ci,C0);
 
             for(const cnode *cn = eq.head(); cn; cn=cn->next)
             {
                 const component &cm = ***cn;
                 const species   &sp = *cm;
                 const size_t      j = *sp;
+                Ci[j] += cm.nu * xx;
+#if 0
                 const double     dc = cm.nu * xx;
                 const double     c0 = Ci[j];
                 const double     c1 = Ci[j] += dc;
-                xadd.push(  min_of(c1,0.0) );
-                xadd.push( -min_of(c0,0.0) );
+                if( (*cs.fixed)[j] )
+                {
+                    xadd.push(  min_of(c1,0.0) );
+                    xadd.push( -min_of(c0,0.0) );
+                }
+#endif
             }
             F.vanish(Ci);
+
+            const readable<bool> &used = *cs.fixed;
+            xadd.ldz();
+            for(const cnode *cn = eq.head(); cn; cn=cn->next)
+            {
+                const component &cm = ***cn;
+                const species   &sp = *cm;
+                const size_t      j = *sp;
+                if(used[j])
+                {
+                    xadd.push(  min_of(Ci[j],0.0) );
+                    xadd.push( -min_of(C0[j],0.0) );
+                }
+            }
+
+
             gain[ei] = xadd.get();
             if(xml.verbose)
             {
