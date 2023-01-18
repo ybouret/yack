@@ -20,6 +20,11 @@ namespace yack
     {
     }
 
+    const string & vfs::entry:: operator*() const throw()
+    {
+        return *path;
+    }
+
     bool vfs::entry:: is_unk() const throw()
     {
         return 0  == (attr&attr_msk);

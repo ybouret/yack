@@ -47,6 +47,7 @@ add_test(parser       test-jive parser)
 add_test(eval         test-jive eval)
 
 add_test(vfs          test-jive vfs)
+add_test(vfs:rm       test-jive vfs_rm)
 
 
 

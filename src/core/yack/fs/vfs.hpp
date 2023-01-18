@@ -82,12 +82,13 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            bool is_unk() const throw(); //!< check if unknown
-            bool is_reg() const throw(); //!< check if regular
-            bool is_dir() const throw(); //!< check if directory
-            bool is_lnk() const throw(); //!< check if link
-            YACK_PROTO_OSTREAM(entry);   //!< display
-
+            bool is_unk() const throw();              //!< check if unknown
+            bool is_reg() const throw();              //!< check if regular
+            bool is_dir() const throw();              //!< check if directory
+            bool is_lnk() const throw();              //!< check if link
+            YACK_PROTO_OSTREAM(entry);                //!< display
+            const string & operator*() const throw(); //!< get path content
+            
             //__________________________________________________________________
             //
             // members

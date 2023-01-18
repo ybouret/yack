@@ -199,11 +199,10 @@ namespace yack
             out_of_reach::naught( &basis[--coerce(count)] );
         }
 
-        inline type       &front() throw()       { assert(size()>0); return *basis; }
-        inline const_type &front() const throw() { assert(size()>0); return *basis; }
-
-        inline type       &back() throw()       { assert(size()>0); return entry[count]; }
-        inline const_type &back() const throw() { assert(size()>0); return entry[count]; }
+        inline type       &front() throw()       { assert(size()>0); return *basis; }       //!< first item
+        inline const_type &front() const throw() { assert(size()>0); return *basis; }       //!< first item, const
+        inline type       &back()  throw()       { assert(size()>0); return entry[count]; } //!< last item
+        inline const_type &back()  const throw() { assert(size()>0); return entry[count]; } //!< last item, const
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(cxx_series);

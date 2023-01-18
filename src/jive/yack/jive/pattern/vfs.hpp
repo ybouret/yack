@@ -12,33 +12,70 @@ namespace yack {
 
     namespace jive
     {
-
-        class vfs_query : public matching
+        //______________________________________________________________________
+        //
+        //
+        //! matching in VFS
+        //
+        //______________________________________________________________________
+        class vfsQuery : public matching
         {
         public:
-            template <typename EXPR> inline
-            vfs_query(EXPR &expr) : matching(expr) {}
-            virtual ~vfs_query() throw();
-            vfs_query(const vfs_query &);
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
 
+            //! setup from expression
+            template <typename EXPR> inline
+            vfsQuery(EXPR &expr) : matching(expr) {}
+
+            //! cleanup
+            virtual ~vfsQuery() throw();
+
+            //! copy
+            vfsQuery(const vfsQuery &);
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
+            //! callback for vfs query
             bool operator()(const char *base_name);
+
+            //! query matching vfs base names from path
             template <typename PATH>
             void operator()(vfs::entries &el, vfs &fs, PATH &path)
             {
                 fs.query(el,path,*this);
             }
 
+            //! helper to build a list of matching base name from path
             template <typename EXPR, typename PATH> static inline
             void submit(EXPR &expr, vfs::entries &el, vfs &fs, PATH &path)
             {
-                vfs_query Q(expr);
+                vfsQuery Q(expr);
                 Q(el,fs,path);
+            }
+
+            //! helper to remove matching base name, use with caution
+            template <typename EXPR, typename PATH> static inline
+            void remove(EXPR &expr, vfs &fs, PATH &path)
+            {
+                vfs::entries L;
+                submit(expr,L,fs,path);
+                while(L.size)
+                {
+                    auto_ptr<vfs::entry> ep = L.pop_back();
+                    fs.try_remove_file(**ep);
+                }
             }
 
 
             
         private:
-            YACK_DISABLE_ASSIGN(vfs_query);
+            YACK_DISABLE_ASSIGN(vfsQuery);
         };
 
     }

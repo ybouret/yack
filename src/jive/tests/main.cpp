@@ -22,6 +22,7 @@ YACK_UTEST_DECL(32)
     YACK_UTEST(eval);
    
     YACK_UTEST(vfs);
+    YACK_UTEST(vfs_rm);
 
 }
 YACK_UTEST_EXEC()

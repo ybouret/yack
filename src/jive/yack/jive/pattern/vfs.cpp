@@ -7,14 +7,14 @@ namespace yack {
 
     namespace jive
     {
-        vfs_query:: ~vfs_query() throw() {}
+        vfsQuery:: ~vfsQuery() throw() {}
 
-        vfs_query:: vfs_query(const vfs_query &other) :
+        vfsQuery:: vfsQuery(const vfsQuery &other) :
         matching(other)
         {
         }
 
-        bool vfs_query:: operator()(const char *base_name)
+        bool vfsQuery:: operator()(const char *base_name)
         {
             assert(NULL!=base_name);
             return exactly(base_name);
