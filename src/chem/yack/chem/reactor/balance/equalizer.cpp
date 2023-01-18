@@ -224,7 +224,7 @@ namespace yack {
                     } break;
 
                     case bad_both:
-                        YACK_XMLOG(xml, "-- " << status_text(st) << " --" );
+                        //YACK_XMLOG(xml, "-- " << status_text(st) << " --" );
                         //YACK_XMLOG(xml, " |_amending reac: " << reac.amending);
                         //YACK_XMLOG(xml, " |_limiting prod:  " << prod.limiting);
                         //YACK_XMLOG(xml, " |_amending prod: " << prod.amending);
@@ -240,7 +240,12 @@ namespace yack {
                 exit(0);
             }
             std::cerr << "used=" << used << std::endl;
-            
+
+            for(const squad *sq=cc.wing->head;sq;sq=sq->next)
+            {
+                std::cerr << "Testing " << *sq << std::endl;
+            }
+
 
         }
 
