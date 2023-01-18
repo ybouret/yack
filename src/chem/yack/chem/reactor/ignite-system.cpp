@@ -8,7 +8,7 @@ namespace yack
         
 
 
-        void cluster:: create_system()
+        void cluster:: ignite_system()
         {
 
             eq_group & delimited = coerce( *(genus->delimited) );

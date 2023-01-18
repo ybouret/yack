@@ -50,6 +50,11 @@ namespace yack {
             friend std::ostream & operator<<( std::ostream & , const cluster & );
 
             //! compile once built
+            /**
+             - collect_alive() : alive from group
+             - ignite_system() : init breed and genus, with stamping
+
+             */
             void compile(const xmlog            &xml,
                          const matrix<int>      &Nu,
                          const readable<double> &K,
@@ -77,7 +82,7 @@ namespace yack {
             //------------------------------------------------------------------
             // describing species and equilibria
             //------------------------------------------------------------------
-            const alist::ptr      alive;  //!< alive.size, fixed from the begining
+            const alist::ptr      alive;  //!< alive.size, from the begining
             const booleans::ptr   fixed;  //!< true if conserved
             const auto_ptr<glist> group;  //!< group.size, initial+manifold
             const sp_tier::ptr    breed;  //!< category for species
@@ -107,7 +112,7 @@ namespace yack {
             YACK_DISABLE_COPY_AND_ASSIGN(cluster);
             std::ostream &      display(std::ostream &) const;
             void                collect_alive();
-            void                create_system();
+            void                ignite_system();
             void                conservations(const xmlog &xml);
             void                make_manifold(const xmlog            &xml,
                                               const matrix<int>      &Nu,

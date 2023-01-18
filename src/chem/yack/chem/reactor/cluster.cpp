@@ -104,28 +104,40 @@ namespace yack
 
             YACK_XMLSUB(xml,"cluster::compile");
             if( latched() ) throw imported::exception(clid,"compile(already latched)");
-            YACK_XMLOG(xml,"-- group     : " << *this);
 
-            collect_alive();
-            create_system();
+            {
+                YACK_XMLSUB(xml,"initial");
+                YACK_XMLOG(xml,"-- group     : " << *this);
+
+                //--------------------------------------------------------------
+                // preparing active species
+                //--------------------------------------------------------------
+                collect_alive();
+
+                //--------------------------------------------------------------
+                // initial breed/genus
+                //--------------------------------------------------------------
+                ignite_system();
+
+                //--------------------------------------------------------------
+                // create dictionaries
+                //--------------------------------------------------------------
+                coerce( *sDict ).record( (*alive)->head );
+                coerce( *eDict ).record( (*group)->head );
 
 
-            coerce( *sDict ).record( (*alive)->head );
-            coerce( *eDict ).record( (*group)->head );
+                YACK_XMLOG(xml,"-- alive     : " << **alive);
+                YACK_XMLOG(xml,"-- fixed     : " <<   fixed);
 
-            
+                YACK_XMLOG(xml,"-- delimited : " << genus->delimited);
+                YACK_XMLOG(xml,"-- reac_only : " << genus->reac_only);
+                YACK_XMLOG(xml,"-- prod_only : " << genus->prod_only);
 
-            YACK_XMLOG(xml,"-- alive     : " << **alive);
-            YACK_XMLOG(xml,"-- fixed     : " <<   fixed);
-
-            YACK_XMLOG(xml,"-- delimited : " << genus->delimited);
-            YACK_XMLOG(xml,"-- reac_only : " << genus->reac_only);
-            YACK_XMLOG(xml,"-- prod_only : " << genus->prod_only);
-            
-            YACK_XMLOG(xml,"-- conserved : " << breed->conserved);
-            YACK_XMLOG(xml,"-- unbounded : " << breed->unbounded);
-
+                YACK_XMLOG(xml,"-- conserved : " << breed->conserved);
+                YACK_XMLOG(xml,"-- unbounded : " << breed->unbounded);
+            }
             coerce(gvidx) = igv;
+            exit(0);
 
             conservations(xml);
             make_manifold(xml,Nu,K,lib,eqs,all);
@@ -135,7 +147,7 @@ namespace yack
         }
 
 
-      
+
 
 
     }

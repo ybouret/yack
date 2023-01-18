@@ -27,7 +27,7 @@ namespace yack
             sp_repo slist;
 
             //------------------------------------------------------------------
-            // collect all species
+            // collect all species from group, ordered by index
             //------------------------------------------------------------------
             {
                 addrbook tribe;
