@@ -86,8 +86,6 @@ YACK_UTEST(reactor)
     {
         const xmlog xml("[equalizer]",std::cerr,reactor::verbose);
         equalizer eqz(cs);
-        eqz.adjust(C,xml);
-        lib(std::cerr << "Cadj=","",C);
         eqz.comply(C,xml);
     }
 }

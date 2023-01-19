@@ -64,13 +64,14 @@ namespace yack {
                                 const cluster    &cc,
                                 const xmlog      &xml)
         {
+            YACK_XMLSUB(xml, "equalize::adjust::cluster" );
             adjust_reac(C,*(cc.replica->genus->reac_only),xml);
             adjust_prod(C,*(cc.replica->genus->prod_only),xml);
         }
 
         void equalizer:: adjust(writable<double> &C, const xmlog &xml)
         {
-            YACK_XMLSUB(xml, "equalizer::adjust" );
+            YACK_XMLSUB(xml, "equalize::adjust" );
             for(const cluster *cc=cs.linked->head;cc;cc=cc->next)
                 adjust(C,*cc,xml);
         }

@@ -15,8 +15,7 @@ namespace yack {
         void equalizer:: comply(writable<double> &C, const xmlog &xml)
         {
             YACK_XMLSUB(xml,"equalizer::comply");
-            for(const cluster *cc=cs.linked->head;cc;cc=cc->next)
-                comply(C,*cc,xml);
+            for(const cluster *cc=cs.linked->head;cc;cc=cc->next) comply(C,*cc,xml);
         }
 
         equalizer::status equalizer:: find_status(const readable<double> &C, const equilibrium &eq)
@@ -69,8 +68,10 @@ namespace yack {
         {
 
             YACK_XMLSUB(xml,"equalize::cluster");
+            size_t cycle = 0;
 
-
+        CYCLE:
+            YACK_XMLOG(xml, "-------- equalizer cycle #" << cycle << " ---------");
             {
                 //--------------------------------------------------------------
                 //
@@ -90,8 +91,11 @@ namespace yack {
                         }
                     }
                 }
+
                 if(!run)
                 {
+                    if(cycle<=0)
+                        adjust(C, cc, xml); // take care of unbounded
                     YACK_XMLOG(xml, "--> all species are OK");
                     return;
                 }
@@ -185,8 +189,27 @@ namespace yack {
                 }
                 YACK_XMLOG(xml, " (*) " << std::setw(15) << Gain << " @" << ***Best << " <--");
                 make_better(C,***Best,xml);
+
+                if(Gain<=0)
+                {
+                    std::cerr << "no gain..." << std::endl;
+                    exit(0);
+                }
+
+            }
+
+            {
+                //--------------------------------------------------------------
+                //
+                // cleanup
+                //
+                //--------------------------------------------------------------
+                adjust(C, cc, xml);
+                ++cycle;
                 cs.lib(std::cerr << "Cimp=","",C);
             }
+
+            goto CYCLE;
         }
 
 
@@ -195,10 +218,7 @@ namespace yack {
         {
             xadd.ldz();
             for(const eq_node *node=sq.head;node;node=node->next)
-            {
-                const equilibrium &eq = ***node;
-                xadd.push( gain[*eq] );
-            }
+                xadd.push( gain[****node] );
             return xadd.get();
         }
 

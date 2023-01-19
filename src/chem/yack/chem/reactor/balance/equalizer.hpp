@@ -39,8 +39,12 @@ namespace yack {
         class equalizer : public sp_fund
         {
         public:
+            //__________________________________________________________________
+            //
+            // types and definition
+            //__________________________________________________________________
 
-            //! comply result
+            //! check status of an equilibrium w.r.t its components
             enum status {
                 balanced, //!< equilibrium is balanced
                 bad_reac, //!< equilibriun has bad reactant(s)
@@ -62,7 +66,6 @@ namespace yack {
             //
             // methods
             //__________________________________________________________________
-
             void adjust(writable<double> &C, const xmlog &xml); //!< adjust [reac|prod]_only using single wall
             void comply(writable<double> &C, const xmlog &xml); //!< comply to maximum positivity of conserved species
             
