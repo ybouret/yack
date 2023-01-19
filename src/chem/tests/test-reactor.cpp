@@ -54,7 +54,7 @@ YACK_UTEST(reactor)
     YACK_SIZEOF(frontier);
 
 
-    cs.graphViz("reactor");
+    //cs.graphViz("reactor");
 
 
     vector<double> C(cs.M+2);

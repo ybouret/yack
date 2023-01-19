@@ -63,7 +63,7 @@ namespace yack {
             // methods
             //__________________________________________________________________
 
-            void adjust(writable<double> &C, const xmlog &xml); //!< adjust [reac|prod]_only using single fence
+            void adjust(writable<double> &C, const xmlog &xml); //!< adjust [reac|prod]_only using single wall
             void comply(writable<double> &C, const xmlog &xml); //!< comply to maximum positivity of conserved species
             
             
