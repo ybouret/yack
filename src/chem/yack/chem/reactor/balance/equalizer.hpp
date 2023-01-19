@@ -92,14 +92,14 @@ namespace yack {
             void adjust(writable<double> &C, const cluster &cc, const xmlog &xml);
             void comply(writable<double> &C, const cluster &cc, const xmlog &xml);
 
-            status              find_status(const readable<double> &C, const equilibrium &eq);
-            static void         locate_wall(frontier &sf, const frontier  &limiting, const frontiers &amending, const xmlog &xml);
-            const equilibrium & comply_prod(const readable<double> &C, const equilibrium &eq, const xmlog &xml);
-            const equilibrium & comply_reac(const readable<double> &C, const equilibrium &eq, const xmlog &xml);
-            void                comply_move(const frontier &F, const readable<double> &C, const equilibrium &eq, const xmlog &xml);
-            bool                is_solution(const squad &) const throw();
-            double              gained_thru(const squad &sq);
-            void                make_better(writable<double> &C0, const squad &sq, const xmlog &xml);
+            status      find_status(const readable<double> &C, const equilibrium &eq);
+            static void locate_wall(frontier &sf, const frontier  &limiting, const frontiers &amending, const xmlog &xml);
+            bool        comply_prod(const readable<double> &C, const equilibrium &eq, const xmlog &xml);
+            bool        comply_reac(const readable<double> &C, const equilibrium &eq, const xmlog &xml);
+            void        comply_move(const frontier &F, const readable<double> &C, const equilibrium &eq, const xmlog &xml);
+            bool        is_solution(const squad &) const throw();
+            double      gained_thru(const squad &sq);
+            void        make_better(writable<double> &C0, const squad &sq, const xmlog &xml);
 
 
 

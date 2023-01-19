@@ -119,13 +119,29 @@ namespace yack {
                         case bad_reac: {
                             YACK_XMLSUB(xml,eq.name);
                             YACK_XMLOG(xml, "==> " << status_text(st) << " <==" );
-                            eqdb.ensure(&comply_reac(C,eq,xml));
+                            if(comply_reac(C,eq,xml))
+                            {
+                                YACK_XMLOG(xml, "--> keep ");
+                                eqdb.ensure(&eq);
+                            }
+                            else
+                            {
+                                YACK_XMLOG(xml, "--> drop ");
+                            }
                         } break;
 
                         case bad_prod: {
                             YACK_XMLSUB(xml,eq.name);
                             YACK_XMLOG(xml, "==> " << status_text(st) << " <==" );
-                            eqdb.ensure(&comply_prod(C,eq,xml));
+                            if(comply_prod(C,eq,xml))
+                            {
+                                YACK_XMLOG(xml, "--> keep ");
+                                eqdb.ensure(&eq);
+                            }
+                            else
+                            {
+                                YACK_XMLOG(xml, "--> drop ");
+                            }
                         } break;
 
                         case bad_both:
@@ -144,7 +160,7 @@ namespace yack {
 
                 if( eqdb->size <= 0)
                 {
-                    YACK_XMLOG(xml, "--> stalled!! <--");
+                    YACK_XMLOG(xml, "-- [[ STALLED ]] --");
                     goto RETURN;
                 }
             }
@@ -193,7 +209,7 @@ namespace yack {
 
                 if(Gain<=0)
                 {
-                    YACK_XMLOG(xml, "--> no gain <--");
+                    YACK_XMLOG(xml, "-- [[ NO GAIN ]] --");
                     goto RETURN;
                 }
 
@@ -214,6 +230,10 @@ namespace yack {
 
         RETURN:
             if(cycle<=0) adjust(C, cc, xml); // take care of unbounded
+            if(xml.verbose)
+            {
+                cs.lib( *xml << "Ceqz=","",C);
+            }
         }
 
 
@@ -227,32 +247,46 @@ namespace yack {
         }
 
 
-        const equilibrium & equalizer:: comply_prod(const readable<double> &C,
-                                                    const equilibrium      &eq,
-                                                    const xmlog            &xml)
+        bool equalizer:: comply_prod(const readable<double> &C,
+                                     const equilibrium      &eq,
+                                     const xmlog            &xml)
         {
             YACK_XMLOG(xml, " |_amending prod: "  << prod.amending); assert(prod.amending.size());
             YACK_XMLOG(xml, " |_limiting reac:  " << reac.limiting);
 
             frontier fwd(*this);
             locate_wall(fwd,reac.limiting,prod.amending,xml);
-            comply_move(fwd,C,eq,xml);
-            return eq;
+            if(fabs(fwd.xi)>0)
+            {
+                comply_move(fwd,C,eq,xml);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
 
-        const equilibrium & equalizer:: comply_reac(const readable<double> &C,
-                                                    const equilibrium      &eq,
-                                                    const xmlog            &xml)
+        bool equalizer:: comply_reac(const readable<double> &C,
+                                     const equilibrium      &eq,
+                                     const xmlog            &xml)
         {
             YACK_XMLOG(xml, " |_amending reac: "  << reac.amending); assert(reac.amending.size());
             YACK_XMLOG(xml, " |_limiting prod:  " << prod.limiting);
 
             frontier rev(*this);
             locate_wall(rev,prod.limiting,reac.amending,xml);
-            rev.xi = -rev.xi;
-            comply_move(rev,C,eq,xml);
-            return eq;
+            if( fabs(rev.xi) > 0 )
+            {
+                rev.xi = -rev.xi;
+                comply_move(rev,C,eq,xml);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         void  equalizer::  comply_move(const frontier         &F,
