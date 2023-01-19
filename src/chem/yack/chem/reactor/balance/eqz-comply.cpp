@@ -283,6 +283,10 @@ namespace yack {
                                      const xmlog      &xml)
         {
             YACK_XMLSUB(xml,"equalize::make_improved_phase_space");
+            YACK_XMLOG(xml, "using " << sq);
+            YACK_XMLOG(xml, "autonomous: " << sq.autonomous);
+            YACK_XMLOG(xml, "mutualized: " << sq.mutualized);
+            
             for(const eq_node *node=sq.head;node;node=node->next)
             {
                 const equilibrium &      eq = ***node;
