@@ -269,8 +269,8 @@ namespace yack {
             //------------------------------------------------------------------
             //! lhs = M * rhs
             //------------------------------------------------------------------
-            template <typename T, typename LHS, typename RHS> static inline
-            void mul(LHS &lhs, const matrix<T> &M, RHS &rhs, adder<T> &xadd)
+            template <typename T, typename U, typename LHS, typename RHS> static inline
+            void mul(LHS &lhs, const matrix<U> &M, RHS &rhs, adder<T> &xadd)
             {
                 assert(lhs.size()>=M.rows);
                 assert(rhs.size()>=M.cols);
@@ -294,8 +294,8 @@ namespace yack {
             //------------------------------------------------------------------
             //! lhs -= M * rhs
             //------------------------------------------------------------------
-            template <typename T, typename LHS, typename RHS> static inline
-            void mulneg(LHS &lhs, const matrix<T> &M, RHS &rhs, adder<T> &xadd)
+            template <typename T, typename U, typename LHS, typename RHS> static inline
+            void mulneg(LHS &lhs, const matrix<U> &M, RHS &rhs, adder<T> &xadd)
             {
                 assert(lhs.size()>=M.rows);
                 assert(rhs.size()>=M.cols);
@@ -318,8 +318,8 @@ namespace yack {
             //------------------------------------------------------------------
             //! lhs += M * rhs
             //------------------------------------------------------------------
-            template <typename T, typename LHS, typename RHS> static inline
-            void muladd(LHS &lhs, const matrix<T> &M, RHS &rhs, adder<T> &xadd)
+            template <typename T, typename U, typename LHS, typename RHS> static inline
+            void muladd(LHS &lhs, const matrix<U> &M, RHS &rhs, adder<T> &xadd)
             {
                 assert(lhs.size()>=M.rows);
                 assert(rhs.size()>=M.cols);

@@ -62,8 +62,8 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            void fill(writable<double> &C, randomized::bits &ran) const; //!< fill random values
-
+            void cfill(writable<double> &C, randomized::bits &ran) const; //!< fill random values C.size() >= size()
+            
             const   snode *head() const throw(); //!< sequential access
 
             //! manual creation of a NEW species

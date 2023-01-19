@@ -16,6 +16,7 @@ YACK_UTEST(reactor)
     randomized::rand_  ran;
     library            lib;
     luaEquilibria      eqs;
+    equilibria        &eqs_ = eqs;
 
     for(int i=1;i<argc;++i)
     {
@@ -35,23 +36,7 @@ YACK_UTEST(reactor)
     
 
     
-    YACK_SIZEOF(entity);
-    YACK_SIZEOF(alist);
-    YACK_SIZEOF(glist);
-    YACK_SIZEOF(cluster);
-    YACK_SIZEOF(clusters);
-    YACK_SIZEOF(reactor);
-    YACK_SIZEOF(sp_repo);
-    YACK_SIZEOF(eq_group);
-    YACK_SIZEOF(sp_group);
-    YACK_SIZEOF(eq_tier);
-    YACK_SIZEOF(sp_tier);
-    YACK_SIZEOF(umap);
-    YACK_SIZEOF(udict);
-    YACK_SIZEOF(custodian);
-    YACK_SIZEOF(ledger);
-    YACK_SIZEOF(ledger::type);
-    YACK_SIZEOF(frontier);
+
 
 
     //cs.graphViz("reactor");
@@ -89,6 +74,38 @@ YACK_UTEST(reactor)
         eqz.comply(C,xml);
         lib(std::cerr << "Cend=","",C);
 
+        cxx_array<double> xi(cs.N,0);
+        for(size_t i=xi.size();i>0;--i)
+        {
+            xi[i] = lib.concentration(ran) * ran.symm<double>();
+        }
+
+        eqs_(std::cerr << "xi=","",xi);
+        math::iota::mul(C,cs.NuT,xi,eqz.xadd);
+        lib(std::cerr << "Cxi=","",C);
+        eqz.comply(C,xml);
+
     }
+
+    YACK_SIZEOF(entity);
+    YACK_SIZEOF(alist);
+    YACK_SIZEOF(glist);
+    YACK_SIZEOF(cluster);
+    YACK_SIZEOF(clusters);
+    YACK_SIZEOF(reactor);
+    YACK_SIZEOF(sp_repo);
+    YACK_SIZEOF(eq_group);
+    YACK_SIZEOF(sp_group);
+    YACK_SIZEOF(eq_tier);
+    YACK_SIZEOF(sp_tier);
+    YACK_SIZEOF(umap);
+    YACK_SIZEOF(udict);
+    YACK_SIZEOF(custodian);
+    YACK_SIZEOF(ledger);
+    YACK_SIZEOF(ledger::type);
+    YACK_SIZEOF(frontier);
+    YACK_SIZEOF(frontiers);
+    YACK_SIZEOF(equalizer);
+
 }
 YACK_UDONE()

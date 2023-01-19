@@ -20,7 +20,7 @@ namespace yack
             return pow(10.0,p);
         }
 
-        void library:: fill(writable<double> &C, randomized::bits &ran) const
+        void library:: cfill(writable<double> &C, randomized::bits &ran) const
         {
             for(const snode *node=head();node;node=node->next)
             {

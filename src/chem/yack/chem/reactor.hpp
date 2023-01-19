@@ -69,6 +69,7 @@ namespace yack {
             const size_t            M;      //!< total species
             const size_t            N;      //!< number of single
             const matrix<int>       Nu;     //!< global topology
+            const matrix<int>       NuT;    //!< Nu'
             const booleans::ptr     fixed;  //!< bounded species, global
             const clusters_ptr      linked; //!< clusters of linked equilibria
             const size_t            Nq;     //!< number of conservations

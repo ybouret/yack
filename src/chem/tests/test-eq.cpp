@@ -32,7 +32,7 @@ YACK_UTEST(eq)
     vector<double> phi(M,0);
     vector<int>    nu(M,0);
     
-    lib.fill(C,ran);
+    lib.cfill(C,ran);
     
     lib(std::cerr << "C=", "", C);
     

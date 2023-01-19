@@ -29,6 +29,7 @@ namespace yack
         N(eqs.size()),
 
         Nu(N,N>0?M:0),
+        NuT(Nu,transposed),
 
         fixed(  new booleans(M,true) ),
         linked( new clusters()       ),
@@ -92,6 +93,8 @@ namespace yack
                 YACK_XMLOG(xml, "Nu=" << Nu);
                 const size_t rank = alga::rank(Nu);
                 if(rank<N) throw imported::exception(clid,"only %u independent equilibria/%u", unsigned(rank), unsigned(N) );
+                coerce(NuT).assign(Nu,transposed);
+                YACK_XMLOG(xml, "NuT=" << NuT);
 
                 //--------------------------------------------------------------
                 //
