@@ -94,6 +94,7 @@ namespace yack {
 
             status      find_status(const readable<double> &C, const equilibrium &eq);
             static void locate_wall(frontier &sf, const frontier  &limiting, const frontiers &amending, const xmlog &xml);
+            bool        comply_any_(const readable<double> &C, const equilibrium &eq, const xmlog &xml, const frontier &limiting, const frontiers &amending, const bool reverse);
             bool        comply_prod(const readable<double> &C, const equilibrium &eq, const xmlog &xml);
             bool        comply_reac(const readable<double> &C, const equilibrium &eq, const xmlog &xml);
             void        comply_move(const frontier &F, const readable<double> &C, const equilibrium &eq, const xmlog &xml);

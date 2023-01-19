@@ -223,17 +223,15 @@ namespace yack {
                 //--------------------------------------------------------------
                 adjust(C, cc, xml);
                 ++cycle;
-                cs.lib(std::cerr << "Cimp=","",C);
+                if(xml.verbose) cs.lib( *xml << "Cimp= ","",C);
             }
 
             goto CYCLE;
 
         RETURN:
-            if(cycle<=0) adjust(C, cc, xml); // take care of unbounded
-            if(xml.verbose)
-            {
-                cs.lib( *xml << "Ceqz=","",C);
-            }
+            if(cycle<=0)    adjust(C, cc, xml); // take care of unbounded
+            if(xml.verbose) cs.lib( *xml << "Ceqz= ","",C);
+
         }
 
 
@@ -247,24 +245,27 @@ namespace yack {
         }
 
 
-        bool equalizer:: comply_prod(const readable<double> &C,
-                                     const equilibrium      &eq,
-                                     const xmlog            &xml)
-        {
-            YACK_XMLOG(xml, " |_amending prod: "  << prod.amending); assert(prod.amending.size());
-            YACK_XMLOG(xml, " |_limiting reac:  " << reac.limiting);
 
-            if(reac.limiting.xi<=0)
+        bool equalizer:: comply_any_(const readable<double> &C,
+                                     const equilibrium      &eq,
+                                     const xmlog            &xml,
+                                     const frontier         &limiting,
+                                     const frontiers        &amending,
+                                     const bool              reverse)
+        {
+
+            if(limiting.xi<=0)
             {
                 return false;
             }
             else
             {
-                frontier fwd(*this);
-                locate_wall(fwd,reac.limiting,prod.amending,xml);
-                if(fabs(fwd.xi)>0)
+                frontier F(*this);
+                locate_wall(F,limiting,amending,xml);
+                if(fabs(F.xi)>0)
                 {
-                    comply_move(fwd,C,eq,xml);
+                    if(reverse) F.xi = -F.xi;
+                    comply_move(F,C,eq,xml);
                     return true;
                 }
                 else
@@ -272,6 +273,17 @@ namespace yack {
                     return false;
                 }
             }
+
+        }
+
+
+        bool equalizer:: comply_prod(const readable<double> &C,
+                                     const equilibrium      &eq,
+                                     const xmlog            &xml)
+        {
+            YACK_XMLOG(xml, " |_amending prod: "  << prod.amending); assert(prod.amending.size());
+            YACK_XMLOG(xml, " |_limiting reac:  " << reac.limiting);
+            return comply_any_(C,eq,xml,reac.limiting,prod.amending,false);
         }
 
 
@@ -281,26 +293,7 @@ namespace yack {
         {
             YACK_XMLOG(xml, " |_amending reac: "  << reac.amending); assert(reac.amending.size());
             YACK_XMLOG(xml, " |_limiting prod:  " << prod.limiting);
-
-            if(prod.limiting.xi<=0)
-            {
-                return false;
-            }
-            else
-            {
-                frontier rev(*this);
-                locate_wall(rev,prod.limiting,reac.amending,xml);
-                if( fabs(rev.xi) > 0 )
-                {
-                    rev.xi = -rev.xi;
-                    comply_move(rev,C,eq,xml);
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
+            return comply_any_(C,eq,xml,prod.limiting,reac.amending,true);
         }
 
         void  equalizer::  comply_move(const frontier         &F,

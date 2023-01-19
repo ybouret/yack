@@ -28,7 +28,7 @@ namespace yack
             bool has_roaming(const equilibrium &lhs, const addrbook &roaming) throw()
             {
                 const string &lid = lhs.name;
-                std::cerr << "\t\t Checking " << lid << std::endl;
+                //std::cerr << "\t\t Checking " << lid << std::endl;
                 for(addrbook::const_iterator it=roaming.begin();it!=roaming.end();++it)
                 {
                     const equilibrium &rhs = *static_cast<const equilibrium *>(*it);
