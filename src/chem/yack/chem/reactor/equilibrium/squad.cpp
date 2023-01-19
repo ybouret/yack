@@ -9,10 +9,17 @@ namespace yack {
         {
         }
 
+#define YACK_CHEM_SQUAD_INIT() \
+next(0),                       \
+prev(0),                       \
+autonomous( new sp_repo() ),   \
+mutualized( new sp_repo() )
+
         squad:: squad(const equilibrium &first) :
-        object(), eq_repo_(), next(0), prev(0),
-        autonomous( new sp_repo() ),
-        mutualized( new sp_repo() )
+        object(),
+        eq_repo_(),
+        gathering(),
+        YACK_CHEM_SQUAD_INIT()
         {
             (*this) << first;
         }
@@ -20,10 +27,8 @@ namespace yack {
         squad:: squad(const squad &other) :
         object(),
         eq_repo_(other),
-        next(0),
-        prev(0),
-        autonomous( new sp_repo() ),
-        mutualized( new sp_repo() )
+        gathering(),
+        YACK_CHEM_SQUAD_INIT()
         {}
 
         squad * squad:: clone() const {

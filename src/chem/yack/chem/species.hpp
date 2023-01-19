@@ -60,6 +60,7 @@ namespace yack
             //! write formated concentration
             ios::ostream &  frame(ios::ostream &os, const readable<double> &C) const;
 
+            //! sort by increasing index
             static inline int compare(const species &lhs, const species &rhs) throw()
             {
                 return comparison::increasing(*lhs,*rhs);
@@ -76,16 +77,33 @@ namespace yack
             YACK_DISABLE_ASSIGN(species);
         };
 
-        typedef core_repo<const species> sp_repo_;     //!< alias
-        typedef sp_repo_::node_type      sp_node;     //!< alias
+        typedef core_repo<const species> sp_repo_;     //!< base class for repository
+        typedef sp_repo_::node_type      sp_node;      //!< alias
 
+
+        //______________________________________________________________________
+        //
+        //
+        //! repository of species
+        //
+        //______________________________________________________________________
         class sp_repo : public object, public sp_repo_
         {
         public:
-            typedef auto_ptr<const sp_repo> ptr;
-            explicit sp_repo() throw() : object(), sp_repo_() {}
-            virtual ~sp_repo() throw() {}
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            typedef auto_ptr<const sp_repo> ptr; //!< alias
 
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit sp_repo() throw() : object(), sp_repo_() {} //!< setup
+            virtual ~sp_repo() throw() {}                        //!< cleanup
+
+            //! sort contained nodes by increasing species index
             void sort() throw()
             {
                 sort_with( species::compare );

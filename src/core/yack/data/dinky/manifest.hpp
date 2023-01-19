@@ -73,7 +73,7 @@ namespace yack
             merge_list_of<node_type>::sort(*this,cb);
         }
 
-
+        //! return node containing address
         template <typename U> inline
         node_type *contains(const U &u)  throw()
         {
@@ -84,14 +84,15 @@ namespace yack
             return NULL;
         }
 
+        //! return node containing address
         template <typename U> inline
-        bool contains(const U &u) const throw()
+        const node_type *contains(const U &u) const throw()
         {
             for(const node_type *node=this->head;node;node=node->next)
             {
-                if( & (***node) == &u ) return true;
+                if( & (***node) == &u ) return node;
             }
-            return false;
+            return NULL;
         }
 
     private:

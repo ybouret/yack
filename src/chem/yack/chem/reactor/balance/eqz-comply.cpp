@@ -282,18 +282,34 @@ namespace yack {
                                      const squad      &sq,
                                      const xmlog      &xml)
         {
-            YACK_XMLSUB(xml,"equalize::make_improved_phase_space");
-            YACK_XMLOG(xml, "using " << sq);
-            YACK_XMLOG(xml, "autonomous: " << sq.autonomous);
-            YACK_XMLOG(xml, "mutualized: " << sq.mutualized);
-            
+            const sp_repo &common = *sq.mutualized;
+
+            /* */           YACK_XMLSUB(xml,"equalize::make_improved_phase_space");
+            /* */           YACK_XMLOG(xml, "combining  : " << sq);
+            /* */           YACK_XMLOG(xml, "autonomous : " << sq.autonomous);
+            if(common.size) YACK_XMLOG(xml, "mutualized : " << sq.mutualized);
+
             for(const eq_node *node=sq.head;node;node=node->next)
             {
                 const equilibrium &      eq = ***node;
                 const size_t             ei = *eq;
                 const readable<double> & Ci = Ceqz[ei];
-                eq.display_compact( sq.pad(std::cerr << eq.name,eq) << " : ",Ci);
-                std::cerr << std::endl;
+                if(xml.verbose)  sq.pad(*xml<< "--> " << '<' << eq.name << '>',eq) << " : ";
+                for(const cnode *cn=eq.head();cn;cn=cn->next)
+                {
+                    const species &sp = ****cn;
+                    if(common.contains(sp)) continue;
+                    const size_t   j  = *sp;
+                    const double   c  = C0[j] = Ci[j];
+                    if(xml.verbose) {
+                        xml() << " [" << sp.name << "]=" << c;
+                    }
+                }
+
+                if(xml.verbose) {
+                    xml() << std::endl;
+                }
+
             }
         }
 
