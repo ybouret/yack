@@ -184,7 +184,7 @@ namespace yack {
                     }
                 }
                 YACK_XMLOG(xml, " (*) " << std::setw(15) << Gain << " @" << ***Best << " <--");
-                
+                make_better(C,***Best,xml);
             }
         }
 
@@ -275,6 +275,21 @@ namespace yack {
             {
                 eq.display_compact(*xml << " | ",Ci,*cs.fixed) << std::endl;
                 *xml <<" | gain = " << std::setw(15) << gain[ei] << std::endl;
+            }
+        }
+
+        void equalizer:: make_better(writable<double> &C0,
+                                     const squad      &sq,
+                                     const xmlog      &xml)
+        {
+            YACK_XMLSUB(xml,"equalize::make_improved_phase_space");
+            for(const eq_node *node=sq.head;node;node=node->next)
+            {
+                const equilibrium &      eq = ***node;
+                const size_t             ei = *eq;
+                const readable<double> & Ci = Ceqz[ei];
+                eq.display_compact( sq.pad(std::cerr << eq.name,eq) << " : ",Ci);
+                std::cerr << std::endl;
             }
         }
 

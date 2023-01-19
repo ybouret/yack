@@ -16,7 +16,7 @@ namespace yack {
         //! squad of DETACHED equilibria
         //
         //______________________________________________________________________
-        class squad : public object, public eq_repo_
+        class squad : public object, public eq_repo_, public gathering
         {
         public:
             //__________________________________________________________________
@@ -39,6 +39,8 @@ namespace yack {
             bool   accepts(const equilibrium  &eq,
                            const matrix<bool> &detached) const throw();
 
+            //! finalize
+            void   compile();
 
             //__________________________________________________________________
             //

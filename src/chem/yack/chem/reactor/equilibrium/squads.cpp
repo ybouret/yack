@@ -13,7 +13,8 @@ namespace yack {
         squads:: squads() throw() : object() {}
 
 
-        void squads:: shape(const eq_repo_ &assembly, const matrix<bool> &detached)
+        void squads:: shape(const eq_repo_     &assembly,
+                            const matrix<bool> &detached)
         {
 
             //------------------------------------------------------------------
@@ -50,6 +51,13 @@ namespace yack {
             //
             //------------------------------------------------------------------
             merge_list_of<squad>::sort(*this,squad::compare);
+
+            //------------------------------------------------------------------
+            //
+            // compile
+            //
+            //------------------------------------------------------------------
+            for(squad *sq=head;sq;sq=sq->next) sq->compile();
         }
 
         void squads:: print(const xmlog &xml, const char * const info) const

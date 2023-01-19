@@ -96,7 +96,7 @@ namespace yack {
             void                comply_move(const frontier &F, const readable<double> &C, const equilibrium &eq, const xmlog &xml);
             bool                is_solution(const squad &) const throw();
             double              gained_thru(const squad &sq);
-
+            void                make_better(writable<double> &C0, const squad &sq, const xmlog &xml);
 
 
 

@@ -89,6 +89,15 @@ namespace yack {
         }
 
 
+        void squad:: compile()
+        {
+            for(const eq_node *node=head;node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                absorb(eq);
+            }
+        }
+
     }
 
 }
