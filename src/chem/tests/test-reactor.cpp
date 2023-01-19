@@ -1,6 +1,6 @@
 #include "yack/chem/reactor/conservation/custodian.hpp"
 #include "yack/chem/reactor/balance/equalizer.hpp"
-
+#include "yack/math/iota.hpp"
 #include "yack/chem/eqs/lua.hpp"
 #include "yack/system/env.hpp"
 #include "yack/utest/run.hpp"
@@ -87,6 +87,8 @@ YACK_UTEST(reactor)
         const xmlog xml("[equalizer]",std::cerr,reactor::verbose);
         equalizer eqz(cs);
         eqz.comply(C,xml);
+        lib(std::cerr << "Cend=","",C);
+
     }
 }
 YACK_UDONE()
