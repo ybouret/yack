@@ -121,12 +121,12 @@ namespace yack {
                             YACK_XMLOG(xml, "==> " << status_text(st) << " <==" );
                             if(comply_reac(C,eq,xml))
                             {
-                                YACK_XMLOG(xml, "--> keep ");
+                                YACK_XMLOG(xml, "<keep>");
                                 eqdb.ensure(&eq);
                             }
                             else
                             {
-                                YACK_XMLOG(xml, "--> drop ");
+                                YACK_XMLOG(xml, "<drop>");
                             }
                         } break;
 
@@ -135,12 +135,12 @@ namespace yack {
                             YACK_XMLOG(xml, "==> " << status_text(st) << " <==" );
                             if(comply_prod(C,eq,xml))
                             {
-                                YACK_XMLOG(xml, "--> keep ");
+                                YACK_XMLOG(xml, "<keep>");
                                 eqdb.ensure(&eq);
                             }
                             else
                             {
-                                YACK_XMLOG(xml, "--> drop ");
+                                YACK_XMLOG(xml, "<drop>");
                             }
                         } break;
 
@@ -254,16 +254,23 @@ namespace yack {
             YACK_XMLOG(xml, " |_amending prod: "  << prod.amending); assert(prod.amending.size());
             YACK_XMLOG(xml, " |_limiting reac:  " << reac.limiting);
 
-            frontier fwd(*this);
-            locate_wall(fwd,reac.limiting,prod.amending,xml);
-            if(fabs(fwd.xi)>0)
+            if(reac.limiting.xi<=0)
             {
-                comply_move(fwd,C,eq,xml);
-                return true;
+                return false;
             }
             else
             {
-                return false;
+                frontier fwd(*this);
+                locate_wall(fwd,reac.limiting,prod.amending,xml);
+                if(fabs(fwd.xi)>0)
+                {
+                    comply_move(fwd,C,eq,xml);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
         }
 
@@ -275,17 +282,24 @@ namespace yack {
             YACK_XMLOG(xml, " |_amending reac: "  << reac.amending); assert(reac.amending.size());
             YACK_XMLOG(xml, " |_limiting prod:  " << prod.limiting);
 
-            frontier rev(*this);
-            locate_wall(rev,prod.limiting,reac.amending,xml);
-            if( fabs(rev.xi) > 0 )
+            if(prod.limiting.xi<=0)
             {
-                rev.xi = -rev.xi;
-                comply_move(rev,C,eq,xml);
-                return true;
+                return false;
             }
             else
             {
-                return false;
+                frontier rev(*this);
+                locate_wall(rev,prod.limiting,reac.amending,xml);
+                if( fabs(rev.xi) > 0 )
+                {
+                    rev.xi = -rev.xi;
+                    comply_move(rev,C,eq,xml);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
         }
 
