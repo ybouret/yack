@@ -86,9 +86,7 @@ namespace yack {
                     if(c<0)
                     {
                         run = true;
-                        if(xml.verbose) {
-                            cs.lib.pad(*xml << " (-) " << '[' << s.name  << ']',s) << " = " << std::setw(15) << c << std::endl;
-                        }
+                        if(xml.verbose) cs.lib.pad(*xml << " (-) " << '[' << s.name  << ']',s) << " = " << std::setw(15) << c << std::endl;
                     }
                 }
 
@@ -106,7 +104,6 @@ namespace yack {
                 YACK_XMLSUB(xml,"equalize::balancing_equilibri[um|a]");
                 //
                 //--------------------------------------------------------------
-
                 eqdb.free();
                 for(const eq_node *node = (*(cc.replica->genus->balancing)).head ;node;node=node->next)
                 {
@@ -198,8 +195,8 @@ namespace yack {
                 {
                     const double temp = gained_thru(***node);
                     const bool   ok   = temp>Gain;
-                    YACK_XMLOG(xml, (ok?" (+) " : " (-) ") << std::setw(15) << temp << " @" << ***node );
                     if(ok) {
+                        YACK_XMLOG(xml," (+) " << std::setw(15) << temp << " @" << ***node );
                         Gain = temp;
                         Best = node;
                     }

@@ -67,7 +67,13 @@ namespace yack {
             // methods
             //__________________________________________________________________
             void adjust(writable<double> &C, const xmlog &xml); //!< adjust [reac|prod]_only using single wall
-            void comply(writable<double> &C, const xmlog &xml); //!< comply to maximum positivity of conserved species
+
+
+            //! comply to maximum positivity of conserved species
+            /**
+             always adjusted
+             */
+            void comply(writable<double> &C, const xmlog &xml);
             
             
             //__________________________________________________________________
@@ -87,11 +93,11 @@ namespace yack {
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(equalizer);
-            void adjust_reac(writable<double> &C, const eq_group  &reac_only, const xmlog &xml);
-            void adjust_prod(writable<double> &C, const eq_group  &prod_only, const xmlog &xml);
-            void adjust(writable<double> &C, const cluster &cc, const xmlog &xml);
-            void comply(writable<double> &C, const cluster &cc, const xmlog &xml);
+            void        adjust_reac(writable<double> &C, const eq_group  &reac_only, const xmlog &xml);
+            void        adjust_prod(writable<double> &C, const eq_group  &prod_only, const xmlog &xml);
+            void        adjust(writable<double> &C, const cluster &cc, const xmlog &xml);
 
+            void        comply(writable<double> &C, const cluster &cc, const xmlog &xml);
             status      find_status(const readable<double> &C, const equilibrium &eq);
             static void locate_wall(frontier &sf, const frontier  &limiting, const frontiers &amending, const xmlog &xml);
             bool        comply_any_(const readable<double> &C, const equilibrium &eq, const xmlog &xml, const frontier &limiting, const frontiers &amending, const bool reverse);
