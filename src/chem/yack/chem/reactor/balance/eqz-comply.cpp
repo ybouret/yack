@@ -94,10 +94,8 @@ namespace yack {
 
                 if(!run)
                 {
-                    if(cycle<=0)
-                        adjust(C, cc, xml); // take care of unbounded
                     YACK_XMLOG(xml, "--> all species are OK");
-                    return;
+                    goto RETURN;
                 }
             }
 
@@ -131,11 +129,14 @@ namespace yack {
                         } break;
 
                         case bad_both:
-                            //YACK_XMLOG(xml, "-- " << status_text(st) << " --" );
-                            //YACK_XMLOG(xml, " |_amending reac: " << reac.amending);
-                            //YACK_XMLOG(xml, " |_limiting prod:  " << prod.limiting);
-                            //YACK_XMLOG(xml, " |_amending prod: " << prod.amending);
-                            //YACK_XMLOG(xml, " |_limiting reac:  " << reac.limiting);
+#if 0
+                            YACK_XMLOG(xml, "-- " << status_text(st) << " --" );
+                            YACK_XMLOG(xml, " |_amending reac: "  << reac.amending);
+                            YACK_XMLOG(xml, " |_limiting prod:  " << prod.limiting);
+                            YACK_XMLOG(xml, " |_amending prod: "  << prod.amending);
+                            YACK_XMLOG(xml, " |_limiting reac:  " << reac.limiting);
+                            exit(0);
+#endif
                             break;
 
                     }
@@ -143,8 +144,8 @@ namespace yack {
 
                 if( eqdb->size <= 0)
                 {
-                    std::cerr << "stalled..." << std::endl;
-                    exit(0);
+                    YACK_XMLOG(xml, "--> stalled!! <--");
+                    goto RETURN;
                 }
             }
 
@@ -192,8 +193,8 @@ namespace yack {
 
                 if(Gain<=0)
                 {
-                    std::cerr << "no gain..." << std::endl;
-                    exit(0);
+                    YACK_XMLOG(xml, "--> no gain <--");
+                    goto RETURN;
                 }
 
             }
@@ -210,6 +211,9 @@ namespace yack {
             }
 
             goto CYCLE;
+
+        RETURN:
+            if(cycle<=0) adjust(C, cc, xml); // take care of unbounded
         }
 
 
