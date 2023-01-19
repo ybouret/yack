@@ -84,28 +84,31 @@ YACK_UTEST(reactor)
         math::iota::mul(C,cs.NuT,xi,eqz.xadd);
         lib(std::cerr << "Cxi=","",C);
         eqz.comply(C,xml);
+        lib(std::cerr << "Cbal=","",C);
 
     }
 
-    YACK_SIZEOF(entity);
-    YACK_SIZEOF(alist);
-    YACK_SIZEOF(glist);
-    YACK_SIZEOF(cluster);
-    YACK_SIZEOF(clusters);
-    YACK_SIZEOF(reactor);
-    YACK_SIZEOF(sp_repo);
-    YACK_SIZEOF(eq_group);
-    YACK_SIZEOF(sp_group);
-    YACK_SIZEOF(eq_tier);
-    YACK_SIZEOF(sp_tier);
-    YACK_SIZEOF(umap);
-    YACK_SIZEOF(udict);
-    YACK_SIZEOF(custodian);
-    YACK_SIZEOF(ledger);
-    YACK_SIZEOF(ledger::type);
-    YACK_SIZEOF(frontier);
-    YACK_SIZEOF(frontiers);
-    YACK_SIZEOF(equalizer);
-
+    if(false)
+    {
+        YACK_SIZEOF(entity);
+        YACK_SIZEOF(alist);
+        YACK_SIZEOF(glist);
+        YACK_SIZEOF(cluster);
+        YACK_SIZEOF(clusters);
+        YACK_SIZEOF(reactor);
+        YACK_SIZEOF(sp_repo);
+        YACK_SIZEOF(eq_group);
+        YACK_SIZEOF(sp_group);
+        YACK_SIZEOF(eq_tier);
+        YACK_SIZEOF(sp_tier);
+        YACK_SIZEOF(umap);
+        YACK_SIZEOF(udict);
+        YACK_SIZEOF(custodian);
+        YACK_SIZEOF(ledger);
+        YACK_SIZEOF(ledger::type);
+        YACK_SIZEOF(frontier);
+        YACK_SIZEOF(frontiers);
+        YACK_SIZEOF(equalizer);
+    }
 }
 YACK_UDONE()
