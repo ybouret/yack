@@ -19,7 +19,7 @@ namespace yack {
                 comply(C,*cc,xml);
         }
 
-        equalizer::status equalizer:: probe(const readable<double> &C, const equilibrium &eq)
+        equalizer::status equalizer:: find_status(const readable<double> &C, const equilibrium &eq)
         {
             const bool amend_reac = reac.probe(C,eq.reac,*this,*cs.fixed);
             const bool amend_prod = prod.probe(C,eq.prod,*this,*cs.fixed);
@@ -50,7 +50,7 @@ namespace yack {
 
         }
 
-        bool equalizer:: is_complying(const squad &sq) const throw()
+        bool equalizer:: is_solution(const squad &sq) const throw()
         {
             for(const eq_node *node=sq.head;node;node=node->next)
             {
@@ -109,20 +109,20 @@ namespace yack {
                 for(const eq_node *node = (*(cc.replica->genus->balancing)).head ;node;node=node->next)
                 {
                     const equilibrium &eq = ***node;
-                    const status       st = probe(C,eq);
+                    const status       st = find_status(C,eq);
 
                     switch(st)
                     {
                         case balanced: continue;
                         case bad_reac: {
                             YACK_XMLSUB(xml,eq.name);
-                            YACK_XMLOG(xml, "-- " << status_text(st) << " --" );
+                            YACK_XMLOG(xml, "==> " << status_text(st) << " <==" );
                             eqdb.ensure(&comply_reac(C,eq,xml));
                         } break;
 
                         case bad_prod: {
                             YACK_XMLSUB(xml,eq.name);
-                            YACK_XMLOG(xml, "-- " << status_text(st) << " --" );
+                            YACK_XMLOG(xml, "==> " << status_text(st) << " <==" );
                             eqdb.ensure(&comply_prod(C,eq,xml));
                         } break;
 
@@ -143,6 +143,8 @@ namespace yack {
                     exit(0);
                 }
             }
+
+
             {
                 //--------------------------------------------------------------
                 //
@@ -152,7 +154,7 @@ namespace yack {
                 pick.clear();
                 for(const squad *sq=cc.wing->head;sq;sq=sq->next)
                 {
-                    if(is_complying(*sq))
+                    if(is_solution(*sq))
                     {
                         pick << *sq;
                         YACK_XMLOG(xml, "--> " << *sq);
@@ -161,6 +163,7 @@ namespace yack {
                 assert(pick.size>0);
             }
 
+
             {
                 //--------------------------------------------------------------
                 //
@@ -168,11 +171,11 @@ namespace yack {
                 //
                 //--------------------------------------------------------------
                 const sq_node *Best = pick.head;
-                double         Gain = gain_of(***Best);
+                double         Gain = gained_thru(***Best);
                 YACK_XMLOG(xml, " (+) " << std::setw(15) << Gain << " @" << ***Best);
                 for(const sq_node *node=Best->next;node;node=node->next)
                 {
-                    const double temp = gain_of(***node);
+                    const double temp = gained_thru(***node);
                     const bool   ok   = temp>Gain;
                     YACK_XMLOG(xml, (ok?" (+) " : " (-) ") << std::setw(15) << temp << " @" << ***node );
                     if(ok) {
@@ -181,12 +184,13 @@ namespace yack {
                     }
                 }
                 YACK_XMLOG(xml, " (*) " << std::setw(15) << Gain << " @" << ***Best << " <--");
+                
             }
         }
 
 
 
-        double equalizer:: gain_of(const squad &sq)
+        double equalizer:: gained_thru(const squad &sq)
         {
             xadd.ldz();
             for(const eq_node *node=sq.head;node;node=node->next)
@@ -206,7 +210,7 @@ namespace yack {
             YACK_XMLOG(xml, " |_limiting reac:  " << reac.limiting);
 
             frontier fwd(*this);
-            locate_single_fence(fwd,reac.limiting,prod.amending,xml);
+            locate_wall(fwd,reac.limiting,prod.amending,xml);
             comply_move(fwd,C,eq,xml);
             return eq;
         }
@@ -220,7 +224,7 @@ namespace yack {
             YACK_XMLOG(xml, " |_limiting prod:  " << prod.limiting);
 
             frontier rev(*this);
-            locate_single_fence(rev,prod.limiting,reac.amending,xml);
+            locate_wall(rev,prod.limiting,reac.amending,xml);
             rev.xi = -rev.xi;
             comply_move(rev,C,eq,xml);
             return eq;

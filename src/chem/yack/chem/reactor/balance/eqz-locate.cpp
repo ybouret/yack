@@ -2,18 +2,18 @@
 
 
 namespace yack {
-
+    
     using namespace math;
-
+    
     namespace chemical
     {
-        void equalizer:: locate_single_fence(frontier        &sf,
-                                             const frontier  &limiting,
-                                             const frontiers &amending,
-                                             const xmlog     &xml)
+        void equalizer:: locate_wall(frontier        &sf,
+                                     const frontier  &limiting,
+                                     const frontiers &amending,
+                                     const xmlog     &xml)
         {
             static const char pfx[] = " | --> ";
-
+            
             YACK_XMLOG(xml, pfx  << "locate single fence in " << amending);
             assert(amending.size()>0);
             assert(amending.are_increasing());
@@ -43,12 +43,12 @@ namespace yack {
                         sf = limiting;
                         YACK_XMLOG(xml,pfx << "best effort " << sf << " [won't solve]");
                         return;
-
+                        
                     case __zero__:
                         (sf = limiting) += amending.front();
                         YACK_XMLOG(xml,pfx << "match first " << sf);
                         return;
-
+                        
                     case positive:
                         if(n<=1)
                         {
@@ -58,9 +58,9 @@ namespace yack {
                         }
                         break;
                 }
-
+                
                 assert(amending.size()>=2);
-
+                
                 //--------------------------------------------------------------
                 //
                 // generic case: test w.r.t back amending
@@ -72,22 +72,22 @@ namespace yack {
                         sf = amending.back();
                         YACK_XMLOG(xml,pfx << "solve last  " << sf);
                         return;
-
+                        
                     case __zero__:
                         (sf = limiting) +=  amending.back();
                         YACK_XMLOG(xml,pfx << "match last  " << sf);
                         return;
-
+                        
                     case negative:
                         break;
                 }
-
+                
                 assert(xx>amending.front().xi);
                 assert(xx<amending.back().xi);
-
+                
                 size_t jlo = 1;
                 size_t jup = n;
-
+                
             LOOK_UP:
                 assert(xx>amending[jlo].xi);
                 assert(xx<amending[jup].xi);
@@ -97,7 +97,7 @@ namespace yack {
                     YACK_XMLOG(xml,pfx << "solve core  " << sf << " #" << jlo) ;
                     return;
                 }
-
+                
                 const size_t     jnx = jlo+1; assert(jnx<=jup);
                 const frontier  &af  = amending[jnx];
                 switch( __sign::of(xx,af.xi) )
@@ -106,25 +106,25 @@ namespace yack {
                         sf = amending[jlo];
                         YACK_XMLOG(xml,pfx << "solve core  " << sf << " #" << jlo) ;
                         return;
-
+                        
                     case __zero__:
                         (sf = limiting) += af;
                         YACK_XMLOG(xml,pfx << "match core  " << sf << " #" << jnx);
                         break;
-
+                        
                     case positive:
                         jlo=jnx;
                         goto LOOK_UP;
                 }
-
-
-
-
+                
+                
+                
+                
             }
-
+            
         }
     }
-
+    
 }
 
 

@@ -89,30 +89,15 @@ namespace yack {
             void adjust(writable<double> &C, const cluster &cc, const xmlog &xml);
             void comply(writable<double> &C, const cluster &cc, const xmlog &xml);
 
-            status probe(const readable<double> &C, const equilibrium &eq);
+            status              find_status(const readable<double> &C, const equilibrium &eq);
+            static void         locate_wall(frontier &sf, const frontier  &limiting, const frontiers &amending, const xmlog &xml);
+            const equilibrium & comply_prod(const readable<double> &C, const equilibrium &eq, const xmlog &xml);
+            const equilibrium & comply_reac(const readable<double> &C, const equilibrium &eq, const xmlog &xml);
+            void                comply_move(const frontier &F, const readable<double> &C, const equilibrium &eq, const xmlog &xml);
+            bool                is_solution(const squad &) const throw();
+            double              gained_thru(const squad &sq);
 
-            const equilibrium & comply_prod(const readable<double> &C,
-                                            const equilibrium      &eq,
-                                            const xmlog            &xml);
-            
 
-            const equilibrium &comply_reac(const readable<double> &C,
-                                           const equilibrium      &eq,
-                                           const xmlog            &xml);
-
-            void comply_move(const frontier         &F,
-                             const readable<double> &C,
-                             const equilibrium      &eq,
-                             const xmlog            &xml);
-
-            static void locate_single_fence(frontier        &sf,
-                                            const frontier  &limiting,
-                                            const frontiers &amending,
-                                            const xmlog     &xml);
-
-            bool is_complying(const squad &) const throw();
-
-            double gain_of(const squad &sq);
 
 
         };
