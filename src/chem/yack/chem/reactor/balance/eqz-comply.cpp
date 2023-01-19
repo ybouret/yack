@@ -185,6 +185,7 @@ namespace yack {
                 }
                 YACK_XMLOG(xml, " (*) " << std::setw(15) << Gain << " @" << ***Best << " <--");
                 make_better(C,***Best,xml);
+                cs.lib(std::cerr << "Cimp=","",C);
             }
         }
 
@@ -289,9 +290,12 @@ namespace yack {
             /* */           YACK_XMLOG(xml, "autonomous : " << sq.autonomous);
             if(common.size) YACK_XMLOG(xml, "mutualized : " << sq.mutualized);
 
-            for(const eq_node *node=sq.head;node;node=node->next)
+            //------------------------------------------------------------------
+            // transfer of autonomous species
+            //------------------------------------------------------------------
+            for(const eq_node *en=sq.head;en;en=en->next)
             {
-                const equilibrium &      eq = ***node;
+                const equilibrium &      eq = ***en;
                 const size_t             ei = *eq;
                 const readable<double> & Ci = Ceqz[ei];
                 if(xml.verbose)  sq.pad(*xml<< "--> " << '<' << eq.name << '>',eq) << " : ";
@@ -309,8 +313,31 @@ namespace yack {
                 if(xml.verbose) {
                     xml() << std::endl;
                 }
-
             }
+
+            //------------------------------------------------------------------
+            // computing effective change in mutual species
+            //------------------------------------------------------------------
+            for(const sp_node *sn=common.head;sn;sn=sn->next)
+            {
+                const species  &s = ***sn;
+                const size_t    j = *s;
+                const double    c = C0[j];
+                xadd.ldz();
+                xadd.push(c);
+                for(const eq_node *en=sq.head;en;en=en->next)
+                {
+                    const equilibrium & eq = ***en; if(!eq.query(s)) continue;
+                    const size_t        ei = *eq;
+                    xadd.push( Ceqz[ei][j] );
+                    xadd.push( -c );
+                }
+                const double c1 = C0[j] = xadd.get();
+                YACK_XMLOG(xml, "--> [" << s.name << "] = " << std::setw(15) << c << " -> " << std::setw(15) << c1);
+            }
+
+
+
         }
 
     }
