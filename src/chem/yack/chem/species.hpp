@@ -60,6 +60,10 @@ namespace yack
             //! write formated concentration
             ios::ostream &  frame(ios::ostream &os, const readable<double> &C) const;
 
+            static inline int compare(const species &lhs, const species &rhs) throw()
+            {
+                return comparison::increasing(*lhs,*rhs);
+            }
 
             //__________________________________________________________________
             //
@@ -72,9 +76,25 @@ namespace yack
             YACK_DISABLE_ASSIGN(species);
         };
 
-        typedef core_repo<const species> sp_repo;     //!< alias
-        typedef sp_repo::node_type       sp_node;     //!< alias
-        typedef auto_ptr<const sp_repo>  sp_repo_ptr; //!< alias
+        typedef core_repo<const species> sp_repo_;     //!< alias
+        typedef sp_repo_::node_type      sp_node;     //!< alias
+
+        class sp_repo : public object, public sp_repo_
+        {
+        public:
+            typedef auto_ptr<const sp_repo> ptr;
+            explicit sp_repo() throw() : object(), sp_repo_() {}
+            virtual ~sp_repo() throw() {}
+
+            void sort() throw()
+            {
+                sort_with( species::compare );
+            }
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(sp_repo);
+        };
+
 
     }
 }

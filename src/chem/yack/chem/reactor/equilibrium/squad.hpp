@@ -49,6 +49,9 @@ namespace yack {
             squad *next; //!< for list
             squad *prev; //!< for list
 
+            const sp_repo::ptr autonomous; //!< autonomous species
+            const sp_repo::ptr mutualized; //!< mutualized species
+
         private:
             YACK_DISABLE_ASSIGN(squad);
         };

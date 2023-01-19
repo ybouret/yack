@@ -67,7 +67,10 @@ namespace yack {
                 YACK_XMLSUB(xml,info);
                 for(const squad *sq = head;sq;sq=sq->next)
                 {
-                    *xml << *sq << std::endl;
+                    *xml << *sq;
+                    if(sq->mutualized->size)
+                        std::cerr << " sharing " << sq->mutualized;
+                    std::cerr << std::endl;
                 }
             }
 

@@ -65,14 +65,35 @@ namespace yack
             return *this;
         }
         
-        //! sort
+        //! sort with function action on node content
         template <typename FUNC> inline
         void sort_with( FUNC &func )
         {
             kernel::replica_sort_callback<node_type,FUNC> cb = { func };
             merge_list_of<node_type>::sort(*this,cb);
         }
-        
+
+
+        template <typename U> inline
+        node_type *contains(const U &u)  throw()
+        {
+            for(node_type *node=this->head;node;node=node->next)
+            {
+                if( & (***node) == &u ) return node;
+            }
+            return NULL;
+        }
+
+        template <typename U> inline
+        bool contains(const U &u) const throw()
+        {
+            for(const node_type *node=this->head;node;node=node->next)
+            {
+                if( & (***node) == &u ) return true;
+            }
+            return false;
+        }
+
     private:
         YACK_DISABLE_ASSIGN(dinky_manifest);
     };
