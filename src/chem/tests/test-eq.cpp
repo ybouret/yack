@@ -48,7 +48,6 @@ YACK_UTEST(eq)
         eq.grad_action(psi,K,S,xmul);                                std::cerr << "psi   = " << psi   << std::endl;
         const double sigma = xadd.dot(psi,nu);                       std::cerr << "sigma = " << sigma << std::endl;
         const double G0    = eq.mass_action(K,C,xmul);
-        const double g0    = G0 / (-sigma);                          std::cerr << "g0    = " << g0    << std::endl;
         const double Xi    = res.value;                              std::cerr << "Xi    = " << Xi    << std::endl;
 
 
@@ -63,33 +62,13 @@ YACK_UTEST(eq)
             {
                 const double u = double(i)/NP;
                 const double x = Xi * u;
-                const double l = (Xi-x);
-                const double g = eq.mass_action(K,C,S,u,Ctry,xmul)/(-sigma);
-                const double t = g0 + slope * x / (-sigma);
+                const double G = eq.mass_action(K,C,S,u,Ctry,xmul);
+                const double L = (x-Xi) * sigma;
 
-                const double dl = fabs(l-g);
-                const double dt = fabs(t-g);
-                const double winner = dl<dt ? l : t;
+                //const double dg = eq.diff_action(phi, K, C, S, u, Ctry, xmul, xadd) / (-sigma);
 
-                const double dg = eq.diff_action(phi, K, C, S, u, Ctry, xmul, xadd) / (-sigma);
-
-                fp("%.15g %.15g %.15g %.15g\n", x, g, winner, dg);
+                fp("%.15g %.15g %.15g %.15g\n", x, G, G0, L);
             }
-        }
-
-        {
-            const string  fn = "dgamm.dat";
-            ios::ocstream fp(fn);
-
-            const size_t NP = 100;
-            for(size_t i=0;i<=NP;++i)
-            {
-                const double u  = double(i)/NP;
-                const double dg = eq.diff_action(phi, K, C, S, u, Ctry, xmul, xadd) / (-sigma);
-                fp("%.15g %.15g\n", u, dg+1);
-
-            }
-
         }
 
 
