@@ -48,8 +48,9 @@ YACK_UTEST(eq)
         const greatest g_phi = eq.grad_action(phi,K,C,xmul);           std::cerr << "phi0  = " << phi   << ", |max|=" << g_phi << std::endl;
         if(g_phi.index) g_phi.divide(phi);                             std::cerr << "phi1  = " << phi   << std::endl;
         const double   slope = g_phi.value*xadd.dot(phi,nu);           std::cerr << "slope = " << slope << std::endl;
-        const greatest g_psi = eq.grad_action(psi,K,S,xmul);           std::cerr << "psi   = " << psi   << ", |max|=" << g_psi << std::endl;
-        const double   sigma = xadd.dot(psi,nu);                       std::cerr << "sigma = " << sigma << std::endl;
+        const greatest g_psi = eq.grad_action(psi,K,S,xmul);           std::cerr << "psi0  = " << psi   << ", |max|=" << g_psi << std::endl;
+        if(g_psi.index) g_psi.divide(psi);                             std::cerr << "psi1  = " << psi   << std::endl;
+        const double   sigma = g_psi.value * xadd.dot(psi,nu);         std::cerr << "sigma = " << sigma << std::endl;
         const double   G0    = eq.mass_action(K,C,xmul);
         const double   Xi    = res.value;                              std::cerr << "Xi    = " << Xi    << std::endl;
         const double   g0    = G0/(-sigma);

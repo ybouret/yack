@@ -15,10 +15,18 @@ namespace yack
 {
     namespace chemical
     {
-
+        //______________________________________________________________________
+        //
+        //
+        //! building a pair of value/index for greatest value detection
+        //
+        //______________________________________________________________________
         YACK_PAIR_DECL(STANDARD,greatest,const double,value,const size_t,index);
 
+        //! setup empty
         inline greatest() throw() : value(0), index(0) {}
+
+        //! update
         inline greatest & operator<<(const greatest &other) throw() {
             if(other.value>value) {
                 coerce(value) = other.value;
@@ -27,16 +35,23 @@ namespace yack
             return *this;
         }
 
+
+        //! divide by the greatest value, taking care of index sign
         template <typename ARR> inline
         void divide(ARR &arr) const throw() {
             assert(fabs(value)>0);
             assert(index>0);
             const size_t n=arr.size();
             for(size_t i=n;i>index;--i)   arr[i] /= value;
-            arr[index] = 1;
+            arr[index] = one(arr[index]);
             for(size_t i=index-1;i>0;--i) arr[i] /= value;
         }
 
+    private:
+        template <typename T> static inline
+        T one(const T x) {
+            return (x>0) ? 1 : -1;
+        }
         YACK_PAIR_END(greatest);
        
         //______________________________________________________________________
