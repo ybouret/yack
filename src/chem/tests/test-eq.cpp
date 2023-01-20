@@ -49,7 +49,7 @@ YACK_UTEST(eq)
         const double sigma = xadd.dot(psi,nu);                       std::cerr << "sigma = " << sigma << std::endl;
         const double G0    = eq.mass_action(K,C,xmul);
         const double Xi    = res.value;                              std::cerr << "Xi    = " << Xi    << std::endl;
-
+        const double g0    = G0/(-sigma);
 
 
 
@@ -62,9 +62,9 @@ YACK_UTEST(eq)
             {
                 const double u = double(i)/NP;
                 const double x = Xi * u;
-                const double G = eq.mass_action(K,C,S,u,Ctry,xmul);
-                const double L = (x-Xi) * sigma;
-                const double T = G0 + slope * x;
+                const double G = eq.mass_action(K,C,S,u,Ctry,xmul)/(-sigma);
+                const double L = (Xi-x);
+                const double T = g0 + slope * x / (-sigma);
                 //const double dg = eq.diff_action(phi, K, C, S, u, Ctry, xmul, xadd) / (-sigma);
 
                 fp("%.15g %.15g %.15g %.15g\n", x, G, L, T);
