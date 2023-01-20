@@ -110,8 +110,8 @@ namespace yack
                 const double j  = ***a;
                 xmul.ld(a->nu);
                 xmul.upower(C[j],a->nm);
-                for(const actor *b=a->prev;b;b=b->prev) xmul.ld(C[***b]);
-                for(const actor *b=a->next;b;b=b->next) xmul.ld(C[***b]);
+                for(const actor *b=a->prev;b;b=b->prev) xmul.upower(C[***b],b->nu);
+                for(const actor *b=a->next;b;b=b->next) xmul.upower(C[***b],b->nu);
                 psi[j] = xmul.query();
             }
         }

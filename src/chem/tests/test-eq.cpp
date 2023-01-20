@@ -64,10 +64,10 @@ YACK_UTEST(eq)
                 const double x = Xi * u;
                 const double G = eq.mass_action(K,C,S,u,Ctry,xmul);
                 const double L = (x-Xi) * sigma;
-
+                const double T = G0 + slope * x;
                 //const double dg = eq.diff_action(phi, K, C, S, u, Ctry, xmul, xadd) / (-sigma);
 
-                fp("%.15g %.15g %.15g %.15g\n", x, G, G0, L);
+                fp("%.15g %.15g %.15g %.15g\n", x, G, L, T);
             }
         }
 
