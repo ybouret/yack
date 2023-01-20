@@ -178,67 +178,6 @@ Since $\bm{\nu}$ has its coefficients in $\mathbb{N}$ of $\mathbb{Q}$, we simpli
 $\bm{\tilde Q}$ into a row of proportional integers to form the simplified matrix $\bm{Q}$.
 
 
-\section{Balancing}
-
-Let $b(C)$ be a function which is minimal when $C$ is positive, and increasingly positive otherwise.
-For a concentration:
-\begin{equation}
-C_j = C_j^0 + \vec{\bm{\nu}^t_j} \cdot \vec{\xi} \Rightarrow \partial_{\xi_k} b(C_j) = \nu_{kj} b'(C_j)
-\end{equation}
-
-We define the balance vector:
-\begin{equation}
-\vec{B}(\vec{C}) = 
-\begin{bmatrix}
-	b(C_1) \\
-	\vdots\\
-	b(C_M)\\
-\end{bmatrix}
-\end{equation}
-and its pseudo derivative:
-\begin{equation}
-\vec{B'}(\vec{C}) = 
-\begin{bmatrix}
-	b'(C_1) \\
-	\vdots\\
-	b'(C_M)\\
-\end{bmatrix},
-\;\;\vec{\beta} = - \vec{B'}(\vec{C})
-\end{equation} 
-
-so that:
-\begin{equation}
-	\partial_{\xi_k} \vec{B} = \bm{\Delta}[\bm{\nu}_k] \vec{B'}
-\end{equation}
-
-We define the total balance as:
-\begin{equation}
-	\mathsf{B}(\vec{C}) = \sum_j b(C_j)
-\end{equation}
-
-The descent direction is:
-\begin{equation}
-	-\vec{\nabla} \mathsf{B} = \bm{\nu} \vec{\beta}
-\end{equation}
-
-so that
-\begin{equation}
-	\vec{\xi}  =  \Delta[\vec{\alpha}] \bm{\nu} \vec{\beta},\;\;\vec{\alpha} \in \mathbb{R}_+^N
-\end{equation}
-which ensures
-\begin{equation}
-	\vec{\xi} \cdot \vec{\nabla} \mathsf{B} = - \langle \bm{\nu} \vec{\beta} \vert \Delta[\vec{\alpha}]  \vert \bm{\nu} \vec{\beta} \rangle \leq 0 
-\end{equation}
-
-\begin{equation}
-	\delta\vec{C} = \bm{\nu}^t \Delta[\vec{\alpha}] \bm{\nu} \vec{\beta}
-\end{equation}
-
-\begin{equation}
-	\delta\vec{C} = \bm{\nu}^t \Delta[\bm{\nu} \vec{\beta}] \vec{\alpha} = \bm{\Lambda}^t \vec{\alpha}, \;\;  \bm{\Lambda} \in \mathcal{M}_{N,M}
-\end{equation}
-which means that \emph{ $\delta\vec{C}$ is a positive linear combination of the $N$ rows of $\bm{\Lambda}$}.
-
 \section{Solving ONE Equilibrium}
 
 \subsection{Equation}
@@ -406,45 +345,6 @@ is a concentration.
  
 \end{itemize}
  
-\section{Global Solving}
-
-\subsection{Building Lattice}
-
-\begin{itemize}
-\item
-Let us take one of the $N(N-1)/2$ possibilities such that $(i<j) \in \lbrack1:N\rbrack^2$.
-For all species $A_k$ which is common to both $(E_i)$ and $(E_j)$, we try to build a
-new equilibrium with coefficients $\kappa_{i,k}\not=0$ and $\kappa_{j,k}\not=0$ which removes the
-dependencies on $A_k$, with an index $l_{i,j,k}$:
-\begin{equation}
-	\kappa_{i,k} (E_i) + \kappa_{j,k} (E_j) : K'_{i,j,k} = K_i^{\kappa_{i,k}} \times K_j^{\kappa_{j,k}}
-\end{equation}
-
-\item We hence form the lattice of $L \geq N$ singles and couples in $\mathcal{E}'$
-\end{itemize}
-
-
-\subsection{Building Disjointed Groups}
-\begin{itemize}
-\item
-We form all the possible groups of disjointed equilibria: two equilibria are disjointed if they share no common species.
-We hence form all the groups with one up to any possible combination.
-
-\item Using this properties, we can process simultaneously all the equilibria within one group.
-
-\subsection{Dominant Step Algorithm}
-
-\begin{itemize}
-\item For all single equilibrium $(E_i)$, compute $\xi_i^\star$, $\vec{C}_i^\star$, $\vec{\Psi}_i^\star$, and $\sigma_i$. After
-this step, is it possible to compute any relative $\mathcal{H}$.
-\item For all equilibria in $\mathcal{E}'$, update if necessary $\vec{C}_i^\star$ then deduce $\vec{C}_i^\circ$ the
-line optimisation of $\mathcal{H}(\vec{C})$ to $\mathcal{H}(\vec{C}_i^\star)$.
-\item Find the group achieving the smallest  $\mathcal{H}(\vec{C}_{mix})$
-\end{itemize}
-
-
-
-\end{itemize} 
  
  
 \section{Local Solving}
