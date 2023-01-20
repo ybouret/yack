@@ -355,9 +355,16 @@ We want to solve
 \forall i, \;\; \Gamma_i\left(\vec{C} + \sum_j \xi_j \vec{\nu}^t_j\right) =  0
 \end{equation}
 
+
 \begin{equation}
-	\Gamma_i\left(\vec{C}+\xi_i \vec{\nu}_i^t\right) \simeq \left[ (\xi_i-\xi_i^\star)  \right] \langle \vec{\Psi_i}^\star \vert \vec{\nu}_i \rangle 
+\left\lbrace
+\begin{array}{ccl}
+	\xi_i \simeq \xi_i^\star & \Rightarrow & \Gamma_i\left(\vec{C}+\xi_i \vec{\nu}_i^t\right) \simeq \left(\xi_i-\xi_i^\star\right)   \langle \vec{\Psi_i}^\star \vert \vec{\nu}_i \rangle \\
+	\xi_i \simeq 0 & \Rightarrow & \Gamma_i\left(\vec{C}+\xi_i \vec{\nu}_i^t\right) \simeq \Gamma_i +   \xi_i   \langle \vec{\Psi_i} \vert \vec{\nu}_i \rangle \\
+\end{array}
+\right.
 \end{equation}
+
 
 \begin{equation}
 \left\lbrace

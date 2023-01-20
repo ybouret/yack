@@ -61,7 +61,7 @@ YACK_UTEST(eq)
             const string  fn = "gamma.dat";
             ios::ocstream fp(fn);
 
-            const size_t NP = 100;
+            const size_t NP = 1000;
             for(size_t i=0;i<=NP;++i)
             {
                 const double u = double(i)/NP;

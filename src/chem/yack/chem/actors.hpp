@@ -46,6 +46,7 @@ namespace yack
             arr[index] = one(arr[index]);
             for(size_t i=index-1;i>0;--i) arr[i] /= value;
         }
+        
 
     private:
         template <typename T> static inline
