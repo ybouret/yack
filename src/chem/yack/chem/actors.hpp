@@ -9,13 +9,35 @@
 #include "yack/chem/xlimit.hpp"
 #include "yack/data/list/cxx.hpp"
 #include "yack/data/bare.hpp"
+#include "yack/container/tuple/pair.hpp"
 
 namespace yack
 {
     namespace chemical
     {
 
+        YACK_PAIR_DECL(STANDARD,greatest,const double,value,const size_t,index);
 
+        inline greatest() throw() : value(0), index(0) {}
+        inline greatest & operator<<(const greatest &other) throw() {
+            if(other.value>value) {
+                coerce(value) = other.value;
+                coerce(index) = other.index;
+            }
+            return *this;
+        }
+
+        template <typename ARR> inline
+        void divide(ARR &arr) const throw() {
+            assert(fabs(value)>0);
+            assert(index>0);
+            const size_t n=arr.size();
+            for(size_t i=n;i>index;--i)   arr[i] /= value;
+            arr[index] = 1;
+            for(size_t i=index-1;i>0;--i) arr[i] /= value;
+        }
+
+        YACK_PAIR_END(greatest);
        
         //______________________________________________________________________
         //
@@ -84,11 +106,11 @@ namespace yack
             //! check that any of the primary acting concentration is negative
             bool are_primarily_blocked_by(const readable<double> &C) const throw();
 
-            //! compute derivatives of mass action w.r.t C, return |max|
-            double grad_action(writable<double>       &psi,
-                               const double            factor,
-                               const readable<double> &C,
-                               rmulops                &xmul) const;
+            //! compute derivatives of mass action w.r.t C, return greatest |max|
+            greatest grad_action(writable<double>       &psi,
+                                 const double            factor,
+                                 const readable<double> &C,
+                                 rmulops                &xmul) const;
             
             //! display list of compact associated concentrations
             void display_compact(std::ostream &, const readable<double> &C) const;

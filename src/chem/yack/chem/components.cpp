@@ -180,15 +180,15 @@ namespace yack
             return rma - pma;
         }
 
-        double components:: grad_action(writable<double>       &psi,
+        greatest components:: grad_action(writable<double>       &psi,
                                         const double            K,
                                         const readable<double> &C,
                                         rmulops                &xmul) const
         {
             psi.ld(0);
-            const double lhs = reac.grad_action(psi,    K, C, xmul);
-            const double rhs = prod.grad_action(psi, -1.0, C, xmul);
-            return max_of(lhs,rhs);
+            greatest res = reac.grad_action(psi,    K, C, xmul);
+            res <<         prod.grad_action(psi, -1.0, C, xmul);
+            return res;
         }
 
 #if 0

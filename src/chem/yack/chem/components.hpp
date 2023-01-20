@@ -143,10 +143,10 @@ namespace yack
                                rmulops                &xmul) const;
 
             //! compute gradient of mass action, return |psi|_max
-            double grad_action(writable<double>       &psi,
-                               const double            K,
-                               const readable<double> &C,
-                               rmulops                &xmul) const;
+            greatest grad_action(writable<double>       &psi,
+                                 const double            K,
+                                 const readable<double> &C,
+                                 rmulops                &xmul) const;
 
 #if 0
             //! compute gradient and derivative of mass action

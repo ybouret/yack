@@ -99,12 +99,12 @@ namespace yack
             return ops.query();
         }
         
-        double actors:: grad_action(writable<double>       &psi,
-                                    const double            factor,
-                                    const readable<double> &C,
-                                    rmulops                &xmul) const
+        greatest actors:: grad_action(writable<double>       &psi,
+                                      const double            factor,
+                                      const readable<double> &C,
+                                      rmulops                &xmul) const
         {
-            double res = 0;
+            greatest res;
             for(const actor *a=crew.head;a;a=a->next)
             {
                 xmul            = factor;
@@ -113,7 +113,8 @@ namespace yack
                 xmul.upower(C[j],a->nm);
                 for(const actor *b=a->prev;b;b=b->prev) xmul.upower(C[***b],b->nu);
                 for(const actor *b=a->next;b;b=b->next) xmul.upower(C[***b],b->nu);
-                res = max_of<double>(res, fabs( psi[j] = xmul.query() ) );
+                const greatest tmp( fabs( psi[j] = xmul.query() ), j);
+                res << tmp;
             }
             return res;
         }
