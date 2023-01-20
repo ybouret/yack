@@ -114,30 +114,24 @@ namespace yack {
                     {
                         case balanced: continue;
                         case bad_reac: {
-                            YACK_XMLSUB(xml,eq.name);
-                            YACK_XMLOG(xml, "==> " << status_text(st) << " <==" );
                             if(comply_reac(C,eq,xml))
                             {
-                                YACK_XMLOG(xml, "<keep>");
+                                YACK_XMLSUB(xml,eq.name);
+                                YACK_XMLOG(xml, "==> " << status_text(st) << " <==" );
+                                YACK_XMLOG(xml, " |_amending reac: "  << reac.amending); assert(reac.amending.size());
+                                YACK_XMLOG(xml, " |_limiting prod:  " << prod.limiting);
                                 eqdb.ensure(&eq);
-                            }
-                            else
-                            {
-                                YACK_XMLOG(xml, "<drop>");
                             }
                         } break;
 
                         case bad_prod: {
-                            YACK_XMLSUB(xml,eq.name);
-                            YACK_XMLOG(xml, "==> " << status_text(st) << " <==" );
                             if(comply_prod(C,eq,xml))
                             {
-                                YACK_XMLOG(xml, "<keep>");
+                                YACK_XMLSUB(xml,eq.name);
+                                YACK_XMLOG(xml, "==> " << status_text(st) << " <==" );
+                                YACK_XMLOG(xml, " |_amending prod: "  << prod.amending); assert(prod.amending.size());
+                                YACK_XMLOG(xml, " |_limiting reac:  " << reac.limiting);
                                 eqdb.ensure(&eq);
-                            }
-                            else
-                            {
-                                YACK_XMLOG(xml, "<drop>");
                             }
                         } break;
 
@@ -278,8 +272,6 @@ namespace yack {
                                      const equilibrium      &eq,
                                      const xmlog            &xml)
         {
-            YACK_XMLOG(xml, " |_amending prod: "  << prod.amending); assert(prod.amending.size());
-            YACK_XMLOG(xml, " |_limiting reac:  " << reac.limiting);
             return comply_any_(C,eq,xml,reac.limiting,prod.amending,false);
         }
 
@@ -288,8 +280,7 @@ namespace yack {
                                      const equilibrium      &eq,
                                      const xmlog            &xml)
         {
-            YACK_XMLOG(xml, " |_amending reac: "  << reac.amending); assert(reac.amending.size());
-            YACK_XMLOG(xml, " |_limiting prod:  " << prod.limiting);
+
             return comply_any_(C,eq,xml,prod.limiting,reac.amending,true);
         }
 
