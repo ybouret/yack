@@ -180,16 +180,18 @@ namespace yack
             return rma - pma;
         }
 
-        void components:: grad_action(writable<double>       &psi,
-                                      const double            K,
-                                      const readable<double> &C,
-                                      rmulops                &xmul) const
+        double components:: grad_action(writable<double>       &psi,
+                                        const double            K,
+                                        const readable<double> &C,
+                                        rmulops                &xmul) const
         {
             psi.ld(0);
-            reac.grad_action(psi,    K, C, xmul);
-            prod.grad_action(psi, -1.0, C, xmul);
+            const double lhs = reac.grad_action(psi,    K, C, xmul);
+            const double rhs = prod.grad_action(psi, -1.0, C, xmul);
+            return max_of(lhs,rhs);
         }
 
+#if 0
         double components:: diff_action(writable<double>       &psi,
                                         const double            K,
                                         const readable<double> &C,
@@ -207,6 +209,7 @@ namespace yack
             }
             return xadd.get();
         }
+#endif
 
         
         double components:: quotient(const double            K,
@@ -290,6 +293,7 @@ namespace yack
             }
         }
 
+#if 0
         double  components:: diff_action(writable<double>       &psi,
                                          const double            K,
                                          const readable<double> &Cini,
@@ -322,7 +326,7 @@ namespace yack
                 }
             }
         }
-
+#endif
         
 
         double components:: estimate_extent(const readable<double> &Cini,

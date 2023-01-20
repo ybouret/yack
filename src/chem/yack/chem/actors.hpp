@@ -84,11 +84,11 @@ namespace yack
             //! check that any of the primary acting concentration is negative
             bool are_primarily_blocked_by(const readable<double> &C) const throw();
 
-            //! compute derivatives of mass action w.r.t C
-            void grad_action(writable<double>       &psi,
-                             const double            factor,
-                             const readable<double> &C,
-                             rmulops                &xmul) const;
+            //! compute derivatives of mass action w.r.t C, return |max|
+            double grad_action(writable<double>       &psi,
+                               const double            factor,
+                               const readable<double> &C,
+                               rmulops                &xmul) const;
             
             //! display list of compact associated concentrations
             void display_compact(std::ostream &, const readable<double> &C) const;

@@ -142,12 +142,13 @@ namespace yack
                                const double            xi,
                                rmulops                &xmul) const;
 
-            //! compute gradient of mass action
-            void grad_action(writable<double>       &psi,
-                             const double            K,
-                             const readable<double> &C,
-                             rmulops                &xmul) const;
+            //! compute gradient of mass action, return |psi|_max
+            double grad_action(writable<double>       &psi,
+                               const double            K,
+                               const readable<double> &C,
+                               rmulops                &xmul) const;
 
+#if 0
             //! compute gradient and derivative of mass action
             double diff_action(writable<double>       &psi,
                                const double            K,
@@ -164,7 +165,7 @@ namespace yack
                                writable<double>       &Ctry,
                                rmulops                &xmul,
                                raddops                &xadd) const;
-
+#endif
 
 
             

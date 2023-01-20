@@ -160,8 +160,7 @@ namespace yack
                 assert(lhs.size()==rhs.size());
                 const size_t n = lhs.size();
                 resume(n);
-                for(size_t i=n;i>0;--i)
-                {
+                for(size_t i=n;i>0;--i) {
                     const_type l = lhs[i];
                     const_type r = rhs[i];
                     const_type p = l*r;
@@ -169,6 +168,9 @@ namespace yack
                 }
                 return get();
             }
+
+            
+
 
             //! get sum of squares
             template <typename LHS> inline
