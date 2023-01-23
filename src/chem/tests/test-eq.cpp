@@ -61,17 +61,18 @@ YACK_UTEST(eq)
             const string  fn = "gamma.dat";
             ios::ocstream fp(fn);
 
-            const size_t NP = 1000;
+            const size_t NP = 100;
             for(size_t i=0;i<=NP;++i)
             {
                 const double u = double(i)/NP;
                 const double x = Xi * u;
                 const double G = eq.mass_action(K,C,S,u,Ctry,xmul,-sigma);
-                const double L = (Xi-x);
-                const double T = g0 + slope * x / (-sigma);
+                const double Linear  = (Xi-x);                    // linear
+                const double Tangent = g0 + slope * x / (-sigma); // tangent
+                const double Chord   = g0 * (1.0-u);              // Chord
                 //const double dg = eq.diff_action(phi, K, C, S, u, Ctry, xmul, xadd) / (-sigma);
 
-                fp("%.15g %.15g %.15g %.15g\n", x, G, L, T);
+                fp("%.15g %.15g %.15g %.15g %.15g\n", x, G, Linear, Tangent, Chord);
             }
         }
 
