@@ -357,6 +357,32 @@ We want to solve
 
 
 \begin{equation}
+	\Gamma_i\left(\vec{C}+\sum_j \xi_j \vec{\nu}_j^t\right) \simeq \left(1-\dfrac{\xi_i}{\xi_i^\star}\right)\Gamma_i 
+ + \sum_{j\not=i} \langle \vec{\Psi_{\xi_i}} \vert \vec{\nu}_j^t  \rangle \xi_j
+\end{equation}
+
+\begin{equation}
+	\vec{\Psi_{\xi_i}} \simeq \left(1-\dfrac{\xi_i}{\xi_i^\star}\right) \vec{\Psi_i} + \dfrac{\xi_i}{\xi_i^\star} 
+	\vec{\Psi_i}^\star
+\end{equation}
+
+\begin{equation}
+	\Gamma_i\left(\vec{C}+\sum_j \xi_j \vec{\nu}_j^t\right) \simeq
+	\left(1-\dfrac{\xi_i}{\xi_i^\star}\right)\Gamma_i 
+	+\sum_{j\not=i} \langle \vec{\Psi_i} \vert \vec{\nu}_j^t  \rangle \xi_j
+	+\sum_{j\not=i} \langle \vec{\Psi_i}^\star - \vec{\Psi_i} \vert \vec{\nu}_j^t  \rangle \dfrac{\xi_i}{\xi_i^\star} \xi_j
+\end{equation}
+
+\begin{equation}
+	\xi_i^\star\Gamma_i\left(\vec{C}+\sum_j \xi_j \vec{\nu}_j^t\right) \simeq
+	\left(\xi_i^\star- \xi_i\right)\Gamma_i 
+	+\sum_{j\not=i} \langle \xi_i^\star \vec{\Psi_i} \vert \vec{\nu}_j^t  \rangle \xi_j
+	+\sum_{j\not=i} \langle \delta\vec{\Psi_i} \vert \vec{\nu}_j^t  \rangle \xi_i \xi_j
+\end{equation}
+
+\end{document}
+
+\begin{equation}
 \left\lbrace
 \begin{array}{ccl}
 	\xi_i \simeq \xi_i^\star & \Rightarrow & \Gamma_i\left(\vec{C}+\xi_i \vec{\nu}_i^t\right) \simeq \left(\xi_i-\xi_i^\star\right)   \langle \vec{\Psi_i}^\star \vert \vec{\nu}_i \rangle \\
