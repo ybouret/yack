@@ -84,13 +84,24 @@ namespace yack
             
             //__________________________________________________________________
             //
-            // methods
+            // methods to build
             //__________________________________________________________________
-            
+
             //! insert a new components
             void operator()(const species &sp,
                             const int      nu);
-            
+
+            //! parse string, use library for species
+            void operator()(library &, const string &);
+
+            //! parse string, use library for species
+            void operator()(library &, const char   *);
+
+            //__________________________________________________________________
+            //
+            // methods to access
+            //__________________________________________________________________
+
             //! get first component
             const cnode   *head() const throw();
             
@@ -102,6 +113,11 @@ namespace yack
 
             //! query is species is used
             const component *query(const species &s) const throw();
+
+            //__________________________________________________________________
+            //
+            // comptuing limits to solve 1D
+            //__________________________________________________________________
 
             //! limits from all the components
             const xlimits &genuine_limits(xlimits_io             &xio,
@@ -116,10 +132,21 @@ namespace yack
             //! make a string
             string to_string() const;
 
+            //__________________________________________________________________
+            //
+            // computing mass action
+            //__________________________________________________________________
+
             //! compute mass action for a given constant
             double mass_action(const double            K,
                                const readable<double> &C,
-                               rmulops                &) const;
+                               rmulops                &xmul) const;
+
+            //! compute mass action for a given constant and xi
+            double mass_action(const double            K,
+                               const readable<double> &C,
+                               const double            xi,
+                               rmulops                &xmul) const;
 
 
             //! compute mass action for a given fraction of Cini->Cend
@@ -128,7 +155,8 @@ namespace yack
                                const readable<double> &Cend,
                                const double            u,
                                writable<double>       &Ctry,
-                               rmulops                &) const;
+                               rmulops                &xmul) const;
+
 
             
             //! compute quotient reaction
@@ -136,39 +164,19 @@ namespace yack
                             const readable<double> &C,
                             rmulops                &) const;
 
-            //! compute mass action for a given constant and xi
-            double mass_action(const double            K,
-                               const readable<double> &C,
-                               const double            xi,
-                               rmulops                &xmul) const;
-
             //! compute gradient of mass action, return |psi|_max
             greatest grad_action(writable<double>       &psi,
                                  const double            K,
                                  const readable<double> &C,
                                  rmulops                &xmul) const;
 
-#if 0
-            //! compute gradient and derivative of mass action
-            double diff_action(writable<double>       &psi,
-                               const double            K,
-                               const readable<double> &C,
-                               rmulops                &xmul,
-                               raddops                &xadd) const;
 
-            //!  compute gradient and derivative of mass action for a given fraction of Cini->Cend
-            double diff_action(writable<double>       &psi,
-                               const double            K,
-                               const readable<double> &Cini,
-                               const readable<double> &Cend,
-                               const double            u,
-                               writable<double>       &Ctry,
-                               rmulops                &xmul,
-                               raddops                &xadd) const;
-#endif
+            //__________________________________________________________________
+            //
+            // methods to handle 
+            //__________________________________________________________________
 
 
-            
             //! move C with computed extent
             void move(writable<double> &C, const double xi) const throw();
 
@@ -200,11 +208,6 @@ namespace yack
                 }
             }
 
-            //! parse string, use library for species
-            void operator()(library &, const string &);
-
-            //! parse string, use library for species
-            void operator()(library &, const char   *);
 
             //! check Delta_r Z = 0
             bool neutral() const throw();
