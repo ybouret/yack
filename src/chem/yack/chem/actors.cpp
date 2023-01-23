@@ -107,7 +107,7 @@ namespace yack
             greatest res;
             for(const actor *a=crew.head;a;a=a->next)
             {
-                xmul            = factor;
+                xmul            = factor; assert(1==xmul.size());
                 const double j  = ***a;
                 xmul.ld(a->nu);
                 xmul.upower(C[j],a->nm);

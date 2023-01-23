@@ -33,7 +33,7 @@ namespace yack
         reac(),
         prod(),
         d_nu(0),
-        cdb()  
+        cdb()
         {
             
         }
@@ -181,35 +181,15 @@ namespace yack
         }
 
         greatest components:: grad_action(writable<double>       &psi,
-                                        const double            K,
-                                        const readable<double> &C,
-                                        rmulops                &xmul) const
+                                          const double            K,
+                                          const readable<double> &C,
+                                          rmulops                &xmul) const
         {
             psi.ld(0);
             greatest res = reac.grad_action(psi,    K, C, xmul);
             res <<         prod.grad_action(psi, -1.0, C, xmul);
             return res;
         }
-
-#if 0
-        double components:: diff_action(writable<double>       &psi,
-                                        const double            K,
-                                        const readable<double> &C,
-                                        rmulops                &xmul,
-                                        raddops                &xadd) const
-        {
-            grad_action(psi,K,C,xmul);
-            xadd.resume(size());
-            for(const cnode *node=head();node;node=node->next)
-            {
-                const component &c  = ***node;
-                const int        nu = c.nu;
-                const size_t     j  = **c;
-                xadd += (nu*psi[j]);
-            }
-            return xadd.get();
-        }
-#endif
 
         
         double components:: quotient(const double            K,
