@@ -66,7 +66,7 @@ YACK_UTEST(eq)
             {
                 const double u = double(i)/NP;
                 const double x = Xi * u;
-                const double G = eq.mass_action(K,C,S,u,Ctry,xmul)/(-sigma);
+                const double G = eq.mass_action(K,C,S,u,Ctry,xmul,-sigma);
                 const double L = (Xi-x);
                 const double T = g0 + slope * x / (-sigma);
                 //const double dg = eq.diff_action(phi, K, C, S, u, Ctry, xmul, xadd) / (-sigma);

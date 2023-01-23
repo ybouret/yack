@@ -166,19 +166,38 @@ namespace yack
         
         double components:: mass_action(const double            K,
                                         const readable<double> &C,
-                                        rmulops                &ops) const
+                                        rmulops                &xmul) const
         {
             // reactant side
-            ops = K;
-            const double rma = reac.mass_action(C,ops);
+            xmul = K;
+            const double rma = reac.mass_action(C,xmul);
 
             // product side
-            ops.ld1();
-            const double pma = prod.mass_action(C,ops);
+            xmul.ld1();
+            const double pma = prod.mass_action(C,xmul);
 
             // difference
             return rma - pma;
         }
+
+        //! compute mass action for a given constant, with scaling
+        double components:: mass_action(const double            K,
+                                        const readable<double> &C,
+                                        rmulops                &xmul,
+                                        const double            scal) const
+        {
+            // reactant side
+            xmul = K/scal;
+            const double rma = reac.mass_action(C,xmul);
+
+            // product side
+            xmul.ld(1.0/scal);
+            const double pma = prod.mass_action(C,xmul);
+
+            // difference
+            return rma - pma;
+        }
+
 
         greatest components:: grad_action(writable<double>       &psi,
                                           const double            K,
@@ -227,21 +246,22 @@ namespace yack
         double components:: mass_action(const double            K,
                                         const readable<double> &C,
                                         const double            xi,
-                                        rmulops                &ops) const
+                                        rmulops                &xmul) const
         {
             // reactant side
-            ops = K;
-            const double rma = reac.mass_action(C,-xi,ops);
+            xmul = K;
+            const double rma = reac.mass_action(C,-xi,xmul);
 
             // product side
-            ops.ld1();
-            const double pma = prod.mass_action(C,xi,ops);
+            xmul.ld1();
+            const double pma = prod.mass_action(C,xi,xmul);
 
             // difference
             return rma - pma;
         }
 
 
+        
         
         
         double components:: mass_action(const double            K,
@@ -272,6 +292,39 @@ namespace yack
                 }
             }
         }
+
+        double components:: mass_action(const double            K,
+                                        const readable<double> &Cini,
+                                        const readable<double> &Cend,
+                                        const double            u,
+                                        writable<double>       &Ctry,
+                                        rmulops                &xmul,
+                                        const double            scal) const
+        {
+            if(u<=0)
+                return mass_action(K,Cini,xmul,scal);
+            else
+            {
+                if(u>=1.0)
+                {
+                    return mass_action(K,Cend,xmul,scal);
+                }
+                else
+                {
+                    const double v = 1.0 - u;
+                    math::iota::load(Ctry,Cini);
+                    for(const cnode *node=head();node;node=node->next)
+                    {
+                        const size_t j = *****node;
+                        Ctry[j] = v * Cini[j] + u * Cend[j];
+                    }
+                    return mass_action(K,Ctry,xmul,scal);
+                }
+            }
+        }
+
+
+
 
 #if 0
         double  components:: diff_action(writable<double>       &psi,

@@ -142,6 +142,15 @@ namespace yack
                                const readable<double> &C,
                                rmulops                &xmul) const;
 
+
+            //! compute mass action for a given constant, with scaling
+            double mass_action(const double            K,
+                               const readable<double> &C,
+                               rmulops                &xmul,
+                               const double            scal) const;
+
+
+
             //! compute mass action for a given constant and xi
             double mass_action(const double            K,
                                const readable<double> &C,
@@ -156,6 +165,16 @@ namespace yack
                                const double            u,
                                writable<double>       &Ctry,
                                rmulops                &xmul) const;
+
+
+            //! compute mass action for a given fraction of Cini->Cend, with scaling
+            double mass_action(const double            K,
+                               const readable<double> &Cini,
+                               const readable<double> &Cend,
+                               const double            u,
+                               writable<double>       &Ctry,
+                               rmulops                &xmul,
+                               const double            scal) const;
 
 
             
@@ -236,8 +255,7 @@ namespace yack
             //! check is use species
             bool uses(const species &) const throw();
 
-            
-            
+
             //! display list of associated concentrations
             std::ostream & display_compact(std::ostream &os, const readable<double> &C) const;
 
