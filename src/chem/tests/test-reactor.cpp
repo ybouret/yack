@@ -90,10 +90,15 @@ YACK_UTEST(reactor)
     }
 
     {
+        const xmlog xml("[steady]",std::cerr,reactor::verbose);
         lib.cfill(C,ran);
-        steady zs(cs,K,0.0);
-        lib(std::cerr << "C0=","",C);
+        cs.computeK(K,0.0);
+        steady zs(cs,K);
+        lib(std::cerr    << "C0=","",C);
         cs.all(std::cerr << "K=","K_",K);
+
+        zs.run(C,xml);
+
 
     }
 

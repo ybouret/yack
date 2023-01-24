@@ -22,6 +22,7 @@ namespace yack
         alive( new alist()              ),
         fixed( flags                    ),
         group( new glist()              ),
+        single( new eq_repo()           ),
         primary( new scene()            ),
         replica( new scene()            ),
         sDict( new udict("species")     ),
@@ -33,8 +34,8 @@ namespace yack
         cross( new ledger()             ),
         gvidx(0)
         {
-            coerce( *group ) << first;
-            
+            coerce( *group  ) << first;
+            coerce( *single ) << first;
         }
 
         
@@ -51,7 +52,8 @@ namespace yack
         {
             if( latched() ) throw imported::exception(clid,"grow(already latched)");
             assert(!owns(eq));
-            coerce( *group ) << eq;
+            coerce( *group  ) << eq;
+            coerce( *single ) << eq;
         }
 
         bool cluster:: linked_with(const equilibrium  &eq,
