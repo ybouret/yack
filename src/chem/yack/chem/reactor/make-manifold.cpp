@@ -291,6 +291,7 @@ namespace yack
                     const size_t       dg = qselect::count_valid(weight); assert(dg>=2); // compute the degree
                     layout.degree(dg) << eq;                                             // register in proper layout
                     coerce(*group)    << eq;                                             // append to local group
+                    coerce(*hybrid)   << eq;                                             // append to hybrid
                     coerce(*static_cast<const sp_repo *>(eq.info)).swap_with(zap);       // store info
                 }
 

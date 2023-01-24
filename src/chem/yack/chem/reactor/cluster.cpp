@@ -23,6 +23,7 @@ namespace yack
         fixed( flags                    ),
         group( new glist()              ),
         single( new eq_repo()           ),
+        hybrid( new eq_repo()           ),
         primary( new scene()            ),
         replica( new scene()            ),
         sDict( new udict("species")     ),
