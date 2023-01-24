@@ -9,11 +9,6 @@ using namespace chemical;
 using namespace math;
 
 
-static inline
-double Poly(const double u)
-{
-    return u*u*(3.0 - 2.0 * u);
-}
 
 YACK_UTEST(eq)
 {
@@ -60,7 +55,7 @@ YACK_UTEST(eq)
         const double   sigma = g_psi.value * xadd.dot(psi,nu);         std::cerr << "sigma = " << sigma << std::endl;
         const double   G0    = eq.mass_action(K,C,xmul);               std::cerr << "G0    = " << G0    << std::endl;
         const double   Xi    = res.value;                              std::cerr << "Xi    = " << Xi    << std::endl;
-        const double   g0    = G0/(-sigma);
+        const double   g0    = G0/(-sigma);                            std::cerr << "g0    = " << g0    << std::endl;
 
 
 
@@ -77,11 +72,9 @@ YACK_UTEST(eq)
                 const double Linear  = (Xi-x);                    // linear
                 const double Tangent = g0 + slope * x / (-sigma); // tangent
                 const double Chord   = g0 * (1.0-u);              // Chord
-                const double Soft    = g0 + (slope*Poly(1-u)+sigma*Poly(u)) * x /(-sigma);
-                //const double dg = eq.diff_action(phi, K, C, S, u, Ctry, xmul, xadd) / (-sigma);
 
 
-                fp("%.15g %.15g %.15g %.15g %.15g %.15g\n", x, G, Linear, Tangent, Chord, Soft);
+                fp("%.15g %.15g %.15g %.15g %.15g\n", x, G, Linear, Tangent, Chord);
             }
         }
 

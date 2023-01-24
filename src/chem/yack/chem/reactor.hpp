@@ -41,6 +41,11 @@ namespace yack {
             //! cleanup
             virtual ~reactor() throw();
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
             //! maximum size of a group of a conservation laws within a cluster
             size_t max_claws_per_cluster() const throw();
 
@@ -53,8 +58,11 @@ namespace yack {
             //! maximum degree of crossed equilibria
             size_t max_degree() const throw();
 
-            //! maximum actors
+            //! maximum actors in one equilibrium side
             size_t max_actors() const throw();
+
+            void computeK(writable<double> &K, const double t) const;
+
 
             //__________________________________________________________________
             //
@@ -63,7 +71,6 @@ namespace yack {
             const library          &lib;   //!< library
             const equilibria       &eqs;   //!< singles
             const equilibria        all;   //!< lattice
-            const readable<double> &K;     //!< user's memory for K
             const alist::ptr        act;    //!< active species, compress indices
             const auto_ptr<sp_repo> obs;    //!< spectator species
             const size_t            M;      //!< total species
@@ -81,7 +88,7 @@ namespace yack {
             const lockable::scope libLock;
             const lockable::scope eqsLock;
             
-            void build_related(const xmlog &); //!< build related clusters in linked
+            void build_related(const xmlog &, const readable<double> &); //!< build related clusters in linked
             void compile_claws(const xmlog &); //!< compile claws
             void setup_lattice(const xmlog &);
             void create_squads(const xmlog &);

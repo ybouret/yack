@@ -1,5 +1,6 @@
 #include "yack/chem/reactor/conservation/custodian.hpp"
 #include "yack/chem/reactor/balance/equalizer.hpp"
+#include "yack/chem/reactor/solver/steady.hpp"
 #include "yack/math/iota.hpp"
 #include "yack/chem/eqs/lua.hpp"
 #include "yack/system/env.hpp"
@@ -34,7 +35,7 @@ YACK_UTEST(reactor)
     vector<double> K;
     reactor cs(lib,eqs,K);
     
-
+    K.make(cs.L,0);
     
 
 
@@ -85,6 +86,14 @@ YACK_UTEST(reactor)
         lib(std::cerr << "Cxi=","",C);
         eqz.comply(C,xml);
         lib(std::cerr << "Cbal=","",C);
+
+    }
+
+    {
+        lib.cfill(C,ran);
+        steady zs(cs,K,0.0);
+        lib(std::cerr << "C0=","",C);
+        cs.all(std::cerr << "K=","K_",K);
 
     }
 

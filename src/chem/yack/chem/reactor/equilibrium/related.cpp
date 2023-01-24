@@ -19,7 +19,7 @@ namespace yack
             return false;
         }
         
-        void reactor:: build_related(const xmlog &xml)
+        void reactor:: build_related(const xmlog &xml, const readable<double> &K)
         {
             YACK_XMLSUB(xml, "cluster::related" );
             

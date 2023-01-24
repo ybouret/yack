@@ -17,11 +17,10 @@ namespace yack
 
         reactor:: reactor(library                &lib_,
                           equilibria             &eqs_,
-                          const readable<double> &K_) :
+                          const readable<double> &K) :
         lib(lib_),
         eqs(eqs_),
         all(eqs),
-        K(K_),
 
         act( new alist(lib.head()) ),
         obs( new sp_repo() ),
@@ -101,7 +100,7 @@ namespace yack
                 // build all clusters
                 //
                 //--------------------------------------------------------------
-                build_related(xml);
+                build_related(xml,K);
 
                 
                 //--------------------------------------------------------------
@@ -182,7 +181,15 @@ namespace yack
             return res;
         }
 
-
+        void reactor:: computeK(writable<double> &K, const double t) const
+        {
+            assert(K.size()>=L);
+            for(const enode *en=all.head();en;en=en->next)
+            {
+                const equilibrium &eq = ***en;
+                K[*eq] = eq.K(t);
+            }
+        }
 
        
     }
