@@ -136,8 +136,8 @@ namespace yack {
             const alist::ptr      alive;   //!< alive.size, from the begining
             const booleans::ptr   fixed;   //!< true if conserved
             const auto_ptr<glist> group;   //!< group.size, initial+manifold
-            const eq_repo::ptr    single;  //!< initial
-            const eq_repo::ptr    hybrid;  //!< with manifold
+            const eq_repo::ptr    single;  //!< initial  equilibria
+            const eq_repo::ptr    hybrid;  //!< manifold only
             const scene::ptr      primary; //!< primary scene
             const scene::ptr      replica; //!< replica scene
             const udict::ptr      sDict;   //!< LUTs for species, from alive

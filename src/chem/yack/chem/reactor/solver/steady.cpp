@@ -37,9 +37,8 @@ namespace yack {
         {
             YACK_XMLSUB(xml, "steady::cluster" );
 
-            //cc.primary->display(xml,"primary");
             std::cerr << cc.single << std::endl;
-            std::cerr << cc.hybrid << std::endl;
+            //std::cerr << cc.hybrid << std::endl;
 
             for(const eq_node *en=cc.single->head;en;en=en->next)
             {
