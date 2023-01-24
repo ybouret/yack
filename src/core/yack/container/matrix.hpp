@@ -8,6 +8,7 @@
 #include "yack/type/destruct.hpp"
 #include "yack/type/out-of-reach.hpp"
 #include "yack/sequence/thin-array.hpp"
+#include "yack/ptr/arc.hpp"
 #include <iostream>
 
 namespace yack
@@ -34,8 +35,10 @@ namespace yack
         //______________________________________________________________________
         YACK_DECL_ARGS(T,type);                    //!< aliases
         typedef typename matrix_data<T>::row row;  //!< alias
+        typedef arc_ptr< matrix<T> >         ptr;  //!< alias
         using matrix_data<T>::line;
         using matrix_data<T>::head;
+
 
         //______________________________________________________________________
         //

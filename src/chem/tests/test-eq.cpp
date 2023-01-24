@@ -80,6 +80,8 @@ YACK_UTEST(eq)
         std::cerr << std::endl;
     }
 
+    YACK_SIZEOF(matrix<double>);
+    YACK_SIZEOF(matrix<int>);
 
 
 }
