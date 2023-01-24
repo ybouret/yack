@@ -21,24 +21,31 @@ namespace yack {
         class steady
         {
         public:
+            typedef solo_repo<const equilibrium> er_repo;
+
             explicit steady(const reactor    &cs_,
                             writable<double> &K_);
 
             virtual ~steady() throw();
 
-            const reactor     &cs;    //!< persistent reactor
-            writable<double>  &K;     //!< persistent array of constants
-            cxx_array<double>  xi;    //!< [L] extents
-            cxx_array<double>  sigma; //!< [L] slope at xi
-            cxx_array<double>  Corg;  //!< [M]
-            cxx_array<double>  Cend;  //!< [M]
-            cxx_array<double>  Ctry;  //!< [M]
-            matrix<double>     Cz;    //!< [LxM]
+            const reactor     &cs;      //!< persistent reactor
+            writable<double>  &K;       //!< persistent array of constants
+            cxx_array<double>  xi;      //!< [L] extents
+            cxx_array<double>  sigma;   //!< [N] slope at xi
+            cxx_array<bool>    blocked; //!< [L] blocked
+            er_repo            running;
+            cxx_array<double>  Corg;    //!< [M]
+            cxx_array<double>  Cend;    //!< [M]
+            cxx_array<double>  Ctry;    //!< [M]
+            matrix<double>     Ceq;     //!< [LxM]
+            matrix<double>     Phi;     //!< [NxM] gradient at Corg
+            matrix<double>     Psi;     //!< [NxM] gradient at Cend
             rmulops            xmul;
             raddops            xadd;
 
             void run(writable<double> &C, const xmlog &xml);
 
+            double Hamiltonian(const readable<double> &C);
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(steady);
