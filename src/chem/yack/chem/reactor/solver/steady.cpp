@@ -168,6 +168,9 @@ namespace yack {
 
             YACK_XMLOG(xml,"--> Looking for most unsteady");
 
+            size_t cycle = 0;
+        CYCLE:
+            ++cycle;
             //------------------------------------------------------------------
             //
             // let's inspect the system and initialize
@@ -338,7 +341,7 @@ namespace yack {
 
             if(solving.size<=0)
             {
-                std::cerr << "No Global Min" << std::endl;
+                std::cerr << "No Global Min @cycle=" << cycle << std::endl;
                 exit(0);
             }
 
@@ -371,7 +374,9 @@ namespace yack {
                 }
             }
 
-
+            iota::save(C,Cend);
+            std::cerr << "@cycle " << cycle << std::endl;
+            goto CYCLE;
 
 
         }
