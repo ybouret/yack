@@ -188,15 +188,12 @@ namespace yack {
 
                     case components::are_running: {
                         blocked[ei] = false;
+                        running  << eq;
                         const double atmp = fabs(xi[ei]=oc.value);
-                        if(atmp>0)
+                        if(atmp>amax)
                         {
-                            running  << eq;
-                            if(atmp>amax)
-                            {
-                                amax = atmp;
-                                emax = &eq;
-                            }
+                            amax = atmp;
+                            emax = &eq;
                         }
                     } break;
                 }
@@ -315,7 +312,6 @@ namespace yack {
             //------------------------------------------------------------------
             if(NULL==emax)
             {
-                assert(0 == running.size);
                 YACK_XMLOG(xml, "--> done");
                 return;
             }
