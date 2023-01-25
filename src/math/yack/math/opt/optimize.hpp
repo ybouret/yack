@@ -81,7 +81,7 @@ namespace yack
             //! run
             /**
              - Tighten a local minimum up to convergence after
-             (no) preprocessing.
+             [no |pre]processing.
              - The optimal value is always evaluated last.
              \param F a real function
              \param x x.a <= x.b <= x.c

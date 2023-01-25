@@ -36,7 +36,7 @@ namespace yack {
             //! full setup
             explicit reactor(library                &lib_,
                              equilibria             &eqs_,
-                             const readable<double> &K_);
+                             const readable<double> &K);
 
             //! cleanup
             virtual ~reactor() throw();
@@ -61,6 +61,7 @@ namespace yack {
             //! maximum actors in one equilibrium side
             size_t max_actors() const throw();
 
+            //! compute all constants
             void computeK(writable<double> &K, const double t) const;
 
 

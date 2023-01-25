@@ -2,6 +2,9 @@
 #include "yack/chem/reactor/solver/steady.hpp"
 #include "yack/chem/outcome.hpp"
 #include "yack/math/iota.hpp"
+#include "yack/math/opt/optimize.hpp"
+#include "yack/type/temporary.hpp"
+#include <iomanip>
 
 namespace yack {
 
@@ -10,31 +13,52 @@ namespace yack {
     namespace chemical {
 
 
+        std::ostream & operator<<(std::ostream &os, const er_repo &self)
+        {
+            os << "{ ";
+            const eq_node *node = self.head;
+            if(node)
+            {
+                os << (***node).name;
+                for(node=node->next;node;node=node->next)
+                {
+                    os << ", " << (***node).name;
+                }
+            }
+            os << " }";
+            return os;
+        }
+
+
         steady:: ~steady() throw() {}
 
         steady:: steady(const reactor    &_,
                         writable<double> &K_) :
         cs(_),
+        cc(NULL),
         K(K_),
         xi(cs.L,0),
         sigma(cs.N,0),
         blocked(cs.L,true),
-        running(cs.L),
+        running(cs.N),
+        solving(cs.L),
         Corg(cs.M,0),
         Cend(cs.M,0),
         Ctry(cs.M,0),
         Ceq(cs.L,cs.L>0?cs.M:0),
         Phi(cs.N,Ceq.cols),
-        Psi(Phi)
+        Psi(Phi),
+        xmul(),
+        xadd()
         {
         }
         
         void steady:: run(writable<double> &C,
                           const xmlog      &xml)
         {
-            for(const cluster *cc = cs.linked->head;cc;cc=cc->next)
+            for(const cluster *cls = cs.linked->head;cls;cls=cls->next)
             {
-                run(C,*cc,xml);
+                run(C,*cls,xml);
             }
         }
 
@@ -51,20 +75,79 @@ namespace yack {
             return xadd.get()/2;
         }
 
+        double steady:: operator()(const double u)
+        {
+            assert(NULL!=cc);
+            iota::load(Ctry,Corg);
+
+            for(const anode *an = (*(cc->alive))->head; an; an=an->next)
+            {
+                const species &s = an->host;
+                const size_t   j = *s;
+                if(u<=0)
+                {
+                    Ctry[j] = Corg[j];
+                }
+                else
+                {
+                    if(u>=1)
+                    {
+                        Ctry[j] = Cend[j];
+                    }
+                    else
+                    {
+                        const double c0   = Corg[j];
+                        const double c1   = Cend[j];
+                        double       cmin = c0;
+                        double       cmax = c1;
+                        if(cmax<cmin)
+                            cswap(cmin,cmax);
+                        assert(cmin<=cmax);
+                        Ctry[j] = clamp(cmin,c0*(1.0-u)+u*c1,cmax);
+                    }
+                }
+            }
+
+            return Hamiltonian(Ctry);
+        }
+
+        double steady:: optimized_H(const double H0)
+        {
+            triplet<double> x = {  0, -1,                1  };
+            triplet<double> f = { H0, -1, Hamiltonian(Cend) };
+            steady         &F = *this;
+
+            assert( fabs( Hamiltonian(Corg) - f.a) <= 0);
+            assert( fabs( Hamiltonian(Cend) - f.c) <= 0);
+
+            optimize::run_for(F, x, f, optimize::inside);
+
+            assert( fabs(f.b - F(x.b)) <= 0 );
+
+            return f.b;
+        }
+
+
         void steady:: run(writable<double> &C,
-                          const cluster    &cc,
+                          const cluster    &cls,
                           const xmlog      &xml)
         {
-            YACK_XMLSUB(xml, "steady::cluster" );
+            YACK_XMLSUB(xml, "steady::cluster" );               assert(NULL==cc);
+            const temporary<const cluster*> momentary(cc,&cls); assert(NULL!=cc);
 
-            std::cerr << cc.single << std::endl;
-            //std::cerr << cc.hybrid << std::endl;
+            std::cerr << cc->single << std::endl;
 
-            YACK_XMLOG(xml,"--> Looking for unsteady...");
+            YACK_XMLOG(xml,"--> Looking for most unsteady");
+
+            //------------------------------------------------------------------
+            //
+            // let's inspect the system and initialize
+            //
+            //------------------------------------------------------------------
             running.clear();
             double             amax = 0;
             const equilibrium *emax = 0;
-            for(const eq_node *en=cc.single->head;en;en=en->next)
+            for(const eq_node *en=cc->single->head;en;en=en->next)
             {
                 const equilibrium &eq = ***en;
                 const size_t       ei = *eq;
@@ -85,8 +168,6 @@ namespace yack {
                         blocked[ei] = true;
                         xi[ei]      = 0;
                         sigma[ei]   = 0;
-                        Phi[ei].ld(0);
-                        Psi[ei].ld(0);
                         break;
 
                     case components::are_running: {
@@ -102,6 +183,12 @@ namespace yack {
                 }
             }
 
+
+            //------------------------------------------------------------------
+            //
+            // all good within numerical limit!
+            //
+            //------------------------------------------------------------------
             if(amax<=0)
             {
                 assert(NULL==emax);
@@ -110,10 +197,20 @@ namespace yack {
                 return;
             }
 
+            //------------------------------------------------------------------
+            //
+            // process
+            //
+            //------------------------------------------------------------------
             assert(emax!=NULL);
             assert(running.size>0);
-            YACK_XMLOG(xml,"--> <" << emax->name << ">");
+            YACK_XMLOG(xml,"--> <" << emax->name << "> <--");
 
+            //------------------------------------------------------------------
+            //
+            // trivial case
+            //
+            //------------------------------------------------------------------
             if(1==running.size)
             {
                 emax->transfer(C,Ceq[**emax]);
@@ -121,27 +218,94 @@ namespace yack {
                 return;
             }
 
+
+            //------------------------------------------------------------------
+            //
+            // compute scalings
+            //
+            //------------------------------------------------------------------
             for(const eq_node *node=running.head;node;node=node->next)
             {
                 const equilibrium &eq = ***node;
                 const size_t       ei = *eq;
+
                 eq.grad_action(Psi[ei], K[ei], Ceq[ei], xmul);
-                sigma[ei] = xadd.dot(Psi[ei],cs.Nu[ei]);
-                //std::cerr << "sigma_" << eq.name << " = " << sigma[ei] << std::endl;
+                sigma[ei] = xadd.dot(Psi[ei],cs.Nu[ei]); assert(sigma[ei] < 0);
+                if(xml.verbose) cs.all.pad(*xml << "sigma_<" << eq.name << ">", eq) << " = " << std::setw(15) << sigma[ei] << std::endl;
             }
 
 
+            //------------------------------------------------------------------
+            //
+            // initialize search
+            //
+            //------------------------------------------------------------------
             assert(running.size>1);
             iota::load(Corg,C);
             double H0 = Hamiltonian(Corg);
-            std::cerr << "H0=" << H0 << std::endl;
+            YACK_XMLOG(xml, "H0 = " << H0);
+
+            //------------------------------------------------------------------
+            //
+            // search running singles
+            //
+            //------------------------------------------------------------------
+            solving.clear();
             for(const eq_node *node=running.head;node;node=node->next)
             {
                 const equilibrium &eq = ***node;
                 const size_t       ei = *eq;
-                std::cerr << "H_" << eq.name << " = " << Hamiltonian(Ceq[ei]) << std::endl;
+                writable<double>  &Ci = Ceq[ei];         iota::load(Cend,Ci);
+                const double       H1 = optimized_H(H0); iota::load(Ci,Ctry);
+                const bool         ok = (H1<H0);
+                assert( fabs(H1-Hamiltonian(Ctry)) <=0 );
+                if(xml.verbose) { cs.all.pad(*xml << (ok? "[+]" : "[-]") << " H_<" << eq.name << ">",eq) << " = " << std::setw(15) << H1 << std::endl; }
+                if(ok)
+                {
+                    solving << eq;
+                }
             }
-            
+
+
+            //------------------------------------------------------------------
+            //
+            // search hybrid
+            //
+            //------------------------------------------------------------------
+            for(const eq_node *node=cc->hybrid->head;node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                const size_t       ei = *eq;
+                const outcome      oc = outcome::study(eq, K[ei], Corg, Cend, xmul, xadd);
+                if(false && xml.verbose)
+                {
+                    cs.all.pad(*xml << eq.name,eq) << oc <<  " : ";
+                    eq.display_compact(xml(),Cend);
+                    xml() << std::endl;
+                }
+                switch(oc.state)
+                {
+                    case components::are_blocked:
+                        blocked[ei] = true;
+                        xi[ei]      = 0;
+                        break;
+
+                    case components::are_running: {
+                        // Cend is loaded
+                        const double H1 = optimized_H(H0); assert( fabs(H1-Hamiltonian(Ctry)) <=0 );
+                        const bool   ok = (H1<H0);
+                        if(xml.verbose) { cs.all.pad(*xml << (ok? "[+]" : "[-]") << " H_<" << eq.name << ">",eq) << " = " << std::setw(15) << H1 << std::endl; }
+                        if(ok)
+                        {
+                            solving << eq;
+                            iota::load(Ceq[ei],Ctry);
+                        }
+                    } break;
+                }
+            }
+
+
+            std::cerr << "solving=" << solving << std::endl;
 
         }
 
