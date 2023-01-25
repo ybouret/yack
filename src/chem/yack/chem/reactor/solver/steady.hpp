@@ -24,6 +24,7 @@ namespace yack {
 
             YACK_PROTO_OSTREAM(er_repo); //!< display
 
+            //! check that all the squad is in the repository
             bool ratifies(const squad &sq) const throw();
 
         private:
@@ -63,11 +64,14 @@ namespace yack {
             rmulops            xmul;    //!< internal multiplications
             raddops            xadd;    //!< internal additions
 
-            void   run(writable<double> &C, const xmlog &xml); //!< top level function
-            double Hamiltonian(const readable<double> &C);     //!< hamiltonian from running singles
-            double optimized_H(const double H0);               //!< from H0=Hamiltonian(Corg) to Cend
-            double Hamiltonian(writable<double> &Cout, const squad &sq);
-            
+            void               run(writable<double> &C, const xmlog &xml);            //!< top level function
+            double             Hamiltonian(const readable<double> &C);                //!< hamiltonian from running singles
+            double             optimized_H(const double H0);                          //!< from H0=Hamiltonian(Corg) to Cend
+            double             Hamiltonian(writable<double> &Cout, const squad &sq);  //!< build composite concentration and H
+            const equilibrium *get_running(const readable<double> &C, const xmlog &); //!< build running
+            void               set_scaling(const xmlog &);                            //!< compute Psi and sigma from running
+            bool               got_solving(const double H0, const xmlog &);           //!< look for solving equilibria
+
             //! Hamiltonian on Corg to Cend
             double operator()(const double u);
 

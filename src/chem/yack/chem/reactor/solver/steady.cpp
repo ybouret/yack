@@ -157,28 +157,12 @@ namespace yack {
         }
 
 
-        void steady:: run(writable<double> &C,
-                          const cluster    &cls,
-                          const xmlog      &xml)
+        const equilibrium * steady:: get_running(const readable<double> &C, const xmlog &xml)
         {
-            YACK_XMLSUB(xml, "steady::cluster" );               assert(NULL==cc);
-            const temporary<const cluster*> momentary(cc,&cls); assert(NULL!=cc);
-
-            std::cerr << cc->single << std::endl;
-
-            YACK_XMLOG(xml,"--> Looking for most unsteady");
-
-            size_t cycle = 0;
-        CYCLE:
-            ++cycle;
-            //------------------------------------------------------------------
-            //
-            // let's inspect the system and initialize
-            //
-            //------------------------------------------------------------------
-            running.clear();
             double             amax = 0;
             const equilibrium *emax = 0;
+
+            running.clear(); assert(0==running.size);
             for(const eq_node *en=cc->single->head;en;en=en->next)
             {
                 const equilibrium &eq = ***en;
@@ -204,58 +188,26 @@ namespace yack {
 
                     case components::are_running: {
                         blocked[ei] = false;
-                        running    << eq;
                         const double atmp = fabs(xi[ei]=oc.value);
-                        if(atmp>amax)
+                        if(atmp>0)
                         {
-                            amax = atmp;
-                            emax = &eq;
+                            running  << eq;
+                            if(atmp>amax)
+                            {
+                                amax = atmp;
+                                emax = &eq;
+                            }
                         }
                     } break;
                 }
             }
 
-
-            //------------------------------------------------------------------
-            //
-            // all good within numerical limit!
-            //
-            //------------------------------------------------------------------
-            if(amax<=0)
-            {
-                assert(NULL==emax);
-                assert(0   ==running.size);
-                YACK_XMLOUT(xml, "--> done");
-                return;
-            }
-
-            //------------------------------------------------------------------
-            //
-            // process
-            //
-            //------------------------------------------------------------------
-            assert(emax!=NULL);
-            assert(running.size>0);
-            YACK_XMLOG(xml,"--> <" << emax->name << "> <--");
-
-            //------------------------------------------------------------------
-            //
-            // trivial case
-            //
-            //------------------------------------------------------------------
-            if(1==running.size)
-            {
-                emax->transfer(C,Ceq[**emax]);
-                YACK_XMLOUT(xml, "--> done");
-                return;
-            }
+            return emax;
+        }
 
 
-            //------------------------------------------------------------------
-            //
-            // compute scalings
-            //
-            //------------------------------------------------------------------
+        void steady:: set_scaling(const xmlog &xml)
+        {
             for(const eq_node *node=running.head;node;node=node->next)
             {
                 const equilibrium &eq = ***node;
@@ -266,17 +218,10 @@ namespace yack {
                 if(xml.verbose) cs.all.pad(*xml << "sigma_<" << eq.name << ">", eq) << " = " << std::setw(15) << sigma[ei] << std::endl;
             }
 
+        }
 
-            //------------------------------------------------------------------
-            //
-            // initialize search
-            //
-            //------------------------------------------------------------------
-            assert(running.size>1);
-            iota::load(Corg,C);
-            double H0 = Hamiltonian(Corg);
-            YACK_XMLOG(xml, "H0 = " << H0);
-
+        bool steady:: got_solving(const double H0, const xmlog &xml)
+        {
             //------------------------------------------------------------------
             //
             // search running singles
@@ -301,7 +246,7 @@ namespace yack {
 
             //------------------------------------------------------------------
             //
-            // search hybrid
+            // search hybrids
             //
             //------------------------------------------------------------------
             for(const eq_node *node=cc->hybrid->head;node;node=node->next)
@@ -336,10 +281,85 @@ namespace yack {
                 }
             }
 
+            return solving.size>0;
 
-            std::cerr << "solving=" << solving << std::endl;
+        }
 
-            if(solving.size<=0)
+
+        void steady:: run(writable<double> &C,
+                          const cluster    &cls,
+                          const xmlog      &xml)
+        {
+            YACK_XMLSUB(xml, "steady::cluster" );               assert(NULL==cc);
+            const temporary<const cluster*> momentary(cc,&cls); assert(NULL!=cc);
+
+            std::cerr << cc->single << std::endl;
+
+            YACK_XMLOG(xml,"--> Looking for most unsteady");
+
+            size_t cycle = 0;
+        CYCLE:
+            ++cycle;
+            //------------------------------------------------------------------
+            //
+            // let's inspect the system and initialize
+            //
+            //------------------------------------------------------------------
+            const equilibrium *emax = get_running(C,xml);
+
+
+            //------------------------------------------------------------------
+            //
+            // all good within numerical limit!
+            //
+            //------------------------------------------------------------------
+            if(NULL==emax)
+            {
+                assert(0 == running.size);
+                YACK_XMLOG(xml, "--> done");
+                return;
+            }
+
+            //------------------------------------------------------------------
+            //
+            // process
+            //
+            //------------------------------------------------------------------
+            assert(emax!=NULL);
+            assert(running.size>0);
+            YACK_XMLOG(xml,"--> <" << emax->name << "> <--");
+
+            //------------------------------------------------------------------
+            //
+            // trivial case
+            //
+            //------------------------------------------------------------------
+            if(1==running.size)
+            {
+                emax->transfer(C,Ceq[**emax]);
+                YACK_XMLOUT(xml, "--> done");
+                return;
+            }
+
+
+            //------------------------------------------------------------------
+            //
+            // compute scalings
+            //
+            //------------------------------------------------------------------
+            set_scaling(xml);
+
+            //------------------------------------------------------------------
+            //
+            // initialize search
+            //
+            //------------------------------------------------------------------
+            assert(running.size>1);
+            iota::load(Corg,C);
+            double H0 = Hamiltonian(Corg);
+            YACK_XMLOG(xml, "H0 = " << H0);
+
+            if(!got_solving(H0,xml))
             {
                 std::cerr << "No Global Min @cycle=" << cycle << std::endl;
                 exit(0);
@@ -348,7 +368,7 @@ namespace yack {
             const squad *best = NULL;
             double       Hopt = -1;
 
-            // initialize best and Hopt
+            // initialize best squad and Hopt
             for(const squad *sq = cc->army->head; sq; sq=sq->next )
             {
                 if(!solving.ratifies(*sq)) continue;
@@ -361,7 +381,7 @@ namespace yack {
             assert(NULL!=best);
             assert(Hopt>=0);
 
-            // look for better
+            // look for better squad
             for(const squad *sq=best->next;sq;sq=sq->next)
             {
                 if(!solving.ratifies(*sq)) continue;
