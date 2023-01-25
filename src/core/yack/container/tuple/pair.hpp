@@ -43,12 +43,19 @@ namespace yack
     //__________________________________________________________________________
     //
     //
-    //! epilog to create a pair class
+    //! epilog to create a pair class without assign operator
     //
     //__________________________________________________________________________
-#define YACK_PAIR_END(CLASS) \
+#define YACK_PAIR_END_NO_ASSIGN(CLASS) \
 /**/ private: YACK_DISABLE_ASSIGN(CLASS); }
 
+    //__________________________________________________________________________
+    //
+    //
+    //! epilog to create a pair class with user defined assign operator
+    //
+    //__________________________________________________________________________
+#define YACK_PAIR_END(CLASS) }
 }
 
 #endif

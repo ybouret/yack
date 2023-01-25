@@ -77,6 +77,9 @@ namespace yack {
         Ceq(cs.L,cs.L>0?cs.M:0),
         Phi(cs.N,Ceq.cols),
         Psi(Phi),
+        gPhi(cs.N),
+        gPsi(cs.N),
+        Omega(cs.N,cs.N),
         xmul(),
         xadd()
         {
@@ -159,6 +162,7 @@ namespace yack {
 
         const equilibrium * steady:: get_running(const readable<double> &C, const xmlog &xml)
         {
+            YACK_XMLSUB(xml,"steady::get_running");
             double             amax = 0;
             const equilibrium *emax = 0;
 
@@ -203,22 +207,87 @@ namespace yack {
         }
 
 
+
+
         void steady:: set_scaling(const xmlog &xml)
         {
+            YACK_XMLSUB(xml,"steady::set_scaling");
             for(const eq_node *node=running.head;node;node=node->next)
             {
                 const equilibrium &eq = ***node;
                 const size_t       ei = *eq;
 
-                eq.grad_action(Psi[ei], K[ei], Ceq[ei], xmul);
+                gPsi[ei]  = eq.grad_action(Psi[ei], K[ei], Ceq[ei], xmul);
                 sigma[ei] = xadd.dot(Psi[ei],cs.Nu[ei]); assert(sigma[ei] < 0);
                 if(xml.verbose) cs.all.pad(*xml << "sigma_<" << eq.name << ">", eq) << " = " << std::setw(15) << sigma[ei] << std::endl;
             }
 
         }
 
+        bool steady:: has_running(writable<double> &C, const unsigned pass, const xmlog &xml)
+        {
+            static const char *msg[2] =
+            {
+                "steady::has_running(1/2)",
+                "steady::has_running(2/2)"
+            };
+
+            YACK_XMLSUB(xml,msg[pass]);
+            //------------------------------------------------------------------
+            //
+            // let's inspect the system and initialize
+            //
+            //------------------------------------------------------------------
+            const equilibrium *emax = get_running(C,xml);
+
+
+            //------------------------------------------------------------------
+            //
+            // all good within numerical limit!
+            //
+            //------------------------------------------------------------------
+            if(NULL==emax)
+            {
+                YACK_XMLOG(xml, "--> done");
+                return false;
+            }
+
+            //------------------------------------------------------------------
+            //
+            // process
+            //
+            //------------------------------------------------------------------
+            assert(emax!=NULL);
+            assert(running.size>0);
+            YACK_XMLOG(xml,"--> most running : <" << emax->name << "> <--");
+
+            //------------------------------------------------------------------
+            //
+            // trivial case
+            //
+            //------------------------------------------------------------------
+            if(1==running.size)
+            {
+                assert( running.contains(*emax) );
+                emax->transfer(C,Ceq[**emax]);
+                YACK_XMLOUT(xml, "--> done");
+                return false;
+            }
+
+
+            //------------------------------------------------------------------
+            //
+            // compute scalings
+            //
+            //------------------------------------------------------------------
+            set_scaling(xml);
+            return true;
+        }
+
+
         bool steady:: got_solving(const double H0, const xmlog &xml)
         {
+            YACK_XMLSUB(xml,"steady::got_solving");
             //------------------------------------------------------------------
             //
             // search running singles
@@ -239,7 +308,6 @@ namespace yack {
                     solving << eq;
                 }
             }
-
 
             //------------------------------------------------------------------
             //
@@ -279,88 +347,10 @@ namespace yack {
             }
 
             return solving.size>0;
-
         }
 
-
-        void steady:: run(writable<double> &C,
-                          const cluster    &cls,
-                          const xmlog      &xml)
+        void steady:: make_global(writable<double> &C, const xmlog &xml)
         {
-            YACK_XMLSUB(xml, "steady::cluster" );               assert(NULL==cc);
-            const temporary<const cluster*> momentary(cc,&cls); assert(NULL!=cc);
-
-            std::cerr << cc->single << std::endl;
-
-            YACK_XMLOG(xml,"--> Looking for most unsteady");
-
-            size_t cycle = 0;
-        CYCLE:
-            ++cycle;
-            //------------------------------------------------------------------
-            //
-            // let's inspect the system and initialize
-            //
-            //------------------------------------------------------------------
-            const equilibrium *emax = get_running(C,xml);
-
-
-            //------------------------------------------------------------------
-            //
-            // all good within numerical limit!
-            //
-            //------------------------------------------------------------------
-            if(NULL==emax)
-            {
-                YACK_XMLOG(xml, "--> done");
-                return;
-            }
-
-            //------------------------------------------------------------------
-            //
-            // process
-            //
-            //------------------------------------------------------------------
-            assert(emax!=NULL);
-            assert(running.size>0);
-            YACK_XMLOG(xml,"--> <" << emax->name << "> <--");
-
-            //------------------------------------------------------------------
-            //
-            // trivial case
-            //
-            //------------------------------------------------------------------
-            if(1==running.size)
-            {
-                emax->transfer(C,Ceq[**emax]);
-                YACK_XMLOUT(xml, "--> done");
-                return;
-            }
-
-
-            //------------------------------------------------------------------
-            //
-            // compute scalings
-            //
-            //------------------------------------------------------------------
-            set_scaling(xml);
-
-            //------------------------------------------------------------------
-            //
-            // initialize search
-            //
-            //------------------------------------------------------------------
-            assert(running.size>1);
-            iota::load(Corg,C);
-            double H0 = Hamiltonian(Corg);
-            YACK_XMLOG(xml, "H0 = " << H0);
-
-            if(!got_solving(H0,xml))
-            {
-                std::cerr << "No Global Min @cycle=" << cycle << std::endl;
-                exit(0);
-            }
-
             const squad *best = NULL;
             double       Hopt = -1;
 
@@ -391,7 +381,76 @@ namespace yack {
             }
 
             iota::save(C,Cend);
-            std::cerr << "@cycle " << cycle << std::endl;
+        }
+
+        void steady:: build_omega(const readable<double> &C,
+                                  const xmlog            &xml)
+        {
+            Omega.ld(0);
+            for(const eq_node *node=cc->single->head;node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                const size_t       ei = *eq;
+                writable<double>  &Omi = Omega[ei]; Omi[ei] = 1.0;
+                if(blocked[ei]) {
+                    assert( fabs(xi[ei]) <= 0);
+                    continue;
+                }
+            }
+            cs.eqs(std::cerr,"",Omega);
+
+        }
+
+
+        void steady:: run(writable<double> &C,
+                          const cluster    &cls,
+                          const xmlog      &xml)
+        {
+            YACK_XMLSUB(xml, "steady::cluster" );               assert(NULL==cc);
+            const temporary<const cluster*> momentary(cc,&cls); assert(NULL!=cc);
+
+            std::cerr << cc->single << std::endl;
+
+            YACK_XMLOG(xml,"--> Looking for most unsteady");
+
+            size_t cycle = 0;
+        CYCLE:
+            YACK_XMLOG(xml, "-------- cycle #" << cycle << " --------");
+            ++cycle;
+
+            //------------------------------------------------------------------
+            //
+            // check has still running and setup scaling, first pass
+            //
+            //------------------------------------------------------------------
+            if(!has_running(C,0,xml))
+                return;
+
+            //------------------------------------------------------------------
+            //
+            // initialize search
+            //
+            //------------------------------------------------------------------
+            assert(running.size>1);
+            iota::load(Corg,C);
+            double H0 = Hamiltonian(Corg);
+            YACK_XMLOG(xml, "H0 = " << H0);
+
+            if(!got_solving(H0,xml))
+            {
+                std::cerr << "No Global Min @cycle=" << cycle << std::endl;
+                exit(0);
+            }
+
+            // using global
+            make_global(C,xml);
+
+            // recomputing
+            if(!has_running(C,1,xml))
+                return;
+
+            build_omega(C,xml);
+
             goto CYCLE;
 
 

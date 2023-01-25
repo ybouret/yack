@@ -35,6 +35,14 @@ namespace yack
             return *this;
         }
 
+        //! assignment operator
+        inline greatest & operator=(const greatest &other) throw()
+        {
+            coerce(value) = other.value;
+            coerce(index) = other.index;
+            return *this;
+        }
+
 
         //! divide by the greatest value, taking care of index sign
         template <typename ARR> inline
@@ -54,7 +62,7 @@ namespace yack
             return (x>0) ? 1 : -1;
         }
         YACK_PAIR_END(greatest);
-       
+
         //______________________________________________________________________
         //
         //
@@ -151,7 +159,7 @@ namespace yack
 
         protected:
             const cxx_list_of<actor>           crew; //!< actors
-       
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(actors);
         };

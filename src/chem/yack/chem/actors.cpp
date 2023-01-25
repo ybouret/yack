@@ -1,8 +1,5 @@
-
-
 #include "yack/chem/actors.hpp"
 #include "yack/type/utils.hpp"
-
 #include <new>
 
 namespace yack
