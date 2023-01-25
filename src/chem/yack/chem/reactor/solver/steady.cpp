@@ -13,6 +13,18 @@ namespace yack {
     namespace chemical {
 
 
+        bool er_repo:: ratifies(const squad &sq) const throw()
+        {
+            for(const squad::node_type *node=sq.head;node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                if( !contains(eq) ) return false;
+            }
+            return true;
+        }
+
+
+
         std::ostream & operator<<(std::ostream &os, const er_repo &self)
         {
             os << "{ ";
@@ -29,6 +41,23 @@ namespace yack {
             return os;
         }
 
+
+        double steady:: Hamiltonian(writable<double> &Cout, const squad &sq)
+        {
+
+            // initialize
+            iota::load(Cout,Corg);
+
+            // transfer components
+            for(const squad::node_type *node=sq.head;node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                eq.transfer(Cout,Ceq[*eq]);
+            }
+
+            return Hamiltonian(Cout);
+
+        }
 
         steady:: ~steady() throw() {}
 
@@ -306,6 +335,44 @@ namespace yack {
 
 
             std::cerr << "solving=" << solving << std::endl;
+
+            if(solving.size<=0)
+            {
+                std::cerr << "No Global Min" << std::endl;
+                exit(0);
+            }
+
+            const squad *best = NULL;
+            double       Hopt = -1;
+
+            // initialize best and Hopt
+            for(const squad *sq = cc->army->head; sq; sq=sq->next )
+            {
+                if(!solving.ratifies(*sq)) continue;
+                best = sq;
+                Hopt = Hamiltonian(Cend,*best);
+                YACK_XMLOG(xml, std::setw(15) << Hopt << " @ " << *best);
+                break;
+            }
+
+            assert(NULL!=best);
+            assert(Hopt>=0);
+
+            // look for better
+            for(const squad *sq=best->next;sq;sq=sq->next)
+            {
+                if(!solving.ratifies(*sq)) continue;
+                const double temp = Hamiltonian(Ctry,*sq);
+                if(temp<Hopt) {
+                    best = sq;
+                    Hopt = temp;
+                    iota::load(Cend,Ctry);
+                    YACK_XMLOG(xml, std::setw(15) << Hopt << " @ " << *best);
+                }
+            }
+
+
+
 
         }
 

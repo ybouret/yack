@@ -24,6 +24,8 @@ namespace yack {
 
             YACK_PROTO_OSTREAM(er_repo); //!< display
 
+            bool ratifies(const squad &sq) const throw();
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(er_repo);
         };
@@ -64,7 +66,8 @@ namespace yack {
             void   run(writable<double> &C, const xmlog &xml); //!< top level function
             double Hamiltonian(const readable<double> &C);     //!< hamiltonian from running singles
             double optimized_H(const double H0);               //!< from H0=Hamiltonian(Corg) to Cend
-
+            double Hamiltonian(writable<double> &Cout, const squad &sq);
+            
             //! Hamiltonian on Corg to Cend
             double operator()(const double u);
 
