@@ -234,7 +234,7 @@ namespace yack {
         
         bool steady:: has_running(writable<double> &C, const unsigned pass, const xmlog &xml)
         {
-            static const char *msg[2] =
+            static const char * const msg[2] =
             {
                 "steady::has_running(1/2)",
                 "steady::has_running(2/2)"
@@ -389,7 +389,10 @@ namespace yack {
                 }
             }
             
-            iota::save(C,Cend);
+            for(size_t i=cs.M;i>0;--i)
+            {
+                C[i] = Corg[i] = Cend[i];
+            }
         }
         
         bool steady:: build_omega(const readable<double> &C,
@@ -400,6 +403,7 @@ namespace yack {
             tableau        &step  = Steps[cc->omega];
             omega.ld(0);
             
+            // loading omega and rhs
             {
                 size_t i=1;
                 for(const eq_node *node=cc->single->head;node;node=node->next,++i)
@@ -452,14 +456,17 @@ namespace yack {
             YACK_XMLOG(xml, "-- omega = " << omega);
             YACK_XMLOG(xml, "-- xstar = " << step);
             
+            // build local inv(omega)
             if(!lu->build(omega,xadd))
             {
                 return false;
             }
             
+            // build local step=inv(omega)*xi_compact
             lu->solve(omega,step,xadd);
             YACK_XMLOG(xml, "-- lstep = " << step);
 
+            // expand local step into global step
             xstep.ld(0);
             {
                 size_t i=1;
@@ -470,7 +477,6 @@ namespace yack {
             }
             YACK_XMLOG(xml, "-- xstep = " << xstep);
 
-            exit(0);
             return true;
         }
         
@@ -515,14 +521,37 @@ namespace yack {
                 exit(0);
             }
             
-            // using global
+            // using squad of optimized, Cend=Corg=C at the end
             make_global(C,xml);
             
-            // recomputing
+            // recomputing satus
             if(!has_running(C,1,xml))
                 return;
             
-            build_omega(C,xml);
+            // local step
+            if(!build_omega(C,xml))
+            {
+                std::cerr << "singular Omega @cycle=" << cycle << std::endl;
+                exit(0);
+            }
+            
+            H0 = Hamiltonian(Corg);
+            for(const anode *an= (*cls.alive)->head; an; an=an->next)
+            {
+                const species &sp = an->host;
+                const size_t   sj = *sp;
+                const double   dc = xadd.dot(xstep,cs.NuT[sj]);
+                if(xml.verbose)
+                {
+                    cs.lib.pad(*xml << "d_["<< sp.name << "]",sp)
+                    << " = " << std::setw(15) << dc
+                    << " / " << std::setw(15) << Corg[sj]
+                    << std::endl;
+                }
+            }
+            exit(0);
+            
+            
             
             goto CYCLE;
             
