@@ -160,8 +160,9 @@ namespace yack {
             // misceallenous
             //------------------------------------------------------------------
             const ledger::ptr     cross;  //!< number of cross/mixed equilibria per degree from manifold
-            const unsigned        gvidx;  //!< graphivz index
-
+            const unsigned        gvidx;  //!< graphivz index [0:...]
+            const unsigned        omega;  //!< omega index = gvidx+1
+                                        
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(cluster);
             std::ostream &      display(std::ostream &) const;

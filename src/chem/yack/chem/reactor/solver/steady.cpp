@@ -74,15 +74,19 @@ namespace yack {
         Corg(cs.M,0),
         Cend(cs.M,0),
         Ctry(cs.M,0),
+        Phi(cs.M,0),
         Ceq(cs.L,cs.L>0?cs.M:0),
-        Phi(cs.N,Ceq.cols),
-        Psi(Phi),
-        gPhi(cs.N),
+        Psi(cs.N,Ceq.cols),
         gPsi(cs.N),
-        Omega(cs.N,cs.N),
+        Omega(cs.linked->size),
         xmul(),
         xadd()
         {
+            for(const cluster *cls=cs.linked->head;cls;cls=cls->next)
+            {
+                const size_t n = cls->single->size; assert(n>0);
+                Omega.add<size_t,size_t>(n,n);      assert(cls->omega==Omega.size());
+            }
         }
         
         void steady:: run(writable<double> &C,
@@ -386,19 +390,22 @@ namespace yack {
         void steady:: build_omega(const readable<double> &C,
                                   const xmlog            &xml)
         {
-            Omega.ld(0);
-            for(const eq_node *node=cc->single->head;node;node=node->next)
+            matrix<double> &omega = Omega[cc->omega];
+            omega.ld(0);
+            
+            size_t i=1;
+            for(const eq_node *node=cc->single->head;node;node=node->next,++i)
             {
                 const equilibrium &eq = ***node;
                 const size_t       ei = *eq;
-                writable<double>  &Omi = Omega[ei]; Omi[ei] = 1.0;
-                if(blocked[ei]) {
-                    assert( fabs(xi[ei]) <= 0);
-                    continue;
-                }
+                const greatest     gr = eq.grad_action(Phi,K[ei],C,xmul);
+                writable<double>  &om = omega[i];
+                om[i] = 1;
             }
-            cs.eqs(std::cerr,"",Omega);
-
+            
+            YACK_XMLOG(xml, "-- omega=" << omega);
+            exit(0);
+            
         }
 
 

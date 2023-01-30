@@ -33,7 +33,8 @@ namespace yack
         army(  new squads()             ),
         wing(  new squads()             ),
         cross( new ledger()             ),
-        gvidx(0)
+        gvidx(0),
+        omega(0)
         {
             coerce( *group  ) << first;
             coerce( *single ) << first;
@@ -135,7 +136,7 @@ namespace yack
 
             }
             coerce(gvidx) = igv;
-
+            coerce(omega) = gvidx+1;
 
             // build conservation laws
             conservations(xml);

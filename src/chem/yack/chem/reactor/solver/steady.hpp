@@ -6,6 +6,7 @@
 
 #include "yack/chem/reactor.hpp"
 #include "yack/sequence/cxx-array.hpp"
+#include "yack/sequence/cxx-series.hpp"
 #include "yack/data/dinky/solo-repo.hpp"
 
 namespace yack {
@@ -40,6 +41,8 @@ namespace yack {
         class steady
         {
         public:
+            typedef cxx_series< matrix<double> > matrices;
+            
             //__________________________________________________________________
             //
             // C++
@@ -58,12 +61,11 @@ namespace yack {
             cxx_array<double>   Corg;    //!< [M]
             cxx_array<double>   Cend;    //!< [M]
             cxx_array<double>   Ctry;    //!< [M]
+            cxx_array<double>   Phi;     //!< [M]
             matrix<double>      Ceq;     //!< [LxM]
-            matrix<double>      Phi;     //!< [NxM] gradient at Corg
             matrix<double>      Psi;     //!< [NxM] gradient at Cend
-            cxx_array<greatest> gPhi;    //!< [N]
             cxx_array<greatest> gPsi;    //!< [N]
-            matrix<double>      Omega;   //!< [NxN]
+            matrices            Omega;   //!< one matrix per cluster
             rmulops             xmul;    //!< internal multiplications
             raddops             xadd;    //!< internal additions
 
@@ -75,7 +77,7 @@ namespace yack {
             const equilibrium *get_running(const readable<double> &C, const xmlog &); //!< build running
             void               set_scaling(const xmlog &);                            //!< compute Psi and sigma from running
             bool               got_solving(const double H0, const xmlog &);           //!< look for solving equilibria
-            void               make_global(writable<double> &C, const xmlog &);
+            void               make_global(writable<double> &C, const xmlog &);       //!< find best squad from solving
             void               build_omega(const readable<double> &C, const xmlog &);
 
             //! Hamiltonian on Corg to Cend
