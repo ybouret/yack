@@ -457,7 +457,7 @@ namespace yack {
                 return false;
             }
             
-            lu->solve(omega,step);
+            lu->solve(omega,step,xadd);
             YACK_XMLOG(xml, "-- lstep = " << step);
 
             xstep.ld(0);
