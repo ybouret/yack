@@ -60,7 +60,9 @@ namespace yack {
 
             //! maximum actors in one equilibrium side
             size_t max_actors() const throw();
-
+            
+            size_t max_cluster_size() const throw();
+            
             //! compute all constants
             void computeK(writable<double> &K, const double t) const;
 

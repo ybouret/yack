@@ -7,12 +7,12 @@
 #include <iomanip>
 
 namespace yack {
-
+    
     using namespace math;
-
+    
     namespace chemical {
-
-
+        
+        
         bool er_repo:: ratifies(const squad &sq) const throw()
         {
             for(const squad::node_type *node=sq.head;node;node=node->next)
@@ -22,9 +22,9 @@ namespace yack {
             }
             return true;
         }
-
-
-
+        
+        
+        
         std::ostream & operator<<(std::ostream &os, const er_repo &self)
         {
             os << "{ ";
@@ -40,27 +40,27 @@ namespace yack {
             os << " }";
             return os;
         }
-
-
+        
+        
         double steady:: Hamiltonian(writable<double> &Cout, const squad &sq)
         {
-
+            
             // initialize
             iota::load(Cout,Corg);
-
+            
             // transfer components
             for(const squad::node_type *node=sq.head;node;node=node->next)
             {
                 const equilibrium &eq = ***node;
                 eq.transfer(Cout,Ceq[*eq]);
             }
-
+            
             return Hamiltonian(Cout);
-
+            
         }
-
+        
         steady:: ~steady() throw() {}
-
+        
         steady:: steady(const reactor    &_,
                         writable<double> &K_) :
         cs(_),
@@ -68,6 +68,7 @@ namespace yack {
         K(K_),
         xi(cs.L,0),
         sigma(cs.N,0),
+        xstep(cs.N,0),
         blocked(cs.L,true),
         running(cs.N),
         solving(cs.L),
@@ -79,13 +80,16 @@ namespace yack {
         Psi(cs.N,Ceq.cols),
         gPsi(cs.N),
         Omega(cs.linked->size),
+        Steps(cs.linked->size),
         xmul(),
-        xadd()
+        xadd(),
+        lu( new lu_type(cs.max_cluster_size()) )
         {
             for(const cluster *cls=cs.linked->head;cls;cls=cls->next)
             {
                 const size_t n = cls->single->size; assert(n>0);
                 Omega.add<size_t,size_t>(n,n);      assert(cls->omega==Omega.size());
+                Steps.add<size_t>(n);               assert(cls->omega==Steps.size());
             }
         }
         
@@ -97,8 +101,8 @@ namespace yack {
                 run(C,*cls,xml);
             }
         }
-
-
+        
+        
         double steady:: Hamiltonian(const readable<double> &C)
         {
             xadd.ldz();
@@ -110,12 +114,12 @@ namespace yack {
             }
             return xadd.get()/2;
         }
-
+        
         double steady:: operator()(const double u)
         {
             assert(NULL!=cc);
             iota::load(Ctry,Corg);
-
+            
             for(const anode *an = (*(cc->alive))->head; an; an=an->next)
             {
                 const species &s = an->host;
@@ -143,33 +147,33 @@ namespace yack {
                     }
                 }
             }
-
+            
             return Hamiltonian(Ctry);
         }
-
+        
         double steady:: optimized_H(const double H0)
         {
             triplet<double> x = {  0, -1,                1  };
             triplet<double> f = { H0, -1, Hamiltonian(Cend) };
             steady         &F = *this;
-
+            
             assert( fabs( Hamiltonian(Corg) - f.a) <= 0);
             assert( fabs( Hamiltonian(Cend) - f.c) <= 0);
-
+            
             optimize::run_for(F, x, f, optimize::inside);
-
+            
             assert( fabs(f.b - F(x.b)) <= 0 );
-
+            
             return f.b;
         }
-
-
+        
+        
         const equilibrium * steady:: get_running(const readable<double> &C, const xmlog &xml)
         {
             YACK_XMLSUB(xml,"steady::get_running");
             double             amax = 0;
             const equilibrium *emax = 0;
-
+            
             running.clear(); assert(0==running.size);
             for(const eq_node *en=cc->single->head;en;en=en->next)
             {
@@ -178,14 +182,14 @@ namespace yack {
                 const double       Ki = K[ei];
                 writable<double>  &Ci = Ceq[ei];
                 const outcome      oc = outcome::study(eq,Ki,C,Ci,xmul,xadd);
-
+                
                 if(xml.verbose)
                 {
                     cs.all.pad(*xml << eq.name,eq) << oc <<  " : ";
                     eq.display_compact(xml(),Ci);
                     xml() << std::endl;
                 }
-
+                
                 switch(oc.state)
                 {
                     case components::are_blocked:
@@ -193,7 +197,7 @@ namespace yack {
                         xi[ei]      = 0;
                         sigma[ei]   = 0;
                         break;
-
+                        
                     case components::are_running: {
                         blocked[ei] = false;
                         running  << eq;
@@ -206,13 +210,13 @@ namespace yack {
                     } break;
                 }
             }
-
+            
             return emax;
         }
-
-
-
-
+        
+        
+        
+        
         void steady:: set_scaling(const xmlog &xml)
         {
             YACK_XMLSUB(xml,"steady::set_scaling");
@@ -220,14 +224,14 @@ namespace yack {
             {
                 const equilibrium &eq = ***node;
                 const size_t       ei = *eq;
-
+                
                 gPsi[ei]  = eq.grad_action(Psi[ei], K[ei], Ceq[ei], xmul);
                 sigma[ei] = xadd.dot(Psi[ei],cs.Nu[ei]); assert(sigma[ei] < 0);
                 if(xml.verbose) cs.all.pad(*xml << "sigma_<" << eq.name << ">", eq) << " = " << std::setw(15) << sigma[ei] << std::endl;
             }
-
+            
         }
-
+        
         bool steady:: has_running(writable<double> &C, const unsigned pass, const xmlog &xml)
         {
             static const char *msg[2] =
@@ -235,7 +239,7 @@ namespace yack {
                 "steady::has_running(1/2)",
                 "steady::has_running(2/2)"
             };
-
+            
             YACK_XMLSUB(xml,msg[pass]);
             //------------------------------------------------------------------
             //
@@ -243,8 +247,8 @@ namespace yack {
             //
             //------------------------------------------------------------------
             const equilibrium *emax = get_running(C,xml);
-
-
+            
+            
             //------------------------------------------------------------------
             //
             // all good within numerical limit!
@@ -255,7 +259,7 @@ namespace yack {
                 YACK_XMLOG(xml, "--> done");
                 return false;
             }
-
+            
             //------------------------------------------------------------------
             //
             // process
@@ -264,7 +268,7 @@ namespace yack {
             assert(emax!=NULL);
             assert(running.size>0);
             YACK_XMLOG(xml,"--> most running : <" << emax->name << "> <--");
-
+            
             //------------------------------------------------------------------
             //
             // trivial case
@@ -277,8 +281,8 @@ namespace yack {
                 YACK_XMLOUT(xml, "--> done");
                 return false;
             }
-
-
+            
+            
             //------------------------------------------------------------------
             //
             // compute scalings
@@ -287,8 +291,8 @@ namespace yack {
             set_scaling(xml);
             return true;
         }
-
-
+        
+        
         bool steady:: got_solving(const double H0, const xmlog &xml)
         {
             YACK_XMLSUB(xml,"steady::got_solving");
@@ -312,7 +316,7 @@ namespace yack {
                     solving << eq;
                 }
             }
-
+            
             //------------------------------------------------------------------
             //
             // search hybrids
@@ -335,9 +339,10 @@ namespace yack {
                         blocked[ei] = true;
                         xi[ei]      = 0;
                         break;
-
+                        
                     case components::are_running: {
                         // Cend is loaded
+                        xi[ei]          = oc.value;
                         const double H1 = optimized_H(H0); assert( fabs(H1-Hamiltonian(Ctry)) <=0 );
                         const bool   ok = (H1<H0);
                         if(xml.verbose) { cs.all.pad(*xml << (ok? "[+]" : "[-]") << " H_<" << eq.name << ">",eq) << " = " << std::setw(15) << H1 << std::endl; }
@@ -349,15 +354,15 @@ namespace yack {
                     } break;
                 }
             }
-
+            
             return solving.size>0;
         }
-
+        
         void steady:: make_global(writable<double> &C, const xmlog &xml)
         {
             const squad *best = NULL;
             double       Hopt = -1;
-
+            
             // initialize best squad and Hopt
             for(const squad *sq = cc->army->head; sq; sq=sq->next )
             {
@@ -367,10 +372,10 @@ namespace yack {
                 YACK_XMLOG(xml, std::setw(15) << Hopt << " @ " << *best);
                 break;
             }
-
+            
             assert(NULL!=best);
             assert(Hopt>=0);
-
+            
             // look for better squad
             for(const squad *sq=best->next;sq;sq=sq->next)
             {
@@ -383,28 +388,45 @@ namespace yack {
                     YACK_XMLOG(xml, std::setw(15) << Hopt << " @ " << *best);
                 }
             }
-
+            
             iota::save(C,Cend);
         }
-
-        void steady:: build_omega(const readable<double> &C,
+        
+        bool steady:: build_omega(const readable<double> &C,
                                   const xmlog            &xml)
         {
+            YACK_XMLSUB(xml, "steady::build_omega");
             matrix<double> &omega = Omega[cc->omega];
+            tableau        &step  = Steps[cc->omega];
             omega.ld(0);
             
-            size_t i=1;
-            for(const eq_node *node=cc->single->head;node;node=node->next,++i)
             {
-                const equilibrium &eq = ***node;
-                const size_t       ei = *eq;
-                writable<double>  &om = omega[i]; om[i] = 1; if(blocked[ei]) continue;
-                
-                const greatest     gr = eq.grad_action(Phi,K[ei],C,xmul);
-                if(gr.index)
+                size_t i=1;
+                for(const eq_node *node=cc->single->head;node;node=node->next,++i)
                 {
-                    const double den = sigma[ei];
+                    const equilibrium &eq = ***node;
+                    const size_t       ei = *eq;
+                    writable<double>  &om = omega[i];
+                    
+                    // initialize omega[i][i] and step[i]
+                    om[i] = 1;
+                    
+                    if(blocked[ei]) {
+                        step[i] = 0;
+                        continue;
+                    }
+                    step[i] = xi[ei];
+                    
+                    // compute gradient at Corg
+                    const greatest gr  = eq.grad_action(Phi,K[ei],C,xmul);
+                    
+                    std::cerr << "Phi_<" << eq.name << "> = " << Phi << std::endl;
+                    
+                    if(gr.index<=0) continue; // numerically 0
+                    const double   den = sigma[ei];
                     gr.divide(Phi);
+                    
+                    // compute extra diagonal omega[i][j!=i]
                     {
                         size_t j = i;
                         for(const eq_node *scan=node->prev;scan;scan=scan->prev)
@@ -423,32 +445,52 @@ namespace yack {
                             om[++j] = num/den;
                         }
                     }
+                    
                 }
-                // else do nothing, it's 0
             }
             
-            YACK_XMLOG(xml, "-- omega=" << omega);
-            exit(0);
+            YACK_XMLOG(xml, "-- omega = " << omega);
+            YACK_XMLOG(xml, "-- xstar = " << step);
             
+            if(!lu->build(omega,xadd))
+            {
+                return false;
+            }
+            
+            lu->solve(omega,step);
+            YACK_XMLOG(xml, "-- lstep = " << step);
+
+            xstep.ld(0);
+            {
+                size_t i=1;
+                for(const eq_node *node=cc->single->head;node;node=node->next,++i)
+                {
+                    xstep[****node] = step[i];
+                }
+            }
+            YACK_XMLOG(xml, "-- xstep = " << xstep);
+
+            exit(0);
+            return true;
         }
-
-
+        
+        
         void steady:: run(writable<double> &C,
                           const cluster    &cls,
                           const xmlog      &xml)
         {
             YACK_XMLSUB(xml, "steady::cluster" );               assert(NULL==cc);
             const temporary<const cluster*> momentary(cc,&cls); assert(NULL!=cc);
-
+            
             std::cerr << cc->single << std::endl;
-
+            
             YACK_XMLOG(xml,"--> Looking for most unsteady");
-
+            
             size_t cycle = 0;
         CYCLE:
             YACK_XMLOG(xml, "-------- cycle #" << cycle << " --------");
             ++cycle;
-
+            
             //------------------------------------------------------------------
             //
             // check has still running and setup scaling, first pass
@@ -456,7 +498,7 @@ namespace yack {
             //------------------------------------------------------------------
             if(!has_running(C,0,xml))
                 return;
-
+            
             //------------------------------------------------------------------
             //
             // initialize search
@@ -466,31 +508,31 @@ namespace yack {
             iota::load(Corg,C);
             double H0 = Hamiltonian(Corg);
             YACK_XMLOG(xml, "H0 = " << H0);
-
+            
             if(!got_solving(H0,xml))
             {
                 std::cerr << "No Global Min @cycle=" << cycle << std::endl;
                 exit(0);
             }
-
+            
             // using global
             make_global(C,xml);
-
+            
             // recomputing
             if(!has_running(C,1,xml))
                 return;
-
+            
             build_omega(C,xml);
-
+            
             goto CYCLE;
-
-
+            
+            
         }
-
-
-
-
+        
+        
+        
+        
     }
-
+    
 }
 

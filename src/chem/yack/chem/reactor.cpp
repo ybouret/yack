@@ -181,6 +181,17 @@ namespace yack
             return res;
         }
 
+        size_t reactor:: max_cluster_size() const throw()
+        {
+            size_t res = 0;
+            
+            for(const cluster *cc=linked->head;cc;cc=cc->next) {
+                res = max_of(res,cc->single->size);
+            }
+            
+            return res;
+        }
+        
         void reactor:: computeK(writable<double> &K, const double t) const
         {
             assert(K.size()>=L);
