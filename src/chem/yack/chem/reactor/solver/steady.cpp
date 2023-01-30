@@ -398,9 +398,33 @@ namespace yack {
             {
                 const equilibrium &eq = ***node;
                 const size_t       ei = *eq;
+                writable<double>  &om = omega[i]; om[i] = 1; if(blocked[ei]) continue;
+                
                 const greatest     gr = eq.grad_action(Phi,K[ei],C,xmul);
-                writable<double>  &om = omega[i];
-                om[i] = 1;
+                if(gr.index)
+                {
+                    const double den = sigma[ei];
+                    gr.divide(Phi);
+                    {
+                        size_t j = i;
+                        for(const eq_node *scan=node->prev;scan;scan=scan->prev)
+                        {
+                            const size_t ej  = ****scan;
+                            const double num = gr.value * xadd.dot(Phi,cs.Nu[ej]);
+                            om[--j] = num/den;
+                        }
+                    }
+                    {
+                        size_t j = i;
+                        for(const eq_node *scan=node->next;scan;scan=scan->next)
+                        {
+                            const size_t ej  = ****scan;
+                            const double num = gr.value * xadd.dot(Phi,cs.Nu[ej]);
+                            om[++j] = num/den;
+                        }
+                    }
+                }
+                // else do nothing, it's 0
             }
             
             YACK_XMLOG(xml, "-- omega=" << omega);
