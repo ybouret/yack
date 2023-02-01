@@ -42,10 +42,10 @@ namespace yack {
         class steady
         {
         public:
-            typedef cxx_array<double>            tableau;
-            typedef cxx_series< matrix<double> > matrices;
-            typedef cxx_series<tableau>          tableaux;
-            typedef math::crout<double>          lu_type;
+            typedef cxx_array<double>            tableau;  //!< alias
+            typedef cxx_series< matrix<double> > matrices; //!< alias
+            typedef cxx_series<tableau>          tableaux; //!< alias
+            typedef math::crout<double>          lu_type;  //!< alias
             
             //__________________________________________________________________
             //
@@ -115,7 +115,7 @@ namespace yack {
              */
             bool               got_solving(const double H0, const xmlog &);
             
-            //! make the best new global concentration from solvin
+            //! make the best new global concentration from got_solving
             /**
              - test all ratified squads and keep the best
              - compose the new concentration from the best squad

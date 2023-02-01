@@ -8,12 +8,18 @@
 namespace yack {
 
 	namespace crypto {
-
+        
+        //______________________________________________________________________
+        //
+        //
+        //! compute Gray's code
+        //
+        //______________________________________________________________________
 		template <typename T>
 		struct gray
 		{
-			static T encode( T n ) throw();
-			static T decode( T n ) throw();
+			static T encode( T n ) throw(); //!< encode
+			static T decode( T n ) throw(); //!< decode
         };		
 
 	}
