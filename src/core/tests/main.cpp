@@ -220,6 +220,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(vfs_bytes);
 
     YACK_UTEST(kr_digest);
+    YACK_UTEST(kr_gray);
 
     YACK_UTEST(fields);
 

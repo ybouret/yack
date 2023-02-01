@@ -424,6 +424,14 @@ set(kr ${kr_impl} ${kr_decl})
 SOURCE_GROUP(kr FILES ${kr})
 install( FILES ${kr_decl} DESTINATION include/yack/kr )
 
+
+file(GLOB kr_bc_impl yack/kr/bc/*.cpp)
+file(GLOB kr_bc_decl yack/kr/bc/*.hpp)
+set(kr_bc ${kr_bc_impl} ${kr_bc_decl})
+SOURCE_GROUP(kr/bc FILES ${kr_bc})
+install( FILES ${kr_bc_decl} DESTINATION include/yack/kr/bc )
+
+
 ########################################################################
 ##
 ## fs
@@ -666,7 +674,7 @@ ${sort} ${sort_nw} ${sort_network}
 ${counting} ${counting_c}
 ${rtld}
 ${string}
-${kr}
+${kr} ${kr_bc}
 ${fs} ${fs_local}
 ${hashing}
 ${info} ${info_modulation} ${info_compression}
