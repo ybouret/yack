@@ -17,8 +17,11 @@ namespace yack {
 		 // The memory pointed to by data will be modified by
 		 // the functions.
 		 */
-		void tea_encrypt( uint32_t *dw_reg, const size_t dw_num, const uint32_t *k) throw();
-		void tea_decrypt( uint32_t *dw_reg, const size_t dw_num, const uint32_t *k) throw();
+        struct tea {
+            static void encrypt( uint32_t *dw_reg, const size_t dw_num, const uint32_t *k) throw();
+            static void decrypt( uint32_t *dw_reg, const size_t dw_num, const uint32_t *k) throw();
+        };
+        
 	}
 }
 #endif

@@ -25,10 +25,10 @@ YACK_UTEST(kr_tea)
                 arr[i] = org[i] = ran.full<uint32_t>();
             }
             
-            tea_encrypt(arr(),n, key());
+            tea::encrypt(arr(),n, key());
             std::cerr << org << std::endl;
             std::cerr << arr << std::endl;
-            tea_decrypt(arr(),n, key());
+            tea::decrypt(arr(),n, key());
             std::cerr << arr << std::endl;
             
             YACK_ASSERT(org==arr);
