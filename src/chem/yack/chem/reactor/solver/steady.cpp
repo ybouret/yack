@@ -403,7 +403,11 @@ namespace yack {
             tableau        &step  = Steps[cc->omega];
             omega.ld(0);
             
-            // loading omega and rhs
+            //------------------------------------------------------------------
+            //
+            // loading omega and rhs step, compressing
+            //
+            //------------------------------------------------------------------
             {
                 size_t i=1;
                 for(const eq_node *node=cc->single->head;node;node=node->next,++i)
@@ -412,7 +416,9 @@ namespace yack {
                     const size_t       ei = *eq;
                     writable<double>  &om = omega[i];
                     
+                    //----------------------------------------------------------
                     // initialize omega[i][i] and step[i]
+                    //----------------------------------------------------------
                     om[i] = 1;
                     
                     if(blocked[ei]) {
@@ -421,22 +427,30 @@ namespace yack {
                     }
                     step[i] = xi[ei];
                     
+                    //----------------------------------------------------------
                     // compute gradient at Corg
+                    //----------------------------------------------------------
                     const greatest gr  = eq.grad_action(Phi,K[ei],C,xmul);
                     
-                    std::cerr << "Phi_<" << eq.name << "> = " << Phi << std::endl;
+                    if(xml.verbose)
+                    {
+                        cs.eqs.pad( *xml << "Phi_<" << eq.name << ">",eq) << " = " << Phi << std::endl;
+                    }
                     
-                    if(gr.index<=0) continue; // numerically 0
-                    const double   den = sigma[ei];
-                    gr.divide(Phi);
+                    if(gr.index<=0) continue;        // numerically 0
+                    const double   den = sigma[ei];  // fetch denominator
+                    gr.divide(Phi);                  // prepare numerator
                     
+                    //----------------------------------------------------------
                     // compute extra diagonal omega[i][j!=i]
+                    //----------------------------------------------------------
                     {
                         size_t j = i;
                         for(const eq_node *scan=node->prev;scan;scan=scan->prev)
                         {
                             const size_t ej  = ****scan;
                             const double num = gr.value * xadd.dot(Phi,cs.Nu[ej]);
+                            assert(j>1);
                             om[--j] = num/den;
                         }
                     }
@@ -446,6 +460,7 @@ namespace yack {
                         {
                             const size_t ej  = ****scan;
                             const double num = gr.value * xadd.dot(Phi,cs.Nu[ej]);
+                            assert(j<omega.cols);
                             om[++j] = num/den;
                         }
                     }
@@ -456,17 +471,29 @@ namespace yack {
             YACK_XMLOG(xml, "-- omega = " << omega);
             YACK_XMLOG(xml, "-- xstar = " << step);
             
+            //------------------------------------------------------------------
+            //
             // build local inv(omega)
+            //
+            //------------------------------------------------------------------
             if(!lu->build(omega,xadd))
             {
                 return false;
             }
             
+            //------------------------------------------------------------------
+            //
             // build local step=inv(omega)*xi_compact
+            //
+            //------------------------------------------------------------------
             lu->solve(omega,step,xadd);
             YACK_XMLOG(xml, "-- lstep = " << step);
 
+            //------------------------------------------------------------------
+            //
             // expand local step into global step
+            //
+            //------------------------------------------------------------------
             xstep.ld(0);
             {
                 size_t i=1;
@@ -521,14 +548,29 @@ namespace yack {
                 exit(0);
             }
             
+            //------------------------------------------------------------------
+            //
             // using squad of optimized, Cend=Corg=C at the end
+            //
+            //------------------------------------------------------------------
             make_global(C,xml);
             
+            //------------------------------------------------------------------
+            //
             // recomputing satus
+            //
+            //------------------------------------------------------------------
             if(!has_running(C,1,xml))
+            {
+                // the global step wan!
                 return;
+            }
             
+            //------------------------------------------------------------------
+            //
             // local step
+            //
+            //------------------------------------------------------------------
             if(!build_omega(C,xml))
             {
                 std::cerr << "singular Omega @cycle=" << cycle << std::endl;

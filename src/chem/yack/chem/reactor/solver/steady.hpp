@@ -81,11 +81,48 @@ namespace yack {
             double             Hamiltonian(const readable<double> &C);                //!< hamiltonian from running singles
             double             optimized_H(const double H0);                          //!< from H0=Hamiltonian(Corg) to Cend
             double             Hamiltonian(writable<double> &Cout, const squad &sq);  //!< build composite concentration and H
-            bool               has_running(writable<double> &C, const unsigned, const xmlog &);       //!< check if still running
-            const equilibrium *get_running(const readable<double> &C, const xmlog &); //!< build running
-            void               set_scaling(const xmlog &);                            //!< compute Psi and sigma from running
-            bool               got_solving(const double H0, const xmlog &);           //!< look for solving equilibria
-            void               make_global(writable<double> &C, const xmlog &);       //!< find best squad from solving
+      
+            //! check if still running amongst single
+            /**
+             - look for an unsteady equilibrium with get_running
+             - return false if all are OK
+             - return true if something to do,  with set_scaling
+             - when true, then the global hamiltonian is ready to be computed
+             */
+            bool               has_running(writable<double> &C, const unsigned, const xmlog &);
+         
+            //! fill currently running single equilibri[um|a]
+            /**
+             - check if each equilibrium is running or blocked, filling Ceq
+             - updated blocked and xi
+             - return the most unsteady equilibrium if found
+             */
+            const equilibrium *get_running(const readable<double> &C, const xmlog &);
+            
+            //! compute scaling for each (running) single
+            /**
+             - if blocked, set sigma to 0
+             - compute gradient of mass action at equilibrium
+             - compute dot product with stoichiometric coeff
+             */
+            void               set_scaling(const xmlog &);
+           
+            //! look for globally solving equilibri[um|a]
+            /**
+             - for each single, compute the best concentration within C0 -> Ceq
+             - for each hybrid, compute its Ceq then the best concentration within C0 -> Ceq
+             - register in solving all the improving concentrations
+             */
+            bool               got_solving(const double H0, const xmlog &);
+            
+            //! make the best new global concentration from solvin
+            /**
+             - test all ratified squads and keep the best
+             - compose the new concentration from the best squad
+             */
+            void               make_global(writable<double> &C, const xmlog &);
+            
+            
             bool               build_omega(const readable<double> &C, const xmlog &);
 
             //! Hamiltonian on Corg to Cend
