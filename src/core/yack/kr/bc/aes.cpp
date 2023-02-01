@@ -492,7 +492,7 @@ RT3[ ( Y0 >> 24 ) & 0xFF ];    \
         /*
          * AES block encryption
          */
-        void aes::encrypt(aes::context  *ctx,
+        void aes::encrypt(aes::context  &ctx,
                           void          *target,
                           const void    *source) throw()
         {
@@ -502,7 +502,7 @@ RT3[ ( Y0 >> 24 ) & 0xFF ];    \
             uint32_t *RK, X0, X1, X2, X3, Y0, Y1, Y2, Y3;
             
             
-            RK = ctx->rk;
+            RK = ctx.rk;
             
             GET_ULONG_LE( X0, input,  0 ); X0 ^= *RK++;
             GET_ULONG_LE( X1, input,  4 ); X1 ^= *RK++;
@@ -510,7 +510,7 @@ RT3[ ( Y0 >> 24 ) & 0xFF ];    \
             GET_ULONG_LE( X3, input, 12 ); X3 ^= *RK++;
             
             
-            for( i = (ctx->nr >> 1); i > 1; i-- )
+            for( i = (ctx.nr >> 1); i > 1; i-- )
             {
                 AES_FROUND( Y0, Y1, Y2, Y3, X0, X1, X2, X3 );
                 AES_FROUND( X0, X1, X2, X3, Y0, Y1, Y2, Y3 );
@@ -549,7 +549,7 @@ RT3[ ( Y0 >> 24 ) & 0xFF ];    \
         /*
          * AES block decryption
          */
-        void aes::decrypt( aes::context  *ctx,
+        void aes::decrypt(aes::context  &ctx,
                           void          *target,
                           const void    *source ) throw()
         {
@@ -560,7 +560,7 @@ RT3[ ( Y0 >> 24 ) & 0xFF ];    \
             uint32_t *RK, X0, X1, X2, X3, Y0, Y1, Y2, Y3;
             
             
-            RK = ctx->rk;
+            RK = ctx.rk;
             
             GET_ULONG_LE( X0, input,  0 ); X0 ^= *RK++;
             GET_ULONG_LE( X1, input,  4 ); X1 ^= *RK++;
@@ -568,7 +568,7 @@ RT3[ ( Y0 >> 24 ) & 0xFF ];    \
             GET_ULONG_LE( X3, input, 12 ); X3 ^= *RK++;
             
             
-            for( i = (ctx->nr >> 1); i > 1; i-- )
+            for( i = (ctx.nr >> 1); i > 1; i-- )
             {
                 AES_RROUND( Y0, Y1, Y2, Y3, X0, X1, X2, X3 );
                 AES_RROUND( X0, X1, X2, X3, Y0, Y1, Y2, Y3 );
@@ -620,99 +620,78 @@ RT3[ ( Y0 >> 24 ) & 0xFF ];    \
         }
         
         
-        /* == AES128 == */
-        static
-        void aes128_encrypt_set( aes::context *ctx, const void *key_buf, const size_t key_len ) {
+        void aes:: enc128( aes::context &ctx, const void *key_buf, const size_t key_len ) throw()
+        {
             
             uint8_t               key[128/8];
             static const size_t   num = sizeof(key);
             
-            assert(ctx);
+            build_aes_key( key, num, key_buf, key_len );
+            aes_setkey_enc( &ctx, key, 128 );
+            memset( key, 0, num );
+        }
+        
+        void aes:: dec128( aes::context &ctx, const void *key_buf, const size_t key_len ) throw()
+        {
+            
+            uint8_t               key[128/8];
+            static const size_t   num = sizeof(key);
             
             build_aes_key( key, num, key_buf, key_len );
-            aes_setkey_enc( ctx, key, 128 );
+            aes_setkey_dec(&ctx, key, 128 );
             memset( key, 0, num );
         }
         
         
         
         
-        static
-        void aes128_decrypt_set(aes::context *ctx, const void *key_buf, const size_t key_len ) throw() {
+        void aes:: enc192( aes::context &ctx, const void *key_buf, const size_t key_len ) throw()
+        {
             
-            uint8_t        key[128/8];
-            const size_t   num = sizeof(key);
+            uint8_t               key[192/8];
+            static const size_t   num = sizeof(key);
             
-            assert(ctx);
+            
+            build_aes_key(  key, num, key_buf, key_len );
+            aes_setkey_enc( &ctx, key, 192 );
+            memset( key, 0, num );
+        }
+        
+        void aes:: dec192( aes::context &ctx, const void *key_buf, const size_t key_len ) throw()
+        {
+            
+            uint8_t               key[192/8];
+            static const size_t   num = sizeof(key);
+            
             
             build_aes_key( key, num, key_buf, key_len );
-            aes_setkey_dec( ctx, key, 128 );
+            aes_setkey_dec( &ctx, key, 192 );
             memset( key, 0, num );
         }
         
         
         
         
-        /* == AES192 == */
-        static
-        void aes192_encrypt_set( aes::context *ctx, const void *key_buf, const size_t key_len ) {
-            
-            uint8_t        key[192/8];
-            const size_t   num = sizeof(key);
-            
-            assert(ctx);
+        void aes :: enc256(aes::context &ctx, const void *key_buf, const size_t key_len ) throw()
+        {
+            uint8_t               key[256/8];
+            static const size_t   num = sizeof(key);
             
             build_aes_key( key, num, key_buf, key_len );
-            aes_setkey_enc( ctx, key, 192 );
+            aes_setkey_enc( &ctx, key, 256 );
             memset( key, 0, num );
         }
         
-        
-        static
-        void aes192_decrypt_set( aes::context *ctx, const void *key_buf, const size_t key_len ) throw() {
-            
-            uint8_t        key[192/8];
-            const size_t   num = sizeof(key);
-            
-            assert(ctx);
+        void aes :: dec256(aes::context &ctx, const void *key_buf, const size_t key_len ) throw()
+        {
+            uint8_t               key[256/8];
+            static const size_t   num = sizeof(key);
             
             build_aes_key( key, num, key_buf, key_len );
-            aes_setkey_dec( ctx, key, 192 );
+            aes_setkey_dec( &ctx, key, 256 );
             memset( key, 0, num );
         }
         
-        
-        
-        
-        
-        /* == AES256 == */
-        static
-        void aes256_encrypt_set( aes::context *ctx, const void *key_buf, const size_t key_len ) throw() {
-            
-            uint8_t        key[256/8];
-            const size_t   num = sizeof(key);
-            
-            assert(ctx);
-            
-            build_aes_key( key, num, key_buf, key_len );
-            aes_setkey_enc( ctx, key, 256 );
-            memset( key, 0, num );
-        }
-        
-        
-        
-        static
-        void aes256_decrypt_set( aes::context *ctx, const void *key_buf, const size_t key_len ) throw() {
-            
-            uint8_t        key[256/8];
-            const size_t   num = sizeof(key);
-            
-            assert(ctx);
-            
-            build_aes_key( key, num, key_buf, key_len );
-            aes_setkey_dec( ctx, key, 256 );
-            memset( key, 0, num );
-        }
         
         
         

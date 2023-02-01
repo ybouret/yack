@@ -330,6 +330,7 @@ add_test(vfs:bytes test-core vfs_bytes)
 add_test(kr:digest   test-core kr_digest)
 add_test(kr:gray     test-core kr_gray)
 add_test(kr:tea      test-core kr_tea)
+add_test(kr:aes      test-core kr_aes)
 
 add_test(fields     test-core fields)
 
