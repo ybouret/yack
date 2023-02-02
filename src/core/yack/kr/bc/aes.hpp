@@ -53,7 +53,6 @@ namespace yack {
 
             static  void   enc256(context &ctx, const void *key_buf, const size_t key_len) throw(); //!< encrypt with aes256
             static  void   dec256(context &ctx, const void *key_buf, const size_t key_len) throw(); //!< decrypt with aes256
-
         };
        
         
