@@ -1,4 +1,6 @@
 #include "yack/kr/bc/aes128.hpp"
+#include "yack/kr/bc/aes192.hpp"
+
 #include "yack/string.hpp"
 #include "yack/utest/run.hpp"
 
@@ -36,6 +38,12 @@ YACK_UTEST(kr_bc)
     {
         aes128::encrypter enc(key);
         aes128::decrypter dec(key);
+        test_codec(enc,dec,ran);
+    }
+    
+    {
+        aes192::encrypter enc(key);
+        aes192::decrypter dec(key);
         test_codec(enc,dec,ran);
     }
     
