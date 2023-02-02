@@ -27,13 +27,13 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        digest(const size_t n); //!< setup with n bytes
-        digest(const digest &); //!< copy, same size
+        digest(const size_t n);                  //!< setup with n bytes
+        digest(const digest &);                  //!< copy, same size
         digest(const size_t n, const uint8_t b); //!< [b...b] n times
-        virtual ~digest() throw();          //!< cleanup
-        digest(const char *h);              //!< from hexadecimal string
-        digest(const memory::ro_buffer &);  //!< from binary data
-        digest(const void *, const size_t); //!< from binary data/text
+        virtual ~digest() throw();               //!< cleanup
+        digest(const char *h);                   //!< from hexadecimal string
+        digest(const memory::ro_buffer &);       //!< from binary data
+        digest(const void *, const size_t);      //!< from binary data/text
 
         //______________________________________________________________________
         //
