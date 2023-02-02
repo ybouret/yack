@@ -1,13 +1,23 @@
-
 #include "yack/kr/bc/aes.hpp"
-
-
 #include <cstring>
 
 namespace yack {
     
     namespace crypto {
         
+        aes:: ~aes() throw()
+        {
+            memset( &ctx, 0, sizeof(ctx) );
+        }
+        
+        aes:: aes() throw() : ctx()
+        {
+            memset( &ctx, 0, sizeof(ctx) );
+        }
+        
+        size_t aes:: size() const throw() { return block_size; }
+        
+    
         
         /*
          * 32-bit integer manipulation macros (little endian)

@@ -331,6 +331,7 @@ add_test(kr:digest   test-core kr_digest)
 add_test(kr:gray     test-core kr_gray)
 add_test(kr:tea      test-core kr_tea)
 add_test(kr:aes      test-core kr_aes)
+add_test(kr:bc       test-core kr_bc)
 
 add_test(fields     test-core fields)
 

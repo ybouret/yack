@@ -223,6 +223,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(kr_gray);
     YACK_UTEST(kr_tea);
     YACK_UTEST(kr_aes);
+    YACK_UTEST(kr_bc);
 
     YACK_UTEST(fields);
 

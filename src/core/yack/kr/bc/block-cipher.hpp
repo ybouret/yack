@@ -23,9 +23,10 @@ namespace yack {
             //
             // virtual interface
             //__________________________________________________________________
-            virtual size_t size() const throw()                   = 0; //!< block size in bytes
-            virtual void   call(void *target, const void *source) = 0; //!< process target[block_size] from source[block_size]
-
+            virtual size_t      size()      const throw()              = 0; //!< block size in bytes
+            virtual void        call(void *target, const void *source) = 0; //!< process target[block_size] from source[block_size]
+            virtual const char *name()      const throw()              = 0; //!< identifier
+            
             //__________________________________________________________________
             //
             // non virtual interface
@@ -39,7 +40,7 @@ namespace yack {
             virtual ~block_cipher() throw(); //!< cleanup
             
         protected:
-            explicit block_cipher();         //!< setup
+            explicit block_cipher() throw(); //!< setup
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(block_cipher);
