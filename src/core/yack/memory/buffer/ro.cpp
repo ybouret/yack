@@ -1,6 +1,7 @@
 
 #include "yack/memory/buffer/ro.hpp"
 #include "yack/type/hexa.hpp"
+#include "yack/ios/ascii/hybrid.hpp"
 #include <iostream>
 
 namespace yack
@@ -22,6 +23,16 @@ namespace yack
             for(size_t i=measure();i>0;--i)
             {
                 os << hexa::uppercase_text[*(p++)];
+            }
+            return os;
+        }
+        
+        std::ostream &ro_buffer:: display_char(std::ostream &os) const
+        {
+            const uint8_t *p = static_cast<const uint8_t *>(ro_addr());
+            for(size_t i=measure();i>0;--i)
+            {
+                os << ios::ascii::hybrid[*(p++)];
             }
             return os;
         }

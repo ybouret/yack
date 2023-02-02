@@ -57,6 +57,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(memory_parcel);
     YACK_UTEST(memory_parcels);
     YACK_UTEST(memory_buffers);
+    YACK_UTEST(memory_buff_io);
     YACK_UTEST(memory_embed);
     YACK_UTEST(memory_zcache);
     YACK_UTEST(memory_operative);

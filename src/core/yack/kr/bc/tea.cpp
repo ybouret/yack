@@ -80,10 +80,10 @@ namespace yack {
 				{
 					const size_t n1 = n-1;
 					uint32_t     mx,e;
-					size_t p;
+                    size_t       p = 0;
 					sum += tea_delta;
 					e = (sum>>2) & 3;
-					for( p = 0; p < n1; p++ )
+					for(; p < n1; p++ )
 					{
 						const uint32_t y  = v[p+1];
 						mx = ( (z>>5) ^ (y<<2) ) + (( (y>>3) ^ (z<<4) ) ^ (sum^y)) + (k[ (p&3) ^ e] ^ z);
@@ -105,8 +105,8 @@ namespace yack {
 			assert(k!=NULL);
 			assert(v!=NULL);
 			{
-                uint32_t y = v[0];
-				uint32_t q = n > 52 ? 0x00000006 : tea_mix[n];
+                uint32_t y   = v[0];
+				uint32_t q   = n > 52 ? 0x00000006 : tea_mix[n];
 				uint32_t sum = q*tea_delta;
                 
 				while (sum != 0){
