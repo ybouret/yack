@@ -38,12 +38,12 @@ namespace yack {
             };
             
             
-            virtual size_t size() const throw();
-            virtual       ~aes()        throw();
+            virtual size_t size() const throw(); //!< block_size
+            virtual       ~aes()        throw(); //!< cleanup
             
         protected:
-            explicit aes() throw();
-            context  ctx;
+            explicit aes() throw(); //!< setup empty
+            context  ctx;           //!< data to implement algorithm
             
         public:
             //__________________________________________________________________
