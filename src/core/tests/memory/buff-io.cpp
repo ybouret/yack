@@ -14,7 +14,7 @@ YACK_UTEST(memory_buff_io)
     if(false)
     {
         string                      src = "Hello World!\n";
-        const memory::ro_buffer    &bf = src;
+        const memory::ro_buffer    &bf  = src;
         const memory::fixed_buffer  fb( src(), src.size() );
         bf.display_char(std::cerr) << std::endl;
         fb.display_char(std::cerr) << std::endl;

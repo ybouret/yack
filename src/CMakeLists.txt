@@ -65,6 +65,7 @@ add_subdirectory(yack/tiff)
 add_subdirectory(gfx)
 add_subdirectory(yack/sqlite3)
 add_subdirectory(mpi++)
+add_subdirectory(fltk)
 
 # ======================================================================
 # creating regression from unit tests
