@@ -31,7 +31,7 @@
 #define FL_ORANGE Fl_Color(93)
 #endif
 
-namespace yocto 
+namespace yack
 {
     namespace FLTK
     {

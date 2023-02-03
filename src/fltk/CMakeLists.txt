@@ -12,8 +12,8 @@ SOURCE_GROUP( FLTK FILES ${srcs} )
 
 INCLUDE_DIRECTORIES( . ../core ../math)
 
-ADD_LIBRARY( y-fltk STATIC ${srcs} )
-INSTALL( TARGETS y-fltk ARCHIVE DESTINATION lib )
+ADD_LIBRARY( yack-fltk STATIC ${srcs} )
+INSTALL( TARGETS yack-fltk ARCHIVE DESTINATION lib )
 
 ADD_SUBDIRECTORY(tests)
 

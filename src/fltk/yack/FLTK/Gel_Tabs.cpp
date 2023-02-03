@@ -42,7 +42,7 @@
 // rightsep   rt_sep_on_xpm     rt_sep_off_xpm   //
 //                                               //
 
-namespace yocto 
+namespace yack
 {
     namespace FLTK
     {

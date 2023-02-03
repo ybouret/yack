@@ -2,10 +2,10 @@
 version 1.0308
 header_name {.h}
 code_name {.cxx}
-decl {\#include "yack/FLTK/Canvas.hpp"} {selected public global
+decl {\#include "yack/FLTK/Canvas.hpp"} {public global
 }
 
-decl {using namespace yocto;} {public global
+decl {using namespace yack;} {selected public global
 }
 
 Function {MakeCanvasWindow()} {open

@@ -1,7 +1,7 @@
 #include "yack/utest/run.hpp"
 #include "matte.h"
 
-using namespace yocto;
+using namespace yack;
 
 YACK_UTEST(matte)
 {

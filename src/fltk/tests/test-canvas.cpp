@@ -1,12 +1,11 @@
-#include "yocto/utest/run.hpp"
+#include "yack/utest/run.hpp"
 #include "canvas.h"
-#include "yocto/ptr/auto.hpp"
-#include "yocto/math/types.hpp"
+#include "yack/ptr/auto.hpp"
 
-using namespace yocto;
+using namespace yack;
 using namespace FLTK;
 
-YOCTO_UNIT_TEST_IMPL(canvas)
+YACK_UTEST(canvas)
 {
     auto_ptr<Fl_Window> win( MakeCanvasWindow() );
     
@@ -26,4 +25,4 @@ YOCTO_UNIT_TEST_IMPL(canvas)
 
     (void)Fl::run();
 }
-YOCTO_UNIT_TEST_DONE()
+YACK_UDONE()

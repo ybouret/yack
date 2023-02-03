@@ -34,7 +34,7 @@
 //          lt         ct         rt             //
 //                                               //
 
-namespace yocto  
+namespace yack
 {
     
     namespace FLTK

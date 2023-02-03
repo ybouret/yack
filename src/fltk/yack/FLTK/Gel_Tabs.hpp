@@ -25,7 +25,7 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Group.H>
 
-namespace yocto 
+namespace yack
 {
     
     namespace FLTK 

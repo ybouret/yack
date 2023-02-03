@@ -5,10 +5,10 @@ code_name {.cxx}
 decl {\#include "yack/FLTK/Matte_Button.hpp"} {public global
 }
 
-decl {\#include "yack/FLTK/Gel_Tabs.hpp"} {selected public global
+decl {\#include "yack/FLTK/Gel_Tabs.hpp"} {public global
 }
 
-decl {using namespace yocto;} {public global
+decl {using namespace yack;} {public global
 }
 
 Function {MakeWindowMatte()} {open
