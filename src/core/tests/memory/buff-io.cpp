@@ -4,6 +4,7 @@
 #include "yack/memory/buffer/fixed.hpp"
 #include "yack/ios/fmt/hexa.hpp"
 #include "yack/system/endian.hpp"
+#include "yack/memory/buffer/io.hpp"
 
 using namespace yack;
 
@@ -43,7 +44,7 @@ YACK_UTEST(memory_buff_io)
         fb.display_char(std::cerr) << std::endl;
         const void *addr = fb.ro_addr();
         size_t      size = fb.measure();
-        uint32_t    dw = buff_io<uint32_t>(addr,size);
+        uint32_t    dw   = memory::buffer_io::get<uint32_t>(addr,size);
         std::cerr << ios::hexa(dw) << std::endl;
     }
     
@@ -55,9 +56,9 @@ YACK_UTEST(memory_buff_io)
         fb.display_char(std::cerr) << std::endl;
         const void *addr = fb.ro_addr();
         size_t      size = fb.measure();
-        uint32_t    dw = buff_io<uint32_t>(addr,size);
+        uint32_t    dw   = memory::buffer_io::get<uint32_t>(addr,size);
         std::cerr << ios::hexa(dw) << std::endl;
-        dw = buff_io<uint32_t>(addr,size);
+        dw = memory::buffer_io::get<uint32_t>(addr,size);
         std::cerr << ios::hexa(dw) << std::endl;
     }
     

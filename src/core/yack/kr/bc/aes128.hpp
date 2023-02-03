@@ -20,17 +20,17 @@ namespace yack {
         {
             //__________________________________________________________________
             //
-            //! AES18 encrypter
+            //! AES128 encrypter
             //__________________________________________________________________
             class encrypter : public aes
             {
             public:
-                static const char * const clid;
+                static const char * const clid; //!< for name
                 
-                explicit encrypter(const memory::ro_buffer &key)           throw();
-                virtual ~encrypter()                                       throw();
-                virtual const char *name()                           const throw();
-                virtual void        call(void *target, const void *source) throw();
+                explicit encrypter(const memory::ro_buffer &key)           throw(); //!< init
+                virtual ~encrypter()                                       throw(); //!< quit
+                virtual const char *name()                           const throw(); //!< name
+                virtual void        call(void *target, const void *source) throw(); //!< encrypt
                 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(encrypter);
@@ -38,17 +38,17 @@ namespace yack {
             
             //__________________________________________________________________
             //
-            //! AES18 decrypter
+            //! AES128 decrypter
             //__________________________________________________________________
             class decrypter : public aes
             {
             public:
-                static const char * const clid;
+                static const char * const clid; //!< for name
                 
-                explicit            decrypter(const memory::ro_buffer &key) throw();
-                virtual            ~decrypter()                             throw();
-                virtual const char *name()                            const throw();
-                virtual void        call(void *target, const void *source)  throw();
+                explicit            decrypter(const memory::ro_buffer &key) throw(); //!< init
+                virtual            ~decrypter()                             throw(); //!< quit
+                virtual const char *name()                            const throw(); //!< name
+                virtual void        call(void *target, const void *source)  throw(); //!< decrypt
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(decrypter);
