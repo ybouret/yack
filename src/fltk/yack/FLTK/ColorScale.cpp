@@ -1,6 +1,6 @@
 
 #include "yack/FLTK/ColorScale.hpp"
-//#include "yack/math/dat/linear.hpp"
+#include "yack/math/data/linear.hpp"
 #include "yack/type/utils.hpp"
 
 namespace yack
@@ -38,7 +38,7 @@ namespace yack
                 for( int xs = 0; xs <= sw; ++xs )
                 {
                     const double user_x = xaxis.vmin  + (xs*xaxis.length)/sw;
-                    const double w      = 0; //clamp<double>(0,math::linear<double>(user_x,data),1);
+                    const double w      = clamp<double>(0,math::linear<double>(user_x,data),1);
                     fl_color( fl_color_average(color1, color2, float(w)) );
                     fl_yxline(sx0+xs, sy0, sy1);
                 }
