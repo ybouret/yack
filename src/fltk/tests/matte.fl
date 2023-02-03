@@ -1,15 +1,15 @@
 # data file for the Fltk User Interface Designer (fluid)
-version 1.0300 
-header_name {.h} 
+version 1.0308
+header_name {.h}
 code_name {.cxx}
-decl {\#include "yocto/FLTK/Matte_Button.hpp"} {public global
-} 
+decl {\#include "yack/FLTK/Matte_Button.hpp"} {public global
+}
 
-decl {\#include "yocto/FLTK/Gel_Tabs.hpp"} {public global
-} 
+decl {\#include "yack/FLTK/Gel_Tabs.hpp"} {selected public global
+}
 
-decl {using namespace yocto;} {selected public global
-} 
+decl {using namespace yocto;} {public global
+}
 
 Function {MakeWindowMatte()} {open
 } {
@@ -53,4 +53,4 @@ Function {MakeWindowMatte()} {open
       }
     }
   }
-} 
+}

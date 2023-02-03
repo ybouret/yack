@@ -1,12 +1,12 @@
-#include "yocto/utest/driver.hpp"
+#include "yack/utest/driver.hpp"
 
-using namespace yocto;
+using namespace yack;
 
 
-YOCTO_UNIT_TEST_INIT(16)
+YACK_UTEST_DECL(16)
 {
-	YOCTO_UNIT_TEST_DECL(matte);
-    YOCTO_UNIT_TEST_DECL(canvas);
+	YACK_UTEST(matte);
+    YACK_UTEST(canvas);
 }
-YOCTO_UNIT_TEST_EXEC()
+YACK_UTEST_EXEC()
 
