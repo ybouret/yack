@@ -8,23 +8,6 @@
 
 using namespace yack;
 
-template <typename T>
-static inline T buff_io(const void * &addr,
-                        size_t       &size)
-{
-    T              x = 0;
-    size_t         n = sizeof(T);
-    const uint8_t *p = static_cast<const uint8_t *>(addr);
-    while(n>0&&size>0)
-    {
-        x <<= 8;
-        x |= *(p++);
-        --n;
-        --size;
-    }
-    addr = p;
-    return endian::swap_be(x);
-}
 
 YACK_UTEST(memory_buff_io)
 {
@@ -49,7 +32,7 @@ YACK_UTEST(memory_buff_io)
     }
     
     {
-        const uint32_t source[2] =  { 0xF1F2F2F4, 0xEAEBECED};
+        const uint32_t source[2] =  { 0xF1F2F2F4, 0xEAEBECED };
         YACK_CHECK(sizeof(source)==8);
         const memory::fixed_buffer  fb( &source[0],sizeof(source));
         std::cerr << ios::hexa(source[0]) << ios::hexa(source[1]) << std::endl;
