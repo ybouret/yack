@@ -7,10 +7,10 @@ namespace yack {
         
         aes:: ~aes() throw()
         {
-            memset( &ctx, 0, sizeof(ctx) );
+            nil();
         }
         
-        aes:: aes() throw() : ctx()
+        void aes:: nil() throw()
         {
             memset( &ctx, 0, sizeof(ctx) );
         }

@@ -42,8 +42,18 @@ namespace yack {
             virtual       ~aes()        throw(); //!< cleanup
             
         protected:
-            explicit aes() throw(); //!< setup empty
-            context  ctx;           //!< data to implement algorithm
+            //! setup empty
+            template <typename NAME> inline
+            explicit aes(const NAME &uuid) : block_cipher(uuid), ctx()
+            {
+                nil();
+            }
+            
+            context  ctx; //!< data to implement algorithm
+            
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(aes);
+            void nil() throw();
             
         public:
             //__________________________________________________________________

@@ -7,10 +7,6 @@ namespace yack {
     
     namespace crypto
     {
-        block_cipher:: block_cipher() throw()
-        {
-            
-        }
         
         block_cipher:: ~block_cipher() throw()
         {
