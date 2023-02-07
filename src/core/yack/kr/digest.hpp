@@ -34,7 +34,8 @@ namespace yack
         digest(const char *h);                   //!< from hexadecimal string
         digest(const memory::ro_buffer &);       //!< from binary data
         digest(const void *, const size_t);      //!< from binary data/text
-
+        digest(const size_t n, const memory::ro_buffer &); //!< setup and fill
+        
         //______________________________________________________________________
         //
         // serializable
@@ -49,8 +50,8 @@ namespace yack
         //______________________________________________________________________
         virtual size_t          size()                        const throw(); //!< bytes
         friend std::ostream   & operator<<(std::ostream  &, const digest &); //!< output
-        friend bool operator==(const digest &, const digest &)      throw(); //!< equality
-        void   ldz() throw(); //!< set to zero
+        //friend bool operator==(const digest &, const digest &)      throw(); //!< equality
+        void                    ldz()                               throw(); //!< set to zero
 
         //______________________________________________________________________
         //

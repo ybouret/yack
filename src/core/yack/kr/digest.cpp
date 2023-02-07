@@ -56,7 +56,21 @@ blen( N )
         memset(addr,b,blen);
     }
 
+    digest:: digest(const size_t n, const memory::ro_buffer &b) :
+    YACK_DIGEST_CTOR(n)
+    {
+        const size_t m = b.measure();
+        if(blen>0 && m>0)
+        {
+            const uint8_t *p = static_cast<const uint8_t *>(b.ro_addr());
+            for(size_t i=0;i<blen;++i)
+            {
+                addr[i] = p[ i % m ];
+            }
+        }
+    }
 
+    
     digest:: digest(const digest &d) :
     YACK_DIGEST_CTOR(d.blen)
     {
@@ -145,6 +159,7 @@ blen( N )
         return os;
     }
 
+#if 0
     bool operator==(const digest &lhs, const digest &rhs) throw()
     {
         size_t n = lhs.blen;
@@ -163,6 +178,7 @@ blen( N )
             return false;
         }
     }
+#endif
     
     const void * digest:: ro_addr() const throw() { return addr; }
     size_t       digest:: measure() const throw() { return blen; }
