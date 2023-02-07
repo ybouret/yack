@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_KR_OPERATING_BLOCK_CIPHER_INCLUDED
@@ -20,8 +19,8 @@ namespace yack {
         {
         public:
             virtual ~operating_block_cipher() throw();
-            
-            
+            virtual size_t size() const throw();
+            virtual void   sync() throw() = 0;
             
         protected:
             explicit operating_block_cipher(const block_cipher::pointer &,

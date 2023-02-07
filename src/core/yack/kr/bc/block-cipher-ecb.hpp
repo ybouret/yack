@@ -18,10 +18,10 @@ namespace yack {
             class encrypter : public operating_block_cipher
             {
             public:
-                
                 virtual      ~encrypter() throw();
                 explicit      encrypter(const block_cipher::pointer &);
                 virtual  void call(void *target, const void *source);
+                virtual  void sync() throw();
                 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(encrypter);
@@ -34,7 +34,8 @@ namespace yack {
                 virtual      ~decrypter() throw();
                 explicit      decrypter(const block_cipher::pointer &);
                 virtual  void call(void *target, const void *source);
-                
+                virtual  void sync() throw();
+
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(decrypter);
             };

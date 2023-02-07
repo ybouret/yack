@@ -20,6 +20,9 @@ namespace yack {
         {
             bc->call(target,source);
         }
+        
+        void   block_cipher_ecb:: encrypter::  sync() throw() {}
+        
     }
     
     namespace crypto
@@ -38,6 +41,9 @@ namespace yack {
         {
             bc->call(target,source);
         }
+        
+        void   block_cipher_ecb:: decrypter::  sync() throw() {}
+
     }
     
 }
