@@ -7,10 +7,10 @@ namespace yack {
     {
         const char * const aes192:: encrypter:: clid = "AES192-ENC";
         
-        aes192:: encrypter:: encrypter(const memory::ro_buffer &key) throw() :
+        aes192:: encrypter:: encrypter(const memory::ro_buffer &k) throw() :
         aes(clid)
         {
-            aes::enc192(ctx, key.ro_addr(), key.measure() );
+            aes::enc192(ctx, k.ro_addr(), k.measure() );
         }
         
         aes192:: encrypter:: ~encrypter() throw()
@@ -32,10 +32,10 @@ namespace yack {
     {
         const char * const aes192:: decrypter:: clid = "AES192-DEC";
         
-        aes192:: decrypter:: decrypter(const memory::ro_buffer &key) throw() :
+        aes192:: decrypter:: decrypter(const memory::ro_buffer &k) throw() :
         aes(clid)
         {
-            aes::dec192(ctx, key.ro_addr(), key.measure() );
+            aes::dec192(ctx, k.ro_addr(), k.measure() );
         }
         
         aes192:: decrypter:: ~decrypter() throw()

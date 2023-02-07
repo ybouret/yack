@@ -7,10 +7,10 @@ namespace yack {
     {
         const char * const aes256:: encrypter:: clid = "AES256-ENC";
         
-        aes256:: encrypter:: encrypter(const memory::ro_buffer &key) throw() :
+        aes256:: encrypter:: encrypter(const memory::ro_buffer &k) throw() :
         aes(clid)
         {
-            aes::enc256(ctx, key.ro_addr(), key.measure() );
+            aes::enc256(ctx, k.ro_addr(), k.measure() );
         }
         
         aes256:: encrypter:: ~encrypter() throw()
@@ -32,10 +32,10 @@ namespace yack {
     {
         const char * const aes256:: decrypter:: clid = "AES256-DEC";
         
-        aes256:: decrypter:: decrypter(const memory::ro_buffer &key) throw() :
+        aes256:: decrypter:: decrypter(const memory::ro_buffer &k) throw() :
         aes(clid)
         {
-            aes::dec256(ctx, key.ro_addr(), key.measure() );
+            aes::dec256(ctx, k.ro_addr(), k.measure() );
         }
         
         aes256:: decrypter:: ~decrypter() throw()

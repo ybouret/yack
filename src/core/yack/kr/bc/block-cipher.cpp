@@ -17,6 +17,7 @@ namespace yack {
             return size() * 8;
         }
         
+        const string & block_cipher:: key() const throw() { return name; }
         
         
         

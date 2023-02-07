@@ -27,7 +27,7 @@ namespace yack {
             public:
                 static const char * const clid; //!< for name
                 
-                explicit     encrypter(const memory::ro_buffer &key) throw(); //!< init
+                explicit     encrypter(const memory::ro_buffer &)    throw(); //!< init
                 virtual     ~encrypter()                             throw(); //!< quit
                 virtual void call(void *target, const void *source)  throw(); //!< encrypt
                 
@@ -44,7 +44,7 @@ namespace yack {
             public:
                 static const char * const clid; //!< for name
                 
-                explicit            decrypter(const memory::ro_buffer &key) throw(); //!< init
+                explicit            decrypter(const memory::ro_buffer &)    throw(); //!< init
                 virtual            ~decrypter()                             throw(); //!< quit
                 virtual void        call(void *target, const void *source)  throw(); //!< decrypt
 
