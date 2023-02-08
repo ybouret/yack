@@ -6,6 +6,7 @@
 #include "yack/kr/digest.hpp"
 #include "yack/string.hpp"
 #include "yack/ptr/ark.hpp"
+#include "yack/large-object.hpp"
 
 namespace yack {
     
@@ -17,7 +18,7 @@ namespace yack {
         //! interface to a block cipher
         //
         //______________________________________________________________________
-        class block_cipher : public object, public counted
+        class block_cipher : public large_object, public counted
         {
         public:
             typedef ark_ptr<string,block_cipher> pointer;
@@ -51,7 +52,7 @@ namespace yack {
         protected:
             template <typename NAME> inline
             explicit block_cipher(const NAME &uuid) :
-            object(), counted(), name(uuid) {}
+            large_object(), counted(), name(uuid) {}
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(block_cipher);

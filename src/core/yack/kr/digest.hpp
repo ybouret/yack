@@ -1,6 +1,7 @@
 #ifndef YACK_CRYPTO_DIGEST_INCLUDED
 #define YACK_CRYPTO_DIGEST_INCLUDED 1
 
+#include "yack/object.hpp"
 #include "yack/sequence/contiguous.hpp"
 #include "yack/ios/serializable.hpp"
 #include "yack/memory/buffer/rw.hpp"
@@ -16,6 +17,7 @@ namespace yack
     //
     //__________________________________________________________________________
     class digest :
+    public object,
     public contiguous<uint8_t>,
     public memory::rw_buffer,
     public ios::serializable
@@ -27,15 +29,16 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        digest(const size_t n);                  //!< setup with n bytes
-        digest(const digest &);                  //!< copy, same size
-        digest(const size_t n, const uint8_t b); //!< [b...b] n times
-        virtual ~digest() throw();               //!< cleanup
-        digest(const char *h);                   //!< from hexadecimal string
-        digest(const memory::ro_buffer &);       //!< from binary data
-        digest(const void *, const size_t);      //!< from binary data/text
+        digest(const size_t n);                            //!< setup with n bytes
+        digest(const digest &);                            //!< copy, same size
+        digest(const size_t n, const uint8_t b);           //!< [b...b] n times
+        virtual ~digest() throw();                         //!< cleanup
+        digest(const char *h);                             //!< from hexadecimal string
+        digest(const memory::ro_buffer &);                 //!< from binary data
+        digest(const void *, const size_t);                //!< from binary data/text
         digest(const size_t n, const memory::ro_buffer &); //!< setup and fill
-        
+        digest & operator=(const digest &) throw();        //!< assign SAME SIZE
+                                                           
         //______________________________________________________________________
         //
         // serializable
@@ -50,7 +53,6 @@ namespace yack
         //______________________________________________________________________
         virtual size_t          size()                        const throw(); //!< bytes
         friend std::ostream   & operator<<(std::ostream  &, const digest &); //!< output
-        //friend bool operator==(const digest &, const digest &)      throw(); //!< equality
         void                    ldz()                               throw(); //!< set to zero
 
         //______________________________________________________________________
@@ -60,8 +62,16 @@ namespace yack
         virtual size_t          measure() const throw(); //!< bytes
         virtual const void *    ro_addr() const throw(); //!< address of first byte
         
+        //______________________________________________________________________
+        //
+        // operators
+        //______________________________________________________________________
+        digest & operator |= (const digest &rhs) throw();
+        digest & operator &= (const digest &rhs) throw();
+        digest & operator ^= (const digest &rhs) throw();
+
+        
     private:
-        YACK_DISABLE_ASSIGN(digest);
         uint8_t     *addr;
         uint8_t     *byte;
         const size_t blen;

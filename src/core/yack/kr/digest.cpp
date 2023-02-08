@@ -36,6 +36,7 @@ namespace yack
 
 #define YACK_DIGEST_CTOR(N) \
 collection(),               \
+object(),                   \
 contiguous<uint8_t>(),      \
 memory::rw_buffer(),        \
 ios::serializable(),        \
@@ -77,6 +78,14 @@ blen( N )
         memcpy(addr,d.addr,blen);
     }
 
+    digest & digest:: operator=(const digest &d) throw()
+    {
+        assert(d.size()==size());
+        assert(d.blen==blen);
+        memmove(addr,d.addr,blen);
+        return *this;
+    }
+    
     static  inline size_t check_hexa(const char *str)
     {
         if(str)
@@ -184,6 +193,39 @@ blen( N )
     size_t       digest:: measure() const throw() { return blen; }
 
 
+    
+    digest & digest:: operator |= (const digest &rhs) throw()
+    {
+        assert(blen==rhs.blen);
+        for(size_t i=blen;i>0;--i)
+        {
+            byte[i] |= rhs.byte[i];
+        }
+        return *this;
+    }
+    
+    digest & digest:: operator &= (const digest &rhs) throw()
+    {
+        assert(blen==rhs.blen);
+        for(size_t i=blen;i>0;--i)
+        {
+            byte[i] &= rhs.byte[i];
+        }
+        return *this;
+    }
+    
+    
+    digest & digest:: operator ^= (const digest &rhs) throw()
+    {
+        assert(blen==rhs.blen);
+        for(size_t i=blen;i>0;--i)
+        {
+            byte[i] ^= rhs.byte[i];
+        }
+        return *this;
+    }
+
+    
 }
 
 #include "yack/ios/encoder.hpp"
