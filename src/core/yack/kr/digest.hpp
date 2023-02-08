@@ -66,9 +66,9 @@ namespace yack
         //
         // operators
         //______________________________________________________________________
-        digest & operator |= (const digest &rhs) throw();
-        digest & operator &= (const digest &rhs) throw();
-        digest & operator ^= (const digest &rhs) throw();
+        digest & operator |= (const digest &rhs) throw(); //!< bytewise OR
+        digest & operator &= (const digest &rhs) throw(); //!< bytewise AND
+        digest & operator ^= (const digest &rhs) throw(); //!< bytewise XOR
 
         
     private:

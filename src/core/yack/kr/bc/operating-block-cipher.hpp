@@ -18,14 +18,29 @@ namespace yack {
         class operating_block_cipher : public block_cipher
         {
         public:
-            virtual ~operating_block_cipher() throw();
-            virtual size_t size() const throw();
-            virtual void   sync() throw() = 0;
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
             
+            virtual size_t size() const throw(); //!< internal block_cipher
+            virtual void   sync() throw() = 0;   //!< restart
+            
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~operating_block_cipher() throw(); //!< cleanup
+
         protected:
+            //! setup with internal block cipher and new name
             explicit operating_block_cipher(const block_cipher::pointer &,
                                             const char                  *);
-            block_cipher::pointer bc;
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            block_cipher::pointer bc; //!< internal block cipher
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(operating_block_cipher);

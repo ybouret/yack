@@ -21,7 +21,11 @@ namespace yack {
         class block_cipher : public large_object, public counted
         {
         public:
-            typedef ark_ptr<string,block_cipher> pointer;
+            //__________________________________________________________________
+            //
+            // types
+            //__________________________________________________________________
+            typedef ark_ptr<string,block_cipher> pointer; //!< alias
             
             //__________________________________________________________________
             //
@@ -35,7 +39,7 @@ namespace yack {
             // non virtual interface
             //__________________________________________________________________
             size_t         bits() const throw(); //!< 8 * size()
-            const string  &key()  const throw();
+            const string  &key()  const throw(); //!< for pointer
             
             //__________________________________________________________________
             //
@@ -47,9 +51,10 @@ namespace yack {
             //
             // members
             //__________________________________________________________________
-            const string name;
+            const string name; //!< identifier
             
         protected:
+            //! setup with name
             template <typename NAME> inline
             explicit block_cipher(const NAME &uuid) :
             large_object(), counted(), name(uuid) {}

@@ -10,31 +10,48 @@ namespace yack {
     
     namespace crypto
     {
-        
+        //______________________________________________________________________
+        //
+        //
+        //! Electronic Code Book
+        //
+        //______________________________________________________________________
         struct block_cipher_ecb
         {
-            static const char * const clid;
+            //__________________________________________________________________
+            //
+            // definitions
+            //__________________________________________________________________
+            static const char * const clid; //!< "ECB"
 
+            //__________________________________________________________________
+            //
+            //! encrypter
+            //__________________________________________________________________
             class encrypter : public operating_block_cipher
             {
             public:
-                virtual      ~encrypter() throw();
-                explicit      encrypter(const block_cipher::pointer &);
-                virtual  void call(void *target, const void *source);
-                virtual  void sync() throw();
+                virtual      ~encrypter() throw();                      //!< cleanup
+                explicit      encrypter(const block_cipher::pointer &); //!< setup
+                virtual  void call(void *target, const void *source);   //!< block-wise encryption
+                virtual  void sync() throw();                           //!< do nothing
                 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(encrypter);
             };
             
+            //__________________________________________________________________
+            //
+            //! decrypter
+            //__________________________________________________________________
             class decrypter : public operating_block_cipher
             {
             public:
                 
-                virtual      ~decrypter() throw();
-                explicit      decrypter(const block_cipher::pointer &);
-                virtual  void call(void *target, const void *source);
-                virtual  void sync() throw();
+                virtual      ~decrypter() throw();                       //!< cleanup
+                explicit      decrypter(const block_cipher::pointer &);  //!< setup
+                virtual  void call(void *target, const void *source);    //!< block-wise decryption
+                virtual  void sync() throw();                            //!< do nothing
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(decrypter);
