@@ -33,6 +33,7 @@ namespace yack {
             public:
                 virtual void sync()     throw(); //!< Cp = IV
                 virtual     ~engine()   throw(); //!< cleanup
+                                                 
             protected:
                 //! setup IV and CP
                 explicit engine(const block_cipher::pointer &,

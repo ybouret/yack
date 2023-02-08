@@ -76,7 +76,9 @@ YACK_UTEST(kr_op)
     string            key = "Hello, World !";
     
     test_codec<aes128::encrypter,aes128::decrypter>(key,ran);
-    
+    test_codec<aes192::encrypter,aes192::decrypter>(key,ran);
+    test_codec<aes256::encrypter,aes256::decrypter>(key,ran);
+
     YACK_SIZEOF(digest);
     YACK_SIZEOF(block_cipher_ecb::encrypter);
     YACK_SIZEOF(block_cipher_ecb::decrypter);
