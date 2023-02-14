@@ -31,15 +31,10 @@ namespace yack
                                     const double            K_eq,
                                     const readable<double> &Cini,
                                     writable<double>       &Cend,
+                                    raddops                &xadd,
                                     rmulops                &xmul);
             
-            static aftermath  build(const components       &comp,
-                                    const double            K_eq,
-                                    const readable<double> &Cini,
-                                    writable<double>       &Cend,
-                                    rmulops                &xmul,
-                                    raddops                &xadd,
-                                    writable<double>       &Ctmp);
+           
             
             friend std::ostream & operator<<(std::ostream &, const aftermath &);
             

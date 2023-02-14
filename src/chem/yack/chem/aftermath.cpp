@@ -65,26 +65,19 @@ namespace yack
         
         std::ostream & operator<<(std::ostream &os, const aftermath &am)
         {
-            switch (am.state) {
-                case components::are_blocked:
-                    os << "[blocked]";
-                    break;
-                 
-                case components::are_running:
-                    os << "[running] " << std::setw(15) << am.value;
-            }
-            
+            os << components::state_text(am.state) << " " <<std::setw(15) << am.value;
             return os;
         }
-
+        
         
         aftermath aftermath:: guess(const components       &comp,
                                     const double            K_eq,
                                     const readable<double> &Cini,
                                     writable<double>       &Cend,
+                                    raddops                &xadd,
                                     rmulops                &xmul)
         {
-            static const char fn[] = "chemical::outcome::study";
+            static const char fn[] = "chemical::aftermath::guess";
             assert(K_eq>0);
             assert(comp.size()>0);
             
@@ -372,53 +365,9 @@ namespace yack
             
             
         SUCCESS:
-            raddops xadd;
-            std::cerr << "x.b= " << x.b << " / " << comp.estimate_extent(Cini,Cend,xadd) << std::endl;
-            return aftermath(components::are_running,x.b);
-            //return aftermath(components::are_running,comp.estimate_extent(Cini,Cend,xadd));
+            return aftermath(components::are_running,comp.estimate_extent(Cini,Cend,xadd));
         }
         
     }
     
 }
-
-    
-
-namespace yack
-{
-    
-    namespace chemical
-    {
-        aftermath  aftermath:: build(const components       &comp,
-                                     const double            K_eq,
-                                     const readable<double> &Cini,
-                                     writable<double>       &Cend,
-                                     rmulops                &xmul,
-                                     raddops                &xadd,
-                                     writable<double>       &Ctmp)
-        {
-            aftermath curr = guess(comp,K_eq,Cini,Cend,xmul);
-            double    ctrl = fabs(curr.value);
-            std::cerr << " -- curr = " << curr << " / " << comp.estimate_extent(Cini,Cend,xadd) <<  " @" << Cend << std::endl;
-            while(components::are_running == curr.state && ctrl>0 )
-            {
-                iota::load(Ctmp,Cend);
-                const aftermath next = guess(comp,K_eq,Ctmp,Cend,xmul);
-                const double    absv = fabs(next.value);
-                std::cerr << " -- next = " << next << " @" << Cend << std::endl;
-                if(absv>=ctrl) break;
-                curr = next;
-                ctrl = absv;
-            }
-            switch(curr.state)
-            {
-                case components::are_blocked: return curr;
-                case components::are_running: break;
-            }
-            coerce(curr.value) = comp.estimate_extent(Cini,Cend,xadd);
-            return curr;
-        }
-    }
-    
-}
-

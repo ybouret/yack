@@ -49,15 +49,14 @@ YACK_UTEST(am)
         lib.cfill(Cini,ran);
         lib(std::cerr << "Cini=","",Cini);
         std::cerr << "MA: " << eq.mass_action(K,Cini,xmul) << std::endl;
-        aftermath am = aftermath::guess(eq,K,Cini,Cend,xmul);
+        aftermath am = aftermath::guess(eq,K,Cini,Cend,xadd,xmul);
         std::cerr << am << std::endl;
         lib(std::cerr << "Cend=","",Cend);
         std::cerr << "MA: " << eq.mass_action(K,Cend,xmul) << std::endl;
-
-        continue;;
-        am = aftermath::build(eq,K,Cini,Cend,xmul,xadd,Ctmp);
+        am = aftermath::guess(eq,K,Cend,Ctmp,xadd,xmul);
         std::cerr << am << std::endl;
-        lib(std::cerr << "Cend=","",Cend);
+        lib(std::cerr << "Ctmp=","",Ctmp);
+        std::cerr << "MA: " << eq.mass_action(K,Ctmp,xmul) << std::endl;
     }
     
  

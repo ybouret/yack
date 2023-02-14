@@ -5,6 +5,7 @@
 #include "yack/type/utils.hpp"
 #include "yack/apex/alga.hpp"
 #include "yack/sequence/cxx-array.hpp"
+#include <iomanip>
 
 namespace yack
 {
@@ -371,7 +372,8 @@ namespace yack
             {
                 const component &c = ***node;
                 const size_t     j = **c;
-                add << (Cend[j]-Cini[j])/c.nu;
+                const double     x = (Cend[j]-Cini[j])/c.nu;
+                add << x;
             }
             return add.get()/size();
         }
