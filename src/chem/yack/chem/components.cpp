@@ -394,9 +394,7 @@ namespace yack
             prod.move(C, xi);
             reac.move(C,-xi);
         }
-
         
-
         bool components:: attached_to(const components &other) const throw()
         {
             for(const cnode *node=head();node;node=node->next)
