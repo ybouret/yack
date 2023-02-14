@@ -5,6 +5,7 @@ YACK_UTEST_DECL(16)
     YACK_UTEST(lib);    
     YACK_UTEST(actors);
     YACK_UTEST(components);
+    YACK_UTEST(am);
     YACK_UTEST(outcome);
     YACK_UTEST(eq);
     YACK_UTEST(diff);
