@@ -158,32 +158,6 @@ namespace yack
 
         
 
-#if 0
-        const xlimit *actors:: genuine_limit(const readable<double> &C) const throw()
-        {
-            const actor *a = crew.head;
-            if(a)
-            {
-                const actor *id = a;
-                double       xi = C[***a]/a->nu;
-                for(a=a->next;a;a=a->next)
-                {
-                    const double xi_tmp = C[***a]/a->nu;
-                    if(xi_tmp<xi)
-                    {
-                        xi = xi_tmp;
-                        id = a;
-                    }
-                }
-                return new ( *wlim ) xlimit(*id,xi);
-            }
-            else
-            {
-                return NULL;
-            }
-        }
-#endif
-
         const xlimit     * actors:: genuine_limit(xlimit::field &xl, const readable<double> &C) const throw()
         {
             const actor *a = crew.head;
