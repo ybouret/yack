@@ -74,11 +74,13 @@ namespace yack
         double ridder_denom(const triplet<double> &f,
                             rmulops               &xmul)
         {
-            std::cerr << "ridder_denom(" << f << ")" << std::endl;
+            std::cerr << "ridder_denom(" << f << ")" << " xmul@" << &xmul << std::endl;
             const double absb = fabs(f.b);   assert(absb>0);
-            return absb;
+            //return absb;
 //            xmul.resume(3);                  assert(0==xmul.size());
             xmul.free();                     assert(0==xmul.size());
+            return absb;
+            
             xmul.ld(f.a);                    assert(1==xmul.size());
             xmul.ld(f.c);                    assert(2==xmul.size());
             xmul.upower(1.0/absb,2);         assert(4==xmul.size());
@@ -96,6 +98,8 @@ namespace yack
         {
             static const char fn[] = "chemical::aftermath::guess";
             assert(K_eq>0);assert(comp.size()>0);
+            const void *ADDR = &xmul;
+            //std::cerr << fn << " xmul@"  << ADDR << std::endl;
             
             //------------------------------------------------------------------
             //

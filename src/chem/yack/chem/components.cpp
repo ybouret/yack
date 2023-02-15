@@ -114,7 +114,7 @@ namespace yack
         
         const xlimits & components:: genuine_limits(xlimits_io &xio, const readable<double> &C, const size_t w) const throw()
         {
-            return * new (*xio) xlimits( reac.genuine_limit(xio.reac,C),prod.genuine_limit(xio.prod,C),w);
+            return * new (*xio) xlimits(reac.genuine_limit(xio.reac,C),prod.genuine_limit(xio.prod,C),w);
         }
 
         

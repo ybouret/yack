@@ -5,6 +5,7 @@
 
 #include "yack/type/out-of-reach.hpp"
 #include "yack/arith/align.hpp"
+#include "yack/check/static.hpp"
 #include <cstring>
 
 namespace yack {
@@ -23,12 +24,18 @@ namespace yack {
         class workplace
         {
         public:
+            static const size_t num_words = YACK_WORDS_FOR(T);
+            
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
             inline virtual     ~workplace()       throw() { eradicate(); }             //!< cleanup
-            inline explicit     workplace()       throw() : words_() { eradicate(); }  //!< setup clean
+            inline explicit     workplace()       throw() : words_()
+            {
+                YACK_STATIC_CHECK(sizeof(words_)>=sizeof(T),bad_size);
+                eradicate();
+            }  //!< setup clean
 
             //! setup and setting address
             template <typename TARGET>
@@ -45,17 +52,17 @@ namespace yack {
 
             inline void        * operator*()       throw() { return out_of_reach::address(&words_[0]); }  //!< entry
             inline const void  * operator*() const throw() { return out_of_reach::address(&words_[0]); }  //!< entry, const
-            inline void         eradicate() throw() { memset(words_,0,sizeof(words_)); }                 //!< cleanup content
+            inline void          eradicate()       throw() { memset(words_,0,sizeof(words_)); }           //!< cleanup content
 
             //! no-throw swap content
             inline void         swap_with(workplace &other) throw() {
-                for(size_t i=0;i<sizeof(words_)/sizeof(words_[0]);++i)
+                for(size_t i=0;i<num_words;++i)
                     cswap(words_[i],other.words_[i]);
             }
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(workplace);
-            void *words_[ YACK_WORDS_FOR(T) ];
+            void *words_[num_words];
         };
 
     }

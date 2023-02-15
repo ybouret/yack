@@ -259,23 +259,24 @@ namespace yack
         
         inline void zombify(node_type *node) throw()
         {
+            assert(NULL!=node);
             zombie.store( out_of_reach::naught( destructed(node) ) );
         }
         
         inline void zombify() throw()
         {
-            while(active.size) zombify(active.pop_back());
+            while(active.size>0) zombify(active.pop_back());
             
         }
         
         inline void release_zombie() throw()
         {
-            while(zombie.size) zrelease(zombie.query());
+            while(zombie.size>0) zrelease(zombie.query());
         }
         
         inline void release_active() throw()
         {
-            while(active.size) zrelease( destructed(active.pop_back()) );
+            while(active.size>0) zrelease( destructed(active.pop_back()) );
         }
         
         inline void release_all() throw()

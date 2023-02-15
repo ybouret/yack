@@ -21,7 +21,7 @@ namespace yack
         nm(nu-1)
         {
             assert(nu>0);
-            assert(nm>=0);
+            //assert(nm>=0);
         }
 
         bool actor:: is_primary() const throw()
