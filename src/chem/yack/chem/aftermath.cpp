@@ -82,7 +82,7 @@ namespace yack
             xmul.ld(f.a);                    assert(1==xmul.size());
             xmul.ld(f.c);                    assert(2==xmul.size());
             xmul.upower(1.0/absb,2);         assert(4==xmul.size());
-            std::cerr << xmul << std::endl;
+            //std::cerr << xmul << std::endl;
             const double rhs = xmul.query(); assert(rhs<=0);
             return absb * sqrt(1.0-rhs);
         }
