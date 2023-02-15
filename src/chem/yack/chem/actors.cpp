@@ -126,6 +126,7 @@ namespace yack
             }
         }
 
+#if 0
         void  actors:: mov_(writable<double> &C, const double xi) const throw()
         {
             for(const actor *a=crew.head;a;a=a->next)
@@ -134,7 +135,7 @@ namespace yack
                 C[j] =   C[j]+(a->nu)*xi;
             }
         }
-
+#endif
 
         bool actors:: are_genuinely_blocked_by(const readable<double> &C) const throw()
         {
@@ -145,6 +146,7 @@ namespace yack
             return false;
         }
 
+#if 0
         bool actors:: are_primarily_blocked_by(const readable<double> &C) const throw()
         {
             for(const actor *a=crew.head;a;a=a->next)
@@ -154,6 +156,7 @@ namespace yack
             }
             return false;
         }
+#endif
 
 
         

@@ -111,8 +111,8 @@ namespace yack
             //! C -> max_of(C+nu*xi,0) (sign of xi must be adapted)
             void  move(writable<double> &C, const double xi) const throw();
 
-            //! C -> C+nu*xi, raw value, sign of xi must be adapted
-            void  mov_(writable<double> &C, const double xi) const throw();
+            // //! C -> C+nu*xi, raw value, sign of xi must be adapted
+            //void  mov_(writable<double> &C, const double xi) const throw();
 
 
             const xlimit     *genuine_limit(xlimit::field &xl, const readable<double> &C) const throw(); //!< test all actors
@@ -128,7 +128,7 @@ namespace yack
             bool are_genuinely_blocked_by(const readable<double> &C) const throw();
 
             //! check that any of the primary acting concentration is negative
-            bool are_primarily_blocked_by(const readable<double> &C) const throw();
+            //bool are_primarily_blocked_by(const readable<double> &C) const throw();
 
             //! compute derivatives of mass action w.r.t C, return greatest |max|
             greatest grad_action(writable<double>       &psi,

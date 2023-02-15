@@ -57,6 +57,7 @@ YACK_UTEST(am)
         std::cerr << am << std::endl;
         lib(std::cerr << "Ctmp=","",Ctmp);
         std::cerr << "MA: " << eq.mass_action(K,Ctmp,xmul) << std::endl;
+        std::cerr << "C=" << Ctmp << std::endl;
     }
     
  

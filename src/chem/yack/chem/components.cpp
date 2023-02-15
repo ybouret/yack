@@ -482,7 +482,7 @@ namespace yack
 
         components::state components:: state_at(const readable<double> &C) const throw()
         {
-            return (reac.are_primarily_blocked_by(C) && prod.are_primarily_blocked_by(C)) ? are_blocked : are_running;
+            return (reac.are_genuinely_blocked_by(C) && reac.are_genuinely_blocked_by(C)) ? are_blocked : are_running;
         }
 
     }
