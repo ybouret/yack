@@ -39,13 +39,16 @@ YACK_UTEST(am)
     vector<double> Cini(M,0);
     vector<double> Cend(M,0);
     vector<double> Ctmp(M,0);
-
+    vector<double> Psi(M,0);
+    vector<int>    Nu(M,0);
+    
     rmulops xmul;
     raddops xadd;
     for(const enode *en=eqs.head();en;en=en->next)
     {
         const equilibrium &eq = ***en;
         const double       K  = eq.K(0);
+        eq.fill(Nu);
         lib.cfill(Cini,ran);
         lib(std::cerr << "Cini=","",Cini);
         std::cerr << "MA: " << eq.mass_action(K,Cini,xmul) << std::endl;
@@ -56,10 +59,16 @@ YACK_UTEST(am)
         am = aftermath::guess(eq,K,Cend,Ctmp,xadd,xmul);
         std::cerr << am << std::endl;
         lib(std::cerr << "Ctmp=","",Ctmp);
-        std::cerr << "MA: " << eq.mass_action(K,Ctmp,xmul) << std::endl;
-        std::cerr << "RQ: " << eq.quotient(K,Ctmp,xmul)    << std::endl;
-        std::cerr << "C=" << Ctmp << std::endl;
-        
+        std::cerr << "MA:     " << eq.mass_action(K,Ctmp,xmul) << std::endl;
+        std::cerr << "RQ:     " << eq.quotient(K,Ctmp,xmul)    << std::endl;
+        std::cerr << "C     = " << Ctmp << std::endl;
+        greatest gr = eq.grad_action(Psi, K, Ctmp, xmul);
+        std::cerr << "Psi   = " << Psi << " @" << gr << std::endl;
+        gr.divide(Psi);
+        std::cerr << "Psi   = " << Psi << std::endl;
+        std::cerr << "Nu    = " << Nu  << std::endl;
+        const double sigma = gr.value * xadd.dot(Psi,Nu);
+        std::cerr << "sigma = " << sigma << std::endl;
     }
     
  
