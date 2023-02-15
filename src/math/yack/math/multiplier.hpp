@@ -186,12 +186,13 @@ namespace yack
             {
                 assert( size() >= 1);
                 while( size() > 1 ) {
-                    const T   lhs( *(pull_front()) );
+                    const T   lhs( *(pull_front()) ); assert(size()>=1);
                     const T   rhs( *(pull_back() ) );
                     const T   ans( lhs * rhs );
                     data_type tmp(ans);
                     insert(tmp);
                 }
+                assert(size()==1);
                 return *(pull_front());
             }
         };

@@ -69,6 +69,23 @@ namespace yack
             return os;
         }
         
+        //
+        static inline
+        double ridder_denom(const triplet<double> &f,
+                            rmulops               &xmul)
+        {
+            std::cerr << "ridder_denom(" << f << ")" << std::endl;
+            const double absb = fabs(f.b);   assert(absb>0);
+            return absb;
+//            xmul.resume(3);                  assert(0==xmul.size());
+            xmul.free();                     assert(0==xmul.size());
+            xmul.ld(f.a);                    assert(1==xmul.size());
+            xmul.ld(f.c);                    assert(2==xmul.size());
+            xmul.upower(1.0/absb,2);         assert(4==xmul.size());
+            std::cerr << xmul << std::endl;
+            const double rhs = xmul.query(); assert(rhs<=0);
+            return absb * sqrt(1.0-rhs);
+        }
         
         aftermath aftermath:: guess(const components       &comp,
                                     const double            K_eq,
@@ -78,8 +95,7 @@ namespace yack
                                     rmulops                &xmul)
         {
             static const char fn[] = "chemical::aftermath::guess";
-            assert(K_eq>0);
-            assert(comp.size()>0);
+            assert(K_eq>0);assert(comp.size()>0);
             
             //------------------------------------------------------------------
             //
@@ -191,7 +207,7 @@ namespace yack
                                 x.c = x.b;          assert(fabs(x.c)<=0);
                                 f.c = f.b;          assert(f.c<0);
                                 x.a = -(plim->xi);  assert(x.a<0);
-                                f.a = K_eq;            assert(f.a>0);
+                                f.a = K_eq;         assert(f.a>0);
                                 break;
                                 
                             case search_positive_extent:
@@ -250,7 +266,8 @@ namespace yack
                         //
                         //------------------------------------------------------
                     case negative: {
-                        const double den = sqrt( squared(f.b) - f.a*f.c );
+                        //const double den = sqrt( squared(f.b) - f.a*f.c );
+                        const double den = ridder_denom(f,xmul);
                         if(fabs(f.b)<den)
                         {
                             //--------------------------------------------------
@@ -296,7 +313,8 @@ namespace yack
                         //
                         //------------------------------------------------------
                     case positive: {
-                        const double den = sqrt( squared(f.b) - f.a*f.c );
+                        //const double den = sqrt( squared(f.b) - f.a*f.c );
+                        const double den = ridder_denom(f,xmul);
                         if(fabs(f.b)<den)
                         {
                             //--------------------------------------------------
