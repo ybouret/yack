@@ -62,7 +62,6 @@ namespace yack
         double ridder_denom(const triplet<double> &f,
                             rmulops               &xmul)
         {
-            //std::cerr << "ridder_denom(" << f << ")" << " xmul@" << &xmul << std::endl;
             const double absb = fabs(f.b);   assert(absb>0);
             xmul.resume(3);                  assert(0==xmul.size());
             xmul.ld(f.a);                    assert(1==xmul.size());
@@ -80,8 +79,7 @@ namespace yack
                                     rmulops                &xmul)
         {
             static const char fn[] = "chemical::aftermath::guess";
-            assert(K_eq>0);assert(comp.size()>0);
-            //const void *ADDR = &xmul;
+            assert(K_eq>0); assert(comp.size()>0);
             
             //------------------------------------------------------------------
             //
@@ -117,7 +115,7 @@ namespace yack
             //------------------------------------------------------------------
         FIND_XI:
             {
-                triplet<double>  x  = { 0, 0,    0 };           // initialize x.b=0
+                triplet<double>  x  = { 0, 0,     0 };           // initialize x.b=0
                 triplet<double>  f  = { 0, FF(0), 0 };          // initialize f.b @Cend
                 const sign_type  s  = __sign::of(f.b);          // check initial sign
                 search_extent    d  = search_positive_extent;   // to be set w.r.t sign
