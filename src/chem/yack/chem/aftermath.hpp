@@ -9,7 +9,11 @@ namespace yack
 {
     namespace chemical
     {
-        
+        //______________________________________________________________________
+        //
+        //! one dimensional solver
+        //
+        //______________________________________________________________________
         class aftermath
         {
         public:
@@ -27,6 +31,8 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
+            
+            //! compute Cend from Cini and return result
             static aftermath  guess(const components       &comp,
                                     const double            K_eq,
                                     const readable<double> &Cini,
@@ -35,7 +41,7 @@ namespace yack
                                     rmulops                &xmul);
             
            
-            
+            //! display
             friend std::ostream & operator<<(std::ostream &, const aftermath &);
             
             

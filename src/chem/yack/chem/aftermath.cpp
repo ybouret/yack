@@ -95,7 +95,7 @@ namespace yack
             //------------------------------------------------------------------
             switch( comp.state_at(Cini) )
             {
-                case components::are_blocked: return aftermath(components::are_blocked,0); // early return
+                case components::are_blocked: return aftermath(); // early return
                 case components::are_running: break;
             }
             
