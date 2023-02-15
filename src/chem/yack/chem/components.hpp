@@ -280,12 +280,14 @@ namespace yack
             components_set                     cdb; //!< components database
             
         public:
+            
+            //! helper for aftermath
             struct mass_action_call {
-                double                  K_eq;
-                const components       &self;
-                const readable<double> &conc;
-                rmulops                &xmul;
-                double operator()(double xi);
+                double                  K_eq; //!< local constant
+                const components       &self; //!< local components
+                const readable<double> &conc; //!< phase space
+                rmulops                &xmul; //!< operations
+                double operator()(double xi); //!< mass_action at conc+nu*xi*
                 
             };
         };

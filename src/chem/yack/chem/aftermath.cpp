@@ -115,7 +115,7 @@ namespace yack
             //------------------------------------------------------------------
         FIND_XI:
             {
-                triplet<double>  x  = { 0, 0,     0 };           // initialize x.b=0
+                triplet<double>  x  = { 0, 0,     0 };          // initialize x.b=0
                 triplet<double>  f  = { 0, FF(0), 0 };          // initialize f.b @Cend
                 const sign_type  s  = __sign::of(f.b);          // check initial sign
                 search_extent    d  = search_positive_extent;   // to be set w.r.t sign
@@ -252,7 +252,6 @@ namespace yack
                             //
                             //------------------------------------------------------
                         case negative: {
-                            //const double den = sqrt( squared(f.b) - f.a*f.c );
                             const double den = ridder_denom(f,xmul);
                             if(fabs(f.b)<den)
                             {
@@ -299,7 +298,6 @@ namespace yack
                             //
                             //------------------------------------------------------
                         case positive: {
-                            //const double den = sqrt( squared(f.b) - f.a*f.c );
                             const double den = ridder_denom(f,xmul);
                             if(fabs(f.b)<den)
                             {

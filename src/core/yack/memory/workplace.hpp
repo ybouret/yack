@@ -24,8 +24,12 @@ namespace yack {
         class workplace
         {
         public:
-            static const size_t num_words = YACK_WORDS_FOR(T);
-            static const size_t num_bytes = num_words * sizeof(void*);
+            //__________________________________________________________________
+            //
+            // definitions
+            //__________________________________________________________________
+            static const size_t num_words = YACK_WORDS_FOR(T);          //!< words to hold type
+            static const size_t num_bytes = num_words * sizeof(void*);  //!< bytes to hold typed
             
             //__________________________________________________________________
             //
