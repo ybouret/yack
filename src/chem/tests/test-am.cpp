@@ -6,9 +6,11 @@
 #include "yack/system/env.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/counting/part.hpp"
+#include "yack/math/iota.hpp"
 
 using namespace yack;
 using namespace chemical;
+using namespace math;
 
 namespace {
     
@@ -79,7 +81,7 @@ namespace {
         raddops xadd;
         rmulops xmul;
         bool    init = true;
-        for(int p=-1;p<=1;++p)
+        for(int p=-10;p<=10;++p)
         {
             const_equilibrium E("E",1,pow(10.0,p));
             library           L;
@@ -141,7 +143,7 @@ YACK_UTEST(am)
     
     drive(3,ran);
     
-    if(false)
+    if(true)
     {
         library            lib;
         luaEquilibria      eqs;
@@ -166,8 +168,6 @@ YACK_UTEST(am)
         
         vector<double> Cini(M,0);
         vector<double> Cend(M,0);
-        vector<double> Ctmp(M,0);
-        vector<double> Psi(M,0);
         vector<int>    Nu(M,0);
         
         rmulops xmul;
@@ -179,24 +179,15 @@ YACK_UTEST(am)
             eq.fill(Nu);
             lib.cfill(Cini,ran);
             lib(std::cerr << "Cini=","",Cini);
-            std::cerr << "MA: " << eq.mass_action(K,Cini,xmul) << std::endl;
+            std::cerr << "MA_ini: " << eq.mass_action(K,Cini,xmul) << std::endl;
             aftermath am = aftermath::guess(eq,K,Cini,Cend,xadd,xmul);
             std::cerr << am << std::endl;
             lib(std::cerr << "Cend=","",Cend);
-            std::cerr << "MA: " << eq.mass_action(K,Cend,xmul) << std::endl;
-            am = aftermath::guess(eq,K,Cend,Ctmp,xadd,xmul);
-            std::cerr << am << std::endl;
-            lib(std::cerr << "Ctmp=","",Ctmp);
-            std::cerr << "MA:     " << eq.mass_action(K,Ctmp,xmul) << std::endl;
-            std::cerr << "RQ:     " << eq.quotient(K,Ctmp,xmul)    << std::endl;
-            std::cerr << "C     = " << Ctmp << std::endl;
-            greatest gr = eq.grad_action(Psi, K, Ctmp, xmul);
-            std::cerr << "Psi   = " << Psi << " @" << gr << std::endl;
-            gr.divide(Psi);
-            std::cerr << "Psi   = " << Psi << std::endl;
-            std::cerr << "Nu    = " << Nu  << std::endl;
-            const double sigma = gr.value * xadd.dot(Psi,Nu);
-            std::cerr << "sigma = " << sigma << std::endl;
+            
+            const double MA = eq.mass_action(K,Cend,xmul);
+            std::cerr << "MA_end: " << MA << std::endl;
+            std::cerr << "RQ_end: " << eq.quotient(K,Cend,xmul) << std::endl;
+            
         }
     }
  

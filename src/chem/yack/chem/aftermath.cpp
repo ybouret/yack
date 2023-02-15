@@ -216,8 +216,11 @@ namespace yack
             assert(x.a<x.c);
             assert( __sign::product_of(f.a,f.c) == negative );
             
-            
+            //------------------------------------------------------------------
+            //
             // find best Cend + nu * xi
+            //
+            //------------------------------------------------------------------
             {
                 double width = fabs(x.c-x.a); assert(width>0);
             ZFIND:
