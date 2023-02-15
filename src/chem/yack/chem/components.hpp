@@ -279,6 +279,15 @@ namespace yack
             //__________________________________________________________________
             components_set                     cdb; //!< components database
             
+        public:
+            struct mass_action_call {
+                double                  K_eq;
+                const components       &self;
+                const readable<double> &conc;
+                rmulops                &xmul;
+                double operator()(double xi);
+                
+            };
         };
         
     }

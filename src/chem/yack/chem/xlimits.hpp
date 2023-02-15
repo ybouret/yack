@@ -24,7 +24,9 @@ namespace yack
         
         //______________________________________________________________________
         //
+        //
         //! aggregate and type of xlimits
+        //
         //______________________________________________________________________
         class xlimits
         {
@@ -65,13 +67,18 @@ namespace yack
             ~xlimits() throw();
         };
 
+        //______________________________________________________________________
+        //
+        //
         //! memory fields to gather xlimits
+        //
+        //______________________________________________________________________
         class xlimits_io : public xlimits::field
         {
         public:
 
             explicit xlimits_io() throw() : xlimits::field(), reac(), prod() {} //!< setup
-            virtual ~xlimits_io() throw() {} //!< cleanup
+            virtual ~xlimits_io() throw()  {}                                   //!< cleanup
 
             xlimit::field reac; //!< for reac
             xlimit::field prod; //!< for prod

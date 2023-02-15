@@ -12,7 +12,12 @@ namespace yack
     namespace chemical
     {
 
-
+        double components:: mass_action_call:: operator()(double xi)
+        {
+            //std::cerr << "xmulMA@" << &xmul << std::endl;
+            return self.mass_action(K_eq,conc, xi, xmul);
+        }
+        
         const char * components:: state_text(const state s) throw()
         {
             switch (s) {
@@ -112,8 +117,11 @@ namespace yack
         }
 
         
-        const xlimits & components:: genuine_limits(xlimits_io &xio, const readable<double> &C, const size_t w) const throw()
+        const xlimits & components:: genuine_limits(xlimits_io             &xio,
+                                                    const readable<double> &C,
+                                                    const size_t            w) const throw()
         {
+            assert(xio.num_bytes>=sizeof(xlimits));
             return * new (*xio) xlimits(reac.genuine_limit(xio.reac,C),prod.genuine_limit(xio.prod,C),w);
         }
 

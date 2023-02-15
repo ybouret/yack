@@ -25,6 +25,7 @@ namespace yack {
         {
         public:
             static const size_t num_words = YACK_WORDS_FOR(T);
+            static const size_t num_bytes = num_words * sizeof(void*);
             
             //__________________________________________________________________
             //
@@ -34,6 +35,7 @@ namespace yack {
             inline explicit     workplace()       throw() : words_()
             {
                 YACK_STATIC_CHECK(sizeof(words_)>=sizeof(T),bad_size);
+                assert(words_==out_of_reach::address(&words_[0]));
                 eradicate();
             }  //!< setup clean
 

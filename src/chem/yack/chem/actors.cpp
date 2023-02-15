@@ -163,6 +163,7 @@ namespace yack
 
         const xlimit     * actors:: genuine_limit(xlimit::field &xl, const readable<double> &C) const throw()
         {
+            assert(xl.num_bytes>=sizeof(xlimit));
             const actor *a = crew.head;
             if(a)
             {

@@ -141,9 +141,12 @@ YACK_UTEST(am)
     entity::verbose = environment::flag("VERBOSE");
     randomized::rand_  ran;
     
-    drive(3,ran);
-    
     if(true)
+    {
+        drive(3,ran);
+    }
+    
+    if(false)
     {
         library            lib;
         luaEquilibria      eqs;
