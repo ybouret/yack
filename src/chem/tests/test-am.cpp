@@ -78,12 +78,20 @@ namespace {
     {
         raddops xadd;
         rmulops xmul;
+        bool    init = true;
         for(int p=-1;p<=1;++p)
         {
             const_equilibrium E("E",1,pow(10.0,p));
             library           L;
             populate(L,E,reac,prod);
-            std::cerr << E << std::endl;
+            const double     K  = E.K(0);
+            if(init)
+            {
+                std::cerr << E.content() << " | [";
+                init=false;
+            }
+            
+            (std::cerr << ' ' << K).flush();
             
             const size_t      M = L.size();
             vector<double>    Cini(M,0);
@@ -91,15 +99,36 @@ namespace {
             for(size_t iter=0;iter<10;++iter)
             {
                 L.cfill(Cini,ran);
-                const double     K  = E.K(0);
                 const aftermath  am = aftermath::guess(E,K, Cini, Cend,xadd,xmul);
                 const double     MA = E.mass_action(K,Cend,xmul);
                 const double     RQ = E.quotient(K,Cend,xmul);
                 save(E,MA,RQ);
             }
+            
         }
+        std::cerr << " ]" << std::endl;
     }
     
+    static inline
+    void drive(const size_t      n,
+               randomized::bits &ran)
+    {
+        save_init();
+        partition reac(n);
+        do
+        {
+            // special cases
+            perform(&reac,NULL,ran);
+            perform(NULL,&reac,ran);
+            
+            partition prod(n);
+            do
+            {
+                perform(&reac,&prod,ran);
+            } while(prod.next());
+        }
+        while(reac.next());
+    }
     
     
     
@@ -110,17 +139,7 @@ YACK_UTEST(am)
     entity::verbose = environment::flag("VERBOSE");
     randomized::rand_  ran;
     
-    save_init();
-    
-    {
-        partition part(2);
-        do
-        {
-            perform(&part,NULL,ran);
-            perform(NULL,&part,ran);
-        }
-        while(part.next());
-    }
+    drive(3,ran);
     
     if(false)
     {
