@@ -30,7 +30,6 @@ COMMAND           $<TARGET_FILE:yack_cjpeg> -dct int -progressive -opt -outfile 
 COMMAND           ${CMAKE_COMMAND} -E compare_files testout.jpg  testimg.jpg
 COMMAND           ${CMAKE_COMMAND} -E compare_files testoutp.jpg testimgp.jpg
 COMMAND           ${CMAKE_COMMAND} -E ${cmake_rm} -f testout.jpg testoutp.jpg
-COMMAND           ${CMAKE_COMMAND} -E cmake_echo_color --blue --bold  "[YACK] done [cjpeg]"
 DEPENDS           yack_cjpeg
 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests
 COMMENT           "[YACK] test [cjpeg]"
@@ -62,7 +61,6 @@ COMMAND           ${CMAKE_COMMAND} -E compare_files testout.bmp  testimg.bmp
 COMMAND           $<TARGET_FILE:yack_djpeg> -dct int -ppm -outfile testoutp.ppm testprog.jpg
 COMMAND           ${CMAKE_COMMAND} -E compare_files testoutp.ppm  testimg.ppm
 COMMAND           ${CMAKE_COMMAND} -E ${cmake_rm} -f testout.ppm testout.gif testout.bmp testoutp.ppm 
-COMMAND           ${CMAKE_COMMAND} -E cmake_echo_color --blue --bold  "[YACK] done [djpeg]"
 DEPENDS           yack_djpeg
 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests
 COMMENT           "[YACK] test [djpeg]"
@@ -84,7 +82,6 @@ COMMAND           ${CMAKE_COMMAND} -E ${cmake_rm} -f testoutt.jpg
 COMMAND           $<TARGET_FILE:yack_jpegtran> -outfile testoutt.jpg testprog.jpg
 COMMAND           ${CMAKE_COMMAND} -E compare_files testoutt.jpg testorig.jpg
 COMMAND           ${CMAKE_COMMAND} -E ${cmake_rm} -f testoutt.jpg
-COMMAND           ${CMAKE_COMMAND} -E cmake_echo_color --blue --bold  "[YACK] done [jpegtran]"
 DEPENDS           yack_jpegtran
 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests
 COMMENT           "[YACK] test [jpegtran]"
