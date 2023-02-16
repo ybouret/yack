@@ -45,7 +45,7 @@ __attribute__((destructor))  void OnQuit() { ON_QUIT(); }
 
 #if defined(YACK_WIN)
 
-#define YACK_DLL_SETUP(ON_INIT,ON_QUIT)                                  \
+#define YACK_DLL_SETUP(ON_INIT,ON_QUIT)                                   \
 extern "C" BOOL WINAPI DllMain(HINSTANCE hinstDLL,DWORD fdwReason,LPVOID) \
 {                                                                         \
 /**/ (void)hinstDLL;                                                      \
