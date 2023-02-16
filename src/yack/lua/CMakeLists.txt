@@ -64,17 +64,11 @@ set( THERE ${HERE}/tests )
 
 add_custom_command( TARGET yack_lua
 POST_BUILD
-COMMAND ${CMAKE_COMMAND} -E echo "[YACK]  <lua::tests>"
-COMMAND ${CMAKE_COMMAND} -E echo "[YACK]    testing hello.lua.."
-COMMAND yack_lua ${THERE}/hello.lua
-COMMAND ${CMAKE_COMMAND} -E echo "[YACK]    testing bisect.lua.."
-COMMAND yack_lua ${THERE}/bisect.lua
-COMMAND ${CMAKE_COMMAND} -E echo "[YACK]    testing sieve.lua.."
-COMMAND yack_lua ${THERE}/sieve.lua
-COMMAND ${CMAKE_COMMAND} -E echo "[YACK]    testing sort.lua.."
-COMMAND yack_lua ${THERE}/sort.lua
-COMMAND ${CMAKE_COMMAND} -E echo "[YACK]  <lua::tests/>"
-COMMENT "[YACK] performing lua tests..."
+WORKING_DIRECTORY "${THERE}"
+COMMAND yack_lua hello.lua
+COMMAND yack_lua bisect.lua
+COMMAND yack_lua sieve.lua
+COMMAND yack_lua sort.lua
 VERBATIM)
 
 yack_third_party(yack_lua)
