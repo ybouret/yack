@@ -1,6 +1,6 @@
 from ctypes import cdll
 import sys
-
+import platform
 
 class DSO:
 
@@ -16,6 +16,10 @@ class DSO:
     def __del__(self):
         print('<DSO Python Quit>')
 
+
+print(platform.machine())
+#print(platform.platform(terse=True))
+print(platform.system())
 
 print(sys.argv)
 if (len(sys.argv) >= 2):
