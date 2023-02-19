@@ -5,22 +5,26 @@
 #include <cmath>
 #include <cstdio>
 
+static int count = 0;
+
 static inline void enter()
 {
+    ++count;
     if (stderr)
     {
         fflush(stderr);
-        fprintf(stderr, "Entering CXX DLL\n");
+        fprintf(stderr, "Entering CXX DLL #%d\n", count);
         fflush(stderr);
     }
 }
 
 static inline void leave()
 {
+    --count;
     if (stderr)
     {
         fflush(stderr);
-        fprintf(stderr, "Leaving CXX DLL\n");
+        fprintf(stderr, "Leaving CXX DLL #%d\n",count);
         fflush(stderr);
     }
 }
