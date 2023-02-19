@@ -1,6 +1,8 @@
 from ctypes import cdll
-import sys
+#import sys
 import platform
+import os.path
+
 
 class DSO:
 
@@ -21,8 +23,11 @@ print(platform.machine())
 #print(platform.platform(terse=True))
 print(platform.system())
 
-print(sys.argv)
-if (len(sys.argv) >= 2):
-    print("dll=", sys.argv[1])
-    dso = DSO(sys.argv[1])
-    
+# print(sys.argv)
+# if (len(sys.argv) >= 2):
+#     print("dll=", sys.argv[1])
+#     dso = DSO(sys.argv[1])
+
+soname = "./dsoxx.dll"
+if os.path.isfile(soname):
+    dso = DSO(soname)
