@@ -128,8 +128,8 @@ if(${YACK_CC} MATCHES "gcc.*" )
 	SET(YACK_GNU            ON)
 	YACK_FIND_COMPILER_VERSION()
 	
- 	set(CMAKE_C_FLAGS   "-Wall -pipe -fPIC")
-	set(CMAKE_CXX_FLAGS "-Wall -pipe -fPIC -fexceptions -Weffc++" )
+ 	set(CMAKE_C_FLAGS   "-Wall -pipe -fPIC -pedantic")
+	set(CMAKE_CXX_FLAGS "-Wall -pipe -fPIC -fexceptions -Weffc++ -std=c++11" )
 	
 	if(${YACK_COMPILER_MAJOR} GREATER 4)
  		YACK_ADD_FLAGS("-Wextra")
@@ -156,7 +156,7 @@ if(${YACK_CC} MATCHES "clang.*" )
 	YACK_FIND_COMPILER_VERSION()
 
 	set(CMAKE_C_FLAGS   "-Wall -Wextra -pipe -fPIC")
-	set(CMAKE_CXX_FLAGS "-Wall -Wextra -pipe -fPIC -fexceptions -Weffc++" )
+	set(CMAKE_CXX_FLAGS "-Wall -Wextra -pipe -fPIC -fexceptions -Weffc++ -std=c++11" )
 	
 	set(YACK_FLAGS_DEBUG   "-O0 -g")
 	set(YACK_FLAGS_RELEASE "-O2 -DNDEBUG=1 -D_FORTIFY_SOURCE=2")
