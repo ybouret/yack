@@ -197,7 +197,7 @@ namespace yack
 	 //__________________________________________________________________________
 #define YACK_SOAK_FINISH(CLASS,PARAMS,LOADER)                               \
 /**/    private:                                                         \
-/**/      Y_DISABLE_COPY_AND_ASSIGN(CLASS);                              \
+/**/      YACK_DISABLE_COPY_AND_ASSIGN(CLASS);                              \
 /**/      inline virtual ~CLASS() throw() {}                             \
 /**/      friend class soak::app<CLASS>;                                 \
 /**/  };                                                                 \
