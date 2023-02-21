@@ -23,7 +23,7 @@ namespace yack
 	//
 	//! ...to catch'm all
 	//___________________________________________________________________________
-#define YACK_SOAK_CATCH()                                                       \
+#define YACK_SOAK_CATCH()                                                    \
 /**/    catch(const yack::exception &e)                                      \
 /**/    {                                                                    \
 /**/      soak::print(stderr,"[%s] %s: %s\n",__soak_fn,e.what(),e.when());   \
@@ -195,21 +195,21 @@ namespace yack
 	 - implement the call_sign for the CLASS
 	 */
 	 //__________________________________________________________________________
-#define YACK_SOAK_FINISH(CLASS,PARAMS,LOADER)                               \
-/**/    private:                                                         \
-/**/      YACK_DISABLE_COPY_AND_ASSIGN(CLASS);                              \
-/**/      inline virtual ~CLASS() throw() {}                             \
-/**/      friend class soak::app<CLASS>;                                 \
-/**/  };                                                                 \
-/**/ YACK_DLL_EXTERN()                                                      \
+#define YACK_SOAK_FINISH(CLASS,PARAMS,LOADER)                                  \
+/**/    private:                                                               \
+/**/      YACK_DISABLE_COPY_AND_ASSIGN(CLASS);                                 \
+/**/      inline virtual ~CLASS() throw() {}                                   \
+/**/      friend class soak::app<CLASS>;                                       \
+/**/  };                                                                       \
+/**/ YACK_DLL_EXTERN()                                                         \
 /**/ YACK_EXPORT void YACK_DLL_API CLASS##Quit() throw() { CLASS::Quit(); }    \
 /**/ YACK_EXPORT int  YACK_DLL_API CLASS##Init(PARAMS) throw() {               \
-/**/   do { LOADER; } while(false);                                      \
+/**/   do { LOADER; } while(false);                                            \
 /**/   return (NULL != CLASS::Init()) ? YACK_SOAK_SUCCESS : YACK_SOAK_FAILURE; \
-/**/ }                                                                   \
+/**/ }                                                                         \
 /**/ YACK_EXPORT int YACK_DLL_API CLASS##WasInit() throw()                     \
-/**/   { return CLASS::WasInit(); }                                      \
-/**/ YACK_DLL_FINISH()                                                      \
+/**/   { return CLASS::WasInit(); }                                            \
+/**/ YACK_DLL_FINISH()                                                         \
 /**/ const char CLASS::call_sign[] = #CLASS
 
 	//__________________________________________________________________________
