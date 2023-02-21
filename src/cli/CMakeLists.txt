@@ -4,6 +4,8 @@ include_directories(../core)
 add_executable(yack_uniq yack_uniq.cpp)
 yack_link_libraries(yack_uniq)
 
+add_executable(yack_cplusplus main.cpp)
+
 #add_executable(yack_irish yack_irish.cpp)
 #yack_link_libraries(yack_irish)
 
