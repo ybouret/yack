@@ -1,3 +1,6 @@
+#define _CRT_SECURE_NO_WARNINGS
+
+
 /*
  * Copyright (c) 1991-1997 Sam Leffler
  * Copyright (c) 1991-1997 Silicon Graphics, Inc.
