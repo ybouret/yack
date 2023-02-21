@@ -22,8 +22,8 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline virtual ~cxx_list_of() throw() { release_(); }                      //!< cleanup by release
-        inline explicit cxx_list_of() throw() : list_of<NODE>(), releasable() {}   //!< setup empty
+        inline virtual ~cxx_list_of() noexcept { release_(); }                      //!< cleanup by release
+        inline explicit cxx_list_of() noexcept : list_of<NODE>(), releasable() {}   //!< setup empty
      
         //! copy using NODE copy constructor
         inline          cxx_list_of(const cxx_list_of &other) : list_of<NODE>(), releasable()
@@ -48,7 +48,7 @@ namespace yack
         // methods
         //______________________________________________________________________
         //! delete all node
-        inline virtual void release() throw()
+        inline virtual void release() noexcept
         {
             release_();
         }
@@ -69,7 +69,7 @@ namespace yack
         
 
     private:
-        inline void release_() throw()
+        inline void release_() noexcept
         {
             while(this->size) delete this->pop_back();
         }

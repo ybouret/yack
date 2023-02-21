@@ -4,11 +4,11 @@
 namespace yack
 {
 
-    dynamic:: ~dynamic() throw()
+    dynamic:: ~dynamic() noexcept
     {
     }
 
-    dynamic:: dynamic() throw()
+    dynamic:: dynamic() noexcept
     {
     }
     

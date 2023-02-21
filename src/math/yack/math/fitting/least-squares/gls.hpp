@@ -33,7 +33,7 @@ namespace yack
                 // C++
                 //______________________________________________________________
                 explicit gls(const drvs_ptr *ppDrvs=NULL); //!< setup
-                virtual ~gls() throw();                    //!< cleanup
+                virtual ~gls() noexcept;                    //!< cleanup
 
 
             private:

@@ -8,7 +8,7 @@ namespace yack
     namespace graphic
     {
         template <typename T, typename U> static inline
-        T scalar_minimum(const T *arr, const size_t num) throw()
+        T scalar_minimum(const T *arr, const size_t num) noexcept
         {
             assert(num>0);
             U res = arr[0];
@@ -20,20 +20,20 @@ namespace yack
             return res;
         }
 
-        template <> uint8_t pixel<uint8_t>:: minimum(const uint8_t *arr, const size_t num) throw()
+        template <> uint8_t pixel<uint8_t>:: minimum(const uint8_t *arr, const size_t num) noexcept
         {
             assert(num>0);
             return scalar_minimum<uint8_t,size_t>(arr,num);
         }
 
-        template <> float pixel<float>:: minimum(const float *arr, const size_t num) throw()
+        template <> float pixel<float>:: minimum(const float *arr, const size_t num) noexcept
         {
             assert(num>0);
             return scalar_minimum<float,float>(arr,num);
         }
 
 
-        template <> double pixel<double>:: minimum(const double *arr, const size_t num) throw()
+        template <> double pixel<double>:: minimum(const double *arr, const size_t num) noexcept
         {
             assert(num>0);
             return scalar_minimum<double,double>(arr,num);
@@ -41,7 +41,7 @@ namespace yack
 
 
         template <typename PIXEL, typename T, typename U, const size_t N> static inline
-        void vector_minimum(PIXEL &out, const PIXEL *pix, const size_t num) throw()
+        void vector_minimum(PIXEL &out, const PIXEL *pix, const size_t num) noexcept
         {
             U res[4] = { 0, 0, 0, 0};
             U sum    = 0;
@@ -81,7 +81,7 @@ namespace yack
             }
         }
 
-        template <> rgb pixel<rgb>:: minimum(const rgb *arr, const size_t num) throw()
+        template <> rgb pixel<rgb>:: minimum(const rgb *arr, const size_t num) noexcept
         {
             assert(num>0);
             rgb    ans;
@@ -89,7 +89,7 @@ namespace yack
             return ans;
         }
 
-        template <> rgba pixel<rgba>:: minimum(const rgba *arr, const size_t num) throw()
+        template <> rgba pixel<rgba>:: minimum(const rgba *arr, const size_t num) noexcept
         {
             assert(num>0);
             rgba   ans;

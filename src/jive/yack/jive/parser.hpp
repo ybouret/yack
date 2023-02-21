@@ -34,7 +34,7 @@ namespace yack
             }
 
             //! cleanup
-            virtual ~parser() throw();
+            virtual ~parser() noexcept;
 
             //__________________________________________________________________
             //

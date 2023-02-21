@@ -9,13 +9,13 @@ namespace yack
     namespace jive
     {
         const char   counting:: clid[] = "counting";
-        const char * counting:: class_uid() const throw() { return clid; }
+        const char * counting:: class_uid() const noexcept { return clid; }
 
-        counting:: ~counting() throw()
+        counting:: ~counting() noexcept
         {
         }
 
-        counting:: counting(const size_t n, const size_t m, pattern *p) throw() :
+        counting:: counting(const size_t n, const size_t m, pattern *p) noexcept :
         joker(mark,p),
         nmin(n),
         nmax(m)
@@ -83,7 +83,7 @@ namespace yack
             viz(fp);
         }
 
-        counting:: counting(const counting &other) throw() :
+        counting:: counting(const counting &other) noexcept :
         joker(other),
         nmin(other.nmin),
         nmax(other.nmax)
@@ -97,7 +97,7 @@ namespace yack
         }
 
 
-        bool counting:: is_univocal()  const throw()
+        bool counting:: is_univocal()  const noexcept
         {
             return (nmin == nmax) && (**this).is_univocal();
         }

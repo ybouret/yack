@@ -7,7 +7,7 @@ namespace yack {
 
         sp_tier:: sp_tier() : conserved( new sp_group() ), unbounded( new sp_group() ) {}
 
-        sp_tier:: ~sp_tier() throw() {}
+        sp_tier:: ~sp_tier() noexcept {}
 
 
         void sp_tier:: display(const xmlog &xml, const char * const pfx) const

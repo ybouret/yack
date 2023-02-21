@@ -2,13 +2,13 @@
 
 namespace yack
 {
-    pipe:: ~pipe() throw()
+    pipe:: ~pipe() noexcept
     {
     }
 
-    pipe:: pipe(const policy how) throw() : scheme(how) {}
+    pipe:: pipe(const policy how) noexcept : scheme(how) {}
 
-    pipe:: pipe(const pipe &_) throw() : scheme(_.scheme) {}
+    pipe:: pipe(const pipe &_) noexcept : scheme(_.scheme) {}
     
 
 }

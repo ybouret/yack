@@ -43,7 +43,7 @@ namespace yack
         //______________________________________________________________________
 
         //! cleanup
-        inline virtual ~field3D() throw()
+        inline virtual ~field3D() noexcept
         {
             slice += lower.z;
             clear(width.z);
@@ -69,13 +69,13 @@ namespace yack
         //______________________________________________________________________
 
         //! access
-        inline slice_type & operator[](const unit_t z) throw()
+        inline slice_type & operator[](const unit_t z) noexcept
         {
             assert(slice);assert(z>=lower.z); assert(z<=upper.z); return slice[z];
         }
 
         //! access, const
-        inline const slice_type & operator[](const unit_t z) const throw()
+        inline const slice_type & operator[](const unit_t z) const noexcept
         {
             assert(slice);assert(z>=lower.z); assert(z<=upper.z); return slice[z];
         }
@@ -84,7 +84,7 @@ namespace yack
         YACK_DISABLE_COPY_AND_ASSIGN(field3D);
         slice_type *slice;
 
-        inline void clear(unit_t done) throw()
+        inline void clear(unit_t done) noexcept
         {
             while(done>0)
             {
@@ -138,7 +138,7 @@ namespace yack
         }
 
         //! read
-        const_type & fetch(const readable<unit_t> &coord) const throw()
+        const_type & fetch(const readable<unit_t> &coord) const noexcept
         {
             assert(coord.size()>=3);
             return (*this)[coord[3]][coord[2]][coord[1]];

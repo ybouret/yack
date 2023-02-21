@@ -39,8 +39,8 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~inner()            throw(); //!< cleanup
-                explicit inner(const tag &) throw(); //!< setup
+                virtual ~inner()            noexcept; //!< cleanup
+                explicit inner(const tag &) noexcept; //!< setup
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(inner);

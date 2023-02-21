@@ -7,8 +7,8 @@ namespace yack {
     //! shapirogreen11
     class shapirogreen11 : public swaps {
       public:
-        virtual ~shapirogreen11() throw(); //!< cleanup
-        explicit shapirogreen11() throw(); //!< setup  
+        virtual ~shapirogreen11() noexcept; //!< cleanup
+        explicit shapirogreen11() noexcept; //!< setup  
         static const char   sid[];        //!< shapirogreen11
         static const size_t lhs[0x0023];  //!< lhs
         static const size_t rhs[0x0023];  //!< rhs

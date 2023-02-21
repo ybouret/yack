@@ -53,7 +53,7 @@ namespace yack
             }
 
             //! release a previously acquired block
-            inline void release(void *block_addr, const size_t block_size) throw()
+            inline void release(void *block_addr, const size_t block_size) noexcept
             {
                 YACK_LOCK(access);
                 release_unlocked(block_addr,block_size);
@@ -61,7 +61,7 @@ namespace yack
 
         private:
             inline explicit small_object_allocator() : singleton<self_type>(), small_objects(LIMIT_SIZE) {}
-            inline virtual ~small_object_allocator() throw() {}
+            inline virtual ~small_object_allocator() noexcept {}
 
             YACK_DISABLE_COPY_AND_ASSIGN(small_object_allocator);
             friend class singleton<self_type>;

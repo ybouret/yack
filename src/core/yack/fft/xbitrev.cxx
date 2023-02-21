@@ -141,7 +141,7 @@ static inline void build(FILE *hdr, FILE *src)
     //
     //--------------------------------------------------------------------------
     fprintf(hdr,"  template <typename T> static inline\n");
-    fprintf(hdr,"  void xbitrev(T data[], const size_t size) throw()\n");
+    fprintf(hdr,"  void xbitrev(T data[], const size_t size) noexcept\n");
     fprintf(hdr,"  {\n");
     fprintf(hdr,"    assert(NULL!=data); assert(size>0);\n");
     

@@ -39,18 +39,18 @@ namespace yack
                             const unit_t D);
 
             //! shared copy
-            bitmap(const bitmap &other) throw();
+            bitmap(const bitmap &other) noexcept;
             
             //! cleanup
-            virtual ~bitmap() throw();
+            virtual ~bitmap() noexcept;
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            const bitrow & line(const unit_t j) const throw(); //!< get scan line
-            bitrow &       line(const unit_t j)       throw(); //!< get scan line
-            void           vflip()                    throw(); //!< vertical flip
+            const bitrow & line(const unit_t j) const noexcept; //!< get scan line
+            bitrow &       line(const unit_t j)       noexcept; //!< get scan line
+            void           vflip()                    noexcept; //!< vertical flip
 
 
         protected:

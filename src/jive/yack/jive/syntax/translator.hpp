@@ -33,8 +33,8 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                explicit translator() throw(); //!< setup
-                virtual ~translator() throw(); //!< cleanup
+                explicit translator() noexcept; //!< setup
+                virtual ~translator() noexcept; //!< cleanup
 
                 //______________________________________________________________
                 //
@@ -58,7 +58,7 @@ namespace yack
                 YACK_DISABLE_COPY_AND_ASSIGN(translator);
                 void         inspect(const xnode *node);    //!< recursive call
                 virtual void on_init();                     //!< prepare resources
-                virtual void on_quit() throw();             //!< free resources
+                virtual void on_quit() noexcept;             //!< free resources
             protected:
                 void *data; //!< temporary user's data if necessary
             };

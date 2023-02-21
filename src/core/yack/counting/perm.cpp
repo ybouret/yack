@@ -6,7 +6,7 @@
 
 namespace yack
 {
-    permutation:: ~permutation() throw()
+    permutation:: ~permutation() noexcept
     {
     }
     
@@ -34,17 +34,17 @@ namespace yack
         yack_perm_boot( static_cast<yack_perm*>(addr),data);
     }
     
-    size_t permutation:: size() const throw()
+    size_t permutation:: size() const noexcept
     {
         return static_cast<yack_perm*>(addr)->n;
     }
 
-    void permutation:: on_boot() throw()
+    void permutation:: on_boot() noexcept
     {
         yack_perm_boot( static_cast<yack_perm*>(addr),data);
     }
     
-    bool  permutation::  on_next() throw()
+    bool  permutation::  on_next() noexcept
     {
         return  yack_perm_next( static_cast<yack_perm*>(addr),data) != 0;
     }

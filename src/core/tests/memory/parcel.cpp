@@ -16,14 +16,14 @@ namespace
         block *prev;
         void  *addr;
         size_t size;
-        inline  block(void*p, size_t n) throw() : next(0), prev(0), addr(p), size(n) {}
-        inline ~block() throw() {}
+        inline  block(void*p, size_t n) noexcept : next(0), prev(0), addr(p), size(n) {}
+        inline ~block() noexcept {}
 
 
 
     private:
         YACK_DISABLE_ASSIGN(block);
-        inline  block(const block &other) throw() : next(0), prev(0), addr(0), size(other.size) {}
+        inline  block(const block &other) noexcept : next(0), prev(0), addr(0), size(other.size) {}
     };
 }
 

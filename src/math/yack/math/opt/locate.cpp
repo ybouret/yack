@@ -30,7 +30,7 @@ namespace yack
             {
                 T f0, alpha, beta, gamma;
 
-                inline T operator()(const T u) const throw()
+                inline T operator()(const T u) const noexcept
                 {
                     return f0+u*(alpha+u*(beta+u*gamma));
                 }
@@ -42,12 +42,12 @@ namespace yack
             {
                 T A,B,C;
 
-                inline T operator()(const T u) const throw()
+                inline T operator()(const T u) const noexcept
                 {
                     return  u*(A*u+B)+C;
                 }
 
-                inline T zsearch(const T q0, const T q1) const throw()
+                inline T zsearch(const T q0, const T q1) const noexcept
                 {
                     static const T utol = numeric<T>::sqrt_eps;
                     assert(q0<0);
@@ -70,7 +70,7 @@ namespace yack
 
             private:
                 inline bool update(triplet<T> &u,
-                                   triplet<T> &f) const throw()
+                                   triplet<T> &f) const noexcept
                 {
                     static const T   h(0.5);
                     const Quadratic &F = *this;

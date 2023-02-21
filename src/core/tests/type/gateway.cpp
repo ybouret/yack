@@ -10,13 +10,13 @@ namespace
     {
     public:
 
-        inline explicit dummy(const int a) throw() : mine(a) {}
-        inline virtual ~dummy() throw() {}
+        inline explicit dummy(const int a) noexcept : mine(a) {}
+        inline virtual ~dummy() noexcept {}
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(dummy);
         int mine;
-        virtual const_inward & bulk() const throw() { return mine; }
+        virtual const_inward & bulk() const noexcept { return mine; }
     };
 
 }

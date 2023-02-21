@@ -32,15 +32,15 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline explicit zsolo() throw() : zcache<NODE>(), pool() {} //!< setup
-        inline virtual ~zsolo() throw() { mercy(); }                //!< cleanup
+        inline explicit zsolo() noexcept : zcache<NODE>(), pool() {} //!< setup
+        inline virtual ~zsolo() noexcept { mercy(); }                //!< cleanup
         
         //______________________________________________________________________
         //
         // methods
         //______________________________________________________________________
-        inline virtual void   release()       throw() { mercy(); }          //!< release pool
-        inline virtual size_t stowage() const throw() { return pool.size; } //!< pool size
+        inline virtual void   release()       noexcept { mercy(); }          //!< release pool
+        inline virtual size_t stowage() const noexcept { return pool.size; } //!< pool size
                                                                             
         //! store zombies into pool
         inline virtual void   reserve(size_t n)
@@ -52,10 +52,10 @@ namespace yack
         inline virtual NODE * zquery() { return pool.size? pool.query() : object::zacquire<NODE>(); }
         
         //! store existing zombie NODE
-        inline virtual void   zstore(NODE *node) throw() { pool.store(node); }
+        inline virtual void   zstore(NODE *node) noexcept { pool.store(node); }
         
         //! turn and store all alive
-        inline virtual void   devour(list_of<NODE> &live) throw()
+        inline virtual void   devour(list_of<NODE> &live) noexcept
         {
             while(live.size) zstore( this->turn(live.pop_back()) );
         }
@@ -63,7 +63,7 @@ namespace yack
         
     private:
         pool_of<NODE> pool;
-        inline void   mercy() throw() { while(pool.size) object::zrelease(pool.query()); }
+        inline void   mercy() noexcept { while(pool.size) object::zrelease(pool.query()); }
         YACK_DISABLE_COPY_AND_ASSIGN(zsolo);
     };
 }

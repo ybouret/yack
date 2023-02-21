@@ -8,13 +8,13 @@ namespace yack
     {
         namespace syntax
         {
-            wildcard:: ~wildcard() throw()
+            wildcard:: ~wildcard() noexcept
             {
             }
             
             wildcard:: wildcard(const tag      &name_,
                                 const uint32_t  uuid_,
-                                const rule     &host_) throw():
+                                const rule     &host_) noexcept:
             internal(name_,uuid_),
             authority<const rule>(host_)
             {

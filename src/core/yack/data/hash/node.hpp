@@ -27,8 +27,8 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            inline virtual ~hash_node() throw()                                      {} //!< cleanup
-            inline explicit hash_node() throw() : next(0), prev(0), hkey(0), node(0) {} //!< setup empty
+            inline virtual ~hash_node() noexcept                                      {} //!< cleanup
+            inline explicit hash_node() noexcept : next(0), prev(0), hkey(0), node(0) {} //!< setup empty
 
             //__________________________________________________________________
             //
@@ -36,7 +36,7 @@ namespace yack
             //__________________________________________________________________
 
             //! return this freed from data
-            inline hash_node *freed() throw()
+            inline hash_node *freed() noexcept
             {
                 assert(NULL==prev); assert(NULL==next);
                 node = 0;

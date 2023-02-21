@@ -7,8 +7,8 @@ namespace yack {
     //! batcher25
     class batcher25 : public swaps {
       public:
-        virtual ~batcher25() throw(); //!< cleanup
-        explicit batcher25() throw(); //!< setup  
+        virtual ~batcher25() noexcept; //!< cleanup
+        explicit batcher25() noexcept; //!< setup  
         static const char   sid[];        //!< batcher25
         static const size_t lhs[0x008a];  //!< lhs
         static const size_t rhs[0x008a];  //!< rhs

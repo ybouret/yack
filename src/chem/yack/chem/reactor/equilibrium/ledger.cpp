@@ -13,7 +13,7 @@ namespace yack {
 
         ledger::  ledger() : ledger_(8,as_capacity) { grow(); }
 
-        ledger:: ~ledger() throw() {}
+        ledger:: ~ledger() noexcept {}
 
 
         eq_repo & ledger:: degree(const size_t n) {

@@ -20,7 +20,7 @@ namespace yack
                 {
                 }
                 
-                jump:: ~jump() throw()
+                jump:: ~jump() noexcept
                 {
                 }
                 

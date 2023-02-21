@@ -3,16 +3,16 @@
 
 namespace yack
 {
-    tokenizer:: ~tokenizer() throw()
+    tokenizer:: ~tokenizer() noexcept
     {
     }
 
-    tokenizer:: tokenizer(const string &_) throw() :
+    tokenizer:: tokenizer(const string &_) noexcept :
     tokenizer_(_)
     {
     }
 
-    tokenizer:: tokenizer(const char *text) throw() :
+    tokenizer:: tokenizer(const char *text) noexcept :
     tokenizer_(text,yack_cstring_size(text))
     {
     }

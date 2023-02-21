@@ -30,7 +30,7 @@ namespace yack
 
             //! generic setup
             template <typename T>
-            inline embed( T * &addr, const size_t size) throw() :
+            inline embed( T * &addr, const size_t size) noexcept :
             handle( static_cast<void **>(out_of_reach::address(&addr)) ),
             offset(0),
             length(size*sizeof(T)),
@@ -43,7 +43,7 @@ namespace yack
             //! setup for a raw block, using as_capacity to disambiguate
             inline embed(void *             & block_addr,
                          const size_t         block_size,
-                         const as_capacity_t &) throw() :
+                         const as_capacity_t &) noexcept :
             handle( &block_addr ),
             offset(0),
             length( block_size ),
@@ -52,8 +52,8 @@ namespace yack
 
             }
 
-            embed(const embed &) throw(); //!< no-throw copy
-            ~embed() throw();             //!< cleanup
+            embed(const embed &) noexcept; //!< no-throw copy
+            ~embed() noexcept;             //!< cleanup
 
             //__________________________________________________________________
             //
@@ -61,7 +61,7 @@ namespace yack
             //__________________________________________________________________
 
             //! decrease address for C++ usage [1..something]
-            void cxx() throw();
+            void cxx() noexcept;
 
             //! display helper
             friend std::ostream & operator<<(std::ostream &os, const embed&);
@@ -70,7 +70,7 @@ namespace yack
             static void *zalloc(embed emb[], const size_t num, allocator &mem, size_t &bs);
 
             //! decrease all addresses
-            static void  cxx(embed emb[],const size_t num) throw();
+            static void  cxx(embed emb[],const size_t num) noexcept;
 
             
 

@@ -23,10 +23,10 @@ namespace yack
         class algorithm
         {
         public:
-            const memory::ro_buffer & key()  const throw(); //!< wrapped code.name
-            virtual                  ~algorithm()  throw(); //!< cleanup
+            const memory::ro_buffer & key()  const noexcept; //!< wrapped code.name
+            virtual                  ~algorithm()  noexcept; //!< cleanup
         protected:
-            explicit algorithm(const swaps &)      throw(); //!< setup
+            explicit algorithm(const swaps &)      noexcept; //!< setup
 
         public:  const swaps               &code;           //!< persistent code
         private: const memory::fixed_buffer buff;
@@ -161,18 +161,18 @@ namespace yack
             //__________________________________________________________________
 
             //! setup
-            inline explicit agenda() throw() :
+            inline explicit agenda() noexcept :
             SWAPS(), algorithm( static_cast<const SWAPS &>(*this) )
             {}
 
             //! cleanup
-            inline virtual ~agenda() throw()
+            inline virtual ~agenda() noexcept
             {
             }
 
             //! increasing sort arr[0..code.size-1]
             template <typename T> inline
-            void csort(T *arr) const throw()
+            void csort(T *arr) const noexcept
             {
                 assert(NULL!=arr);
                 thin_array<T> ARR(arr,code.size);
@@ -181,7 +181,7 @@ namespace yack
 
             //! increasing co-sort arr[0..code.size-1] and brr[0..code.size-1]
             template <typename T, typename U> inline
-            void csort(T *arr, U *brr) const throw()
+            void csort(T *arr, U *brr) const noexcept
             {
                 assert(NULL!=arr);
                 thin_array<T> ARR(arr,code.size);

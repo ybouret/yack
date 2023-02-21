@@ -38,13 +38,13 @@ namespace yack
         //______________________________________________________________________
         
         //! setup for none/solo cache
-        inline explicit dinky_root() throw() : list_type(), cache() {}
+        inline explicit dinky_root() noexcept : list_type(), cache() {}
         
         //! setup for coop cache
-        inline explicit dinky_root(const ZPROXY &user) throw() : list_type(), cache(user) {}
+        inline explicit dinky_root(const ZPROXY &user) noexcept : list_type(), cache(user) {}
         
         //! cleanup
-        inline virtual ~dinky_root() throw() { cache->devour(*this); }
+        inline virtual ~dinky_root() noexcept { cache->devour(*this); }
         
         //! copy
         inline dinky_root(const dinky_root &other) :
@@ -67,20 +67,20 @@ namespace yack
         inline void shove(const U &u) { push_front( cache->create(u) ); }
         
         //! remove node
-        inline void cut(NODE *node) throw() {
+        inline void cut(NODE *node) noexcept {
             assert(node);
             cache->zstore( cache->turn( pop(node) ) );
         }
         
         //! remove back
-        inline void cut_tail() throw()
+        inline void cut_tail() noexcept
         {
             assert(size);
             cache->zstore( cache->turn( pop_back() ) );
         }
         
         //! remove front
-        inline void cut_head() throw()
+        inline void cut_head() noexcept
         {
             assert(size);
             cache->zstore( cache->turn( pop_front() ) );
@@ -110,10 +110,10 @@ namespace yack
         }
         
         //! clear alive NODEs
-        inline void   clear() throw() { cache->devour(*this); }
+        inline void   clear() noexcept { cache->devour(*this); }
         
         //! avalailable zombies
-        inline size_t ready() const throw() { return coerce(cache)->stowage(); }
+        inline size_t ready() const noexcept { return coerce(cache)->stowage(); }
         
         
         

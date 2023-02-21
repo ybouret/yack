@@ -10,7 +10,7 @@ namespace yack
         {
             const char formats:: call_sign[] = "graphic::images";
             
-            formats:: ~formats() throw()
+            formats:: ~formats() noexcept
             {
             }
 
@@ -54,14 +54,14 @@ namespace yack
 
             
 
-            const format * formats::query(const string &id) const throw()
+            const format * formats::query(const string &id) const noexcept
             {
                 const fmt_ptr *ppC = search(id);
                 return NULL!=ppC ? & **ppC : NULL;
 
             }
 
-            const format * formats::query(const char *id) const throw()
+            const format * formats::query(const char *id) const noexcept
             {
                 if(id)
                 {

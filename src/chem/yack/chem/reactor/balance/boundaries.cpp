@@ -12,7 +12,7 @@ namespace yack {
         {
         }
 
-        boundaries:: ~boundaries() throw()
+        boundaries:: ~boundaries() noexcept
         {
         }
 

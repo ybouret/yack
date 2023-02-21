@@ -19,8 +19,8 @@ namespace yack
     public:
         typedef hashing::to_key<size_t,FUNCTION> self_type; //!< alias
 
-        inline explicit key_hasher() throw() : self_type() {} //!< setup
-        inline virtual ~key_hasher() throw() {}               //!< cleanup
+        inline explicit key_hasher() noexcept : self_type() {} //!< setup
+        inline virtual ~key_hasher() noexcept {}               //!< cleanup
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(key_hasher);

@@ -7,20 +7,20 @@ namespace yack
 
     namespace information
     {
-        echo:: ~echo() throw()
+        echo:: ~echo() noexcept
         {
         }
 
-        echo:: echo() throw()
+        echo:: echo() noexcept
         {
         }
 
-        uint8_t echo:: alter(const uint8_t x) throw()
+        uint8_t echo:: alter(const uint8_t x) noexcept
         {
             return x;
         }
 
-        void echo:: reset() throw()
+        void echo:: reset() noexcept
         {
         }
         

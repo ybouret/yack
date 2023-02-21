@@ -10,11 +10,11 @@ namespace yack
         namespace syntax
         {
 
-            internal:: ~internal() throw()
+            internal:: ~internal() noexcept
             {
             }
 
-            internal:: internal(const tag &name_, const uint32_t uuid_) throw() :
+            internal:: internal(const tag &name_, const uint32_t uuid_) noexcept :
             rule(name_,internal_type,uuid_)
             {
             }

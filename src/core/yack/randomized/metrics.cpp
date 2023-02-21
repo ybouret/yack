@@ -7,7 +7,7 @@ namespace yack
     {
 
 
-        metrics:: metrics(const uint32_t umax) throw() :
+        metrics:: metrics(const uint32_t umax) noexcept :
         m(umax),
         f(umax),
         d(umax),
@@ -16,43 +16,43 @@ namespace yack
         }
 
 
-        metrics:: ~metrics() throw()
+        metrics:: ~metrics() noexcept
         {
 
         }
 
         template <>
-        float metrics:: unit_<float>(const uint32_t u) const throw()
+        float metrics:: unit_<float>(const uint32_t u) const noexcept
         {
             return f.unit(u);
         }
 
         template <>
-        double metrics:: unit_<double>(const uint32_t u) const throw()
+        double metrics:: unit_<double>(const uint32_t u) const noexcept
         {
             return d.unit(u);
         }
 
         template <>
-        long double metrics:: unit_<long double>(const uint32_t u) const throw()
+        long double metrics:: unit_<long double>(const uint32_t u) const noexcept
         {
             return l.unit(u);
         }
 
         template <>
-        float metrics:: symm_<float>(const uint32_t u) const throw()
+        float metrics:: symm_<float>(const uint32_t u) const noexcept
         {
             return f.symm(u);
         }
 
         template <>
-        double metrics:: symm_<double>(const uint32_t u) const throw()
+        double metrics:: symm_<double>(const uint32_t u) const noexcept
         {
             return d.symm(u);
         }
 
         template <>
-        long double metrics:: symm_<long double>(const uint32_t u) const throw()
+        long double metrics:: symm_<long double>(const uint32_t u) const noexcept
         {
             return l.symm(u);
         }

@@ -6,11 +6,11 @@ namespace yack
 
     namespace math
     {
-        template <> zsec<real_t>:: zsec() throw() : math::zroot<real_t>() {}
+        template <> zsec<real_t>:: zsec() noexcept : math::zroot<real_t>() {}
 
-        template <> zsec<real_t>:: ~zsec() throw() {}
+        template <> zsec<real_t>:: ~zsec() noexcept {}
 
-        template <> const char * zsec<real_t>:: name() const throw()
+        template <> const char * zsec<real_t>:: name() const noexcept
         {
             return core::zsec_name;
         }

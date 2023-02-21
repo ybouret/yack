@@ -75,10 +75,10 @@ __info.bytes += (BYTES)
             // C++
             //__________________________________________________________________
             //! what=MPI error message, when=formatted string
-            explicit exception(const int err,const char *fmt,...) throw() YACK_PRINTF_CHECK(3,4);
-            exception(const exception &)      throw(); //!< copy
-            virtual ~exception()              throw(); //!< cleanup
-            virtual  const char *what() const throw(); //!< internal message
+            explicit exception(const int err,const char *fmt,...) noexcept YACK_PRINTF_CHECK(3,4);
+            exception(const exception &)      noexcept; //!< copy
+            virtual ~exception()              noexcept; //!< cleanup
+            virtual  const char *what() const noexcept; //!< internal message
 
             //__________________________________________________________________
             //
@@ -208,7 +208,7 @@ __info.bytes += (BYTES)
         void replica_wait() const; //!< ACK(0)
         void replica_done() const; //!< SYN(0)
 
-        void tmx_init() throw();   //!< reset timings
+        void tmx_init() noexcept;   //!< reset timings
 
         //______________________________________________________________________
         //
@@ -227,7 +227,7 @@ __info.bytes += (BYTES)
         YACK_DISABLE_COPY_AND_ASSIGN(mpi);
         friend class singleton<mpi>;
         explicit mpi();
-        virtual ~mpi() throw();
+        virtual ~mpi() noexcept;
         const __mpi::data_types native;
     public:
         __mpi::data_rs          cxx; //!< high-level Recv/Send

@@ -20,7 +20,7 @@ namespace yack
             return mgr.query(page_exp2);
         }
 
-        void hash_table_:: release(void *block_addr, const size_t page_exp2) throw()
+        void hash_table_:: release(void *block_addr, const size_t page_exp2) noexcept
         {
             assert(block_addr);
             static memory::dyadic &mgr = memory::dyadic::location();

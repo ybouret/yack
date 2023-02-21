@@ -25,21 +25,21 @@ namespace yack
             // C++
             //__________________________________________________________________
             explicit qvector(apz *ptr, const size_t num); //!< constructor on predefined ptr[num]
-            virtual ~qvector()                   throw(); //!< cleanup
+            virtual ~qvector()                   noexcept; //!< cleanup
 
             //__________________________________________________________________
             //
             // interface: readable
             //__________________________________________________________________
-            virtual size_t      size()                   const throw(); //!< dimension
-            virtual const apz & operator[](const size_t) const throw(); //!< 1..dimension
+            virtual size_t      size()                   const noexcept; //!< dimension
+            virtual const apz & operator[](const size_t) const noexcept; //!< 1..dimension
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
             friend std::ostream & operator<<(std::ostream &, const qvector &); //!< display
-            void   ldz() throw();                                              //!< fast load of zero into coeff/norm2
+            void   ldz() noexcept;                                              //!< fast load of zero into coeff/norm2
 
             //! remove projection of v_k on u_k
             /**
@@ -56,7 +56,7 @@ namespace yack
             bool appointed(const readable<apq> &u_k);
 
             //! lexicographic comparison
-            static int  compare(const qvector &lhs, const qvector &rhs) throw();
+            static int  compare(const qvector &lhs, const qvector &rhs) noexcept;
 
             //! cast to integer type
             template <typename T> inline

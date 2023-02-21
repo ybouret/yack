@@ -6,8 +6,8 @@ namespace yack
     namespace chemical
     {
 
-        alist::  alist() throw() : alist_() {}
-        alist:: ~alist() throw() {}
+        alist::  alist() noexcept : alist_() {}
+        alist:: ~alist() noexcept {}
 
 
         alist:: alist(const snode *sn) : alist_()

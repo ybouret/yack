@@ -7,13 +7,13 @@ namespace yack
     {
         namespace bz
         {
-            stream:: ~stream() throw()
+            stream:: ~stream() noexcept
             {
                 assert(NULL==BZ);
             }
             
 
-            stream:: stream(void *ptr) throw() :
+            stream:: stream(void *ptr) noexcept :
             BZ(ptr)
             {
                 assert(NULL!=BZ);
@@ -21,7 +21,7 @@ namespace yack
 
 #define YACK_BZ(ERR) case ERR: return #ERR
 
-            const char * stream:: errstr(const int err) throw()
+            const char * stream:: errstr(const int err) noexcept
             {
                 switch(err)
                 {

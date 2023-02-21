@@ -25,10 +25,10 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~internal()                            throw(); //!< cleanup
+                virtual ~internal()                            noexcept; //!< cleanup
 
             protected:
-                explicit internal(const tag &, const uint32_t) throw(); //!< set name/uuid
+                explicit internal(const tag &, const uint32_t) noexcept; //!< set name/uuid
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(internal);

@@ -24,8 +24,8 @@ namespace yack {
         {
         public:
             typedef auto_ptr<const umap> ptr; //!< alias
-            explicit umap() throw();          //!< setup
-            virtual ~umap() throw();          //!< cleanup
+            explicit umap() noexcept;          //!< setup
+            virtual ~umap() noexcept;          //!< cleanup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(umap);
@@ -51,7 +51,7 @@ namespace yack {
             // C++
             //__________________________________________________________________
             explicit udict(const char *which); //!< setup with name
-            virtual ~udict() throw();          //!< cleanup
+            virtual ~udict() noexcept;          //!< cleanup
 
             //__________________________________________________________________
             //

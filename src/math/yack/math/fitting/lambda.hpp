@@ -28,25 +28,25 @@ namespace yack
                 // types and definition
                 //______________________________________________________________
                 typedef field1D<const T> field_type; //!< alias
-                static const char *clid() throw();   //!< lambda<T>
-                static int         pmin() throw();   //!< ceil( log10( epsilon ) )
-                static int         pmax() throw();   //!< MAX_10_EXP
-                static int         ptol() throw();   //!< floor( log10( sqrt(epsilon) ) )
+                static const char *clid() noexcept;   //!< lambda<T>
+                static int         pmin() noexcept;   //!< ceil( log10( epsilon ) )
+                static int         pmax() noexcept;   //!< MAX_10_EXP
+                static int         ptol() noexcept;   //!< floor( log10( sqrt(epsilon) ) )
                 //______________________________________________________________
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~lambda() throw(); //!< cleanup
+                virtual ~lambda() noexcept; //!< cleanup
                 explicit lambda();         //!< setup
 
                 //______________________________________________________________
                 //
                 // methods
                 //______________________________________________________________
-                T        initialized(int &p) const throw(); //!< return self[p=pmin/2]
-                void     initialize(int &p)  const throw(); //!< p=pmin/2
-                void     decrease(int &p)    const throw(); //!< p = max_of(p-1,pmin)
-                bool     increase(int &p)    const throw(); //!< ++p if p<pmax, false otherwise
+                T        initialized(int &p) const noexcept; //!< return self[p=pmin/2]
+                void     initialize(int &p)  const noexcept; //!< p=pmin/2
+                void     decrease(int &p)    const noexcept; //!< p = max_of(p-1,pmin)
+                bool     increase(int &p)    const noexcept; //!< ++p if p<pmax, false otherwise
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(lambda);

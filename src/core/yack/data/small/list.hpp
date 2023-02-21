@@ -30,8 +30,8 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline explicit small_list() throw() : self_type() {} //!< setup
-        inline virtual ~small_list() throw() {}               //!< cleanup
+        inline explicit small_list() noexcept : self_type() {} //!< setup
+        inline virtual ~small_list() noexcept {}               //!< cleanup
         inline          small_list(const small_list &other) : self_type(other) {} //!< hard copy
 
 

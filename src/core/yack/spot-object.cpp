@@ -13,13 +13,13 @@
 
 namespace yack
 {
-    spot_object::  spot_object() throw() {}
-    spot_object:: ~spot_object() throw() {}
+    spot_object::  spot_object() noexcept {}
+    spot_object:: ~spot_object() noexcept {}
     
     typedef base2<size_t> Base2;
     static const size_t max_block_size = Base2::max_power_of_two;
     
-    static inline size_t page_exp2_for(const size_t block_size) throw()
+    static inline size_t page_exp2_for(const size_t block_size) noexcept
     {
         assert(block_size<=max_block_size);
         assert(block_size>0);
@@ -34,7 +34,7 @@ namespace yack
         return mgr.query(page_exp2_for(block_size));
     }
     
-    static inline void __store(void *block_addr, const size_t block_size) throw()
+    static inline void __store(void *block_addr, const size_t block_size) noexcept
     {
         assert(block_size>0);
         if(block_size>max_block_size)
@@ -52,7 +52,7 @@ namespace yack
         return __query(block_size);
     }
     
-    void spot_object:: operator delete(void *block_addr,const size_t block_size) throw()
+    void spot_object:: operator delete(void *block_addr,const size_t block_size) noexcept
     {
         __store(block_addr,block_size);
     }
@@ -62,13 +62,13 @@ namespace yack
         return __query(block_size);
     }
     
-    void spot_object:: operator delete[](void *block_addr, const size_t block_size) throw()
+    void spot_object:: operator delete[](void *block_addr, const size_t block_size) noexcept
     {
         __store(block_addr,block_size);
     }
     
     
-    void * spot_object::operator new(size_t block_size, void *addr) throw()
+    void * spot_object::operator new(size_t block_size, void *addr) noexcept
     {
         assert(block_size>0);
         assert(addr!=NULL);
@@ -76,7 +76,7 @@ namespace yack
         return addr;
     }
     
-    void spot_object:: operator delete(void *, void *) throw()
+    void spot_object:: operator delete(void *, void *) noexcept
     {}
     
     

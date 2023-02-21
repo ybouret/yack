@@ -19,7 +19,7 @@ namespace yack
         struct aligned
         {
             static const size_t largest;                       //!< using base2
-            static size_t       package(const size_t) throw(); //!< using YACK_MEMALIGN
+            static size_t       package(const size_t) noexcept; //!< using YACK_MEMALIGN
         };
     }
 }

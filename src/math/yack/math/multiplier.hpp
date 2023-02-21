@@ -26,13 +26,13 @@ namespace yack
                 //______________________________________________________________
 
                 //! setup
-                inline   tagged_real(const T args) throw() : value(args), exponent(rexp(value)) { }
+                inline   tagged_real(const T args) noexcept : value(args), exponent(rexp(value)) { }
 
                 //! copy
-                inline  tagged_real(const tagged_real &t) throw() : value(t.value), exponent(t.exponent) { }
+                inline  tagged_real(const tagged_real &t) noexcept : value(t.value), exponent(t.exponent) { }
 
                 //! cleanup
-                inline ~tagged_real() throw() {}
+                inline ~tagged_real() noexcept {}
 
                 //______________________________________________________________
                 //
@@ -41,7 +41,7 @@ namespace yack
 
                 //! '<' operator for odereder list
                 inline friend bool operator<(const tagged_real &lhs,
-                                             const tagged_real &rhs) throw() {
+                                             const tagged_real &rhs) noexcept {
                     return lhs.exponent < rhs.exponent;
                 }
 
@@ -52,12 +52,12 @@ namespace yack
                 }
 
                 //! access value
-                inline const T & operator*() const throw() { return value; }
+                inline const T & operator*() const noexcept { return value; }
 
             private:
                 YACK_DISABLE_ASSIGN(tagged_real);
                 const T   value;
-                static inline int rexp(const T x) throw() {
+                static inline int rexp(const T x) noexcept {
                     int ex = 0; (void) std::frexp(x,&ex); return ex;
                 }
 
@@ -81,8 +81,8 @@ namespace yack
                 overflow   //!< found overflow
             };
 
-            explicit multiplication() throw(); //!< setup
-            virtual ~multiplication() throw(); //!< cleanup
+            explicit multiplication() noexcept; //!< setup
+            virtual ~multiplication() noexcept; //!< cleanup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(multiplication);
@@ -122,13 +122,13 @@ namespace yack
             // C++
             //__________________________________________________________________
             //! cleanup
-            inline virtual ~multiplier() throw() {}
+            inline virtual ~multiplier() noexcept {}
 
             //! setup emptu
-            inline explicit multiplier() throw() : multiplication(), self_type() {}
+            inline explicit multiplier() noexcept : multiplication(), self_type() {}
 
             //! setup with capacity
-            inline explicit multiplier(const size_t n) throw() : multiplication(), self_type(n) {}
+            inline explicit multiplier(const size_t n) noexcept : multiplication(), self_type(n) {}
 
             //__________________________________________________________________
             //
@@ -139,7 +139,7 @@ namespace yack
             inline void init(const T x) { free(); ld(x); }
 
             //! initialize with 1
-            inline void ld1() throw() { free(); }
+            inline void ld1() noexcept { free(); }
 
             //! syntax helper to multiply by a value
             multiplier & operator *=(const T x) { ld(x); return *this; }

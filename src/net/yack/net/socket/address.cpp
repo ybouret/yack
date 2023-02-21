@@ -9,11 +9,11 @@ namespace yack
 
         
 
-        socket_address::  ~socket_address() throw() { clear(); }
+        socket_address::  ~socket_address() noexcept { clear(); }
 
         socket_address:: socket_address(const ip_version        user_ip_v,
                                         const inet_address_name user_name,
-                                        const uint16_t          user_port) throw() :
+                                        const uint16_t          user_port) noexcept :
         gateway<socket_addr>(),
         which(user_ip_v),
         entry(NULL),
@@ -26,7 +26,7 @@ namespace yack
             }
         }
 
-        socket_address:: socket_address(const socket_address &other) throw() :
+        socket_address:: socket_address(const socket_address &other) noexcept :
         gateway<socket_addr>(),
         which(other.which),
         entry(NULL),
@@ -39,19 +39,19 @@ namespace yack
             }
         }
 
-        void socket_address:: xch(socket_address &other) throw()
+        void socket_address:: xch(socket_address &other) noexcept
         {
             cswap(which,other.which);
             where.swap_with(other.where);
         }
 
-        socket_address & socket_address:: operator=(const socket_address &other) throw()
+        socket_address & socket_address:: operator=(const socket_address &other) noexcept
         {
             { socket_address tmp(other); xch(tmp); }
             return *this;
         }
 
-        socket_address:: const_inward & socket_address:: bulk() const throw()
+        socket_address:: const_inward & socket_address:: bulk() const noexcept
         {
             const socket_addr *myself = NULL;
             switch(which)
@@ -74,7 +74,7 @@ namespace yack
             return os;
         }
 
-        void socket_address:: clear() throw()
+        void socket_address:: clear() noexcept
         {
             switch(which)
             {
@@ -84,7 +84,7 @@ namespace yack
             where.eradicate();
         }
 
-        ip_version  socket_address:: version() const throw()
+        ip_version  socket_address:: version() const noexcept
         {
             return which;
         }

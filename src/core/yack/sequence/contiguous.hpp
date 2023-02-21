@@ -37,7 +37,7 @@ namespace yack
         //
         //! readable interface
         //______________________________________________________________________
-        inline virtual const_type & operator[](const size_t indx) const throw()
+        inline virtual const_type & operator[](const size_t indx) const noexcept
         {
             assert(indx>=1); assert(indx<=size());
             assert(cxx());
@@ -48,7 +48,7 @@ namespace yack
         //
         //! writable interface
         //______________________________________________________________________
-        inline virtual type & operator[](const size_t indx) throw()
+        inline virtual type & operator[](const size_t indx) noexcept
         {
             assert(indx>=1); assert(indx<=size());
             assert(cxx());
@@ -59,13 +59,13 @@ namespace yack
         //
         // non virtual interface
         //______________________________________________________________________
-        inline const_type * operator*() const throw() { return cxx();        } //!< direct [1..size()]
-        inline type       * operator*()       throw() { return (type*)cxx(); } //!< direct [1..size()]
+        inline const_type * operator*() const noexcept { return cxx();        } //!< direct [1..size()]
+        inline type       * operator*()       noexcept { return (type*)cxx(); } //!< direct [1..size()]
         
-        inline const_type *operator()(void)              const throw() { return mem();            } //!< first const object
-        inline type       *operator()(void)                    throw() { return (type*)mem();     } //!< first object
-        inline const_type *operator()(const ptrdiff_t n) const throw() { return mem()+n;          } //!< shifted first const object
-        inline type       *operator()(const ptrdiff_t n)       throw() { return (type*)(mem()+n); } //!< shifted first object
+        inline const_type *operator()(void)              const noexcept { return mem();            } //!< first const object
+        inline type       *operator()(void)                    noexcept { return (type*)mem();     } //!< first object
+        inline const_type *operator()(const ptrdiff_t n) const noexcept { return mem()+n;          } //!< shifted first const object
+        inline type       *operator()(const ptrdiff_t n)       noexcept { return (type*)(mem()+n); } //!< shifted first object
 
         //______________________________________________________________________
         //
@@ -82,7 +82,7 @@ namespace yack
         //
         //! reverse order
         //______________________________________________________________________
-        inline void reverse() throw()
+        inline void reverse() noexcept
         {
             writable<T> &self  = *this;
             size_t       upper = size();
@@ -100,15 +100,15 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline virtual ~contiguous() throw() {} //!< cleanup
+        inline virtual ~contiguous() noexcept {} //!< cleanup
 
     protected:
-        inline explicit contiguous() throw() {} //!< setup
+        inline explicit contiguous() noexcept {} //!< setup
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(contiguous);
-        virtual const_type *cxx() const throw() = 0; //!< to access[1..size()]
-        virtual const_type *mem() const throw() = 0; //!< to access[0..size()-1]
+        virtual const_type *cxx() const noexcept = 0; //!< to access[1..size()]
+        virtual const_type *mem() const noexcept = 0; //!< to access[0..size()-1]
 
     public:
         //______________________________________________________________________
@@ -116,20 +116,20 @@ namespace yack
         // iterators
         //______________________________________________________________________
         typedef iterating::linear<type,iterating::forward> iterator;                     //!< forward iterator
-        inline  iterator begin() throw() { return (type*)mem();          }               //!< forward iterator begin
-        inline  iterator end()   throw() { return ((type*)mem())+size(); }               //!< forward iterator end
+        inline  iterator begin() noexcept { return (type*)mem();          }               //!< forward iterator begin
+        inline  iterator end()   noexcept { return ((type*)mem())+size(); }               //!< forward iterator end
 
         typedef iterating::linear<const_type,iterating::forward> const_iterator;         //!< const forward iterator
-        inline  const_iterator begin() const throw() { return mem(); }                   //!< const forward iterator begin
-        inline  const_iterator end()   const throw() { return mem()+size(); }            //!< const forward iterator end
+        inline  const_iterator begin() const noexcept { return mem(); }                   //!< const forward iterator begin
+        inline  const_iterator end()   const noexcept { return mem()+size(); }            //!< const forward iterator end
 
         typedef iterating::linear<type,iterating::reverse> reverse_iterator;             //!< reverse iterator
-        inline  reverse_iterator rbegin() throw() { return ((type *)cxx())+size();  }    //!< reverse iterator begin
-        inline  reverse_iterator rend()   throw() { return (type*)cxx();            }    //!< reverse iterator end
+        inline  reverse_iterator rbegin() noexcept { return ((type *)cxx())+size();  }    //!< reverse iterator begin
+        inline  reverse_iterator rend()   noexcept { return (type*)cxx();            }    //!< reverse iterator end
 
         typedef iterating::linear<const_type,iterating::reverse> const_reverse_iterator; //!< const reverse iterator
-        inline  const_reverse_iterator rbegin() const throw() { return cxx()+size();  }  //!< const reverse iterator begin
-        inline  const_reverse_iterator rend()   const throw() { return cxx();         }  //!< const reverse iterator end
+        inline  const_reverse_iterator rbegin() const noexcept { return cxx()+size();  }  //!< const reverse iterator begin
+        inline  const_reverse_iterator rend()   const noexcept { return cxx();         }  //!< const reverse iterator end
 
 
     };

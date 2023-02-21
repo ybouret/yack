@@ -22,7 +22,7 @@ namespace yack
         //! increasing
         //______________________________________________________________________
         template <typename T> static inline
-        int increasing(const T &lhs, const T &rhs) throw()
+        int increasing(const T &lhs, const T &rhs) noexcept
         {
             return (lhs<rhs) ? -1 : (rhs<lhs ? 1 : 0);
         }
@@ -32,7 +32,7 @@ namespace yack
         //! increasing absolute value
         //______________________________________________________________________
         template <typename T> static inline
-        int increasing_abs(const T &lhs, const T &rhs) throw()
+        int increasing_abs(const T &lhs, const T &rhs) noexcept
         {
             const T L = absolute(lhs);
             const T R = absolute(rhs);
@@ -45,7 +45,7 @@ namespace yack
         //! decreasing
         //______________________________________________________________________
         template <typename T> static inline
-        int decreasing(const T &lhs, const T &rhs) throw()
+        int decreasing(const T &lhs, const T &rhs) noexcept
         {
             return (lhs<rhs) ? 1 : (rhs<lhs ? -1 : 0);
         }
@@ -55,7 +55,7 @@ namespace yack
         //! increasing absolute value
         //______________________________________________________________________
         template <typename T> static inline
-        int decreasing_abs(const T &lhs, const T &rhs) throw()
+        int decreasing_abs(const T &lhs, const T &rhs) noexcept
         {
             const T L = absolute(lhs);
             const T R = absolute(rhs);
@@ -104,7 +104,7 @@ namespace yack
         //! lexicographic comparison of same lengths arrays[0..n-1]
         //______________________________________________________________________
         template <typename T> static inline
-        int lexicographic(const T *lhs, const T *rhs, const size_t n) throw()
+        int lexicographic(const T *lhs, const T *rhs, const size_t n) noexcept
         {
             assert(NULL!=lhs);
             assert(NULL!=rhs);

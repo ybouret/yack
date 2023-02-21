@@ -26,8 +26,8 @@ namespace yack
             //
             // interface
             //__________________________________________________________________
-            virtual size_t      measure() const throw() = 0; //!< usable bytes
-            virtual const void *ro_addr() const throw() = 0; //!< first byte address
+            virtual size_t      measure() const noexcept = 0; //!< usable bytes
+            virtual const void *ro_addr() const noexcept = 0; //!< first byte address
 
             //__________________________________________________________________
             //
@@ -35,15 +35,15 @@ namespace yack
             //__________________________________________________________________
             std::ostream &display_hexa(std::ostream &)             const;         //!< hexadecimal content
             std::ostream &display_char(std::ostream &)             const;         //!< human readable...
-            bool          has_same_content_than(const ro_buffer &) const throw(); //!< check
+            bool          has_same_content_than(const ro_buffer &) const noexcept; //!< check
 
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            virtual ~ro_buffer() throw(); //!< cleanup
+            virtual ~ro_buffer() noexcept; //!< cleanup
         protected:
-            explicit ro_buffer() throw(); //!< setup
+            explicit ro_buffer() noexcept; //!< setup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(ro_buffer);

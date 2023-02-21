@@ -9,19 +9,19 @@ namespace yack
 
 
         template <>
-        void convert<float,rgba>::make(float &f, const rgba &c) throw()
+        void convert<float,rgba>::make(float &f, const rgba &c) noexcept
         {
             f = convtable::f[unsigned(c.r)+unsigned(c.g)+unsigned(c.b)];
         }
 
         template <>
-        void convert<rgb,rgba>::make(rgb &f, const rgba &c) throw()
+        void convert<rgb,rgba>::make(rgb &f, const rgba &c) noexcept
         {
             f = c;
         }
 
         template <>
-        void convert<uint8_t,rgba>::make(uint8_t &f, const rgba &c) throw()
+        void convert<uint8_t,rgba>::make(uint8_t &f, const rgba &c) noexcept
         {
             f = convtable::u[unsigned(c.r)+unsigned(c.g)+unsigned(c.b)];
         }

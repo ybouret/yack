@@ -54,7 +54,7 @@ namespace
             validate();
         }
         
-        virtual ~myparser() throw()
+        virtual ~myparser() noexcept
         {
         }
         

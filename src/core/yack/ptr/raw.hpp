@@ -33,13 +33,13 @@ namespace yack
         //______________________________________________________________________
 
         //! setup empty
-        inline raw_ptr() throw() : ptr<T>(0) {}
+        inline raw_ptr() noexcept : ptr<T>(0) {}
 
         //! setup anything
-        inline raw_ptr(type *addr) throw() : ptr<T>(addr) {}
+        inline raw_ptr(type *addr) noexcept : ptr<T>(addr) {}
 
         //! copy, take ownershipt
-        inline raw_ptr(const raw_ptr &_) throw() : ptr<T>( _.pointee ) {}
+        inline raw_ptr(const raw_ptr &_) noexcept : ptr<T>( _.pointee ) {}
 
         //! assign, take ownership
         inline raw_ptr & operator=(const raw_ptr &other)
@@ -50,7 +50,7 @@ namespace yack
 
 
         //! cleanup
-        inline virtual ~raw_ptr() throw() { pointee = NULL; }
+        inline virtual ~raw_ptr() noexcept { pointee = NULL; }
 
         //! assign new address
         inline raw_ptr & operator=(type *addr)
@@ -64,8 +64,8 @@ namespace yack
         // methods
         //______________________________________________________________________
 
-        inline bool is_valid() const throw() { return NULL!=pointee; } //!< check pointee
-        inline bool is_empty() const throw() { return NULL==pointee; } //!< check !pointee
+        inline bool is_valid() const noexcept { return NULL!=pointee; } //!< check pointee
+        inline bool is_empty() const noexcept { return NULL==pointee; } //!< check !pointee
         
         
     };

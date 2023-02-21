@@ -13,7 +13,7 @@ namespace yack
         {
             static inline
             bool has_conserved_species(const actors   &A,
-                                       const addrbook &nomadic) throw()
+                                       const addrbook &nomadic) noexcept
             {
                 for(const actor *a=A->head;a;a=a->next)
                 {
@@ -25,7 +25,7 @@ namespace yack
 
 
             static inline
-            bool has_roaming(const equilibrium &lhs, const addrbook &roaming) throw()
+            bool has_roaming(const equilibrium &lhs, const addrbook &roaming) noexcept
             {
                 const string &lid = lhs.name;
                 //std::cerr << "\t\t Checking " << lid << std::endl;

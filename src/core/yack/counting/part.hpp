@@ -27,7 +27,7 @@ namespace yack
         // C++
         //______________________________________________________________________
         explicit partition(const size_t n); //!< setup n>0
-        virtual ~partition() throw();       //!< cleanup
+        virtual ~partition() noexcept;       //!< cleanup
 
         static apex::natural cardinality(const size_t n); //!< cardinality
 
@@ -35,13 +35,13 @@ namespace yack
         //
         // interface
         //______________________________________________________________________
-        virtual size_t size() const throw(); //!< current size in 1..n
+        virtual size_t size() const noexcept; //!< current size in 1..n
 
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(partition);
-        virtual void on_boot() throw();       //!< size()=1, [1] = n
-        virtual bool on_next() throw();       //!< up to [1 1...1 1]
+        virtual void on_boot() noexcept;       //!< size()=1, [1] = n
+        virtual bool on_next() noexcept;       //!< up to [1 1...1 1]
     };
     
 }

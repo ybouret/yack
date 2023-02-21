@@ -38,8 +38,8 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~token() throw();  //!< cleanup
-            explicit token() throw();  //!< no-throw build
+            virtual ~token() noexcept;  //!< cleanup
+            explicit token() noexcept;  //!< no-throw build
             token(const token &);      //!< char-wise copy
 
             //__________________________________________________________________
@@ -51,7 +51,7 @@ namespace yack
             friend std::ostream & operator<< (std::ostream &os, const token &t);
             
             //! get context from first char
-            const context & operator*() const throw();
+            const context & operator*() const noexcept;
 
             //! transfer to string
             string        to_string(size_t nskip=0, size_t ntrim=0) const;

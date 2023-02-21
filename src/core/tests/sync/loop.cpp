@@ -30,13 +30,13 @@ namespace
         const size_t length;
         double      *partial;
 
-        explicit engine(const size_t len) throw() :
+        explicit engine(const size_t len) noexcept :
         length(len),
         partial(0)
         {
         }
 
-        virtual ~engine() throw()
+        virtual ~engine() noexcept
         {
             clean();
         }
@@ -47,12 +47,12 @@ namespace
             partial = new double[para];
         }
 
-        void clean() throw()
+        void clean() noexcept
         {
             if(partial) { delete []partial; partial=0; }
         }
 
-        double get(const size_t para) const throw()
+        double get(const size_t para) const noexcept
         {
             double res = 0;
             for(size_t i=0;i<para;++i)
@@ -64,7 +64,7 @@ namespace
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(engine);
-        virtual void run(const concurrent::context &here, lockable &sync) throw()
+        virtual void run(const concurrent::context &here, lockable &sync) noexcept
         {
             size_t size = length;
             size_t curr = 1;

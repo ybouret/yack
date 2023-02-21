@@ -7,8 +7,8 @@ namespace yack {
     //! waksman10
     class waksman10 : public swaps {
       public:
-        virtual ~waksman10() throw(); //!< cleanup
-        explicit waksman10() throw(); //!< setup  
+        virtual ~waksman10() noexcept; //!< cleanup
+        explicit waksman10() noexcept; //!< setup  
         static const char   sid[];        //!< waksman10
         static const size_t lhs[0x001d];  //!< lhs
         static const size_t rhs[0x001d];  //!< rhs

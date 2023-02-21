@@ -59,7 +59,7 @@ namespace
             
         }
 
-        virtual ~mylexer() throw()
+        virtual ~mylexer() noexcept
         {
             std::cerr << "~mylexer" << std::endl;
         }

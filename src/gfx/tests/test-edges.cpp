@@ -18,7 +18,7 @@ namespace
     class indx2rgba
     {
     public:
-        indx2rgba() throw() : colors()
+        indx2rgba() noexcept : colors()
         {
             randomized::rand_ ran;
             srand(0);
@@ -30,9 +30,9 @@ namespace
                 c.b = ran.in(100, 255);
             }
         }
-        ~indx2rgba() throw() {}
+        ~indx2rgba() noexcept {}
 
-        inline void operator()(rgba &c, const size_t i) throw()
+        inline void operator()(rgba &c, const size_t i) noexcept
         {
             c = colors[i%N];
         }

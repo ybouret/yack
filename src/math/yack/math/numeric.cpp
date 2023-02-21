@@ -54,7 +54,7 @@ namespace yack
         template <> const long double numeric<long double>::pi = (long double)(M_PI);
 
         template <typename T> static inline
-        T _sqrt_eps() throw()
+        T _sqrt_eps() noexcept
         {
             static const T one(1);
             static const T ten(10);

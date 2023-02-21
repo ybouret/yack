@@ -48,8 +48,8 @@ namespace yack
                 class sequential_wrapper : public sequential_type
                 {
                 public:
-                    inline explicit sequential_wrapper(FUNC &f) throw() : sequential_type(), host(f) {} //!< setup
-                    inline virtual ~sequential_wrapper()        throw() {}                              //!< cleanup
+                    inline explicit sequential_wrapper(FUNC &f) noexcept : sequential_type(), host(f) {} //!< setup
+                    inline virtual ~sequential_wrapper()        noexcept {}                              //!< cleanup
 
                 private:
                     YACK_DISABLE_COPY_AND_ASSIGN(sequential_wrapper);
@@ -62,7 +62,7 @@ namespace yack
                 //
                 // virtual interface
                 //______________________________________________________________
-                virtual size_t   dimension() const throw() = 0;          //!< number of data points.
+                virtual size_t   dimension() const noexcept = 0;          //!< number of data points.
                 virtual void     make_indx(comparator)     = 0;          //!< indices for sequential evaluation
 
                 //--------------------------------------------------------------
@@ -138,7 +138,7 @@ namespace yack
                 //______________________________________________________________
 
                 //! cleanup
-                inline virtual ~sample() throw() {}
+                inline virtual ~sample() noexcept {}
 
                 //______________________________________________________________
                 //
@@ -166,7 +166,7 @@ namespace yack
                 //
                 //! make a symmetric matrix
                 //______________________________________________________________
-                inline void epilog(const size_t nvar) throw()
+                inline void epilog(const size_t nvar) noexcept
                 {
                     for(size_t i=2;i<=nvar;++i)
                     {
@@ -195,7 +195,7 @@ namespace yack
                 //
                 //! releasing memory
                 //______________________________________________________________
-                inline void cleanup() throw()
+                inline void cleanup() noexcept
                 {
                     beta.release();
                     curv.release();
@@ -205,7 +205,7 @@ namespace yack
                 //
                 //! zero used curv diagonal points
                 //______________________________________________________________
-                inline void z_diag(const readable<bool> &used) throw()
+                inline void z_diag(const readable<bool> &used) noexcept
                 {
                     for(const vnode *I=(**this).head();I;I=I->next)
                     {

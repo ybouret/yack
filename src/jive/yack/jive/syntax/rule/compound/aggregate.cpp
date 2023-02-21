@@ -11,12 +11,12 @@ namespace yack
         namespace syntax
         {
 
-            aggregate:: ~aggregate() throw()
+            aggregate:: ~aggregate() noexcept
             {
             }
 
             aggregate:: aggregate(const tag     &name_,
-                                  const agg_role role_) throw() :
+                                  const agg_role role_) noexcept :
             compound(name_,mark),
             role(role_)
             {

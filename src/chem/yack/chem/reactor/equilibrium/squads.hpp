@@ -25,8 +25,8 @@ namespace yack {
             //
             // C++
             //__________________________________________________________________
-            explicit squads() throw(); //!< setup
-            virtual ~squads() throw(); //!< cleanup
+            explicit squads() noexcept; //!< setup
+            virtual ~squads() noexcept; //!< cleanup
 
             //__________________________________________________________________
             //

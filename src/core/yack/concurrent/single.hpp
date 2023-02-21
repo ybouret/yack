@@ -40,19 +40,19 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~single() throw(); //!< cleanup
+            virtual ~single() noexcept; //!< cleanup
 
         protected:
             //! setup from call_sign and life_time
             explicit single(const char *             call_sign,
-                            const at_exit::longevity life_time) throw();
+                            const at_exit::longevity life_time) noexcept;
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            void        enter() const throw(); //!< show creation
-            void        leave() const throw(); //!< show destruction
+            void        enter() const noexcept; //!< show creation
+            void        leave() const noexcept; //!< show destruction
             //! display info if verbose
             static void shrug(const char              *call_sign,
                               const at_exit::longevity life_time);

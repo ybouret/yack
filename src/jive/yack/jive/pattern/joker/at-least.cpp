@@ -9,13 +9,13 @@ namespace yack
     namespace jive
     {
         const char   at_least:: clid[] = "at_least";
-        const char * at_least:: class_uid() const throw() { return clid; }
+        const char * at_least:: class_uid() const noexcept { return clid; }
 
-        at_least:: ~at_least() throw()
+        at_least:: ~at_least() noexcept
         {
         }
 
-        at_least:: at_least(const size_t n,pattern *p) throw() :
+        at_least:: at_least(const size_t n,pattern *p) noexcept :
         joker(mark,p),
         count(n)
         {
@@ -100,7 +100,7 @@ namespace yack
             viz(fp);
         }
 
-        at_least:: at_least(const at_least &other) throw() :
+        at_least:: at_least(const at_least &other) noexcept :
         joker(other),
         count(other.count)
         {
@@ -112,7 +112,7 @@ namespace yack
             return new at_least(*this);
         }
 
-        bool at_least:: is_univocal() const throw()
+        bool at_least:: is_univocal() const noexcept
         {
             return false;
         }

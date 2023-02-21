@@ -7,7 +7,7 @@ namespace yack {
 
     namespace math {
 
-        cyclic_:: ~cyclic_() throw()
+        cyclic_:: ~cyclic_() noexcept
         {
         }
 

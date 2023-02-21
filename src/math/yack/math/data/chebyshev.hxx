@@ -4,7 +4,7 @@ namespace yack
     {
 
         template <>
-        chebyshev<real_t>:: ~chebyshev() throw()
+        chebyshev<real_t>:: ~chebyshev() noexcept
         {
         }
 
@@ -19,7 +19,7 @@ namespace yack
         }
 
         template <>
-        void chebyshev<real_t>:: coef(const size_t n) throw()
+        void chebyshev<real_t>:: coef(const size_t n) noexcept
         {
             static const comp_t PI = numeric<comp_t>::pi;
             static const comp_t two(2);
@@ -46,7 +46,7 @@ namespace yack
         real_t chebyshev<real_t>:: at(const real_t x,
                                       const real_t a,
                                       const real_t b,
-                                      const size_t m) const throw()
+                                      const size_t m) const noexcept
         {
             assert(x>=a);
             assert(x<=b);

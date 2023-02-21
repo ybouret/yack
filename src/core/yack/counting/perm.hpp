@@ -22,19 +22,19 @@ namespace yack
         // C++
         //______________________________________________________________________
         explicit permutation(const size_t n); //!< setup
-        virtual ~permutation() throw();       //!< cleanup
+        virtual ~permutation() noexcept;       //!< cleanup
         
         //______________________________________________________________________
         //
         // interface
         //______________________________________________________________________
-        virtual size_t size() const throw(); //!< n
+        virtual size_t size() const noexcept; //!< n
 
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(permutation);
-        virtual void   on_boot() throw();       //!< [1..n]
-        virtual bool   on_next() throw();       //!< find next permutation
+        virtual void   on_boot() noexcept;       //!< [1..n]
+        virtual bool   on_next() noexcept;       //!< find next permutation
     };
     
 }

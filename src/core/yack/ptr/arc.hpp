@@ -35,7 +35,7 @@ namespace yack
         //______________________________________________________________________
 
         //! setup with valid address
-        inline arc_ptr(type *addr) throw() : counted_ptr<T>(addr)
+        inline arc_ptr(type *addr) noexcept : counted_ptr<T>(addr)
         {
             assert(pointee);
             pointee->withhold();
@@ -43,7 +43,7 @@ namespace yack
 
 
         //! no-throw copy
-        inline arc_ptr(const arc_ptr &_) throw() : counted_ptr<T>( coerce(_).pointee )
+        inline arc_ptr(const arc_ptr &_) noexcept : counted_ptr<T>( coerce(_).pointee )
         {
             pointee->withhold();
         }
@@ -57,7 +57,7 @@ namespace yack
         }
         
         //! cleanup
-        inline virtual ~arc_ptr() throw()
+        inline virtual ~arc_ptr() noexcept
         {
             assert(pointee);
             if(pointee->liberate())
@@ -68,7 +68,7 @@ namespace yack
         }
 
         //! no-throw inline exchange
-        inline void commute(arc_ptr &other) throw()
+        inline void commute(arc_ptr &other) noexcept
         {
             cswap(pointee,other.pointee);
         }
@@ -79,7 +79,7 @@ namespace yack
         //______________________________________________________________________
 
         //! counted_ptr interface
-        virtual size_t references() const throw()
+        virtual size_t references() const noexcept
         {
             assert(pointee);
             return pointee->quantity();

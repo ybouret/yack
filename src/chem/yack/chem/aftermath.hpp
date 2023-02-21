@@ -21,11 +21,11 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            aftermath()                                      throw(); //!< blocked/zero
-            ~aftermath()                                     throw(); //!< cleanup
-            aftermath(const components::state, const double) throw(); //!< setup
-            aftermath(const aftermath &)                     throw(); //!< copy
-            aftermath & operator=( const aftermath &)        throw(); //!< assign
+            aftermath()                                      noexcept; //!< blocked/zero
+            ~aftermath()                                     noexcept; //!< cleanup
+            aftermath(const components::state, const double) noexcept; //!< setup
+            aftermath(const aftermath &)                     noexcept; //!< copy
+            aftermath & operator=( const aftermath &)        noexcept; //!< assign
             
             //__________________________________________________________________
             //

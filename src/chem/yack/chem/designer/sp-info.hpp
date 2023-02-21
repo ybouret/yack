@@ -27,7 +27,7 @@ namespace yack
                 // C++
                 //______________________________________________________________
                 explicit sp_info();              //!< setup empty/0
-                virtual ~sp_info() throw();      //!< cleanup
+                virtual ~sp_info() noexcept;      //!< cleanup
                 sp_info(const sp_info &);        //!< copy
 
                 //______________________________________________________________

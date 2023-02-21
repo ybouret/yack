@@ -34,18 +34,18 @@ namespace yack
                 // C++
                 //______________________________________________________________
                 explicit primary(const string &, const size_t); //!< name+indx
-                virtual ~primary() throw();                     //!< cleanup
+                virtual ~primary() noexcept;                     //!< cleanup
 
                 //______________________________________________________________
                 //
                 // methods
                 //______________________________________________________________
-                virtual const string & alias()      const throw(); //!< name
-                virtual bool           is_primary() const throw(); //!< true
+                virtual const string & alias()      const noexcept; //!< name
+                virtual bool           is_primary() const noexcept; //!< true
                 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(primary);
-                virtual size_t indx() const throw(); //!< return indx_
+                virtual size_t indx() const noexcept; //!< return indx_
                 const   size_t indx_;
             };
 

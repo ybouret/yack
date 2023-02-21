@@ -6,7 +6,7 @@ namespace yack
 
         namespace
         {
-            static inline real_t half_of(const real_t xlo, const real_t xhi) throw()
+            static inline real_t half_of(const real_t xlo, const real_t xhi) noexcept
             {
                 static const real_t half(0.5);
                 
@@ -14,19 +14,19 @@ namespace yack
                 return clamp(xlo, half * (xlo+xhi), xhi);
             }
             
-            static inline real_t half_ab(const triplet<real_t> &x) throw()
+            static inline real_t half_ab(const triplet<real_t> &x) noexcept
             {
                 assert(x.is_increasing());
                 return half_of(x.a,x.b);
             }
             
-            static inline real_t half_bc(const triplet<real_t> &x) throw()
+            static inline real_t half_bc(const triplet<real_t> &x) noexcept
             {
                 assert(x.is_increasing());
                 return half_of(x.b,x.c);
             }
 
-            static inline real_t middle_of(const triplet<real_t> &x) throw()
+            static inline real_t middle_of(const triplet<real_t> &x) noexcept
             {
                 return half_of(x.a,x.c);
             }
@@ -34,7 +34,7 @@ namespace yack
         }
 
         template <>
-        real_t optimize:: parabolic_guess(const triplet<real_t> &x, const triplet<real_t> &f) throw()
+        real_t optimize:: parabolic_guess(const triplet<real_t> &x, const triplet<real_t> &f) noexcept
         {
             static const real_t one(1);
 
@@ -123,7 +123,7 @@ namespace yack
                                        double                  &w_opt,
                                        const triplet<real_t> *  x_cur,
                                        const triplet<real_t> *  f_cur,
-                                       const double             w_cur) throw()
+                                       const double             w_cur) noexcept
             {
                 switch( __sign::of(f_opt->b,f_cur->b) )
                 {
@@ -159,7 +159,7 @@ namespace yack
             static inline double choose_among(real_t         xx[],
                                               real_t         ff[],
                                               const unsigned offset,
-                                              const bool     build3) throw()
+                                              const bool     build3) noexcept
             {
                 assert(NULL!=xx);
                 assert(NULL!=ff);

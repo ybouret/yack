@@ -6,11 +6,11 @@ namespace yack {
 
     namespace chemical {
 
-        squads:: ~squads() throw()
+        squads:: ~squads() noexcept
         {
         }
 
-        squads:: squads() throw() : object() {}
+        squads:: squads() noexcept : object() {}
 
 
         void squads:: shape(const eq_repo_     &assembly,

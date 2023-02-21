@@ -12,11 +12,11 @@ namespace yack
         bool single:: verbose = false;
         
 
-        single:: ~single() throw()
+        single:: ~single() noexcept
         {
         }
 
-        single:: single(const char *call_sign, const at_exit::longevity life_time) throw() :
+        single:: single(const char *call_sign, const at_exit::longevity life_time) noexcept :
         uuid(call_sign),
         span(life_time),
         _len( yack_cstring_size(uuid) ),
@@ -42,7 +42,7 @@ namespace yack
             }
         }
 
-        void single:: enter() const throw()
+        void single:: enter() const noexcept
         {
             try
             {
@@ -53,7 +53,7 @@ namespace yack
             }
         }
 
-        void single:: leave() const throw()
+        void single:: leave() const noexcept
         {
             try
             {

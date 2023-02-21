@@ -37,8 +37,8 @@ namespace yack
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(localFS);
-        virtual ~localFS() throw();
-        explicit localFS() throw();
+        virtual ~localFS() noexcept;
+        explicit localFS() noexcept;
         friend class singleton<localFS>;
     };
 

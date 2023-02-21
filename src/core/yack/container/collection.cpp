@@ -5,12 +5,12 @@
 namespace yack
 {
 
-    collection:: collection() throw()
+    collection:: collection() noexcept
     {
 
     }
 
-    collection:: ~collection() throw()
+    collection:: ~collection() noexcept
     {
 
     }

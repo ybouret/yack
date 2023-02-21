@@ -4,11 +4,11 @@ namespace yack
 {
     namespace jive
     {
-        character:: ~character() throw()
+        character:: ~character() noexcept
         {
         }
 
-        character:: character(const context &ctx, const uint8_t chr) throw() :
+        character:: character(const context &ctx, const uint8_t chr) noexcept :
         context(ctx),
         next(0),
         prev(0),
@@ -17,7 +17,7 @@ namespace yack
 
         }
 
-        character:: character(const character &other) throw() :
+        character:: character(const character &other) noexcept :
         context(other),
         next(0),
         prev(0),
@@ -25,7 +25,7 @@ namespace yack
         {
         }
         
-        const uint8_t & character:: operator*() const throw()
+        const uint8_t & character:: operator*() const noexcept
         {
             return code;
         }

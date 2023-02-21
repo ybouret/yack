@@ -6,7 +6,7 @@ namespace yack
     namespace graphic
     {
 
-        bitrows:: ~bitrows() throw()
+        bitrows:: ~bitrows() noexcept
         {
             static memory::allocator &mgr = memory_allocator::location();
             mgr.withdraw(row,coerce(mem));
@@ -35,24 +35,24 @@ namespace yack
         }
 
 #if 0
-        bitrow & bitrows:: operator()(const unit_t y) throw()
+        bitrow & bitrows:: operator()(const unit_t y) noexcept
         {
             assert(y>=0); assert(y<zfh.size);
             return row[y];
         }
 
-        const bitrow & bitrows:: operator()(const unit_t y) const throw()
+        const bitrow & bitrows:: operator()(const unit_t y) const noexcept
         {
             assert(y>=0); assert(y<zfh.size);
             return row[y];
         }
 
-        bitrow & bitrows:: operator[](const unit_t y) throw()
+        bitrow & bitrows:: operator[](const unit_t y) noexcept
         {
             return row[ zfh(y) ];
         }
 
-        const bitrow & bitrows:: operator[](const unit_t y) const throw()
+        const bitrow & bitrows:: operator[](const unit_t y) const noexcept
         {
             return row[ zfh(y) ];
         }

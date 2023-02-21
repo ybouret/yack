@@ -173,9 +173,9 @@ namespace yack
 #define YACK_SOAK_INIT_(CLASS) \
 /**/  {                                                                                   \
 /**/    public:                                                                           \
-/**/      inline static void   Quit()    throw() { soak::app<CLASS>::quit();            } \
-/**/      inline static CLASS *Init()    throw() { return soak::app<CLASS>::init();     } \
-/**/      inline static int    WasInit() throw() { return soak::app<CLASS>::was_init(); } \
+/**/      inline static void   Quit()    noexcept { soak::app<CLASS>::quit();            } \
+/**/      inline static CLASS *Init()    noexcept { return soak::app<CLASS>::init();     } \
+/**/      inline static int    WasInit() noexcept { return soak::app<CLASS>::was_init(); } \
 /**/      static const char call_sign[]
 
 	//! no parameters macro
@@ -198,16 +198,16 @@ namespace yack
 #define YACK_SOAK_FINISH(CLASS,PARAMS,LOADER)                                  \
 /**/    private:                                                               \
 /**/      YACK_DISABLE_COPY_AND_ASSIGN(CLASS);                                 \
-/**/      inline virtual ~CLASS() throw() {}                                   \
+/**/      inline virtual ~CLASS() noexcept {}                                   \
 /**/      friend class soak::app<CLASS>;                                       \
 /**/  };                                                                       \
 /**/ YACK_DLL_EXTERN()                                                         \
-/**/ YACK_EXPORT void YACK_DLL_API CLASS##Quit() throw() { CLASS::Quit(); }    \
-/**/ YACK_EXPORT int  YACK_DLL_API CLASS##Init(PARAMS) throw() {               \
+/**/ YACK_EXPORT void YACK_DLL_API CLASS##Quit() noexcept { CLASS::Quit(); }    \
+/**/ YACK_EXPORT int  YACK_DLL_API CLASS##Init(PARAMS) noexcept {               \
 /**/   do { LOADER; } while(false);                                            \
 /**/   return (NULL != CLASS::Init()) ? YACK_SOAK_SUCCESS : YACK_SOAK_FAILURE; \
 /**/ }                                                                         \
-/**/ YACK_EXPORT int YACK_DLL_API CLASS##WasInit() throw()                     \
+/**/ YACK_EXPORT int YACK_DLL_API CLASS##WasInit() noexcept                     \
 /**/   { return CLASS::WasInit(); }                                            \
 /**/ YACK_DLL_FINISH()                                                         \
 /**/ const char CLASS::call_sign[] = #CLASS

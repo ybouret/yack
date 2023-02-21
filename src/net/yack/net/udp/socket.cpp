@@ -6,7 +6,7 @@ namespace yack
     namespace net
     {
 
-        udp_socket:: ~udp_socket() throw() {}
+        udp_socket:: ~udp_socket() noexcept {}
 
         udp_socket:: udp_socket(const plexus &network, const socket_address user_addr) :
         socket(user_addr, network.open_udp(user_addr.version()) )

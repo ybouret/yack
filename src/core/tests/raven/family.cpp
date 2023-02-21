@@ -43,11 +43,11 @@ namespace
     class vecstore : public vector< cxx_array<int> >
     {
     public:
-        explicit vecstore() throw() :vector< cxx_array<int> >()
+        explicit vecstore() noexcept :vector< cxx_array<int> >()
         {
         }
 
-        virtual ~vecstore() throw()
+        virtual ~vecstore() noexcept
         {
         }
 

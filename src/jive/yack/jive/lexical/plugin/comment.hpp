@@ -26,7 +26,7 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~comment() throw(); //!< cleanup
+                virtual ~comment() noexcept; //!< cleanup
 
             protected:
 

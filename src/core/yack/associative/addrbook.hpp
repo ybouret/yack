@@ -30,8 +30,8 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        ~addrbook() throw();        //!< cleanup
-        addrbook()  throw();        //!< setup
+        ~addrbook() noexcept;        //!< cleanup
+        addrbook()  noexcept;        //!< setup
         addrbook(const addrbook &); //!< copy
         
         //______________________________________________________________________
@@ -40,7 +40,7 @@ namespace yack
         //______________________________________________________________________
         void              ensure(const void *);               //!< ensure presence
         bool              insert(const void *);               //!< insert, address is BE key
-        bool              search(const void *) const throw(); //!< search if registered
+        bool              search(const void *) const noexcept; //!< search if registered
 
         //______________________________________________________________________
         //
@@ -50,8 +50,8 @@ namespace yack
         //! alias, const only
         typedef iterating::linked<void *,const knot_type,iterating::forward> const_iterator;
 
-        const_iterator begin() const throw() { return (**this).head; } //!< forward iterator begin
-        const_iterator end()   const throw() { return NULL; }          //!< forward itetator end
+        const_iterator begin() const noexcept { return (**this).head; } //!< forward iterator begin
+        const_iterator end()   const noexcept { return NULL; }          //!< forward itetator end
 
         //______________________________________________________________________
         //

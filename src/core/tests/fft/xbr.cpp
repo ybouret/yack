@@ -15,7 +15,7 @@ namespace yack
     //! default bit reversal routine
     //__________________________________________________________________________
     template <typename T> static
-    inline void bitrev(T data[],const size_t size) throw()
+    inline void bitrev(T data[],const size_t size) noexcept
     {
         assert(data);
         assert(size);

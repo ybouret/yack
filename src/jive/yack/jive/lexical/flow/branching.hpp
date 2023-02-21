@@ -43,7 +43,7 @@ namespace yack
                     //
                     // C++
                     //__________________________________________________________
-                    virtual ~branching() throw();          //!< cleanup
+                    virtual ~branching() noexcept;          //!< cleanup
                     
                 protected:
                     explicit branching(analyzer       &,

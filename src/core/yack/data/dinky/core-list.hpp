@@ -29,8 +29,8 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline  explicit core_list() throw() :  self_type()  {} //!< setup
-        inline  virtual ~core_list() throw()                 {} //!< cleanup
+        inline  explicit core_list() noexcept :  self_type()  {} //!< setup
+        inline  virtual ~core_list() noexcept                 {} //!< cleanup
         inline  core_list(const core_list &_) : self_type(_) {} //!< copy
         
         

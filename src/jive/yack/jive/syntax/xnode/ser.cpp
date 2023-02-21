@@ -9,7 +9,7 @@ namespace yack
     {
         namespace syntax
         {
-            const char * xnode::class_uid() const throw() { return clid; }
+            const char * xnode::class_uid() const noexcept { return clid; }
 
             size_t xnode:: serialize(ios::ostream &fp) const
             {

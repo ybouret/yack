@@ -20,8 +20,8 @@ namespace
     public:
         int value;
         
-        virtual ~dummy() throw() {}
-        explicit dummy(const int a) throw() : value(a) {}
+        virtual ~dummy() noexcept {}
+        explicit dummy(const int a) noexcept : value(a) {}
         
         inline friend std::ostream & operator<<(std::ostream &os, const dummy &self)
         {

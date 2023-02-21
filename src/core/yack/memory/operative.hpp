@@ -41,10 +41,10 @@ namespace yack
                                const void  *param);
 
             //! destruct all objects
-            virtual ~operative() throw();
+            virtual ~operative() noexcept;
 
             //! no-throw swap
-            void     swap_with(operative &op) throw();
+            void     swap_with(operative &op) noexcept;
 
             //! construct helper
             template <typename T> static inline void init(void *addr, const void *) { new (addr) T(); }
@@ -55,7 +55,7 @@ namespace yack
 
 
             //! destruct helper
-            template <typename T> static inline void quit(void *addr) throw() { static_cast<T*>(addr)->~T(); }
+            template <typename T> static inline void quit(void *addr) noexcept { static_cast<T*>(addr)->~T(); }
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(operative);
@@ -64,7 +64,7 @@ namespace yack
             const size_t     step; //!< sizeof item
             const on_quit    kill; //!< destruct procedure
 
-            void zap() throw();
+            void zap() noexcept;
         };
 
         //______________________________________________________________________
@@ -77,7 +77,7 @@ namespace yack
         {
         public:
             //! cleanup
-            inline virtual ~operative_of() throw() {}
+            inline virtual ~operative_of() noexcept {}
 
             //! setup
             inline explicit operative_of(void *entry, const size_t count) :

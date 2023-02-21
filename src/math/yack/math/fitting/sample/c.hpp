@@ -26,7 +26,7 @@ namespace yack
             {
             public:
                 //! cleanup
-                inline virtual ~csample_() throw() { }
+                inline virtual ~csample_() noexcept { }
                 
             protected:
                 //! setup and load data
@@ -93,7 +93,7 @@ namespace yack
                 //______________________________________________________________
 
                 //! cleanup
-                inline virtual ~csample() throw() {}
+                inline virtual ~csample() noexcept {}
 
                 
                 //! setup, load and link data

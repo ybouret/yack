@@ -19,7 +19,7 @@ namespace
 
         }
 
-        virtual ~my_scanner() throw()
+        virtual ~my_scanner() noexcept
         {
         }
 

@@ -18,10 +18,10 @@ namespace yack
         class stream
         {
         public:
-            virtual ~stream() throw(); //!< cleanup
+            virtual ~stream() noexcept; //!< cleanup
 
         protected:
-            explicit stream() throw(); //!< setup
+            explicit stream() noexcept; //!< setup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(stream);

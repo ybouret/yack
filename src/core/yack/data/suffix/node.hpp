@@ -34,8 +34,8 @@ namespace yack
         public:
             typedef vector<CODE,memory::pooled> base_type; //!< alias
 
-            inline  explicit tree_path() throw() : collection(), base_type()   {} //!< setup
-            inline  virtual ~tree_path() throw() {}                               //!< cleanup
+            inline  explicit tree_path() noexcept : collection(), base_type()   {} //!< setup
+            inline  virtual ~tree_path() noexcept {}                               //!< cleanup
             inline  tree_path(const tree_path &_) : collection(), base_type(_) {} //!< hard copy
             //! initialize with capacity
             inline  tree_path(const size_t n, const as_capacity_t &_) : collection(), base_type(n,_) {}
@@ -56,9 +56,9 @@ namespace yack
             static void format(std::ostream &, const void *, const size_t ); //!< key format
             static void format(ios::ostream &, const void *, const size_t ); //!< key format
 
-            virtual ~tree_node_() throw();
+            virtual ~tree_node_() noexcept;
         protected:
-            explicit tree_node_() throw();
+            explicit tree_node_() noexcept;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(tree_node_);
@@ -91,27 +91,27 @@ namespace yack
             //__________________________________________________________________
 
             //! setup
-            inline explicit tree_node(const CODE c) throw() :
+            inline explicit tree_node(const CODE c) noexcept :
             tree_node_(), code(c), next(NULL), prev(NULL), from(NULL), chld(), knot(NULL)
             {
             }
 
             //! cleanup
-            inline virtual ~tree_node() throw() {}
+            inline virtual ~tree_node() noexcept {}
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            inline type       & operator*()       throw() { assert(knot); assert(knot->is_alive()); return **knot; } //!< access data
-            inline const_type & operator*() const throw() { assert(knot); assert(knot->is_alive()); return **knot; } //!< access data, condt
+            inline type       & operator*()       noexcept { assert(knot); assert(knot->is_alive()); return **knot; } //!< access data
+            inline const_type & operator*() const noexcept { assert(knot); assert(knot->is_alive()); return **knot; } //!< access data, condt
 
-            inline type       * operator->()       throw() { assert(knot); assert(knot->is_alive()); return & **knot; } //!< transitive access node
-            inline const_type * operator->() const throw() { assert(knot); assert(knot->is_alive()); return & **knot; } //!< transitive access node
+            inline type       * operator->()       noexcept { assert(knot); assert(knot->is_alive()); return & **knot; } //!< transitive access node
+            inline const_type * operator->() const noexcept { assert(knot); assert(knot->is_alive()); return & **knot; } //!< transitive access node
             
             
             //! comparison for ordered_list ops
-            static inline sign_type compare(const CODE &code, const node_type *node) throw()
+            static inline sign_type compare(const CODE &code, const node_type *node) noexcept
             {
                 return __sign::of(code,node->code);
             }
@@ -208,7 +208,7 @@ namespace yack
             friend class suffix_tree<T,CODE>;
 
             //! change code
-            inline tree_node *reset(const CODE new_code) throw() {
+            inline tree_node *reset(const CODE new_code) noexcept {
                 coerce(code) = new_code;
                 return this;
             }

@@ -7,8 +7,8 @@ namespace yack {
     //! alhajbaddar18
     class alhajbaddar18 : public swaps {
       public:
-        virtual ~alhajbaddar18() throw(); //!< cleanup
-        explicit alhajbaddar18() throw(); //!< setup  
+        virtual ~alhajbaddar18() noexcept; //!< cleanup
+        explicit alhajbaddar18() noexcept; //!< setup  
         static const char   sid[];        //!< alhajbaddar18
         static const size_t lhs[0x0054];  //!< lhs
         static const size_t rhs[0x0054];  //!< rhs

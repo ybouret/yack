@@ -37,7 +37,7 @@ namespace yack
                 // setup
                 //______________________________________________________________
                 explicit driver();
-                virtual ~driver() throw();
+                virtual ~driver() noexcept;
 
                 //______________________________________________________________
                 //

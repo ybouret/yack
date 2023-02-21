@@ -31,7 +31,7 @@ namespace yack {
             vfsQuery(EXPR &expr) : matching(expr) {}
 
             //! cleanup
-            virtual ~vfsQuery() throw();
+            virtual ~vfsQuery() noexcept;
 
             //! copy
             vfsQuery(const vfsQuery &);

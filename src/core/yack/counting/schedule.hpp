@@ -24,9 +24,9 @@ namespace yack
         //
         // interface
         //______________________________________________________________________
-        virtual size_t         granted()                const throw(); //!< dynamic interface
-        virtual size_t       & operator[](const size_t)       throw(); //!< data[1..size()]
-        virtual const size_t & operator[](const size_t) const throw(); //!< data[1..size()]
+        virtual size_t         granted()                const noexcept; //!< dynamic interface
+        virtual size_t       & operator[](const size_t)       noexcept; //!< data[1..size()]
+        virtual const size_t & operator[](const size_t) const noexcept; //!< data[1..size()]
 
         //______________________________________________________________________
         //
@@ -35,14 +35,14 @@ namespace yack
 
         //! access proxy, const
         template <typename T> inline
-        const T & operator()(const readable<T> &arr, const size_t i) const throw()
+        const T & operator()(const readable<T> &arr, const size_t i) const noexcept
         {
             return arr[ (*this)[i] ];
         }
 
         //! access proxy
         template <typename T> inline
-        T & operator()(writable<T> &arr, const size_t i) const throw()
+        T & operator()(writable<T> &arr, const size_t i) const noexcept
         {
             return arr[ (*this)[i] ];
         }
@@ -84,7 +84,7 @@ namespace yack
         //______________________________________________________________________
 
         //! cleanup
-        virtual ~schedule() throw();
+        virtual ~schedule() noexcept;
 
     protected:
         //! setup memory

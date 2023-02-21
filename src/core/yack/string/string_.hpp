@@ -28,13 +28,13 @@ namespace yack
         {
         public:
             //! memory buffer interface
-            virtual const void * ro_addr() const throw();
+            virtual const void * ro_addr() const noexcept;
 
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            virtual ~string_() throw();            //!< cleanup
+            virtual ~string_() noexcept;            //!< cleanup
         protected:                                 //|
             explicit string_(size_t         num,   //|
                              const size_t   bpc);  //!< setup for width>=num
@@ -52,7 +52,7 @@ namespace yack
         protected:              //|
             void        *block; //!< address of first char
 
-            void swap_with(string_ &other) throw(); //!< no-throw swap
+            void swap_with(string_ &other) noexcept; //!< no-throw swap
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(string_);

@@ -9,7 +9,7 @@ namespace yack
             device->build<real_t>(2);
         }
 
-        filter::real_t broker_filter:: finalize(const broker &device) throw()
+        filter::real_t broker_filter:: finalize(const broker &device) noexcept
         {
             const concurrent::loop &eng  = *device;
             size_t                  idx  = eng.size();

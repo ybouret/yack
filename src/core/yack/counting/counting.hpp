@@ -30,7 +30,7 @@ namespace yack
         //
         // non-virtual interface
         //______________________________________________________________________
-        void boot() throw(); //!< index=1, on_boot
+        void boot() noexcept; //!< index=1, on_boot
         bool next(); //!< ++index, on_next
 
         //______________________________________________________________________
@@ -44,7 +44,7 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        virtual ~counting() throw();                        //!< cleanup
+        virtual ~counting() noexcept;                        //!< cleanup
 
         //______________________________________________________________________
         //
@@ -73,11 +73,11 @@ namespace yack
         
 
     protected:
-        explicit counting(const cardinality_t num) throw(); //!< setup with num>0
+        explicit counting(const cardinality_t num) noexcept; //!< setup with num>0
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(counting);
-        virtual void on_boot()     throw() = 0; //!< boot state
+        virtual void on_boot()     noexcept = 0; //!< boot state
         virtual bool on_next()             = 0; //!< next state
     };
 

@@ -20,16 +20,16 @@ namespace yack
         {
         public:
 
-            explicit entropy() throw(); //!< setup
-            virtual ~entropy() throw(); //!< cleanup
+            explicit entropy() noexcept; //!< setup
+            virtual ~entropy() noexcept; //!< cleanup
 
-            void      reset()                          throw();  //!< restart
-            entropy & operator<<(const uint8_t)        throw(); //!< add one byte
-            entropy & operator()(const void * ,size_t) throw(); //!< add one block
-            double    operator()(void)           const throw(); //!< compute
+            void      reset()                          noexcept;  //!< restart
+            entropy & operator<<(const uint8_t)        noexcept; //!< add one byte
+            entropy & operator()(const void * ,size_t) noexcept; //!< add one block
+            double    operator()(void)           const noexcept; //!< compute
 
             //! entropy of a block
-            static double of(const void *, const size_t) throw();
+            static double of(const void *, const size_t) noexcept;
 
         private:
             size_t total;

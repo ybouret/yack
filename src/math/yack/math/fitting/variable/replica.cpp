@@ -7,7 +7,7 @@ namespace yack
 
         namespace fitting
         {
-            replica:: ~replica() throw()
+            replica:: ~replica() noexcept
             {
             }
 
@@ -18,17 +18,17 @@ namespace yack
 
             }
 
-            const string & replica:: alias() const throw()
+            const string & replica:: alias() const noexcept
             {
                 return link->name;
             }
 
-            size_t replica:: indx() const throw()
+            size_t replica:: indx() const noexcept
             {
                 return **link;
             }
 
-            bool replica:: is_primary() const throw() { return false; }
+            bool replica:: is_primary() const noexcept { return false; }
 
 
         }

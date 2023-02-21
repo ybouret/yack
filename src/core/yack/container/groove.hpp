@@ -29,17 +29,17 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        explicit groove() throw();
-        virtual ~groove() throw();
+        explicit groove() noexcept;
+        virtual ~groove() noexcept;
 
         //______________________________________________________________________
         //
         // methods
         //______________________________________________________________________
-        virtual size_t granted() const throw(); //!< bytes
-        size_t   size()          const throw(); //!< num_blocks
-        void     free()                throw(); //!< remove content, keep bytes
-        void     release()             throw(); //!< remove content, remove bytes
+        virtual size_t granted() const noexcept; //!< bytes
+        size_t   size()          const noexcept; //!< num_blocks
+        void     free()                noexcept; //!< remove content, keep bytes
+        void     release()             noexcept; //!< remove content, remove bytes
         void     ensure(const size_t nb, const size_t bs); //!< free/acquire
 
         //______________________________________________________________________
@@ -99,7 +99,7 @@ namespace yack
         //! access in [0:size()-1], const
         //______________________________________________________________________
         template <typename T> inline
-        const T & get(const size_t i) const throw()
+        const T & get(const size_t i) const noexcept
         {
             assert(i<num_blocks);
             const T *p = static_cast<const T *>(entry);
@@ -111,7 +111,7 @@ namespace yack
         //! access in [0:size()-1]
         //______________________________________________________________________
         template <typename T> inline
-        T & get(const size_t i) throw()
+        T & get(const size_t i) noexcept
         {
             assert(i<num_blocks);
             T *p = static_cast<T *>(entry);
@@ -119,8 +119,8 @@ namespace yack
         }
 
 
-        template <typename T> inline T       &as()       throw() { return get<T>(0); }  //!< first item
-        template <typename T> inline const T &as() const throw() { return get<T>(0); }  //!< first const item
+        template <typename T> inline T       &as()       noexcept { return get<T>(0); }  //!< first item
+        template <typename T> inline const T &as() const noexcept { return get<T>(0); }  //!< first const item
 
 
 
@@ -134,7 +134,7 @@ namespace yack
         const rtti *block_type;
 
         template <typename T> static inline
-        void kill(void *addr) throw()
+        void kill(void *addr) noexcept
         { assert(NULL!=addr); destruct( static_cast<T*>(addr) );}
 
 

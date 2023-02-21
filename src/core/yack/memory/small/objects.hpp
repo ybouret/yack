@@ -31,7 +31,7 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~small_objects() throw();                     //!< cleanup
+            virtual ~small_objects() noexcept;                     //!< cleanup
             explicit small_objects(const size_t the_limit_size);  //!< setup
 
             //__________________________________________________________________
@@ -39,8 +39,8 @@ namespace yack
             // thread unsafe metjods
             //__________________________________________________________________
             void *acquire_unlocked(size_t block_size);                           //!< acquire a new block
-            void  release_unlocked(void *block_addr, size_t block_size) throw(); //!< release an old block
-            void  gc_unlocked(dyadic &) throw();                                 //!< garbage collection
+            void  release_unlocked(void *block_addr, size_t block_size) noexcept; //!< release an old block
+            void  gc_unlocked(dyadic &) noexcept;                                 //!< garbage collection
 
             const size_t      limit_size;    //!< to choose allocation methods
             const uint64_t    put_in_ram;    //!< bookkeeping or large alloc

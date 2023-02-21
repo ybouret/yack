@@ -23,7 +23,7 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~ocstream() throw();                                        //!< cleanup
+            virtual ~ocstream() noexcept;                                        //!< cleanup
             explicit ocstream(const ios::cstderr_t &);                          //!< link to stderr
             explicit ocstream(const ios::cstdout_t &);                          //!< link to stdout
             explicit ocstream(const char   *filename, const bool append=false); //!< open file
@@ -66,7 +66,7 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~acstream() throw();                //!< cleanup
+            virtual ~acstream() noexcept;                //!< cleanup
             explicit acstream(const ios::cstderr_t &);  //!< default stderr
             explicit acstream(const ios::cstdout_t &);  //!< default stdout
             explicit acstream(const char *);            //!< file+append

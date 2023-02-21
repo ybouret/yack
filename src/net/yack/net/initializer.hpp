@@ -20,7 +20,7 @@ namespace yack
         class initializer
         {
         public:
-            virtual ~initializer() throw(); //!< cleanup
+            virtual ~initializer() noexcept; //!< cleanup
 
         protected:
             explicit initializer();         //!< setup

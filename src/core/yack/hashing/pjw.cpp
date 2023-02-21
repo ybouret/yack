@@ -5,11 +5,11 @@ namespace yack
 	namespace hashing
 	{
 		
-		pjw:: pjw() throw() : function( __length, __window ), hash(0)
+		pjw:: pjw() noexcept : function( __length, __window ), hash(0)
 		{
 		}
 		
-		pjw:: ~pjw() throw()
+		pjw:: ~pjw() noexcept
 		{
 			hash = 0;
 		}
@@ -17,12 +17,12 @@ namespace yack
         
         const char pjw::clid[] = "pjw";
 
-		void pjw:: set() throw()
+		void pjw:: set() noexcept
 		{
 			hash = 0;
 		}
 		
-		void pjw:: run( const void *buffer, size_t buflen ) throw()
+		void pjw:: run( const void *buffer, size_t buflen ) noexcept
 		{
 			assert( !(buffer==NULL&&buflen>0) );
 #	define BitsInUnsignedInt   ( (uint32_t)(sizeof(uint32_t) * 8) )
@@ -47,7 +47,7 @@ namespace yack
 			
 		}
 		
-		void pjw:: get( void *output, size_t outlen ) throw()
+		void pjw:: get( void *output, size_t outlen ) noexcept
 		{
 			fill(output, outlen, &hash, sizeof(hash) );
 		}

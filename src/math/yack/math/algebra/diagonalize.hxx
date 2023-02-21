@@ -6,7 +6,7 @@ namespace yack
     {
 
         template <>
-        void diagonalize::Hessenberg::Balance<real_t>( matrix<real_t> &a ) throw()
+        void diagonalize::Hessenberg::Balance<real_t>( matrix<real_t> &a ) noexcept
         {
             static const real_t RADIX = 2;
             static const real_t sqrdx = RADIX*RADIX;
@@ -67,7 +67,7 @@ namespace yack
     namespace math
     {
         template < >
-        void diagonalize:: Hessenberg:: Reduce<real_t>( matrix<real_t> &a ) throw()
+        void diagonalize:: Hessenberg:: Reduce<real_t>( matrix<real_t> &a ) noexcept
         {
             assert(a.is_square());
             const size_t n = a.rows;
@@ -143,7 +143,7 @@ namespace yack
     {
 
         template <>
-        bool diagonalize:: Hessenberg:: QR<real_t>( matrix<real_t> &a, writable<real_t> &wr, writable<real_t> &wi, size_t &nr) throw()
+        bool diagonalize:: Hessenberg:: QR<real_t>( matrix<real_t> &a, writable<real_t> &wr, writable<real_t> &wi, size_t &nr) noexcept
         {
             assert( a.is_square() );
             assert( a.rows>0      );
@@ -334,7 +334,7 @@ namespace yack
     {
         //! all in one eigenvalues finding....
         template < >
-        bool diagonalize:: eig<real_t>( matrix<real_t> &a, writable<real_t> &wr, writable<real_t> &wi, size_t &nr) throw()
+        bool diagonalize:: eig<real_t>( matrix<real_t> &a, writable<real_t> &wr, writable<real_t> &wi, size_t &nr) noexcept
         {
             Hessenberg::Balance(a);
             Hessenberg::Reduce(a);

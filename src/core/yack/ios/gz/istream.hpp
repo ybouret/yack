@@ -23,7 +23,7 @@ namespace yack
             class istream : public ios::istream, public stream
             {
             public:
-                virtual ~istream() throw();               //!< cleanup
+                virtual ~istream() noexcept;               //!< cleanup
                 explicit istream(const char   *filename); //!< open
                 explicit istream(const string &filename); //!< open
 

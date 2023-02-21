@@ -30,7 +30,7 @@ namespace yack {
             // C++
             //__________________________________________________________________
             explicit eq_tier();          //!< setup
-            virtual ~eq_tier() throw();  //!< cleanup
+            virtual ~eq_tier() noexcept;  //!< cleanup
 
             //__________________________________________________________________
             //

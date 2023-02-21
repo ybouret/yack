@@ -24,7 +24,7 @@ namespace yack
             {
             public:
 
-                virtual ~cm_linker() throw(); //!< cleanup
+                virtual ~cm_linker() noexcept; //!< cleanup
                 explicit cm_linker();         //!< setup
 
 
@@ -40,7 +40,7 @@ namespace yack
                 virtual void on_terminal(const lexeme &);
                 virtual void on_internal(const string &,const size_t);
                 static  void raise_error(const string &);
-                void         reduce() throw();
+                void         reduce() noexcept;
             };
         }
     }

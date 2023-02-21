@@ -34,9 +34,9 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline virtual ~registry() throw() {} //!< cleanup
+        inline virtual ~registry() noexcept {} //!< cleanup
     protected:
-        inline explicit registry() throw() {} //!< setup
+        inline explicit registry() noexcept {} //!< setup
 
         //! multipurpose display
         template <typename OSTREAM, typename NODE> static inline

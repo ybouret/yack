@@ -22,11 +22,11 @@ namespace yack
         class real_function
         {
         public:
-            virtual ~real_function() throw(); //!< cleanup
+            virtual ~real_function() noexcept; //!< cleanup
             virtual T operator()(T)      = 0; //!< call operator
             
         protected:
-            explicit real_function() throw(); //!< setup
+            explicit real_function() noexcept; //!< setup
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(real_function);
@@ -50,8 +50,8 @@ namespace yack
             class call : public real_function<T>
             {
             public:
-                inline explicit call(FUNC &func) throw() : real_function<T>(), host(func) {}   //!< setup
-                inline virtual ~call()           throw() {}                                    //!< cleanup
+                inline explicit call(FUNC &func) noexcept : real_function<T>(), host(func) {}   //!< setup
+                inline virtual ~call()           noexcept {}                                    //!< cleanup
                 inline virtual T operator()(T x) { return host(x); }                           //!< forward call
 
             private:

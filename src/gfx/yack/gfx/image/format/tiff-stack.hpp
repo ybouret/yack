@@ -22,7 +22,7 @@ namespace yack
         public:
             explicit tiff_stack(const string &filename); //!< load filename (.tiff)
             explicit tiff_stack(const char   *filename); //!< load filename (.tiff), wrapper
-            virtual ~tiff_stack() throw();               //!< cleanup
+            virtual ~tiff_stack() noexcept;               //!< cleanup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(tiff_stack);

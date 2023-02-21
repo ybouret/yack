@@ -30,7 +30,7 @@ namespace yack
             // C++
             //__________________________________________________________________
             explicit bmp_format();         //!< setup
-            virtual ~bmp_format() throw(); //!< cleanup
+            virtual ~bmp_format() noexcept; //!< cleanup
 
             //__________________________________________________________________
             //

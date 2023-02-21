@@ -65,13 +65,13 @@ namespace yack
             };
 
             //! human readable maturity
-            static const char *maturity_to_text(const maturity) throw();
+            static const char *maturity_to_text(const maturity) noexcept;
 
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            virtual ~qmatrix() throw();                         //!< cleanup
+            virtual ~qmatrix() noexcept;                         //!< cleanup
             explicit qmatrix(const size_t sz, const size_t rk); //!< build with sz>=rk>=2
             qmatrix(const qmatrix &other);                      //!< full copy
 
@@ -79,17 +79,17 @@ namespace yack
             //
             // interface: readable
             //__________________________________________________________________
-            virtual size_t         size()                   const throw(); //!< current_rank
-            virtual const qvector &operator[](const size_t) const throw(); //!< [1..current_rank]
+            virtual size_t         size()                   const noexcept; //!< current_rank
+            virtual const qvector &operator[](const size_t) const noexcept; //!< [1..current_rank]
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            const char            *maturity_text()          const throw();      //!< human readadble maturity
-            size_t                 allocated()              const throw();      //!< linear memory
+            const char            *maturity_text()          const noexcept;      //!< human readadble maturity
+            size_t                 allocated()              const noexcept;      //!< linear memory
             qmatrix               *clone()                          const;      //!< new qmatrix(*this)
-            void                   reset()                        throw();      //!< reset
+            void                   reset()                        noexcept;      //!< reset
             friend std::ostream   &operator<<(std::ostream &, const qmatrix &); //!< display as matrix
 
             //------------------------------------------------------------------
@@ -160,7 +160,7 @@ namespace yack
             //------------------------------------------------------------------
             //! get latter created vector for current_rank>0
             //------------------------------------------------------------------
-            const qvector & last() const throw();
+            const qvector & last() const noexcept;
 
             //__________________________________________________________________
             //
@@ -182,10 +182,10 @@ namespace yack
             
             void                 initialize();
             const readable<apq> &keep_ortho(writable<apq>       &u_k,    const readable<apz> &v_k);          //!< projection
-            bool                 is_nil_vec(const readable<apq> &u_k)    const throw();                      //!< test nil vec
+            bool                 is_nil_vec(const readable<apq> &u_k)    const noexcept;                      //!< test nil vec
             bool                 build_next(writable<apq>       &u_k,    const readable<apz> &v_k);          //!< try to build next basis vector
             bool                 try_polish(writable<apz>       &target, const readable<apq> &source) const; //!< univocal target
-            void                 reschedule() throw();                                                       //!< rebuilding row index
+            void                 reschedule() noexcept;                                                       //!< rebuilding row index
 
         };
 

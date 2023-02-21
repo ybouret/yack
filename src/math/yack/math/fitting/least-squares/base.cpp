@@ -10,10 +10,10 @@ namespace yack
 
             const char least_squares_:: clid[] = "[least-squares] ";
 
-            least_squares_::  least_squares_() throw() {}
-            least_squares_:: ~least_squares_() throw() {}
+            least_squares_::  least_squares_() noexcept {}
+            least_squares_:: ~least_squares_() noexcept {}
 
-            const char * least_squares_:: ok(const bool flag)   throw()
+            const char * least_squares_:: ok(const bool flag)   noexcept
             {
                 return flag ? " <ok> " : " <no> ";
             }

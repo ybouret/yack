@@ -11,11 +11,11 @@ namespace yack
             {
             }
 
-            codec:: ~codec() throw()
+            codec:: ~codec() noexcept
             {
             }
 
-            const string & codec:: key() const throw()
+            const string & codec:: key() const noexcept
             {
                 return name;
             }

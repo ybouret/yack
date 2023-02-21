@@ -7,11 +7,11 @@ namespace yack
     {
 
 
-        queue:: ~queue() throw()
+        queue:: ~queue() noexcept
         {
         }
 
-        queue:: queue() throw() : assembly()
+        queue:: queue() noexcept : assembly()
         {
         }
         

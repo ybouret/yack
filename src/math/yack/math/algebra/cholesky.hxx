@@ -6,12 +6,12 @@ namespace yack
     {
 
         template <>
-        cholesky<real_t>:: ~cholesky() throw()
+        cholesky<real_t>:: ~cholesky() noexcept
         {
         }
 
         template <>
-        cholesky<real_t>:: cholesky() throw() : base_type()
+        cholesky<real_t>:: cholesky() noexcept : base_type()
         {
         }
 
@@ -52,7 +52,7 @@ namespace yack
         }
 
         template <>
-        void cholesky<real_t>:: solve(writable<real_t> &x, const matrix<real_t> &a, const readable<real_t> &b) const throw()
+        void cholesky<real_t>:: solve(writable<real_t> &x, const matrix<real_t> &a, const readable<real_t> &b) const noexcept
         {
             assert(x.size()==size());
             assert(b.size()==size());

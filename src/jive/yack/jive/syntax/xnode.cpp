@@ -13,14 +13,14 @@ namespace yack
             const char xnode:: clid[] = "xnode";
 
 
-            xnode::list:: list() throw() : list_() {}
+            xnode::list:: list() noexcept : list_() {}
 
-            xnode::list:: ~list() throw()
+            xnode::list:: ~list() noexcept
             {
             }
             
 
-            xnode:: ~xnode() throw()
+            xnode:: ~xnode() noexcept
             {
                 if(data)
                 {
@@ -48,7 +48,7 @@ namespace yack
 
             }
 
-            xnode:: xnode(const terminal &r, lexeme *lx) throw():
+            xnode:: xnode(const terminal &r, lexeme *lx) noexcept:
             auth(r),
             next(0),
             prev(0),
@@ -71,7 +71,7 @@ namespace yack
                 return p;
             }
             
-            void xnode:: grow( xnode * &tree, xnode *node) throw()
+            void xnode:: grow( xnode * &tree, xnode *node) noexcept
             {
                 assert(node);
                 if(NULL==tree)
@@ -85,7 +85,7 @@ namespace yack
                 }
             }
 
-            void xnode:: join( xnode * &tree, xnode *node) throw()
+            void xnode:: join( xnode * &tree, xnode *node) noexcept
             {
                 assert(node);
                 assert((**node).type == internal_type );
@@ -111,25 +111,25 @@ namespace yack
                 grow( tree, make(r,l) );
             }
 
-            lexeme & xnode:: lex() throw()
+            lexeme & xnode:: lex() noexcept
             {
                 assert(terminal_type==(**this).type);
                 return *static_cast<lexeme *>(data);
             }
 
-            const lexeme & xnode:: lex() const throw()
+            const lexeme & xnode:: lex() const noexcept
             {
                 assert(terminal_type==(**this).type);
                 return *static_cast<const lexeme *>(data);
             }
 
-            xlist & xnode:: sub()       throw()
+            xlist & xnode:: sub()       noexcept
             {
                 assert(internal_type==(**this).type);
                 return *static_cast<xlist *>(data);
             }
 
-            size_t xnode:: size() const throw()
+            size_t xnode:: size() const noexcept
             {
                 switch((**this).type)
                 {
@@ -140,38 +140,38 @@ namespace yack
                 return 0;
             }
             
-            const xnode * xnode::head() const throw()
+            const xnode * xnode::head() const noexcept
             {
                 assert(internal_type==(**this).type);
                 return static_cast<const xlist *>(data)->head;
             }
 
-            const xnode * xnode::tail() const throw()
+            const xnode * xnode::tail() const noexcept
             {
                 assert(internal_type==(**this).type);
                 return static_cast<const xlist *>(data)->tail;
             }
             
-            const token & xnode:: word() const throw()
+            const token & xnode:: word() const noexcept
             {
                 assert(terminal_type==(**this).type);
                 return static_cast<lexeme *>(data)->data;
             }
 
-            const string & xnode:: name() const throw()
+            const string & xnode:: name() const noexcept
             {
                 return *(**this).name;
             }
 
 
 
-            const xlist & xnode:: sub() const throw()
+            const xlist & xnode:: sub() const noexcept
             {
                 assert(internal_type==(**this).type);
                 return *static_cast<const xlist *>(data);
             }
 
-            lexeme * xnode::rip() throw()
+            lexeme * xnode::rip() noexcept
             {
                 assert(terminal_type==(**this).type);
                 lexeme *res = static_cast<lexeme *>(data);
@@ -180,7 +180,7 @@ namespace yack
                 return res;
             }
 
-            static inline void xlist_ret(lexer &L, list_of<xnode> &chld) throw()
+            static inline void xlist_ret(lexer &L, list_of<xnode> &chld) noexcept
             {
                 while(chld.size)
                 {
@@ -188,7 +188,7 @@ namespace yack
                 }
             }
 
-            void xnode::ret(lexer &L, xnode *node) throw()
+            void xnode::ret(lexer &L, xnode *node) noexcept
             {
                 assert(node);
                 switch( (**node).type )

@@ -7,7 +7,7 @@ namespace yack
     namespace chemical
     {
 
-        species:: ~species() throw() {}
+        species:: ~species() noexcept {}
 
         species:: species(const species &sp) :
         entity(sp),

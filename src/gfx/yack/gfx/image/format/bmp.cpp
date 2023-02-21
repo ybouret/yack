@@ -17,14 +17,14 @@ namespace yack
 
         }
 
-        bmp_format:: ~bmp_format() throw()
+        bmp_format:: ~bmp_format() noexcept
         {
 
         }
 
 
         static inline void bmp_w32(unsigned char *p,
-                                   const int      i) throw()
+                                   const int      i) noexcept
         {
 
             p[ 0] = (unsigned char)( i    );

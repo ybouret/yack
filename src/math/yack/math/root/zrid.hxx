@@ -5,11 +5,11 @@ namespace yack
 
     namespace math
     {
-        template <> zrid<real_t>:: zrid() throw() : math::zroot<real_t>() {}
+        template <> zrid<real_t>:: zrid() noexcept : math::zroot<real_t>() {}
 
-        template <> zrid<real_t>:: ~zrid() throw() {}
+        template <> zrid<real_t>:: ~zrid() noexcept {}
 
-        template <> const char * zrid<real_t>:: name() const throw()
+        template <> const char * zrid<real_t>:: name() const noexcept
         {
             return core::zrid_name;
         }

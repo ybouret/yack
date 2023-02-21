@@ -7,10 +7,10 @@ namespace yack
     {
         
         YACK_APN_BINARY_REP(int natural::compare,
-                            throw() { YACK_APN_BINARY_IMPL(cmp); })
+                            noexcept { YACK_APN_BINARY_IMPL(cmp); })
         
         int natural:: cmp(const handle &l,
-                          const handle &r) throw()
+                          const handle &r) noexcept
         {
             // sanity check
             const size_t     nl  = l.words;
@@ -57,7 +57,7 @@ namespace yack
         }
         
         sign_type natural:: scmp(const handle &l,
-                                 const handle &r) throw()
+                                 const handle &r) noexcept
         {
             // sanity check
             const size_t     nl  = l.words;

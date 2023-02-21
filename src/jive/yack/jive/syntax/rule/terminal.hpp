@@ -40,8 +40,8 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~terminal()            throw(); //!< cleanup
-                explicit terminal(const tag &, const term_role) throw(); //!< setup name
+                virtual ~terminal()            noexcept; //!< cleanup
+                explicit terminal(const tag &, const term_role) noexcept; //!< setup name
 
                 //______________________________________________________________
                 //

@@ -5,7 +5,7 @@ namespace yack {
 
     namespace chemical {
 
-        squad:: ~squad() throw()
+        squad:: ~squad() noexcept
         {
         }
 
@@ -57,7 +57,7 @@ mutualized( new sp_repo() )
         }
 
         bool squad:: accepts(const equilibrium  &rhs,
-                             const matrix<bool> &detached) const throw()
+                             const matrix<bool> &detached) const noexcept
         {
             assert(size>0);
             const equilibrium &lhs = ***tail;
@@ -77,7 +77,7 @@ mutualized( new sp_repo() )
             }
         }
 
-        int squad:: compare(const squad *lhs, const squad *rhs) throw()
+        int squad:: compare(const squad *lhs, const squad *rhs) noexcept
         {
             switch( __sign::of(lhs->size,rhs->size) )
             {

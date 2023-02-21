@@ -33,12 +33,12 @@ namespace yack
                     singular
                 };
 
-                virtual ~zircon() throw(); //!< cleanup
+                virtual ~zircon() noexcept; //!< cleanup
 
                 bool verbose;              //!< verbosity
                 
             protected:
-                explicit zircon() throw(); //!< setup
+                explicit zircon() noexcept; //!< setup
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(zircon);
@@ -64,13 +64,13 @@ namespace yack
             //__________________________________________________________________
             class f1d {
             public:
-                virtual ~f1d() throw() {} //!< cleanup
+                virtual ~f1d() noexcept {} //!< cleanup
 
                 //! should do it
                 virtual T operator()(const T) = 0;
 
             protected:
-                explicit f1d() throw() {}
+                explicit f1d() noexcept {}
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(f1d);
@@ -87,7 +87,7 @@ namespace yack
             //
             // types and definitions
             //__________________________________________________________________
-            virtual ~zircon() throw(); //!< cleanup
+            virtual ~zircon() noexcept; //!< cleanup
             explicit zircon(const size_t dims=0); //!< setup
 
             //__________________________________________________________________
@@ -141,8 +141,8 @@ namespace yack
                 return step(userF,userJ);
             }
 
-            T                 control(const array_type &Ftmp) throw(); //!< |Ftmp^2|/2
-            const array_type &probe(const T u) throw();                //!< XX = X + u * S
+            T                 control(const array_type &Ftmp) noexcept; //!< |Ftmp^2|/2
+            const array_type &probe(const T u) noexcept;                //!< XX = X + u * S
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(zircon);
@@ -162,9 +162,9 @@ namespace yack
             class fwrap : public f1d
             {
             public:
-                inline virtual ~fwrap() throw() {}
+                inline virtual ~fwrap() noexcept {}
                 inline explicit fwrap(FUNCTION &user_f,
-                                      zircon   &myself) throw() :
+                                      zircon   &myself) noexcept :
                 func(user_f),
                 self(myself)
                 {

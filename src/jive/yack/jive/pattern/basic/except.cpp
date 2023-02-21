@@ -9,13 +9,13 @@ namespace yack
     {
         const char except::clid[] = "except";
 
-        const char * except:: class_uid() const throw() { return clid; }
+        const char * except:: class_uid() const noexcept { return clid; }
 
-        except:: ~except() throw()
+        except:: ~except() noexcept
         {
         }
 
-        except:: except(const uint8_t ch) throw() :
+        except:: except(const uint8_t ch) noexcept :
         pattern(mark),
         code(ch)
         {
@@ -68,7 +68,7 @@ namespace yack
             fc << sub;
         }
 
-        bool except:: is_same_than(const except *other) const throw()
+        bool except:: is_same_than(const except *other) const noexcept
         {
             assert(other);
             return code==other->code;
@@ -96,7 +96,7 @@ namespace yack
             return new except(code);
         }
 
-        bool except:: is_univocal() const throw()
+        bool except:: is_univocal() const noexcept
         {
             return false;
         }

@@ -39,7 +39,7 @@ namespace yack {
                              const readable<double> &K);
 
             //! cleanup
-            virtual ~reactor() throw();
+            virtual ~reactor() noexcept;
 
             //__________________________________________________________________
             //
@@ -47,7 +47,7 @@ namespace yack {
             //__________________________________________________________________
 
             //! maximum size of a group of a conservation laws within a cluster
-            size_t max_claws_per_cluster() const throw();
+            size_t max_claws_per_cluster() const noexcept;
 
             //! save spectator ions
             void viz_obs(ios::ostream &fp) const;
@@ -56,13 +56,13 @@ namespace yack {
             void graphViz(const string &root) const;
 
             //! maximum degree of crossed equilibria
-            size_t max_degree() const throw();
+            size_t max_degree() const noexcept;
 
             //! maximum actors in one equilibrium side
-            size_t max_actors() const throw();
+            size_t max_actors() const noexcept;
             
             //! maximum cluster size
-            size_t max_cluster_size() const throw();
+            size_t max_cluster_size() const noexcept;
             
             //! compute all constants
             void computeK(writable<double> &K, const double t) const;

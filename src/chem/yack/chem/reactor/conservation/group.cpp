@@ -13,11 +13,11 @@ namespace yack
             (*this) << first;
         }
 
-        clot:: ~clot() throw()
+        clot:: ~clot() noexcept
         {
         }
 
-        bool clot:: attached_to(const claw &cl) const throw()
+        bool clot:: attached_to(const claw &cl) const noexcept
         {
             for(const node_type *node=head;node;node=node->next)
             {
@@ -27,7 +27,7 @@ namespace yack
             return false;
         }
 
-        bool clot:: attached_to(const clot &g) const throw()
+        bool clot:: attached_to(const clot &g) const noexcept
         {
             assert( &g != this );
             for(const node_type *node=g.head;node;node=node->next)

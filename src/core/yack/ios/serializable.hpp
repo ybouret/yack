@@ -26,7 +26,7 @@ namespace yack
             // virtual interface
             //__________________________________________________________________
             virtual size_t      serialize(ostream &) const         = 0; //!< as portable format, return written bytes
-            virtual const char *class_uid()          const throw() = 0; //!< class Unique IDentifier
+            virtual const char *class_uid()          const noexcept = 0; //!< class Unique IDentifier
 
             //__________________________________________________________________
             //
@@ -40,9 +40,9 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~serializable() throw(); //!< cleanup
+            virtual ~serializable() noexcept; //!< cleanup
         protected:
-            explicit serializable() throw(); //!< setup
+            explicit serializable() noexcept; //!< setup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(serializable);

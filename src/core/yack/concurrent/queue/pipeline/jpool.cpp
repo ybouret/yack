@@ -8,11 +8,11 @@ namespace yack
 
     namespace concurrent
     {
-        jpool:: jpool() throw() :  releasable(), impl(), uuid(1)
+        jpool:: jpool() noexcept :  releasable(), impl(), uuid(1)
         {
         }
 
-        void jpool:: release() throw()
+        void jpool:: release() noexcept
         {
             while(impl.size)
             {
@@ -20,7 +20,7 @@ namespace yack
             }
         }
 
-        jpool:: ~jpool() throw()
+        jpool:: ~jpool() noexcept
         {
             release();
         }
@@ -30,7 +30,7 @@ namespace yack
             return impl.size ? impl.query() : object::zacquire<jnode>();
         }
 
-        void jpool:: zput(jnode *zombie) throw()
+        void jpool:: zput(jnode *zombie) noexcept
         {
             assert(NULL!=zombie);
             impl.store( out_of_reach::naught(zombie) );
@@ -45,7 +45,7 @@ namespace yack
             catch(...) { zput(node); throw;   }
         }
 
-        void jpool:: store(jnode *alive) throw()
+        void jpool:: store(jnode *alive) noexcept
         {
             assert(NULL!=alive);
             zput( destructed(alive) );

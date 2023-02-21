@@ -22,7 +22,7 @@ namespace yack
             class sp_parser : public jive::parser
             {
             public:
-                virtual ~sp_parser() throw(); //!< cleanup
+                virtual ~sp_parser() noexcept; //!< cleanup
                 explicit sp_parser();         //!< setup
 
             private:

@@ -21,7 +21,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             template <typename T> static inline
-            bool keep_more_than_two(const readable<T> &cf) throw()
+            bool keep_more_than_two(const readable<T> &cf) noexcept
             {
                 return qselect::count_valid(cf) >= 2;
             }
@@ -43,7 +43,7 @@ namespace yack
                 bunch<int>(w)
                 {}
 
-                virtual ~collector() throw() {}
+                virtual ~collector() noexcept {}
 
                 //--------------------------------------------------------------
                 //
@@ -66,7 +66,7 @@ namespace yack
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(collector);
-                static inline int norm1(const readable<int> &arr) throw()
+                static inline int norm1(const readable<int> &arr) noexcept
                 {
                     int sum = 0;
                     for(size_t i=arr.size();i>0;--i)
@@ -77,7 +77,7 @@ namespace yack
                 }
 
                 static inline int compare(const readable<int> &lhs,
-                                          const readable<int> &rhs) throw()
+                                          const readable<int> &rhs) noexcept
                 {
                     const int l1 = norm1(lhs);
                     const int r1 = norm1(rhs);
@@ -109,7 +109,7 @@ namespace yack
             void global_to_local_topology(matrix<int>       &nu,
                                           const glist       &grp,
                                           const alist       &act,
-                                          const matrix<int> &Nu) throw()
+                                          const matrix<int> &Nu) noexcept
             {
                 for(const gnode *en=grp->head;en;en=en->next)
                 {

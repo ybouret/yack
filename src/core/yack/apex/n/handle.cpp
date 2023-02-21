@@ -10,25 +10,25 @@ namespace yack
     namespace apex
     {
 
-        natural:: handle:: handle(const natural &n) throw() :
+        natural:: handle:: handle(const natural &n) noexcept :
         words(n.words),
         bytes(n.bytes),
         entry(n.word)
         {
         }
 
-        natural:: handle:: ~handle() throw()
+        natural:: handle:: ~handle() noexcept
         {
         }
 
-        natural:: handle:: handle(uint_type &u) throw() :
+        natural:: handle:: handle(uint_type &u) noexcept :
         words(0),
         bytes(0),
         entry( natural::u2w(u,coerce(words),coerce(bytes)) )
         {
         }
 
-        natural:: handle:: handle(word_type &W) throw() :
+        natural:: handle:: handle(word_type &W) noexcept :
         words(1),
         bytes(bytes_for(W)),
         entry(&W)
@@ -55,9 +55,9 @@ namespace yack
         }
 
 
-        bool natural::handle::is0() const throw() { return words<=0; }
+        bool natural::handle::is0() const noexcept { return words<=0; }
 
-        bool natural::handle::is1() const throw()
+        bool natural::handle::is1() const noexcept
         {
             return (1==words) && (1==entry[0]);
         }

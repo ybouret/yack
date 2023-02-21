@@ -23,13 +23,13 @@ namespace yack
         {
         public:
             //! cleanup
-            virtual ~assembly() throw();
+            virtual ~assembly() noexcept;
 
             //! free all local memories
-            void free_local_memories() throw();
+            void free_local_memories() noexcept;
 
             //! drop all local memories
-            void drop_local_memories() throw();
+            void drop_local_memories() noexcept;
             
             //! ensuring num_blocks of block_size per context
             void ensure(const size_t num_blocks, const size_t block_size) const;
@@ -58,7 +58,7 @@ namespace yack
 
         protected:
             //! setup
-            explicit assembly() throw();
+            explicit assembly() noexcept;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(assembly);

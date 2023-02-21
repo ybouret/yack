@@ -7,8 +7,8 @@ namespace yack {
     //! sat20
     class sat20 : public swaps {
       public:
-        virtual ~sat20() throw(); //!< cleanup
-        explicit sat20() throw(); //!< setup  
+        virtual ~sat20() noexcept; //!< cleanup
+        explicit sat20() noexcept; //!< setup  
         static const char   sid[];        //!< sat20
         static const size_t lhs[0x0066];  //!< lhs
         static const size_t rhs[0x0066];  //!< rhs

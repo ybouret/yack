@@ -11,7 +11,7 @@ namespace yack
     namespace memory
     {
 
-        note:: ~note() throw()
+        note:: ~note() noexcept
         {
             size_t i = parts;
             while(i>0)
@@ -56,7 +56,7 @@ namespace yack
             return self[page_exp2].acquire();
         }
 
-        void note:: store(void *addr, const size_t page_exp2) throw()
+        void note:: store(void *addr, const size_t page_exp2) noexcept
         {
             assert(addr!=NULL);
             assert(page_exp2<=max_page_exp2);

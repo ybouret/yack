@@ -22,7 +22,7 @@ namespace yack
         public:
 
             //! cleanup
-            virtual ~udp_socket() throw();
+            virtual ~udp_socket() noexcept;
 
             //! sendTo api
             void sendTo(const socket_address &dst,

@@ -24,9 +24,9 @@ namespace
     public:
         XNode *next;
         XNode *prev;
-        inline  XNode() throw() : next(0), prev(0) {}
-        inline ~XNode() throw() { assert(0==next); assert(0==prev); }
-        inline  XNode(const XNode &) throw() : next(0), prev(0) {}
+        inline  XNode() noexcept : next(0), prev(0) {}
+        inline ~XNode() noexcept { assert(0==next); assert(0==prev); }
+        inline  XNode(const XNode &) noexcept : next(0), prev(0) {}
 
         XNode *clone() const { return new XNode(); }
 

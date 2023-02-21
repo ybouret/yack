@@ -46,18 +46,18 @@ namespace yack
              */
             chunk(const size_t block_size,
                   void        *chunk_data,
-                  const size_t chunk_size) throw();
+                  const size_t chunk_size) noexcept;
 
             //! cleanup
-            ~chunk() throw();
+            ~chunk() noexcept;
 
             //__________________________________________________________________
             //
             // query methods
             //__________________________________________________________________
-            bool      contains(const void *addr)                      const throw(); //!< in range
-            bool      owns(const void *addr, const size_t block_size) const throw(); //!< in range AND aligned
-            ownership whose(const void *addr)                         const throw(); //!< query ownsership
+            bool      contains(const void *addr)                      const noexcept; //!< in range
+            bool      owns(const void *addr, const size_t block_size) const noexcept; //!< in range AND aligned
+            ownership whose(const void *addr)                         const noexcept; //!< query ownsership
 
             //__________________________________________________________________
             //
@@ -65,10 +65,10 @@ namespace yack
             //__________________________________________________________________
 
             //! need still_available>0: get the first available block, zeroed
-            void *acquire(const size_t block_size) throw();
+            void *acquire(const size_t block_size) noexcept;
 
             //! release a previously acquired block, untouched
-            bool  release(void *addr, const size_t block_size) throw();
+            bool  release(void *addr, const size_t block_size) noexcept;
 
             //__________________________________________________________________
             //
@@ -83,7 +83,7 @@ namespace yack
              */
             static size_t optimized_frame_size(const size_t block_size,
                                                size_t      &blocks,
-                                               const bool   compact) throw();
+                                               const bool   compact) noexcept;
 
             //! create a single frame with chunk+data
             static chunk *create_frame(const size_t block_size,
@@ -93,7 +93,7 @@ namespace yack
             //! delete a previously created frame chunk
             static void   delete_frame(chunk     *used_chunk,
                                        size_t     frame_size,
-                                       allocator &dispatcher) throw();
+                                       allocator &dispatcher) noexcept;
             //__________________________________________________________________
             //
             // members
@@ -109,7 +109,7 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(chunk);
-            void format(const size_t block_size) throw();
+            void format(const size_t block_size) noexcept;
 
         };
         

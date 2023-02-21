@@ -25,13 +25,13 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            shelf()  throw(); //!< default empty constructor
-            ~shelf() throw(); //!< cleanup
+            shelf()  noexcept; //!< default empty constructor
+            ~shelf() noexcept; //!< cleanup
 
             //! assign allocated memory and allocator to release it
             shelf(const void  *addr,
                   const size_t size,
-                  allocator   &user) throw();
+                  allocator   &user) noexcept;
             
 
 
@@ -39,11 +39,11 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            void trade(shelf &other) throw(); //!< no-throw trade contents
-            void empty()             throw(); //!< release linear memory
+            void trade(shelf &other) noexcept; //!< no-throw trade contents
+            void empty()             noexcept; //!< release linear memory
             void store(const void  *addr,
                        const size_t size,
-                       allocator   &user) throw(); //!< assign by copy/tread
+                       allocator   &user) noexcept; //!< assign by copy/tread
             void build(embed        emb[],
                        const size_t num,
                        allocator   &user); //!< store block addr/size of embedded scheme

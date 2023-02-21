@@ -30,7 +30,7 @@ namespace yack
             MPI.Recv(ptr,2*num,mdt.info,mdt.size,src,tag);
         }
 
-        lcplx_io:: ~lcplx_io() throw() {}
+        lcplx_io:: ~lcplx_io() noexcept {}
 
     }
 

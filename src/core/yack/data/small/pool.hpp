@@ -31,8 +31,8 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline explicit small_pool() throw() : self_type() {} //!< setup
-        inline virtual ~small_pool() throw() {}               //!< cleanup
+        inline explicit small_pool() noexcept : self_type() {} //!< setup
+        inline virtual ~small_pool() noexcept {}               //!< cleanup
         inline          small_pool(const small_pool &other) : self_type(other) {} //!< hard copy
 
         

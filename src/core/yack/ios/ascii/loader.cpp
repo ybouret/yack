@@ -11,11 +11,11 @@ namespace yack
         namespace ascii
         {
 
-            loader::column:: ~column() throw()
+            loader::column:: ~column() noexcept
             {
             }
 
-            void loader::column:: free() throw()
+            void loader::column:: free() noexcept
             {
                 drop(*this);
             }
@@ -26,16 +26,16 @@ namespace yack
             }
             
 
-            int loader::column:: compare(const column *lhs, const column *rhs) throw()
+            int loader::column:: compare(const column *lhs, const column *rhs) noexcept
             {
                 return comparison::increasing(lhs->indx,rhs->indx);
             }
 
-            loader:: ~loader() throw()
+            loader:: ~loader() noexcept
             {
             }
 
-            loader:: loader() throw() : cols()
+            loader:: loader() noexcept : cols()
             {
             }
 
@@ -47,14 +47,14 @@ namespace yack
 
 
 
-            void loader:: use(column *col) throw()
+            void loader:: use(column *col) noexcept
             {
                 cols.push_back(col);
                 merge_list_of<column>::sort(cols,column::compare);
             }
 
 
-            static inline bool is_sep(const int ch) throw()
+            static inline bool is_sep(const int ch) noexcept
             {
                 return ' ' == ch || '\t' == ch;
             }

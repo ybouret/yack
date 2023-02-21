@@ -39,16 +39,16 @@ namespace yack
         inline explicit dinky_node(const U &u, const alt_t &) :  YACK_DINKY_NODE_CTOR(), data(u)       {} //!< setup from user's args
         inline explicit dinky_node() :                           YACK_DINKY_NODE_CTOR(), data()        {} //!< default setup, if exists
         inline explicit dinky_node(const dinky_node &_) :        YACK_DINKY_NODE_CTOR(), data(_.data)  {} //!< copy constructor
-        inline virtual ~dinky_node() throw() { assert(!next); assert(!prev); }                          //!< cleanup
+        inline virtual ~dinky_node() noexcept { assert(!next); assert(!prev); }                          //!< cleanup
         
         //______________________________________________________________________
         //
         // access methods
         //______________________________________________________________________
-        inline type       & operator*()        throw() { return               data;  } //!< access
-        inline const_type & operator*()  const throw() { return (const_type &)data;  } //!< access
-        inline type       * operator->()       throw() { return               &data; } //!< access
-        inline const_type * operator->() const throw() { return (const type *)&data; } //!< access
+        inline type       & operator*()        noexcept { return               data;  } //!< access
+        inline const_type & operator*()  const noexcept { return (const_type &)data;  } //!< access
+        inline type       * operator->()       noexcept { return               &data; } //!< access
+        inline const_type * operator->() const noexcept { return (const type *)&data; } //!< access
 
         //! display wrapper
         inline friend std::ostream & operator<<(std::ostream &os, const dinky_node &self) { return os << self.data; }

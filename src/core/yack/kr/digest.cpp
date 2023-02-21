@@ -12,23 +12,23 @@ namespace yack
 
     const char digest::clid[] = "digest";
 
-    const char *digest:: class_uid() const throw()
+    const char *digest:: class_uid() const noexcept
     {
         return clid;
     }
 
 
-    void digest:: ldz() throw()
+    void digest:: ldz() noexcept
     {
         memset(addr,0,blen);
     }
 
-    digest::const_type * digest:: cxx() const throw()
+    digest::const_type * digest:: cxx() const noexcept
     {
         return byte;
     }
 
-    digest::const_type * digest:: mem() const throw()
+    digest::const_type * digest:: mem() const noexcept
     {
         return addr;
     }
@@ -78,7 +78,7 @@ blen( N )
         memcpy(addr,d.addr,blen);
     }
 
-    digest & digest:: operator=(const digest &d) throw()
+    digest & digest:: operator=(const digest &d) noexcept
     {
         assert(d.size()==size());
         assert(d.blen==blen);
@@ -144,14 +144,14 @@ blen( N )
     }
 
 
-    digest:: ~digest() throw()
+    digest:: ~digest() noexcept
     {
         memset(addr,0,blen);
         memory::legacy::release(addr);
         coerce(blen) = 0;
     }
 
-    size_t digest:: size() const throw()
+    size_t digest:: size() const noexcept
     {
         return blen;
     }
@@ -169,7 +169,7 @@ blen( N )
     }
 
 #if 0
-    bool operator==(const digest &lhs, const digest &rhs) throw()
+    bool operator==(const digest &lhs, const digest &rhs) noexcept
     {
         size_t n = lhs.blen;
         if(rhs.blen==n)
@@ -189,12 +189,12 @@ blen( N )
     }
 #endif
     
-    const void * digest:: ro_addr() const throw() { return addr; }
-    size_t       digest:: measure() const throw() { return blen; }
+    const void * digest:: ro_addr() const noexcept { return addr; }
+    size_t       digest:: measure() const noexcept { return blen; }
 
 
     
-    digest & digest:: operator |= (const digest &rhs) throw()
+    digest & digest:: operator |= (const digest &rhs) noexcept
     {
         assert(blen==rhs.blen);
         for(size_t i=blen;i>0;--i)
@@ -204,7 +204,7 @@ blen( N )
         return *this;
     }
     
-    digest & digest:: operator &= (const digest &rhs) throw()
+    digest & digest:: operator &= (const digest &rhs) noexcept
     {
         assert(blen==rhs.blen);
         for(size_t i=blen;i>0;--i)
@@ -215,7 +215,7 @@ blen( N )
     }
     
     
-    digest & digest:: operator ^= (const digest &rhs) throw()
+    digest & digest:: operator ^= (const digest &rhs) noexcept
     {
         assert(blen==rhs.blen);
         for(size_t i=blen;i>0;--i)

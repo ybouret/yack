@@ -15,7 +15,7 @@ namespace yack
 
         const char natural:: clid[] = "apn";
         
-        const char * natural:: class_uid() const throw()
+        const char * natural:: class_uid() const noexcept
         {
             return clid;
         }

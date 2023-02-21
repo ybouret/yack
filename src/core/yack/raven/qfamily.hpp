@@ -58,7 +58,7 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~qfamily() throw(); //!< cleanup
+            virtual ~qfamily() noexcept; //!< cleanup
             
             
             //! start a new family
@@ -117,10 +117,10 @@ namespace yack
             // methods
             //__________________________________________________________________
             friend std::ostream & operator<<(std::ostream &, const qfamily &); //!< display with all info
-            const qmatrix &       operator*()  const throw();                  //!< access, const
-            const qmatrix *       operator->() const throw();                  //!< access, const
-            qmatrix       *       operator->()       throw();                  //!< access
-            qmatrix       &       operator*()        throw();                  //!< access
+            const qmatrix &       operator*()  const noexcept;                  //!< access, const
+            const qmatrix *       operator->() const noexcept;                  //!< access, const
+            qmatrix       *       operator->()       noexcept;                  //!< access
+            qmatrix       &       operator*()        noexcept;                  //!< access
 
             //__________________________________________________________________
             //
@@ -160,7 +160,7 @@ namespace yack
             //
             //! this matrix won't produce any new vector
             //__________________________________________________________________
-            bool is_complete() const throw()
+            bool is_complete() const noexcept
             {
                 if(qmatrix::fully_grown==qbase->active_state) return true;
                 if(ready->size<=0)                            return true;

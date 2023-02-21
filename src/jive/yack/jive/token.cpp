@@ -6,8 +6,8 @@ namespace yack
 {
     namespace jive
     {
-        token:: ~token() throw() {}
-        token::  token() throw()       : object(), characters(),  next(0), prev(0) {}
+        token:: ~token() noexcept {}
+        token::  token() noexcept       : object(), characters(),  next(0), prev(0) {}
         token::  token(const token &t) : object(), characters(t), next(0), prev(0) {}
         
         std::ostream & operator<< (std::ostream &os, const token &t)
@@ -19,7 +19,7 @@ namespace yack
             return os;
         }
         
-        const context & token:: operator*() const throw()
+        const context & token:: operator*() const noexcept
         {
             assert(size>0);
             return *head;

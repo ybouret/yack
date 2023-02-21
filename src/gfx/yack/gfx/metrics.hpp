@@ -26,11 +26,11 @@ namespace yack
             //__________________________________________________________________
             metrics(const unit_t width,
                     const unit_t height,
-                    const unit_t depth) throw(); //!< W>0, H>0, D>0
+                    const unit_t depth) noexcept; //!< W>0, H>0, D>0
             metrics(const dimensions &,
-                    const unit_t depth) throw(); //!< partial copy
-            metrics(const metrics &)    throw(); //!< copy
-            virtual ~metrics()          throw(); //!< cleanup
+                    const unit_t depth) noexcept; //!< partial copy
+            metrics(const metrics &)    noexcept; //!< copy
+            virtual ~metrics()          noexcept; //!< cleanup
 
             //__________________________________________________________________
             //

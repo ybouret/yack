@@ -41,11 +41,11 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        virtual ~pipe()    throw(); //!< cleanup
+        virtual ~pipe()    noexcept; //!< cleanup
 
     protected:
-        pipe(const policy) throw(); //!< setup policy
-        pipe(const pipe &) throw(); //!< copy policy
+        pipe(const policy) noexcept; //!< setup policy
+        pipe(const pipe &) noexcept; //!< copy policy
 
     private:
         YACK_DISABLE_ASSIGN(pipe);
@@ -73,19 +73,19 @@ namespace yack
         // interface
         //______________________________________________________________________
         virtual void        push(param_type)     = 0; //!< push an object
-        virtual type        pop()  throw()       = 0; //!< remove object according to policy
-        virtual type       &peek() throw()       = 0; //!< next available object
-        virtual const_type &peek() const throw() = 0; //!< next available const object
+        virtual type        pop()  noexcept       = 0; //!< remove object according to policy
+        virtual type       &peek() noexcept       = 0; //!< next available object
+        virtual const_type &peek() const noexcept = 0; //!< next available const object
 
         //______________________________________________________________________
         //
         // C++
         //______________________________________________________________________
-        inline virtual ~pipe_of()        throw() {} //!< cleanup
+        inline virtual ~pipe_of()        noexcept {} //!< cleanup
 
     protected:
-        inline explicit pipe_of()        throw() : pipe(class_scheme) {} //!< setup with scheme
-        inline pipe_of(const pipe_of &_) throw() : pipe(_)            {} //!< copy scheme
+        inline explicit pipe_of()        noexcept : pipe(class_scheme) {} //!< setup with scheme
+        inline pipe_of(const pipe_of &_) noexcept : pipe(_)            {} //!< copy scheme
 
     private:
         YACK_DISABLE_ASSIGN(pipe_of);
@@ -121,21 +121,21 @@ namespace yack
         }
 
         //! pop: lifo=back, fifo=front
-        inline virtual type pop() throw()
+        inline virtual type pop() noexcept
         {
             static const int2type<SCHEME> manner = {};
             return pop_(manner);
         }
 
         //! peek: lifo=back, fifo=front
-        inline virtual const_type &peek() const throw()
+        inline virtual const_type &peek() const noexcept
         {
             static const int2type<SCHEME> manner = {};
             return peek_(manner);
         }
 
         //! alias
-        inline virtual type &peek()   throw()
+        inline virtual type &peek()   noexcept
         {
             static const int2type<SCHEME> manner = {};
             return coerce(peek_(manner));
@@ -146,22 +146,22 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline virtual ~pipe_on() throw() {} //!< cleanup
+        inline virtual ~pipe_on() noexcept {} //!< cleanup
 
     protected:
-        inline explicit pipe_on()        throw() : pipe_type(),  self_type()    {} //!< default setup
-        inline pipe_on(const pipe_on &_) throw() : pipe_type(_), self_type(_)   {} //!< copy using sequence
+        inline explicit pipe_on()        noexcept : pipe_type(),  self_type()    {} //!< default setup
+        inline pipe_on(const pipe_on &_) noexcept : pipe_type(_), self_type(_)   {} //!< copy using sequence
         inline pipe_on(const size_t n) : pipe_type(),  self_type(n,as_capacity) {} //!< setup with capacity
 
     private:
         YACK_DISABLE_ASSIGN(pipe_on);
-        inline type pop_(const int2type<pipe::lifo>&) throw()
+        inline type pop_(const int2type<pipe::lifo>&) noexcept
         { type ans = this->back(); this->pop_back(); return ans; }
-        inline type pop_(const int2type<pipe::fifo>&) throw()
+        inline type pop_(const int2type<pipe::fifo>&) noexcept
         { type ans = this->front(); this->pop_front(); return ans; }
 
-        inline const_type &peek_(const int2type<pipe::lifo>&) const throw() { return this->back();  }
-        inline const_type &peek_(const int2type<pipe::fifo>&) const throw() { return this->front(); }
+        inline const_type &peek_(const int2type<pipe::lifo>&) const noexcept { return this->back();  }
+        inline const_type &peek_(const int2type<pipe::fifo>&) const noexcept { return this->front(); }
 
 
     };

@@ -40,7 +40,7 @@ namespace yack {
             // C++
             //__________________________________________________________________
             explicit sp_tier();          //!< setup
-            virtual ~sp_tier() throw();  //!< cleanup
+            virtual ~sp_tier() noexcept;  //!< cleanup
 
             //__________________________________________________________________
             //

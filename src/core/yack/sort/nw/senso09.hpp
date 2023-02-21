@@ -7,8 +7,8 @@ namespace yack {
     //! senso09
     class senso09 : public swaps {
       public:
-        virtual ~senso09() throw(); //!< cleanup
-        explicit senso09() throw(); //!< setup  
+        virtual ~senso09() noexcept; //!< cleanup
+        explicit senso09() noexcept; //!< setup  
         static const char   sid[];        //!< senso09
         static const size_t lhs[0x0019];  //!< lhs
         static const size_t rhs[0x0019];  //!< rhs

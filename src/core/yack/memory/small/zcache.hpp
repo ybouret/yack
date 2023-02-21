@@ -39,29 +39,29 @@ namespace yack
             };
 
             //! compute the block_size>=bs
-            static size_t block_size_for(const size_t bs) throw();
+            static size_t block_size_for(const size_t bs) noexcept;
 
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
             explicit zcache(const size_t bs); //!< setup
-            virtual ~zcache() throw();        //!< cleanup
+            virtual ~zcache() noexcept;        //!< cleanup
 
             //__________________________________________________________________
             //
             // repository helpers
             //__________________________________________________________________
             void    load(size_t);         //!< well -> repo
-            void    free() throw();       //!< repo -> well
-            size_t  here() const throw(); //!< repo size
+            void    free() noexcept;       //!< repo -> well
+            size_t  here() const noexcept; //!< repo size
 
             //__________________________________________________________________
             //
             // blocks I/O
             //__________________________________________________________________
             void *acquire_unlocked();               //!< from repo or well
-            void  release_unlocked(void *) throw(); //!< to repo
+            void  release_unlocked(void *) noexcept; //!< to repo
 
             static void xdisabled(const char *clid); //!< system error
             

@@ -13,7 +13,7 @@ namespace yack
         {
         public:
             explicit HColorScale( int X, int Y, int W, int H, const char *l=0);
-            virtual ~HColorScale() throw();
+            virtual ~HColorScale() noexcept;
             
             Axis   xaxis;
             Axis   yaxis;

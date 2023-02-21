@@ -34,7 +34,7 @@ namespace yack
             
         }
         
-        dyadic:: ~dyadic() throw()
+        dyadic:: ~dyadic() noexcept
         {
             out_of_reach::zset( destructed(book_), sizeof(book__) );
             out_of_reach::zset( destructed(note_), sizeof(note__) );
@@ -67,7 +67,7 @@ namespace yack
             }
         }
         
-        void dyadic:: release(void *&addr, size_t &size) throw()
+        void dyadic:: release(void *&addr, size_t &size) noexcept
         {
             YACK_LOCK(access);
             if(addr)
@@ -87,7 +87,7 @@ namespace yack
         
         const char   dyadic:: call_sign[] = "memory.dyadic";
         
-        const char * dyadic:: variety() const throw() { return call_sign; }
+        const char * dyadic:: variety() const noexcept { return call_sign; }
         
         void * dyadic::query(const size_t page_exp2)
         {
@@ -96,7 +96,7 @@ namespace yack
             return (page_exp2<book::min_page_exp2) ? note_->query(page_exp2) : book_->query(page_exp2);
         }
         
-        void  dyadic:: store(void *addr, const size_t page_exp2) throw()
+        void  dyadic:: store(void *addr, const size_t page_exp2) noexcept
         {
             YACK_LOCK(access);
             assert(page_exp2<=book::max_page_exp2);
@@ -119,14 +119,14 @@ namespace yack
     namespace memory
     {
         
-        static inline page *chunk2page(chunk *ch) throw()
+        static inline page *chunk2page(chunk *ch) noexcept
         {
             assert(NULL!=ch);
             return static_cast<page *>( out_of_reach::zset(ch,sizeof(page)));
         }
         
         void   dyadic:: retrieve(core_pool_of<chunk> &reservoir,
-                                 const size_t         page_exp2) throw()
+                                 const size_t         page_exp2) noexcept
         {
             //__________________________________________________________________
             //

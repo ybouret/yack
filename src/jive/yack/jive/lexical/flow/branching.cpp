@@ -11,7 +11,7 @@ namespace yack
             namespace flow
             {
 
-                branching:: ~branching() throw()
+                branching:: ~branching() noexcept
                 {
                 }
                 

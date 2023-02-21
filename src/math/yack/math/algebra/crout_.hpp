@@ -30,13 +30,13 @@ namespace yack
                             const size_t scal_size);
             
             //! cleanup
-            virtual ~crout_() throw();
+            virtual ~crout_() noexcept;
             
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            virtual size_t granted() const throw();
+            virtual size_t granted() const noexcept;
             
             //__________________________________________________________________
             //

@@ -7,8 +7,8 @@ namespace yack {
     //! morwenn24
     class morwenn24 : public swaps {
       public:
-        virtual ~morwenn24() throw(); //!< cleanup
-        explicit morwenn24() throw(); //!< setup  
+        virtual ~morwenn24() noexcept; //!< cleanup
+        explicit morwenn24() noexcept; //!< setup  
         static const char   sid[];        //!< morwenn24
         static const size_t lhs[0x007b];  //!< lhs
         static const size_t rhs[0x007b];  //!< rhs

@@ -29,7 +29,7 @@ public:
     static const uint64_t width = (upper-lower)+1;
     static const size_t   cache = 32768;
     
-    virtual ~engine() throw()
+    virtual ~engine() noexcept
     {
     }
     
@@ -89,7 +89,7 @@ public:
     }
     
     virtual void run(const context &ctx,
-                     lockable      &sync) throw()
+                     lockable      &sync) noexcept
     {
         const size_t        i      = ctx.indx;
         writable<uint32_t> &m      = pmatrix[i];

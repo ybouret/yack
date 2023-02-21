@@ -62,8 +62,8 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            inline explicit adder() throw() : self_type() {}                    //!< default constructor
-            inline virtual ~adder() throw() {}                                  //!< destructor
+            inline explicit adder() noexcept : self_type() {}                    //!< default constructor
+            inline virtual ~adder() noexcept {}                                  //!< destructor
             inline explicit adder(const size_t n) : self_type(n,as_capacity) {} //!< constructor with capacity
 
             //__________________________________________________________________

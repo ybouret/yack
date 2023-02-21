@@ -4,7 +4,7 @@ namespace yack
 {
     namespace FLTK
     {
-        Canvas:: ~Canvas() throw()
+        Canvas:: ~Canvas() noexcept
         {
             
         }

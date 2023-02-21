@@ -6,11 +6,11 @@ namespace yack
 {
     namespace jive
     {
-        logical:: ~logical() throw()
+        logical:: ~logical() noexcept
         {
         }
 
-        logical:: logical(const uint32_t t) throw() :
+        logical:: logical(const uint32_t t) noexcept :
         pattern(t),
         patterns()
         {
@@ -22,7 +22,7 @@ namespace yack
         {
         }
 
-        logical & logical:: operator<<( pattern *p ) throw()
+        logical & logical:: operator<<( pattern *p ) noexcept
         {
             assert(p);
             push_back(p);

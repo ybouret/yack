@@ -26,7 +26,7 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            const memory::ro_buffer &key() const throw(); //!< key for ptr
+            const memory::ro_buffer &key() const noexcept; //!< key for ptr
 
             //! sending contiguous objects
             virtual void send(const mpi   &,
@@ -52,10 +52,10 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~data_io() throw(); //!< cleanup
+            virtual ~data_io() noexcept; //!< cleanup
 
         protected:
-            explicit data_io(const rtti &) throw(); //!< setup
+            explicit data_io(const rtti &) noexcept; //!< setup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(data_io);
@@ -77,7 +77,7 @@ namespace yack
             // C++
             //__________________________________________________________________
             //! cleanup
-            inline virtual ~data_io_for() throw() {}
+            inline virtual ~data_io_for() noexcept {}
 
         protected:
             //! setup

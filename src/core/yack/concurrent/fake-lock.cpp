@@ -7,8 +7,8 @@
 namespace yack
 {
 
-    fake_lock::  fake_lock() throw() : lockable(), depth(0) {}
-    fake_lock:: ~fake_lock() throw()
+    fake_lock::  fake_lock() noexcept : lockable(), depth(0) {}
+    fake_lock:: ~fake_lock() noexcept
     {
         if(0!=depth)
         {
@@ -16,14 +16,14 @@ namespace yack
         }
     }
 
-    void fake_lock:: lock() throw() { ++coerce(depth);  }
+    void fake_lock:: lock() noexcept { ++coerce(depth);  }
 
-    void fake_lock:: unlock() throw()
+    void fake_lock:: unlock() noexcept
     {
         if( --coerce(depth) < 0 ) system_error::critical_bsd(EINVAL,"fake unlocking failure");
     }
 
-    bool fake_lock:: try_lock() throw()
+    bool fake_lock:: try_lock() noexcept
     {
         lock(); return true;
     }

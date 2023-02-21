@@ -22,7 +22,7 @@ namespace yack
             class tiffxx
             {
             public:
-                virtual ~tiffxx() throw(); //!< cleanup
+                virtual ~tiffxx() noexcept; //!< cleanup
 
             protected:
                 explicit tiffxx(const string &, const char *mode); //!< TIFFOpen
@@ -42,7 +42,7 @@ namespace yack
             {
             public:
                 explicit itiff(const string &filename); //!< setup
-                virtual ~itiff() throw();               //!< cleanup
+                virtual ~itiff() noexcept;               //!< cleanup
 
                 unit_t width();                       //!< image width
                 unit_t height();                      //!< image height
@@ -73,7 +73,7 @@ namespace yack
             {
             public:
                 explicit otiff(const string &filename); //!< setup
-                virtual ~otiff() throw();               //!< cleanup
+                virtual ~otiff() noexcept;               //!< cleanup
 
 
             private:

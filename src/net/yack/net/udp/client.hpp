@@ -26,7 +26,7 @@ namespace yack
             //__________________________________________________________________
 
             //! cleanup
-            virtual ~udp_client() throw();
+            virtual ~udp_client() noexcept;
 
             //! setup directly
             explicit udp_client(const plexus       &,

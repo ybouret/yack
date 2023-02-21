@@ -47,9 +47,9 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~vizible() throw();
+            virtual ~vizible() noexcept;
         protected:
-            explicit vizible() throw();
+            explicit vizible() noexcept;
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(vizible);

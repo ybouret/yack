@@ -103,12 +103,12 @@ namespace yack
         {
         public:
             //! setup
-            explicit exception(const error_code err,const char *fmt,...) throw() YACK_PRINTF_CHECK(3,4);
-            virtual ~exception() throw();           //!< default destructor
-            exception( const exception & ) throw(); //!< copy constructor
+            explicit exception(const error_code err,const char *fmt,...) noexcept YACK_PRINTF_CHECK(3,4);
+            virtual ~exception() noexcept;           //!< default destructor
+            exception( const exception & ) noexcept; //!< copy constructor
 
-            virtual const char *what() const throw(); //!< internal what_
-            error_code          code() const throw(); //!< internal code_
+            virtual const char *what() const noexcept; //!< internal what_
+            error_code          code() const noexcept; //!< internal code_
 
         private:
             const error_code code_;

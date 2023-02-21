@@ -6,7 +6,7 @@ namespace yack
     {
         namespace ode
         {
-            template <> cash_karp<real_t>:: ~cash_karp() throw() {}
+            template <> cash_karp<real_t>:: ~cash_karp() noexcept {}
 
             template <> cash_karp<real_t>::  cash_karp() :
             base_type(6),

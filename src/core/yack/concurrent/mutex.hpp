@@ -40,24 +40,24 @@ namespace yack
             // C++
             //__________________________________________________________________
             explicit     mutex(const char *id=0); //!< create internal mutex
-            virtual     ~mutex() throw();         //!< cleanup
+            virtual     ~mutex() noexcept;         //!< cleanup
 
             //__________________________________________________________________
             //
             // lockable interface
             //__________________________________________________________________
-            virtual void lock()     throw(); //!< lock
-            virtual void unlock()   throw(); //!< unlock
-            virtual bool try_lock() throw(); //!< try lock
+            virtual void lock()     noexcept; //!< lock
+            virtual void unlock()   noexcept; //!< unlock
+            virtual bool try_lock() noexcept; //!< try lock
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            void tag(const char *id) throw(); //!< create a name
+            void tag(const char *id) noexcept; //!< create a name
 
             //! output for verbosity
-            friend std::ostream & operator<<(std::ostream &, const mutex &) throw();
+            friend std::ostream & operator<<(std::ostream &, const mutex &) noexcept;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(mutex);

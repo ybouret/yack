@@ -37,23 +37,23 @@ namespace yack
             // C++
             //__________________________________________________________________
             explicit pipeline(const topology &); //!< initialize w.r.t topology
-            virtual ~pipeline() throw();         //!< cleanup
+            virtual ~pipeline() noexcept;         //!< cleanup
 
             //__________________________________________________________________
             //
             // assembly interface
             //__________________________________________________________________
-            virtual size_t      size()                        const throw(); //!< threads
-            virtual const_type &operator[](const size_t indx) const throw(); //!< in 1..threads
+            virtual size_t      size()                        const noexcept; //!< threads
+            virtual const_type &operator[](const size_t indx) const noexcept; //!< in 1..threads
 
             //__________________________________________________________________
             //
             // queue interface
             //__________________________________________________________________
             virtual job_uuid write(const job_type &J);
-            virtual void     flush() throw();
-            virtual void     prune() throw();
-            virtual bool     ended(const job_uuid) const throw();
+            virtual void     flush() noexcept;
+            virtual void     prune() noexcept;
+            virtual bool     ended(const job_uuid) const noexcept;
             
             //__________________________________________________________________
             //
@@ -94,13 +94,13 @@ namespace yack
             drone       *squad;     //!< drones
             size_t       ready;     //!< to build
 
-            void        cycle()       throw(); //!< main cycle method
-            static void entry(void *) throw(); //!< forward to cycle
+            void        cycle()       noexcept; //!< main cycle method
+            static void entry(void *) noexcept; //!< forward to cycle
 
-            void        finish(size_t count)  throw(); //!< cleanup [0..count]
-            job_uuid    process(jnode *alive) throw(); //!< send to computing or to pending
-            void        recycle(drone *me)    throw(); //!< computing->available at random front/back
-            void        zkill() throw();
+            void        finish(size_t count)  noexcept; //!< cleanup [0..count]
+            job_uuid    process(jnode *alive) noexcept; //!< send to computing or to pending
+            void        recycle(drone *me)    noexcept; //!< computing->available at random front/back
+            void        zkill() noexcept;
 
         public:
             prng ran; //!< random generator for thread dispatch

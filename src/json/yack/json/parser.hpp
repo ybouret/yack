@@ -23,7 +23,7 @@ namespace yack
         {
         public:
             explicit Parser();         //!< setup
-            virtual ~Parser() throw(); //!< cleanup
+            virtual ~Parser() noexcept; //!< cleanup
 
             Value &operator()(jive::module *); //!< return *this after parsing
 

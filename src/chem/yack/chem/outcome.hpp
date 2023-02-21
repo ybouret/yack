@@ -23,11 +23,11 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            outcome() throw();                                                         //!< blocked, degenerated, 0
-            outcome(const components::state,const extent::grade,const double) throw(); //!< setup
-            outcome(const outcome &) throw();                                          //!< no-throw copy
-            outcome & operator=(const outcome &other) throw();                         //!< assign
-            ~outcome() throw();                                                        //!< cleanup
+            outcome() noexcept;                                                         //!< blocked, degenerated, 0
+            outcome(const components::state,const extent::grade,const double) noexcept; //!< setup
+            outcome(const outcome &) noexcept;                                          //!< no-throw copy
+            outcome & operator=(const outcome &other) noexcept;                         //!< assign
+            ~outcome() noexcept;                                                        //!< cleanup
 
             //__________________________________________________________________
             //
@@ -46,7 +46,7 @@ namespace yack
             //
             //! return value or zero if degenerated
             //__________________________________________________________________
-            double operator*() const throw();
+            double operator*() const noexcept;
 
             //__________________________________________________________________
             //

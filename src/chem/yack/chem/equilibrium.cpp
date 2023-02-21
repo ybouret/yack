@@ -7,7 +7,7 @@ namespace yack
 {
     namespace chemical
     {
-        equilibrium:: ~equilibrium() throw()
+        equilibrium:: ~equilibrium() noexcept
         {
         }
         
@@ -37,7 +37,7 @@ namespace yack
 
        
 
-        const components & equilibrium:: content() const throw()
+        const components & equilibrium:: content() const noexcept
         {
             return *this;
         }

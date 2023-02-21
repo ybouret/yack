@@ -41,7 +41,7 @@ namespace yack
             // C++
             //__________________________________________________________________
             explicit parcels();          //!< setup and one default parcel
-            virtual ~parcels() throw();  //!< cleanup
+            virtual ~parcels() noexcept;  //!< cleanup
 
             
             //__________________________________________________________________
@@ -53,7 +53,7 @@ namespace yack
             void *acquire_unlocked(size_t &block_size);
 
             //! release previously acquired block
-            void  release_unlocked(void * &block_addr, size_t &block_size) throw();
+            void  release_unlocked(void * &block_addr, size_t &block_size) noexcept;
 
             //__________________________________________________________________
             //
@@ -69,8 +69,8 @@ namespace yack
             arena          *zpool;
             void           *impl[YACK_MEMORY_ARENA_WORDS];
             void  grow_for(const size_t block_size); //!< grow and set cache
-            void  kill(parcel *)   throw();          //!< return to pages and zpool
-            void *checked(void *)  throw();          //!< check empty!=cache or set to NULL
+            void  kill(parcel *)   noexcept;          //!< return to pages and zpool
+            void *checked(void *)  noexcept;          //!< check empty!=cache or set to NULL
 
         };
 

@@ -9,7 +9,7 @@ namespace yack
     {
         static const char vector_category[] = "vector.";
 
-        const char *vector_category_build(char *buffer,const size_t length, const char *call_sign) throw()
+        const char *vector_category_build(char *buffer,const size_t length, const char *call_sign) noexcept
         {
             assert(NULL!=buffer);
             assert(length>0);

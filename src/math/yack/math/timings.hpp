@@ -17,7 +17,7 @@ namespace yack
         {
             //! f * 10^e <= x
             template <typename T> static inline
-            T round_floor(const T a) throw()
+            T round_floor(const T a) noexcept
             {
                 assert(a>0);
                 static const T ten(10);
@@ -29,7 +29,7 @@ namespace yack
 
             //! f * 10^e >= x
             template <typename T> static inline
-            T round_ceil( const T a ) throw()
+            T round_ceil( const T a ) noexcept
             {
                 assert( a > 0 );
                 static const T ten(10);

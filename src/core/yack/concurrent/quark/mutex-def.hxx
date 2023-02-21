@@ -10,18 +10,18 @@ namespace yack
                 yack_mutex impl;
 
                 //! syntax helper
-                inline yack_mutex * operator*() throw() { return &impl; }
+                inline yack_mutex * operator*() noexcept { return &impl; }
 
                 //! smart pointer
                 class handle
                 {
                 public:
                     inline  handle() : pointee( mutex_api::init() ) {}
-                    inline ~handle() throw()  { mutex_api::quit(pointee); }
+                    inline ~handle() noexcept  { mutex_api::quit(pointee); }
 
-                    inline mutex & operator*() throw() { assert(pointee); return *pointee;            }
-                    inline void lock()         throw() { assert(pointee); mutex_api::lock(pointee);   }
-                    inline void unlock()       throw() { assert(pointee); mutex_api::unlock(pointee); }
+                    inline mutex & operator*() noexcept { assert(pointee); return *pointee;            }
+                    inline void lock()         noexcept { assert(pointee); mutex_api::lock(pointee);   }
+                    inline void unlock()       noexcept { assert(pointee); mutex_api::unlock(pointee); }
 
                 private:
                     mutex *pointee;
@@ -57,7 +57,7 @@ namespace yack
                     }
                 }
 
-                inline virtual ~mutex_attribute() throw()
+                inline virtual ~mutex_attribute() noexcept
                 {
                     (void) pthread_mutexattr_destroy(&attr);
                 }

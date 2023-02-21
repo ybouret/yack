@@ -18,8 +18,8 @@ namespace yack
         //______________________________________________________________________
         class matrix_data : public object, public counted
         {
-        public:    virtual ~matrix_data() throw(); //!< cleanup
-        protected: explicit matrix_data() throw(); //!< setup
+        public:    virtual ~matrix_data() noexcept; //!< cleanup
+        protected: explicit matrix_data() noexcept; //!< setup
         private: YACK_DISABLE_COPY_AND_ASSIGN(matrix_data);
         };
     }
@@ -45,18 +45,18 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline virtual ~matrix_data() throw() { line=0; head=0; }  //!< cleanup
+        inline virtual ~matrix_data() noexcept { line=0; head=0; }  //!< cleanup
         
 
         
     protected:
-        inline explicit matrix_data() throw() :
+        inline explicit matrix_data() noexcept :
         kernel::matrix_data(), line(0), head(0) {} //!< setup
         row          *line;                                         //!< in [1..rows]
         mutable_type *head;                                         //!< first data
         
         //! no-throw swap
-        void swap_data_with(matrix_data &other) throw()
+        void swap_data_with(matrix_data &other) noexcept
         {
             cswap(line,other.line);
             cswap(head,other.head);

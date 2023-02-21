@@ -9,32 +9,32 @@ namespace yack
     namespace information
     {
 
-        entropy:: ~entropy() throw()
+        entropy:: ~entropy() noexcept
         {
             reset();
         }
 
-        entropy:: entropy() throw() :
+        entropy:: entropy() noexcept :
         total(0),
         count()
         {
             reset();
         }
 
-        void entropy:: reset() throw()
+        void entropy:: reset() noexcept
         {
             total = 0;
             memset(count,0,sizeof(count));
         }
 
-        entropy & entropy:: operator<<(const uint8_t byte) throw()
+        entropy & entropy:: operator<<(const uint8_t byte) noexcept
         {
             ++total;
             ++count[byte];
             return *this;
         }
 
-        entropy & entropy:: operator()(const void *addr,size_t size) throw()
+        entropy & entropy:: operator()(const void *addr,size_t size) noexcept
         {
             assert(!(NULL==addr&&size>0));
             const uint8_t *q = static_cast<const uint8_t *>(addr);
@@ -45,7 +45,7 @@ namespace yack
             return *this;
         }
 
-        double entropy:: operator()(void) const throw()
+        double entropy:: operator()(void) const noexcept
         {
             double sum = 0;
             for(size_t i=0;i<256;++i)
@@ -61,7 +61,7 @@ namespace yack
             return -sum;
         }
 
-        double entropy:: of(const void *addr, const size_t size) throw()
+        double entropy:: of(const void *addr, const size_t size) noexcept
         {
             entropy self;
             return self(addr,size)();

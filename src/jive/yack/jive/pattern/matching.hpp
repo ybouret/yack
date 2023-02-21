@@ -34,8 +34,8 @@ namespace yack
             matching(pattern *);                                 //!< setup from new pattern
             matching(const string &, const dictionary * = NULL); //!< compile regexp
             matching(const char   *, const dictionary * = NULL); //!< compile regexp
-            matching(const matching &) throw(); //!< copy, without token content
-            virtual ~matching()        throw(); //!< cleanup
+            matching(const matching &) noexcept; //!< copy, without token content
+            virtual ~matching()        noexcept; //!< cleanup
 
 
             //__________________________________________________________________

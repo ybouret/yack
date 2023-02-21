@@ -7,12 +7,12 @@ namespace yack
     namespace ios
     {
 
-        istream:: ~istream() throw()
+        istream:: ~istream() noexcept
         {
         }
 
 
-        istream:: istream() throw() : cache()
+        istream:: istream() noexcept : cache()
         {
         }
 

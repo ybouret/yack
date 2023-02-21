@@ -7,12 +7,12 @@ namespace yack
     namespace raven
     {
 
-        qmatrix:: ~qmatrix() throw()
+        qmatrix:: ~qmatrix() noexcept
         {
 
         }
 
-        const char *qmatrix:: maturity_to_text(const maturity m) throw()
+        const char *qmatrix:: maturity_to_text(const maturity m) noexcept
         {
             switch(m)
             {
@@ -55,7 +55,7 @@ namespace yack
 
         }
 
-        const char * qmatrix:: maturity_text() const throw()
+        const char * qmatrix:: maturity_text() const noexcept
         {
             return maturity_to_text(active_state);
         }
@@ -113,16 +113,16 @@ namespace yack
 
         qmatrix * qmatrix:: clone() const { return new qmatrix(*this); }
 
-        void qmatrix:: reset() throw()
+        void qmatrix:: reset() noexcept
         {
             coerce(current_rank) = 0;
             coerce(active_state) = get_maturity(maximum_rank,current_rank);
             coerce(total_weight).ldz();
         }
 
-        size_t    qmatrix:: size() const throw() { return current_rank; }
+        size_t    qmatrix:: size() const noexcept { return current_rank; }
 
-        const qvector & qmatrix:: operator[](const size_t ivec) const throw()
+        const qvector & qmatrix:: operator[](const size_t ivec) const noexcept
         {
             assert(ivec>=1); assert(ivec<=maximum_rank);
             return row[ivec];
@@ -157,7 +157,7 @@ namespace yack
 
 
 
-        size_t  qmatrix:: allocated() const throw()
+        size_t  qmatrix:: allocated() const noexcept
         {
             return lib.bytes;
         }
@@ -170,7 +170,7 @@ namespace yack
             return u_k;
         }
 
-        bool qmatrix:: is_nil_vec(const readable<apq> &u_k) const throw()
+        bool qmatrix:: is_nil_vec(const readable<apq> &u_k) const noexcept
         {
             assert(dimension==u_k.size());
             for(size_t i=dimension;i>0;--i)
@@ -209,7 +209,7 @@ namespace yack
             }
         }
 
-        const qvector & qmatrix:: last() const throw()  { assert(current_rank); return row[current_rank]; }
+        const qvector & qmatrix:: last() const noexcept  { assert(current_rank); return row[current_rank]; }
 
         bool qmatrix:: is_equivalent_to(const qmatrix &rhs)
         {
@@ -262,7 +262,7 @@ namespace yack
     {
 
 
-        void qmatrix:: reschedule() throw()
+        void qmatrix:: reschedule() noexcept
         {
             assert(idx);
             thin_array<size_t> indx(idx,current_rank);

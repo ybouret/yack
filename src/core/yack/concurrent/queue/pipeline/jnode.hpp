@@ -25,7 +25,7 @@ namespace yack
             // C++
             //__________________________________________________________________
             jnode(const job_type &, const job_uuid); //!< setup
-            ~jnode() throw();                        //!< cleanup
+            ~jnode() noexcept;                        //!< cleanup
 
             //! build with host/method
             template <typename OBJECT_POINTER, typename METHOD_POINTER> inline

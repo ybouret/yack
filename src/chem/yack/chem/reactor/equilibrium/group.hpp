@@ -47,8 +47,8 @@ namespace yack {
             //
             // C++
             //__________________________________________________________________
-            explicit eq_group() throw();
-            virtual ~eq_group() throw();
+            explicit eq_group() noexcept;
+            virtual ~eq_group() noexcept;
 
             //__________________________________________________________________
             //
@@ -58,7 +58,7 @@ namespace yack {
             
 
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(eq_group) throw();
+            YACK_DISABLE_COPY_AND_ASSIGN(eq_group) noexcept;
         };
     }
 

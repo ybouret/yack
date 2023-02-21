@@ -36,7 +36,7 @@ namespace yack {
             // C++
             //__________________________________________________________________
             explicit scene() : breed( new sp_tier() ), genus( new eq_tier() ) {} //!< setup
-            virtual ~scene() throw() {} //!< cleanup
+            virtual ~scene() noexcept {} //!< cleanup
 
             //__________________________________________________________________
             //
@@ -82,18 +82,18 @@ namespace yack {
             //__________________________________________________________________
             explicit cluster(const equilibrium   &first,
                              const booleans::ptr &flags); //!< setup with first equilibrium and fixed flags
-            virtual ~cluster() throw();                  //!< cleanup
+            virtual ~cluster() noexcept;                  //!< cleanup
 
             //__________________________________________________________________
             //
             // build methods
             //__________________________________________________________________
-            bool  owns(const equilibrium &) const throw(); //!< mostly to debug
+            bool  owns(const equilibrium &) const noexcept; //!< mostly to debug
             void  grow(const equilibrium &);               //!< append to group
 
             //! check if is linked with another equilibrium using global matrix
             bool  linked_with(const equilibrium  &,
-                              const matrix<bool> &) const throw();
+                              const matrix<bool> &) const noexcept;
 
             //! display
             friend std::ostream & operator<<( std::ostream & , const cluster & );
@@ -203,8 +203,8 @@ namespace yack {
             //
             // C++
             //__________________________________________________________________
-            explicit clusters() throw(); //!< setup
-            virtual ~clusters() throw(); //!< cleanup
+            explicit clusters() noexcept; //!< setup
+            virtual ~clusters() noexcept; //!< cleanup
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(clusters);
         };

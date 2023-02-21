@@ -14,7 +14,7 @@ namespace yack
         class channel
         {
         public:
-            virtual ~channel() throw(); //!< cleanup
+            virtual ~channel() noexcept; //!< cleanup
 
 
             //! recv interface
@@ -22,7 +22,7 @@ namespace yack
             
         protected:
             //! setup with server's address
-            explicit channel() throw();
+            explicit channel() noexcept;
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(channel);

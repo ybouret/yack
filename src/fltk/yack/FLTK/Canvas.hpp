@@ -13,7 +13,7 @@ namespace yack
         {
         public:
             explicit Canvas( int X, int Y, int W, int H, const char *l = 0 );
-            virtual ~Canvas() throw();
+            virtual ~Canvas() noexcept;
             
             Axis   xaxis;
             Axis   yaxis;

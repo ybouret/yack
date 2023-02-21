@@ -72,15 +72,15 @@ namespace yack
             };
 
             //! get textual value
-            static const char *state_text(const state s) throw();
+            static const char *state_text(const state s) noexcept;
 
 
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            explicit components() throw(); //!< setup empty
-            virtual ~components() throw(); //!< cleanup
+            explicit components() noexcept; //!< setup empty
+            virtual ~components() noexcept; //!< cleanup
             
             //__________________________________________________________________
             //
@@ -103,16 +103,16 @@ namespace yack
             //__________________________________________________________________
 
             //! get first component
-            const cnode   *head() const throw();
+            const cnode   *head() const noexcept;
             
             //! number of components
-            size_t         size() const throw();
+            size_t         size() const noexcept;
 
             //! max index of components
-            size_t         span() const throw();
+            size_t         span() const noexcept;
 
             //! query is species is used
-            const component *query(const species &s) const throw();
+            const component *query(const species &s) const noexcept;
 
             //__________________________________________________________________
             //
@@ -122,7 +122,7 @@ namespace yack
             //! limits from all the components
             const xlimits &genuine_limits(xlimits_io             &xio,
                                           const readable<double> &C,
-                                          const size_t            w) const throw();
+                                          const size_t            w) const noexcept;
 
             
 
@@ -197,7 +197,7 @@ namespace yack
 
 
             //! move C with computed extent
-            void move(writable<double> &C, const double xi) const throw();
+            void move(writable<double> &C, const double xi) const noexcept;
 
             //! return true is new species were inserted
             bool update(addrbook &tribe) const;
@@ -229,13 +229,13 @@ namespace yack
 
 
             //! check Delta_r Z = 0
-            bool neutral() const throw();
+            bool neutral() const noexcept;
 
             //! check minimal
-            bool minimal() const throw();
+            bool minimal() const noexcept;
 
             //! check is running or blocked by are_primarily_blocked
-            state state_at(const readable<double> &C) const throw();
+            state state_at(const readable<double> &C) const noexcept;
 
             //! deduce extent from difference of concentrations
             double       estimate_extent(const readable<double> &Cini, const readable<double> &Cend, raddops & ) const;
@@ -247,13 +247,13 @@ namespace yack
                                          rmulops                &xmul) const ;
 
             //! check if one species in common
-            bool attached_to(const components &other) const throw();
+            bool attached_to(const components &other) const noexcept;
 
             //! check is no species in common
-            bool detached_of(const components &other) const throw();
+            bool detached_of(const components &other) const noexcept;
 
             //! check is use species
-            bool uses(const species &) const throw();
+            bool uses(const species &) const noexcept;
 
 
             //! display list of associated concentrations

@@ -6,12 +6,12 @@ namespace yack
 
     namespace ios
     {
-        align:: ~align() throw()
+        align:: ~align() noexcept
         {
 
         }
 
-        align:: align(const string &s, const size_t w, const justify j) throw() :
+        align:: align(const string &s, const size_t w, const justify j) noexcept :
         entry( s() ),
         count( s.size() ),
         width(w),
@@ -19,7 +19,7 @@ namespace yack
         {
         }
 
-        align:: align(const char *text, const size_t w, const justify j) throw() :
+        align:: align(const char *text, const size_t w, const justify j) noexcept :
         entry(text),
         count(text?strlen(text):0),
         width(w),
@@ -29,7 +29,7 @@ namespace yack
         }
 
 
-        align:: align(const align &a) throw() :
+        align:: align(const align &a) noexcept :
         entry(a.entry),
         count(a.count),
         width(a.width),

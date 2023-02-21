@@ -14,17 +14,17 @@ namespace
         ;
         const size_t value;
         
-        virtual ~dummy() throw()
+        virtual ~dummy() noexcept
         {
             std::cerr << "-" << call_sign << "@" << value << std::endl;
         }
         
-        inline static void suppress() throw() { suppress_(); };
+        inline static void suppress() noexcept { suppress_(); };
         
     private:
         friend class singleton<dummy>;
         
-        explicit dummy() throw() : value(guess)
+        explicit dummy() noexcept : value(guess)
         {
             std::cerr << "+" << call_sign << "@" << value << std::endl;
         }

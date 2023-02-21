@@ -9,13 +9,13 @@ namespace yack
     {
 
         template <>
-        void convert<rgba,uint8_t>::make(rgba &c, const uint8_t &u) throw()
+        void convert<rgba,uint8_t>::make(rgba &c, const uint8_t &u) noexcept
         {
             c.r = c.g = c.b = u;
         }
 
         template <>
-        void convert<rgb,uint8_t>::make(rgb &c, const uint8_t &u) throw()
+        void convert<rgb,uint8_t>::make(rgb &c, const uint8_t &u) noexcept
         {
             c.r = c.g = c.b = u;
         }

@@ -30,13 +30,13 @@ namespace yack
                  Given a matrix a[1..n][1..n], this routine replaces it by a balanced matrix with identical eigenvalues.
                  A symmetric matrix is already balanced and is unaffected by this procedure.
                  */
-                template <typename T> static void Balance( matrix<T> &a ) throw();
+                template <typename T> static void Balance( matrix<T> &a ) noexcept;
 
                 //! reduction to a real Hessenberg form
                 /**
                  matrix should be balanced.
                  */
-                template <typename T> static void Reduce( matrix<T> &a ) throw();
+                template <typename T> static void Reduce( matrix<T> &a ) noexcept;
 
                 static const unsigned MAX_ITS = 100; //!< maximum number of cycles
                 static const unsigned SCALING =  10; //!< scaling every cycle
@@ -50,18 +50,18 @@ namespace yack
                  wi[1..nr]=0 and wr[1..nr] are sorted by increasing order.
                  */
                 template <typename T> static inline
-                bool QR(matrix<T> &a, writable<T> &wr, writable<T> &wi, size_t &nr) throw();
+                bool QR(matrix<T> &a, writable<T> &wr, writable<T> &wi, size_t &nr) noexcept;
                 
             };
             
             //! all in one eigenvalues finding....
             template <typename T> static
-            bool eig(matrix<T> &a, writable<T> &wr, writable<T> &wi, size_t &nr) throw();
+            bool eig(matrix<T> &a, writable<T> &wr, writable<T> &wi, size_t &nr) noexcept;
             
             
             //! compare by absolute real type value
             template <typename T> static inline
-            int __compare_fabs(const T lhs, const T rhs) throw()
+            int __compare_fabs(const T lhs, const T rhs) noexcept
             {
                 const T L = std::abs(lhs);
                 const T R = std::fabs(rhs);

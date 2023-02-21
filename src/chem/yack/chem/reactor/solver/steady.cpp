@@ -13,7 +13,7 @@ namespace yack {
     namespace chemical {
         
         
-        bool er_repo:: ratifies(const squad &sq) const throw()
+        bool er_repo:: ratifies(const squad &sq) const noexcept
         {
             for(const squad::node_type *node=sq.head;node;node=node->next)
             {
@@ -59,7 +59,7 @@ namespace yack {
             
         }
         
-        steady:: ~steady() throw() {}
+        steady:: ~steady() noexcept {}
         
         steady:: steady(const reactor    &_,
                         writable<double> &K_) :

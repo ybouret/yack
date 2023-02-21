@@ -7,7 +7,7 @@
 
 using namespace yack;
 
-static inline bool is_space(const int C) throw() { return ' ' == C || '\t' == C; }
+static inline bool is_space(const int C) noexcept { return ' ' == C || '\t' == C; }
 
 YACK_PROGRAM()
 {

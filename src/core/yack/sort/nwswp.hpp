@@ -14,7 +14,7 @@ namespace yack
         class swaps
         {
         public:
-            virtual ~swaps() throw();  //!< cleanup
+            virtual ~swaps() noexcept;  //!< cleanup
             
             const char * const   name; //!< uuid
             const size_t         size; //!< inputs
@@ -31,7 +31,7 @@ namespace yack
                            const size_t dim,
                            const size_t num,
                            const size_t *lhs,
-                           const size_t *rhs) throw();
+                           const size_t *rhs) noexcept;
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(swaps);

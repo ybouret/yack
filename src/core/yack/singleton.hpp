@@ -27,7 +27,7 @@ namespace yack
         //! query existence
         //
         //______________________________________________________________________
-        static inline bool exists() throw() { return NULL!=instance_; }
+        static inline bool exists() noexcept { return NULL!=instance_; }
         
         //______________________________________________________________________
         //
@@ -73,7 +73,7 @@ namespace yack
         //! recall a valid instance
         //
         //______________________________________________________________________
-        static CLASS & location() throw() { assert(exists()); return *instance_; }
+        static CLASS & location() noexcept { assert(exists()); return *instance_; }
         
         
         

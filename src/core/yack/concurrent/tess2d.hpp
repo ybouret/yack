@@ -62,7 +62,7 @@ namespace yack
             }
             
             //! cleanup
-            inline virtual ~tess2D() throw() {}
+            inline virtual ~tess2D() noexcept {}
                                    
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(tess2D);

@@ -25,7 +25,7 @@ namespace yack
             //! Knuth shuffle of a C-style array
             //__________________________________________________________________
             template <typename T> static inline
-            void data(T addr[], const size_t size, bits &ran) throw()
+            void data(T addr[], const size_t size, bits &ran) noexcept
             {
                 assert(!(NULL==addr&&size>0));
                 if(size>1)
@@ -44,7 +44,7 @@ namespace yack
             //! Knuth shuffle on a sequence of data
             //__________________________________________________________________
             template <typename ARRAY> static inline
-            void tableau(ARRAY &arr, bits &ran) throw()
+            void tableau(ARRAY &arr, bits &ran) noexcept
             {
                 const size_t size = arr.size();
                 if(size>1)
@@ -63,7 +63,7 @@ namespace yack
             //! card-desk shuffle for lists
             //__________________________________________________________________
             template <typename LIST> static inline
-            void list(LIST &l, bits &ran) throw()
+            void list(LIST &l, bits &ran) noexcept
             {
                 LIST tmp;
                 while(l.size)
@@ -79,7 +79,7 @@ namespace yack
             //! card-desk shuffle for pool
             //__________________________________________________________________
             template <typename POOL> static inline
-            void pool(POOL &p, bits &ran) throw()
+            void pool(POOL &p, bits &ran) noexcept
             {
                 POOL tmp;
                 while(p.size)

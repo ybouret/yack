@@ -56,7 +56,7 @@ zfh(rows->zfh)
             }
 
             //! shared copy
-            inline pixmap(const pixmap &other) throw() :
+            inline pixmap(const pixmap &other) noexcept :
             bitmap(other),
             YACK_GFX_PIXMAP_CTOR()
             {
@@ -78,7 +78,7 @@ zfh(rows->zfh)
             }
 
             //! cleanup
-            inline virtual ~pixmap() throw() {}
+            inline virtual ~pixmap() noexcept {}
 
             //__________________________________________________________________
             //
@@ -86,52 +86,52 @@ zfh(rows->zfh)
             //__________________________________________________________________
 
             //! direct access
-            inline row_type & operator()(const unit_t y) throw()
+            inline row_type & operator()(const unit_t y) noexcept
             {
                 assert(y>=0); assert(y<h);
                 return row[y];
             }
 
             //! direct CONST access
-            inline const row_type & operator()(const unit_t y) const throw()
+            inline const row_type & operator()(const unit_t y) const noexcept
             {
                 assert(y>=0); assert(y<h);
                 return row[y];
             }
 
             //! direct access by coord
-            inline T & operator()(const coord pos) throw()
+            inline T & operator()(const coord pos) noexcept
             {
                 return (*this)(pos.y)(pos.x);
             }
 
             //! direct CONST access by coord
-            inline const T & operator()(const coord pos) const throw()
+            inline const T & operator()(const coord pos) const noexcept
             {
                 return (*this)(pos.y)(pos.x);
             }
 
 
             //! zero-flux access
-            inline row_type & operator[](const unit_t y) throw()
+            inline row_type & operator[](const unit_t y) noexcept
             {
                 return row[zfh(y)];
             }
 
             //! zero-flux CONST access
-            inline const row_type & operator[](const unit_t y) const throw()
+            inline const row_type & operator[](const unit_t y) const noexcept
             {
                 return  row[zfh(y)];
             }
 
             //! zero-flux access by coord
-            inline T & operator[](const coord pos) throw()
+            inline T & operator[](const coord pos) noexcept
             {
                 return row[zfh(pos.y)][pos.x];
             }
 
             //! zero-flux access by coord
-            inline const T & operator[](const coord pos) const throw()
+            inline const T & operator[](const coord pos) const noexcept
             {
                 return row[zfh(pos.y)][pos.x];
             }

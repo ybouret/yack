@@ -4,7 +4,7 @@
 namespace yack
 {
     
-    const char * __sign::text(const sign_type s) throw()
+    const char * __sign::text(const sign_type s) noexcept
     {
         switch(s)
         {
@@ -15,7 +15,7 @@ namespace yack
         return yack_unknown;
     }
     
-    const char * __sign:: symbol(const sign_type s) throw()
+    const char * __sign:: symbol(const sign_type s) noexcept
     {
         switch(s)
         {
@@ -27,7 +27,7 @@ namespace yack
     }
 
 
-    sign_type __sign:: opposite(const sign_type s) throw()
+    sign_type __sign:: opposite(const sign_type s) noexcept
     {
         switch(s)
         {
@@ -39,13 +39,13 @@ namespace yack
         return __zero__;
     }
 
-    void __sign::change(sign_type &s) throw()
+    void __sign::change(sign_type &s) noexcept
     {
         s = opposite(s);
     }
 
 
-    sign_pair __sign::pair(const sign_type lhs, const sign_type rhs) throw()
+    sign_pair __sign::pair(const sign_type lhs, const sign_type rhs) noexcept
     {
         switch(lhs)
         {
@@ -78,7 +78,7 @@ namespace yack
     }
 
 
-    sign_type __sign:: product(const sign_type lhs, const sign_type rhs) throw()
+    sign_type __sign:: product(const sign_type lhs, const sign_type rhs) noexcept
     {
 
         switch(lhs)

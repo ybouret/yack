@@ -18,7 +18,7 @@ namespace yack
         {
         }
         
-        HColorScale:: ~HColorScale() throw() {}
+        HColorScale:: ~HColorScale() noexcept {}
         
         
         void HColorScale:: draw()

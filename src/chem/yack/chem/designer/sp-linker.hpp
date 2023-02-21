@@ -17,7 +17,7 @@ namespace yack
             class sp_linker  : public large_object, public jive::syntax::translator
             {
             public:
-                virtual ~sp_linker() throw(); //!< cleanup
+                virtual ~sp_linker() noexcept; //!< cleanup
                 explicit sp_linker();
                 
             private:

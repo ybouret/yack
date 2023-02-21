@@ -22,7 +22,7 @@ namespace yack
 
     //! count digits to display value
     template <typename T>
-    inline unsigned digits_for(T value) throw()
+    inline unsigned digits_for(T value) noexcept
     {
         if(value < base10<T>::ten)
         {

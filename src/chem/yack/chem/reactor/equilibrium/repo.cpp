@@ -5,9 +5,9 @@ namespace yack {
 
     namespace chemical {
 
-        eq_repo:: ~eq_repo() throw() {}
+        eq_repo:: ~eq_repo() noexcept {}
 
-        eq_repo:: eq_repo() throw() : object(), counted(), eq_repo_()  {}
+        eq_repo:: eq_repo() noexcept : object(), counted(), eq_repo_()  {}
 
 
         std::ostream & operator<<(std::ostream &os, const eq_repo &self) {

@@ -9,23 +9,23 @@ namespace yack
     namespace ios
     {
 
-        size_t binary:: width(const uint64_t qw) throw()
+        size_t binary:: width(const uint64_t qw) noexcept
         {
             return bits_for(qw);
         }
 
 
-        binary:: binary(const binary &_) throw() :
+        binary:: binary(const binary &_) noexcept :
         qword(_.qword),
         nbits(_.nbits)
         {
         }
 
-        binary:: ~binary() throw()
+        binary:: ~binary() noexcept
         {
         }
 
-        size_t binary:: load(char tab[]) const throw()
+        size_t binary:: load(char tab[]) const noexcept
         {
             if(nbits>0)
             {

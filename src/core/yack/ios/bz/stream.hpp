@@ -23,12 +23,12 @@ namespace yack
             class stream
             {
             public:
-                virtual ~stream() throw(); //!< cleanup
-                static const char *errstr(const int err) throw(); //!< named errors
+                virtual ~stream() noexcept; //!< cleanup
+                static const char *errstr(const int err) noexcept; //!< named errors
 
 
             protected:
-                explicit stream(void*) throw();  //!< setup handle
+                explicit stream(void*) noexcept;  //!< setup handle
                 void *BZ;                        //!< handle for BZFILE
 
             private:

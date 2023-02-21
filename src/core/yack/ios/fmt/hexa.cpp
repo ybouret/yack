@@ -9,21 +9,21 @@ namespace yack
     namespace ios
     {
 
-        size_t hexa:: width(const uint64_t qw) throw()
+        size_t hexa:: width(const uint64_t qw) noexcept
         {
             return bytes_for(qw);
         }
         
-        hexa::hexa(const hexa &_) throw() :
+        hexa::hexa(const hexa &_) noexcept :
         qword(_.qword),
         count(_.count)
         {
         }
 
-        hexa:: ~hexa() throw() {}
+        hexa:: ~hexa() noexcept {}
 
 
-        size_t  hexa:: load(char tab[]) const throw()
+        size_t  hexa:: load(char tab[]) const noexcept
         {
             if(count>0)
             {

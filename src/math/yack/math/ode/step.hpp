@@ -47,7 +47,7 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~step() throw(); //!< cleanup
+                virtual ~step() noexcept; //!< cleanup
 
             protected:
                 explicit step(const size_t num_arrays); //!< setup

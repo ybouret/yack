@@ -2,8 +2,8 @@
 namespace yack {
   namespace nwsrt {
     const char batcher12 :: sid[] ="batcher12";
-    batcher12 :: ~batcher12() throw() {}
-    batcher12 ::  batcher12() throw() : swaps(sid,12,0x0029,lhs,rhs) {}
+    batcher12 :: ~batcher12() noexcept {}
+    batcher12 ::  batcher12() noexcept : swaps(sid,12,0x0029,lhs,rhs) {}
     const size_t batcher12 :: lhs[0x0029] = {
  0x0001, 0x0002, 0x0003, 0x0004, 0x0001, 0x0002, 0x0003, 0x0004,
  0x0005, 0x0006, 0x0007, 0x0008, 0x0001, 0x0002, 0x0005, 0x0006,

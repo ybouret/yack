@@ -8,7 +8,7 @@ namespace yack
     {
 
         template < >
-        void broker_normalize:: procedure<uint8_t>:: operator()(uint8_t &v) const throw()
+        void broker_normalize:: procedure<uint8_t>:: operator()(uint8_t &v) const noexcept
         {
             if(v<=vmin)
             {
@@ -29,7 +29,7 @@ namespace yack
         }
 
         template < >
-        void broker_normalize:: procedure<float>:: operator()(float &v) const throw()
+        void broker_normalize:: procedure<float>:: operator()(float &v) const noexcept
         {
             if(v<=vmin)
             {

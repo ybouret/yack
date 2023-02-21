@@ -25,7 +25,7 @@ namespace
         {
         }
 
-        virtual ~Circle() throw()
+        virtual ~Circle() noexcept
         {
         }
 
@@ -72,7 +72,7 @@ namespace
             dYdt[4] = (F.y+f.y)/m;
         }
 
-        virtual callback *check() throw() { return &cb; }
+        virtual callback *check() noexcept { return &cb; }
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(Circle);

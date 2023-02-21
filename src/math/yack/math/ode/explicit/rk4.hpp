@@ -38,7 +38,7 @@ namespace yack
                 // C++
                 //______________________________________________________________
                 explicit rk4(const size_t nvar=0); //!< setup with optional nvar
-                virtual ~rk4() throw();            //!< cleanup
+                virtual ~rk4() noexcept;            //!< cleanup
 
                 //______________________________________________________________
                 //

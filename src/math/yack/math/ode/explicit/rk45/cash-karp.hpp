@@ -39,7 +39,7 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~cash_karp() throw(); //!< cleanup
+                virtual ~cash_karp() noexcept; //!< cleanup
                 explicit cash_karp();         //!< setup
 
                 //______________________________________________________________

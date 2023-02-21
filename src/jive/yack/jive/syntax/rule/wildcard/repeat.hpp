@@ -36,12 +36,12 @@ namespace yack
                 // C++
                 //______________________________________________________________
                 //! cleanup
-                virtual ~repeat() throw();
+                virtual ~repeat() noexcept;
                 
                 //! setup
                 explicit repeat(const tag      &name_,
                                 const rule     &host_,
-                                const size_t    nmin) throw();
+                                const size_t    nmin) noexcept;
 
                 //______________________________________________________________
                 //

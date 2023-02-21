@@ -45,7 +45,7 @@ namespace yack
         //______________________________________________________________________
 
         //! cleanup
-        inline virtual ~field4D() throw()
+        inline virtual ~field4D() noexcept
         {
             volume += lower.w;
             clear(width.w);
@@ -68,13 +68,13 @@ namespace yack
         //______________________________________________________________________
 
         //! access
-        inline volume_type & operator[](const unit_t w) throw()
+        inline volume_type & operator[](const unit_t w) noexcept
         {
             assert(volume);assert(w>=lower.w); assert(w<=upper.w); return volume[w];
         }
 
         //! access, const
-        inline const volume_type & operator[](const unit_t w) const throw()
+        inline const volume_type & operator[](const unit_t w) const noexcept
         {
             assert(volume);assert(w>=lower.w); assert(w<=upper.w); return volume[w];
         }
@@ -83,7 +83,7 @@ namespace yack
         YACK_DISABLE_COPY_AND_ASSIGN(field4D);
         volume_type *volume;
 
-        inline void clear(unit_t done) throw()
+        inline void clear(unit_t done) noexcept
         {
             while(done>0)
             {
@@ -140,7 +140,7 @@ namespace yack
         }
 
         //! read
-        const_type & fetch(const readable<unit_t> &coord) const throw()
+        const_type & fetch(const readable<unit_t> &coord) const noexcept
         {
             assert(coord.size()>=4);
             return (*this)[coord[4]][coord[3]][coord[2]][coord[1]];

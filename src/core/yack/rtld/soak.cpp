@@ -4,7 +4,7 @@
 
 namespace yack
 {
-	void soak::print(FILE* stream, const char* format, ...) throw()
+	void soak::print(FILE* stream, const char* format, ...) noexcept
 	{
 		if (stream)
 		{
@@ -24,7 +24,7 @@ namespace yack
 	const char soak::message::quit[] = "quit";
 	const char soak::message::unknown[] = "unhandled exception";
 
-	void soak::message::disp(const char* id, const char* msg) throw()
+	void soak::message::disp(const char* id, const char* msg) noexcept
 	{
 		assert(NULL!=id);
 		assert(NULL!=msg);

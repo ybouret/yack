@@ -32,18 +32,18 @@ namespace yack
         //______________________________________________________________________
         virtual void push_back(param_type args)  = 0; //!< push back existing object
         virtual void push_front(param_type args) = 0; //!< push front existing object
-        virtual void pop_back()  throw() = 0;         //!< pop back object
-        virtual void pop_front() throw() = 0;         //!< pop front object
+        virtual void pop_back()  noexcept = 0;         //!< pop back object
+        virtual void pop_front() noexcept = 0;         //!< pop front object
 
         //______________________________________________________________________
         //
         // non-virtual interface
         //______________________________________________________________________
-        inline type       &front()       throw() { return *(type *) _front(); } //!< front item
-        inline const_type &front() const throw() { return *         _front(); } //!< front item, const
+        inline type       &front()       noexcept { return *(type *) _front(); } //!< front item
+        inline const_type &front() const noexcept { return *         _front(); } //!< front item, const
      
-        inline type       &back()       throw() { return *(type *) _back(); }   //!< back item
-        inline const_type &back() const throw() { return *         _back(); }   //!< back item, const
+        inline type       &back()       noexcept { return *(type *) _back(); }   //!< back item
+        inline const_type &back() const noexcept { return *         _back(); }   //!< back item, const
 
         //! adjust size
         inline void adjust(const size_t n, param_type pad)

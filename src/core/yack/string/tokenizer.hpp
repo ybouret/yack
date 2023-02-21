@@ -21,23 +21,23 @@ namespace yack
         {
         public:
             //! cleanup
-            inline virtual ~tokenizer() throw() { curr=0;last=0;size=0;indx=0; }
+            inline virtual ~tokenizer() noexcept { curr=0;last=0;size=0;indx=0; }
 
             //! setup from sub-string
-            inline explicit tokenizer(const T *entry, const size_t count) throw() :
+            inline explicit tokenizer(const T *entry, const size_t count) noexcept :
             curr(entry), last(curr+count), size(0), indx(0)
             {
             }
 
             //! setup from string
-            inline explicit tokenizer(const string<T> &str) throw() :
+            inline explicit tokenizer(const string<T> &str) noexcept :
             curr( str() ), last(curr+str.size()), size(0), indx(0)
             {
             }
 
             //! the main find function
             template <typename FUNCTION>
-            bool find(FUNCTION &is_sep) throw()
+            bool find(FUNCTION &is_sep) noexcept
             {
                 curr += size;
             SKIP:
@@ -55,19 +55,19 @@ namespace yack
                 return true;
             }
 
-            inline const T *token() const throw() { return curr;      } //!< current token position
-            inline size_t   units() const throw() { return size;      } //!< current token units
-            inline size_t   count() const throw() { return indx;      } //!< current token count
+            inline const T *token() const noexcept { return curr;      } //!< current token position
+            inline size_t   units() const noexcept { return size;      } //!< current token units
+            inline size_t   count() const noexcept { return indx;      } //!< current token count
 
             //! after current token
-            inline const T *after() const throw()
+            inline const T *after() const noexcept
             {
                 const T *next = curr+size;
                 if(++next>=last) return last; else return next;
             }
 
             //! find with a given separator
-            inline bool find_with(const char C) throw()
+            inline bool find_with(const char C) noexcept
             {
                 is_separator_t is_separator = { C };
                 return find(is_separator);
@@ -101,7 +101,7 @@ namespace yack
             struct is_separator_t
             {
                 int tgt;
-                inline bool operator()(const int src) const throw() {
+                inline bool operator()(const int src) const noexcept {
                     return src==tgt;
                 }
             };
@@ -138,9 +138,9 @@ namespace yack
     class tokenizer : public tokenizer_
     {
     public:
-        virtual ~tokenizer()              throw(); //!< cleanup
-        explicit tokenizer(const string&) throw(); //!< setup
-        explicit tokenizer(const char  *) throw(); //!< setup
+        virtual ~tokenizer()              noexcept; //!< cleanup
+        explicit tokenizer(const string&) noexcept; //!< setup
+        explicit tokenizer(const char  *) noexcept; //!< setup
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(tokenizer);

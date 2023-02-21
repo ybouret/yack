@@ -7,8 +7,8 @@ namespace yack {
     //! hibbard18
     class hibbard18 : public swaps {
       public:
-        virtual ~hibbard18() throw(); //!< cleanup
-        explicit hibbard18() throw(); //!< setup  
+        virtual ~hibbard18() noexcept; //!< cleanup
+        explicit hibbard18() noexcept; //!< setup  
         static const char   sid[];        //!< hibbard18
         static const size_t lhs[0x005a];  //!< lhs
         static const size_t rhs[0x005a];  //!< rhs

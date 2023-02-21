@@ -31,8 +31,8 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit except(const uint8_t) throw(); //!< setup code
-            virtual ~except()              throw(); //!< cleanup
+            explicit except(const uint8_t) noexcept; //!< setup code
+            virtual ~except()              noexcept; //!< cleanup
 
             //__________________________________________________________________
             //
@@ -44,21 +44,21 @@ namespace yack
             virtual void     firsts(first_bytes  &) const; //!< all but code
             virtual void     encode(ios::ostream &) const; //!< graphviz
             virtual pattern *clone()                const; //!< clone
-            virtual bool     is_univocal()  const throw(); //!< false
+            virtual bool     is_univocal()  const noexcept; //!< false
             
 
             //__________________________________________________________________
             //
             // serializable interface
             //__________________________________________________________________
-            virtual const char *class_uid() const throw();       //!< clid
+            virtual const char *class_uid() const noexcept;       //!< clid
             virtual size_t      serialize(ios::ostream &) const; //!< mark+code
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            bool is_same_than(const except *other) const throw();            //!< same code
+            bool is_same_than(const except *other) const noexcept;            //!< same code
             friend std::ostream & operator<<(std::ostream &,const except &); //!< display
 
             //__________________________________________________________________

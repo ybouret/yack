@@ -38,13 +38,13 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline  v2d() throw() : x(0), y(0) {}                           //!< setup
-        inline ~v2d() throw() {}                                        //!< cleanup
-        inline  v2d(const v2d &v) throw() : x(v.x), y(v.y) {}           //!< copy
-        inline  v2d(const_type X, const_type Y) throw() : x(X), y(Y) {} //!< setup
+        inline  v2d() noexcept : x(0), y(0) {}                           //!< setup
+        inline ~v2d() noexcept {}                                        //!< cleanup
+        inline  v2d(const v2d &v) noexcept : x(v.x), y(v.y) {}           //!< copy
+        inline  v2d(const_type X, const_type Y) noexcept : x(X), y(Y) {} //!< setup
 
         //!assign
-        inline  v2d & operator=( const v2d &v ) throw()
+        inline  v2d & operator=( const v2d &v ) noexcept
         {
             x = v.x;
             y = v.y;
@@ -56,16 +56,16 @@ namespace yack
         // pseudo array
         //______________________________________________________________________
         //! size
-        inline size_t size() const throw() { return 2; }
+        inline size_t size() const noexcept { return 2; }
 
         //! access
-        inline type & operator[](size_t indx) throw() {
+        inline type & operator[](size_t indx) noexcept {
             assert(indx>=1);assert(indx<=2);
             return *( &x + --indx );
         }
 
         //! access, const
-        inline const_type & operator[](size_t indx) const throw() {
+        inline const_type & operator[](size_t indx) const noexcept {
             assert(indx>=1);assert(indx<=2);
             return *( &x + --indx );
         }
@@ -86,17 +86,17 @@ namespace yack
         //______________________________________________________________________
 
         //! add
-        inline friend v2d operator+ ( const v2d &lhs, const v2d &rhs ) throw() {
+        inline friend v2d operator+ ( const v2d &lhs, const v2d &rhs ) noexcept {
             return v2d(lhs.x+rhs.x,lhs.y+rhs.y);
         }
 
         //! add
-        inline v2d & operator+=(const v2d &rhs) throw() {
+        inline v2d & operator+=(const v2d &rhs) noexcept {
             x += rhs.x; y += rhs.y; return *this;
         }
 
         //! unary +
-        inline v2d operator+() const throw() {
+        inline v2d operator+() const noexcept {
             return *this;
         }
 
@@ -106,17 +106,17 @@ namespace yack
         //______________________________________________________________________
 
         //! sub
-        inline friend v2d operator- ( const v2d &lhs, const v2d &rhs ) throw() {
+        inline friend v2d operator- ( const v2d &lhs, const v2d &rhs ) noexcept {
             return v2d(lhs.x-rhs.x,lhs.y-rhs.y);
         }
 
         //! sub
-        inline v2d & operator-=(const v2d &rhs) throw() {
+        inline v2d & operator-=(const v2d &rhs) noexcept {
             x -= rhs.x; y -= rhs.y; return *this;
         }
 
         //! unary -
-        inline v2d operator-() const throw() {
+        inline v2d operator-() const noexcept {
             return v2d(-x,-y);
         }
         
@@ -126,19 +126,19 @@ namespace yack
         //______________________________________________________________________
 
         //! by scalar
-        inline friend v2d operator * (const T factor, const v2d &rhs) throw()
+        inline friend v2d operator * (const T factor, const v2d &rhs) noexcept
         {
             return v2d(factor*rhs.x, factor*rhs.y);
         }
 
         //! by scalar
-        inline friend v2d operator * ( const v2d &lhs, const T factor) throw()
+        inline friend v2d operator * ( const v2d &lhs, const T factor) noexcept
         {
             return v2d(factor*lhs.x, factor*lhs.y);
         }
 
         //! in place
-        inline v2d & operator*=(const T factor) throw()
+        inline v2d & operator*=(const T factor) noexcept
         {
             x*=factor;
             y*=factor;
@@ -146,7 +146,7 @@ namespace yack
         }
 
         //! scalar product
-        inline friend T operator*( const v2d &lhs, const v2d &rhs) throw()
+        inline friend T operator*( const v2d &lhs, const v2d &rhs) noexcept
         {
             return lhs.x*rhs.x + lhs.y*rhs.y;
         }
@@ -156,13 +156,13 @@ namespace yack
         // division
         //______________________________________________________________________
         //! by scalar
-        inline friend v2d operator / ( const v2d &lhs, const T factor) throw()
+        inline friend v2d operator / ( const v2d &lhs, const T factor) noexcept
         {
             return v2d(lhs.x/factor,lhs.y/factor);
         }
 
         //! in place
-        inline v2d & operator/=(const T factor) throw()
+        inline v2d & operator/=(const T factor) noexcept
         {
             x/=factor;
             y/=factor;
@@ -177,19 +177,19 @@ namespace yack
         //______________________________________________________________________
         
         //! norm2
-        inline mutable_type norm2() const throw()
+        inline mutable_type norm2() const noexcept
         {
             return squared(x) + squared(y);
         }
         
         //! norm1
-        inline mutable_type norm1() const throw()
+        inline mutable_type norm1() const noexcept
         {
             return absolute(x) + absolute(y);
         }
 
         //! angle in -pi:pi for float,double, long double
-        mutable_type angle() const throw();
+        mutable_type angle() const noexcept;
 
         //______________________________________________________________________
         //
@@ -197,19 +197,19 @@ namespace yack
         //______________________________________________________________________
 
         //! test equality
-        inline friend bool operator==(const v2d &lhs, const v2d &rhs) throw()
+        inline friend bool operator==(const v2d &lhs, const v2d &rhs) noexcept
         {
             return lhs.x==rhs.x && lhs.y==rhs.y;
         }
 
         //! test different
-        inline friend bool operator!=(const v2d &lhs, const v2d &rhs) throw()
+        inline friend bool operator!=(const v2d &lhs, const v2d &rhs) noexcept
         {
             return lhs.x!=rhs.x || lhs.y!=rhs.y;
         }
         
         //! lexicographic comparions
-        static inline int compare(const v2d &lhs, const v2d &rhs) throw()
+        static inline int compare(const v2d &lhs, const v2d &rhs) noexcept
         {
             const T *l = &lhs.x; const T *r = &rhs.x;
             return comparison::lexicographic(l,r,2);

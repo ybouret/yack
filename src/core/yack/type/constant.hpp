@@ -32,7 +32,7 @@ namespace yack
         //
         //! cleanup
         //______________________________________________________________________
-        inline ~const_field() throw()
+        inline ~const_field() noexcept
         { out_of_reach::zset( destructed(impl), sizeof(data) ); impl=0; }
 
         //______________________________________________________________________
@@ -64,13 +64,13 @@ namespace yack
         //
         //! access
         //______________________________________________________________________
-        inline const_type &operator*() const throw() { assert(impl); return *impl; }
+        inline const_type &operator*() const noexcept { assert(impl); return *impl; }
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(const_field);
         mutable_type  *impl;
         void          *data[ YACK_WORDS_FOR(T) ];
-        void          *zget() throw() { return out_of_reach::zset(data,sizeof(data)); }
+        void          *zget() noexcept { return out_of_reach::zset(data,sizeof(data)); }
     };
 
 }

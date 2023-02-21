@@ -26,7 +26,7 @@ namespace yack
 
 
 
-        void number::reset_tracking() throw()
+        void number::reset_tracking() noexcept
         {
             add_ticks  = 0; add_count = 0;
             sub_ticks  = 0; sub_count = 0;
@@ -90,11 +90,11 @@ namespace yack
         }
 
 
-        number:: number() throw()
+        number:: number() noexcept
         {
         }
 
-        number:: ~number() throw()
+        number:: ~number() noexcept
         {
         }
         

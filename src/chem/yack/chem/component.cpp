@@ -4,12 +4,12 @@ namespace yack
 {
     namespace chemical
     {
-        component:: ~component() throw()
+        component:: ~component() noexcept
         {
         }
         
         component:: component(const species &sr,
-                              const int      cf) throw() :
+                              const int      cf) noexcept :
         
         sp(sr),
         nu(cf)
@@ -17,12 +17,12 @@ namespace yack
             assert(nu!=0);
         }
         
-        const string & component:: key() const throw()
+        const string & component:: key() const noexcept
         {
             return sp.name;
         }
 
-        const species & component:: operator*() const throw()
+        const species & component:: operator*() const noexcept
         {
             return sp;
         }

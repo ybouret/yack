@@ -34,15 +34,15 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~mt19937() throw();                           //!< cleanup
-            explicit mt19937(const unsigned long seed=0) throw(); //!< setup
-            explicit mt19937(const unsigned long init_key[], const size_t key_length) throw(); //!< setup
+            virtual ~mt19937() noexcept;                           //!< cleanup
+            explicit mt19937(const unsigned long seed=0) noexcept; //!< setup
+            explicit mt19937(const unsigned long init_key[], const size_t key_length) noexcept; //!< setup
 
             //__________________________________________________________________
             //
             // interface
             //__________________________________________________________________
-            virtual uint32_t next32() throw(); //!< next word
+            virtual uint32_t next32() noexcept; //!< next word
 
             //__________________________________________________________________
             //
@@ -50,10 +50,10 @@ namespace yack
             //__________________________________________________________________
             
             //! init with any seed
-            void init_genrand(unsigned long s) throw();
+            void init_genrand(unsigned long s) noexcept;
 
             //! init with and array of seeds
-            void init_by_array(const unsigned long init_key[], const size_t key_length) throw();
+            void init_by_array(const unsigned long init_key[], const size_t key_length) noexcept;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(mt19937);

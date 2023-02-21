@@ -25,8 +25,8 @@ namespace yack
         {
         public:
             typedef auto_ptr<const alist> ptr; //!< alias
-            explicit alist() throw();          //!< setup empty
-            virtual ~alist() throw();          //!< cleanup
+            explicit alist() noexcept;          //!< setup empty
+            virtual ~alist() noexcept;          //!< cleanup
             explicit alist(const snode *);     //!< active from library
 
 

@@ -22,7 +22,7 @@ namespace yack
                 public:
                     inline a2r(const char  *entry,
                                const size_t count,
-                               const char  *where) throw() :
+                               const char  *where) noexcept :
                     expr(entry),
                     curr(entry),
                     last(entry+count),
@@ -30,7 +30,7 @@ namespace yack
                     {
                     }
 
-                    inline ~a2r() throw() {}
+                    inline ~a2r() noexcept {}
 
 
                     const char * const expr;

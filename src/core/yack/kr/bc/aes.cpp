@@ -5,17 +5,17 @@ namespace yack {
     
     namespace crypto {
         
-        aes:: ~aes() throw()
+        aes:: ~aes() noexcept
         {
             nil();
         }
         
-        void aes:: nil() throw()
+        void aes:: nil() noexcept
         {
             memset( &ctx, 0, sizeof(ctx) );
         }
         
-        size_t aes:: size() const throw() { return block_size; }
+        size_t aes:: size() const noexcept { return block_size; }
         
     
         
@@ -313,7 +313,7 @@ V(61,84,CB,7B), V(70,B6,32,D5), V(74,5C,6C,48), V(42,57,B8,D0)
          * AES key schedule (encryption)
          */
         static
-        void aes_setkey_enc( aes::context *ctx, const uint8_t *key, int keysize ) throw()
+        void aes_setkey_enc( aes::context *ctx, const uint8_t *key, int keysize ) noexcept
         {
             int i;
             uint32_t *RK;
@@ -406,7 +406,7 @@ V(61,84,CB,7B), V(70,B6,32,D5), V(74,5C,6C,48), V(42,57,B8,D0)
          * AES key schedule (decryption)
          */
         static
-        void aes_setkey_dec( aes::context *ctx, const uint8_t *key, int keysize ) throw()
+        void aes_setkey_dec( aes::context *ctx, const uint8_t *key, int keysize ) noexcept
         {
             int i, j;
             aes::context cty;
@@ -504,7 +504,7 @@ RT3[ ( Y0 >> 24 ) & 0xFF ];    \
          */
         void aes::encrypt(aes::context  &ctx,
                           void          *target,
-                          const void    *source) throw()
+                          const void    *source) noexcept
         {
             uint8_t       *output = (uint8_t *)target;
             const uint8_t *input  = (const uint8_t *)source;
@@ -561,7 +561,7 @@ RT3[ ( Y0 >> 24 ) & 0xFF ];    \
          */
         void aes::decrypt(aes::context  &ctx,
                           void          *target,
-                          const void    *source ) throw()
+                          const void    *source ) noexcept
         {
             uint8_t       *output = (uint8_t *)target;
             const uint8_t *input  = (const uint8_t *)source;
@@ -618,7 +618,7 @@ RT3[ ( Y0 >> 24 ) & 0xFF ];    \
         void build_aes_key(uint8_t     *key,
                            const size_t num,
                            const void  *key_buf,
-                           const size_t key_len ) throw()
+                           const size_t key_len ) noexcept
         {
             assert(!(key_buf==NULL&&key_len>0));
             if( key_len < num ) {
@@ -630,7 +630,7 @@ RT3[ ( Y0 >> 24 ) & 0xFF ];    \
         }
         
         
-        void aes:: enc128( aes::context &ctx, const void *key_buf, const size_t key_len ) throw()
+        void aes:: enc128( aes::context &ctx, const void *key_buf, const size_t key_len ) noexcept
         {
             
             uint8_t               key[128/8];
@@ -641,7 +641,7 @@ RT3[ ( Y0 >> 24 ) & 0xFF ];    \
             memset( key, 0, num );
         }
         
-        void aes:: dec128( aes::context &ctx, const void *key_buf, const size_t key_len ) throw()
+        void aes:: dec128( aes::context &ctx, const void *key_buf, const size_t key_len ) noexcept
         {
             
             uint8_t               key[128/8];
@@ -655,7 +655,7 @@ RT3[ ( Y0 >> 24 ) & 0xFF ];    \
         
         
         
-        void aes:: enc192( aes::context &ctx, const void *key_buf, const size_t key_len ) throw()
+        void aes:: enc192( aes::context &ctx, const void *key_buf, const size_t key_len ) noexcept
         {
             
             uint8_t               key[192/8];
@@ -667,7 +667,7 @@ RT3[ ( Y0 >> 24 ) & 0xFF ];    \
             memset( key, 0, num );
         }
         
-        void aes:: dec192( aes::context &ctx, const void *key_buf, const size_t key_len ) throw()
+        void aes:: dec192( aes::context &ctx, const void *key_buf, const size_t key_len ) noexcept
         {
             
             uint8_t               key[192/8];
@@ -682,7 +682,7 @@ RT3[ ( Y0 >> 24 ) & 0xFF ];    \
         
         
         
-        void aes :: enc256(aes::context &ctx, const void *key_buf, const size_t key_len ) throw()
+        void aes :: enc256(aes::context &ctx, const void *key_buf, const size_t key_len ) noexcept
         {
             uint8_t               key[256/8];
             static const size_t   num = sizeof(key);
@@ -692,7 +692,7 @@ RT3[ ( Y0 >> 24 ) & 0xFF ];    \
             memset( key, 0, num );
         }
         
-        void aes :: dec256(aes::context &ctx, const void *key_buf, const size_t key_len ) throw()
+        void aes :: dec256(aes::context &ctx, const void *key_buf, const size_t key_len ) noexcept
         {
             uint8_t               key[256/8];
             static const size_t   num = sizeof(key);
@@ -707,23 +707,23 @@ RT3[ ( Y0 >> 24 ) & 0xFF ];    \
         
         
 #if 0
-        aes:: ~aes() throw() {
+        aes:: ~aes() noexcept {
             memset( &ctx_, 0, sizeof(aes::context) );
         }
         
-        aes:: aes( const char *id, const block_cipher::action mode ) throw() :
+        aes:: aes( const char *id, const block_cipher::action mode ) noexcept :
         name_( id ),
         ctx_(),
         run_( mode == encrypting ? aes::encrypt : aes::decrypt )
         {
         }
         
-        size_t aes:: size() const throw()
+        size_t aes:: size() const noexcept
         {
             return 16;
         }
         
-        void aes::crypt( void *output, const void *input ) throw() {
+        void aes::crypt( void *output, const void *input ) noexcept {
             run_( &ctx_, output, input );
         }
         
@@ -731,66 +731,66 @@ RT3[ ( Y0 >> 24 ) & 0xFF ];    \
         namespace aes128
         {
             
-            encrypter:: encrypter( const memory::ro_buffer &key ) throw() :
+            encrypter:: encrypter( const memory::ro_buffer &key ) noexcept :
             aes( "AES128-ENC", block_cipher::encrypting )
             {
                 aes128_encrypt_set( &ctx_, key.ro(), key.length() );
             }
             
-            encrypter:: ~encrypter() throw() {}
+            encrypter:: ~encrypter() noexcept {}
             
             
-            decrypter:: decrypter( const memory::ro_buffer &key ) throw() :
+            decrypter:: decrypter( const memory::ro_buffer &key ) noexcept :
             aes( "AES128-DEC", block_cipher::decrypting )
             {
                 aes128_decrypt_set( &ctx_, key.ro(), key.length() );
             }
             
-            decrypter:: ~decrypter() throw() {}
+            decrypter:: ~decrypter() noexcept {}
             
         }
         
         namespace aes192
         {
             
-            encrypter:: encrypter( const memory::ro_buffer &key ) throw() :
+            encrypter:: encrypter( const memory::ro_buffer &key ) noexcept :
             aes( "AES192-ENC", block_cipher::encrypting )
             {
                 aes192_encrypt_set( &ctx_, key.ro(), key.length() );
             }
             
-            encrypter:: ~encrypter() throw() {}
+            encrypter:: ~encrypter() noexcept {}
             
             
-            decrypter:: decrypter( const memory::ro_buffer &key ) throw() :
+            decrypter:: decrypter( const memory::ro_buffer &key ) noexcept :
             aes( "AES192-DEC", block_cipher::decrypting )
             {
                 aes192_decrypt_set( &ctx_, key.ro(), key.length() );
             }
             
-            decrypter:: ~decrypter() throw() {}
+            decrypter:: ~decrypter() noexcept {}
             
         }
         
         namespace aes256
         {
             
-            encrypter:: encrypter( const memory::ro_buffer &key ) throw() :
+            encrypter:: encrypter( const memory::ro_buffer &key ) noexcept :
             aes( "AES256-ENC", block_cipher::encrypting )
             {
                 aes256_encrypt_set( &ctx_, key.ro(), key.length() );
             }
             
-            encrypter:: ~encrypter() throw() {}
+            encrypter:: ~encrypter() noexcept {}
             
             
-            decrypter:: decrypter( const memory::ro_buffer &key ) throw() :
+            decrypter:: decrypter( const memory::ro_buffer &key ) noexcept :
             aes( "AES256-DEC", block_cipher::decrypting )
             {
                 aes256_decrypt_set( &ctx_, key.ro(), key.length() );
             }
             
-            decrypter:: ~decrypter() throw() {}
+            decrypter:: ~decrypter() noexcept {}
             
         }
         

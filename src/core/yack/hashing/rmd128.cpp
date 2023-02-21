@@ -267,7 +267,7 @@ namespace yack
 		// init MDbuf
 #pragma warning ( disable : 4351 )
 #endif
-        rmd128 :: rmd128()  throw() :
+        rmd128 :: rmd128()  noexcept :
         function(__length,__window),
         RMD(),
         MDbuf()
@@ -275,20 +275,20 @@ namespace yack
             memset(MDbuf,0,sizeof(MDbuf));
         }
         
-        rmd128:: ~rmd128() throw()
+        rmd128:: ~rmd128() noexcept
         {
             memset(MDbuf,0,sizeof(MDbuf));
         }
         
         const char rmd128:: clid[] = "rmd128";
         
-        void rmd128:: set() throw()
+        void rmd128:: set() noexcept
         {
             RMD.reset();
             MDinit(MDbuf);
         }
         
-        void rmd128:: run(const void *buf, size_t len) throw()
+        void rmd128:: run(const void *buf, size_t len) noexcept
         {
             const uint8_t *p = (const uint8_t *)buf;
             for( size_t i=len;i>0;--i,++p)
@@ -298,7 +298,7 @@ namespace yack
             }
         }
         
-        void rmd128::get(void *output, size_t outlen) throw()
+        void rmd128::get(void *output, size_t outlen) noexcept
         {
             MDfinish(MDbuf, RMD.flush(), RMD.lswlen(), RMD.mswlen() );
             uint8_t hashcode[RMDsize/8];

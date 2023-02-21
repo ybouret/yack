@@ -34,7 +34,7 @@ namespace yack
 
             const char ostream:: clid[] = "bz::ostream";
 
-            ostream:: ~ostream() throw()
+            ostream:: ~ostream() noexcept
             {
                 YACK_GIANT_LOCK();
                 int     err = BZ_OK;

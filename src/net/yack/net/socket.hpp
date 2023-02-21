@@ -29,10 +29,10 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~socket() throw();            //!< close socket
+            virtual ~socket() noexcept;            //!< close socket
 
         protected:
-            explicit socket(const socket_address, const socket_type) throw(); //!< setup from user's sock
+            explicit socket(const socket_address, const socket_type) noexcept; //!< setup from user's sock
             explicit socket(const plexus       &, const socket_type);         //!< setup from tcp server accept
 
             //__________________________________________________________________
@@ -46,10 +46,10 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(socket);
-            virtual const_inward  &bulk() const throw();
+            virtual const_inward  &bulk() const noexcept;
 
-            void on_init() const throw();
-            void on_quit() const throw();
+            void on_init() const noexcept;
+            void on_quit() const noexcept;
 
 
         public:
@@ -57,11 +57,11 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            const socket_key    &key()     const throw(); //!< get UUID
+            const socket_key    &key()     const noexcept; //!< get UUID
 
-            void                 shutdown_recv() throw(); //!< shutdown receiving abilities
-            void                 shutdown_send() throw(); //!< shutdown sending abitilites
-            void                 shutdown_both() throw(); //!< shutdown all I/O abilities
+            void                 shutdown_recv() noexcept; //!< shutdown receiving abilities
+            void                 shutdown_send() noexcept; //!< shutdown sending abitilites
+            void                 shutdown_both() noexcept; //!< shutdown all I/O abilities
 
             //__________________________________________________________________
             //

@@ -8,7 +8,7 @@ namespace yack
     {
 
         string_io:: string_io() : self_data_io() { }
-        string_io:: ~string_io() throw() {}
+        string_io:: ~string_io() noexcept {}
 
         void string_io:: send1(const mpi    &MPI,
                                const string &str,

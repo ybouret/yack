@@ -11,13 +11,13 @@ namespace yack
     namespace jive
     {
 
-        domain:: ~domain() throw()
+        domain:: ~domain() noexcept
         {
             coerce(lower) = 0;
             coerce(upper) = 0;
         }
 
-        domain:: domain(const uint8_t v) throw() :
+        domain:: domain(const uint8_t v) noexcept :
         object(),
         next(0),
         prev(0),
@@ -26,7 +26,7 @@ namespace yack
         {
         }
 
-        domain:: domain(const uint8_t a, const uint8_t b) throw():
+        domain:: domain(const uint8_t a, const uint8_t b) noexcept:
         object(),
         next(0),
         prev(0),
@@ -41,7 +41,7 @@ namespace yack
             }
         }
 
-        domain:: domain(const domain &other) throw() :
+        domain:: domain(const domain &other) noexcept :
         object(),
         next(0),
         prev(0),
@@ -51,7 +51,7 @@ namespace yack
         }
         
 
-        bool domain::owns(const uint8_t value) const throw()
+        bool domain::owns(const uint8_t value) const noexcept
         {
             return lower<=value && value<=upper;
         }
@@ -60,7 +60,7 @@ namespace yack
 
 
 
-        domain::position domain::compare(const domain *lhs, const domain *rhs) throw()
+        domain::position domain::compare(const domain *lhs, const domain *rhs) noexcept
         {
             assert(NULL!=lhs);
             assert(NULL!=rhs);
@@ -147,7 +147,7 @@ namespace yack
 
 
 
-        bool first_bytes:: is_valid() const throw()
+        bool first_bytes:: is_valid() const noexcept
         {
             for(const domain *dom=head;dom;dom=dom->next)
             {
@@ -196,20 +196,20 @@ namespace yack
             }
         }
 
-        first_bytes &  first_bytes:: operator<<( domain *dom ) throw()
+        first_bytes &  first_bytes:: operator<<( domain *dom ) noexcept
         {
             add(dom);
             return *this;
         }
 
         
-        first_bytes &  first_bytes:: operator<<(list_of<domain> &doms) throw()
+        first_bytes &  first_bytes:: operator<<(list_of<domain> &doms) noexcept
         {
             while(doms.size) add(doms.pop_back());
             return *this;
         }
 
-        void first_bytes:: add(domain *dom) throw()
+        void first_bytes:: add(domain *dom) noexcept
         {
             assert(dom);
             if(size<=0)
@@ -361,11 +361,11 @@ namespace yack
             return (*this -= content);
         }
 
-        first_bytes:: ~first_bytes() throw()
+        first_bytes:: ~first_bytes() noexcept
         {
         }
 
-        first_bytes:: first_bytes() throw() :
+        first_bytes:: first_bytes() noexcept :
         object(), counted(), domains()
         {
         }
@@ -375,7 +375,7 @@ namespace yack
         {
         }
         
-        bool first_bytes:: has(const uint8_t code) const throw()
+        bool first_bytes:: has(const uint8_t code) const noexcept
         {
             assert(is_valid());
             if(size)

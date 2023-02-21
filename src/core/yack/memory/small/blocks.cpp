@@ -15,14 +15,14 @@ namespace yack
     namespace memory
     {
 
-        void blocks:: release_table() throw()
+        void blocks:: release_table() noexcept
         {
             global::location().withdraw(table,coerce(bytes));
             coerce(tsize) = 0;
             coerce(tmask) = 0;
         }
 
-        blocks:: ~blocks() throw()
+        blocks:: ~blocks() noexcept
         {
             //------------------------------------------------------------------
             //
@@ -63,14 +63,14 @@ namespace yack
 
         const char blocks:: designation[] = "memory::blocks";
 
-        static inline size_t blocks_max_table_niches(const size_t max_table_bytes) throw()
+        static inline size_t blocks_max_table_niches(const size_t max_table_bytes) noexcept
         {
             const size_t res =YACK_ALIGN_TO(blocks::niche_type,max_table_bytes)/sizeof(blocks::niche_type);
             if(res<=0) system_error::critical_bsd(EINVAL,"YACK_CHUNK_SIZE is too small for memory::blocks");
             return res;
         }
 
-        static inline size_t blocks_table_size() throw()
+        static inline size_t blocks_table_size() noexcept
         {
             static const size_t max_table_bytes  = YACK_CHUNK_SIZE;
             static const size_t max_table_niches = blocks_max_table_niches(max_table_bytes);
@@ -249,7 +249,7 @@ namespace yack
             acquiring_niche  = niche;
         }
 
-        bool blocks:: check(const niche_type *niche) const throw()
+        bool blocks:: check(const niche_type *niche) const noexcept
         {
             assert(niche);
             switch(niche->size)
@@ -268,7 +268,7 @@ namespace yack
             return true;
         }
 
-        arena * blocks:: find(niche_type *niche, const size_t block_size) throw()
+        arena * blocks:: find(niche_type *niche, const size_t block_size) noexcept
         {
             //------------------------------------------------------------------
             //
@@ -303,7 +303,7 @@ namespace yack
         }
 
 
-        void  blocks:: release(void *block_addr, const size_t block_size) throw()
+        void  blocks:: release(void *block_addr, const size_t block_size) noexcept
         {
             //------------------------------------------------------------------
             //
@@ -355,7 +355,7 @@ namespace yack
         }
 
 
-        void  blocks:: gc(dyadic &target) throw()
+        void  blocks:: gc(dyadic &target) noexcept
         {
             for(size_t i=0;i<tsize;++i)
             {

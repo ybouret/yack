@@ -1,5 +1,5 @@
 
-template <> lambda<real_t>:: ~lambda() throw() {}
+template <> lambda<real_t>:: ~lambda() noexcept {}
 
 
 template <> lambda<real_t>:: lambda() : field_type( clid(), layout1D(pmin(),pmax()), NULL)
@@ -13,26 +13,26 @@ template <> lambda<real_t>:: lambda() : field_type( clid(), layout1D(pmin(),pmax
 
 }
 
-template <> void  lambda<real_t>::  initialize(int &p) const throw()
+template <> void  lambda<real_t>::  initialize(int &p) const noexcept
 {
     static const int  pini = pmin()/2;
     p = pini;
 }
 
-template <> real_t  lambda<real_t>::  initialized(int &p) const throw()
+template <> real_t  lambda<real_t>::  initialized(int &p) const noexcept
 {
     const field_type &self = *this;
     initialize(p);
     return self[p];
 }
 
-template <> void lambda<real_t>:: decrease(int &p) const throw()
+template <> void lambda<real_t>:: decrease(int &p) const noexcept
 {
     static const int _ = pmin();
     if(--p<_) p=_;
 }
 
-template <> bool lambda<real_t>:: increase(int &p) const throw()
+template <> bool lambda<real_t>:: increase(int &p) const noexcept
 {
     static const int _ = pmax();
     if(p>=_)

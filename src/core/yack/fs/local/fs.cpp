@@ -22,11 +22,11 @@ namespace yack
 
     const char localFS::call_sign[] = "localFS";
 
-    localFS:: localFS() throw() : vfs(), singleton<localFS>()
+    localFS:: localFS() noexcept : vfs(), singleton<localFS>()
     {
     }
 
-    localFS:: ~localFS() throw()
+    localFS:: ~localFS() noexcept
     {
     }
 
@@ -63,7 +63,7 @@ namespace yack
         public:
 
 #if defined(YACK_WIN)
-            inline virtual ~local_scanner() throw()
+            inline virtual ~local_scanner() noexcept
             {
                 FindClose(hfind);
             }
@@ -116,7 +116,7 @@ namespace yack
 #endif
 
 #if defined(YACK_BSD)
-            inline virtual ~local_scanner() throw()
+            inline virtual ~local_scanner() noexcept
             {
                 closedir(hdir);
                 hdir = 0;
@@ -247,7 +247,7 @@ namespace yack
     class ReadOnlyFileHandle
     {
     public:
-        inline ~ReadOnlyFileHandle() throw()
+        inline ~ReadOnlyFileHandle() noexcept
         {
             ::CloseHandle(handle);
             handle = INVALID_HANDLE_VALUE;
@@ -262,7 +262,7 @@ namespace yack
             }
         }
 
-        const HANDLE & operator*() const throw() { return handle;  }
+        const HANDLE & operator*() const noexcept { return handle;  }
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(ReadOnlyFileHandle);

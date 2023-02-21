@@ -182,8 +182,8 @@ YACK_PROGRAM()
             hdr << "    //! "   << name << "\n";
             hdr << "    class " << name << " : public swaps {\n";
             hdr << "      public:\n";
-            hdr << "        virtual ~" << name << "() throw(); //!< cleanup\n";
-            hdr << "        explicit " << name << "() throw(); //!< setup  \n";
+            hdr << "        virtual ~" << name << "() noexcept; //!< cleanup\n";
+            hdr << "        explicit " << name << "() noexcept; //!< setup  \n";
             hdr << "        static const char   sid[];        //!< " << name << "\n";
             hdr << "        static const size_t lhs[" << num << "];  //!< lhs\n";
             hdr << "        static const size_t rhs[" << num << "];  //!< rhs\n";
@@ -203,8 +203,8 @@ YACK_PROGRAM()
             src << "namespace yack {\n";
             src << "  namespace nwsrt {\n";
             src << "    const char " << name << " :: sid[] =\"" << name << "\";\n";
-            src << "    " << name << " :: ~" << name<< "() throw() {}\n";
-            src << "    " << name << " ::  " << name<< "() throw() : swaps(sid," << dim << "," << num << ",lhs,rhs) {}\n";
+            src << "    " << name << " :: ~" << name<< "() noexcept {}\n";
+            src << "    " << name << " ::  " << name<< "() noexcept : swaps(sid," << dim << "," << num << ",lhs,rhs) {}\n";
             src << "    const size_t " << name << " :: lhs[" << num << "] = {\n";
             outputPairs(src,swaps,1);
             src << "    };\n";

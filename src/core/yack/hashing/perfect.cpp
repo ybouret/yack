@@ -7,7 +7,7 @@ namespace yack
     {
 
         perfect::node_type:: node_type(node_type    *parent,
-                                       const uint8_t encode) throw() :
+                                       const uint8_t encode) noexcept :
         next(0),
         prev(0),
         from(parent),
@@ -18,7 +18,7 @@ namespace yack
         {
         }
 
-        perfect::node_type:: ~node_type() throw()
+        perfect::node_type:: ~node_type() noexcept
         {
             while(chld.size) delete chld.pop_back();
         }
@@ -36,7 +36,7 @@ namespace yack
     {
 
 
-        perfect:: ~perfect() throw()
+        perfect:: ~perfect() noexcept
         {
             assert(root);
             delete root;
@@ -134,7 +134,7 @@ namespace yack
         }
 
 
-        int  perfect:: operator()(const void *addr, size_t size) const throw()
+        int  perfect:: operator()(const void *addr, size_t size) const noexcept
         {
             assert(yack_good(addr,size));
             const uint8_t   *data = static_cast<const uint8_t *>(addr);
@@ -161,13 +161,13 @@ namespace yack
             return node->hash;
         }
 
-        int  perfect:: operator()(const char *text) const throw()
+        int  perfect:: operator()(const char *text) const noexcept
         {
             return (*this)( text, text ? strlen(text) : 0 );
         }
 
 
-        int  perfect:: operator()(const memory::ro_buffer &buff) const throw()
+        int  perfect:: operator()(const memory::ro_buffer &buff) const noexcept
         {
             return (*this)(buff.ro_addr(),buff.measure());
         }

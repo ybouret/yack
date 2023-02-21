@@ -22,12 +22,12 @@ namespace yack {
         {
         public:
             explicit er_repo(const size_t n) : er_repo_(n) {} //!< setup
-            virtual ~er_repo() throw() {}                     //!< cleanup
+            virtual ~er_repo() noexcept {}                     //!< cleanup
 
             YACK_PROTO_OSTREAM(er_repo); //!< display
 
             //! check that all the squad is in the repository
-            bool ratifies(const squad &sq) const throw();
+            bool ratifies(const squad &sq) const noexcept;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(er_repo);
@@ -52,7 +52,7 @@ namespace yack {
             // C++
             //__________________________________________________________________
             explicit steady(const reactor &cs_, writable<double> &K_); //!< setup
-            virtual ~steady() throw();                                 //!< cleanup
+            virtual ~steady() noexcept;                                 //!< cleanup
 
             const reactor      &cs;      //!< persistent reactor
             const cluster      *cc;      //!< current cluster

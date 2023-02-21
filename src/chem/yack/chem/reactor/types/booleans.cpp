@@ -7,7 +7,7 @@ namespace yack {
 
 
         booleans::  booleans(const size_t n, const bool f) : object(), cxx_array<bool>(n,f) {}
-        booleans:: ~booleans() throw() {}
+        booleans:: ~booleans() noexcept {}
 
 
     }

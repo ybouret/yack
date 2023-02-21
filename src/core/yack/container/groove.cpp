@@ -4,7 +4,7 @@
 
 namespace yack
 {
-    groove:: groove() throw() :
+    groove:: groove() noexcept :
     entry(NULL),
     bytes(0),
     block_size(0),
@@ -14,12 +14,12 @@ namespace yack
     {
     }
 
-    groove:: ~groove() throw()
+    groove:: ~groove() noexcept
     {
         release();
     }
 
-    void groove:: free() throw()
+    void groove:: free() noexcept
     {
         if(num_blocks)
         {
@@ -51,7 +51,7 @@ namespace yack
         memset(entry,0,bytes);
     }
 
-    void groove:: release() throw()
+    void groove:: release() noexcept
     {
         free();
         if(entry)
@@ -62,12 +62,12 @@ namespace yack
         }
     }
 
-    size_t groove:: granted() const throw()
+    size_t groove:: granted() const noexcept
     {
         return bytes;
     }
 
-    size_t groove:: size() const throw()
+    size_t groove:: size() const noexcept
     {
         return num_blocks;
     }

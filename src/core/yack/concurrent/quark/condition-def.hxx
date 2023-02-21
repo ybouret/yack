@@ -25,26 +25,26 @@ namespace yack
                     if( res != 0 ) throw libc::exception(res,"pthread_cond_init");
                 }
 
-                inline ~condition() throw()
+                inline ~condition() noexcept
                 {
                     const int res = pthread_cond_destroy(&cond);
                     if( res != 0 )  system_error::critical_bsd( res,"pthread_cond_destroy");
                 }
 
-                inline void wait(mutex *m) throw()
+                inline void wait(mutex *m) noexcept
                 {
                     assert(m);
                     const int res = pthread_cond_wait(&cond,**m);
                     if( res != 0 ) system_error::critical_bsd(res, "pthread_cond_wait" );
                 }
 
-                void signal() throw()
+                void signal() noexcept
                 {
                     const int res = pthread_cond_signal(&cond);
                     if( res != 0 ) system_error::critical_bsd(res, "pthread_cond_signal");
                 }
 
-                void broadcast() throw()
+                void broadcast() noexcept
                 {
                     const int res = pthread_cond_broadcast(&cond);
                     if( res != 0 ) system_error::critical_bsd(res, "pthread_cond_broadcast");
@@ -86,10 +86,10 @@ namespace yack
                 {
                 }
 
-                inline ~condition() throw()
+                inline ~condition() noexcept
                 {}
 
-                inline void wait(mutex *m) throw()
+                inline void wait(mutex *m) noexcept
                 {
                     /* Obtain the protection mutex, and increment the number of waiters.
                      This allows the signal mechanism to only perform a signal if there
@@ -130,7 +130,7 @@ namespace yack
 					mutex_api::lock(m);
                 }
 
-                void signal() throw()
+                void signal() noexcept
                 {
                     cv_lock.lock();
                     if( cv_waiting > cv_signals )
@@ -144,7 +144,7 @@ namespace yack
                         cv_lock.unlock();
                 }
 
-                void broadcast() throw()
+                void broadcast() noexcept
                 {
                     /* If there are waiting threads not already signalled, then
                      signal the condition and wait for the thread to respond.

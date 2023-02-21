@@ -35,8 +35,8 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline explicit lexicon() throw() : self_type() {} //!< setup empty
-        inline virtual ~lexicon() throw() {}               //!< cleanup
+        inline explicit lexicon() noexcept : self_type() {} //!< setup empty
+        inline virtual ~lexicon() noexcept {}               //!< cleanup
         inline lexicon(const lexicon &_) : self_type(_) {} //!< hard copy
 
         //! ensure presence of args
@@ -54,7 +54,7 @@ namespace yack
         }
 
         //! search if registered
-        bool search(param_type args) const throw()
+        bool search(param_type args) const noexcept
         {
             const bkey_type key(args);
             return self_type::search(key.begin(),key.measure());
@@ -64,8 +64,8 @@ namespace yack
         //
         // methods
         //______________________________________________________________________
-        const_iterator begin() const throw() { return (**this).head; } //!< forward iterator begin
-        const_iterator end()   const throw() { return NULL; }          //!< forward itetator end
+        const_iterator begin() const noexcept { return (**this).head; } //!< forward iterator begin
+        const_iterator end()   const noexcept { return NULL; }          //!< forward itetator end
 
         //! display content
         inline friend std::ostream & operator<<(std::ostream &os, const lexicon &self)

@@ -15,7 +15,7 @@ namespace yack
         {
 
             template <typename T> unsigned max_bits_for(const unsigned mant_dig,
-                                                        const T        epsilon) throw()
+                                                        const T        epsilon) noexcept
             {
                 static const T half(0.5);
                 static const T one(1);

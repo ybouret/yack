@@ -36,7 +36,7 @@ namespace yack
             // C++
             //__________________________________________________________________
             explicit svd(const size_t dims=0); //!< setup
-            virtual ~svd() throw();            //!< cleanup
+            virtual ~svd() noexcept;            //!< cleanup
 
             //__________________________________________________________________
             //

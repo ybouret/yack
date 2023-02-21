@@ -18,7 +18,7 @@ namespace yack
             //! triangle of x[1..3], y[1..3]
             template <typename LHS, typename RHS> static inline
             typename LHS::mutable_type
-            triangle(LHS &x, RHS &y) throw()
+            triangle(LHS &x, RHS &y) noexcept
             {
                 static typename LHS::const_type half(0.5);
                 assert(x.size()>=3);

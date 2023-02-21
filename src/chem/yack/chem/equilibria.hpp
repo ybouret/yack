@@ -39,17 +39,17 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit equilibria() throw();  //!< setup empty
-            virtual ~equilibria() throw();  //!< cleanup
+            explicit equilibria() noexcept;  //!< setup empty
+            virtual ~equilibria() noexcept;  //!< cleanup
             equilibria(const equilibria &); //!< shared copies
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            size_t       size() const throw(); //!< number of equilibria
-            const enode *head() const throw(); //!< first equilibrium
-            const enode *tail() const throw(); //!< last  equilibrium
+            size_t       size() const noexcept; //!< number of equilibria
+            const enode *head() const noexcept; //!< first equilibrium
+            const enode *tail() const noexcept; //!< last  equilibrium
 
             //! register a new equilibrium with proper index
             equilibrium & use(equilibrium *eq);

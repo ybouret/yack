@@ -19,7 +19,7 @@ namespace yack
         {
         public:
             //! append a new pattern
-            logical & operator<<( pattern *p ) throw();
+            logical & operator<<( pattern *p ) noexcept;
 
             //! append a new single
             logical & add(const uint8_t);
@@ -50,9 +50,9 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~logical() throw();               //!< cleanup
+            virtual ~logical() noexcept;               //!< cleanup
         protected:
-            explicit logical(const uint32_t) throw(); //!< setup
+            explicit logical(const uint32_t) noexcept; //!< setup
             explicit logical(const logical &);        //!< copy
             void     viz(ios::ostream &)       const; //!< render patterns and create links
             

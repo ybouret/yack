@@ -15,7 +15,7 @@ namespace yack
         //
         // tokenizer separator
         //______________________________________________________________________
-        static inline bool is_sep(const char c) throw()
+        static inline bool is_sep(const char c) noexcept
         {
             return c == ',';
         }

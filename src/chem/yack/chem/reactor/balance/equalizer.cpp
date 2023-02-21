@@ -12,10 +12,10 @@ namespace yack {
     {
 
         sq_repo::  sq_repo(const size_t n) : sq_repo_(n) {}
-        sq_repo:: ~sq_repo() throw() {}
+        sq_repo:: ~sq_repo() noexcept {}
 
 
-        const char * equalizer:: status_text(const status s) throw()
+        const char * equalizer:: status_text(const status s) noexcept
         {
             switch(s)
             {
@@ -27,7 +27,7 @@ namespace yack {
             return yack_unknown;
         }
 
-        equalizer:: ~equalizer() throw() {}
+        equalizer:: ~equalizer() noexcept {}
 
 
         equalizer:: equalizer(const reactor &_) :

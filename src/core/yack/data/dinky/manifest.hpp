@@ -42,10 +42,10 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline explicit dinky_manifest() throw() : root_type()                           {} //!< setup empty
-        inline explicit dinky_manifest(const proxy_type &user) throw() : root_type(user) {} //!< setup with cache
+        inline explicit dinky_manifest() noexcept : root_type()                           {} //!< setup empty
+        inline explicit dinky_manifest(const proxy_type &user) noexcept : root_type(user) {} //!< setup with cache
         inline explicit dinky_manifest(const dinky_manifest &_) : root_type(_)           {} //!< copy
-        inline virtual ~dinky_manifest() throw()                                         {} //!< cleanup
+        inline virtual ~dinky_manifest() noexcept                                         {} //!< cleanup
         
         //______________________________________________________________________
         //
@@ -75,7 +75,7 @@ namespace yack
 
         //! return node containing address
         template <typename U> inline
-        node_type *contains(const U &u)  throw()
+        node_type *contains(const U &u)  noexcept
         {
             for(node_type *node=this->head;node;node=node->next)
             {
@@ -86,7 +86,7 @@ namespace yack
 
         //! return node containing address
         template <typename U> inline
-        const node_type *contains(const U &u) const throw()
+        const node_type *contains(const U &u) const noexcept
         {
             for(const node_type *node=this->head;node;node=node->next)
             {

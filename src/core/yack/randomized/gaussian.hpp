@@ -25,10 +25,10 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~gaussian() throw() {} //!< cleanup
+            virtual ~gaussian() noexcept {} //!< cleanup
             
             //! setup
-            explicit gaussian(const shared_bits &sh) throw() :
+            explicit gaussian(const shared_bits &sh) noexcept :
             shared_bits(sh),
             gen(true),
             g1(0),
@@ -41,7 +41,7 @@ namespace yack
             // methods
             //__________________________________________________________________
             //! return generated gaussian value
-            inline T operator()(void) throw()
+            inline T operator()(void) noexcept
             {
                 if(gen)
                 {
@@ -56,7 +56,7 @@ namespace yack
             }
 
             //! on an hypesphere
-            inline void operator()(writable<T> &hypersphere) throw()
+            inline void operator()(writable<T> &hypersphere) noexcept
             {
                 const size_t n = hypersphere.size(); assert(n>0);
             TRIAL:
@@ -79,7 +79,7 @@ namespace yack
             T    g1;
             T    g2;
             
-            inline void generate() throw()
+            inline void generate() noexcept
             {
                 static const T    minus_one = T(-1);
                 static const T    pi        = acos(minus_one);

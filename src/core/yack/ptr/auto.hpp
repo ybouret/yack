@@ -32,13 +32,13 @@ namespace yack
         //______________________________________________________________________
 
         //! setup empty
-        inline auto_ptr() throw() : ptr<T>(0) {}
+        inline auto_ptr() noexcept : ptr<T>(0) {}
 
         //! setup anything
-        inline auto_ptr(type *addr) throw() : ptr<T>(addr) {}
+        inline auto_ptr(type *addr) noexcept : ptr<T>(addr) {}
 
         //! copy, take ownershipt
-        inline auto_ptr(const auto_ptr &_) throw() : ptr<T>( coerce(_).yield() ) {}
+        inline auto_ptr(const auto_ptr &_) noexcept : ptr<T>( coerce(_).yield() ) {}
 
         //! assign, take ownership
         inline auto_ptr & operator=(const auto_ptr &other)
@@ -53,7 +53,7 @@ namespace yack
 
 
         //! cleanup
-        inline virtual ~auto_ptr() throw() { release(); }
+        inline virtual ~auto_ptr() noexcept { release(); }
 
         //! assign new address
         inline auto_ptr & operator=(type *addr)
@@ -71,11 +71,11 @@ namespace yack
         // methods
         //______________________________________________________________________
 
-        inline bool is_valid() const throw() { return NULL!=pointee; } //!< check pointee
-        inline bool is_empty() const throw() { return NULL==pointee; } //!< check !pointee
+        inline bool is_valid() const noexcept { return NULL!=pointee; } //!< check pointee
+        inline bool is_empty() const noexcept { return NULL==pointee; } //!< check !pointee
 
         //! surrender
-        inline type *yield() throw()
+        inline type *yield() noexcept
         {
             type *old = pointee;
             pointee = 0;
@@ -83,13 +83,13 @@ namespace yack
         }
 
         //! dismiss
-        inline void dismiss() throw()
+        inline void dismiss() noexcept
         {
             pointee=0;
         }
 
     private:
-        inline void release() throw() {
+        inline void release() noexcept {
             if(pointee) { delete pointee; pointee=0; }
         }
         

@@ -5,11 +5,11 @@ namespace yack
 {
     namespace graphic
     {
-        bitmap:: ~bitmap() throw()
+        bitmap:: ~bitmap() noexcept
         {
         }
 
-        bitmap::bitmap(const bitmap &other) throw() :
+        bitmap::bitmap(const bitmap &other) noexcept :
         article(),
         metrics(other),
         data(other.data),
@@ -57,7 +57,7 @@ namespace yack
         {
         }
 
-        const bitrow & bitmap:: line(const unit_t j) const throw()
+        const bitrow & bitmap:: line(const unit_t j) const noexcept
         {
             assert(j>=0);
             assert(j<h);
@@ -65,7 +65,7 @@ namespace yack
         }
 
 
-        bitrow & bitmap:: line(const unit_t j)   throw()
+        bitrow & bitmap:: line(const unit_t j)   noexcept
         {
             assert(j>=0);
             assert(j<h);
@@ -73,13 +73,13 @@ namespace yack
         }
 
 
-        static inline void xch_rows(uint8_t *a, uint8_t *b,size_t len) throw()
+        static inline void xch_rows(uint8_t *a, uint8_t *b,size_t len) noexcept
         {
             while(len-- >0)
                 cswap(*(a++),*(b++));
         }
 
-        void bitmap:: vflip() throw()
+        void bitmap:: vflip() noexcept
         {
             unit_t       jlo = 0;
             unit_t       jhi = h;

@@ -42,15 +42,15 @@ namespace yack
         }
 
         //! cleanup
-        virtual ~xmlog() throw();
+        virtual ~xmlog() noexcept;
 
         //______________________________________________________________________
         //
         // methods
         //______________________________________________________________________
         std::ostream & operator*()      const; //!< return formatted/indented ostream
-        virtual void   incr()   const throw(); //!< increase indentation
-        virtual void   decr()   const throw(); //!< decrease indentatiomn
+        virtual void   incr()   const noexcept; //!< increase indentation
+        virtual void   decr()   const noexcept; //!< decrease indentatiomn
         std::ostream & operator()(void) const; //!< return raw ostream
 
         //______________________________________________________________________
@@ -130,7 +130,7 @@ namespace yack
             }
 
             //! cleanup
-            virtual ~msg() throw();
+            virtual ~msg() noexcept;
 
 
 

@@ -26,7 +26,7 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~string_() throw(); //!< cleanup
+                virtual ~string_() noexcept; //!< cleanup
 
 
             protected:
@@ -50,11 +50,11 @@ namespace yack
                 YACK_DISABLE_COPY_AND_ASSIGN(string_);
                 void         setup(const char eos, const char raw);
                 void         leave(token &);
-                virtual void enter(token &)    throw();
-                behavior     claim(token &)    throw();
-                behavior     esc_copy(token &) throw();
-                behavior     esc_code(token &) throw();
-                behavior     esc_hexa(token &) throw();
+                virtual void enter(token &)    noexcept;
+                behavior     claim(token &)    noexcept;
+                behavior     esc_copy(token &) noexcept;
+                behavior     esc_code(token &) noexcept;
+                behavior     esc_hexa(token &) noexcept;
                 behavior     esc_utf8(token &);
                 behavior     esc_fail(token &);
                 behavior     all_fail(token &);

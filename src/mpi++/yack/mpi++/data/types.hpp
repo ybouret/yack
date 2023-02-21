@@ -36,7 +36,7 @@ namespace yack
             // C++
             //__________________________________________________________________
             explicit data_types();          //!< create and populate database
-            virtual ~data_types() throw();  //!< cleanup
+            virtual ~data_types() noexcept;  //!< cleanup
 
             //__________________________________________________________________
             //

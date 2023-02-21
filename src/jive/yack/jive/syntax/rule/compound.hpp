@@ -21,8 +21,8 @@ namespace yack
             class component : public object, public authority<const rule>
             {
             public:
-                virtual ~component()             throw(); //!< cleanup
-                explicit component(const rule &) throw(); //!< setup
+                virtual ~component()             noexcept; //!< cleanup
+                explicit component(const rule &) noexcept; //!< setup
                 component *next;                          //!< for manifest
                 component *prev;                          //!< for manifest
             private:
@@ -47,10 +47,10 @@ namespace yack
             {
             public:
                 compound & operator<<(const rule &); //!< helper method
-                virtual ~compound() throw();         //!< cleanup
+                virtual ~compound() noexcept;         //!< cleanup
             protected:
                 explicit compound(const tag     &name_,
-                                  const uint32_t uuid_) throw(); //!< setup
+                                  const uint32_t uuid_) noexcept; //!< setup
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(compound);
             };

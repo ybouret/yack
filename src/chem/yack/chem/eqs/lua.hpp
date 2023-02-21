@@ -25,7 +25,7 @@ namespace yack
             // C++
             //__________________________________________________________________
             explicit luaEquilibria();          //!< setup with Lua::Sate
-            virtual ~luaEquilibria() throw();  //!< cleanup
+            virtual ~luaEquilibria() noexcept;  //!< cleanup
 
             //__________________________________________________________________
             //

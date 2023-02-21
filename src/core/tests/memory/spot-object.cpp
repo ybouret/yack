@@ -18,13 +18,13 @@ namespace {
         block *prev;
         void  *data[N];
         
-        block() throw() : next(0), prev(0), data()
+        block() noexcept : next(0), prev(0), data()
         {
             memset(data,0,sizeof(data));
             ++all_blocks;
         }
         
-        ~block() throw()
+        ~block() noexcept
         {
             --all_blocks;
         }

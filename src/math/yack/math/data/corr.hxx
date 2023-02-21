@@ -3,13 +3,13 @@ namespace yack
 {
     namespace math
     {
-        template <> correlation<real_t>::correlation() throw() :
+        template <> correlation<real_t>::correlation() noexcept :
         points(),
         xadd()
         {
         }
 
-        template <> correlation<real_t>:: ~correlation() throw()
+        template <> correlation<real_t>:: ~correlation() noexcept
         {
         }
 

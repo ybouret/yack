@@ -6,7 +6,7 @@ namespace yack
 {
     namespace net
     {
-        socket:: ~socket() throw()
+        socket:: ~socket() noexcept
         {
             assert(invalid_socket!=sock);
             on_quit();
@@ -15,7 +15,7 @@ namespace yack
         }
 
         socket:: socket(const socket_address  user_addr,
-                        const socket_type     user_sock) throw() :
+                        const socket_type     user_sock) noexcept :
         self(user_addr),
         sock(user_sock),
         skey(sock)
@@ -24,24 +24,24 @@ namespace yack
             on_init();
         }
 
-        socket::const_inward &socket:: bulk() const throw() { return self; }
+        socket::const_inward &socket:: bulk() const noexcept { return self; }
 
-        const socket_key &socket::key() const throw()
+        const socket_key &socket::key() const noexcept
         {
             return skey;
         }
 
-        void socket::shutdown_recv() throw()
+        void socket::shutdown_recv() noexcept
         {
             bsd::closure(sock,sd_recv);
         }
 
-        void socket::shutdown_send() throw()
+        void socket::shutdown_send() noexcept
         {
             bsd::closure(sock,sd_send);
         }
 
-        void socket::shutdown_both() throw()
+        void socket::shutdown_both() noexcept
         {
             bsd::closure(sock,sd_both);
         }
@@ -87,7 +87,7 @@ namespace yack
         }
 
 
-        void socket:: on_init() const throw()
+        void socket:: on_init() const noexcept
         {
             if(plexus::verbose)
             {
@@ -96,7 +96,7 @@ namespace yack
         }
 
 
-        void socket:: on_quit() const throw()
+        void socket:: on_quit() const noexcept
         {
             if(plexus::verbose)
             {

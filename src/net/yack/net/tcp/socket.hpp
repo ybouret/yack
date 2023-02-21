@@ -21,7 +21,7 @@ namespace yack
         {
         public:
             //! cleanup
-            virtual ~tcp_socket() throw();
+            virtual ~tcp_socket() noexcept;
             
         protected:
             //! setup internal socket from plexus and address

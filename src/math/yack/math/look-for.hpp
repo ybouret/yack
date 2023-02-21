@@ -44,7 +44,7 @@ namespace yack
                 template <typename ITERATOR> static inline
                 size_t of(const ITERATOR curr,
                           const ITERATOR last,
-                          T              ftol) throw()
+                          T              ftol) noexcept
                 {
                     // first pass: count and find max value
                     mutable_type a = 0;
@@ -78,7 +78,7 @@ namespace yack
                 //! nullity for a sequence
                 //______________________________________________________________
                 template <typename SEQUENCE> static inline
-                size_t of(SEQUENCE &seq, const T ftol) throw()
+                size_t of(SEQUENCE &seq, const T ftol) noexcept
                 {
                     return of(seq.begin(),seq.end(),ftol);
                 }
@@ -96,7 +96,7 @@ namespace yack
                 //______________________________________________________________
                 template <typename ITERATOR> static inline
                 mutable_type of(ITERATOR       curr,
-                                const ITERATOR last) throw()
+                                const ITERATOR last) noexcept
                 {
                     mutable_type res = 0;
                     while(curr!=last)
@@ -109,7 +109,7 @@ namespace yack
                 //! maximum of a sequence
                 //______________________________________________________________
                 template <typename SEQUENCE> static inline
-                mutable_type of(SEQUENCE &seq) throw() {
+                mutable_type of(SEQUENCE &seq) noexcept {
                     return of(seq.begin(),seq.end());
                 }
 
@@ -120,7 +120,7 @@ namespace yack
                 template <typename ITERATOR, typename FUNC> static inline
                 mutable_type of(ITERATOR       curr,
                                 const ITERATOR last,
-                                FUNC          &func) throw()
+                                FUNC          &func) noexcept
                 {
                     mutable_type res = 0;
                     res = func(res);
@@ -134,7 +134,7 @@ namespace yack
                 //! maximum of a function of a sequence
                 //______________________________________________________________
                 template <typename SEQUENCE, typename FUNC> static inline
-                mutable_type of(SEQUENCE &seq, FUNC &func) throw() {
+                mutable_type of(SEQUENCE &seq, FUNC &func) noexcept {
                     return of(seq.begin(),seq.end(),func);
                 }
 

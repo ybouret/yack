@@ -8,7 +8,7 @@ namespace yack
     namespace chemical
     {
 
-        claw::  claw(const size_t i) throw() :
+        claw::  claw(const size_t i) noexcept :
         object(),
         indexed(i),
         next(0),
@@ -16,7 +16,7 @@ namespace yack
         nrm2(0),
         crew()
         {}
-        claw:: ~claw() throw() {}
+        claw:: ~claw() noexcept {}
 
 
         void claw::add(const species  &sp,
@@ -25,7 +25,7 @@ namespace yack
             crew.push_back( new actor(sp,cf) );
         }
 
-        const list_of<actor> * claw:: operator->() const throw() { return &crew; }
+        const list_of<actor> * claw:: operator->() const noexcept { return &crew; }
 
         std::ostream & operator<<(std::ostream &os, const claw &self)
         {
@@ -38,7 +38,7 @@ namespace yack
             return os;
         }
 
-        bool claw:: contains(const species &s) const throw() {
+        bool claw:: contains(const species &s) const noexcept {
             for(const actor *a=crew.head;a;a=a->next)
             {
                 if( &s == & **a ) return true;
@@ -46,7 +46,7 @@ namespace yack
             return false;
         }
 
-        bool claw:: is_linked_to(const claw &other) const throw()
+        bool claw:: is_linked_to(const claw &other) const noexcept
         {
             for(const actor *a=other->head;a;a=a->next)
             {
@@ -57,7 +57,7 @@ namespace yack
 
 
 
-        void claw:: finalize() throw()
+        void claw:: finalize() noexcept
         {
             coerce(nrm2) = 0;
             for(const actor *a=crew.head;a;a=a->next)

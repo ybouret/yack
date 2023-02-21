@@ -8,9 +8,9 @@ namespace yack
 {
     namespace graphic
     {
-        options:: ~options() throw() {}
+        options:: ~options() noexcept {}
 
-        options:: options() throw() : options_db() {}
+        options:: options() noexcept : options_db() {}
 
 
         options & options:: operator<<(const string &info)
@@ -26,7 +26,7 @@ namespace yack
             return *this;
         }
 
-        const string * options:: query(const char *key) const throw()
+        const string * options:: query(const char *key) const noexcept
         {
             if(key)
             {
@@ -38,13 +38,13 @@ namespace yack
             }
         }
 
-        const string * options:: look_up(const options *opt, const char *key) throw()
+        const string * options:: look_up(const options *opt, const char *key) noexcept
         {
             return opt ? opt->query(key) : NULL;
         }
 
 
-        static inline void optclr(string &s) throw()
+        static inline void optclr(string &s) noexcept
         {
             strops::strip_with(" \t", 2, s);
         }

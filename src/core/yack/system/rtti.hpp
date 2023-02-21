@@ -25,8 +25,8 @@ namespace yack
         public:
             typedef cxx_pool_of<rtti> pool;                       //!< to store aliases
             explicit                  rtti(const yack::string &); //!< create string
-            virtual                  ~rtti()            throw();  //!< cleanup
-            const yack::string &      operator*() const throw();  //!< access alias
+            virtual                  ~rtti()            noexcept;  //!< cleanup
+            const yack::string &      operator*() const noexcept;  //!< access alias
             rtti                     *next;                       //!< for pool
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(rtti);
@@ -47,15 +47,15 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        virtual ~rtti() throw();               //!<cleanup
+        virtual ~rtti() noexcept;               //!<cleanup
         explicit rtti(const std::type_info &); //!< build with default name
 
         //______________________________________________________________________
         //
         // methods
         //______________________________________________________________________
-        const string &name()   const throw();    //!< get current name
-        const string &native() const throw();    //!< get native name
+        const string &name()   const noexcept;    //!< get current name
+        const string &native() const noexcept;    //!< get native name
 
         static                              const rtti & use(const std::type_info &);       //!< declare/recall typeid
         template <typename T> static inline const rtti & use() { return use( typeid(T) ); } //!< declare/recall typeid

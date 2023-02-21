@@ -12,7 +12,7 @@
 
 namespace yack
 {
-    dso:: ~dso() throw()
+    dso:: ~dso() noexcept
     {
         assert(handle);
 
@@ -63,7 +63,7 @@ namespace yack
 
     }
 
-    void    * dso:: load(const char *symbol) const throw()
+    void    * dso:: load(const char *symbol) const noexcept
     {
         assert(symbol);
 #if     defined(YACK_BSD)

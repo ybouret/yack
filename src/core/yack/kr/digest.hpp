@@ -32,18 +32,18 @@ namespace yack
         digest(const size_t n);                            //!< setup with n bytes
         digest(const digest &);                            //!< copy, same size
         digest(const size_t n, const uint8_t b);           //!< [b...b] n times
-        virtual ~digest() throw();                         //!< cleanup
+        virtual ~digest() noexcept;                         //!< cleanup
         digest(const char *h);                             //!< from hexadecimal string
         digest(const memory::ro_buffer &);                 //!< from binary data
         digest(const void *, const size_t);                //!< from binary data/text
         digest(const size_t n, const memory::ro_buffer &); //!< setup and fill
-        digest & operator=(const digest &) throw();        //!< assign SAME SIZE
+        digest & operator=(const digest &) noexcept;        //!< assign SAME SIZE
                                                            
         //______________________________________________________________________
         //
         // serializable
         //______________________________________________________________________
-        virtual const char *class_uid() const throw();                //!< clid
+        virtual const char *class_uid() const noexcept;                //!< clid
         virtual size_t      serialize(ios::ostream &) const;          //!< size+bytes
         static  digest      construct(ios::istream &, size_t &cumul); //!< reload
         
@@ -51,32 +51,32 @@ namespace yack
         //
         // methods
         //______________________________________________________________________
-        virtual size_t          size()                        const throw(); //!< bytes
+        virtual size_t          size()                        const noexcept; //!< bytes
         friend std::ostream   & operator<<(std::ostream  &, const digest &); //!< output
-        void                    ldz()                               throw(); //!< set to zero
+        void                    ldz()                               noexcept; //!< set to zero
 
         //______________________________________________________________________
         //
         // buffer interface
         //______________________________________________________________________
-        virtual size_t          measure() const throw(); //!< bytes
-        virtual const void *    ro_addr() const throw(); //!< address of first byte
+        virtual size_t          measure() const noexcept; //!< bytes
+        virtual const void *    ro_addr() const noexcept; //!< address of first byte
         
         //______________________________________________________________________
         //
         // operators
         //______________________________________________________________________
-        digest & operator |= (const digest &rhs) throw(); //!< bytewise OR
-        digest & operator &= (const digest &rhs) throw(); //!< bytewise AND
-        digest & operator ^= (const digest &rhs) throw(); //!< bytewise XOR
+        digest & operator |= (const digest &rhs) noexcept; //!< bytewise OR
+        digest & operator &= (const digest &rhs) noexcept; //!< bytewise AND
+        digest & operator ^= (const digest &rhs) noexcept; //!< bytewise XOR
 
         
     private:
         uint8_t     *addr;
         uint8_t     *byte;
         const size_t blen;
-        virtual const_type *cxx() const throw();
-        virtual const_type *mem() const throw();
+        virtual const_type *cxx() const noexcept;
+        virtual const_type *mem() const noexcept;
     };
     
 }

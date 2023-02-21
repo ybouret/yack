@@ -33,7 +33,7 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~pattern() throw();
+            virtual ~pattern() noexcept;
 
             //__________________________________________________________________
             //
@@ -49,7 +49,7 @@ namespace yack
             virtual void     firsts(first_bytes &)  const         = 0; //!< collect first bytes
             virtual void     encode(ios::ostream &) const         = 0; //!< encode as GraphViz
             virtual pattern *clone()                const         = 0; //!< clone
-            virtual bool     is_univocal()          const throw() = 0; //!< if univocal
+            virtual bool     is_univocal()          const noexcept = 0; //!< if univocal
 
             //__________________________________________________________________
             //
@@ -84,13 +84,13 @@ namespace yack
             //
             //! equality
             //__________________________________________________________________
-            static bool are_same(const pattern &lhs, const pattern &rhs) throw();
+            static bool are_same(const pattern &lhs, const pattern &rhs) noexcept;
 
             //! wrapper
-            friend bool operator==(const pattern &lhs, const pattern &rhs) throw();
+            friend bool operator==(const pattern &lhs, const pattern &rhs) noexcept;
 
             //! wrapper
-            friend bool operator!=(const pattern &lhs, const pattern &rhs) throw();
+            friend bool operator!=(const pattern &lhs, const pattern &rhs) noexcept;
 
             //__________________________________________________________________
             //
@@ -110,21 +110,21 @@ namespace yack
             //! check conversion
             //__________________________________________________________________
             template <typename PATTERN> inline
-            bool is() const throw() { return PATTERN::mark == uuid; }
+            bool is() const noexcept { return PATTERN::mark == uuid; }
 
             //__________________________________________________________________
             //
             //! required conversion
             //__________________________________________________________________
             template <typename PATTERN> inline
-            PATTERN *as() throw() { assert(self); assert(uuid==PATTERN::mark); return (PATTERN *)self; }
+            PATTERN *as() noexcept { assert(self); assert(uuid==PATTERN::mark); return (PATTERN *)self; }
 
             //__________________________________________________________________
             //
             //! required conversion
             //__________________________________________________________________
             template <typename PATTERN> inline
-            const PATTERN *as() const throw() { assert(self); assert(uuid==PATTERN::mark); return (const PATTERN *)self; }
+            const PATTERN *as() const noexcept { assert(self); assert(uuid==PATTERN::mark); return (const PATTERN *)self; }
 
 
             //__________________________________________________________________
@@ -137,13 +137,13 @@ namespace yack
             const void * const *self; //!< to retrieve
 
         protected:
-            explicit pattern(const uint32_t) throw(); //!< setup with uuid, self=0
-            void     I_am(const void*) throw();       //!< set self to most derived class
+            explicit pattern(const uint32_t) noexcept; //!< setup with uuid, self=0
+            void     I_am(const void*) noexcept;       //!< set self to most derived class
             size_t   emit_uuid(ios::ostream &) const; //!< emit uuid, return written bytes
 
             //! helper
             template <typename T> inline
-            void I_am() throw() { I_am( static_cast<const T*>(this) ); }
+            void I_am() noexcept { I_am( static_cast<const T*>(this) ); }
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(pattern);

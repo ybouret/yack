@@ -34,15 +34,15 @@ namespace yack
             // allocator interface
             //__________________________________________________________________
             virtual void *       acquire(size_t &count, const size_t block_size);
-            virtual void         release(void * &addr, size_t &size)     throw();
-            virtual const char * variety()                         const throw();
+            virtual void         release(void * &addr, size_t &size)     noexcept;
+            virtual const char * variety()                         const noexcept;
 
             
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(pooled);
             explicit pooled();
-            virtual ~pooled() throw();
+            virtual ~pooled() noexcept;
             friend class singleton<pooled>;
         };
         

@@ -8,14 +8,14 @@ namespace yack
     namespace hashing
     {
 
-        des64:: ~des64() throw() {}
+        des64:: ~des64() noexcept {}
 
-        des64::  des64() throw() {}
+        des64::  des64() noexcept {}
 
 
         const char des64::clid[] = "DES";
 
-        const char *des64:: protocol() const throw()  { return clid; }
+        const char *des64:: protocol() const noexcept  { return clid; }
 
 #define YACK_DES64(i) \
 {\
@@ -28,7 +28,7 @@ rword = lword ^ (( ( (ib >> 0x10) | ((ib & 0xffff) << 0x10)) ^ Y##i)+ (il*ih) );
 lword = it;\
 }
 
-        void des64:: operator()(uint32_t &lword, uint32_t &rword) const throw()
+        void des64:: operator()(uint32_t &lword, uint32_t &rword) const noexcept
         {
             static const uint32_t X0 = 0xbaa96887L;
             static const uint32_t X1 = 0x1e17d32cL;
@@ -54,7 +54,7 @@ namespace yack
     namespace hashing
     {
 
-        bool des64:: test() const throw()
+        bool des64:: test() const noexcept
         {
             static const uint32_t input[4][2] =
             {

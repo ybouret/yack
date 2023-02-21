@@ -42,7 +42,7 @@ namespace yack
                 // C++
                 //______________________________________________________________
                 explicit interpolate(const size_t ndat=0); //!< setup with initial data
-                virtual ~interpolate() throw();            //!< cleanup
+                virtual ~interpolate() noexcept;            //!< cleanup
 
                 //______________________________________________________________
                 //

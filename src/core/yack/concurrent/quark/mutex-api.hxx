@@ -17,7 +17,7 @@ namespace yack
                 return          mgr.create_mutex();
             }
 
-            void   mutex_api:: quit(mutex * &m) throw()
+            void   mutex_api:: quit(mutex * &m) noexcept
             {
                 assert(!atelier_initialize);
                 static atelier &mgr = atelier_location();
@@ -27,7 +27,7 @@ namespace yack
 
 
 
-            void mutex_api:: lock(mutex *m) throw()
+            void mutex_api:: lock(mutex *m) noexcept
             {
                 assert(m);
 #if defined(YACK_BSD)
@@ -41,7 +41,7 @@ namespace yack
 
             }
 
-            void mutex_api:: unlock(mutex *m) throw()
+            void mutex_api:: unlock(mutex *m) noexcept
             {
                 assert(m);
 #if defined(YACK_BSD)
@@ -54,7 +54,7 @@ namespace yack
 #endif
             }
 
-            bool   mutex_api:: try_lock(mutex *m) throw()
+            bool   mutex_api:: try_lock(mutex *m) noexcept
             {
 #if defined(YACK_WIN)
                 return ::TryEnterCriticalSection(**m) == TRUE;

@@ -48,8 +48,8 @@ namespace yack
             ip_version ip_version_from(const char   *text) const; //!< [v4|v6]
             ip_version ip_version_from(const string &text) const; //!< [v4|v6]
 
-            const char    * ip_version_text(const ip_version) const throw();    //!< v4|v6
-            const char    * ip_protocol_text(const ip_protocol) const throw();  //!< tcp|udp
+            const char    * ip_version_text(const ip_version) const noexcept;    //!< v4|v6
+            const char    * ip_protocol_text(const ip_protocol) const noexcept;  //!< tcp|udp
 
             //__________________________________________________________________
             //
@@ -108,7 +108,7 @@ namespace yack
             friend class socket;
             
 
-            virtual ~plexus() throw();
+            virtual ~plexus() noexcept;
             explicit plexus();
 
 

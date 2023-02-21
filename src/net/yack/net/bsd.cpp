@@ -39,7 +39,7 @@ namespace yack
             return s;
         }
 
-        void bsd:: release(socket_type &s) throw()
+        void bsd:: release(socket_type &s) noexcept
         {
             assert(invalid_socket != s);
 
@@ -69,7 +69,7 @@ namespace yack
 #define YACK_NET_SD_BOTH SD_BOTH
 #endif
 
-        void bsd:: closure(socket_type s, const sd_how how) throw()
+        void bsd:: closure(socket_type s, const sd_how how) noexcept
         {
             switch(how)
             {

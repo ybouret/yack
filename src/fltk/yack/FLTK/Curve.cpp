@@ -6,7 +6,7 @@ namespace yack
     namespace FLTK
     {
         
-        Curve:: ~Curve() throw() {}
+        Curve:: ~Curve() noexcept {}
         
         Curve:: Curve( const string &id ) :
         name(id),
@@ -20,14 +20,14 @@ namespace yack
         {
         }
         
-        const string & Curve:: key() const throw() { return name; }
+        const string & Curve:: key() const noexcept { return name; }
         
         
-        Curves:: Curves() throw() : Curve::DB()
+        Curves:: Curves() noexcept : Curve::DB()
         {}
         
         
-        Curves:: ~Curves() throw()
+        Curves:: ~Curves() noexcept
         {
         }
     

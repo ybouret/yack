@@ -22,7 +22,7 @@ namespace yack
 	namespace ios
 	{
 
-		pstream:: ~pstream() throw()
+		pstream:: ~pstream() noexcept
 		{
 			assert(handle);
 #if defined(YACK_BSD)

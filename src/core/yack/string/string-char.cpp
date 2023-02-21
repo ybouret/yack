@@ -10,7 +10,7 @@ namespace yack
         template <> const char string<char>::clid[] = "string";
        
         template <>
-        const char * string<CH>:: class_uid() const throw()
+        const char * string<CH>:: class_uid() const noexcept
         {
             return clid;
         }
@@ -18,7 +18,7 @@ namespace yack
        
         
         static inline
-        void copy_msg(char *item, const char *msg, size_t &chars) throw()
+        void copy_msg(char *item, const char *msg, size_t &chars) noexcept
         {
             assert(msg);
         CYCLE:

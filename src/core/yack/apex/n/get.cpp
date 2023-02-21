@@ -9,14 +9,14 @@ namespace yack
         {
             typedef const uint8_t & (*apn_get_proc)(const natural::word_type &, const size_t);
 
-            static inline const uint8_t & getBE(const natural::word_type &w, const size_t at) throw()
+            static inline const uint8_t & getBE(const natural::word_type &w, const size_t at) noexcept
             {
                 assert(at<sizeof(w));
                 const uint8_t *p= (const uint8_t *)&w;
                 return p[(sizeof(w)-1)-at];
             }
 
-            static inline const uint8_t & getLE(const natural::word_type &w, const size_t at) throw()
+            static inline const uint8_t & getLE(const natural::word_type &w, const size_t at) noexcept
             {
                 assert(at<sizeof(w));
                 const uint8_t *p= (const uint8_t *)&w;
@@ -25,7 +25,7 @@ namespace yack
         }
 
 
-        const uint8_t & natural:: operator[](const size_t indx) const throw()
+        const uint8_t & natural:: operator[](const size_t indx) const noexcept
         {
             static const apn_get_proc proc =  endian::BE() ? getBE : getLE;
 

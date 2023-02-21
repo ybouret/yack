@@ -37,7 +37,7 @@ namespace yack
             // C++
             //__________________________________________________________________
             explicit edges(const unit_t w, const unit_t h); //!< setup
-            virtual ~edges() throw();                       //!< cleanup
+            virtual ~edges() noexcept;                       //!< cleanup
 
             //__________________________________________________________________
             //

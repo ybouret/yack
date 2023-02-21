@@ -9,11 +9,11 @@ namespace yack
         namespace syntax
         {
 
-            alternate:: ~alternate() throw()
+            alternate:: ~alternate() noexcept
             {
             }
 
-            alternate:: alternate(const tag &name_) throw() :
+            alternate:: alternate(const tag &name_) noexcept :
             compound(name_,mark)
             {
                 I_am<alternate>();

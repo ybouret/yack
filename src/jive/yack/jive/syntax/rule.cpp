@@ -10,13 +10,13 @@ namespace yack
 
             bool rule::verbose = false;
             
-            rule:: ~rule() throw()
+            rule:: ~rule() noexcept
             {
             }
 
             rule:: rule(const tag        &name_,
                         const rule_type   type_,
-                        const uint32_t    uuid_ ) throw() :
+                        const uint32_t    uuid_ ) noexcept :
             name(name_),
             type(type_),
             uuid(uuid_),

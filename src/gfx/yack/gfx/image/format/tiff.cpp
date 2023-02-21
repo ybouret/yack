@@ -17,7 +17,7 @@ namespace yack
 
         }
 
-        tiff_format:: ~tiff_format() throw()
+        tiff_format:: ~tiff_format() noexcept
         {
         }
 
@@ -25,13 +25,13 @@ namespace yack
         class tiff_file
         {
         public:
-            inline virtual ~tiff_file() throw()
+            inline virtual ~tiff_file() noexcept
             {
                 TIFFClose(tif);
                 tif = NULL;
             }
 
-            TIFF * operator*() throw() {
+            TIFF * operator*() noexcept {
                 return tif;
             }
 
@@ -52,7 +52,7 @@ namespace yack
         {
         public:
             inline explicit tiff_ofile(const string &filename) : tiff_file(filename,"w") {}
-            inline virtual ~tiff_ofile() throw() {}
+            inline virtual ~tiff_ofile() noexcept {}
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(tiff_ofile);

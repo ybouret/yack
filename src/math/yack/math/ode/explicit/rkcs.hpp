@@ -26,7 +26,7 @@ namespace yack
             {
             public:
                 typedef ENGINE<T> engine;                           //!< alias
-                inline virtual ~rkcs() throw()                   {} //!< cleanup
+                inline virtual ~rkcs() noexcept                   {} //!< cleanup
                 inline explicit rkcs() : rk45<T>( new engine() ) {} //!< setup
                 
             private:

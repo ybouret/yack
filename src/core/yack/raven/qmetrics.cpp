@@ -5,7 +5,7 @@ namespace yack
 {
     namespace raven
     {
-        qmetrics:: ~qmetrics() throw()
+        qmetrics:: ~qmetrics() noexcept
         {
             coerce(dimension) = 0;
         }
@@ -17,7 +17,7 @@ namespace yack
             if(dimension<2) throw imported::exception("raven::metrics","dimension<2");
         }
 
-        qmetrics:: qmetrics(const qmetrics &_) throw() :
+        qmetrics:: qmetrics(const qmetrics &_) noexcept :
         dimension(_.dimension)
         {
         }

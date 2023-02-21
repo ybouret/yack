@@ -6,7 +6,7 @@ namespace yack
 
         namespace ode
         {
-            template <> zextr<real_t>:: ~zextr() throw()
+            template <> zextr<real_t>:: ~zextr() noexcept
             {
             }
 

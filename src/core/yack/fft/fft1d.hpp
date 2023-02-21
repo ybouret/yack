@@ -49,7 +49,7 @@ namespace yack
         //! forward algorithm data[2*size], mapping complexes
         //______________________________________________________________________
         template <typename T> static
-        inline void forward(T data[], const size_t size) throw()
+        inline void forward(T data[], const size_t size) noexcept
         {
             apply(data,size,pos_sine);
         }
@@ -59,7 +59,7 @@ namespace yack
         //! reverse algorithm data[2*size], mapping complexes
         //______________________________________________________________________
         template <typename T> static
-        inline void reverse(T data[], const size_t size) throw()
+        inline void reverse(T data[], const size_t size) noexcept
         {
             apply(data,size,neg_sine);
         }
@@ -69,7 +69,7 @@ namespace yack
         //! expand fft1 and fft2 from a dual-real-functions transform
         //______________________________________________________________________
         template <typename T> static
-        inline void expand(T fft1[], T fft2[], const size_t n) throw()
+        inline void expand(T fft1[], T fft2[], const size_t n) noexcept
         {
             static const T half(0.5);
             const size_t nn2 = 2+n+n;
@@ -106,7 +106,7 @@ namespace yack
         template <typename T> static
         inline void apply(T            *data,
                           const size_t  size,
-                          const double *sine) throw()
+                          const double *sine) noexcept
         {
 
             //__________________________________________________________________

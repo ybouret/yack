@@ -9,11 +9,11 @@ namespace yack
 
         namespace ode
         {
-            entity:: ~entity() throw()
+            entity:: ~entity() noexcept
             {
             }
 
-            entity:: entity() throw() : large_object(), counted() {}
+            entity:: entity() noexcept : large_object(), counted() {}
             
         }
     }

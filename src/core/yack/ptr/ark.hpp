@@ -36,15 +36,15 @@ namespace yack
         //______________________________________________________________________
 
         //! setup with valid address
-        inline ark_ptr(type *addr) throw() : arc_ptr<T>(addr) { }
+        inline ark_ptr(type *addr) noexcept : arc_ptr<T>(addr) { }
 
         //! no-throw copy
-        inline ark_ptr(const ark_ptr &_) throw() : arc_ptr<T>(_)
+        inline ark_ptr(const ark_ptr &_) noexcept : arc_ptr<T>(_)
         {
         }
 
         //! cleanup
-        inline virtual ~ark_ptr() throw() { }
+        inline virtual ~ark_ptr() noexcept { }
 
         //! no-throw assign by copy/swap
         inline ark_ptr & operator=(const ark_ptr &other)
@@ -59,7 +59,7 @@ namespace yack
         // methods
         //______________________________________________________________________
         //! access pointee key
-        inline const_key_type &key() const throw() { return pointee->key(); }
+        inline const_key_type &key() const noexcept { return pointee->key(); }
 
 
     };

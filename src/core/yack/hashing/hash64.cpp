@@ -7,9 +7,9 @@ namespace yack
     namespace hashing
     {
 
-        hash64:: ~hash64() throw() {}
+        hash64:: ~hash64() noexcept {}
 
-        hash64::  hash64() throw() {}
+        hash64::  hash64() noexcept {}
 
     }
 

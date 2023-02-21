@@ -6,7 +6,7 @@ namespace yack
 {
     namespace chemical
     {
-        reactor:: ~reactor() throw()
+        reactor:: ~reactor() noexcept
         {
         }
 
@@ -151,7 +151,7 @@ namespace yack
         }
 
 
-        size_t reactor:: max_claws_per_cluster() const throw()
+        size_t reactor:: max_claws_per_cluster() const noexcept
         {
             size_t res = 0;
             for(const cluster *cc=linked->head;cc;cc=cc->next) {
@@ -160,7 +160,7 @@ namespace yack
             return res;
         }
 
-        size_t reactor:: max_degree() const throw()
+        size_t reactor:: max_degree() const noexcept
         {
             size_t res = 0;
             for(const cluster *cc=linked->head;cc;cc=cc->next) {
@@ -169,7 +169,7 @@ namespace yack
             return res;
         }
 
-        size_t reactor:: max_actors() const throw()
+        size_t reactor:: max_actors() const noexcept
         {
             size_t res = 0;
             for(const enode *en=all.head();en;en=en->next)
@@ -181,7 +181,7 @@ namespace yack
             return res;
         }
 
-        size_t reactor:: max_cluster_size() const throw()
+        size_t reactor:: max_cluster_size() const noexcept
         {
             size_t res = 0;
             

@@ -18,7 +18,7 @@ namespace yack
 {
     //! inline cswap of integral objects
     template <typename T> inline
-    void cswap2(T *lhs, T *rhs) throw()
+    void cswap2(T *lhs, T *rhs) noexcept
     {
         assert(lhs); assert(rhs);
         const T tmp0 = lhs[0];

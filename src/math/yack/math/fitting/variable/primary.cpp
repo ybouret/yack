@@ -7,7 +7,7 @@ namespace yack
 
         namespace fitting
         {
-            primary:: ~primary() throw()
+            primary:: ~primary() noexcept
             {
                 coerce(indx_) = 0;
             }
@@ -19,17 +19,17 @@ namespace yack
                 assert(i>0);
             }
 
-            size_t primary:: indx() const throw() {
+            size_t primary:: indx() const noexcept {
                 assert(indx_>0);
                 return indx_;
             }
 
-            const string & primary:: alias() const throw()
+            const string & primary:: alias() const noexcept
             {
                 return name;
             }
 
-            bool primary:: is_primary() const throw() { return true; }
+            bool primary:: is_primary() const noexcept { return true; }
         }
 
     }

@@ -30,10 +30,10 @@ namespace yack
             //__________________________________________________________________
             
             //! cleanup
-            inline virtual ~tile2D() throw()  {}
+            inline virtual ~tile2D() noexcept  {}
             
             //! setup
-            inline explicit tile2D(const v2d<T> &org, const T len) throw() :
+            inline explicit tile2D(const v2d<T> &org, const T len) noexcept :
             next(0), start(org), width(len) {}
             
             //__________________________________________________________________
@@ -70,8 +70,8 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            inline  tiles2D() throw() : items(0), tiles() {} //!< setup
-            inline ~tiles2D() throw() {}                     //!< cleanup
+            inline  tiles2D() noexcept : items(0), tiles() {} //!< setup
+            inline ~tiles2D() noexcept {}                     //!< cleanup
             
             //__________________________________________________________________
             //
@@ -84,8 +84,8 @@ namespace yack
                 coerce(items) += tiles.store( new tile2D<T>(org,len) )->width;
             }
             
-            inline size_t           size() const throw() { return tiles.size; } //!< number of tiles
-            inline const tile_type *head() const throw() { return tiles.head; } //!< first tile
+            inline size_t           size() const noexcept { return tiles.size; } //!< number of tiles
+            inline const tile_type *head() const noexcept { return tiles.head; } //!< first tile
             
             //__________________________________________________________________
             //
@@ -157,7 +157,7 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(tiles2D);
             cxx_pool_of< tile_type > tiles;
-            inline void   finish()     throw() { tiles.reverse();   } //!< reverse order
+            inline void   finish()     noexcept { tiles.reverse();   } //!< reverse order
             friend struct split2D;
 
             static inline void show1(std::ostream &os, const tile_type *t)
@@ -183,7 +183,7 @@ namespace yack
             //! x + y*width.x = offset
             //__________________________________________________________________
             template <typename U> static inline
-            v2d<U> offset_to_vertex(const U offset, const v2d<U> &width) throw()
+            v2d<U> offset_to_vertex(const U offset, const v2d<U> &width) noexcept
             {
                 const U y = offset/width.x; assert(y<width.y);
                 return v2d<U>(offset-y*width.x,y);
@@ -198,7 +198,7 @@ namespace yack
                        const T         size,
                        const T         rank,
                        const v2d<U>   &lower,
-                       const v2d<U>   &upper) throw()
+                       const v2d<U>   &upper) noexcept
             {
                 assert(size>0);
                 assert(rank<size);

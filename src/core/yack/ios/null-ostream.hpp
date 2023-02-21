@@ -23,15 +23,15 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~null_ostream() throw(); //!< cleanup
-            explicit null_ostream() throw(); //!< setup
+            virtual ~null_ostream() noexcept; //!< cleanup
+            explicit null_ostream() noexcept; //!< setup
 
             //__________________________________________________________________
             //
             // virtual interface
             //__________________________________________________________________
-            virtual void write(const char) throw();   //!< do nothing
-            virtual void flush()           throw();   //!< do nothing
+            virtual void write(const char) noexcept;   //!< do nothing
+            virtual void flush()           noexcept;   //!< do nothing
 
 
         private:

@@ -15,7 +15,7 @@ namespace yack
     //
     //__________________________________________________________________________
     template <typename T> inline
-    void destruct(T *item) throw()
+    void destruct(T *item) noexcept
     {
         assert(item);
         item->~T();
@@ -28,7 +28,7 @@ namespace yack
     //
     //__________________________________________________________________________
     template <typename T> inline
-    T *destructed(T *item) throw()
+    T *destructed(T *item) noexcept
     {
         destruct(item);
         return item;

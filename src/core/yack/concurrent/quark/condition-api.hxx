@@ -16,7 +16,7 @@ namespace yack
         }
 
 
-        condition:: ~condition() throw()
+        condition:: ~condition() noexcept
         {
             assert(NULL!=cond);
             quark::condition_api::quit(cond);
@@ -24,19 +24,19 @@ namespace yack
         }
 
 
-        void condition:: signal() throw()
+        void condition:: signal() noexcept
         {
             assert(cond);
             cond->signal();
         }
 
-        void condition:: broadcast() throw()
+        void condition:: broadcast() noexcept
         {
             assert(cond);
             cond->broadcast();
         }
 
-        void condition:: wait(mutex &m) throw()
+        void condition:: wait(mutex &m) noexcept
         {
             assert(NULL!=cond);
             if(mutex::verbose)
@@ -55,7 +55,7 @@ namespace yack
                 return mgr.conditions.invoke<condition>();
             }
 
-            void condition_api:: quit(condition * &cond) throw()
+            void condition_api:: quit(condition * &cond) noexcept
             {
                 assert(NULL!=cond);
                 static atelier &mgr = atelier_location();

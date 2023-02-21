@@ -23,12 +23,12 @@ namespace yack
             std::cerr << "custodian: nc=" << nc << std::endl;
         }
 
-        custodian:: ~custodian() throw()
+        custodian:: ~custodian() noexcept
         {
             
         }
 
-        void custodian:: reset_all() throw()
+        void custodian:: reset_all() noexcept
         {
             sr.clear();
             xs.ld(0);

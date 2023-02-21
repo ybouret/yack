@@ -13,11 +13,11 @@ namespace yack
     {
         namespace core
         {
-            zircon:: zircon() throw() : verbose(false)
+            zircon:: zircon() noexcept : verbose(false)
             {
             }
 
-            zircon:: ~zircon() throw()
+            zircon:: ~zircon() noexcept
             {
             }
 

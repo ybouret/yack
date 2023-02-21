@@ -41,8 +41,8 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline explicit suffix_set() throw() : base_type() {}            //!< setup empty
-        inline virtual ~suffix_set() throw() {}                          //!< cleanup
+        inline explicit suffix_set() noexcept : base_type() {}            //!< setup empty
+        inline virtual ~suffix_set() noexcept {}                          //!< cleanup
         inline          suffix_set(const suffix_set &other) :
         collection(), base_type(other) {} //!< hard copy
 
@@ -72,7 +72,7 @@ namespace yack
         }
 
         //! category for container
-        virtual const char *category() const throw() { return kernel::suffix_set_category; }
+        virtual const char *category() const noexcept { return kernel::suffix_set_category; }
 
         //! output to std::ostream
         friend inline std::ostream & operator<<(std::ostream &os, const suffix_set &s)

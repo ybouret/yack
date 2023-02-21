@@ -8,11 +8,11 @@ namespace yack
     {
         namespace syntax
         {
-            translator:: translator() throw() : depth(0), data(NULL)
+            translator:: translator() noexcept : depth(0), data(NULL)
             {
             }
 
-            translator:: ~translator() throw()
+            translator:: ~translator() noexcept
             {
             }
 
@@ -26,7 +26,7 @@ namespace yack
 
             void translator:: on_init() {}
 
-            void translator:: on_quit() throw()
+            void translator:: on_quit() noexcept
             {
             }
 

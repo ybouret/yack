@@ -11,7 +11,7 @@ namespace
     template <typename T>
     struct  hincr
     {
-        inline int operator()(const T &lhs, const T &rhs) throw()
+        inline int operator()(const T &lhs, const T &rhs) noexcept
         {
             return comparison::increasing<T>(lhs,rhs);
         }
@@ -20,7 +20,7 @@ namespace
     template <typename T>
     struct  hdecr
     {
-        inline int operator()(const T &lhs, const T &rhs) throw()
+        inline int operator()(const T &lhs, const T &rhs) noexcept
         {
             return comparison::decreasing<T>(lhs,rhs);
         }

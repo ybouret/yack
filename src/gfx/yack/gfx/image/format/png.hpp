@@ -20,7 +20,7 @@ namespace yack
         public:
             static const char clid[];       //!< "PNG"
             explicit png_format();          //!< setup
-            virtual ~png_format() throw();  //!< cleanup
+            virtual ~png_format() noexcept;  //!< cleanup
 
             //! load
             virtual pixmap<rgba> load(const string &, const options *) const;

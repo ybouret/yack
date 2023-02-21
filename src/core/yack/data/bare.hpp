@@ -21,7 +21,7 @@ namespace yack
         YACK_DECL_ARGS(T,type);
 
         //! cleanup
-        inline ~bare() throw()
+        inline ~bare() noexcept
         {
             out_of_reach::zset( destructed( static_cast<mutable_type*>( out_of_reach::address(wksp) )), sizeof(wksp) );
         }
@@ -40,7 +40,7 @@ namespace yack
 
 
         //! access
-        inline const_type & operator*() const throw() { return *static_cast<const_type*>( out_of_reach::address(wksp) ); }
+        inline const_type & operator*() const noexcept { return *static_cast<const_type*>( out_of_reach::address(wksp) ); }
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(bare);

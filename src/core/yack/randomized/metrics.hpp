@@ -23,8 +23,8 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit metrics(const uint32_t umax) throw(); //!< setup
-            virtual ~metrics() throw();                    //!< cleanup
+            explicit metrics(const uint32_t umax) noexcept; //!< setup
+            virtual ~metrics() noexcept;                    //!< cleanup
 
             const uint32_t            m; //!< user's maximum provided value
             const u32_to<float>       f; //!< float       metrics
@@ -32,10 +32,10 @@ namespace yack
             const u32_to<long double> l; //!< long double metrics
 
             //! for float|double|long double
-            template <typename T> T unit_(const uint32_t u) const throw();
+            template <typename T> T unit_(const uint32_t u) const noexcept;
 
             //! for float|double|long double
-            template <typename T> T symm_(const uint32_t u) const throw();
+            template <typename T> T symm_(const uint32_t u) const noexcept;
 
 
         private:

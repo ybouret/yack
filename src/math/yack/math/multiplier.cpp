@@ -6,8 +6,8 @@ namespace yack
 {
     namespace math
     {
-        multiplication::  multiplication() throw() {}
-        multiplication:: ~multiplication() throw() {}
+        multiplication::  multiplication() noexcept {}
+        multiplication:: ~multiplication() noexcept {}
 
         template <> const int multiplier<float>::       min_exp = numeric<float>::min_exp;
         template <> const int multiplier<double>::      min_exp = numeric<double>::min_exp;

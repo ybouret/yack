@@ -27,14 +27,14 @@ namespace yack
             //__________________________________________________________________
             //! setup
             template <typename T>
-            inline binary(const T x, const bool full=false) throw() :
+            inline binary(const T x, const bool full=false) noexcept :
             qword( uint64_t(x)  ),
             nbits( full ? (sizeof(T)*8) : width(qword) )
             {
             }
 
-            binary(const binary &_) throw(); //!< copy
-            ~binary() throw();               //!< cleanup
+            binary(const binary &_) noexcept; //!< copy
+            ~binary() noexcept;               //!< cleanup
 
             //__________________________________________________________________
             //
@@ -47,8 +47,8 @@ namespace yack
             YACK_DISABLE_ASSIGN(binary);
             const uint64_t qword;
             const size_t   nbits;
-            static size_t  width(const uint64_t) throw();
-            size_t         load(char tab[]) const throw();
+            static size_t  width(const uint64_t) noexcept;
+            size_t         load(char tab[]) const noexcept;
         };
     }
 

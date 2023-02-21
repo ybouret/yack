@@ -19,8 +19,8 @@ namespace yack
         struct legacy
         {
             static void *acquire(const size_t n);          //!< acquire, may throw
-            static void *c_alloc(const size_t n) throw();  //!< acquire, no throw
-            static void  release(void *) throw();          //!< release
+            static void *c_alloc(const size_t n) noexcept;  //!< acquire, no throw
+            static void  release(void *) noexcept;          //!< release
 
             //! helper
             template <typename T> static inline

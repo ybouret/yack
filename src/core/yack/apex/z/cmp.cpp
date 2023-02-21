@@ -5,7 +5,7 @@ namespace yack
 {
     namespace apex
     {
-        int integer::cmp(const handle &lh, const handle &rh) throw()
+        int integer::cmp(const handle &lh, const handle &rh) noexcept
         {
             switch( __sign::pair(lh.s,rh.s) )
             {
@@ -26,7 +26,7 @@ namespace yack
             return 0;
         }
 
-        sign_type integer::scmp(const handle &lh, const handle &rh) throw()
+        sign_type integer::scmp(const handle &lh, const handle &rh) noexcept
         {
             switch( __sign::pair(lh.s,rh.s) )
             {

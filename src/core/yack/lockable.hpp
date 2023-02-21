@@ -21,9 +21,9 @@ namespace yack
         //
         // virtual interface
         //______________________________________________________________________
-        virtual void lock()     throw() = 0; //!< lock
-        virtual void unlock()   throw() = 0; //!< unlock
-        virtual bool try_lock() throw() = 0; //!< try lock
+        virtual void lock()     noexcept = 0; //!< lock
+        virtual void unlock()   noexcept = 0; //!< unlock
+        virtual bool try_lock() noexcept = 0; //!< try lock
         
         //______________________________________________________________________
         //
@@ -32,8 +32,8 @@ namespace yack
         class scope
         {
         public:
-            scope(lockable &) throw(); //!< lock
-            ~scope()          throw(); //!< unlock
+            scope(lockable &) noexcept; //!< lock
+            ~scope()          noexcept; //!< unlock
             
         private:
             lockable &host;
@@ -47,10 +47,10 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        virtual ~lockable() throw(); //!< cleanup
+        virtual ~lockable() noexcept; //!< cleanup
 
     protected:
-        explicit lockable() throw(); //!< setup
+        explicit lockable() noexcept; //!< setup
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(lockable);
@@ -79,8 +79,8 @@ namespace yack
     class return_unlocked
     {
     public:
-        return_unlocked(lockable &) throw(); //!< do nothing
-        ~return_unlocked()          throw(); //!< unlock
+        return_unlocked(lockable &) noexcept; //!< do nothing
+        ~return_unlocked()          noexcept; //!< unlock
 
     private:
         lockable &host;

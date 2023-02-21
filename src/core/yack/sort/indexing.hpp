@@ -18,7 +18,7 @@ namespace yack
     {
         //! make index, C++ style
         template <typename T,typename FUNC> static inline
-        void make(writable<size_t> &idx, FUNC &compare, const readable<T> &ra) throw()
+        void make(writable<size_t> &idx, FUNC &compare, const readable<T> &ra) noexcept
         {
 
             // initialize indices

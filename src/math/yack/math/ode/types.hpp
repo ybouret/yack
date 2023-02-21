@@ -37,10 +37,10 @@ namespace yack
             class entity : public large_object, public counted
             {
             public:
-                virtual ~entity() throw(); //!< cleanup
+                virtual ~entity() noexcept; //!< cleanup
 
             protected:
-                explicit entity() throw(); //!< setup
+                explicit entity() noexcept; //!< setup
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(entity);

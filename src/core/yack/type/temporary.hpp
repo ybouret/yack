@@ -25,7 +25,7 @@ namespace yack
         { host = temp; }
 
         //! restore original host value
-        inline virtual ~temporary() throw() { who = old; }
+        inline virtual ~temporary() noexcept { who = old; }
 
 
     private:
@@ -45,7 +45,7 @@ namespace yack
     {
     public:
         inline explicit temporary_increase(T &host) : temporary<T>(host,host+N) {} //!< save and set
-        inline virtual ~temporary_increase() throw() {}                            //!< reset
+        inline virtual ~temporary_increase() noexcept {}                            //!< reset
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(temporary_increase);

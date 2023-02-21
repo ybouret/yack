@@ -32,7 +32,7 @@ namespace yack {
   };
 
   template <typename T> static inline
-  void xbitrev(T data[], const size_t size) throw()
+  void xbitrev(T data[], const size_t size) noexcept
   {
     assert(NULL!=data); assert(size>0);
     switch(size)

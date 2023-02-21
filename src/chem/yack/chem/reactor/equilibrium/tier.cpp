@@ -9,7 +9,7 @@ namespace yack {
 
     namespace chemical {
         
-        eq_tier:: ~eq_tier() throw() {}
+        eq_tier:: ~eq_tier() noexcept {}
 
 
         eq_tier:: eq_tier() :

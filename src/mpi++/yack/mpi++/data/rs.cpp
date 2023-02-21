@@ -20,7 +20,7 @@ namespace yack
             {
             public:
 
-                inline virtual ~native_data_io() throw() {}
+                inline virtual ~native_data_io() noexcept {}
 
                 inline explicit native_data_io(const data_types &native) :
                 data_io_for<T>(),
@@ -57,7 +57,7 @@ namespace yack
 
 
 
-        data_rs:: ~data_rs() throw()
+        data_rs:: ~data_rs() noexcept
         {
         }
 

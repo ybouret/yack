@@ -23,7 +23,7 @@ namespace yack
         {
         public:
             typedef ios::ovstream<memory::dyadic> io_buffer; //!< alias
-            virtual ~srz_io() throw();                       //!< cleanup
+            virtual ~srz_io() noexcept;                       //!< cleanup
 
         protected:
             explicit srz_io(const rtti &uuid); //!< setup
@@ -55,7 +55,7 @@ namespace yack
         {
         public:
             //! cleanup
-            inline virtual ~srz_io_for() throw() {}
+            inline virtual ~srz_io_for() noexcept {}
 
             //! initialize type and constant default field
             inline explicit srz_io_for() :

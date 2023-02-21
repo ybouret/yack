@@ -28,9 +28,9 @@ namespace yack
             static const char Yext[]; //!< "Y"
 
 
-            filters(const filter &fx, const filter &fy) throw(); //!< setup from ALLOCATED filters
-            filters(const filters &)                    throw(); //!< no-throw copy
-            virtual ~filters()                          throw(); //!< cleanup
+            filters(const filter &fx, const filter &fy) noexcept; //!< setup from ALLOCATED filters
+            filters(const filters &)                    noexcept; //!< no-throw copy
+            virtual ~filters()                          noexcept; //!< cleanup
 
             const filter_ptr X; //!< X-Filter
             const filter_ptr Y; //!< Y-Filter

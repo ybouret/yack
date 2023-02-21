@@ -22,7 +22,7 @@ namespace yack
         // C++
         //______________________________________________________________________
         explicit wtime();          //!< setup frequency
-        virtual ~wtime() throw();  //!< cleanup
+        virtual ~wtime() noexcept;  //!< cleanup
 
         //______________________________________________________________________
         //

@@ -26,7 +26,7 @@ namespace yack {
             // C++
             //__________________________________________________________________
             boundaries(const size_t m, const sp_fund &); //!< setup with capacities
-            ~boundaries() throw();                       //!< cleanup
+            ~boundaries() noexcept;                       //!< cleanup
 
             //__________________________________________________________________
             //

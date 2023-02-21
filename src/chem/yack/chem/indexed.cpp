@@ -4,25 +4,25 @@ namespace yack
 {
     namespace chemical
     {
-        indexed:: ~indexed() throw()
+        indexed:: ~indexed() noexcept
         {
             coerce(indx_) = 0;
         }
 
-        indexed:: indexed(const size_t i) throw() :
+        indexed:: indexed(const size_t i) noexcept :
         indx_(i)
         {
             assert(indx_>0);
         }
 
-        indexed:: indexed(const indexed &_) throw() :
+        indexed:: indexed(const indexed &_) noexcept :
         indx_(_.indx_)
         {
 
         }
 
 
-        size_t indexed:: operator*() const throw() { assert(indx_>0); return indx_; }
+        size_t indexed:: operator*() const noexcept { assert(indx_>0); return indx_; }
 
     }
 

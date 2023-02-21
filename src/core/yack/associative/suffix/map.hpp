@@ -42,8 +42,8 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline explicit suffix_map() throw() : base_type() {} //!< setup empty
-        inline virtual ~suffix_map() throw() {}               //!< cleanup
+        inline explicit suffix_map() noexcept : base_type() {} //!< setup empty
+        inline virtual ~suffix_map() noexcept {}               //!< cleanup
         inline          suffix_map(const suffix_map &other) : //|
         collection(), base_type(other) {}                     //!< hard copy
 
@@ -62,7 +62,7 @@ namespace yack
 
 
         //! same category for suffix map
-        virtual const char *category() const throw() { return kernel::suffix_map_category; }
+        virtual const char *category() const noexcept { return kernel::suffix_map_category; }
 
         //! output to std::ostream
         friend inline std::ostream & operator<<(std::ostream &os, const suffix_map &s)

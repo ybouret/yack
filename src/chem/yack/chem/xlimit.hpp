@@ -32,13 +32,13 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            xlimit(const actor &, const double x) throw(); //!< setup with x >= 0
+            xlimit(const actor &, const double x) noexcept; //!< setup with x >= 0
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            const  actor  & operator*() const throw();       //!< get id
+            const  actor  & operator*() const noexcept;       //!< get id
 
             //__________________________________________________________________
             //
@@ -49,7 +49,7 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(xlimit);
-            ~xlimit() throw();
+            ~xlimit() noexcept;
         };
     }
     

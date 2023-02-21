@@ -65,7 +65,7 @@ namespace yack {
         
 		static const uint32_t tea_delta = 0x9E3779B9;
         
-		void tea:: encrypt(uint32_t *v, const size_t n, const uint32_t *k) throw() {
+		void tea:: encrypt(uint32_t *v, const size_t n, const uint32_t *k) noexcept {
 			assert(n>=2);
 			assert(k!=NULL);
 			assert(v!=NULL);
@@ -100,7 +100,7 @@ namespace yack {
             
 		}
         
-		void tea:: decrypt(uint32_t *v, const size_t n, const uint32_t *k) throw() {
+		void tea:: decrypt(uint32_t *v, const size_t n, const uint32_t *k) noexcept {
 			assert(n>=2);
 			assert(k!=NULL);
 			assert(v!=NULL);

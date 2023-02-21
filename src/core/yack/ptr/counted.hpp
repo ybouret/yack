@@ -20,12 +20,12 @@ namespace yack
     {
     public:
         typedef typename ptr<T>::type type;             //!< alias
-        virtual size_t  references() const throw() = 0; //!< interface
-        inline virtual ~counted_ptr() throw() {}        //!< cleanup
+        virtual size_t  references() const noexcept = 0; //!< interface
+        inline virtual ~counted_ptr() noexcept {}        //!< cleanup
 
     protected:
         //! setup by forwarding
-        inline explicit counted_ptr(type *addr) throw() : ptr<T>(addr) {}
+        inline explicit counted_ptr(type *addr) noexcept : ptr<T>(addr) {}
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(counted_ptr);

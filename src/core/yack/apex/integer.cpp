@@ -10,7 +10,7 @@ namespace yack
     namespace apex
     {
         
-        integer:: ~integer() throw()
+        integer:: ~integer() noexcept
         {
         }
         
@@ -88,13 +88,13 @@ namespace yack
             
         }
 
-        void integer:: ldz() throw()
+        void integer:: ldz() noexcept
         {
             coerce(s) = __zero__;
             coerce(n).ldz();
         }
 
-        void integer:: ldi(int_type i) throw()
+        void integer:: ldi(int_type i) noexcept
         {
             switch( coerce(s) = __sign::of(i) )
             {
@@ -105,7 +105,7 @@ namespace yack
         }
 
 
-        void integer:: xch(integer &z) throw()
+        void integer:: xch(integer &z) noexcept
         {
             coerce_cswap(s,z.s);
             coerce(n).xch( coerce(z.n) );
@@ -138,7 +138,7 @@ namespace yack
         
         const char integer::clid[] = "apz";
         
-        const char *  integer::class_uid() const throw()
+        const char *  integer::class_uid() const noexcept
         {
             return clid;
         }
@@ -158,37 +158,37 @@ namespace yack
 
     namespace apex
     {
-        integer::handle_::  handle_() throw() : u(0) {}
-        integer::handle_:: ~handle_() throw() {}
+        integer::handle_::  handle_() noexcept : u(0) {}
+        integer::handle_:: ~handle_() noexcept {}
 
-        integer::handle_::  handle_(const int_type I) throw() :
+        integer::handle_::  handle_(const int_type I) noexcept :
         u( absolute(I) )
         {
         }
 
 
 
-        integer:: handle:: handle(const integer &z) throw() :
+        integer:: handle:: handle(const integer &z) noexcept :
         handle_(),
         natural::handle(z.n),
         s(z.s)
         {
         }
 
-        integer:: handle:: handle(const int_type &I) throw() :
+        integer:: handle:: handle(const int_type &I) noexcept :
         handle_(I),
         natural::handle(u),
         s( __sign::of(I) )
         {
         }
 
-        integer:: handle:: ~handle() throw()
+        integer:: handle:: ~handle() noexcept
         {
             
         }
 
 
-        integer:: handle:: handle(const natural &N) throw() :
+        integer:: handle:: handle(const natural &N) noexcept :
         handle_(),
         natural::handle(N),
         s( (N>0) ? positive : __zero__ )

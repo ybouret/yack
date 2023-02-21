@@ -18,7 +18,7 @@ namespace yack
                 static inline void make(void          *args,
                                         const tiles   &part,
                                         const context & ,
-                                        lockable      &) throw()
+                                        lockable      &) noexcept
                 {
                     assert(args);
                     task                 &self   = *static_cast<task *>(args);

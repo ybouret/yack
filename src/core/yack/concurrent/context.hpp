@@ -27,10 +27,10 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            context()  throw();               //!< sequential
-            ~context() throw();               //!< cleanup
+            context()  noexcept;               //!< sequential
+            ~context() noexcept;               //!< cleanup
             context(const size_t sz,
-                    const size_t rk) throw(); //!< parallel
+                    const size_t rk) noexcept; //!< parallel
 
             //__________________________________________________________________
             //
@@ -42,17 +42,17 @@ namespace yack
 
             //! crop part from a larger task
             template <typename U> inline
-            void crop(U &length, U &offset) const throw()
+            void crop(U &length, U &offset) const noexcept
             {
                 split1D::with(size,rank,length,offset);
             }
 
             //! format sz.id
             static
-            void format(char buf[], const size_t len, const size_t sz, const size_t id)   throw();
+            void format(char buf[], const size_t len, const size_t sz, const size_t id)   noexcept;
           
             //! format size.indx
-            void format(char buf[], const size_t len) const throw();
+            void format(char buf[], const size_t len) const noexcept;
 
             //! on-the-fly access to (created) groove
             groove & operator*() const;
@@ -61,16 +61,16 @@ namespace yack
             groove * operator->() const;
 
             //! check if groove exists
-            bool   owns_local_memory() const throw();
+            bool   owns_local_memory() const noexcept;
 
             //! get local memory
-            size_t local_memory_size() const throw();
+            size_t local_memory_size() const noexcept;
 
             //! free local memory if exists
-            void free_local_memory() throw();
+            void free_local_memory() noexcept;
 
             //! remove local memory if exists
-            void drop_local_memory() throw();
+            void drop_local_memory() noexcept;
 
 
             //__________________________________________________________________

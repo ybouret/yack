@@ -24,9 +24,9 @@ namespace
         xNode       *prev;
         const size_t data;
 
-        inline  xNode(const size_t i) throw() : next(0), prev(0), data(i) {}
-        inline ~xNode() throw() {}
-        inline  xNode(const xNode &other) throw() : next(0), prev(0), data(other.data) {}
+        inline  xNode(const size_t i) noexcept : next(0), prev(0), data(i) {}
+        inline ~xNode() noexcept {}
+        inline  xNode(const xNode &other) noexcept : next(0), prev(0), data(other.data) {}
 
     private:
         YACK_DISABLE_ASSIGN(xNode);

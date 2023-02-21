@@ -6,7 +6,7 @@ namespace yack
     namespace ios
     {
 
-        characters:: characters() throw() : characters_()
+        characters:: characters() noexcept : characters_()
         {
         }
 
@@ -15,7 +15,7 @@ namespace yack
         {
         }
 
-        characters:: ~characters() throw()
+        characters:: ~characters() noexcept
         {
         }
 
@@ -47,7 +47,7 @@ namespace yack
             return *this;
         }
 
-        size_t characters:: fill(char buffer[],const size_t buflen) throw()
+        size_t characters:: fill(char buffer[],const size_t buflen) noexcept
         {
             assert(yack_good(buffer,buflen));
 
@@ -71,32 +71,32 @@ namespace yack
             }
         }
 
-        characters & characters:: trim(const char *bad, const size_t num) throw()
+        characters & characters:: trim(const char *bad, const size_t num) noexcept
         {
             return apply(bad,num, & characters::trim_<is_bad_> );
         }
 
-        characters & characters:: trim(const char *bad) throw()
+        characters & characters:: trim(const char *bad) noexcept
         {
             return trim(bad,yack_cstring_size(bad));
         }
 
-        characters & characters:: skip(const char *bad, const size_t num) throw()
+        characters & characters:: skip(const char *bad, const size_t num) noexcept
         {
             return apply(bad,num, & characters::skip_<is_bad_> );
         }
 
-        characters & characters:: skip(const char *bad) throw()
+        characters & characters:: skip(const char *bad) noexcept
         {
             return skip(bad,yack_cstring_size(bad));
         }
 
-        characters & characters:: strip(const char *bad, const size_t num) throw()
+        characters & characters:: strip(const char *bad, const size_t num) noexcept
         {
             return apply(bad,num, & characters::strip_<is_bad_> );
         }
 
-        characters & characters:: strip(const char *bad) throw()
+        characters & characters:: strip(const char *bad) noexcept
         {
             return strip(bad,yack_cstring_size(bad));
         }
@@ -125,7 +125,7 @@ namespace yack
 
 
 
-        void characters:: free(char *msg) throw()
+        void characters:: free(char *msg) noexcept
         {
             memory::legacy::release(msg);
         }

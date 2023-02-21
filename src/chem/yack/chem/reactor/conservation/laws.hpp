@@ -37,8 +37,8 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit claws() throw(); //!< setup
-            virtual ~claws() throw(); //!< cleanup
+            explicit claws() noexcept; //!< setup
+            virtual ~claws() noexcept; //!< cleanup
 
             
 

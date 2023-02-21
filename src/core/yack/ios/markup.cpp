@@ -10,7 +10,7 @@ namespace yack
         markup:: markup(const bool   &v,
                         std::ostream &os,
                         const char   *pfx_,
-                        const char   *tag_) throw() :
+                        const char   *tag_) noexcept :
         vrb(v),
         ptr( &os ),
         out( std_ostream ),
@@ -25,7 +25,7 @@ namespace yack
         markup:: markup(const bool   &v,
                         ios::ostream &os,
                         const char   *pfx_,
-                        const char   *tag_) throw() :
+                        const char   *tag_) noexcept :
         vrb(v),
         ptr( &os ),
         out( lib_ostream ),
@@ -38,12 +38,12 @@ namespace yack
         }
 
 
-        markup:: ~markup() throw()
+        markup:: ~markup() noexcept
         {
             leave();
         }
 
-        void markup:: enter() const throw()
+        void markup:: enter() const noexcept
         {
             try {
                 if(vrb)
@@ -65,7 +65,7 @@ namespace yack
             }
         }
 
-        void markup:: leave() const throw()
+        void markup:: leave() const noexcept
         {
             try {
                 if(vrb)

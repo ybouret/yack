@@ -45,10 +45,10 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~ostream() throw(); //!< cleanup
+            virtual ~ostream() noexcept; //!< cleanup
 
         protected:
-            explicit ostream() throw(); //!< setup
+            explicit ostream() noexcept; //!< setup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(ostream);

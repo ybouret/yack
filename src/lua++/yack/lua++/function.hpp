@@ -23,7 +23,7 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~Function_()  throw();          //!< cleanup
+            virtual ~Function_()  noexcept;          //!< cleanup
 
         protected:
             explicit Function_(const Function_ &);  //!< copy
@@ -89,7 +89,7 @@ namespace yack
             template <typename NAME>
             inline explicit Function(const VM &vm, const NAME &id) : Function_(vm,id) {} //!< setu
             inline          Function(const Function &F) : Function_(F) {}                //!< copy
-            inline virtual ~Function() throw() {}                                        //!< cleanup
+            inline virtual ~Function() noexcept {}                                        //!< cleanup
 
             //! call operator, nargs=1
             inline T operator()(const T x)

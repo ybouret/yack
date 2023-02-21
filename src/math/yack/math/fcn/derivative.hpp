@@ -36,14 +36,14 @@ namespace yack
             // C++
             //__________________________________________________________________
             explicit derivative();          //!< setup, allocate matrix
-            virtual ~derivative() throw();  //!< cleanup
+            virtual ~derivative() noexcept;  //!< cleanup
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            static T unit_step_size() throw(); //!< step scaling w.r.t characteristic scale of 1
-            static T diff_maxi_ftol() throw(); //!< first order max fractional tolerance
+            static T unit_step_size() noexcept; //!< step scaling w.r.t characteristic scale of 1
+            static T diff_maxi_ftol() noexcept; //!< first order max fractional tolerance
 
 
             //__________________________________________________________________
@@ -88,7 +88,7 @@ namespace yack
 
             void regularize(const T x, T &h);
             void rescale(const T x, T &h);
-            bool converged(T &ans, const size_t i, T &err) throw();
+            bool converged(T &ans, const size_t i, T &err) noexcept;
 
 
 

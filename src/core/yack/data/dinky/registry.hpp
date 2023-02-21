@@ -35,9 +35,9 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline explicit dinky_registry() throw() : root_type()                           {} //!< setup
-        inline explicit dinky_registry(const proxy_type &user) throw() : root_type(user) {} //!< setup with cache
-        inline virtual ~dinky_registry() throw()                                         {} //!< cleanup
+        inline explicit dinky_registry() noexcept : root_type()                           {} //!< setup
+        inline explicit dinky_registry(const proxy_type &user) noexcept : root_type(user) {} //!< setup with cache
+        inline virtual ~dinky_registry() noexcept                                         {} //!< cleanup
         inline          dinky_registry(const dinky_registry &_) : root_type(_)           {} //!< copy
 
         //______________________________________________________________________

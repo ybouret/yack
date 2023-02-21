@@ -24,11 +24,11 @@ namespace yack
             //__________________________________________________________________
 
             //! cleanup
-            virtual ~actor() throw();
+            virtual ~actor() noexcept;
             
             //! setup from persistent species and positive coefficient
             explicit actor(const species &sr,
-                           const unsigned cf) throw();
+                           const unsigned cf) noexcept;
 
             //__________________________________________________________________
             //
@@ -36,7 +36,7 @@ namespace yack
             //__________________________________________________________________
            
             //! access species
-            const species & operator*() const throw();
+            const species & operator*() const noexcept;
             
             //! helper
             void display_first(std::ostream &) const;
@@ -45,7 +45,7 @@ namespace yack
             void display_extra(std::ostream &) const;
 
             //! 1 == sp.rank
-            bool is_primary() const throw();
+            bool is_primary() const noexcept;
 
             //!  "[sp.name]=C[*s]"
             void display_compact(std::ostream &, const readable<double> &C) const;

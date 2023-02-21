@@ -75,7 +75,7 @@ namespace yack
                 }
                 
                 //! cleanup
-                inline virtual ~sample_of() throw()
+                inline virtual ~sample_of() noexcept
                 {
                 }
                 
@@ -85,7 +85,7 @@ namespace yack
                 //______________________________________________________________
              
                 //! common size
-                virtual size_t dimension() const throw()
+                virtual size_t dimension() const noexcept
                 {
                     assert(ordinate.size()==abscissa.size());
                     assert(adjusted.size()==abscissa.size());
@@ -269,7 +269,7 @@ namespace yack
                 }
 
                 //! release all memory
-                inline virtual void release() throw()
+                inline virtual void release() noexcept
                 {
                     Beta.release();
                     dFda.release();

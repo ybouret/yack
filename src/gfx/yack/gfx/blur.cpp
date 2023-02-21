@@ -10,7 +10,7 @@ namespace yack
     namespace graphic
     {
 
-        blur :: ~blur() throw() {}
+        blur :: ~blur() noexcept {}
 
         static inline unit_t compute_radius(const float sigma)
         {
@@ -19,7 +19,7 @@ namespace yack
             return r<=1 ? 1 : r;
         }
 
-        size_t blur:: inside(const unit_t r) throw()
+        size_t blur:: inside(const unit_t r) noexcept
         {
             assert(r>=0);
             const unit_t r2 = r*r;
@@ -50,9 +50,9 @@ namespace yack
 
         }
 
-        blur::factor::  factor() throw() : r(), w(0) {}
-        blur::factor:: ~factor() throw() {}
-        blur:: factor:: factor(const factor &f) throw() :
+        blur::factor::  factor() noexcept : r(), w(0) {}
+        blur::factor:: ~factor() noexcept {}
+        blur:: factor:: factor(const factor &f) noexcept :
         r(f.r), w(f.w)
         {
         }
@@ -63,11 +63,11 @@ namespace yack
             return os;
         }
 
-        blurring  :: ~blurring()  throw() {}
+        blurring  :: ~blurring()  noexcept {}
 
 
         static inline int compare_blur_factors(const blur::factor &lhs,
-                                               const blur::factor &rhs) throw()
+                                               const blur::factor &rhs) noexcept
         {
             return comparison::decreasing(lhs.w,rhs.w);
         }

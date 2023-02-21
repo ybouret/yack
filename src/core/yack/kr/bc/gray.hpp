@@ -18,8 +18,8 @@ namespace yack {
 		template <typename T>
 		struct gray
 		{
-			static T encode( T n ) throw(); //!< encode
-			static T decode( T n ) throw(); //!< decode
+			static T encode( T n ) noexcept; //!< encode
+			static T decode( T n ) noexcept; //!< decode
         };		
 
 	}

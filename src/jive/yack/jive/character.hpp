@@ -30,15 +30,15 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~character() throw();                               //!< cleanup
-            explicit character(const context &, const uint8_t) throw(); //!< no-throw build
-            character(const character &) throw();                       //!< no-throw copy
+            virtual ~character() noexcept;                               //!< cleanup
+            explicit character(const context &, const uint8_t) noexcept; //!< no-throw build
+            character(const character &) noexcept;                       //!< no-throw copy
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            const uint8_t & operator*() const throw(); //!< access
+            const uint8_t & operator*() const noexcept; //!< access
 
             //__________________________________________________________________
             //

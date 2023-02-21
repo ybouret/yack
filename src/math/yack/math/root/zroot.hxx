@@ -5,8 +5,8 @@ namespace yack
 
     namespace math
     {
-        template <> zroot<real_t>:: ~zroot() throw() {}
-        template <> zroot<real_t>::  zroot() throw() : core::zroot() {}
+        template <> zroot<real_t>:: ~zroot() noexcept {}
+        template <> zroot<real_t>::  zroot() noexcept : core::zroot() {}
 
         template <>
         core::zroot::result zroot<real_t>:: initialize(real_function<real_t> &F,

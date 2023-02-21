@@ -10,7 +10,7 @@ namespace yack
         namespace image
         {
 
-            tiffxx:: ~tiffxx() throw()
+            tiffxx:: ~tiffxx() noexcept
             {
                 assert(handle);
                 TIFFClose( static_cast<TIFF *>(handle) );
@@ -30,7 +30,7 @@ namespace yack
             {
             }
 
-            itiff:: ~itiff() throw()
+            itiff:: ~itiff() noexcept
             {
             }
 
@@ -95,7 +95,7 @@ namespace yack
             }
 
             static inline
-            void expand(pixmap<rgba> &img) throw()
+            void expand(pixmap<rgba> &img) noexcept
             {
                 const unit_t h   = img.h;
                 const unit_t w   = img.w;
@@ -148,7 +148,7 @@ namespace yack
             {
             }
 
-            otiff:: ~otiff() throw()
+            otiff:: ~otiff() noexcept
             {
             }
 

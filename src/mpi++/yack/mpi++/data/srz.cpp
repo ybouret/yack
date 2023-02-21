@@ -15,7 +15,7 @@ namespace yack
         io(4096)
         { }
 
-        srz_io:: ~srz_io() throw()
+        srz_io:: ~srz_io() noexcept
         {
         }
 

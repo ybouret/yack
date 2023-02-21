@@ -5,7 +5,7 @@ namespace yack
 {
     namespace net
     {
-        tcp_server_:: ~tcp_server_() throw()
+        tcp_server_:: ~tcp_server_() noexcept
         {
         }
 
@@ -27,7 +27,7 @@ namespace yack
     namespace net
     {
 
-        tcp_server:: ~tcp_server() throw()
+        tcp_server:: ~tcp_server() noexcept
         {
         }
 

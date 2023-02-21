@@ -11,7 +11,7 @@ namespace yack
     static bool    at_exit_init = true;
     static size_t  at_exit_size = 0;
     
-    static inline void at_exit_call() throw()
+    static inline void at_exit_call() noexcept
     {
         for(size_t i=0;i<at_exit_size;++i)
         {
@@ -23,7 +23,7 @@ namespace yack
     }
     
     static inline
-    int at_exit_compare(const void *lhs, const void *rhs) throw()
+    int at_exit_compare(const void *lhs, const void *rhs) noexcept
     {
         const at_exit &L = *static_cast<const at_exit *>(lhs);
         const at_exit &R = *static_cast<const at_exit *>(rhs);

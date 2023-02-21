@@ -45,7 +45,7 @@ namespace yack
                     static inline void make(void         *args,
                                             const tiles   &part,
                                             const context &info,
-                                            lockable      &) throw()
+                                            lockable      &) noexcept
                     {
                         assert(args);
                         assert(info.owns_local_memory());

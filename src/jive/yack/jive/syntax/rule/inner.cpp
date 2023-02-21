@@ -8,11 +8,11 @@ namespace yack
         namespace syntax
         {
 
-            inner:: ~inner() throw()
+            inner:: ~inner() noexcept
             {
             }
 
-            inner:: inner(const tag &name_) throw() :
+            inner:: inner(const tag &name_) noexcept :
             internal(name_,mark)
             {
                 I_am<inner>();

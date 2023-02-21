@@ -23,7 +23,7 @@ namespace yack
             class cm_parser : public jive::parser
             {
             public:
-                virtual ~cm_parser() throw(); //!< cleanup
+                virtual ~cm_parser() noexcept; //!< cleanup
                 explicit cm_parser();         //!< setup
 
             private:

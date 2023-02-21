@@ -14,8 +14,8 @@ namespace
         size_t        rank;
         static size_t count;
 
-        inline  dummy() throw() : rank(1) { ++count; }
-        inline ~dummy() throw() { --count; }
+        inline  dummy() noexcept : rank(1) { ++count; }
+        inline ~dummy() noexcept { --count; }
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(dummy);

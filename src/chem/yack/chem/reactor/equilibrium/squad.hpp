@@ -24,7 +24,7 @@ namespace yack {
             // C++
             //__________________________________________________________________
             explicit squad(const equilibrium &first); //!< setup
-            virtual ~squad() throw();                 //!< cleanup
+            virtual ~squad() noexcept;                 //!< cleanup
             squad(const squad &);                     //!< full copy
 
             //__________________________________________________________________
@@ -33,11 +33,11 @@ namespace yack {
             //__________________________________________________________________
             squad *clone() const;                                       //!< return new squad(*this)
             YACK_PROTO_OSTREAM(squad);                                  //!< display
-            static int compare(const squad * , const squad * ) throw(); //!< lexicographic
+            static int compare(const squad * , const squad * ) noexcept; //!< lexicographic
 
             //! accept equilibrium with higher index and detached of all
             bool   accepts(const equilibrium  &eq,
-                           const matrix<bool> &detached) const throw();
+                           const matrix<bool> &detached) const noexcept;
 
             //! finalize
             void   compile();

@@ -4,18 +4,18 @@
 namespace yack
 {
 
-    uint8_t  hexa::up16(const uint8_t b) throw()
+    uint8_t  hexa::up16(const uint8_t b) noexcept
     {
         return (b>>4) & 0xf;
     }
 
-    uint8_t  hexa::lo16(const uint8_t b) throw()
+    uint8_t  hexa::lo16(const uint8_t b) noexcept
     {
         return b & 0xf;
     }
 
 
-    int hexa::convert(const int ch) throw()
+    int hexa::convert(const int ch) noexcept
     {
         switch(ch)
         {

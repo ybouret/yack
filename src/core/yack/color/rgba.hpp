@@ -47,7 +47,7 @@ namespace yack
                 inline  rgba(param_type R, param_type G, param_type B, param_type A) : r(R), g(G), b(B), a(A) {}
 
                 //! cleanup
-                inline ~rgba() throw() {}
+                inline ~rgba() noexcept {}
 
                 //! copy
                 inline  rgba(const rgba &c) : r(c.r), g(c.g), b(c.b), a(c.a) {}
@@ -72,7 +72,7 @@ namespace yack
                 //______________________________________________________________
 
                 //! field wise comparator
-                inline friend bool operator==(const rgba &lhs, const rgba &rhs) throw()
+                inline friend bool operator==(const rgba &lhs, const rgba &rhs) noexcept
                 {
                     return (lhs.r==rhs.r) && (lhs.g==rhs.g) && (lhs.b==rhs.b) && (lhs.a==rhs.a);
                 }

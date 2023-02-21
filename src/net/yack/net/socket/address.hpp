@@ -34,16 +34,16 @@ namespace yack
             //! setup with version and optional inet_address_name and port
             socket_address(const ip_version        user_ip_v,
                            const inet_address_name user_name = inet_address_none,
-                           const uint16_t          user_port = 0) throw();
+                           const uint16_t          user_port = 0) noexcept;
 
             //! full copy
-            socket_address(const socket_address &other) throw();
+            socket_address(const socket_address &other) noexcept;
 
             //! copy/swap
-            socket_address & operator=(const socket_address &other) throw();
+            socket_address & operator=(const socket_address &other) noexcept;
 
             //! cleanup
-            virtual ~socket_address() throw();
+            virtual ~socket_address() noexcept;
 
 
 
@@ -51,8 +51,8 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            void        xch(socket_address &) throw(); //!< no-throw swap
-            ip_version  version()       const throw(); //!< version
+            void        xch(socket_address &) noexcept; //!< no-throw swap
+            ip_version  version()       const noexcept; //!< version
 
             //! display
             friend std::ostream & operator<<(std::ostream &, const socket_address &);
@@ -61,8 +61,8 @@ namespace yack
             ip_version              which;
             void                   *entry;
             memory::workplace<IPv6> where;
-            void clear() throw();
-            virtual const_inward & bulk()    const throw();
+            void clear() noexcept;
+            virtual const_inward & bulk()    const noexcept;
 
         };
     }

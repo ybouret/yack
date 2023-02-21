@@ -4,19 +4,19 @@
 
 namespace yack
 {
-    mpi:: exception:: ~exception() throw()
+    mpi:: exception:: ~exception() noexcept
     {
         memset(data,0,sizeof(data));
     }
 
-    const char * mpi::exception::what() const throw()
+    const char * mpi::exception::what() const noexcept
     {
         return data;
     }
 
     mpi:: exception:: exception(const int err,
                                 const char *fmt,
-                                ...) throw() :
+                                ...) noexcept :
     yack::exception(),
     code(err),
     data()
@@ -35,7 +35,7 @@ namespace yack
         (void) MPI_Error_string(code,data,&resultlen);
     }
 
-    mpi::exception::exception(const exception &other) throw() :
+    mpi::exception::exception(const exception &other) noexcept :
     yack::exception(other),
     code(other.code),
     data()

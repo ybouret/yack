@@ -19,7 +19,7 @@ namespace yack
         // C++
         //______________________________________________________________________
         explicit dso(const char *soname); //!< load library
-        virtual ~dso() throw();           //!< free library
+        virtual ~dso() noexcept;           //!< free library
 
         //______________________________________________________________________
         //
@@ -27,11 +27,11 @@ namespace yack
         //______________________________________________________________________
 
         //! load symbol address
-        void    *load(const char *symbol) const throw();
+        void    *load(const char *symbol) const noexcept;
 
         //! helper to load proc
         template <typename CFUNCTION>
-        CFUNCTION proc(const char *symbol) const throw()
+        CFUNCTION proc(const char *symbol) const noexcept
         {
             union {
                 void      *addr;

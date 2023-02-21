@@ -38,7 +38,7 @@ namespace yack {
             // C++
             //__________________________________________________________________
             explicit ledger();          //!< setup with first list
-            virtual ~ledger() throw();  //!< cleanup
+            virtual ~ledger() noexcept;  //!< cleanup
 
             //__________________________________________________________________
             //

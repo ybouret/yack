@@ -28,23 +28,23 @@ namespace yack
         // methods
         //______________________________________________________________________
 
-        inline inward       & operator*()        throw() { return (inward&) bulk(); } //!< access
-        inline const_inward & operator*()  const throw() { return           bulk(); } //!< access
-        inline inward       * operator->()       throw() { return (inward*)&bulk(); } //!< access
-        inline const_inward * operator->() const throw() { return          &bulk(); } //!< access
+        inline inward       & operator*()        noexcept { return (inward&) bulk(); } //!< access
+        inline const_inward & operator*()  const noexcept { return           bulk(); } //!< access
+        inline inward       * operator->()       noexcept { return (inward*)&bulk(); } //!< access
+        inline const_inward * operator->() const noexcept { return          &bulk(); } //!< access
 
         //______________________________________________________________________
         //
         // C++
         //______________________________________________________________________
-        inline virtual ~gateway() throw() {}                         //!< cleanup
+        inline virtual ~gateway() noexcept {}                         //!< cleanup
 
     protected:
-        inline explicit gateway() throw() {} //!< setup
+        inline explicit gateway() noexcept {} //!< setup
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(gateway);
-        virtual const_inward &bulk() const throw() = 0;
+        virtual const_inward &bulk() const noexcept = 0;
     };
 
 }

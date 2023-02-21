@@ -9,14 +9,14 @@ namespace yack
     namespace concurrent
     {
 
-        void pipeline:: prune() throw()
+        void pipeline:: prune() noexcept
         {
             sync.lock();
             while(pending.size) zombies.store( pending.pop_back() );
             sync.unlock();
         }
 
-        void pipeline:: flush() throw()
+        void pipeline:: flush() noexcept
         {
             sync.lock();
             if(computing.size)
@@ -31,7 +31,7 @@ namespace yack
 
         }
 
-        void pipeline:: finish(size_t count) throw()
+        void pipeline:: finish(size_t count) noexcept
         {
             assert(count<=threads);
             assert(ready>=count);
@@ -111,7 +111,7 @@ namespace yack
 {
     namespace concurrent
     {
-        void pipeline:: cycle() throw()
+        void pipeline:: cycle() noexcept
         {
             //------------------------------------------------------------------
             //
@@ -242,7 +242,7 @@ namespace yack
             }
         }
 
-        void pipeline:: recycle(drone *me)    throw()
+        void pipeline:: recycle(drone *me)    noexcept
         {
             assert(me);
             assert(computing.owns(me));
@@ -261,7 +261,7 @@ namespace yack
 {
     namespace concurrent
     {
-        job_uuid pipeline:: process(jnode *alive) throw()
+        job_uuid pipeline:: process(jnode *alive) noexcept
         {
             YACK_LOCK(sync);
             assert(NULL!=alive);

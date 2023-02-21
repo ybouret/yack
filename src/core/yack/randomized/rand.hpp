@@ -20,9 +20,9 @@ namespace yack
         class rand_ : public bits
         {
         public:
-            virtual ~rand_() throw(); //!< cleanup
-            explicit rand_() throw(); //!< setup
-            virtual uint32_t next32() throw();
+            virtual ~rand_() noexcept; //!< cleanup
+            explicit rand_() noexcept; //!< setup
+            virtual uint32_t next32() noexcept;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(rand_);

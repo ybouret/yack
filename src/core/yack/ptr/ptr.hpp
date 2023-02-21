@@ -19,10 +19,10 @@ namespace yack
     {
     public:
         static const char nil[]; //!< "(nil)"
-        virtual ~ptr_() throw(); //!< cleanup
+        virtual ~ptr_() noexcept; //!< cleanup
 
     protected:
-        explicit ptr_() throw(); //!< setup
+        explicit ptr_() noexcept; //!< setup
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(ptr_);

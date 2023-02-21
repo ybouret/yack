@@ -15,9 +15,9 @@ namespace yack
         class ParkMiller : public bits
         {
         public:
-            virtual ~ParkMiller() throw();                  //!< cleanup
-            explicit ParkMiller(const long seed=0) throw(); //!< setup
-            virtual uint32_t next32() throw();
+            virtual ~ParkMiller() noexcept;                  //!< cleanup
+            explicit ParkMiller(const long seed=0) noexcept; //!< setup
+            virtual uint32_t next32() noexcept;
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(ParkMiller);
             long word;

@@ -7,8 +7,8 @@ namespace yack {
     //! end13
     class end13 : public swaps {
       public:
-        virtual ~end13() throw(); //!< cleanup
-        explicit end13() throw(); //!< setup  
+        virtual ~end13() noexcept; //!< cleanup
+        explicit end13() noexcept; //!< setup  
         static const char   sid[];        //!< end13
         static const size_t lhs[0x002d];  //!< lhs
         static const size_t rhs[0x002d];  //!< rhs

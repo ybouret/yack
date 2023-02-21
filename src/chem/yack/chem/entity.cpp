@@ -8,7 +8,7 @@ namespace yack
     {
         bool entity::verbose = false;
 
-        entity:: ~entity() throw()
+        entity:: ~entity() noexcept
         {
         }
 
@@ -23,7 +23,7 @@ namespace yack
         
         
 
-        const string & entity:: key() const throw()
+        const string & entity:: key() const noexcept
         {
             return name;
         }

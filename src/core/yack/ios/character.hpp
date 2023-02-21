@@ -31,19 +31,19 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            character(const uint8_t ch) throw();               //!< create
-            character()  throw();                              //!< create with 0
-            ~character() throw();                              //!< cleanup
-            character(const character &) throw();              //!< copy code
-            character & operator=( const character &) throw(); //!< assign code
-            character & operator=( const uint8_t    ) throw(); //!< assign code
+            character(const uint8_t ch) noexcept;               //!< create
+            character()  noexcept;                              //!< create with 0
+            ~character() noexcept;                              //!< cleanup
+            character(const character &) noexcept;              //!< copy code
+            character & operator=( const character &) noexcept; //!< assign code
+            character & operator=( const uint8_t    ) noexcept; //!< assign code
             
             //__________________________________________________________________
             //
             // access
             //__________________________________________________________________
-            uint8_t       & operator*()       throw(); //!< access
-            const uint8_t & operator*() const throw(); //!< access
+            uint8_t       & operator*()       noexcept; //!< access
+            const uint8_t & operator*() const noexcept; //!< access
             
             //__________________________________________________________________
             //

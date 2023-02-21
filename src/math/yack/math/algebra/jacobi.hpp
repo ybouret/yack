@@ -42,7 +42,7 @@ namespace yack
             // C++
             //__________________________________________________________________
             explicit jacobi(const size_t n=0); //!< setup
-            virtual ~jacobi() throw();         //!< cleanup
+            virtual ~jacobi() noexcept;         //!< cleanup
 
             //__________________________________________________________________
             //
@@ -60,10 +60,10 @@ namespace yack
 
 
             //! sort by decreasing value
-            static void  eigsrt(writable<T> &d,  matrix<T> &v) throw();
+            static void  eigsrt(writable<T> &d,  matrix<T> &v) noexcept;
 
             //! sort by decreasing module
-            static void  eigsrtA(writable<T> &d, matrix<T> &v) throw();
+            static void  eigsrtA(writable<T> &d, matrix<T> &v) noexcept;
 
 
         private:

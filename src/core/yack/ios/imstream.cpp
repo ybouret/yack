@@ -7,13 +7,13 @@ namespace yack
     namespace ios
     {
 
-        imstream:: ~imstream() throw()
+        imstream:: ~imstream() noexcept
         {
             data = 0;
             left = 0;
         }
 
-        imstream:: imstream(const void *addr, const size_t size) throw() :
+        imstream:: imstream(const void *addr, const size_t size) noexcept :
         data( static_cast<const uint8_t *>(addr) ),
         left(size)
         {
@@ -21,7 +21,7 @@ namespace yack
             assert(!(NULL==data&&left>0));
         }
 
-        imstream:: imstream(const memory::ro_buffer &buff) throw() :
+        imstream:: imstream(const memory::ro_buffer &buff) noexcept :
         data( static_cast<const uint8_t *>(buff.ro_addr()) ),
         left( buff.measure() )
         {

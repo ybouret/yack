@@ -7,7 +7,7 @@ namespace yack
         namespace fitting
         {
 
-            template <> explODE<real_t>:: ~explODE() throw() {}
+            template <> explODE<real_t>:: ~explODE() noexcept {}
 
             
             template <>
@@ -20,7 +20,7 @@ namespace yack
 
 
             template <>
-            explODE<real_t>::callback * explODE<real_t>:: check() throw()
+            explODE<real_t>::callback * explODE<real_t>:: check() noexcept
             {
                 return NULL;
             }

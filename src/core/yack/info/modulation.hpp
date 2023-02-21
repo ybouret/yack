@@ -21,20 +21,20 @@ namespace yack
         class modulation
         {
         public:
-            virtual ~modulation() throw(); //!< cleanup
+            virtual ~modulation() noexcept; //!< cleanup
 
-            virtual void    reset()              throw() = 0; //!< reset state
-            virtual uint8_t alter(const uint8_t) throw() = 0; //!< alter byte
+            virtual void    reset()              noexcept = 0; //!< reset state
+            virtual uint8_t alter(const uint8_t) noexcept = 0; //!< alter byte
 
         protected:
-            explicit modulation() throw(); //!< setup
+            explicit modulation() noexcept; //!< setup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(modulation);
 
         public:
-            static uint8_t call(const uint8_t, void *) throw(); //!< for C code
-            void          *self() throw();                      //!< for C code
+            static uint8_t call(const uint8_t, void *) noexcept; //!< for C code
+            void          *self() noexcept;                      //!< for C code
         };
 
     }

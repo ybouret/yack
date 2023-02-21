@@ -16,11 +16,11 @@ namespace yack
     //__________________________________________________________________________
     struct system_seed
     {
-        static uint64_t get64() throw(); //!< create a hashed value
+        static uint64_t get64() noexcept; //!< create a hashed value
 
         //! make a positive seed from 64 bits
         template <typename T>
-        static inline T get() throw()
+        static inline T get() noexcept
         {
             static const uint64_t max64 = integral_for<T>::maximum;
             static const size_t   bits  = bits_for(max64);

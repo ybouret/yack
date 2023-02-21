@@ -34,7 +34,7 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~species() throw(); //!< cleanup
+            virtual ~species() noexcept; //!< cleanup
             species(const species &);   //!< copy
 
             //! initialize with valid index
@@ -61,7 +61,7 @@ namespace yack
             ios::ostream &  frame(ios::ostream &os, const readable<double> &C) const;
 
             //! sort by increasing index
-            static inline int compare(const species &lhs, const species &rhs) throw()
+            static inline int compare(const species &lhs, const species &rhs) noexcept
             {
                 return comparison::increasing(*lhs,*rhs);
             }
@@ -100,11 +100,11 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit sp_repo() throw() : object(), sp_repo_() {} //!< setup
-            virtual ~sp_repo() throw() {}                        //!< cleanup
+            explicit sp_repo() noexcept : object(), sp_repo_() {} //!< setup
+            virtual ~sp_repo() noexcept {}                        //!< cleanup
 
             //! sort contained nodes by increasing species index
-            void sort() throw()
+            void sort() noexcept
             {
                 sort_with( species::compare );
             }

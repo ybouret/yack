@@ -15,7 +15,7 @@ namespace yack
         {
             //! generate point on unit sphere
             template <typename T> static inline
-            void on_sphere(T &x, T &y, T&z, bits &ran) throw()
+            void on_sphere(T &x, T &y, T&z, bits &ran) noexcept
             {
                 static const T one(1);
                 while(true)
@@ -50,7 +50,7 @@ namespace yack
 
             //! generate point strictly within unit ball
             template <typename T> static inline
-            void in_ball(T &x, T &y, T &z, bits &ran) throw()
+            void in_ball(T &x, T &y, T &z, bits &ran) noexcept
             {
                 while(true)
                 {

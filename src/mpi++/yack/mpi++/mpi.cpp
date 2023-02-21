@@ -8,7 +8,7 @@ namespace yack {
     
     const char * const mpi::call_sign = "mpi";
 
-    mpi:: ~mpi() throw()
+    mpi:: ~mpi() noexcept
     {
         (void) MPI_Finalize();
     }
@@ -41,7 +41,7 @@ namespace yack {
     }
 
 
-    void mpi:: tmx_init() throw()
+    void mpi:: tmx_init() noexcept
     {
         memset( & coerce(send_tmx), 0, sizeof(send_tmx) );
         memset( & coerce(recv_tmx), 0, sizeof(recv_tmx) );

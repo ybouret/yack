@@ -21,7 +21,7 @@ namespace yack {
         class cyclic_
         {
         public:
-            virtual ~cyclic_() throw();     //!< cleanup
+            virtual ~cyclic_() noexcept;     //!< cleanup
         protected:
             explicit cyclic_(const size_t); //!< throw below 3
 
@@ -55,7 +55,7 @@ namespace yack {
             //__________________________________________________________________
 
             //! cleanup
-            inline virtual ~cyclic() throw() {}
+            inline virtual ~cyclic() noexcept {}
 
             //! allocate resources
             inline cyclic(const size_t n) :
@@ -164,7 +164,7 @@ namespace yack {
             }
 
             //! get value at row i, column j
-            inline T operator()(const size_t i, const size_t j) const throw()
+            inline T operator()(const size_t i, const size_t j) const noexcept
             {
                 assert(i>0); assert(i<=this->mutual_size());
                 assert(j>0); assert(j<=this->mutual_size());

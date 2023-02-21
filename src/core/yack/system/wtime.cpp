@@ -111,7 +111,7 @@ namespace yack
     {
     }
 
-    wtime:: ~wtime() throw()
+    wtime:: ~wtime() noexcept
     {
         coerce(freq) = 0;
     }

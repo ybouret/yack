@@ -37,8 +37,8 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~blobs() throw(); //!< setup empty
-            explicit blobs() throw(); //!< cleanup
+            virtual ~blobs() noexcept; //!< setup empty
+            explicit blobs() noexcept; //!< cleanup
 
             //------------------------------------------------------------------
             //
@@ -145,10 +145,10 @@ namespace yack
             }
 
             //! assume blobs are in decreasing size order
-            void no_smaller_than(const size_t minsize, tagmap &tmap) throw();
+            void no_smaller_than(const size_t minsize, tagmap &tmap) noexcept;
 
             //! re-label blobs index and tmap
-            void   relabel(tagmap &tmap) throw();
+            void   relabel(tagmap &tmap) noexcept;
 
 
         private:

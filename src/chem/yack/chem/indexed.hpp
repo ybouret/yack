@@ -19,10 +19,10 @@ namespace yack
         class indexed
         {
         public:
-            explicit indexed(const size_t) throw(); //!< with positive index
-            virtual ~indexed() throw();             //!< cleanup
-            indexed(const indexed &) throw();       //!< copy
-            size_t operator*() const throw();       //!< get index
+            explicit indexed(const size_t) noexcept; //!< with positive index
+            virtual ~indexed() noexcept;             //!< cleanup
+            indexed(const indexed &) noexcept;       //!< copy
+            size_t operator*() const noexcept;       //!< get index
 
         private:
             const size_t indx_;

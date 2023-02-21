@@ -6,7 +6,7 @@ namespace yack
         namespace ode
         {
             template <>
-            rk4<real_t>:: ~rk4() throw()
+            rk4<real_t>:: ~rk4() noexcept
             {
 
             }

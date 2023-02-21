@@ -22,15 +22,15 @@ namespace yack
                 static const size_t min_size = 128; //!< min size
 
                 explicit buffer(const size_t n); //!< next power of two
-                virtual ~buffer() throw();       //!< cleanup
+                virtual ~buffer() noexcept;       //!< cleanup
                 
                 buffer *next; //!< for list/pool
                 buffer *prev; //!< for list
 
-                void   restart() throw(); //!< make a fresh start
-                size_t written() const throw() { return wpos-rpos; } //!< written (a.k.a readable) bytes
-                size_t vacuous() const throw() { return last-wpos; } //!< vacuous (a.k.a writable) bytes
-                void   compact() throw(); //!< from written to entru
+                void   restart() noexcept; //!< make a fresh start
+                size_t written() const noexcept { return wpos-rpos; } //!< written (a.k.a readable) bytes
+                size_t vacuous() const noexcept { return last-wpos; } //!< vacuous (a.k.a writable) bytes
+                void   compact() noexcept; //!< from written to entru
 
                 //! receive at most vacuous bytes from channel
                 bool   recv(channel &input, const int flags)
@@ -59,8 +59,8 @@ namespace yack
                 uint8_t              *rpos;
                 uint8_t              *wpos;
 
-                virtual bool   query_(char &C)             throw();
-                virtual size_t fetch_(void *,const size_t) throw();
+                virtual bool   query_(char &C)             noexcept;
+                virtual size_t fetch_(void *,const size_t) noexcept;
             };
         }
 

@@ -31,21 +31,21 @@ namespace yack {
             //
             // virtual interface
             //__________________________________________________________________
-            virtual size_t      size()      const throw()              = 0; //!< block size in bytes
+            virtual size_t      size()      const noexcept              = 0; //!< block size in bytes
             virtual void        call(void *target, const void *source) = 0; //!< process target[block_size] from source[block_size]
             
             //__________________________________________________________________
             //
             // non virtual interface
             //__________________________________________________________________
-            size_t         bits() const throw(); //!< 8 * size()
-            const string  &key()  const throw(); //!< for pointer
+            size_t         bits() const noexcept; //!< 8 * size()
+            const string  &key()  const noexcept; //!< for pointer
             
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            virtual ~block_cipher() throw(); //!< cleanup
+            virtual ~block_cipher() noexcept; //!< cleanup
             
             //__________________________________________________________________
             //

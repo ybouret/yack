@@ -7,25 +7,25 @@ namespace yack
     {
         namespace syntax
         {
-            component:: component(const rule &r) throw() :
+            component:: component(const rule &r) noexcept :
             authority<const rule>(r),
             next(0),
             prev(0)
             {
             }
            
-            component:: ~component() throw()
+            component:: ~component() noexcept
             {
             }
             
             
             
-            compound:: ~compound() throw()
+            compound:: ~compound() noexcept
             {
             }
             
             compound:: compound(const tag     &name_,
-                                const uint32_t uuid_) throw() :
+                                const uint32_t uuid_) noexcept :
             internal(name_,uuid_), manifest()
             {
             }

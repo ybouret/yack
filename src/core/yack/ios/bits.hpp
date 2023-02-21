@@ -50,8 +50,8 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        virtual ~io_bits() throw();    //!< cleanup
-        io_bits()          throw();    //!< setup empty
+        virtual ~io_bits() noexcept;    //!< cleanup
+        io_bits()          noexcept;    //!< setup empty
         io_bits(const io_bits &other); //!< copy using other pool if possible
         void add(const io_bit::type);  //!< append  new bit
         void pre(const io_bit::type);  //!< prepend new bit
@@ -63,7 +63,7 @@ namespace yack
         //
         // methods
         //______________________________________________________________________
-        virtual void release() throw(); //!< list into pool
+        virtual void release() noexcept; //!< list into pool
 
         //______________________________________________________________________
         //
@@ -72,7 +72,7 @@ namespace yack
         virtual void write(const char C);       //!< write 8 bits
         virtual void flush();                   //!< align to next 8 bits boundary
         void         fuzz(randomized::bits &);  //!< align to next 8 bits boundary with random
-        void         drop() throw();            //!< drop up to next 8 bits boudary
+        void         drop() noexcept;            //!< drop up to next 8 bits boudary
         
         //______________________________________________________________________
         //
@@ -114,7 +114,7 @@ namespace yack
         }
 
         //! pluck bits to form a word
-        template <typename T> inline T pluck(size_t nbit) throw()
+        template <typename T> inline T pluck(size_t nbit) noexcept
         {
             assert(nbit<=sizeof(T)*8);
             assert(size>=nbit);
@@ -135,7 +135,7 @@ namespace yack
         }
 
         //! pluck a full word
-        template <typename T> inline T pluck() throw()
+        template <typename T> inline T pluck() noexcept
         {
             return pluck<T>(sizeof(T)*8);
         }
@@ -153,10 +153,10 @@ namespace yack
     private:
         YACK_DISABLE_ASSIGN(io_bits);
         io_bit *make(const io_bit::type);               //!< depending on pool's state
-        io_bit *fast(const io_bit::type) const throw(); //!< from non-empty pool
+        io_bit *fast(const io_bit::type) const noexcept; //!< from non-empty pool
 
-        virtual bool   query_(char &C) throw();
-        virtual size_t fetch_(void *addr, size_t size) throw();
+        virtual bool   query_(char &C) noexcept;
+        virtual size_t fetch_(void *addr, size_t size) noexcept;
 
     };
     

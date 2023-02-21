@@ -6,20 +6,20 @@ namespace yack
 {
     namespace jive
     {
-        context:: ~context() throw()
+        context:: ~context() noexcept
         {
             coerce(line)   = 0;
             coerce(column) = 0;
         }
 
-        context:: context(const context &other) throw() :
+        context:: context(const context &other) noexcept :
         tag(other),
         line(other.line),
         column(other.column)
         {
         }
         
-        exception &  context:: stamp(exception &excp) const throw()
+        exception &  context:: stamp(exception &excp) const noexcept
         {
             return excp.pre("%s:%u:%u: ", (**this)(), line, column);
         }

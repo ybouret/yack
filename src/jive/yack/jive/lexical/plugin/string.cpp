@@ -13,7 +13,7 @@ namespace yack
 
         namespace lexical
         {
-            string_:: ~string_() throw()
+            string_:: ~string_() noexcept
             {
 
             }
@@ -56,7 +56,7 @@ namespace yack
                 
             }
 
-            void string_:: enter(token &t) throw()
+            void string_:: enter(token &t) noexcept
             {
                 // token is the 'init' single char
                 assert(1==t.size);
@@ -64,13 +64,13 @@ namespace yack
                 content.swap_with(t);
             }
 
-            behavior string_:: claim(token &t) throw()
+            behavior string_:: claim(token &t) noexcept
             {
                 content.merge_back(t);
                 return discard;
             }
 
-            behavior string_:: esc_copy(token &t) throw()
+            behavior string_:: esc_copy(token &t) noexcept
             {
                 assert(2==t.size);
                 delete t.pop_front();
@@ -79,7 +79,7 @@ namespace yack
             }
 
 
-            behavior string_:: esc_code(token &t) throw()
+            behavior string_:: esc_code(token &t) noexcept
             {
                 assert(2==t.size);
                 delete t.pop_front();
@@ -97,7 +97,7 @@ namespace yack
                 return discard;
             }
 
-            behavior string_:: esc_hexa(token &t) throw()
+            behavior string_:: esc_hexa(token &t) noexcept
             {
                 assert(4==t.size);
                 assert('x'==**(t.head->next));

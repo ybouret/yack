@@ -50,7 +50,7 @@ namespace yack
             }
 
             //! cleanup
-            inline virtual ~pixmaps() throw() {}
+            inline virtual ~pixmaps() noexcept {}
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(pixmaps);

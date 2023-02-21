@@ -35,8 +35,8 @@ namespace yack {
             //
             // C++
             //__________________________________________________________________
-            inline virtual     ~workplace()       throw() { eradicate(); }             //!< cleanup
-            inline explicit     workplace()       throw() : words_()
+            inline virtual     ~workplace()       noexcept { eradicate(); }             //!< cleanup
+            inline explicit     workplace()       noexcept : words_()
             {
                 YACK_STATIC_CHECK(sizeof(words_)>=sizeof(T),bad_size);
                 assert(words_==out_of_reach::address(&words_[0]));
@@ -45,7 +45,7 @@ namespace yack {
 
             //! setup and setting address
             template <typename TARGET>
-            inline explicit     workplace(TARGET * &target) throw() : words_()
+            inline explicit     workplace(TARGET * &target) noexcept : words_()
             {
                 eradicate();
                 target = static_cast<TARGET *>( **this );
@@ -56,12 +56,12 @@ namespace yack {
             // methods
             //__________________________________________________________________
 
-            inline void        * operator*()       throw() { return out_of_reach::address(&words_[0]); }  //!< entry
-            inline const void  * operator*() const throw() { return out_of_reach::address(&words_[0]); }  //!< entry, const
-            inline void          eradicate()       throw() { memset(words_,0,sizeof(words_)); }           //!< cleanup content
+            inline void        * operator*()       noexcept { return out_of_reach::address(&words_[0]); }  //!< entry
+            inline const void  * operator*() const noexcept { return out_of_reach::address(&words_[0]); }  //!< entry, const
+            inline void          eradicate()       noexcept { memset(words_,0,sizeof(words_)); }           //!< cleanup content
 
             //! no-throw swap content
-            inline void         swap_with(workplace &other) throw() {
+            inline void         swap_with(workplace &other) noexcept {
                 for(size_t i=0;i<num_words;++i)
                     cswap(words_[i],other.words_[i]);
             }

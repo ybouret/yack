@@ -23,8 +23,8 @@ namespace yack
 /**/  private:                                    \
 /**/   YACK_DISABLE_COPY_AND_ASSIGN(callable);    \
 /**/  public:                                     \
-/**/    explicit callable() throw() : object() {} \
-/**/    virtual ~callable() throw() {}            \
+/**/    explicit callable() noexcept : object() {} \
+/**/    virtual ~callable() noexcept {}            \
 /**/    virtual callable *clone() const = 0
 
 

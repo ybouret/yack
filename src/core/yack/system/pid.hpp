@@ -22,8 +22,8 @@ namespace yack
         typedef uint32_t type;
 #endif
 
-        static type     get() throw(); //!< get the PID
-        static uint32_t h32() throw(); //!< get the crc32 of it
+        static type     get() noexcept; //!< get the PID
+        static uint32_t h32() noexcept; //!< get the crc32 of it
     };
 
 

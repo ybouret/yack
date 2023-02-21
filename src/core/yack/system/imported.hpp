@@ -30,30 +30,30 @@ namespace yack
             //
             // C++
             //______________________________________________________________________
-            explicit exception()         throw(); //!< empty
-            virtual ~exception()         throw(); //!< cleanup
-            exception(const exception &) throw(); //!< nothrow copy
+            explicit exception()         noexcept; //!< empty
+            virtual ~exception()         noexcept; //!< cleanup
+            exception(const exception &) noexcept; //!< nothrow copy
             //! set what()=where, format when()
-            explicit exception(const char *where, const char *fmt,...) throw() YACK_PRINTF_CHECK(3,4);
+            explicit exception(const char *where, const char *fmt,...) noexcept YACK_PRINTF_CHECK(3,4);
             
             //______________________________________________________________________
             //
             // interface
             //______________________________________________________________________
-            virtual const char *what() const throw(); //!< return system error text
+            virtual const char *what() const noexcept; //!< return system error text
 
             //______________________________________________________________________
             //
             //! helper to format text
             //______________________________________________________________________
-            void describe(const char *fmt,...) throw() YACK_PRINTF_API;
+            void describe(const char *fmt,...) noexcept YACK_PRINTF_API;
 
         protected:
             char text[what_size];                //!< textual error
 
         private:
             YACK_DISABLE_ASSIGN(exception);
-            void erase() throw();
+            void erase() noexcept;
         };
     }
 

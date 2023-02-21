@@ -14,7 +14,7 @@ namespace yack
             {
             public:
                 inline explicit bool_scribe() :  scribe( rtti::use<bool>() ) {}
-                inline virtual ~bool_scribe() throw() {}
+                inline virtual ~bool_scribe() noexcept {}
 
 
 
@@ -41,7 +41,7 @@ namespace yack
             {
             public:
                 inline explicit char_scribe() :  scribe( rtti::use<char>() ) {}
-                inline virtual ~char_scribe() throw() {}
+                inline virtual ~char_scribe() noexcept {}
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(char_scribe);
@@ -59,13 +59,13 @@ namespace yack
                 const string &format;
 
                 inline explicit format_scribe(const rtti   &uid,
-                                              const string &fmt) throw() :
+                                              const string &fmt) noexcept :
                 scribe(uid),
                 format(fmt)
                 {
                 }
 
-                inline virtual ~format_scribe() throw()
+                inline virtual ~format_scribe() noexcept
                 {
                 }
 
@@ -82,7 +82,7 @@ namespace yack
                 {
                 }
 
-                inline virtual ~real_scribe() throw()
+                inline virtual ~real_scribe() noexcept
                 {
                 }
 
@@ -100,7 +100,7 @@ namespace yack
             {
             public:
                 inline explicit u_scribe()  : scribe( rtti::use<T>() ) {}
-                inline virtual ~u_scribe() throw() {}
+                inline virtual ~u_scribe() noexcept {}
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(u_scribe);
@@ -117,7 +117,7 @@ namespace yack
             {
             public:
                 inline explicit s_scribe()  : scribe( rtti::use<T>() ) {}
-                inline virtual ~s_scribe() throw() {}
+                inline virtual ~s_scribe() noexcept {}
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(s_scribe);
@@ -133,7 +133,7 @@ namespace yack
 
         const char scribes:: call_sign[] = "ios::scribes";
 
-        scribes:: ~scribes() throw()
+        scribes:: ~scribes() noexcept
         {
         }
 

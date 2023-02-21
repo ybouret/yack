@@ -9,13 +9,13 @@ namespace yack
     {
 
         template <typename JOKER> static inline
-        bool are_same_joker(const pattern &lhs, const pattern &rhs) throw()
+        bool are_same_joker(const pattern &lhs, const pattern &rhs) noexcept
         {
             return pattern::are_same( **lhs.as<JOKER>(), **rhs.as<JOKER>() );
         }
 
         template <typename LOGIC> static inline
-        bool are_same_logic(const pattern &lhs, const pattern &rhs) throw()
+        bool are_same_logic(const pattern &lhs, const pattern &rhs) noexcept
         {
             const logical *L = lhs.as<LOGIC>();
             const logical *R = rhs.as<LOGIC>();
@@ -44,7 +44,7 @@ case CLASS::mark: return are_same_joker<CLASS>(lhs,rhs)
 case CLASS::mark: return are_same_logic<CLASS>(lhs,rhs)
 
 
-        bool pattern:: are_same(const pattern &lhs, const pattern &rhs) throw()
+        bool pattern:: are_same(const pattern &lhs, const pattern &rhs) noexcept
         {
             if(lhs.uuid!=rhs.uuid)
             {

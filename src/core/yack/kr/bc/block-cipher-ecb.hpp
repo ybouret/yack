@@ -31,10 +31,10 @@ namespace yack {
             class encrypter : public operating_block_cipher
             {
             public:
-                virtual      ~encrypter() throw();                      //!< cleanup
+                virtual      ~encrypter() noexcept;                      //!< cleanup
                 explicit      encrypter(const block_cipher::pointer &); //!< setup
                 virtual  void call(void *target, const void *source);   //!< block-wise encryption
-                virtual  void sync() throw();                           //!< do nothing
+                virtual  void sync() noexcept;                           //!< do nothing
                 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(encrypter);
@@ -48,10 +48,10 @@ namespace yack {
             {
             public:
                 
-                virtual      ~decrypter() throw();                       //!< cleanup
+                virtual      ~decrypter() noexcept;                       //!< cleanup
                 explicit      decrypter(const block_cipher::pointer &);  //!< setup
                 virtual  void call(void *target, const void *source);    //!< block-wise decryption
-                virtual  void sync() throw();                            //!< do nothing
+                virtual  void sync() noexcept;                            //!< do nothing
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(decrypter);

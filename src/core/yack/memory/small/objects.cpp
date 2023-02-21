@@ -12,7 +12,7 @@ namespace yack
 
         const char small_objects::designation[] = "memory::small_objects";
         
-        small_objects :: ~small_objects() throw()
+        small_objects :: ~small_objects() noexcept
         {
             if(0!=put_in_ram)
             {
@@ -49,7 +49,7 @@ namespace yack
             }
         }
         
-        void  small_objects:: release_unlocked(void *block_addr, size_t block_size) throw()
+        void  small_objects:: release_unlocked(void *block_addr, size_t block_size) noexcept
         {
             assert(block_addr);
             assert(block_size>0);
@@ -65,7 +65,7 @@ namespace yack
             }
         }
 
-        void  small_objects:: gc_unlocked(dyadic &target) throw()
+        void  small_objects:: gc_unlocked(dyadic &target) noexcept
         {
             blk->gc(target);
         }

@@ -7,7 +7,7 @@ namespace yack
 
         namespace lexical
         {
-            single_line_comment:: ~single_line_comment() throw()
+            single_line_comment:: ~single_line_comment() noexcept
             {
             }
 
@@ -17,12 +17,12 @@ namespace yack
                 drop(".+");
             }
 
-            void single_line_comment:: enter(token &) throw()
+            void single_line_comment:: enter(token &) noexcept
             {
 
             }
 
-            void single_line_comment:: leave(token &word) throw()
+            void single_line_comment:: leave(token &word) noexcept
             {
                 // word is endl => restore for host
                 restore(word);

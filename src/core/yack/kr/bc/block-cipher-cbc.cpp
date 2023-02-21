@@ -16,11 +16,11 @@ namespace yack {
         {
         }
         
-        block_cipher_cbc:: engine:: ~engine() throw()
+        block_cipher_cbc:: engine:: ~engine() noexcept
         {
         }
         
-        void block_cipher_cbc:: engine:: sync() throw()
+        void block_cipher_cbc:: engine:: sync() noexcept
         {
             Cp = *IV;
         }
@@ -34,7 +34,7 @@ namespace yack {
         {
         }
         
-        block_cipher_cbc:: encrypter:: ~encrypter() throw()
+        block_cipher_cbc:: encrypter:: ~encrypter() noexcept
         {
         }
         
@@ -61,7 +61,7 @@ namespace yack {
         {
         }
         
-        block_cipher_cbc:: decrypter:: ~decrypter() throw()
+        block_cipher_cbc:: decrypter:: ~decrypter() noexcept
         {
         }
         

@@ -28,7 +28,7 @@ namespace yack
         }
 
         
-        zcache:: ~zcache() throw()
+        zcache:: ~zcache() noexcept
         {
             free();
             //well->display_arena();
@@ -36,7 +36,7 @@ namespace yack
         }
         
         
-        size_t zcache:: block_size_for(const size_t bs) throw()
+        size_t zcache:: block_size_for(const size_t bs) noexcept
         {
             const size_t mbs = max_of( sizeof(stub), bs );
             return YACK_ALIGN_TO(void *,mbs);
@@ -56,7 +56,7 @@ namespace yack
             
         }
 
-        size_t  zcache:: here() const throw()
+        size_t  zcache:: here() const noexcept
         {
             return repo.size;
         }
@@ -68,7 +68,7 @@ namespace yack
                 repo.push( static_cast<stub*>(well->acquire()) );
         }
         
-        void zcache:: free() throw()
+        void zcache:: free() noexcept
         {
             while( repo.size )
                 well->release( repo.pop() );
@@ -86,7 +86,7 @@ namespace yack
             }
         }
         
-        void  zcache:: release_unlocked(void *addr) throw()
+        void  zcache:: release_unlocked(void *addr) noexcept
         {
             assert(addr);
             repo.push( static_cast<stub *>(memset(addr,0,sizeof(stub))));

@@ -10,9 +10,9 @@ namespace yack {
         static const char fn[] = "chemical::dictionary";
 
 
-        umap:: umap() throw() : large_object(), umap_() {}
+        umap:: umap() noexcept : large_object(), umap_() {}
 
-        umap:: ~umap() throw()
+        umap:: ~umap() noexcept
         {
         }
 
@@ -34,7 +34,7 @@ namespace yack {
             memcpy(kind,which, min_of<size_t>(strlen(which),sizeof(kind)-1));
         }
 
-        udict:: ~udict() throw()
+        udict:: ~udict() noexcept
         {
             memset(kind,0,sizeof(kind));
         }

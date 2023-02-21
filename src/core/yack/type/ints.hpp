@@ -24,7 +24,7 @@ namespace yack
         static const uint8_t minimum = 0;     //!< min
         static const uint8_t maximum = 0xff;  //!< max
         //! check
-        static inline type   positive(const type x) throw() { return x; }
+        static inline type   positive(const type x) noexcept { return x; }
     };
 
     //__________________________________________________________________________
@@ -38,7 +38,7 @@ namespace yack
         static const uint16_t maximum = 0xffff;  //!< max
 
         //! check
-        static inline type    positive(const type x) throw() { return x; }
+        static inline type    positive(const type x) noexcept { return x; }
     };
 
     //__________________________________________________________________________
@@ -52,7 +52,7 @@ namespace yack
         static const uint32_t maximum = 0xffffffff; //!< max
 
         //! check
-        static inline type    positive(const type x) throw() { return x; }
+        static inline type    positive(const type x) noexcept { return x; }
     };
 
     //__________________________________________________________________________
@@ -66,7 +66,7 @@ namespace yack
         static const uint64_t maximum = YACK_U64(0xffffffffffffffff); //!< max
 
         //! check
-        static inline type    positive(const type x) throw() { return x; }
+        static inline type    positive(const type x) noexcept { return x; }
     };
 
     //! matching unsigned type
@@ -95,7 +95,7 @@ namespace yack
         static const int8_t minimum = (-maximum-1);  //!< max
 
         //! check
-        static inline type  positive(const type x) throw() { return (x<0)?0:x; }
+        static inline type  positive(const type x) noexcept { return (x<0)?0:x; }
     };
 
     //__________________________________________________________________________
@@ -109,7 +109,7 @@ namespace yack
         static const int16_t minimum = (-maximum-1);   //!< min
 
         //! check
-        static inline type   positive(const type x) throw() { return (x<0)?0:x; }
+        static inline type   positive(const type x) noexcept { return (x<0)?0:x; }
     };
 
     //__________________________________________________________________________
@@ -123,7 +123,7 @@ namespace yack
         static const int32_t minimum = (-maximum-1); //!< min
 
         //! check
-        static inline type   positive(const type x) throw() { return (x<0)?0:x; }
+        static inline type   positive(const type x) noexcept { return (x<0)?0:x; }
     };
 
     //__________________________________________________________________________
@@ -137,7 +137,7 @@ namespace yack
         static const int64_t minimum =  (-maximum-1);                 //!< min
 
         //! check
-        static inline type   positive(const type x) throw() { return (x<0)?0:x; }
+        static inline type   positive(const type x) noexcept { return (x<0)?0:x; }
     };
 
     //__________________________________________________________________________

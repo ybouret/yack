@@ -39,7 +39,7 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~integer() throw();                      //!< cleanup
+            virtual ~integer() noexcept;                      //!< cleanup
             integer();                                       //!< default=0
             integer(const int_type z);                       //!< from integral type
             integer(const integer &z);                       //!< copy
@@ -53,7 +53,7 @@ namespace yack
             //
             // serializable interface
             //__________________________________________________________________
-            virtual const char * class_uid()       const throw(); //!< clid
+            virtual const char * class_uid()       const noexcept; //!< clid
             virtual size_t       serialize(ios::ostream &) const; //!< s+n
             static  integer      construct(ios::istream &, size_t &cumul); //!< from s+n
 
@@ -63,9 +63,9 @@ namespace yack
             //__________________________________________________________________
 
 
-            void xch(integer &) throw(); //!< no-throw exchange
-            void ldz()          throw(); //!< fast to zero
-            void ldi(int_type)  throw(); //!< fast loading of integer type
+            void xch(integer &) noexcept; //!< no-throw exchange
+            void ldz()          noexcept; //!< fast to zero
+            void ldi(int_type)  noexcept; //!< fast loading of integer type
 
             //! display
             friend std::ostream &operator<<(std::ostream &, const integer &);
@@ -77,15 +77,15 @@ namespace yack
 
             //! build API
 #define     YACK_APZ_REP_NO_THROW(PROLOG,CALL)                           \
-/**/        inline PROLOG (const integer &lhs, const integer &rhs) throw() \
+/**/        inline PROLOG (const integer &lhs, const integer &rhs) noexcept \
 /**/        { const handle L(lhs), R(rhs); return CALL; }                  \
-/**/        inline PROLOG (const integer &lhs, const int_type rhs) throw() \
+/**/        inline PROLOG (const integer &lhs, const int_type rhs) noexcept \
 /**/        { const handle L(lhs), R(rhs); return CALL; }                  \
-/**/        inline PROLOG (const int_type lhs, const integer &rhs) throw() \
+/**/        inline PROLOG (const int_type lhs, const integer &rhs) noexcept \
 /**/        { const handle L(lhs), R(rhs); return CALL; }                  \
-/**/        inline PROLOG (const integer &lhs, const natural &rhs) throw() \
+/**/        inline PROLOG (const integer &lhs, const natural &rhs) noexcept \
 /**/        { const handle L(lhs), R(rhs); return CALL; }                  \
-/**/        inline PROLOG (const natural &lhs, const integer &rhs) throw() \
+/**/        inline PROLOG (const natural &lhs, const integer &rhs) noexcept \
 /**/        { const handle L(lhs), R(rhs); return CALL; }
 
 
@@ -142,7 +142,7 @@ namespace yack
             integer &operator--();      //!< pre  decrease operator
             integer  operator--(int);   //!< post decrease operator
             YACK_APZ_REP(-,sub)
-            void neg() throw();         //!< in-place no-throw change sign
+            void neg() noexcept;         //!< in-place no-throw change sign
 
             //__________________________________________________________________
             //
@@ -169,7 +169,7 @@ namespace yack
             //__________________________________________________________________
             //! try to cast to a system integer
             template <typename T> inline
-            bool try_cast_to(T &res) const throw()
+            bool try_cast_to(T &res) const noexcept
             {
                 switch(s)
                 {
@@ -221,10 +221,10 @@ namespace yack
             class handle_
             {
             public:
-                virtual ~handle_() throw();
+                virtual ~handle_() noexcept;
             protected:
-                explicit handle_() throw();
-                explicit handle_(const int_type) throw();
+                explicit handle_() noexcept;
+                explicit handle_(const int_type) noexcept;
                 uint_type u;
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(handle_);
@@ -234,18 +234,18 @@ namespace yack
             class handle : public handle_, public natural::handle
             {
             public:
-                explicit handle(const integer  &) throw();
-                explicit handle(const int_type &) throw();
-                explicit handle(const natural  &) throw();
-                virtual ~handle() throw();
+                explicit handle(const integer  &) noexcept;
+                explicit handle(const int_type &) noexcept;
+                explicit handle(const natural  &) noexcept;
+                virtual ~handle() noexcept;
 
                 const sign_type s;
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(handle);
             };
 
-            static int        cmp(const handle &lh, const handle &rh) throw();
-            static sign_type scmp(const handle &lh, const handle &rh) throw();
+            static int        cmp(const handle &lh, const handle &rh) noexcept;
+            static sign_type scmp(const handle &lh, const handle &rh) noexcept;
             static integer    add(const handle &lh, const handle &rh);
             static integer    sub(const handle &lh, const handle &rh);
             static integer    mul(const handle &lh, const handle &rh);

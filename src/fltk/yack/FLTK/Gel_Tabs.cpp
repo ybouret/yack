@@ -363,7 +363,7 @@ namespace yack
             push_ = 0;
         }
         
-        Gel_Tabs:: ~Gel_Tabs() throw() {}
+        Gel_Tabs:: ~Gel_Tabs() noexcept {}
     }
 }
 

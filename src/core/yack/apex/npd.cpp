@@ -18,13 +18,13 @@ namespace yack
             return os;
         }
 
-        pnode::~pnode() throw()
+        pnode::~pnode() noexcept
         {
             coerce(p) = 0;
             coerce(n) = 0;
         }
 
-        pnode:: pnode(const pnode &other) throw() :
+        pnode:: pnode(const pnode &other) noexcept :
         object(),
         p(other.p),
         n(other.n),
@@ -34,7 +34,7 @@ namespace yack
             assert(n>0);
         }
 
-        pnode:: pnode(const natural &p_, const size_t n_) throw() :
+        pnode:: pnode(const natural &p_, const size_t n_) noexcept :
         object(),
         p( &p_ ),
         n(  n_ ),
@@ -99,11 +99,11 @@ namespace yack
         }
 
 
-        npd:: ~npd() throw()
+        npd:: ~npd() noexcept
         {
         }
 
-        npd:: npd() throw() : plist()
+        npd:: npd() noexcept : plist()
         {
 
         }

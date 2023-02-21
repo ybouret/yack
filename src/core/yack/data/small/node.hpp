@@ -32,7 +32,7 @@ namespace yack
         // C++
         //______________________________________________________________________
         inline  small_node(param_type args) : next(0), prev(0), data(args) {}                       //!< setup by copy constructor
-        inline ~small_node() throw() { assert(NULL==next); assert(NULL==prev); }                    //!< cleanup
+        inline ~small_node() noexcept { assert(NULL==next); assert(NULL==prev); }                    //!< cleanup
         inline  small_node(const small_node &node) : object(), next(0), prev(0), data(node.data) {} //!< hard copy
 
         //! setup by conversion constructor
@@ -43,8 +43,8 @@ namespace yack
         //
         // methods
         //______________________________________________________________________
-        inline type       & operator*() throw()       { return data; } //!< access
-        inline const_type & operator*() const throw() { return data; } //!< access, const
+        inline type       & operator*() noexcept       { return data; } //!< access
+        inline const_type & operator*() const noexcept { return data; } //!< access, const
 
         //! forwarding display call
         inline friend std::ostream & operator<<(std::ostream &os, const small_node &self)

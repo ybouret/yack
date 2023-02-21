@@ -6,9 +6,9 @@ namespace yack
     namespace ios
     {
 
-        osstream:: ~osstream() throw() {}
+        osstream:: ~osstream() noexcept {}
 
-        osstream:: osstream(string &target) throw() : host(target) {}
+        osstream:: osstream(string &target) noexcept : host(target) {}
 
         void osstream:: write(char C)
         {

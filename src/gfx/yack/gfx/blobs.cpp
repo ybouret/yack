@@ -6,12 +6,12 @@ namespace yack
     namespace graphic
     {
 
-        blobs:: blobs() throw() : cxx_list_of<blob>()
+        blobs:: blobs() noexcept : cxx_list_of<blob>()
         {
 
         }
 
-        blobs:: ~blobs() throw()
+        blobs:: ~blobs() noexcept
         {
         }
 
@@ -25,12 +25,12 @@ namespace yack
 
 
         static inline
-        int compare_blobs(const blob *lhs, const blob *rhs) throw()
+        int compare_blobs(const blob *lhs, const blob *rhs) noexcept
         {
             return comparison::decreasing<size_t>(lhs->size,rhs->size);
         }
 
-        void blobs:: relabel(tagmap &tmap) throw()
+        void blobs:: relabel(tagmap &tmap) noexcept
         {
             size_t i = 0;
             for(blob *b=head;b;b=b->next)
@@ -48,7 +48,7 @@ namespace yack
             merge_list_of<blob>::sort(*this, compare_blobs);
         }
 
-        void blobs:: no_smaller_than(const size_t minsize, tagmap &bmap) throw()
+        void blobs:: no_smaller_than(const size_t minsize, tagmap &bmap) noexcept
         {
             while(size)
             {

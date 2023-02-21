@@ -36,9 +36,9 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline virtual ~glossary() throw() {} //!< cleanup
+        inline virtual ~glossary() noexcept {} //!< cleanup
     protected:
-        inline explicit glossary() throw() {} //!< setup
+        inline explicit glossary() noexcept {} //!< setup
 
         //! multipurpose display
         template <typename OSTREAM, typename NODE> static inline

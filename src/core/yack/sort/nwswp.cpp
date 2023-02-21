@@ -4,7 +4,7 @@ namespace yack
 {
     namespace nwsrt
     {
-        swaps:: ~swaps() throw()
+        swaps:: ~swaps() noexcept
         {
         }
         
@@ -12,7 +12,7 @@ namespace yack
                       const size_t dim,
                       const size_t num,
                       const size_t *lhs,
-                      const size_t *rhs) throw() :
+                      const size_t *rhs) noexcept :
         name(sid),
         size(dim),
         work(num),

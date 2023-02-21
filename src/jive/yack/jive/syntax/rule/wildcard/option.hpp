@@ -35,11 +35,11 @@ namespace yack
                 // C++
                 //______________________________________________________________
                 //! cleanup
-                virtual ~option() throw();
+                virtual ~option() noexcept;
                 
                 //! setup
                 explicit option(const tag      &name_,
-                                const rule     &host_) throw();
+                                const rule     &host_) noexcept;
 
                 //______________________________________________________________
                 //

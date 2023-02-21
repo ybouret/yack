@@ -5,14 +5,14 @@ namespace yack
 {
     namespace graphic
     {
-        cnode:: ~cnode() throw() {}
+        cnode:: ~cnode() noexcept {}
 
-        cnode:: cnode(const coord &p) throw() : next(0), prev(0), pos(p) {}
+        cnode:: cnode(const coord &p) noexcept : next(0), prev(0), pos(p) {}
 
-        cnode:: cnode(const cnode &v) throw() : next(0), prev(0), pos(v.pos) {}
+        cnode:: cnode(const cnode &v) noexcept : next(0), prev(0), pos(v.pos) {}
 
 
-        const coord & cnode:: operator*() const throw() { return pos; }
+        const coord & cnode:: operator*() const noexcept { return pos; }
 
     }
 }

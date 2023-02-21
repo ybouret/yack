@@ -6,7 +6,7 @@ namespace yack
     namespace chemical
     {
         
-        static inline int compare_sp(const species &lhs, const species &rhs) throw()
+        static inline int compare_sp(const species &lhs, const species &rhs) noexcept
         {
             return comparison::increasing(*lhs,*rhs);
         }

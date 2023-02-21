@@ -286,7 +286,7 @@ namespace yack
 
 		} // RFC1321
 
-		md5::md5() throw() : function(__length, __window), ctx()
+		md5::md5() noexcept : function(__length, __window), ctx()
 		{
 		}
 
@@ -294,18 +294,18 @@ namespace yack
         
 
 
-		void md5:: set() throw()
+		void md5:: set() noexcept
 		{
 			RFC1321::MD5Init( &ctx );
 		}
 
-		void md5:: run( const void *buffer, size_t buflen ) throw()
+		void md5:: run( const void *buffer, size_t buflen ) noexcept
 		{
 			assert( !(buflen>0&&NULL==buffer) );
 			RFC1321::MD5Update( &ctx, (const uint8_t *)buffer, buflen );
 		}
 
-		void md5::get(void *output, size_t outlen ) throw()
+		void md5::get(void *output, size_t outlen ) noexcept
 		{
 			assert( !(output==NULL&&outlen>0) );
 			uint8_t  digest[16];
@@ -313,7 +313,7 @@ namespace yack
 			fill( output, outlen, digest, sizeof(digest) );
 		}
 
-		md5:: ~md5() throw()
+		md5:: ~md5() noexcept
 		{
 			memset( &ctx, 0 , sizeof(ctx) );
 		}

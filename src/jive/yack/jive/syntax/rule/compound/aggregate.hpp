@@ -33,8 +33,8 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~aggregate()                            throw(); //!< cleanup
-                explicit aggregate(const tag &, const agg_role) throw(); //!< setup
+                virtual ~aggregate()                            noexcept; //!< cleanup
+                explicit aggregate(const tag &, const agg_role) noexcept; //!< setup
 
                 //______________________________________________________________
                 //

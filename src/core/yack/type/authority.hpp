@@ -26,18 +26,18 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline virtual ~authority()        throw() {}                          //!< cleanup
-        inline explicit authority(T &user) throw() : host_( coerce(user) ) {}  //!< setup
+        inline virtual ~authority()        noexcept {}                          //!< cleanup
+        inline explicit authority(T &user) noexcept : host_( coerce(user) ) {}  //!< setup
 
         //______________________________________________________________________
         //
         // methods
         //______________________________________________________________________
-        inline host       & operator*()  throw()       { return host_; } //!< access
-        inline const_host & operator*()  const throw() { return host_; } //!< access
+        inline host       & operator*()  noexcept       { return host_; } //!< access
+        inline const_host & operator*()  const noexcept { return host_; } //!< access
         
-        inline host       * operator->()  throw()       { return &host_; } //!< access
-        inline const_host * operator->()  const throw() { return &host_; } //!< access
+        inline host       * operator->()  noexcept       { return &host_; } //!< access
+        inline const_host * operator->()  const noexcept { return &host_; } //!< access
         
     private:
         mutable_host &host_;

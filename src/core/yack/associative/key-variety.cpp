@@ -2,7 +2,7 @@
 
 namespace yack
 {
-    const char * key_variety:: text(const type t) throw()
+    const char * key_variety:: text(const type t) noexcept
     {
         switch (t)
         {

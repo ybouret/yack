@@ -21,16 +21,16 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline explicit zproxy() throw() : host()      {} //!< setup
-        inline virtual ~zproxy() throw()               {} //!< cleanup
-        inline zproxy(const zproxy &) throw() : host() {} //!< copy is do nothing...
+        inline explicit zproxy() noexcept : host()      {} //!< setup
+        inline virtual ~zproxy() noexcept               {} //!< cleanup
+        inline zproxy(const zproxy &) noexcept : host() {} //!< copy is do nothing...
         
         //______________________________________________________________________
         //
         // methods
         //______________________________________________________________________
-        inline HOST *       operator->()       throw() { return &host; } //!< access
-        inline const HOST & operator->() const throw() { return &host; } //!< access
+        inline HOST *       operator->()       noexcept { return &host; } //!< access
+        inline const HOST & operator->() const noexcept { return &host; } //!< access
         
     private:
         HOST host;

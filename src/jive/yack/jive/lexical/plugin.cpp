@@ -9,7 +9,7 @@ namespace yack
 
         namespace lexical
         {
-            plugin:: ~plugin() throw()
+            plugin:: ~plugin() noexcept
             {}
 
 

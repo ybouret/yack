@@ -18,11 +18,11 @@ namespace
         void  *addr;
         size_t size;
         
-        inline  block( ) throw() : next(0), prev(0), addr(0), size(0)
+        inline  block( ) noexcept : next(0), prev(0), addr(0), size(0)
         {
         }
         
-        inline ~block() throw()
+        inline ~block() noexcept
         {
         }
         

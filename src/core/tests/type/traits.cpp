@@ -3,7 +3,7 @@
 
 using namespace yack;
 
-static inline const char *answer(const bool flag) throw() { return flag ? "yes" : "no"; }
+static inline const char *answer(const bool flag) noexcept { return flag ? "yes" : "no"; }
 
 #define CHECK(ppty) do { std::cerr << "\t" << std::setw(20) << #ppty << " : " << answer( type_traits<T>::is_##ppty ) << std::endl; } while(false)
 

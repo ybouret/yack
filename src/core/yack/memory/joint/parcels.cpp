@@ -29,7 +29,7 @@ namespace yack
             grow_for(0);
         }
         
-        void parcels:: kill(parcel *p) throw()
+        void parcels:: kill(parcel *p) noexcept
         {
             assert(NULL!=p);
             assert(NULL!=zpool);
@@ -42,7 +42,7 @@ namespace yack
         }
         
         
-        parcels:: ~parcels() throw()
+        parcels:: ~parcels() noexcept
         {
             while(plist.size) kill( plist.pop_back() );
             out_of_reach::zset( destructed(zpool), sizeof(impl ) );
@@ -81,7 +81,7 @@ namespace yack
         }
         
         
-        void * parcels:: checked(void *p) throw()
+        void * parcels:: checked(void *p) noexcept
         {
             assert(p);
             assert(parcel::whose(p) == cache);
@@ -185,7 +185,7 @@ namespace yack
     
     namespace memory
     {
-        void  parcels:: release_unlocked(void * &block_addr, size_t &block_size) throw()
+        void  parcels:: release_unlocked(void * &block_addr, size_t &block_size) noexcept
         {
             // sanity check
             assert(block_addr);

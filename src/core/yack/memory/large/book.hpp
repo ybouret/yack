@@ -44,17 +44,17 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            book()  throw(); //!< setup chapters
-            ~book() throw(); //!< clean all
+            book()  noexcept; //!< setup chapters
+            ~book() noexcept; //!< clean all
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
             void *query(const size_t page_exp2);                      //!< min_page_exp2 <= page_exp2 <= max_page_exp2
-            void  store(void *addr, const size_t page_exp2) throw();  //!< store a previously queried page
+            void  store(void *addr, const size_t page_exp2) noexcept;  //!< store a previously queried page
             void  display() const;                                    //!< display current info
-            chapter & operator[](const size_t page_exp2) throw();     //!< direct access to book
+            chapter & operator[](const size_t page_exp2) noexcept;     //!< direct access to book
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(book);

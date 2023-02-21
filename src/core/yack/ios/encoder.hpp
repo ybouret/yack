@@ -38,7 +38,7 @@ namespace yack
 
 
             //! transform qw in [0..9] bytes
-            static size_t upack(uint8_t *, uint64_t qw) throw();
+            static size_t upack(uint8_t *, uint64_t qw) noexcept;
 
             //! serialize 64bits by quartets
             static size_t serialize64(ostream &, const uint64_t);

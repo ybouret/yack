@@ -54,7 +54,7 @@ namespace yack
                 //______________________________________________________________
 
                 //! cleanup
-                virtual ~scanner() throw();
+                virtual ~scanner() noexcept;
 
                 //! setup with default policy and internal index for lexemes
                 template <typename LABEL> inline
@@ -80,7 +80,7 @@ namespace yack
                 //______________________________________________________________
 
                 //! return *tag
-                const string & key() const throw();
+                const string & key() const noexcept;
 
                 //! return '<' + *label + '>'
                 const string   sid() const; 
@@ -181,9 +181,9 @@ namespace yack
                 }
 
 
-                behavior on_produce(const token &) throw(); //!< default produce method: return produce
-                behavior on_discard(const token &) throw(); //!< default discard method: return discard
-                behavior on_newline(const token &) throw(); //!< curr_->newline()    and return discard
+                behavior on_produce(const token &) noexcept; //!< default produce method: return produce
+                behavior on_discard(const token &) noexcept; //!< default discard method: return discard
+                behavior on_newline(const token &) noexcept; //!< curr_->newline()    and return discard
 
                 friend std::ostream & operator<<(std::ostream &, const scanner &); //!< output quoted directives
 
@@ -299,16 +299,16 @@ namespace yack
                 //
                 // other methods
                 //______________________________________________________________
-                void     link_to(analyzer&) throw();                   //!< set dict, root and indx
-                void     restore(token&)    throw();                   //!< restore read token to root
+                void     link_to(analyzer&) noexcept;                   //!< set dict, root and indx
+                void     restore(token&)    noexcept;                   //!< restore read token to root
                 lexeme  *newlex(const tag &, const context &);         //!< create with *indx
 
                 //______________________________________________________________
                 //
                 // helpers to check status
                 //______________________________________________________________
-                bool     standalone() const throw();                   //!< indx == &indx_
-                bool     linked_to(const scanner &host) const throw(); //!< indx == &host.indx
+                bool     standalone() const noexcept;                   //!< indx == &indx_
+                bool     linked_to(const scanner &host) const noexcept; //!< indx == &host.indx
 
                 //______________________________________________________________
                 //

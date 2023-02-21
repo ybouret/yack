@@ -11,7 +11,7 @@
 using namespace yack;
 
 
-static inline bool is_space(const int ch) throw()
+static inline bool is_space(const int ch) noexcept
 {
     return ' ' == ch;
 }

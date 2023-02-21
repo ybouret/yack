@@ -27,7 +27,7 @@ namespace yack
             void apply(pixmap<T>       &target,
                        const pixmap<U> &source,
                        broker          &device,
-                       PROC            &U_to_T) throw()
+                       PROC            &U_to_T) noexcept
             {
                 struct task {
                     pixmap<T>       &target;
@@ -37,7 +37,7 @@ namespace yack
                     static inline void make(void         *args,
                                             const tiles   &part,
                                             const context &,
-                                            lockable      &) throw()
+                                            lockable      &) noexcept
                     {
                         assert(args);
                         task            &self   = *static_cast<task *>(args);
@@ -64,7 +64,7 @@ namespace yack
             template <typename T, typename PROC> static inline
             void apply(pixmap<T>       &target,
                        broker          &device,
-                       PROC            &T_to_T) throw()
+                       PROC            &T_to_T) noexcept
             {
                 struct task {
                     pixmap<T>       &target;
@@ -73,7 +73,7 @@ namespace yack
                     static inline void make(void         *args,
                                             const tiles   &part,
                                             const context &,
-                                            lockable      &) throw()
+                                            lockable      &) noexcept
                     {
                         assert(args);
                         task            &self   = *static_cast<task *>(args);

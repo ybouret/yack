@@ -42,7 +42,7 @@ namespace yack
                 //______________________________________________________________
 
                 //! cleanup
-                virtual ~appliance() throw();
+                virtual ~appliance() noexcept;
 
                 //! setup
                 explicit appliance(step<T> *forward, const T  epsilon);
@@ -82,7 +82,7 @@ namespace yack
             public:
 
                 //! cleanup
-                inline virtual ~app() throw() {}
+                inline virtual ~app() noexcept {}
 
                 //! setup
                 inline explicit app(const T epsilon) :

@@ -23,8 +23,8 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~osstream()               throw(); //!< cleanup
-            explicit osstream(string &target) throw(); //!< setup
+            virtual ~osstream()               noexcept; //!< cleanup
+            explicit osstream(string &target) noexcept; //!< setup
             //__________________________________________________________________
             //
             // interface

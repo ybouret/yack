@@ -10,17 +10,17 @@ namespace yack
 
     const char exception:: what_text[] = "yack::exception";
 
-    void exception:: clear() throw()
+    void exception:: clear() noexcept
     {
         memset(info,0,sizeof(info));
     }
 
-    exception:: ~exception() throw()
+    exception:: ~exception() noexcept
     {
         clear();
     }
 
-    exception:: exception() throw() :
+    exception:: exception() noexcept :
     std::exception(),
     info()
     {
@@ -29,7 +29,7 @@ namespace yack
 
 
     
-    void exception:: failsafe_format(char *buffer, size_t buflen, const char *fmt, void *args) throw()
+    void exception:: failsafe_format(char *buffer, size_t buflen, const char *fmt, void *args) noexcept
     {
         assert(NULL!=buffer);
         assert(0<buflen);
@@ -43,7 +43,7 @@ namespace yack
         }
     }
 
-    exception:: exception(const char *fmt,...) throw() :
+    exception:: exception(const char *fmt,...) noexcept :
     std::exception(),
     info()
     {
@@ -54,36 +54,36 @@ namespace yack
         va_end(ap);
     }
 
-    exception:: exception(const exception &other) throw() :
+    exception:: exception(const exception &other) noexcept :
     std::exception(),
     info()
     {
         memcpy(info,other.info,sizeof(info));
     }
 
-    const char * exception:: when() const throw()
+    const char * exception:: when() const noexcept
     {
         return info;
     }
 
-    const char * exception:: what() const throw()
+    const char * exception:: what() const noexcept
     {
         return what_text;
     }
 
-    exception & exception:: operator<<(const char *msg) throw()
+    exception & exception:: operator<<(const char *msg) noexcept
     {
         yack_cstring_msgcat(info,sizeof(info),msg);
         return *this;
     }
 
-    exception & exception:: operator<<(const char c) throw()
+    exception & exception:: operator<<(const char c) noexcept
     {
         yack_cstring_chrcat(info,sizeof(info),c);
         return *this;
     }
 
-    exception & exception:: add(const char *fmt,...) throw()
+    exception & exception:: add(const char *fmt,...) noexcept
     {
         char    data[when_size] = { 0 };
         {
@@ -100,7 +100,7 @@ namespace yack
     }
 
 
-    exception & exception:: pre(const char *fmt,...) throw()
+    exception & exception:: pre(const char *fmt,...) noexcept
     {
         char    data[when_size] = { 0 };
         {

@@ -90,37 +90,37 @@ namespace yack
             //__________________________________________________________________
             natural();
             natural(uint_type u);                               //!< setup with an integral type
-            virtual ~natural() throw();                         //!< cleanup
+            virtual ~natural() noexcept;                         //!< cleanup
             natural(const natural &);                           //!< copy
             natural & operator= (const natural &);              //!< assign
-            natural & operator= (const uint_type) throw();      //!< assign
+            natural & operator= (const uint_type) noexcept;      //!< assign
             natural(randomized::bits &ran, const size_t nbits); //!< make exactly nbits, and random
             
             //__________________________________________________________________
             //
             // readable interface
             //__________________________________________________________________
-            virtual size_t          size()                   const throw(); //!< significant bytes
-            virtual const uint8_t & operator[](const size_t) const throw(); //!< access operator
+            virtual size_t          size()                   const noexcept; //!< significant bytes
+            virtual const uint8_t & operator[](const size_t) const noexcept; //!< access operator
             
             //__________________________________________________________________
             //
             // serializable interface
             //__________________________________________________________________
             virtual size_t      serialize(ios::ostream &) const;          //!< serialize content as readable
-            virtual const char *class_uid()       const throw();          //!< clid
+            virtual const char *class_uid()       const noexcept;          //!< clid
             static  natural     construct(ios::istream &, size_t &cumul); //!< reload a serialized natural
             
             //__________________________________________________________________
             //
             // read/write methods
             //__________________________________________________________________
-            size_t        bits()           const throw(); //!< exact bits
-            void          xch(natural &other)    throw(); //!< no throw exchange all fields
-            uint_type     lsu()            const throw(); //!< least significant unsigned
-            void          ldu(uint_type)         throw(); //!< load unsigned type
-            void          ldz()                  throw(); //!< load zero
-            bool          bit(size_t ibit) const throw(); //!< access 0<=ibit<bits()
+            size_t        bits()           const noexcept; //!< exact bits
+            void          xch(natural &other)    noexcept; //!< no throw exchange all fields
+            uint_type     lsu()            const noexcept; //!< least significant unsigned
+            void          ldu(uint_type)         noexcept; //!< load unsigned type
+            void          ldz()                  noexcept; //!< load zero
+            bool          bit(size_t ibit) const noexcept; //!< access 0<=ibit<bits()
             
             //! output
             friend std::ostream & operator<<(std::ostream &os, const natural n);
@@ -138,7 +138,7 @@ namespace yack
             //! convert value to array of words, uses value as memory
             static const word_type *u2w(uint_type &value,
                                         size_t    &num_words,
-                                        size_t    &num_bytes) throw();
+                                        size_t    &num_bytes) noexcept;
             
             //__________________________________________________________________
             //
@@ -147,7 +147,7 @@ namespace yack
 
             //! fast named comparison
             template <uint8_t u> inline
-            bool is() const throw() { return bytes<=1 && u == word[0]; }
+            bool is() const noexcept { return bytes<=1 && u == word[0]; }
 
 
             //! make local handles and call PROTO
@@ -160,10 +160,10 @@ namespace yack
 /**/          PROLOG (uint_type      lhs, const natural &rhs) EPILOG
             
             
-            YACK_APN_BINARY_REP(static int compare, throw();)
+            YACK_APN_BINARY_REP(static int compare, noexcept;)
             
             //! declare and inline implement a comparison operator
-#define     YACK_APN_COMPARE(OP) YACK_APN_BINARY_REP(inline friend bool operator OP, throw() { YACK_APN_BINARY_IMPL(cmp) OP 0;})
+#define     YACK_APN_COMPARE(OP) YACK_APN_BINARY_REP(inline friend bool operator OP, noexcept { YACK_APN_BINARY_IMPL(cmp) OP 0;})
             
             
             YACK_APN_COMPARE(<)
@@ -230,7 +230,7 @@ namespace yack
             // power of two and bits shifting
             //__________________________________________________________________
             static natural exp2(const size_t shift);       //!< 2^shift
-            natural        &shr() throw();                 //!< optimized one bit right shift, aka /=2
+            natural        &shr() noexcept;                 //!< optimized one bit right shift, aka /=2
             natural         shr(const size_t shift) const; //!<  shift right
             natural         shl(const size_t shift) const; //!< shift left
             friend natural  operator<<(const natural &lhs, const size_t shift); //!< shift left
@@ -295,7 +295,7 @@ namespace yack
             //__________________________________________________________________
             //! try to cast to a system integer
             template <typename T> inline
-            bool try_cast_to(T &res) const throw()
+            bool try_cast_to(T &res) const noexcept
             {
                 uint_type    umax = uint_type( integral_for<T>::maximum );
                 const handle hmax(umax);
@@ -371,7 +371,7 @@ namespace yack
 
             //! number of significative digits
             template <typename T>
-            static unsigned _dig() throw();
+            static unsigned _dig() noexcept;
 
             //__________________________________________________________________
             //
@@ -419,32 +419,32 @@ namespace yack
                 const size_t            bytes; //!< bytes count
                 const word_type * const entry; //!< words entry
                 
-                explicit handle(const natural &) throw(); //!< from natural
-                explicit handle(uint_type     &) throw(); //!< from uint_type
-                explicit handle(word_type     &) throw(); //!< one word reference
-                virtual ~handle() throw();                //!< cleanup
+                explicit handle(const natural &) noexcept; //!< from natural
+                explicit handle(uint_type     &) noexcept; //!< from uint_type
+                explicit handle(word_type     &) noexcept; //!< one word reference
+                virtual ~handle() noexcept;                //!< cleanup
 
                 std::ostream &display(std::ostream &) const; //!< helper
-                bool          is0() const throw();           //!< test if is 0
-                bool          is1() const throw();           //!< test if is 1
+                bool          is0() const noexcept;           //!< test if is 0
+                bool          is1() const noexcept;           //!< test if is 1
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(handle);
             };
             
             friend std::ostream & operator << (std::ostream &, const natural::handle &);
 
-            void     update() throw(); //!< from words and bytes
-            void     zpad()   throw(); //!< after words to max_words
+            void     update() noexcept; //!< from words and bytes
+            void     zpad()   noexcept; //!< after words to max_words
             explicit natural(const size_t num_words, const as_capacity_t &);  //!< capacity for num_words
             explicit natural(const word_type *w, const size_t n);             //!< from words
-            void     set_bit(const size_t ibit) throw();
+            void     set_bit(const size_t ibit) noexcept;
             
             static size_t    ldw(word_type *,
                                  uint_type,
-                                 size_t  &) throw(); //!< load uint into word[words_per_uint], return num words
+                                 size_t  &) noexcept; //!< load uint into word[words_per_uint], return num words
             
-            static int       cmp(const  handle &l, const handle &r) throw(); //!< comparison
-            static sign_type scmp(const handle &l, const handle &r) throw(); //!< comparions to sign_type
+            static int       cmp(const  handle &l, const handle &r) noexcept; //!< comparison
+            static sign_type scmp(const handle &l, const handle &r) noexcept; //!< comparions to sign_type
             static natural   add(const  handle &l, const handle &r);         //!< addition
             static natural   sub(const  handle &l, const handle &r);         //!< subtraction
             static natural   mul(const  handle &l, const handle &r);         //!< multiplication => lmul/fmul
@@ -459,7 +459,7 @@ namespace yack
             typedef uint8_t   (*bitproc)(uint8_t, uint8_t);
             static natural      bitwise(bitproc proc, const natural &lhs, const natural &rhs); //!< bitwise call
 
-            template <typename T> static T get_log2() throw(); //!< get log(2)
+            template <typename T> static T get_log2() noexcept; //!< get log(2)
             static void       raise_log_error();               //!< raise error
         };
         

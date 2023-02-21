@@ -28,7 +28,7 @@ namespace yack
 
         }
 
-        initializer:: ~initializer() throw()
+        initializer:: ~initializer() noexcept
         {
 
 #if defined(YACK_WIN)

@@ -25,7 +25,7 @@ namespace yack
     //
     //__________________________________________________________________________
     template <typename T> inline
-    uint32_t ucrc(const T *addr, const size_t size) throw()
+    uint32_t ucrc(const T *addr, const size_t size) noexcept
     {
         assert( !(NULL==addr&&0<size) );
         return yack_crc32(  out_of_reach::address(addr), size*sizeof(T) );
@@ -54,7 +54,7 @@ namespace yack
 
 //! start a new test
 #define YACK_UTEST(NAME)                                               \
-/**/  int yack_test_##NAME(int argc, char **argv) throw() {      \
+/**/  int yack_test_##NAME(int argc, char **argv) noexcept {      \
 /**/  const char *program = argv[0]; (void) argc; (void) program; try
 
 

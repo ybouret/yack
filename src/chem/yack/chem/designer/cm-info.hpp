@@ -29,7 +29,7 @@ namespace yack
                 // C++
                 //______________________________________________________________
                 explicit cm_info();         //!< setup empty/1
-                virtual ~cm_info() throw(); //!< cleanup
+                virtual ~cm_info() noexcept; //!< cleanup
                 cm_info(const cm_info &);   //!< copy
 
                 //______________________________________________________________

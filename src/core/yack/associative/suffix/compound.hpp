@@ -40,7 +40,7 @@ namespace yack
         // ASSOCIATIVE interface
         //______________________________________________________________________
         //! search method
-        inline virtual const_type *search(param_key_type key) const throw()
+        inline virtual const_type *search(param_key_type key) const noexcept
         {
             size_t         len = 0;
             const uint8_t *ptr = walk(key,len);
@@ -48,7 +48,7 @@ namespace yack
         }
 
         //! remove method
-        inline virtual bool remove(param_key_type key) throw()
+        inline virtual bool remove(param_key_type key) noexcept
         {
             size_t         len = 0;
             const uint8_t *ptr = walk(key,len);
@@ -56,26 +56,26 @@ namespace yack
         }
 
         //! size interface
-        inline virtual size_t size() const throw() { return (*tree).size; }
+        inline virtual size_t size() const noexcept { return (*tree).size; }
 
         //! available
-        inline size_t available() const throw() { return tree.cache(); }
+        inline size_t available() const noexcept { return tree.cache(); }
 
         //! capacity
-        inline size_t capacity() const throw() { return tree.cache()+(*tree).size; }
+        inline size_t capacity() const noexcept { return tree.cache()+(*tree).size; }
 
         //! reserve
         inline void reserve(const size_t n) { tree.cache(n); }
 
         //! free
-        inline void free() throw() { tree.free(); }
+        inline void free() noexcept { tree.free(); }
 
 
         //! release
-        inline void release() throw() { tree.release(); }
+        inline void release() noexcept { tree.release(); }
 
         //! reverse
-        inline void reverse() throw() { tree.reverse(); }
+        inline void reverse() noexcept { tree.reverse(); }
 
         //______________________________________________________________________
         //
@@ -83,10 +83,10 @@ namespace yack
         //______________________________________________________________________
 
         //! get tree structure
-        inline const tree_type &get_tree() const throw() { return tree; }
+        inline const tree_type &get_tree() const noexcept { return tree; }
 
         //! exchange content, keep resources
-        void exchange_content_with(suffix_compound &other) throw()
+        void exchange_content_with(suffix_compound &other) noexcept
         {
             tree.exchange_content_with(other.tree);
         }
@@ -95,9 +95,9 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline virtual ~suffix_compound() throw() {}                                 //!< cleanup
+        inline virtual ~suffix_compound() noexcept {}                                 //!< cleanup
     protected:
-        inline explicit suffix_compound() throw() : ASSOCIATIVE(), walk(), tree() {} //!< setup
+        inline explicit suffix_compound() noexcept : ASSOCIATIVE(), walk(), tree() {} //!< setup
 
         //! copy tree 
         inline suffix_compound(const suffix_compound &other) :
@@ -123,8 +123,8 @@ namespace yack
         // iterators
         //______________________________________________________________________
         typedef iterating::linked<const_type,const knot_type,iterating::forward> const_iterator; //!< forward const iterator
-        const_iterator begin() const throw() { return (*tree).head; }                            //!< forward const begin
-        const_iterator end()   const throw() { return NULL;         }                            //!< forward const end
+        const_iterator begin() const noexcept { return (*tree).head; }                            //!< forward const begin
+        const_iterator end()   const noexcept { return NULL;         }                            //!< forward const end
 
         //! prototype...
         inline void foreach( )

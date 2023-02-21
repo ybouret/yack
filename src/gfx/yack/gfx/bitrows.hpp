@@ -26,7 +26,7 @@ namespace yack
             // C++
             //__________________________________________________________________
             explicit bitrows(const metrics &m, void *p); //!< setup
-            virtual ~bitrows() throw();                  //!< cleanup
+            virtual ~bitrows() noexcept;                  //!< cleanup
 
             //__________________________________________________________________
             //

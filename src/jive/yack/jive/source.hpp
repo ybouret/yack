@@ -24,23 +24,23 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit source(module *) throw(); //!< setup
-            virtual ~source()         throw(); //!< cleanup
+            explicit source(module *) noexcept; //!< setup
+            virtual ~source()         noexcept; //!< cleanup
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
             character       *query();                     //!< query next char, NULL => EOF
-            void             store(character *) throw();  //!< store read char
-            void             store(token &)     throw();  //!< store read token
+            void             store(character *) noexcept;  //!< store read char
+            void             store(token &)     noexcept;  //!< store read token
             void             store_copy(const token &);   //!< store a copy of a read token
             const character *peek();                      //!< peek next char, NULL => EOF
-            void             skip() throw();              //!< skip first cached characters
-            void             skip(size_t n) throw();      //!< skip first n cached characters
+            void             skip() noexcept;              //!< skip first cached characters
+            void             skip(size_t n) noexcept;      //!< skip first n cached characters
             bool             done();                      //!< NULL == peek()
-            size_t           read()      const throw();   //!< cache size
-            module         & operator*()       throw();   //!< *intake
+            size_t           read()      const noexcept;   //!< cache size
+            module         & operator*()       noexcept;   //!< *intake
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(source);

@@ -8,11 +8,11 @@ namespace yack
         namespace syntax
         {
 
-            terminal:: ~terminal() throw()
+            terminal:: ~terminal() noexcept
             {
             }
 
-            terminal:: terminal(const tag &t, const term_role r) throw() :
+            terminal:: terminal(const tag &t, const term_role r) noexcept :
             rule(t,terminal_type,mark),
             role(r)
             {

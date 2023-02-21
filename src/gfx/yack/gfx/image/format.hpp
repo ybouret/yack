@@ -39,7 +39,7 @@ namespace yack
                 //
                 // C++
                 //__________________________________________________________________
-                virtual ~format() throw();
+                virtual ~format() noexcept;
 
             protected:
                 //! setup name and regular expression

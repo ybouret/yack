@@ -22,16 +22,16 @@ namespace yack
 
 
         template <typename WORD>
-        cplx_t *load_re(cplx_t *target, const WORD word) throw();
+        cplx_t *load_re(cplx_t *target, const WORD word) noexcept;
         
         template <>   inline
-        cplx_t *load_re<uint8_t>(cplx_t *target, const uint8_t word) throw()
+        cplx_t *load_re<uint8_t>(cplx_t *target, const uint8_t word) noexcept
         {
             target[0].re = word; return target;
         }
 
         template <>   inline
-        cplx_t *load_re<uint16_t>(cplx_t *target, const uint16_t word) throw()
+        cplx_t *load_re<uint16_t>(cplx_t *target, const uint16_t word) noexcept
         {
             target[0].re = (  word     & 0xff);
             target[1].re = ( (word>>8) & 0xff);
@@ -39,7 +39,7 @@ namespace yack
         }
 
         template <>   inline
-        cplx_t *load_re<uint32_t>(cplx_t *target, const uint32_t word) throw()
+        cplx_t *load_re<uint32_t>(cplx_t *target, const uint32_t word) noexcept
         {
             target[0].re = (  word      & 0xff);
             target[1].re = ( (word>>8)  & 0xff);
@@ -49,16 +49,16 @@ namespace yack
         }
 
         template <typename WORD>
-        cplx_t *load_im(cplx_t *target, const WORD word) throw();
+        cplx_t *load_im(cplx_t *target, const WORD word) noexcept;
 
         template <>   inline
-        cplx_t *load_im<uint8_t>(cplx_t *target, const uint8_t word) throw()
+        cplx_t *load_im<uint8_t>(cplx_t *target, const uint8_t word) noexcept
         {
             target[0].im = word; return target;
         }
 
         template <>   inline
-        cplx_t *load_im<uint16_t>(cplx_t *target, const uint16_t word) throw()
+        cplx_t *load_im<uint16_t>(cplx_t *target, const uint16_t word) noexcept
         {
             target[0].im = (  word     & 0xff);
             target[1].im = ( (word>>8) & 0xff);
@@ -66,7 +66,7 @@ namespace yack
         }
 
         template <>   inline
-        cplx_t *load_im<uint32_t>(cplx_t *target, const uint32_t word) throw()
+        cplx_t *load_im<uint32_t>(cplx_t *target, const uint32_t word) noexcept
         {
             target[0].im = (  word      & 0xff);
             target[1].im = ( (word>>8)  & 0xff);
@@ -121,7 +121,7 @@ namespace yack
         void finalize(uint8_t      *prod,
                       const size_t  size,
                       const cplx_t *L,
-                      const size_t  nn) throw()
+                      const size_t  nn) noexcept
         {
             const double fac   = 1.0/nn;
             double       carry = 0.0;

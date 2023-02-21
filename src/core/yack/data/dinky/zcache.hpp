@@ -25,15 +25,15 @@ namespace yack
         //
         // virtual: NODE interface
         //______________________________________________________________________
-        virtual void   zstore(NODE *)  throw()         = 0; //!< store a zombie node
+        virtual void   zstore(NODE *)  noexcept         = 0; //!< store a zombie node
         virtual NODE  *zquery()                        = 0; //!< query a new zombie node
-        virtual void   devour(list_of<NODE> &) throw() = 0; //!< turn all alives anto zombies
+        virtual void   devour(list_of<NODE> &) noexcept = 0; //!< turn all alives anto zombies
        
         //______________________________________________________________________
         //
         // virtual: cache management
         //______________________________________________________________________
-        virtual size_t stowage() const throw()         = 0; //!< available
+        virtual size_t stowage() const noexcept         = 0; //!< available
         virtual void   reserve(size_t)                 = 0; //!< reserve zombies
         
         //______________________________________________________________________
@@ -57,7 +57,7 @@ namespace yack
         }
         
         //! turn live into zombie
-        inline static NODE *turn(NODE *live) throw()
+        inline static NODE *turn(NODE *live) noexcept
         {
             assert(live);
             return static_cast<NODE *>(out_of_reach:: naught( destructed(live) ));
@@ -67,10 +67,10 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline virtual ~zcache() throw() {} //!< cleanup
+        inline virtual ~zcache() noexcept {} //!< cleanup
         
     protected:
-        inline explicit zcache() throw() : releasable() {} //!< setup/
+        inline explicit zcache() noexcept : releasable() {} //!< setup/
         
         
         

@@ -14,9 +14,9 @@ namespace yack
 
     namespace ios
     {
-        vizible:: ~vizible() throw() {}
+        vizible:: ~vizible() noexcept {}
 
-        vizible:: vizible() throw() {}
+        vizible:: vizible() noexcept {}
 
         ostream & vizible:: uuid(ostream &os, const void *addr)
         {

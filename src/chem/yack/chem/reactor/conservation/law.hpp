@@ -25,18 +25,18 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit claw(const size_t i) throw(); //!< setup
-            virtual ~claw() throw(); //!< cleanup
+            explicit claw(const size_t i) noexcept; //!< setup
+            virtual ~claw() noexcept; //!< cleanup
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            const list_of<actor> * operator->() const throw(); //!< access
+            const list_of<actor> * operator->() const noexcept; //!< access
             void   add(const species &, const unsigned);       //!< add a new species
-            bool   contains(const species &)    const throw(); //!< check if species is in use
-            void   finalize()                         throw(); //!< compute nrm2
-            bool   is_linked_to(const claw &)   const throw(); //!< check is a species is shared
+            bool   contains(const species &)    const noexcept; //!< check if species is in use
+            void   finalize()                         noexcept; //!< compute nrm2
+            bool   is_linked_to(const claw &)   const noexcept; //!< check is a species is shared
 
             //! specific display
             friend std::ostream & operator<<(std::ostream &, const claw &);

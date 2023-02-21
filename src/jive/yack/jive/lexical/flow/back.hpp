@@ -34,7 +34,7 @@ namespace yack
                     //
                     // C++
                     //__________________________________________________________
-                    virtual ~back() throw();          //!< cleanup
+                    virtual ~back() noexcept;          //!< cleanup
                     explicit back(analyzer       &,
                                   const callback &);  //!< setup
                     explicit back(const back     &);  //!< copy

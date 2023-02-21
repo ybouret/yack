@@ -37,7 +37,7 @@ namespace yack
                 return mgr;
             }
 
-            void glyph_ops:: release(void * &block_addr, size_t &block_size) throw()
+            void glyph_ops:: release(void * &block_addr, size_t &block_size) noexcept
             {
                 static memory::allocator &mgr = memory::dyadic::location();
                 mgr.release(block_addr,block_size);

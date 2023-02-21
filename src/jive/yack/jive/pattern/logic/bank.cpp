@@ -8,11 +8,11 @@ namespace yack
     namespace jive
     {
 
-        bank:: ~bank() throw()
+        bank:: ~bank() noexcept
         {
         }
 
-        bank:: bank(const uint32_t t) throw() : logical(t)
+        bank:: bank(const uint32_t t) noexcept : logical(t)
         {
 
         }
@@ -23,7 +23,7 @@ namespace yack
         }
         
 
-        void bank:: no_multiple() throw()
+        void bank:: no_multiple() noexcept
         {
             patterns temp;
             while(size)

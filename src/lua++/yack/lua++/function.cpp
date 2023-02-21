@@ -5,7 +5,7 @@ namespace yack
 {
     namespace Lua
     {
-        Function_:: ~Function_() throw()
+        Function_:: ~Function_() noexcept
         {
         }
 

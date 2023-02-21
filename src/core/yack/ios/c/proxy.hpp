@@ -33,13 +33,13 @@ namespace yack
             inline explicit file_proxy(const T &args, const bool flag) : BASE_CLASS(args,flag) {}
 
             //! cleanup
-            inline virtual ~file_proxy() throw() {}
+            inline virtual ~file_proxy() noexcept {}
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            inline FILE * operator*() throw() { return (FILE *)(this->handle); } //!< access
+            inline FILE * operator*() noexcept { return (FILE *)(this->handle); } //!< access
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(file_proxy);

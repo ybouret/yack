@@ -32,14 +32,14 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                explicit unode_type(const size_t which) throw(); //!< setup core
-                virtual ~unode_type() throw();                   //!< cleanup
+                explicit unode_type(const size_t which) noexcept; //!< setup core
+                virtual ~unode_type() noexcept;                   //!< cleanup
 
                 //______________________________________________________________
                 //
                 // methods
                 //______________________________________________________________
-                size_t operator*() const throw(); //!< return core number
+                size_t operator*() const noexcept; //!< return core number
 
                 //______________________________________________________________
                 //
@@ -74,7 +74,7 @@ namespace yack
             class topology : public object, public counted, public ulist_type
             {
             public:
-                ~topology() throw();      //!< cleanup
+                ~topology() noexcept;      //!< cleanup
                 topology(const size_t n); //!< n procs
                 topology(const string &); //!< parse content
                 topology(const char   *); //!< parse content
@@ -88,7 +88,7 @@ namespace yack
                 YACK_DISABLE_COPY_AND_ASSIGN(topology);
                 void       linear(const size_t n); //!< n linear threads
                 void       expand(const string &); //!< parser
-                void       update() throw();       //!< post process rank/indx
+                void       update() noexcept;       //!< post process rank/indx
             };
         }
 
@@ -109,7 +109,7 @@ namespace yack
         class topology : public topology_
         {
         public:
-            virtual ~topology() throw();       //!< cleanup
+            virtual ~topology() noexcept;       //!< cleanup
             explicit topology();               //!< default or parse existing YACK_NUM_THREADS
             explicit topology(const size_t  ); //!< n procs
             explicit topology(const string &); //!< parse content

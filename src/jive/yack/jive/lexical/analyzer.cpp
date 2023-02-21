@@ -15,14 +15,14 @@ namespace yack
         namespace lexical
         {
 
-            analyzer:: ~analyzer() throw()
+            analyzer:: ~analyzer() noexcept
             {
                 sdb.release();
                 assert(quantity()>0);
                 liberate();
             }
 
-            void analyzer:: reset() throw()
+            void analyzer:: reset() noexcept
             {
                 scan = this;
                 repo.release();
@@ -32,7 +32,7 @@ namespace yack
             }
 
 
-            const analyzer::scan_set & analyzer:: operator*() const throw()
+            const analyzer::scan_set & analyzer:: operator*() const noexcept
             {
                 return sdb;
             }
@@ -81,7 +81,7 @@ namespace yack
             }
 
 
-            void scanner:: link_to(analyzer &parent) throw()
+            void scanner:: link_to(analyzer &parent) noexcept
             {
                 assert(standalone());
                 YACK_JIVE_LEX_PRINTLN( ios::align(sid(),output_width) << " [ link to <" << parent.label << "> ]" );
@@ -91,7 +91,7 @@ namespace yack
                 indx    =   parent.indx;
             }
             
-            void scanner:: restore(token &word) throw()
+            void scanner:: restore(token &word) noexcept
             {
                 assert(flux);
                 flux->store(word);
@@ -130,7 +130,7 @@ namespace yack
             
 
             
-            void analyzer:: store(lexeme *lx) throw()
+            void analyzer:: store(lexeme *lx) noexcept
             {
                 assert(NULL!=lx);
                 repo.push_front(lx);
@@ -207,7 +207,7 @@ namespace yack
                 return ans;
             }
 
-            bool analyzer:: owns(const lexeme *lx) const throw()
+            bool analyzer:: owns(const lexeme *lx) const noexcept
             {
                 return repo.owns(lx);
             }

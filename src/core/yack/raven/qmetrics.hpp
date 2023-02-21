@@ -24,8 +24,8 @@ namespace yack
             // C++
             //__________________________________________________________________
             explicit qmetrics(const size_t dims); //!< dims>=2
-            virtual ~qmetrics()          throw(); //!< cleanup
-            qmetrics(const qmetrics &)   throw(); //!< copy
+            virtual ~qmetrics()          noexcept; //!< cleanup
+            qmetrics(const qmetrics &)   noexcept; //!< copy
 
             //__________________________________________________________________
             //

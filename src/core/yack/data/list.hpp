@@ -41,10 +41,10 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         //______________________________________________________________________
 
         //! setup empty
-        inline explicit list_of() throw() : interlinked<NODE>(), tail(0) {}
+        inline explicit list_of() noexcept : interlinked<NODE>(), tail(0) {}
 
         //! setup from compact state
-        inline explicit list_of(core_list_of<NODE> &io) throw() :
+        inline explicit list_of(core_list_of<NODE> &io) noexcept :
         interlinked<NODE>(), tail(io.tail)
         {
             /** update */           io.tail = 0;
@@ -53,13 +53,13 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         }
 
         //! need cleanup before!
-        inline virtual ~list_of() throw() {}
+        inline virtual ~list_of() noexcept {}
 
         //______________________________________________________________________
         //
         //! saving compact state
         //______________________________________________________________________
-        inline void save(core_list_of<NODE> &io) throw()
+        inline void save(core_list_of<NODE> &io) noexcept
         {
             io.head=head; head         = NULL;
             io.tail=tail; tail         = NULL;
@@ -71,7 +71,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         //______________________________________________________________________
 
         //! sequential ownership test
-        inline virtual bool owns(const NODE *node) const throw()
+        inline virtual bool owns(const NODE *node) const noexcept
         {
             for(const NODE *mine=head;mine;mine=mine->next)
             {
@@ -81,7 +81,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         }
 
         //! reverse by auxiliary list
-        inline virtual void reverse() throw()
+        inline virtual void reverse() noexcept
         {
             list_of tmp;
             while(size) tmp.push_front( pop_front() );
@@ -94,7 +94,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         //______________________________________________________________________
         
         //! no-throw exchange with another list
-        inline void swap_with(list_of &other) throw()
+        inline void swap_with(list_of &other) noexcept
         {
             this->xch_size(other);
             cswap(head,other.head);
@@ -102,7 +102,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         }
         
         //! push_back a new node
-        inline NODE *push_back(NODE *node) throw()
+        inline NODE *push_back(NODE *node) noexcept
         {
             YACK_LIST_CHECK(node);
             if(size<=0)
@@ -120,7 +120,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
 
         
         //! push_front a new node
-        inline NODE *push_front(NODE *node) throw()
+        inline NODE *push_front(NODE *node) noexcept
         {
             YACK_LIST_CHECK(node);
             if(size<=0)
@@ -137,7 +137,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         }
         
         //! pop  back node
-        inline NODE *pop_back() throw()
+        inline NODE *pop_back() noexcept
         {
             switch(size)
             {
@@ -155,7 +155,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         }
         
         //! pop front node
-        inline NODE *pop_front() throw()
+        inline NODE *pop_front() noexcept
         {
             switch(size)
             {
@@ -175,13 +175,13 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
 
         
         //! access  in [1..size] (slow)
-        inline const NODE *get(const size_t indx) const throw() { return get_(indx);          }
+        inline const NODE *get(const size_t indx) const noexcept { return get_(indx);          }
         
         //! access in [1..size] (slow)
-        inline NODE       *get(const size_t indx)       throw() { return (NODE *) get_(indx); }
+        inline NODE       *get(const size_t indx)       noexcept { return (NODE *) get_(indx); }
         
         //! unlink current node
-        inline NODE       *pop(NODE *node) throw()
+        inline NODE       *pop(NODE *node) noexcept
         {
             assert(owns(node));
             if(head==node)
@@ -203,7 +203,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         }
 
         //! replace mine with another node, return mine for further processing
-        inline NODE *replace(NODE *mine, NODE *node) throw()
+        inline NODE *replace(NODE *mine, NODE *node) noexcept
         {
             assert(NULL!=mine); assert(NULL!=node); assert(NULL==node->prev); assert(NULL==node->next);
             assert( owns(mine) );
@@ -235,7 +235,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         }
 
         //! move owned node to head node
-        inline NODE *move_to_front(NODE *node) throw()
+        inline NODE *move_to_front(NODE *node) noexcept
         {
             assert(owns(node));
             if(head==node)
@@ -251,7 +251,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         
         //! insert a new node after an owned node
         inline NODE *insert_after(NODE *mine,
-                                  NODE *node) throw()
+                                  NODE *node) noexcept
         {
             assert(owns(mine));
             YACK_LIST_CHECK(node);
@@ -271,7 +271,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         
         //! insert a new node before an owned node
         inline NODE *insert_before(NODE *mine,
-                                   NODE *node) throw()
+                                   NODE *node) noexcept
         {
             assert(owns(mine));
             YACK_LIST_CHECK(node);
@@ -290,7 +290,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         }
         
         //! move current node!=head towards head
-        inline NODE *towards_front(NODE *node) throw()
+        inline NODE *towards_front(NODE *node) noexcept
         {
             assert(owns(node));
             assert(NULL!=node->prev);
@@ -300,7 +300,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         }
 
         //! merge back
-        void merge_back(list_of &other) throw()
+        void merge_back(list_of &other) noexcept
         {
             if(size<=0)
             {
@@ -320,7 +320,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         }
 
         //! merge front
-        void merge_front(list_of &other) throw()
+        void merge_front(list_of &other) noexcept
         {
             other.merge_back(*this);
             swap_with(other);
@@ -328,7 +328,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
 
 
         //! rolling down content
-        inline void roll_down() throw()
+        inline void roll_down() noexcept
         {
             switch(size)
             {
@@ -342,7 +342,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         }
 
         //! rolling up content
-        inline void roll_up() throw()
+        inline void roll_up() noexcept
         {
             switch(size)
             {
@@ -356,7 +356,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         }
 
         //! store by increasing memory
-        NODE *store_increasing_memory(NODE *node) throw()
+        NODE *store_increasing_memory(NODE *node) noexcept
         {
             YACK_LIST_CHECK(node);
             assert(false==owns(node));
@@ -419,7 +419,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(list_of);
 
-        inline NODE *first(NODE *node) throw()
+        inline NODE *first(NODE *node) noexcept
         {
             YACK_LIST_CHECK(node);
             assert(NULL==head); assert(NULL==tail);
@@ -428,7 +428,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
             return node;
         }
         
-        inline NODE *last() throw()
+        inline NODE *last() noexcept
         {
             assert(1==size);
             assert(head!=NULL);
@@ -440,7 +440,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
             return node;
         }
         
-        inline NODE *pull(NODE *node) throw()
+        inline NODE *pull(NODE *node) noexcept
         {
             node->next->prev = node->prev;
             node->prev->next = node->next;
@@ -451,7 +451,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         }
         
         
-        inline const NODE *get_(size_t indx) const throw()
+        inline const NODE *get_(size_t indx) const noexcept
         {
             assert(1<=indx);
             assert(indx<=size);
@@ -475,7 +475,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
 
     protected:
         //! hard reset for internal operations
-        inline void hard_reset_() throw()
+        inline void hard_reset_() noexcept
         {
             coerce(size) = 0;
             head = 0;

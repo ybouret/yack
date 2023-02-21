@@ -34,10 +34,10 @@ namespace yack
             //__________________________________________________________________
             
             //! cleanup
-            virtual ~jacobian() throw();
+            virtual ~jacobian() noexcept;
             
             //! setup
-            explicit jacobian(const size_t ndat, const T = 1e-4) throw();
+            explicit jacobian(const size_t ndat, const T = 1e-4) noexcept;
             
             //__________________________________________________________________
             //

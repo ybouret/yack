@@ -37,9 +37,9 @@ namespace yack
             virtual bool     strong() const;                       //! count>0 and joker is strong
             virtual void     encode(ios::ostream &) const;         //!< graphviz
             virtual pattern *clone()                const;         //!< clone
-            virtual bool     is_univocal()  const throw();         //!< false
+            virtual bool     is_univocal()  const noexcept;         //!< false
 
-            virtual const char *class_uid() const throw();          //!< clid
+            virtual const char *class_uid() const noexcept;          //!< clid
             virtual size_t      serialize(ios::ostream &fp) const;  //!< uuid+count+jk
 
             //__________________________________________________________________
@@ -59,13 +59,13 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~at_least() throw();                      //!< cleanup
+            virtual ~at_least() noexcept;                      //!< cleanup
 
         protected:
-            explicit at_least(const size_t,pattern*) throw(); //!< setup
+            explicit at_least(const size_t,pattern*) noexcept; //!< setup
 
         private:
-            at_least(const at_least &) throw();
+            at_least(const at_least &) noexcept;
             YACK_DISABLE_ASSIGN(at_least);
 
         };

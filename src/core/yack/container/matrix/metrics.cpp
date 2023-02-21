@@ -14,12 +14,12 @@ namespace yack
 
     typedef memory::pooled matrix_allocator;
 
-    matrix_metrics:: ~matrix_metrics() throw()
+    matrix_metrics:: ~matrix_metrics() noexcept
     {
         deallocate();
     }
     
-    void matrix_metrics:: deallocate() throw()
+    void matrix_metrics:: deallocate() noexcept
     {
         if(rows)
         {
@@ -32,7 +32,7 @@ namespace yack
     }
     
     
-    matrix_metrics:: matrix_metrics(  ) throw():
+    matrix_metrics:: matrix_metrics(  ) noexcept:
     rows(0),
     cols(0),
     items(0),
@@ -42,7 +42,7 @@ namespace yack
     {
     }
 
-    void matrix_metrics:: swap_metrics_with(matrix_metrics &other) throw()
+    void matrix_metrics:: swap_metrics_with(matrix_metrics &other) noexcept
     {
         coerce_cswap(rows,      other.rows     );
         coerce_cswap(cols,      other.cols     );
@@ -117,22 +117,22 @@ namespace yack
         }
     }
 
-    size_t matrix_metrics::granted() const throw()
+    size_t matrix_metrics::granted() const noexcept
     {
         return allocated;
     }
 
-    bool matrix_metrics:: is_square() const throw()
+    bool matrix_metrics:: is_square() const noexcept
     {
         return rows==cols;
     }
 
-    bool matrix_metrics:: have_same_sizes(const matrix_metrics &lhs, const matrix_metrics &rhs) throw()
+    bool matrix_metrics:: have_same_sizes(const matrix_metrics &lhs, const matrix_metrics &rhs) noexcept
     {
         return (lhs.rows==rhs.rows) && (lhs.cols==rhs.cols);
     }
 
-    bool matrix_metrics:: are_transposed(const matrix_metrics &lhs, const matrix_metrics &rhs) throw()
+    bool matrix_metrics:: are_transposed(const matrix_metrics &lhs, const matrix_metrics &rhs) noexcept
     {
         return (lhs.rows==rhs.cols) && (lhs.cols==rhs.rows);
     }

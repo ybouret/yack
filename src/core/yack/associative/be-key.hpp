@@ -22,28 +22,28 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        virtual ~be_key_() throw(); //!< cleanup
+        virtual ~be_key_() noexcept; //!< cleanup
 
 
     protected:
         //! setup
         explicit be_key_(void *       target,
                          const void  *source,
-                         const size_t length) throw();
+                         const size_t length) noexcept;
 
         //______________________________________________________________________
         //
         // methods
         //______________________________________________________________________
         //! out of reach memset
-        static void clear(void *target, const size_t length) throw();
+        static void clear(void *target, const size_t length) noexcept;
 
         //! out of reach display
-        static void show(std::ostream &, const uint8_t *source, const size_t length) throw();
+        static void show(std::ostream &, const uint8_t *source, const size_t length) noexcept;
 
     public:
         //! to use within suffix tree
-        const uint8_t *begin() const throw() ;
+        const uint8_t *begin() const noexcept ;
 
 
     private:
@@ -71,15 +71,15 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline virtual ~be_key()                throw() { clear(wksp,length); }          //!< cleanup
-        inline explicit be_key(param_type args) throw() : be_key_(wksp,&args,length) { } //!< setup
+        inline virtual ~be_key()                noexcept { clear(wksp,length); }          //!< cleanup
+        inline explicit be_key(param_type args) noexcept : be_key_(wksp,&args,length) { } //!< setup
 
         //______________________________________________________________________
         //
         // buffer interface
         //______________________________________________________________________
-        inline virtual const void * ro_addr() const throw() { return wksp;   }
-        inline virtual size_t       measure() const throw() { return length; }
+        inline virtual const void * ro_addr() const noexcept { return wksp;   }
+        inline virtual size_t       measure() const noexcept { return length; }
 
 
         //______________________________________________________________________

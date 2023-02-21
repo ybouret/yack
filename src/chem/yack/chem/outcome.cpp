@@ -7,7 +7,7 @@ namespace yack
     namespace chemical
     {
 
-        outcome:: outcome() throw() :
+        outcome:: outcome() noexcept :
         state(components::are_blocked),
         grade(extent::is_degenerated),
         value(0)
@@ -17,7 +17,7 @@ namespace yack
 
         outcome:: outcome(const components::state s,
                           const extent::grade     g,
-                          const double            x) throw() :
+                          const double            x) noexcept :
         state(s),
         grade(g),
         value(x)
@@ -25,18 +25,18 @@ namespace yack
 
         }
 
-        outcome:: ~outcome() throw()
+        outcome:: ~outcome() noexcept
         {
         }
 
-        outcome:: outcome(const outcome &other) throw() :
+        outcome:: outcome(const outcome &other) noexcept :
         state(other.state),
         grade(other.grade),
         value(other.value)
         {
         }
 
-        outcome & outcome:: operator=(const outcome &other) throw()
+        outcome & outcome:: operator=(const outcome &other) noexcept
         {
             coerce(state) = other.state;
             coerce(grade) = other.grade;
@@ -73,7 +73,7 @@ namespace yack
     namespace chemical
     {
 
-        double outcome:: operator*() const throw()
+        double outcome:: operator*() const noexcept
         {
             if( extent::is_degenerated == grade ) return 0;
             return value;

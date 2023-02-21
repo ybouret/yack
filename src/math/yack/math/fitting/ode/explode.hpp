@@ -60,7 +60,7 @@ namespace yack
                                    const readable<T> &Y) = 0;
 
                 //! get callback, default to NULL
-                virtual callback *check() throw();
+                virtual callback *check() noexcept;
 
                 //! to be used within other methods to access parameters by name
                 template <typename PARAM> inline
@@ -83,7 +83,7 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~explODE() throw(); //!< cleanup
+                virtual ~explODE() noexcept; //!< cleanup
 
 
             protected:

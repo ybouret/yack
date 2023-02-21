@@ -31,21 +31,21 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit des64() throw(); //!< setup
-            virtual ~des64() throw(); //!< cleanup
+            explicit des64() noexcept; //!< setup
+            virtual ~des64() noexcept; //!< cleanup
 
             //__________________________________________________________________
             //
             // hash64 interface
             //__________________________________________________________________
-            virtual const char *protocol()                                   const throw(); //!< clid
-            virtual void        operator()(uint32_t &lword, uint32_t &rword) const throw(); //!< algo
+            virtual const char *protocol()                                   const noexcept; //!< clid
+            virtual void        operator()(uint32_t &lword, uint32_t &rword) const noexcept; //!< algo
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            bool test() const throw(); //!< test consistency
+            bool test() const noexcept; //!< test consistency
 
             
         private:

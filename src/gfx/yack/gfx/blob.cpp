@@ -5,12 +5,12 @@ namespace yack
     namespace graphic
     {
 
-        blob:: ~blob() throw()
+        blob:: ~blob() noexcept
         {
             coerce(tag) = 0;
         }
 
-        blob:: blob(const size_t i) throw() :
+        blob:: blob(const size_t i) noexcept :
         object(),
         cnodes(),
         tag(i),

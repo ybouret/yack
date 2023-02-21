@@ -45,7 +45,7 @@ namespace yack
                     static inline void make(void          *args,
                                             const tiles   &part,
                                             const context &,
-                                            lockable      &) throw()
+                                            lockable      &) noexcept
                     {
                         assert(args);
                         task                 &self   = *static_cast<task *>(args);
@@ -94,7 +94,7 @@ namespace yack
                     static inline void make(void          *args,
                                             const tiles   &part,
                                             const context &info,
-                                            lockable      &) throw()
+                                            lockable      &) noexcept
                     {
                         assert(args);
                         task                 &self   = *static_cast<task *>(args);
@@ -153,7 +153,7 @@ namespace yack
                     static inline void make(void          *args,
                                             const tiles   &part,
                                             const context &info,
-                                            lockable      &) throw()
+                                            lockable      &) noexcept
                     {
                         assert(args);
                         const v2d<TARGET>      zvtx(0,0);
@@ -205,7 +205,7 @@ namespace yack
             static void   initialize(broker &device);
 
             //! maximum over non-empty tiles
-            static real_t finalize(const broker &device) throw();
+            static real_t finalize(const broker &device) noexcept;
         };
     }
 

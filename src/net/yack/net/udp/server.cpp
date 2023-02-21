@@ -8,7 +8,7 @@ namespace yack
     namespace net
     {
 
-        udp_server:: ~udp_server() throw()
+        udp_server:: ~udp_server() noexcept
         {
         }
 

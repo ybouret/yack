@@ -5,9 +5,9 @@ namespace yack
 {
     namespace concurrent
     {
-        primitive:: ~primitive() throw() {}
+        primitive:: ~primitive() noexcept {}
         
-        primitive:: primitive() throw() {}
+        primitive:: primitive() noexcept {}
         
     }
 }

@@ -31,8 +31,8 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline  explicit coop_list(const proxy_type &_) throw() : self_type(_)  {} //!< setup
-        inline  virtual ~coop_list() throw()                                    {} //!< cleanup
+        inline  explicit coop_list(const proxy_type &_) noexcept : self_type(_)  {} //!< setup
+        inline  virtual ~coop_list() noexcept                                    {} //!< cleanup
         inline  coop_list(const coop_list &_) : self_type(_)                    {} //!< copy
         
         

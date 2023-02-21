@@ -45,16 +45,16 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~queue() throw(); //!< cleanup
+            virtual ~queue() noexcept; //!< cleanup
 
             //__________________________________________________________________
             //
             // virtual interface
             //__________________________________________________________________
             virtual job_uuid write(const job_type &J)            = 0; //!< write a new job
-            virtual void     flush()                     throw() = 0; //!< flush all jobs
-            virtual void     prune()                     throw() = 0; //!< prune pending jobs
-            virtual bool     ended(const job_uuid) const throw() = 0; //!< check if ended
+            virtual void     flush()                     noexcept = 0; //!< flush all jobs
+            virtual void     prune()                     noexcept = 0; //!< prune pending jobs
+            virtual bool     ended(const job_uuid) const noexcept = 0; //!< check if ended
 
             //__________________________________________________________________
             //
@@ -84,7 +84,7 @@ namespace yack
 
 
         protected:
-            explicit queue() throw(); //!< setup
+            explicit queue() noexcept; //!< setup
 
 
         private:

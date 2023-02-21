@@ -31,8 +31,8 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit op_and() throw();
-            virtual ~op_and() throw();
+            explicit op_and() noexcept;
+            virtual ~op_and() noexcept;
 
             //__________________________________________________________________
             //
@@ -43,13 +43,13 @@ namespace yack
             virtual void     firsts(first_bytes  &) const; //!< collect
             virtual void     encode(ios::ostream &) const; //!< graphviz
             virtual pattern *clone()                const; //!< clone
-            virtual bool     is_univocal()  const throw(); //!< all univocal
+            virtual bool     is_univocal()  const noexcept; //!< all univocal
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            virtual const char *class_uid() const throw(); //!< clid
+            virtual const char *class_uid() const noexcept; //!< clid
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(op_and);

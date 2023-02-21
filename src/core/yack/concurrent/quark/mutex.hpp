@@ -33,10 +33,10 @@ namespace yack
             struct    mutex_api
             {
                 static mutex *init();                     //!< initialize a recursive mutex
-                static void   quit(mutex * &)   throw();  //!< destruct a mutex
-                static void   lock(mutex *)     throw();  //!< lock access
-                static void   unlock(mutex *)   throw();  //!< unlock access
-                static bool   try_lock(mutex *) throw();  //!< try lock access
+                static void   quit(mutex * &)   noexcept;  //!< destruct a mutex
+                static void   lock(mutex *)     noexcept;  //!< lock access
+                static void   unlock(mutex *)   noexcept;  //!< unlock access
+                static bool   try_lock(mutex *) noexcept;  //!< try lock access
             };
 
             

@@ -12,7 +12,7 @@ namespace yack
     {
         namespace gz
         {
-            stream:: ~stream() throw()
+            stream:: ~stream() noexcept
             {
                 assert(GZ);
                 gzclose( static_cast<gzFile>(GZ) );

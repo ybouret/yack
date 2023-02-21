@@ -28,8 +28,8 @@ namespace yack
         template <typename TARGET, typename SOURCE>
         struct convert
         {
-            static void          make(TARGET &, const SOURCE &) throw(); //!< SOURCE->TARGET
-            static inline TARGET cast(const SOURCE  &src)       throw()
+            static void          make(TARGET &, const SOURCE &) noexcept; //!< SOURCE->TARGET
+            static inline TARGET cast(const SOURCE  &src)       noexcept
             {
                 TARGET tgt(0);
                 make(tgt,src);
@@ -45,15 +45,15 @@ namespace yack
         template <typename TARGET>
         struct convert<TARGET,TARGET>
         {
-            static inline void   make(TARGET &tgt, const TARGET &src) throw() { tgt=src;    } //!< SOURCE->TARGET
-            static inline TARGET cast(const TARGET &src)              throw() { return src; } //!< helper
+            static inline void   make(TARGET &tgt, const TARGET &src) noexcept { tgt=src;    } //!< SOURCE->TARGET
+            static inline TARGET cast(const TARGET &src)              noexcept { return src; } //!< helper
         };
 
         
 
         //! wrapper for saveBMP essentially
         template <typename TARGET, typename SOURCE> inline
-        TARGET converting(const void *addr) throw()
+        TARGET converting(const void *addr) noexcept
         {
             assert(NULL!=addr);
             return convert<TARGET,SOURCE>::cast(*static_cast<const SOURCE *>(addr));

@@ -25,13 +25,13 @@ namespace yack
             return wexp2;
         }
 
-        size_t natural:: size() const throw()
+        size_t natural:: size() const noexcept
         {
             return bytes;
         }
 
 
-        natural:: ~natural() throw()
+        natural:: ~natural() noexcept
         {
             bytes=0;
             words=0;
@@ -87,7 +87,7 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
             update();
         }
 
-        void natural:: ldz() throw()
+        void natural:: ldz() noexcept
         {
             words = bytes = 0;
             memset(word,0,max_bytes);
@@ -95,7 +95,7 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
 
         size_t natural:: ldw(word_type *w,
                              uint_type  u,
-                             size_t    &n) throw()
+                             size_t    &n) noexcept
         {
             switch(u)
             {
@@ -150,7 +150,7 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
 
         const natural::word_type * natural:: u2w(uint_type &value,
                                                  size_t    &num_words,
-                                                 size_t    &num_bytes) throw()
+                                                 size_t    &num_bytes) noexcept
         {
             word_type temp[words_per_uint]; assert(sizeof(temp)==sizeof(uint_type));
             num_words = ldw(temp,value,num_bytes);
@@ -160,7 +160,7 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
 
 #define YACK_NATURAL_LDU8(X) case X: word[0] = X; break
 
-        void natural:: ldu(uint_type u) throw()
+        void natural:: ldu(uint_type u) noexcept
         {
             assert(max_bytes>=sizeof(uint_type));
             assert(max_words>=words_per_uint);
@@ -183,7 +183,7 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
 
 #define YACK_NATURAL_XCH(FIELD) coerce_cswap(FIELD,other.FIELD)
 
-        void natural:: xch(natural &other) throw()
+        void natural:: xch(natural &other) noexcept
         {
             YACK_NATURAL_XCH(bytes);
             YACK_NATURAL_XCH(words);
@@ -215,19 +215,19 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
             return *this;
         }
 
-        natural & natural:: operator= (const uint_type u) throw()
+        natural & natural:: operator= (const uint_type u) noexcept
         {
             ldu(u);
             return *this;
         }
 
 
-        void natural:: zpad() throw()
+        void natural:: zpad() noexcept
         {
             for(size_t i=words;i<max_words;++i) word[i] = 0;
         }
 
-        void natural:: update() throw()
+        void natural:: update() noexcept
         {
             //------------------------------------------------------------------
             //
@@ -264,7 +264,7 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
             zpad();
         }
 
-        size_t natural:: bits() const throw()
+        size_t natural:: bits() const noexcept
         {
             if(words>0)
             {
@@ -278,7 +278,7 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
             }
         }
 
-        uint_type natural:: lsu() const throw()
+        uint_type natural:: lsu() const noexcept
         {
             uint_type u = 0;
             for(size_t i=words;i>0;)

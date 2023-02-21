@@ -20,8 +20,8 @@ namespace yack {
          */
         //______________________________________________________________________
         struct tea {
-            static void encrypt( uint32_t *dw_reg, const size_t dw_num, const uint32_t *k) throw(); //!< encrypt
-            static void decrypt( uint32_t *dw_reg, const size_t dw_num, const uint32_t *k) throw(); //!< decrypt
+            static void encrypt( uint32_t *dw_reg, const size_t dw_num, const uint32_t *k) noexcept; //!< encrypt
+            static void decrypt( uint32_t *dw_reg, const size_t dw_num, const uint32_t *k) noexcept; //!< decrypt
         };
         
 	}

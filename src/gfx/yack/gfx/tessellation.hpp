@@ -35,7 +35,7 @@ namespace yack
                                   const size_t      ncpu);
 
             //! cleanup
-            virtual ~tessellation() throw();
+            virtual ~tessellation() noexcept;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(tessellation);

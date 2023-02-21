@@ -28,8 +28,8 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline  explicit solo_list() throw()  : self_type()  {} //!< setup
-        inline  virtual ~solo_list() throw()                 {} //!< cleanup
+        inline  explicit solo_list() noexcept  : self_type()  {} //!< setup
+        inline  virtual ~solo_list() noexcept                 {} //!< cleanup
         inline  solo_list(const solo_list &_) : self_type(_) {} //!< copy
         
         

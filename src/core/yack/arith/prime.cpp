@@ -3,12 +3,12 @@
 namespace yack
 {
 
-    bool prime64:: is(const uint64_t n) throw()
+    bool prime64:: is(const uint64_t n) noexcept
     {
         return core::primes::check<uint64_t>(n);
     }
 
-    uint64_t prime64::next(uint64_t p) throw()
+    uint64_t prime64::next(uint64_t p) noexcept
     {
         switch(p)
         {
@@ -27,7 +27,7 @@ namespace yack
 
     namespace core
     {
-        uint64_t primes:: get16(const size_t indx) throw()
+        uint64_t primes:: get16(const size_t indx) noexcept
         {
             assert(indx<pi16);
             if(indx<n8)

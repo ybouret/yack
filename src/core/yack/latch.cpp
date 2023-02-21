@@ -6,27 +6,27 @@
 namespace yack
 {
 
-    latch:: latch() throw() : on(false)
+    latch:: latch() noexcept : on(false)
     {
     }
     
-    latch:: ~latch() throw()
+    latch:: ~latch() noexcept
     {
     }
 
-    void latch:: lock() throw()
+    void latch:: lock() noexcept
     {
         if(on) system_error::critical_bsd(EINVAL,"already latched");
         on = true;
     }
 
-    void latch:: unlock() throw()
+    void latch:: unlock() noexcept
     {
         if(!on) system_error::critical_bsd(EINVAL,"not latched");
         on = false;
     }
 
-    bool latch:: try_lock() throw()
+    bool latch:: try_lock() noexcept
     {
         if(on)
         {
@@ -39,7 +39,7 @@ namespace yack
         }
     }
 
-    bool latch:: latched() const throw()
+    bool latch:: latched() const noexcept
     {
         return on;
     }

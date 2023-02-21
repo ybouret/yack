@@ -24,8 +24,8 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline virtual ~cxx_pool_of() throw() { release_(); }                      //!< cleanup by release
-        inline explicit cxx_pool_of() throw() : pool_of<NODE>(), releasable() {}   //!< setup empty
+        inline virtual ~cxx_pool_of() noexcept { release_(); }                      //!< cleanup by release
+        inline explicit cxx_pool_of() noexcept : pool_of<NODE>(), releasable() {}   //!< setup empty
      
         //! copy using NODE copy constructor
         inline          cxx_pool_of(const cxx_pool_of &other) : pool_of<NODE>(), releasable()
@@ -44,14 +44,14 @@ namespace yack
         //______________________________________________________________________
 
         //! delete all nodes
-        inline virtual void release() throw()
+        inline virtual void release() noexcept
         {
             release_();
         }
         
     private:
         YACK_DISABLE_ASSIGN(cxx_pool_of);
-        inline void release_() throw()
+        inline void release_() noexcept
         {
             while(this->size) delete this->query();
         }

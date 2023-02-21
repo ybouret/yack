@@ -9,17 +9,17 @@ namespace yack
     {
         const char  op_none::clid[] = "none";
 
-        const char *op_none:: class_uid() const throw()
+        const char *op_none:: class_uid() const noexcept
         {
             return clid;
         }
 
-        op_none:: op_none() throw() : bank(mark)
+        op_none:: op_none() noexcept : bank(mark)
         {
             I_am<op_none>();
         }
 
-        op_none:: ~op_none() throw()
+        op_none:: ~op_none() noexcept
         {
         }
 
@@ -86,7 +86,7 @@ namespace yack
             return new op_none(*this);
         }
 
-        bool op_none:: is_univocal()  const throw()
+        bool op_none:: is_univocal()  const noexcept
         {
             return false;
         }

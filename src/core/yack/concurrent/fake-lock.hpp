@@ -18,12 +18,12 @@ namespace yack
     class fake_lock : public lockable
     {
     public:
-        explicit fake_lock() throw(); //!< setup
-        virtual ~fake_lock() throw(); //!< cleanup
+        explicit fake_lock() noexcept; //!< setup
+        virtual ~fake_lock() noexcept; //!< cleanup
 
-        void lock()     throw(); //!< increase depth
-        void unlock()   throw(); //!< decrease depth, error if negative
-        bool try_lock() throw(); //!< lock, true
+        void lock()     noexcept; //!< increase depth
+        void unlock()   noexcept; //!< decrease depth, error if negative
+        bool try_lock() noexcept; //!< lock, true
         const int depth;         //!< locking depth
 
         

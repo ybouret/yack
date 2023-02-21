@@ -52,8 +52,8 @@ namespace yack
             //! setup all internal pointers
             RXCompiler(const char       *entry,
                        const size_t      count,
-                       const dictionary *usrDB) throw();
-            ~RXCompiler() throw(); //!< cleanup
+                       const dictionary *usrDB) noexcept;
+            ~RXCompiler() noexcept; //!< cleanup
             
             //__________________________________________________________________
             //

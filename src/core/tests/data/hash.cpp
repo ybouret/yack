@@ -22,16 +22,16 @@ namespace
         {
         }
 
-        inline virtual ~dummy() throw()
+        inline virtual ~dummy() noexcept
         {
         }
 
-        inline const KEY & key() const throw()
+        inline const KEY & key() const noexcept
         {
             return key_;
         }
 
-        static dummy *Quit(dummy *d) throw() { return d; }
+        static dummy *Quit(dummy *d) noexcept { return d; }
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(dummy);

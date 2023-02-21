@@ -9,11 +9,11 @@ namespace yack
     namespace chemical
     {
 
-        actor:: ~actor() throw()
+        actor:: ~actor() noexcept
         {
         }
 
-        actor:: actor(const species &sr, const unsigned cf) throw() :
+        actor:: actor(const species &sr, const unsigned cf) noexcept :
         next(0),
         prev(0),
         sp(sr),
@@ -24,13 +24,13 @@ namespace yack
             //assert(nm>=0);
         }
 
-        bool actor:: is_primary() const throw()
+        bool actor:: is_primary() const noexcept
         {
             return (1 == sp.rank);
         }
 
 
-        const species & actor:: operator*() const throw() { return sp; }
+        const species & actor:: operator*() const noexcept { return sp; }
 
         void actor:: display_first(std::ostream &os) const
         {

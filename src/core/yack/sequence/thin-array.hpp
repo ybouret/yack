@@ -34,7 +34,7 @@ namespace yack
         //______________________________________________________________________
         
         //! cleanup
-        inline virtual ~thin_array() throw() {
+        inline virtual ~thin_array() noexcept {
             entry=0;
             coerce(count)=0;
             basis = 0;
@@ -42,7 +42,7 @@ namespace yack
         }
         
         //! setup from user's C-style data
-        inline explicit thin_array(type *arr, const size_t num) throw() :
+        inline explicit thin_array(type *arr, const size_t num) noexcept :
         collection(),
         contiguous<T>(),
         entry( coerce_cast<mutable_type>(arr)-1 ),
@@ -53,7 +53,7 @@ namespace yack
         }
         
         //! copy
-        inline   thin_array(const thin_array &other ) throw() :
+        inline   thin_array(const thin_array &other ) noexcept :
         collection(),
         contiguous<T>(),
         entry(other.entry),
@@ -65,7 +65,7 @@ namespace yack
 
         //! transmogrify
         template <typename U>
-        inline thin_array( thin_array<U> &other, const transmogrify_t & ) throw() :
+        inline thin_array( thin_array<U> &other, const transmogrify_t & ) noexcept :
         collection(),
         contiguous<T>(),
         entry( coerce_cast<mutable_type>( other()+1 ) - 1 ),
@@ -78,7 +78,7 @@ namespace yack
 
         //! relink
         template <typename U> inline
-        void relink() throw()
+        void relink() noexcept
         {
             assert(hired);
             const thin_array<U> &other = *static_cast< thin_array<U> *>(hired);
@@ -92,7 +92,7 @@ namespace yack
         //
         // interface
         //______________________________________________________________________
-        inline virtual size_t size() const throw() { return count; }
+        inline virtual size_t size() const noexcept { return count; }
         
         
     private:
@@ -102,8 +102,8 @@ namespace yack
         void         *hired;
 
         YACK_DISABLE_ASSIGN(thin_array);
-        inline virtual const_type *cxx() const throw() { return entry; }
-        inline virtual const_type *mem() const throw() { return basis; }
+        inline virtual const_type *cxx() const noexcept { return entry; }
+        inline virtual const_type *mem() const noexcept { return basis; }
     };
 
 }

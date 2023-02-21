@@ -18,11 +18,11 @@ namespace
         const T kr;
         const T kp;
 
-        inline virtual ~enzyme() throw()
+        inline virtual ~enzyme() noexcept
         {
         }
 
-        inline explicit enzyme( randomized::bits &ran ) throw() :
+        inline explicit enzyme( randomized::bits &ran ) noexcept :
         kf(100*ran.to<T>()),
         kr(100*ran.to<T>()),
         kp(1000*ran.to<T>())

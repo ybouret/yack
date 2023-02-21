@@ -24,7 +24,7 @@ namespace yack
         //
         //! formatting category
         //______________________________________________________________________
-        const char *vector_category_build(char *,const size_t,const char *) throw();
+        const char *vector_category_build(char *,const size_t,const char *) noexcept;
     }
     //__________________________________________________________________________
     //
@@ -59,7 +59,7 @@ namespace yack
         YACK_VECTOR_CTOR(), count(0), utter(0), owned(0), base(0), item(0) {}
 
         //! cleanup
-        inline virtual ~vector() throw() { release_(); }
+        inline virtual ~vector() noexcept { release_(); }
 
         //! setup with capacity
         inline explicit vector(const size_t n, const as_capacity_t &) :
@@ -145,10 +145,10 @@ namespace yack
         // collection interface
         //______________________________________________________________________
         //! size
-        inline virtual size_t      size()     const throw() { return count; }
+        inline virtual size_t      size()     const noexcept { return count; }
 
         //! category
-        inline virtual const char *category() const throw()
+        inline virtual const char *category() const noexcept
         {
             static char        buff[32];
             static const char *id = kernel::vector_category_build(buff,sizeof(buff),ALLOCATOR::call_sign);
@@ -160,15 +160,15 @@ namespace yack
         // releasable interface
         //______________________________________________________________________
         //! release all memory
-        inline virtual void     release()         throw() { release_(); }
+        inline virtual void     release()         noexcept { release_(); }
 
         //______________________________________________________________________
         //
         // container interface
         //______________________________________________________________________
-        inline virtual size_t   capacity()  const throw() { return utter; }        //!< utter
-        inline virtual size_t   available() const throw() { return utter-count; }  //!< utter-count
-        inline virtual void     free()            throw() { kill_(); }             //!< destruct all objects, keep memory
+        inline virtual size_t   capacity()  const noexcept { return utter; }        //!< utter
+        inline virtual size_t   available() const noexcept { return utter-count; }  //!< utter-count
+        inline virtual void     free()            noexcept { kill_(); }             //!< destruct all objects, keep memory
         //! grow for n more objects
         inline virtual void     reserve(size_t n)
         {
@@ -229,14 +229,14 @@ namespace yack
         }
 
         //! pop back
-        inline virtual void pop_back()  throw()
+        inline virtual void pop_back()  noexcept
         {
             assert(count>0);
             out_of_reach::naught( destructed( &item[count--] ) );
         }
 
         //! pop front
-        inline virtual void pop_front() throw()
+        inline virtual void pop_front() noexcept
         {
             assert(count>0);
             mutable_type *target = destructed(base);
@@ -250,7 +250,7 @@ namespace yack
         //______________________________________________________________________
 
         //! private linear bytes
-        inline virtual size_t granted() const throw() { return owned; }
+        inline virtual size_t granted() const noexcept { return owned; }
 
         //______________________________________________________________________
         //
@@ -258,7 +258,7 @@ namespace yack
         //______________________________________________________________________
 
         //! no-throw swap
-        inline void swap_with( vector &other ) throw()
+        inline void swap_with( vector &other ) noexcept
         {
             cswap(count,other.count);
             cswap(utter,other.utter);
@@ -278,7 +278,7 @@ namespace yack
         
         
         //! remove an item
-        inline void suppress(const size_t indx) throw()
+        inline void suppress(const size_t indx) noexcept
         {
             assert(indx>=1);
             assert(indx<=size());
@@ -303,7 +303,7 @@ namespace yack
         }
 
         //! keep only front
-        void keep_only_front() throw()
+        void keep_only_front() noexcept
         {
             while(count>1) pop_back();
         }
@@ -316,9 +316,9 @@ namespace yack
         mutable_type *item;  //!< shifted object location item[1..count]
 
         //! contiguous interface
-        virtual const_type * cxx() const throw() { return item; }
+        virtual const_type * cxx() const noexcept { return item; }
 
-        virtual const_type * mem() const throw() { return base; }
+        virtual const_type * mem() const noexcept { return base; }
 
 
         //! acquire zombi-memory
@@ -329,7 +329,7 @@ namespace yack
         }
 
         //! release zombi-memory
-        static inline void zrelease(mutable_type * &entry, size_t &objects, size_t &allocated) throw()
+        static inline void zrelease(mutable_type * &entry, size_t &objects, size_t &allocated) noexcept
         {
             if(entry)
             {
@@ -348,21 +348,21 @@ namespace yack
         }
 
 
-        inline void kill_() throw() {
+        inline void kill_() noexcept {
             while(count>0)
                 out_of_reach::naught(destructed(&item[count--]));
         }
 
-        inline void release_() throw() {
+        inline void release_() noexcept {
             kill_();
             zrelease(base,utter,owned);
             item = 0;
         }
         
-        inline virtual const_type *_front() const throw()
+        inline virtual const_type *_front() const noexcept
         { assert(count>0); return &base[0]; }
 
-        inline virtual const_type *_back() const throw()
+        inline virtual const_type *_back() const noexcept
         { assert(count>0); return &item[count]; }
 
 

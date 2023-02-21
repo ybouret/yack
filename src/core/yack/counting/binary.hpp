@@ -22,15 +22,15 @@ namespace yack
         // C++
         //______________________________________________________________________
         explicit binary_spots(const size_t maxbits); //!< setup
-        virtual ~binary_spots() throw();             //!< cleanup
+        virtual ~binary_spots() noexcept;             //!< cleanup
 
         //______________________________________________________________________
         //
         // methods++
         //______________________________________________________________________
-        size_t                capacity()              const throw(); //!< maxbits
-        virtual size_t        size()                  const throw(); //!< in [0:maxbits]
-        virtual const_type & operator[](const size_t) const throw(); //!< [] to [1,2,...,maxbits]
+        size_t                capacity()              const noexcept; //!< maxbits
+        virtual size_t        size()                  const noexcept; //!< in [0:maxbits]
+        virtual const_type & operator[](const size_t) const noexcept; //!< [] to [1,2,...,maxbits]
 
         //! create an array of zero and one according to current status
         template <typename T> inline
@@ -52,8 +52,8 @@ namespace yack
         const size_t                   bmax;
         memory::workplace<combination> wksp;
 
-        void         restart() throw();
-        virtual void on_boot() throw();
+        void         restart() noexcept;
+        virtual void on_boot() noexcept;
         virtual bool on_next();
         
     };

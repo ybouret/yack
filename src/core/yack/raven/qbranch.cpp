@@ -5,12 +5,12 @@ namespace yack
     namespace raven
     {
 
-        qbranch:: ~qbranch() throw()
+        qbranch:: ~qbranch() noexcept
         {
             prune();
         }
 
-        void qbranch:: prune() throw()
+        void qbranch:: prune() noexcept
         {
             qlist.release();
         }
@@ -21,12 +21,12 @@ namespace yack
         {
         }
 
-        const list_of<qfamily> & qbranch:: operator*()  const throw()
+        const list_of<qfamily> & qbranch:: operator*()  const noexcept
         {
             return qlist;
         }
 
-        const list_of<qfamily> * qbranch:: operator->()  const throw()
+        const list_of<qfamily> * qbranch:: operator->()  const noexcept
         {
             return &qlist;
         }

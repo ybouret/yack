@@ -38,7 +38,7 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~grammar() throw();       //!< cleanup
+                virtual ~grammar() noexcept;       //!< cleanup
 
                 //! setup
                 template <typename LANG> inline
@@ -184,13 +184,13 @@ namespace yack
                 //______________________________________________________________
 
                 //! return current list of rules
-                const list_of<rule> & operator*() const throw();
+                const list_of<rule> & operator*() const noexcept;
 
                 //! set top level rule
                 void top(const rule &);
 
                 //! get top level rult
-                const rule *top() const throw();
+                const rule *top() const noexcept;
                 
                 //! get terminal by name
                 const terminal & operator[](const string &) const;

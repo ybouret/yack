@@ -30,7 +30,7 @@ namespace yack
             // C++
             //__________________________________________________________________
             explicit perfect();         //!< setup
-            virtual ~perfect() throw(); //!< cleanup
+            virtual ~perfect() noexcept; //!< cleanup
             explicit perfect(const char * keys[], const size_t size); //!< register keys
 
 
@@ -52,9 +52,9 @@ namespace yack
             //
             // search: negative means error
             //__________________________________________________________________
-            int  operator()(const void *addr, size_t size) const throw(); //!< search a valid key
-            int  operator()(const char *)                  const throw(); //!< search text
-            int  operator()(const memory::ro_buffer&)      const throw(); //!< search buffer
+            int  operator()(const void *addr, size_t size) const noexcept; //!< search a valid key
+            int  operator()(const char *)                  const noexcept; //!< search text
+            int  operator()(const memory::ro_buffer&)      const noexcept; //!< search buffer
 
             //__________________________________________________________________
             //
@@ -79,9 +79,9 @@ namespace yack
             class node_type : public object
             {
             public:
-                virtual ~node_type() throw();
+                virtual ~node_type() noexcept;
                 explicit node_type(node_type    *parent,
-                                   const uint8_t encode) throw();
+                                   const uint8_t encode) noexcept;
 
                 node_type    *next;
                 node_type    *prev;

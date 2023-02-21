@@ -7,7 +7,7 @@ namespace yack {
 
     namespace jive
     {
-        vfsQuery:: ~vfsQuery() throw() {}
+        vfsQuery:: ~vfsQuery() noexcept {}
 
         vfsQuery:: vfsQuery(const vfsQuery &other) :
         matching(other)

@@ -5,7 +5,7 @@ namespace yack
     {
 
         template <>
-        jacobi<real_t>:: ~jacobi() throw()
+        jacobi<real_t>:: ~jacobi() noexcept
         {
         }
 
@@ -19,7 +19,7 @@ namespace yack
 
 
         template < >
-        void   jacobi<real_t>:: eigsrt(writable<real_t> &d, matrix<real_t> &v) throw()
+        void   jacobi<real_t>:: eigsrt(writable<real_t> &d, matrix<real_t> &v) noexcept
         {
             const size_t n = v.rows;
             assert( d.size() >= v.rows );
@@ -44,7 +44,7 @@ namespace yack
         }
 
         template <>
-        void   jacobi<real_t>:: eigsrtA(writable<real_t> &d, matrix<real_t> &v) throw()
+        void   jacobi<real_t>:: eigsrtA(writable<real_t> &d, matrix<real_t> &v) noexcept
         {
             const size_t n = v.rows;
             assert( d.size() >= v.rows );

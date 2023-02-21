@@ -33,7 +33,7 @@ namespace yack
             static const inet_addr_type loopback;            //!< alias
             static const char           className[];         //!< IPv6
 
-            static void   initialize(sock_addr_type &) throw(); //!< set clean and family
+            static void   initialize(sock_addr_type &) noexcept; //!< set clean and family
             static string to_string(const sock_addr_type &);    //!< convert address to string
 
         };

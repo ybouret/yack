@@ -47,7 +47,7 @@ namespace yack
                 static void display_raw(std::ostream &os, const void *addr, const size_t size);
 
                 static memory::allocator & memmgr(); //!< memory manager
-                static void                release(void * &, size_t &) throw(); //!< release allocated bytes
+                static void                release(void * &, size_t &) noexcept; //!< release allocated bytes
             };
 
             //__________________________________________________________________
@@ -78,13 +78,13 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                inline  glyph(const code_type c)          throw() : code(c), bits(code_bits), freq(0), next(0), prev(0) {}   //!< setup
-                inline ~glyph()                           throw() { }                               //!< cleanup
+                inline  glyph(const code_type c)          noexcept : code(c), bits(code_bits), freq(0), next(0), prev(0) {}   //!< setup
+                inline ~glyph()                           noexcept { }                               //!< cleanup
 
 
                 //! assign an escape/control sequence
                 template <int ESC>
-                inline glyph(const int2type<ESC> &_) throw() : code(cntl_mini+_.value), bits(cntl_bits), freq(1), next(0), prev(0)
+                inline glyph(const int2type<ESC> &_) noexcept : code(cntl_mini+_.value), bits(cntl_bits), freq(1), next(0), prev(0)
                 {
                 }
 
@@ -153,7 +153,7 @@ namespace yack
                 static  const size_t                   data_size  = num_glyphs * sizeof(glyph_type);  //!< bytes to hold glyphs
 
                 //! setup with data_size workspace
-                inline explicit alphabet(void *wksp) throw() :
+                inline explicit alphabet(void *wksp) noexcept :
                 g_list(),
                 status(alphabet_set),
                 tab( static_cast<glyph_type *>(wksp) ),
@@ -164,14 +164,14 @@ namespace yack
                 }
 
                 //! cleanup
-                inline virtual ~alphabet() throw()
+                inline virtual ~alphabet() noexcept
                 {
                     g_list.restart();
                     out_of_reach::zset(tab,data_size);
                 }
 
                 //! access
-                inline const glyph_list * operator->() const throw() { return &g_list; }
+                inline const glyph_list * operator->() const noexcept { return &g_list; }
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(alphabet);
@@ -184,7 +184,7 @@ namespace yack
                 glyph_type *nyt;
 
 
-                void setup() throw()
+                void setup() noexcept
                 {
                     for(size_t i=0;i<num_codes;++i)
                         new (tab+i) glyph_type(i);

@@ -9,7 +9,7 @@ namespace yack
     namespace ios
     {
 
-        ocstream:: ~ocstream() throw()
+        ocstream:: ~ocstream() noexcept
         {
             try {
                 flush();
@@ -111,7 +111,7 @@ namespace yack
     namespace ios
     {
 
-        acstream:: ~acstream() throw() {}
+        acstream:: ~acstream() noexcept {}
 
         acstream:: acstream(const ios::cstderr_t & _) :
         ocstream(_)

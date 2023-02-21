@@ -30,9 +30,9 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit cholesky()       throw(); //!< default setup
+            explicit cholesky()       noexcept; //!< default setup
             explicit cholesky(const size_t n); //!< setup with data
-            virtual ~cholesky()       throw(); //!< cleanup
+            virtual ~cholesky()       noexcept; //!< cleanup
 
             //__________________________________________________________________
             //
@@ -48,7 +48,7 @@ namespace yack
             bool build(matrix<T> &a);
 
             //! solve after decomposition of a
-            void solve(writable<T> &x, const matrix<T> &a, const readable<T> &b) const throw();
+            void solve(writable<T> &x, const matrix<T> &a, const readable<T> &b) const noexcept;
 
 
         private:

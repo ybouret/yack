@@ -10,10 +10,10 @@ namespace yack
         const char pipeline:: clid[] = "[pipeline]";
 
 
-        size_t pipeline:: size() const throw() { return threads; }
+        size_t pipeline:: size() const noexcept { return threads; }
 
 
-        pipeline::const_type &pipeline:: operator[](const size_t indx) const throw()
+        pipeline::const_type &pipeline:: operator[](const size_t indx) const noexcept
         {
             assert(indx>=1);
             assert(indx<=threads);
@@ -150,7 +150,7 @@ namespace yack
         }
 
 
-        pipeline:: ~pipeline() throw()
+        pipeline:: ~pipeline() noexcept
         {
             {
                 YACK_LOCK(sync);
@@ -164,14 +164,14 @@ namespace yack
         }
 
 
-        void pipeline:: zkill() throw()
+        void pipeline:: zkill() noexcept
         {
             static memory::allocator &mgr = memory::dyadic::location();
             mgr.withdraw(++squad,bytes);
         }
 
       
-        void pipeline:: entry(void *args) throw()
+        void pipeline:: entry(void *args) noexcept
         {
             assert(NULL!=args);
             static_cast<pipeline *>(args)->cycle();
@@ -185,7 +185,7 @@ namespace yack
 
 
 
-        bool pipeline:: ended(const job_uuid uuid) const throw()
+        bool pipeline:: ended(const job_uuid uuid) const noexcept
         {
             YACK_LOCK( coerce(sync) );
 

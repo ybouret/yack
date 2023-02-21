@@ -32,17 +32,17 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            inline ~linked()                  throw() { node=0; }                              //!< cleanup
-            inline  linked(node_type *     n) throw() : node( (mutable_node_type*)n )       {} //!< setup
-            inline  linked(const linked   &_) throw() : node( (mutable_node_type *) _.node) {} //!< copy
-            inline  linked&operator=(const linked &_) throw()                                  //|
+            inline ~linked()                  noexcept { node=0; }                              //!< cleanup
+            inline  linked(node_type *     n) noexcept : node( (mutable_node_type*)n )       {} //!< setup
+            inline  linked(const linked   &_) noexcept : node( (mutable_node_type *) _.node) {} //!< copy
+            inline  linked&operator=(const linked &_) noexcept                                  //|
             {   node = (mutable_node_type*)_.node; return *this; }                             //!< assign
 
             //__________________________________________________________________
             //
             //! prefix increment operator
             //__________________________________________________________________
-            inline linked & operator++() throw()
+            inline linked & operator++() noexcept
             {
                 static const int2type<D> way = {}; incr(way); return *this;
             }
@@ -51,7 +51,7 @@ namespace yack
             //
             //! postfix increment operator
             //__________________________________________________________________
-            inline linked  operator++(int) throw()
+            inline linked  operator++(int) noexcept
             {
                 static const int2type<D> way = {};
                 const linked             tmp = *this;
@@ -62,7 +62,7 @@ namespace yack
             //
             //! prefix decrement operator
             //__________________________________________________________________
-            inline linked & operator--() throw()
+            inline linked & operator--() noexcept
             {
                 static const int2type<D> way = {}; decr(way); return *this;
             }
@@ -71,7 +71,7 @@ namespace yack
             //
             //! postfix decrement operator
             //__________________________________________________________________
-            inline linked  operator--(int) throw()
+            inline linked  operator--(int) noexcept
             {
                 static const int2type<D> way = {};
                 const linked tmp = *this; decr(way); return tmp;
@@ -81,7 +81,7 @@ namespace yack
             //
             //! += n
             //__________________________________________________________________
-            inline linked & operator+=(const ptrdiff_t n) throw()
+            inline linked & operator+=(const ptrdiff_t n) noexcept
             {
                 static const int2type<D> way = {};
                 add(way,n); return *this;
@@ -91,7 +91,7 @@ namespace yack
             //
             //! self + n
             //__________________________________________________________________
-            inline friend bool operator+(const linked &lhs, const ptrdiff_t n) throw()
+            inline friend bool operator+(const linked &lhs, const ptrdiff_t n) noexcept
             {
                 linked tmp = lhs; tmp += n; return tmp;
             }
@@ -100,7 +100,7 @@ namespace yack
             //
             //! -= n
             //__________________________________________________________________
-            inline linked & operator-=(const ptrdiff_t n) throw()
+            inline linked & operator-=(const ptrdiff_t n) noexcept
             {
                 static const int2type<D> way = {};
                 sub(way,n); return *this;
@@ -110,7 +110,7 @@ namespace yack
             //
             //! self - n
             //__________________________________________________________________
-            inline friend bool operator-(const linked &lhs, const ptrdiff_t n) throw()
+            inline friend bool operator-(const linked &lhs, const ptrdiff_t n) noexcept
             {
                 linked tmp = lhs; tmp -= n; return tmp;
             }
@@ -119,7 +119,7 @@ namespace yack
             //
             //! equality
             //__________________________________________________________________
-            inline friend bool operator==(const linked &lhs, const linked &rhs) throw()
+            inline friend bool operator==(const linked &lhs, const linked &rhs) noexcept
             {
                 return lhs.node == rhs.node;
             }
@@ -128,7 +128,7 @@ namespace yack
             //
             //! difference
             //__________________________________________________________________
-            inline friend bool operator!=(const linked &lhs, const linked &rhs) throw()
+            inline friend bool operator!=(const linked &lhs, const linked &rhs) noexcept
             {
                 return lhs.node != rhs.node;
             }
@@ -137,34 +137,34 @@ namespace yack
             //
             //! access
             //__________________________________________________________________
-            inline type       & operator*()       throw() { assert(node); return **node; }
+            inline type       & operator*()       noexcept { assert(node); return **node; }
 
             //__________________________________________________________________
             //
             //! used to drill-down
             //__________________________________________________________________
-            inline NODE       & operator->()      throw() { assert(node); return *node;   }
+            inline NODE       & operator->()      noexcept { assert(node); return *node;   }
 
             //__________________________________________________________________
             //
             //! access, const
             //__________________________________________________________________
-            inline const_type & operator*()  const  throw() { assert(node); return **node; }
+            inline const_type & operator*()  const  noexcept { assert(node); return **node; }
 
             //__________________________________________________________________
             //
             //! used to drill-down
             //__________________________________________________________________
-            inline const NODE & operator->() const throw() { assert(node); return *node;   }
+            inline const NODE & operator->() const noexcept { assert(node); return *node;   }
 
         private:
             mutable_node_type *node;
-            inline void incr(const int2type<forward> &) throw() { assert(node); node=node->next; }
-            inline void incr(const int2type<reverse> &) throw() { assert(node); node=node->prev; }
-            inline void decr(const int2type<forward> &) throw() { assert(node); node=node->prev; }
-            inline void decr(const int2type<reverse> &) throw() { assert(node); node=node->next; }
+            inline void incr(const int2type<forward> &) noexcept { assert(node); node=node->next; }
+            inline void incr(const int2type<reverse> &) noexcept { assert(node); node=node->prev; }
+            inline void decr(const int2type<forward> &) noexcept { assert(node); node=node->prev; }
+            inline void decr(const int2type<reverse> &) noexcept { assert(node); node=node->next; }
 
-            inline void add(const int2type<forward> &, ptrdiff_t n) throw()
+            inline void add(const int2type<forward> &, ptrdiff_t n) noexcept
             {
                 if(n>0)
                 {
@@ -190,19 +190,19 @@ namespace yack
                 }
             }
 
-            inline void add(const int2type<reverse> &, const ptrdiff_t n) throw()
+            inline void add(const int2type<reverse> &, const ptrdiff_t n) noexcept
             {
                 static const int2type<forward> fwd = {};
                 add(fwd,-n);
             }
 
-            inline void sub(const int2type<forward> &, const ptrdiff_t n) throw()
+            inline void sub(const int2type<forward> &, const ptrdiff_t n) noexcept
             {
                 static const int2type<forward> fwd = {};
                 add(fwd,-n);
             }
 
-            inline void sub(const int2type<reverse> &, const ptrdiff_t n) throw()
+            inline void sub(const int2type<reverse> &, const ptrdiff_t n) noexcept
             {
                 static const int2type<forward> fwd = {};
                 add(fwd,n);

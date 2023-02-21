@@ -11,9 +11,9 @@ namespace yack
     namespace math
     {
 
-        inline float        anint(const float       x) throw() { return floor(x+0.5f); } //!< closest float
-        inline double       anint(const double      x) throw() { return floor(x+0.5);  } //!< closest double
-        inline long double  anint(const long double x) throw() { return floor(x+0.5L); } //!< closest long double
+        inline float        anint(const float       x) noexcept { return floor(x+0.5f); } //!< closest float
+        inline double       anint(const double      x) noexcept { return floor(x+0.5);  } //!< closest double
+        inline long double  anint(const long double x) noexcept { return floor(x+0.5L); } //!< closest long double
 
 
         //! all useful numeric constants
@@ -60,7 +60,7 @@ template <> const long double numeric<long double>::VALUE
 
         //! test almost equal
         template <typename T>
-        inline bool almost_equal( const T X, const T Y) throw()
+        inline bool almost_equal( const T X, const T Y) noexcept
         {
             static T fac = T(0.5) * numeric<T>::epsilon;
             return ( std::abs(X-Y) <= fac * ( std::abs(X) + std::abs(Y) ) );
@@ -68,7 +68,7 @@ template <> const long double numeric<long double>::VALUE
 
         //! precise hypothenuse
         template <typename T>
-        inline T hypothenuse(const T a, const T b) throw()
+        inline T hypothenuse(const T a, const T b) noexcept
         {
             static const T one(1);
             const T        absa=std::abs(a);
@@ -85,7 +85,7 @@ template <> const long double numeric<long double>::VALUE
 
         //! return the signed value of a w.r.t the sign of b
         template <typename T, typename U>
-        inline T __sgn(T a, U b) throw()
+        inline T __sgn(T a, U b) noexcept
         {
             return (b >= 0) ? std::abs(a) : -std::abs(a);
         }

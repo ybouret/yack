@@ -17,11 +17,11 @@ namespace yack
     class restartable
     {
     public:
-        virtual ~restartable() throw();     //!< cleanup
-        virtual void restart() throw() = 0; //!< hard reset
+        virtual ~restartable() noexcept;     //!< cleanup
+        virtual void restart() noexcept = 0; //!< hard reset
         
     protected:
-        explicit restartable() throw();    //!< setup
+        explicit restartable() noexcept;    //!< setup
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(restartable);

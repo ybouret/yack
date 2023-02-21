@@ -24,10 +24,10 @@ namespace yack
         YACK_PAIR_DECL(STANDARD,greatest,const double,value,const size_t,index);
 
         //! setup empty
-        inline greatest() throw() : value(0), index(0) {}
+        inline greatest() noexcept : value(0), index(0) {}
 
         //! update
-        inline greatest & operator<<(const greatest &other) throw() {
+        inline greatest & operator<<(const greatest &other) noexcept {
             if(other.value>value) {
                 coerce(value) = other.value;
                 coerce(index) = other.index;
@@ -36,7 +36,7 @@ namespace yack
         }
 
         //! assignment operator
-        inline greatest & operator=(const greatest &other) throw()
+        inline greatest & operator=(const greatest &other) noexcept
         {
             coerce(value) = other.value;
             coerce(index) = other.index;
@@ -46,7 +46,7 @@ namespace yack
 
         //! divide by the greatest value, taking care of index sign
         template <typename ARR> inline
-        void divide(ARR &arr) const throw() {
+        void divide(ARR &arr) const noexcept {
             assert(fabs(value)>0);
             assert(index>0);
             const size_t n=arr.size();
@@ -76,8 +76,8 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~actors() throw(); //!< cleanup
-            explicit actors() throw(); //!< setup empty
+            virtual ~actors() noexcept; //!< cleanup
+            explicit actors() noexcept; //!< setup empty
 
             //__________________________________________________________________
             //
@@ -90,12 +90,12 @@ namespace yack
                             const unsigned nu);
 
             //! emergency remove last
-            void remove_last() throw();
+            void remove_last() noexcept;
 
 
-            const list_of<actor> * operator->() const throw(); //!< access to const crew
-            bool attached_to(const actor  &) const throw();    //!< check link with actor
-            bool attached_to(const actors &) const throw();    //!< check link with other actors
+            const list_of<actor> * operator->() const noexcept; //!< access to const crew
+            bool attached_to(const actor  &) const noexcept;    //!< check link with actor
+            bool attached_to(const actors &) const noexcept;    //!< check link with other actors
             //!
 
             //! mass action with rmulops
@@ -109,13 +109,13 @@ namespace yack
                                rmulops                &ops) const;
 
             //! C -> max_of(C+nu*xi,0) (sign of xi must be adapted)
-            void  move(writable<double> &C, const double xi) const throw();
+            void  move(writable<double> &C, const double xi) const noexcept;
 
             // //! C -> C+nu*xi, raw value, sign of xi must be adapted
-            //void  mov_(writable<double> &C, const double xi) const throw();
+            //void  mov_(writable<double> &C, const double xi) const noexcept;
 
 
-            const xlimit     *genuine_limit(xlimit::field &xl, const readable<double> &C) const throw(); //!< test all actors
+            const xlimit     *genuine_limit(xlimit::field &xl, const readable<double> &C) const noexcept; //!< test all actors
 
             
             //! display
@@ -125,10 +125,10 @@ namespace yack
             string to_string() const;
 
             //! check that any of the acting concentration is negative
-            bool are_genuinely_blocked_by(const readable<double> &C) const throw();
+            bool are_genuinely_blocked_by(const readable<double> &C) const noexcept;
 
             //! check that any of the primary acting concentration is negative
-            //bool are_primarily_blocked_by(const readable<double> &C) const throw();
+            //bool are_primarily_blocked_by(const readable<double> &C) const noexcept;
 
             //! compute derivatives of mass action w.r.t C, return greatest |max|
             greatest grad_action(writable<double>       &psi,

@@ -31,10 +31,10 @@ namespace yack
             //
             //C++
             //__________________________________________________________________
-            inline ~u32_to() throw() {} //!< cleanup
+            inline ~u32_to() noexcept {} //!< cleanup
 
             //! setup
-            inline u32_to(const uint32_t umax) throw() :
+            inline u32_to(const uint32_t umax) noexcept :
             unit_proc(0),
             user_maxi(umax),
             unit_deno(0),
@@ -49,13 +49,13 @@ namespace yack
             //__________________________________________________________________
             
             //! call to transform 0..user_maxi into ]0:1[
-            inline T unit(const uint32_t u) const throw()
+            inline T unit(const uint32_t u) const noexcept
             {
                 return ((*this).*unit_proc)(u);
             }
 
             //! call to transform 0..user_maxi into ]-1:1[
-            inline T symm(const uint32_t u) const throw()
+            inline T symm(const uint32_t u) const noexcept
             {
                 static const T half(0.5);
                 const T x = unit(u)-half;
@@ -76,7 +76,7 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(u32_to);
 
-            inline void setup() throw()
+            inline void setup() noexcept
             {
                 static const T one(1);
                 if(compacted)
@@ -93,7 +93,7 @@ namespace yack
                 }
             }
 
-            inline T unit_proc_all_range(const uint32_t u) const throw()
+            inline T unit_proc_all_range(const uint32_t u) const noexcept
             {
                 static const T half(0.5);
                 assert(user_maxi<=maxi);
@@ -103,7 +103,7 @@ namespace yack
 
 
 
-            inline T unit_proc_compacted(const uint32_t u) const throw()
+            inline T unit_proc_compacted(const uint32_t u) const noexcept
             {
                 static const T half(0.5);
                 assert(user_maxi>maxi);

@@ -7,9 +7,9 @@ namespace yack
     namespace JSON
     {
 
-        Array:: Array() throw() : Array_() {}
+        Array:: Array() noexcept : Array_() {}
 
-        Array:: ~Array() throw() {}
+        Array:: ~Array() noexcept {}
 
         Array:: Array(const Array &arr) : collection(), object(), Array_(arr) {}
 
@@ -39,9 +39,9 @@ namespace yack
     namespace JSON
     {
 
-        Object:: Object() throw() : Object_() {}
+        Object:: Object() noexcept : Object_() {}
 
-        Object:: ~Object() throw() {}
+        Object:: ~Object() noexcept {}
 
         Object:: Object(const Object &arr) : collection(), large_object(), Object_(arr) {}
 
@@ -65,7 +65,7 @@ namespace yack
     namespace JSON
     {
 
-        Pair_:: ~Pair_() throw()
+        Pair_:: ~Pair_() noexcept
         {
         }
 
@@ -75,7 +75,7 @@ namespace yack
         {
         }
 
-        const string & Pair_:: key() const throw() { return key_; }
+        const string & Pair_:: key() const noexcept { return key_; }
 
         std::ostream & operator<<(std::ostream &os, const Pair_ &p)
         {
@@ -85,7 +85,7 @@ namespace yack
 
 
 
-        Value:: Value() throw() :
+        Value:: Value() noexcept :
         type(isNull),
         impl(NULL)
         {
@@ -93,14 +93,14 @@ namespace yack
         }
 
         template <typename T>
-        static inline void jkill(void * &impl) throw()
+        static inline void jkill(void * &impl) noexcept
         {
             assert(impl);
             delete static_cast<T*>(impl);
             impl=NULL;
         }
 
-        Value:: ~Value() throw()
+        Value:: ~Value() noexcept
         {
             switch(type)
             {
@@ -176,13 +176,13 @@ namespace yack
 
 
 
-        Value:: Value(const bool b) throw() :
+        Value:: Value(const bool b) noexcept :
         type(b?isTrue:isFalse),
         impl(NULL)
         {
         }
 
-        Value:: Value(const Number d) throw() :
+        Value:: Value(const Number d) noexcept :
         type(isNumber),
         impl( new (object::zacquire<Number>()) Number(d) )
         {
@@ -222,21 +222,21 @@ namespace yack
 
 
 
-        void Value:: xch(Value &other) throw()
+        void Value:: xch(Value &other) noexcept
         {
             coerce_cswap(type,other.type);
             coerce_cswap(impl,other.impl);
         }
 
-        void Value:: nil() throw()
+        void Value:: nil() noexcept
         {
             Value _;
             xch(_);
         }
 
 #define YACK_JSON_VALUE_AS(TYPE) \
-template <> TYPE       & Value::as<TYPE>()       throw() { assert(is##TYPE==type); return *static_cast<TYPE*>(impl);       } \
-template <> const TYPE & Value::as<TYPE>() const throw() { assert(is##TYPE==type); return *static_cast<const TYPE*>(impl); }
+template <> TYPE       & Value::as<TYPE>()       noexcept { assert(is##TYPE==type); return *static_cast<TYPE*>(impl);       } \
+template <> const TYPE & Value::as<TYPE>() const noexcept { assert(is##TYPE==type); return *static_cast<const TYPE*>(impl); }
 
 
         YACK_JSON_VALUE_AS(String)

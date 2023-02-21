@@ -92,7 +92,7 @@ namespace yack
             // methods
             //__________________________________________________________________
             character *get();             //!< get next char, NULL => EOF
-            void       newline() throw(); //!< update context
+            void       newline() noexcept; //!< update context
             bool       gets(token &line); //!< helper to get line
             
             //__________________________________________________________________
@@ -106,7 +106,7 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual        ~module() throw(); //!< cleanup
+            virtual        ~module() noexcept; //!< cleanup
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(module);
             module(const string &filename);

@@ -32,7 +32,7 @@ namespace yack
             struct   thread_api
             {
                 static  thread *  init(threadable &);               //!< create a new  thread
-                static  void      quit(thread *   &) throw();       //!< finish and delete an old thread
+                static  void      quit(thread *   &) noexcept;       //!< finish and delete an old thread
             };
 
         }

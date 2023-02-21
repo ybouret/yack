@@ -8,10 +8,10 @@
 
 namespace yack
 {
-    large_object::  large_object() throw() {}
-    large_object:: ~large_object() throw() {}
+    large_object::  large_object() noexcept {}
+    large_object:: ~large_object() noexcept {}
 
-    static inline void hard_check(const void *block_addr, const size_t block_size) throw()
+    static inline void hard_check(const void *block_addr, const size_t block_size) noexcept
     {
         assert(block_addr);
         const size_t allocated = memory::parcel::size_of(block_addr);
@@ -27,7 +27,7 @@ namespace yack
         return memory::legacy::acquire(block_size);
     }
 
-    void large_object:: operator delete(void *block_addr,const size_t block_size) throw()
+    void large_object:: operator delete(void *block_addr,const size_t block_size) noexcept
     {
         assert(block_size>0);
         if(NULL!=block_addr)
@@ -43,7 +43,7 @@ namespace yack
         return memory::legacy::acquire(block_size);
     }
 
-    void large_object:: operator delete[](void *block_addr, const size_t block_size) throw()
+    void large_object:: operator delete[](void *block_addr, const size_t block_size) noexcept
     {
         assert(block_size>0);
         if(NULL!=block_addr)
@@ -54,7 +54,7 @@ namespace yack
     }
 
 
-    void * large_object::operator new(size_t block_size, void *addr) throw()
+    void * large_object::operator new(size_t block_size, void *addr) noexcept
     {
         assert(block_size>0);
         assert(addr!=NULL);
@@ -62,7 +62,7 @@ namespace yack
         return addr;
     }
 
-    void large_object:: operator delete(void *, void *) throw()
+    void large_object:: operator delete(void *, void *) noexcept
     {}
 
 }

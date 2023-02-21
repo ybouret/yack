@@ -33,7 +33,7 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~rzextr() throw(); //!< cleanup
+                virtual ~rzextr() noexcept; //!< cleanup
                 explicit rzextr();         //!< setup
 
                 //______________________________________________________________

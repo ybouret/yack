@@ -6,7 +6,7 @@ namespace yack {
     namespace chemical
     {
 
-        frontiers:: ~frontiers() throw() {}
+        frontiers:: ~frontiers() noexcept {}
 
         frontiers:: frontiers(const size_t m) :
         base_type(m) {}
@@ -70,7 +70,7 @@ namespace yack {
         }
 
 
-        bool frontiers:: are_increasing() const throw()
+        bool frontiers:: are_increasing() const noexcept
         {
             const size_t n = size();
             switch(n)

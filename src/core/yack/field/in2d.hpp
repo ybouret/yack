@@ -42,7 +42,7 @@ namespace yack
         //______________________________________________________________________
 
         //! cleanup
-        inline virtual ~field2D() throw()
+        inline virtual ~field2D() noexcept
         {
             row += lower.y;
             clear(width.y);
@@ -67,13 +67,13 @@ namespace yack
         //______________________________________________________________________
 
         //! access
-        inline row_type & operator[](const unit_t y) throw()
+        inline row_type & operator[](const unit_t y) noexcept
         {
             assert(row); assert(y>=lower.y); assert(y<=upper.y); return row[y];
         }
 
         //! access
-        inline const row_type & operator[](const unit_t y) const throw()
+        inline const row_type & operator[](const unit_t y) const noexcept
         {
             assert(row); assert(y>=lower.y); assert(y<=upper.y); return row[y];
         }
@@ -98,7 +98,7 @@ namespace yack
         row_type *row; //!< in [lower.y:upper.y]
 
         //! erase memory
-        inline void clear(unit_t done) throw()
+        inline void clear(unit_t done) noexcept
         {
             while(done>0)
                 destruct( &row[--done] );
@@ -160,7 +160,7 @@ namespace yack
 
 
         //! read
-        const_type & fetch(const readable<unit_t> &coord) const throw()
+        const_type & fetch(const readable<unit_t> &coord) const noexcept
         {
             assert(coord.size()>=2);
             return (*this)[coord[2]][coord[1]];

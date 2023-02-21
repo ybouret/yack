@@ -7,7 +7,7 @@ namespace yack
     namespace net
     {
 
-        void  socket_address_metrics<v4>:: initialize(sock_addr_type &sa) throw()
+        void  socket_address_metrics<v4>:: initialize(sock_addr_type &sa) noexcept
         {
             memset(&sa,0,sock_addr_size);
             sa.sin_family = AF_INET;

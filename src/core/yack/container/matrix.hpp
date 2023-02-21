@@ -46,10 +46,10 @@ namespace yack
         //______________________________________________________________________
 
         //! cleanup
-        inline virtual ~matrix() throw() { clear(items); }
+        inline virtual ~matrix() noexcept { clear(items); }
 
         //! setup empty
-        inline matrix() throw(): matrix_data<T>(), matrix_metrics() {}
+        inline matrix() noexcept: matrix_data<T>(), matrix_metrics() {}
 
         //! setup empty or full of defaut items
         inline matrix(const size_t r, const size_t c) :
@@ -115,7 +115,7 @@ namespace yack
         //
         // interface methods
         //______________________________________________________________________
-        virtual void release() throw()
+        virtual void release() noexcept
         {
             matrix<T> tmp;
             xch(tmp);
@@ -127,15 +127,15 @@ namespace yack
         //______________________________________________________________________
 
         //! row[1..rows]
-        inline row &operator[](const size_t r) throw()
+        inline row &operator[](const size_t r) noexcept
         { assert(r>=1); assert(r<=rows); return line[r]; }
 
         //! row[1..rows] const
-        inline const row &operator[](const size_t r) const throw()
+        inline const row &operator[](const size_t r) const noexcept
         { assert(r>=1); assert(r<=rows); return line[r]; }
 
         //! no throw exchange
-        inline void xch(matrix &other) throw()
+        inline void xch(matrix &other) noexcept
         {
             this->swap_data_with(other);
             swap_metrics_with(other);
@@ -169,7 +169,7 @@ namespace yack
 
 
         //! swap rows content
-        inline void swap_rows(const size_t r1, const size_t r2) throw()
+        inline void swap_rows(const size_t r1, const size_t r2) noexcept
         {
             assert(r1>=1); assert(r1<=rows);
             assert(r2>=1); assert(r2<=rows);
@@ -177,7 +177,7 @@ namespace yack
         }
 
         //! swap cols contents
-        inline void swap_cols(const size_t c1, const size_t c2) throw()
+        inline void swap_cols(const size_t c1, const size_t c2) noexcept
         {
             assert(c1>=1); assert(c1<=cols);
             assert(c2>=1); assert(c2<=cols);
@@ -185,7 +185,7 @@ namespace yack
         }
 
         //! swap both rows and cols
-        inline void swap_both(const size_t i, const size_t j) throw()
+        inline void swap_both(const size_t i, const size_t j) noexcept
         {
             swap_rows(i,j);
             swap_cols(i,j);
@@ -270,10 +270,10 @@ namespace yack
         }
 
         //! access linear space
-        inline thin_array<type>       get_contiguous() throw()       { return thin_array<type>(head,items); }
+        inline thin_array<type>       get_contiguous() noexcept       { return thin_array<type>(head,items); }
 
         //! access linear space
-        inline thin_array<const_type> get_contiguous() const throw() { return thin_array<const_type>(head,items); }
+        inline thin_array<const_type> get_contiguous() const noexcept { return thin_array<const_type>(head,items); }
 
         //! compute minor matrix
         template <typename U>
@@ -371,11 +371,11 @@ namespace yack
         }
 
         //! creation of a row
-        static inline void build_row_at(void *row_addr, void *data_ptr, const size_t num_cols) throw()
+        static inline void build_row_at(void *row_addr, void *data_ptr, const size_t num_cols) noexcept
         { new (row_addr) row(static_cast<mutable_type *>(data_ptr),num_cols); }
 
         //! clear built objects
-        inline void clear(size_t built) throw() {
+        inline void clear(size_t built) noexcept {
             while(built-- > 0)
                 destruct(head+built);
         }

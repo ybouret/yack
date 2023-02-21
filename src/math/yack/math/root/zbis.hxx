@@ -4,11 +4,11 @@ namespace yack
 
     namespace math
     {
-        template <> zbis<real_t>:: zbis() throw() : math::zroot<real_t>() {}
+        template <> zbis<real_t>:: zbis() noexcept : math::zroot<real_t>() {}
 
-        template <> zbis<real_t>:: ~zbis() throw() {}
+        template <> zbis<real_t>:: ~zbis() noexcept {}
 
-        template <> const char * zbis<real_t>:: name() const throw()
+        template <> const char * zbis<real_t>:: name() const noexcept
         {
             return core::zbis_name;
         }

@@ -10,7 +10,7 @@
 using namespace yack;
 
 template <typename T> static inline
-int legacy_compare(const void *lhs, const void *rhs, void *) throw()
+int legacy_compare(const void *lhs, const void *rhs, void *) noexcept
 {
     return comparison::increasing( *(const T*)lhs, *(const T *)rhs);
 }

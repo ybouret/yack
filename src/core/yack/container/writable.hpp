@@ -30,7 +30,7 @@ namespace yack
         //
         // interface
         //______________________________________________________________________
-        virtual type &operator[](const size_t) throw() = 0; //!< in [1..size]
+        virtual type &operator[](const size_t) noexcept = 0; //!< in [1..size]
 
         //______________________________________________________________________
         //
@@ -54,9 +54,9 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline virtual ~writable() throw() {}
+        inline virtual ~writable() noexcept {}
     protected:
-        inline explicit writable() throw() {}
+        inline explicit writable() noexcept {}
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(writable);

@@ -5,11 +5,11 @@ namespace yack
     namespace concurrent
     {
 
-        assembly:: ~assembly() throw()
+        assembly:: ~assembly() noexcept
         {
         }
 
-        assembly:: assembly() throw() : readable<context>()
+        assembly:: assembly() noexcept : readable<context>()
         {
         }
 
@@ -26,7 +26,7 @@ namespace yack
         }
 
 
-        void assembly:: free_local_memories() throw()
+        void assembly:: free_local_memories() noexcept
         {
             const readable<context> &self = *this;
             const size_t             nctx = self.size();
@@ -37,7 +37,7 @@ namespace yack
             }
         }
 
-        void assembly:: drop_local_memories() throw()
+        void assembly:: drop_local_memories() noexcept
         {
             const readable<context> &self = *this;
             const size_t             nctx = self.size();

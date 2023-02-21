@@ -19,7 +19,7 @@ namespace yack
 
         system_error_t c_file::last_close_error = 0;
         
-        c_file:: ~c_file() throw()
+        c_file:: ~c_file() noexcept
         {
             assert(handle);
             if(_close)

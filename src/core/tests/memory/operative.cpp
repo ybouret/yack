@@ -14,7 +14,7 @@ namespace
         new (addr) apq();
     }
 
-    static inline void clear(void *addr) throw()
+    static inline void clear(void *addr) noexcept
     {
         destruct( static_cast<apq *>(addr) );
     }

@@ -35,10 +35,10 @@ namespace yack
                 //
                 // methods
                 //______________________________________________________________
-                virtual          ~sample_()         throw(); //!< cleanup
-                const string    & key() const       throw(); //!< for db
-                variables       & operator*()       throw(); //!< internal variables
-                const variables & operator*() const throw(); //!< internal variables
+                virtual          ~sample_()         noexcept; //!< cleanup
+                const string    & key() const       noexcept; //!< for db
+                variables       & operator*()       noexcept; //!< internal variables
+                const variables & operator*() const noexcept; //!< internal variables
 
                 //______________________________________________________________
                 //

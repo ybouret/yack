@@ -80,7 +80,7 @@ namespace yack
                 //! cleanup
                 //
                 //______________________________________________________________
-                inline ~atelier() throw()
+                inline ~atelier() noexcept
                 {
                     assert(NULL!=giant);
                     delete_mutex(giant);
@@ -93,9 +93,9 @@ namespace yack
                 // lockable interface
                 //
                 //______________________________________________________________
-                virtual void lock()     throw() { mutex_api::lock(giant);            }
-                virtual void unlock()   throw() { mutex_api::unlock(giant);          }
-                virtual bool try_lock() throw() { return mutex_api::try_lock(giant); }
+                virtual void lock()     noexcept { mutex_api::lock(giant);            }
+                virtual void unlock()   noexcept { mutex_api::unlock(giant);          }
+                virtual bool try_lock() noexcept { return mutex_api::try_lock(giant); }
                 
                 //______________________________________________________________
                 //
@@ -128,7 +128,7 @@ namespace yack
                 //! quit/release functional mutex
                 //
                 //______________________________________________________________
-                inline void delete_mutex(mutex *m) throw()
+                inline void delete_mutex(mutex *m) noexcept
                 {
                     assert(NULL!=m);
 #if                 defined(YACK_BSD)
@@ -183,18 +183,18 @@ namespace yack
             //__________________________________________________________________
 
             //! clean memory
-            static inline void      atelier_zero() throw() { memset(atelier_data,0,sizeof(atelier_data)); }
+            static inline void      atelier_zero() noexcept { memset(atelier_data,0,sizeof(atelier_data)); }
             
 
             //! location of initialized atelier
-            static inline atelier & atelier_location() throw()
+            static inline atelier & atelier_location() noexcept
             {
                 assert(!atelier_initialize);
                 return *static_cast<atelier *>( yack::out_of_reach::address(atelier_data) );
             }
 
             //! cleanup at exit
-            static inline void atelier_quit(void *) throw()
+            static inline void atelier_quit(void *) noexcept
             {
                 assert(!atelier_initialize);
                 yack::destruct( &atelier_location() );

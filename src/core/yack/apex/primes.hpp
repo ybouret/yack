@@ -36,7 +36,7 @@ namespace yack
             }
 
             //! cleanup
-            virtual ~prime_knot() throw();
+            virtual ~prime_knot() noexcept;
 
             //__________________________________________________________________
             //
@@ -89,8 +89,8 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            const prime_list * operator->() const throw(); //!< access
-            const prime_list & operator*()  const throw(); //!< access
+            const prime_list * operator->() const noexcept; //!< access
+            const prime_list & operator*()  const noexcept; //!< access
 
 
             bool              is(const natural &n);     //!< check if is prime
@@ -114,7 +114,7 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(primes);
             friend class singleton<primes>;
             explicit primes();
-            virtual ~primes() throw();
+            virtual ~primes() noexcept;
 
             void              update();            //!< update sieve starting point
             const prime_knot &search();            //!< get next prime

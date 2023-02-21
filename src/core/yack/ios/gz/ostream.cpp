@@ -9,7 +9,7 @@ namespace yack
     {
         namespace gz
         {
-            ostream:: ~ostream() throw()
+            ostream:: ~ostream() noexcept
             {
             }
 

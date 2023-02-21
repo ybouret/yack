@@ -37,15 +37,15 @@ namespace yack
         //______________________________________________________________________
 
         //! no-throw copy
-        inline system_exception(const system_exception &other) throw() :
+        inline system_exception(const system_exception &other) noexcept :
         imported::exception(other), code(other.code)  {}
 
         //! cleanup
-        inline virtual ~system_exception() throw() { (CODE&)code=0; }
+        inline virtual ~system_exception() noexcept { (CODE&)code=0; }
 
     protected:
         //! setup code/empty what() and when()
-        inline explicit system_exception(const CODE err) throw() :
+        inline explicit system_exception(const CODE err) noexcept :
         imported::exception(), code(err) {}
         
     private:
@@ -65,9 +65,9 @@ namespace yack
         {
         public:
             //! setup code/strerror/when
-            explicit exception(const int err, const char *fmt,...) throw() YACK_PRINTF_CHECK(3,4);
-            virtual ~exception() throw();        //!< cleanup
-            exception(const exception&) throw(); //!< nothrow copy
+            explicit exception(const int err, const char *fmt,...) noexcept YACK_PRINTF_CHECK(3,4);
+            virtual ~exception() noexcept;        //!< cleanup
+            exception(const exception&) noexcept; //!< nothrow copy
 
         private:
             YACK_DISABLE_ASSIGN(exception);
@@ -87,9 +87,9 @@ namespace yack
         {
         public:
             //! setup code/mach error/when
-            explicit exception(const int err, const char *fmt,...) throw() YACK_PRINTF_CHECK(3,4);
-            virtual ~exception() throw();        //!< cleanup
-            exception(const exception&) throw(); //!< nothrow copy
+            explicit exception(const int err, const char *fmt,...) noexcept YACK_PRINTF_CHECK(3,4);
+            virtual ~exception() noexcept;        //!< cleanup
+            exception(const exception&) noexcept; //!< nothrow copy
 
         private:
             YACK_DISABLE_ASSIGN(exception);
@@ -110,9 +110,9 @@ namespace yack
         {
         public:
             //! setup code/FormatMessage/when
-            explicit exception(const uint32_t err, const char *fmt, ...) throw() YACK_PRINTF_CHECK(3, 4);
-            virtual ~exception() throw();        //!< cleanup
-            exception(const exception&) throw(); //!< nothrow copy
+            explicit exception(const uint32_t err, const char *fmt, ...) noexcept YACK_PRINTF_CHECK(3, 4);
+            virtual ~exception() noexcept;        //!< cleanup
+            exception(const exception&) noexcept; //!< nothrow copy
 
         private:
             YACK_DISABLE_ASSIGN(exception);

@@ -26,17 +26,17 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~fixed_buffer()                  throw(); //!< cleanup
-            fixed_buffer(const fixed_buffer &)       throw(); //!< soft-copy
-            fixed_buffer(const void *, const size_t) throw(); //!< assign persistent area
-            fixed_buffer(const char *)               throw(); //!< assign from persistent text
+            virtual ~fixed_buffer()                  noexcept; //!< cleanup
+            fixed_buffer(const fixed_buffer &)       noexcept; //!< soft-copy
+            fixed_buffer(const void *, const size_t) noexcept; //!< assign persistent area
+            fixed_buffer(const char *)               noexcept; //!< assign from persistent text
 
             //__________________________________________________________________
             //
             // interface
             //__________________________________________________________________
-            virtual size_t      measure() const throw(); //!< size_
-            virtual const void *ro_addr() const throw(); //!< addr_
+            virtual size_t      measure() const noexcept; //!< size_
+            virtual const void *ro_addr() const noexcept; //!< addr_
 
         private:
             YACK_DISABLE_ASSIGN(fixed_buffer);

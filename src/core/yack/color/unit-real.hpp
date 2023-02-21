@@ -20,7 +20,7 @@ namespace yack
             static const T table[256];                 //!< [0..255]/255
 
             //! [0..1] -> [0..255]
-            static inline uint8_t to_byte(const T x) throw()
+            static inline uint8_t to_byte(const T x) noexcept
             {
                 static const T word(255);
                 static const T half(0.5);

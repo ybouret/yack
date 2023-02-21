@@ -26,21 +26,21 @@ namespace yack
         cstr_ptr(const char *);      //!< copy text
         cstr_ptr(const char *,const char *); //!< merge text
         cstr_ptr(const cstr_ptr &);  //!< copy data
-        virtual ~cstr_ptr() throw(); //!< cleanup
+        virtual ~cstr_ptr() noexcept; //!< cleanup
 
         //______________________________________________________________________
         //
         // buffer interface
         //______________________________________________________________________
-        virtual const void *ro_addr() const throw(); //!< first char address
-        virtual size_t      measure() const throw(); //!< length
+        virtual const void *ro_addr() const noexcept; //!< first char address
+        virtual size_t      measure() const noexcept; //!< length
 
         //______________________________________________________________________
         //
         // access
         //______________________________________________________________________
-        char       & operator[](const size_t indx)       throw(); //!< [0..length-1]
-        const char & operator[](const size_t indx) const throw(); //!< [0..length]
+        char       & operator[](const size_t indx)       noexcept; //!< [0..length-1]
+        const char & operator[](const size_t indx) const noexcept; //!< [0..length]
         
         //______________________________________________________________________
         //

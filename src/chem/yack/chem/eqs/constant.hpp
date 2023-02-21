@@ -24,7 +24,7 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~const_equilibrium() throw(); //!< cleanup
+            virtual ~const_equilibrium() noexcept; //!< cleanup
 
             //! setup with name, index and K value
             template <typename NAME> inline

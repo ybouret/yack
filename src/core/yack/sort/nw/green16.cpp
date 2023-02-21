@@ -2,8 +2,8 @@
 namespace yack {
   namespace nwsrt {
     const char green16 :: sid[] ="green16";
-    green16 :: ~green16() throw() {}
-    green16 ::  green16() throw() : swaps(sid,16,0x003c,lhs,rhs) {}
+    green16 :: ~green16() noexcept {}
+    green16 ::  green16() noexcept : swaps(sid,16,0x003c,lhs,rhs) {}
     const size_t green16 :: lhs[0x003c] = {
  0x0001, 0x0003, 0x0005, 0x0007, 0x0009, 0x000b, 0x000d, 0x000f,
  0x0001, 0x0005, 0x0009, 0x000d, 0x0002, 0x0006, 0x000a, 0x000e,

@@ -22,7 +22,7 @@ namespace
         {
         }
 
-        virtual ~damping() throw()
+        virtual ~damping() noexcept
         {
         }
 

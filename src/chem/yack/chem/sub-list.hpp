@@ -33,7 +33,7 @@ namespace yack
             // C++
             //__________________________________________________________________
             //! setup with host and positive index
-            inline explicit sub_node(const T &user, const size_t i) throw() :
+            inline explicit sub_node(const T &user, const size_t i) noexcept :
             object(),
             indexed(i),
             host(user),
@@ -43,10 +43,10 @@ namespace yack
             }
 
             //! cleanup
-            inline virtual ~sub_node() throw() {}
+            inline virtual ~sub_node() noexcept {}
 
             //! copy
-            inline sub_node(const sub_node &other) throw() :
+            inline sub_node(const sub_node &other) noexcept :
             object(), indexed(other), host(other.host), next(0), prev(0) {}
 
             //__________________________________________________________________
@@ -94,15 +94,15 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            inline explicit sub_list() throw() : L() {}
-            inline virtual ~sub_list() throw()       {}
+            inline explicit sub_list() noexcept : L() {}
+            inline virtual ~sub_list() noexcept       {}
 
             //__________________________________________________________________
             //
             // access
             //__________________________________________________________________
-            inline const list_type * operator->() const throw() { return &L; } //!< access, const
-            inline const list_type & operator*()  const throw() { return  L; } //!< access, const
+            inline const list_type * operator->() const noexcept { return &L; } //!< access, const
+            inline const list_type & operator*()  const noexcept { return  L; } //!< access, const
 
             //__________________________________________________________________
             //

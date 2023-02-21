@@ -34,8 +34,8 @@ namespace yack {
             //
             // C++
             //__________________________________________________________________
-            frontier(const sp_fund &) throw();      //!< setup
-            virtual ~frontier()       throw();      //!< cleanup
+            frontier(const sp_fund &) noexcept;      //!< setup
+            virtual ~frontier()       noexcept;      //!< cleanup
             frontier(const frontier &);             //!< copy
             frontier & operator=(const frontier &); //!< assign
 
@@ -44,8 +44,8 @@ namespace yack {
             // methods
             //__________________________________________________________________
 
-            void             free()                            throw();              //!< xi=0, clear()
-            void             vanish(writable<double> &C) const throw();              //!< set all registered species to exactly zero
+            void             free()                            noexcept;              //!< xi=0, clear()
+            void             vanish(writable<double> &C) const noexcept;              //!< set all registered species to exactly zero
             bool             adjust(const readable<double> &C, const actors &A);     //!< adjustement in case of negative value(s) for actors
             YACK_PROTO_OSTREAM(frontier);                                            //!< display
             void             operator()(const double xx, const species &s);          //!< update xx>=0 for limiting

@@ -40,7 +40,7 @@ namespace yack
             //------------------------------------------------------------------
             static inline TARGET _(const SOURCE         u,
                                    const char           *,
-                                   const int2type<true> &) throw()
+                                   const int2type<true> &) noexcept
             {
                 YACK_STATIC_CHECK(sizeof(SOURCE)<=sizeof(TARGET),SOURCE_too_big);
                 return TARGET(u);
@@ -91,7 +91,7 @@ namespace yack
             //------------------------------------------------------------------
             static inline TARGET _(const SOURCE         u,
                                    const char           *,
-                                   const int2type<true> &) throw()
+                                   const int2type<true> &) noexcept
             {
                 YACK_STATIC_CHECK(sizeof(SOURCE)<=sizeof(TARGET),SOURCE_too_big);
                 assert(u>=0);

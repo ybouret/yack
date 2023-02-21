@@ -84,7 +84,7 @@ namespace yack
             void call(void          *args,
                       const tiles   &part,
                       const context &info,
-                      lockable      &) throw()
+                      lockable      &) noexcept
             {
                 if(part.size())
                 {

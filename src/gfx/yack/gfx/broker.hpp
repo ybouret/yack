@@ -49,7 +49,7 @@ namespace yack
                             const dimensions &);
 
             //! cleanup
-            virtual ~broker() throw();
+            virtual ~broker() noexcept;
 
             //__________________________________________________________________
             //
@@ -60,14 +60,14 @@ namespace yack
             void operator()(commands, void *);
 
             //! access loop
-            const concurrent::loop & operator*() const throw();
+            const concurrent::loop & operator*() const noexcept;
 
             //! access loop
-            const concurrent::loop * operator->() const throw();
+            const concurrent::loop * operator->() const noexcept;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(broker);
-            virtual void run(const context &, lockable &) throw();
+            virtual void run(const context &, lockable &) noexcept;
             engine   call;
             commands code;
             void    *args;

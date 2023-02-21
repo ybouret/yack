@@ -35,7 +35,7 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~pzextr() throw(); //!< cleanup
+                virtual ~pzextr() noexcept; //!< cleanup
                 explicit pzextr();         //!< setup
 
                 //______________________________________________________________

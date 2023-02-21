@@ -21,9 +21,9 @@ namespace yack
         class imstream : public istream
         {
         public:
-            virtual ~imstream() throw();                                    //!< cleanup
-            explicit imstream(const void *addr, const size_t size) throw(); //!< setup
-            explicit imstream(const memory::ro_buffer &) throw();           //!< setup
+            virtual ~imstream() noexcept;                                    //!< cleanup
+            explicit imstream(const void *addr, const size_t size) noexcept; //!< setup
+            explicit imstream(const memory::ro_buffer &) noexcept;           //!< setup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(imstream);

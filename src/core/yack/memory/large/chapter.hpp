@@ -28,15 +28,15 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit chapter(const size_t sz) throw(); //!< initialize with page_size
-            virtual ~chapter() throw();                //!< cleanup
+            explicit chapter(const size_t sz) noexcept; //!< initialize with page_size
+            virtual ~chapter() noexcept;                //!< cleanup
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
             void  *query();               //!< recall/create a page
-            void   store(void *) throw(); //!< store a former page
+            void   store(void *) noexcept; //!< store a former page
             void   display() const;       //!< display status
 
 

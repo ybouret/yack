@@ -9,7 +9,7 @@ namespace yack
         namespace fitting
         {
 
-            variable:: ~variable() throw()
+            variable:: ~variable() noexcept
             {
                 
             }
@@ -18,18 +18,18 @@ namespace yack
             {
             }
 
-            const string & variable:: key() const throw() {
+            const string & variable:: key() const noexcept {
                 return name;
             }
 
-            size_t variable:: operator*() const throw()
+            size_t variable:: operator*() const noexcept
             {
                 assert(indx()>0);
                 return indx();
             }
 
 
-            bool variable:: is_replica() const throw() { return !is_primary(); }
+            bool variable:: is_replica() const noexcept { return !is_primary(); }
 
 
             std::ostream & operator<<(std::ostream &os, const variable &v)

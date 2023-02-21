@@ -9,7 +9,7 @@ namespace yack
 
         const char * const cluster:: clid = "chemical::cluster";
 
-        cluster:: ~cluster() throw()
+        cluster:: ~cluster() noexcept
         {
         }
         
@@ -41,7 +41,7 @@ namespace yack
         }
 
         
-        bool  cluster:: owns(const equilibrium &eq) const throw()
+        bool  cluster:: owns(const equilibrium &eq) const noexcept
         {
             for(const gnode *gn=(**group).head;gn;gn=gn->next)
             {
@@ -59,7 +59,7 @@ namespace yack
         }
 
         bool cluster:: linked_with(const equilibrium  &eq,
-                                   const matrix<bool> &related) const throw()
+                                   const matrix<bool> &related) const noexcept
         {
             assert( !owns(eq) );
             const readable<bool> &chk = related[ *eq ];
@@ -161,11 +161,11 @@ namespace yack
 {
     namespace chemical
     {
-        clusters:: clusters() throw() : object(), cxx_list_of<cluster>()
+        clusters:: clusters() noexcept : object(), cxx_list_of<cluster>()
         {
         }
         
-        clusters:: ~clusters() throw()
+        clusters:: ~clusters() noexcept
         {
         }
         

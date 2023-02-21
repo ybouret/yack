@@ -35,7 +35,7 @@ namespace yack
                     //
                     // C++
                     //__________________________________________________________
-                    virtual ~jump() throw();          //!< cleanup
+                    virtual ~jump() noexcept;          //!< cleanup
                     explicit jump(const tag      &,
                                   analyzer       &,
                                   const callback &);  //!< setup

@@ -41,10 +41,10 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual            ~zroot()      throw();     //!< cleanup
-                virtual const char *name() const throw() = 0; //!< identifier
+                virtual            ~zroot()      noexcept;     //!< cleanup
+                virtual const char *name() const noexcept = 0; //!< identifier
             protected:                                        //|
-                explicit            zroot()      throw();     //!< setup
+                explicit            zroot()      noexcept;     //!< setup
                 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(zroot);
@@ -68,8 +68,8 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit zroot() throw();  //!< setup
-            virtual ~zroot() throw();  //!< cleanup
+            explicit zroot() noexcept;  //!< setup
+            virtual ~zroot() noexcept;  //!< cleanup
 
             //__________________________________________________________________
             //

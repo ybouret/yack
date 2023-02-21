@@ -7,11 +7,11 @@ namespace yack
     namespace ios
     {
 
-        scribe:: ~scribe() throw()
+        scribe:: ~scribe() noexcept
         {
         }
 
-        scribe:: scribe(const rtti &uid) throw() :
+        scribe:: scribe(const rtti &uid) noexcept :
         tid(uid)
         {
         }

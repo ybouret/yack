@@ -10,15 +10,15 @@ namespace yack
         {
             YACK_JIVE_PLUGIN_IMPL(verbatim);
 
-            verbatim:: ~verbatim() throw() {}
+            verbatim:: ~verbatim() noexcept {}
 
-            behavior verbatim:: on_dot(token &t) throw()
+            behavior verbatim:: on_dot(token &t) noexcept
             {
                 content.merge_back(t);
                 return discard;
             }
 
-            behavior verbatim:: on_endl(token &t) throw()
+            behavior verbatim:: on_endl(token &t) noexcept
             {
                 assert(flux);
                 content.merge_back(t);
@@ -32,7 +32,7 @@ namespace yack
                 make("[:endl:]",this, &verbatim::on_endl);
             }
 
-            void verbatim:: enter(token &t) throw()
+            void verbatim:: enter(token &t) noexcept
             {
                 assert(t.size>0);
                 content.swap_with(t);

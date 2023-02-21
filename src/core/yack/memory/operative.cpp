@@ -7,7 +7,7 @@ namespace yack
     namespace memory
     {
 
-        void operative:: zap() throw()
+        void operative:: zap() noexcept
         {
             uint8_t *addr = static_cast<uint8_t*>(base)+live*step;
             while(live>0)
@@ -18,7 +18,7 @@ namespace yack
             }
         }
 
-        operative:: ~operative() throw()
+        operative:: ~operative() noexcept
         {
             zap();
          }
@@ -55,7 +55,7 @@ namespace yack
         }
 
 
-        void operative:: swap_with(operative &other) throw()
+        void operative:: swap_with(operative &other) noexcept
         {
             YACK_EXCHANGE(base);
             YACK_EXCHANGE(live);

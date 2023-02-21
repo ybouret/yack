@@ -183,24 +183,24 @@ namespace yack
 			
 		} // RFC1319 
 		
-		md2::md2() throw() : function(__length, __window), ctx()
+		md2::md2() noexcept : function(__length, __window), ctx()
 		{
 		}
 		
 		const char md2:: clid[]= "md2";
 		
-		void md2:: set() throw()
+		void md2:: set() noexcept
 		{
 			RFC1319::MD2Init( &ctx );
 		}
 		
-		void md2:: run( const void *buffer, size_t buflen ) throw()
+		void md2:: run( const void *buffer, size_t buflen ) noexcept
 		{
 			assert( !(buflen>0&&NULL==buffer) );
 			RFC1319::MD2Update( &ctx, (const uint8_t *)buffer, buflen );
 		}
 		
-		void md2::get(void *output, size_t outlen ) throw()
+		void md2::get(void *output, size_t outlen ) noexcept
 		{
 			assert( !(output==NULL&&outlen>0) );
 			uint8_t  digest[16];
@@ -208,7 +208,7 @@ namespace yack
 			fill( output, outlen, digest, sizeof(digest) );
 		}
 		
-		md2:: ~md2() throw()
+		md2:: ~md2() noexcept
 		{
 			memset( &ctx, 0 , sizeof(ctx) );
 		}

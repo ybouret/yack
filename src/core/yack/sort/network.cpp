@@ -7,18 +7,18 @@ namespace yack
 
     namespace nwsrt
     {
-        algorithm:: algorithm(const swaps &instr) throw() :
+        algorithm:: algorithm(const swaps &instr) noexcept :
         code(instr),
         buff(code.name)
         {
         }
 
-        algorithm:: ~algorithm() throw()
+        algorithm:: ~algorithm() noexcept
         {
         }
         
 
-        const memory::ro_buffer & algorithm:: key() const throw() { return buff; }
+        const memory::ro_buffer & algorithm:: key() const noexcept { return buff; }
 
         
 

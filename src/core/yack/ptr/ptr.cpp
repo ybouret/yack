@@ -4,8 +4,8 @@
 namespace yack
 {
     
-    ptr_::  ptr_() throw() {}
-    ptr_:: ~ptr_() throw() {}
+    ptr_::  ptr_() noexcept {}
+    ptr_:: ~ptr_() noexcept {}
     
     const char ptr_::nil[] = "(nil)";
 }

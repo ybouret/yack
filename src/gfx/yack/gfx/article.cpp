@@ -5,11 +5,11 @@ namespace yack
 
     namespace graphic
     {
-        article:: ~article() throw()
+        article:: ~article() noexcept
         {
         }
 
-        article:: article() throw() : object(), counted() {}
+        article:: article() noexcept : object(), counted() {}
         
     }
 }

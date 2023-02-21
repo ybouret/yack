@@ -32,7 +32,7 @@ namespace yack
         //
         // writable interface
         //______________________________________________________________________
-        inline virtual size_t size() const throw() { return cols; }
+        inline virtual size_t size() const noexcept { return cols; }
 
         //______________________________________________________________________
         //
@@ -40,10 +40,10 @@ namespace yack
         //______________________________________________________________________
 
         //! cleanup
-        inline virtual ~matrix_row() throw() { coerce(cols)=0; item=0; }
+        inline virtual ~matrix_row() noexcept { coerce(cols)=0; item=0; }
 
         //! setup with offseted pointed
-        inline explicit matrix_row(mutable_type *p, const size_t  c) throw() :
+        inline explicit matrix_row(mutable_type *p, const size_t  c) noexcept :
         cols(c),
         item(p)
         {
@@ -79,8 +79,8 @@ namespace yack
     private:
         mutable_type *item;
         YACK_DISABLE_COPY_AND_ASSIGN(matrix_row);
-        inline virtual const_type *cxx() const throw() { return item;   }
-        inline virtual const_type *mem() const throw() { return item+1; }
+        inline virtual const_type *cxx() const noexcept { return item;   }
+        inline virtual const_type *mem() const noexcept { return item+1; }
 
     };
 }

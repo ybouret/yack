@@ -40,7 +40,7 @@ namespace yack
             static uint64_t mod_ticks;  //!< cumulative ticks
             static size_t   mod_count;  //!< cumulative count
 
-            static void     reset_tracking() throw();                   //!< all ticks/count
+            static void     reset_tracking() noexcept;                   //!< all ticks/count
             static double   rate(const uint64_t ell, const size_t num); //!< in Mops
             static double   add_rate();                                 //!< in Mops
             static double   sub_rate();                                 //!< in Mops
@@ -51,10 +51,10 @@ namespace yack
             static double   mod_rate();                                 //!< in Mops
 
 
-            virtual ~number() throw(); //!< cleanup
+            virtual ~number() noexcept; //!< cleanup
 
         protected:
-            explicit number() throw();                     //!< setup
+            explicit number() noexcept;                     //!< setup
             void     cast_overflow(const char *who) const; //!< rise exception
 
         private:

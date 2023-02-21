@@ -9,17 +9,17 @@ namespace yack
     {
 
 
-        rand_:: ~rand_() throw()
+        rand_:: ~rand_() noexcept
         {
         }
 
-        rand_:: rand_() throw() :
+        rand_:: rand_() noexcept :
         bits( unsigned(RAND_MAX) )
         {
             srand( system_seed::get<int>() );
         }
 
-        uint32_t rand_:: next32() throw()
+        uint32_t rand_:: next32() noexcept
         {
             return uint32_t(rand());
         }

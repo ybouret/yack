@@ -9,19 +9,19 @@ namespace yack
     {
 
         template <>
-        unsigned natural:: _dig<float>() throw()
+        unsigned natural:: _dig<float>() noexcept
         {
             return FLT_DIG;
         }
 
         template <>
-        unsigned natural:: _dig<double>() throw()
+        unsigned natural:: _dig<double>() noexcept
         {
             return DBL_DIG;
         }
 
         template <>
-        unsigned natural:: _dig<long double>() throw()
+        unsigned natural:: _dig<long double>() noexcept
         {
             return LDBL_DIG;
         }

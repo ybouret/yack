@@ -32,14 +32,14 @@ namespace yack
             inline  hash_map_node(param_key_type k, param_type v) :
             next(0), prev(0), key_(k), val_(v) {}
 
-            inline                 ~hash_map_node()   throw() {}               //!< cleanup
-            inline type           & operator*()       throw() { return val_; } //!< access
-            inline const_type     & operator*() const throw() { return val_; } //!< access
-            inline const_key_type & key()       const throw() { return key_; } //!< access
+            inline                 ~hash_map_node()   noexcept {}               //!< cleanup
+            inline type           & operator*()       noexcept { return val_; } //!< access
+            inline const_type     & operator*() const noexcept { return val_; } //!< access
+            inline const_key_type & key()       const noexcept { return key_; } //!< access
 
 
-            inline hash_map_node       * operator->()       throw() { return this; } //!< for drill down behavior
-            inline const hash_map_node * operator->() const throw() { return this; } //!< for drill down behavior
+            inline hash_map_node       * operator->()       noexcept { return this; } //!< for drill down behavior
+            inline const hash_map_node * operator->() const noexcept { return this; } //!< for drill down behavior
 
 
             hash_map_node *next; //!< for list/pool
@@ -92,10 +92,10 @@ namespace yack
         // C++
         //______________________________________________________________________
         //! cleanup
-        inline virtual ~hash_map() throw() {}
+        inline virtual ~hash_map() noexcept {}
         
         //! setup empty
-        inline explicit hash_map() throw() : base_type() {}
+        inline explicit hash_map() noexcept : base_type() {}
         
         //! copy
         inline hash_map(const hash_map &other) : collection(), base_type()
@@ -110,7 +110,7 @@ namespace yack
         }
 
         //! return the named category
-        virtual const char *category() const throw() { return kernel::hash_map_category; }
+        virtual const char *category() const noexcept { return kernel::hash_map_category; }
 
 
         //______________________________________________________________________
@@ -156,12 +156,12 @@ namespace yack
         // iterators
         //______________________________________________________________________
         typedef iterating::linked<type,node_type,iterating::forward> iterator; //!< forward   iterator
-        iterator begin()   throw() { return (*table).head; }                   //!< forward   begin
-        iterator end()     throw() { return NULL;          }                   //!< forward   end
+        iterator begin()   noexcept { return (*table).head; }                   //!< forward   begin
+        iterator end()     noexcept { return NULL;          }                   //!< forward   end
 
         typedef iterating::linked<const_type,const node_type,iterating::forward> const_iterator; //!< forward const iterator
-        const_iterator begin() const throw() { return (*table).head; }                      //!< forward const begin
-        const_iterator end()   const throw() { return NULL;          }                      //!< forward const end
+        const_iterator begin() const noexcept { return (*table).head; }                      //!< forward const begin
+        const_iterator end()   const noexcept { return NULL;          }                      //!< forward const end
 
     };
 

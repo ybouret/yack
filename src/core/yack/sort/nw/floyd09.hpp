@@ -7,8 +7,8 @@ namespace yack {
     //! floyd09
     class floyd09 : public swaps {
       public:
-        virtual ~floyd09() throw(); //!< cleanup
-        explicit floyd09() throw(); //!< setup  
+        virtual ~floyd09() noexcept; //!< cleanup
+        explicit floyd09() noexcept; //!< setup  
         static const char   sid[];        //!< floyd09
         static const size_t lhs[0x0019];  //!< lhs
         static const size_t rhs[0x0019];  //!< rhs

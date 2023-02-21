@@ -9,13 +9,13 @@ namespace yack
 
         const char optional:: clid[] = "optional";
 
-        const char * optional:: class_uid() const throw() { return clid; }
+        const char * optional:: class_uid() const noexcept { return clid; }
 
 
-        optional:: ~optional() throw() {}
+        optional:: ~optional() noexcept {}
 
 
-        optional:: optional(pattern *p) throw() : joker(mark,p)
+        optional:: optional(pattern *p) noexcept : joker(mark,p)
         {
             I_am<optional>();
         }
@@ -64,7 +64,7 @@ namespace yack
             viz(fp);
         }
 
-        optional:: optional(const optional &other) throw() :
+        optional:: optional(const optional &other) noexcept :
         joker(other)
         {
             I_am<optional>();
@@ -76,7 +76,7 @@ namespace yack
             return new optional(*this);
         }
         
-        bool optional:: is_univocal()  const throw()
+        bool optional:: is_univocal()  const noexcept
         {
             return false;
         }

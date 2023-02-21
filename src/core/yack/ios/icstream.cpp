@@ -8,7 +8,7 @@ namespace yack
     namespace ios
     {
 
-        icstream:: ~icstream() throw()
+        icstream:: ~icstream() noexcept
         {
         }
 

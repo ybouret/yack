@@ -30,7 +30,7 @@ namespace yack
                 //______________________________________________________________
 
                 //! cleanup
-                virtual ~multi_lines_comment() throw();
+                virtual ~multi_lines_comment() noexcept;
 
                 //! setup between init/done expressions
                 template <
@@ -51,8 +51,8 @@ namespace yack
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(multi_lines_comment);
                 void         compile();               //!< create directives
-                void         leave(token &) throw();  //!< drop done expression
-                virtual void enter(token &) throw();  //!< drop init expression
+                void         leave(token &) noexcept;  //!< drop done expression
+                virtual void enter(token &) noexcept;  //!< drop init expression
             };
 
 
@@ -62,7 +62,7 @@ namespace yack
 /**/  {\
 /**/   public:\
 /**/    YACK_JIVE_PLUGIN_DECL(NAME);    \
-/**/    inline virtual ~NAME() throw() {}\
+/**/    inline virtual ~NAME() noexcept {}\
 /**/    template<typename IDENTIFIER>\
 /**/    inline explicit NAME(const IDENTIFIER &uuid,analyzer &host) :\
 /**/      multi_lines_comment(uuid,EXPRINI,EXPREND,host) {} \

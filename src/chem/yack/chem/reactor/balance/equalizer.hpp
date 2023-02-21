@@ -23,7 +23,7 @@ namespace yack {
         class sq_repo : public sq_repo_ {
         public:
             explicit sq_repo(const size_t n); //!< setup
-            virtual ~sq_repo() throw();       //!< cleanup
+            virtual ~sq_repo() noexcept;       //!< cleanup
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(sq_repo);
@@ -53,13 +53,13 @@ namespace yack {
             };
 
             //! humar readable status
-            static const char * status_text(const status) throw();
+            static const char * status_text(const status) noexcept;
 
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            virtual ~equalizer() throw();        //!< cleanup
+            virtual ~equalizer() noexcept;        //!< cleanup
             explicit equalizer(const reactor &); //!< setup
             
             //__________________________________________________________________
@@ -104,7 +104,7 @@ namespace yack {
             bool        comply_prod(const readable<double> &C, const equilibrium &eq, const xmlog &xml);
             bool        comply_reac(const readable<double> &C, const equilibrium &eq, const xmlog &xml);
             void        comply_move(const frontier &F, const readable<double> &C, const equilibrium &eq, const xmlog &xml);
-            bool        is_solution(const squad &) const throw();
+            bool        is_solution(const squad &) const noexcept;
             double      gained_thru(const squad &sq);
             void        make_better(writable<double> &C0, const squad &sq, const xmlog &xml);
 

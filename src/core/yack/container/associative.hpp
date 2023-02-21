@@ -29,22 +29,22 @@ namespace yack
         //
         //! search interface
         //______________________________________________________________________
-        virtual const_type *search(param_key_type) const throw() = 0;
+        virtual const_type *search(param_key_type) const noexcept = 0;
 
         //______________________________________________________________________
         //
         //! remove interface
         //______________________________________________________________________
-        virtual bool        remove(param_key_type)       throw() = 0;
+        virtual bool        remove(param_key_type)       noexcept = 0;
 
         //______________________________________________________________________
         //
         // C++
         //______________________________________________________________________
-        inline virtual ~associative() throw() {} //!< cleanup
+        inline virtual ~associative() noexcept {} //!< cleanup
 
     protected:
-        inline explicit associative() throw() {} //!< setup
+        inline explicit associative() noexcept {} //!< setup
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(associative);

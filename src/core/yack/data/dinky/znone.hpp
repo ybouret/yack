@@ -31,15 +31,15 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline explicit znone() throw() : zcache<NODE>() {} //!< setup
-        inline virtual ~znone() throw() {}                  //!< cleanup
+        inline explicit znone() noexcept : zcache<NODE>() {} //!< setup
+        inline virtual ~znone() noexcept {}                  //!< cleanup
         
         //______________________________________________________________________
         //
         // methods
         //______________________________________________________________________
-        inline virtual void   release() throw()       {}            //!< do nothing
-        inline virtual size_t stowage() const throw() { return 0; } //!< no reserve
+        inline virtual void   release() noexcept       {}            //!< do nothing
+        inline virtual size_t stowage() const noexcept { return 0; } //!< no reserve
         inline virtual void   reserve(size_t)         {}            //!< no reserve
         
         //______________________________________________________________________
@@ -54,10 +54,10 @@ namespace yack
         }
         
         //! release NODE as one object block
-        inline virtual void   zstore(NODE *node) throw() { object::zrelease(node); }
+        inline virtual void   zstore(NODE *node) noexcept { object::zrelease(node); }
         
         //! turn a list of alive into zombies
-        inline virtual void   devour(list_of<NODE> &live) throw()
+        inline virtual void   devour(list_of<NODE> &live) noexcept
         {
             while(live.size) zstore( this->turn(live.pop_back()) );
         }

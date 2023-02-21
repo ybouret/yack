@@ -14,9 +14,9 @@ namespace yack
     namespace concurrent
     {
 
-        context:: context() throw() : size(1), rank(0), indx(1), data(0) {}
+        context:: context() noexcept : size(1), rank(0), indx(1), data(0) {}
 
-        context:: ~context() throw()
+        context:: ~context() noexcept
         {
             coerce(size) = 0;
             coerce(rank) = 0;
@@ -28,7 +28,7 @@ namespace yack
             }
         }
 
-        context:: context(const size_t sz, const size_t rk) throw() :
+        context:: context(const size_t sz, const size_t rk) noexcept :
         size(sz),
         rank(rk),
         indx(1+rank),
@@ -50,7 +50,7 @@ namespace yack
         }
 
         void context:: format(char         buf[],
-                              const size_t len, const size_t size, const size_t indx)   throw()
+                              const size_t len, const size_t size, const size_t indx)   noexcept
         {
             assert(buf!=NULL);
             assert(len>0);
@@ -68,7 +68,7 @@ namespace yack
             snprintf(buf,len,fmt,unsigned(size),unsigned(indx));
         }
         
-        void context:: format(char buf[], const size_t len) const throw()
+        void context:: format(char buf[], const size_t len) const noexcept
         {
             format(buf,len,size,indx);
         }
@@ -83,12 +83,12 @@ namespace yack
             return & (**this);
         }
 
-        bool context:: owns_local_memory() const throw()
+        bool context:: owns_local_memory() const noexcept
         {
             return NULL != data;
         }
 
-        size_t context:: local_memory_size() const throw()
+        size_t context:: local_memory_size() const noexcept
         {
             if(data)
             {
@@ -100,7 +100,7 @@ namespace yack
             }
         }
 
-        void context:: drop_local_memory() throw()
+        void context:: drop_local_memory() noexcept
         {
             if(data)
             {
@@ -109,7 +109,7 @@ namespace yack
             }
         }
 
-        void context:: free_local_memory() throw()
+        void context:: free_local_memory() noexcept
         {
             if(data)
             {

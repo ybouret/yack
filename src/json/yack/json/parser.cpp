@@ -55,7 +55,7 @@ namespace yack
             vstack(),
             pstack()
             {}
-            inline ~Translator() throw() {}
+            inline ~Translator() noexcept {}
 
             Value                 &target;
             const hashing::perfect scalars;
@@ -73,7 +73,7 @@ namespace yack
                 pstack.free();
             }
 
-            virtual void on_quit() throw()
+            virtual void on_quit() noexcept
             {
                 if(1==vstack.size())
                 {
@@ -242,7 +242,7 @@ namespace yack
 
         }
 
-        Parser:: ~Parser() throw()
+        Parser:: ~Parser() noexcept
         {
         }
 

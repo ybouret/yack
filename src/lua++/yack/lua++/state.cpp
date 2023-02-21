@@ -8,7 +8,7 @@ namespace yack
     {
         const char State:: dummy_name[] = "dummy_name";
 
-        State:: ~State() throw()
+        State:: ~State() noexcept
         {
             lua_close(L);
         }
@@ -20,7 +20,7 @@ namespace yack
             luaL_openlibs(L);
         }
 
-        lua_State * State:: operator*() throw()
+        lua_State * State:: operator*() noexcept
         {
             assert(L);
             return L;
@@ -113,7 +113,7 @@ namespace yack
         }
 
 
-        int State:: type(const int idx) throw()
+        int State:: type(const int idx) noexcept
         {
             return lua_type(L,idx);
         }

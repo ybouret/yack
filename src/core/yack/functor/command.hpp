@@ -44,7 +44,7 @@ namespace yack {
                 assert( NULL != method_ );
             }
             //! destructor
-            virtual ~command() throw() {}
+            virtual ~command() noexcept {}
 
             //__________________________________________________________________
             //
@@ -104,7 +104,7 @@ namespace yack {
             METHOD_POINTER method_;
 
             //! copy for the clone function
-            explicit command( const command &other ) throw():
+            explicit command( const command &other ) noexcept:
             callable_type(),
             object_( other.object_ ),
             method_( other.method_ )

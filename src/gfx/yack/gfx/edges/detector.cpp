@@ -9,7 +9,7 @@ namespace yack
     {
 
 
-        edges:: ~edges() throw()
+        edges:: ~edges() noexcept
         {
         }
 
@@ -36,7 +36,7 @@ namespace yack
         }
 
         static inline
-        bool is_strong_ridge(const cnode *head, const pixmap<uint8_t> &edges) throw()
+        bool is_strong_ridge(const cnode *head, const pixmap<uint8_t> &edges) noexcept
         {
             while(head)
             {

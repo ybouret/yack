@@ -6,12 +6,12 @@ namespace yack
     namespace ios
     {
 
-        stream:: ~stream() throw()
+        stream:: ~stream() noexcept
         {
         }
 
 
-        stream:: stream() throw()
+        stream:: stream() noexcept
         {
         }
         

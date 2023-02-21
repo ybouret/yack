@@ -49,7 +49,7 @@ namespace yack {
 
         }
 
-        bool equalizer:: is_solution(const squad &sq) const throw()
+        bool equalizer:: is_solution(const squad &sq) const noexcept
         {
             for(const eq_node *node=sq.head;node;node=node->next)
             {

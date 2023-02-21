@@ -28,7 +28,7 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~bstring() throw(); //!< cleanup
+                virtual ~bstring() noexcept; //!< cleanup
 
                 //! setup with brackets
                 template <typename IDENTIFIER>

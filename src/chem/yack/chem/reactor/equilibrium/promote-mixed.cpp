@@ -26,7 +26,7 @@ namespace yack
                     info = &zeroed;
                 }
 
-                virtual ~mixed_equilibrium() throw()
+                virtual ~mixed_equilibrium() noexcept
                 {
                 }
                 

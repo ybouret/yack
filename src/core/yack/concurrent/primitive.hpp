@@ -20,10 +20,10 @@ namespace yack
         {
         public:
             static void display();           //!< display internal info
-            virtual    ~primitive() throw(); //!< cleanup
+            virtual    ~primitive() noexcept; //!< cleanup
 
         protected:
-            explicit    primitive() throw(); //!< setup
+            explicit    primitive() noexcept; //!< setup
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(primitive);

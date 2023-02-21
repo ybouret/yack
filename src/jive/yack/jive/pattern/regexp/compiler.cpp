@@ -7,14 +7,14 @@ namespace yack
     {
         const char RXCompiler:: clid[] = "regexp";
         
-        RXCompiler:: ~RXCompiler() throw()
+        RXCompiler:: ~RXCompiler() noexcept
         {
 
         }
 
         RXCompiler:: RXCompiler(const char       *entry,
                                 const size_t      count,
-                                const dictionary *usrDB) throw() :
+                                const dictionary *usrDB) noexcept :
         expr(entry),
         curr(expr),
         last(curr+count),

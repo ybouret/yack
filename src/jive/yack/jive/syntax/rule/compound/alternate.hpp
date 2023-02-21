@@ -33,8 +33,8 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~alternate()                 throw(); //!< cleanup
-                explicit alternate(const tag &name_) throw(); //!< setup
+                virtual ~alternate()                 noexcept; //!< cleanup
+                explicit alternate(const tag &name_) noexcept; //!< setup
 
                 //______________________________________________________________
                 //

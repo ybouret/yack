@@ -12,7 +12,7 @@ namespace yack
         
         static void *parcels__[ YACK_WORDS_FOR(parcels) ];
         
-        pooled:: ~pooled() throw()
+        pooled:: ~pooled() noexcept
         {
             out_of_reach::zset( destructed( coerce_cast<parcels>(parcels__) ), sizeof(parcels__) );
         }
@@ -22,7 +22,7 @@ namespace yack
             new (out_of_reach::zset(parcels__,sizeof(parcels__))) parcels();
         }
         
-        const char * pooled:: variety() const throw() { return call_sign; }
+        const char * pooled:: variety() const noexcept { return call_sign; }
         
         void *pooled:: acquire(size_t &count, const size_t block_size)
         {
@@ -39,7 +39,7 @@ namespace yack
             }
         }
         
-        void pooled:: release(void *&addr, size_t &size) throw()
+        void pooled:: release(void *&addr, size_t &size) noexcept
         {
             YACK_LOCK(access);
             if(addr)

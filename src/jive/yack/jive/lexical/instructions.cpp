@@ -7,11 +7,11 @@ namespace yack
         namespace lexical
         {
 
-            instructions:: ~instructions() throw()
+            instructions:: ~instructions() noexcept
             {
             }
 
-            instructions:: instructions() throw() : object(), instructions_()
+            instructions:: instructions() noexcept : object(), instructions_()
             {
             }
 

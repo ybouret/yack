@@ -25,7 +25,7 @@ namespace yack
         struct hash_table_
         {
             static void   *acquire(const size_t page_exp2);                    //!< 2^page_exp2 bytes
-            static void    release(void *, const size_t page_exp2) throw();    //!< release 2^page_exp2 bytes
+            static void    release(void *, const size_t page_exp2) noexcept;    //!< release 2^page_exp2 bytes
             static size_t  check(const size_t usr_exp2,const size_t max_exp2); //!< check limit, raise error on overflow
         };
 
@@ -72,7 +72,7 @@ namespace yack
                 //______________________________________________________________
 
                 //! no-throw construct from internal slot
-                inline explicit xtable(slot_type &mine) throw() :
+                inline explicit xtable(slot_type &mine) noexcept :
                 exp2(0), slot(&mine), size(1), mask(0) { }
 
                 //! acquire with usr_exp2<=max_exp2
@@ -86,7 +86,7 @@ namespace yack
                 }
 
                 //! destruct, MUST be empty
-                inline ~xtable() throw()
+                inline ~xtable() noexcept
                 {
                     if(exp2>0)
                     {
@@ -105,7 +105,7 @@ namespace yack
                 //______________________________________________________________
 
                 //! no-throw swap
-                inline void swap_with(xtable &other) throw()
+                inline void swap_with(xtable &other) noexcept
                 {
                     coerce_cswap(exp2,other.exp2);
                     coerce_cswap(slot,other.slot);
@@ -114,7 +114,7 @@ namespace yack
                 }
 
                 //! steal and dispatch nodes
-                inline void steal(xtable &other) throw()
+                inline void steal(xtable &other) noexcept
                 {
                     const size_t n=other.size;
                     for(size_t i=0;i<n;++i)
@@ -130,7 +130,7 @@ namespace yack
                 }
 
                 //! slot access
-                inline slot_type &operator[](const size_t hkey) throw()
+                inline slot_type &operator[](const size_t hkey) noexcept
                 {
                     assert(slot);
                     return slot[hkey&mask];
@@ -138,14 +138,14 @@ namespace yack
 
 
                 //! slot access, const
-                inline const slot_type &operator[](const size_t hkey) const throw()
+                inline const slot_type &operator[](const size_t hkey) const noexcept
                 {
                     assert(slot);
                     return slot[hkey&mask];
                 }
 
                 //! return all freed meta_nodes to repository
-                inline void back_to(meta_pool &repo) throw()
+                inline void back_to(meta_pool &repo) noexcept
                 {
                     for(size_t i=0;i<size;++i) store(repo,slot[i]);
                 }
@@ -164,7 +164,7 @@ namespace yack
                 const size_t mask; //!< mask=size-1
 
             private:
-                static inline void store(meta_pool &repo, slot_type &load) throw()
+                static inline void store(meta_pool &repo, slot_type &load) noexcept
                 {
                     while(load.size) repo.store( load.pop_back()->freed() );
                 }
@@ -177,13 +177,13 @@ namespace yack
             //__________________________________________________________________
 
             //! setup
-            inline explicit hash_table() throw() :
+            inline explicit hash_table() noexcept :
             data(), base(), xtab(base), repo()
             {
             }
 
             //! cleanup
-            inline virtual ~hash_table() throw()
+            inline virtual ~hash_table() noexcept
             {
                 // must have no data!
             }
@@ -192,7 +192,7 @@ namespace yack
 
             //! generic search function, const
             inline const node_type *search(const size_t    hkey,
-                                           const_key_type &key) const throw()
+                                           const_key_type &key) const noexcept
             {
 
                 //______________________________________________________________
@@ -276,7 +276,7 @@ namespace yack
             inline bool remove(const size_t    hkey,
                                const_key_type &key,
                                pool_type      &pool,
-                               quit_proc       quit) throw()
+                               quit_proc       quit) noexcept
             {
                 assert(NULL!=quit);
                 slot_type     &load = xtab[hkey]; // scan this slot
@@ -297,7 +297,7 @@ namespace yack
 
             //! free all nodes, keep resources
             inline void free_with(pool_type &pool,
-                                  quit_proc  quit) throw()
+                                  quit_proc  quit) noexcept
             {
                 //______________________________________________________________
                 //
@@ -315,13 +315,13 @@ namespace yack
 
 
             //! access data
-            inline const list_of<NODE> & operator*() const throw() { return data; }
+            inline const list_of<NODE> & operator*() const noexcept { return data; }
 
             //! get current slots
-            inline size_t slots()        const throw() { return xtab.size; }
+            inline size_t slots()        const noexcept { return xtab.size; }
 
             //! get average load
-            inline size_t average_load() const throw() { return data.size/xtab.size; }
+            inline size_t average_load() const noexcept { return data.size/xtab.size; }
 
             //! change internal table size to 2^new_exp2
             inline void reload(const size_t new_exp2)
@@ -336,7 +336,7 @@ namespace yack
             }
 
             //! compute exp2 for xtable to preserve load_factor
-            size_t exp2_for(const size_t load_factor) const throw()
+            size_t exp2_for(const size_t load_factor) const noexcept
             {
                 const size_t total = data.size;
                 size_t       shift = 0;
@@ -376,7 +376,7 @@ namespace yack
             }
 
             //! delete cache meta nodes
-            inline void trim() throw()
+            inline void trim() noexcept
             {
                 repo.release();
             }

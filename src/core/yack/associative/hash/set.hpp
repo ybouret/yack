@@ -34,13 +34,13 @@ namespace yack
             // methods
             //__________________________________________________________________
             inline hash_set_node(param_type v) : next(0), prev(0), val_(v) {}    //!< setup
-            inline                 ~hash_set_node()   throw() {}                 //!< cleanup
-            inline type           & operator*()       throw() { return val_; }   //!< access
-            inline const_type     & operator*() const throw() { return val_; }   //!< access
-            inline const_key_type & key() const throw() { return val_.key(); }   //!< key access
+            inline                 ~hash_set_node()   noexcept {}                 //!< cleanup
+            inline type           & operator*()       noexcept { return val_; }   //!< access
+            inline const_type     & operator*() const noexcept { return val_; }   //!< access
+            inline const_key_type & key() const noexcept { return val_.key(); }   //!< key access
 
-            inline type       * operator->()       throw() { return &val_; } //!< final drilled-down pointer
-            inline const_type * operator->() const throw() { return &val_; } //!< final drilled-down pointer
+            inline type       * operator->()       noexcept { return &val_; } //!< final drilled-down pointer
+            inline const_type * operator->() const noexcept { return &val_; } //!< final drilled-down pointer
 
 
             hash_set_node *next; //!< for list/pool
@@ -84,10 +84,10 @@ namespace yack
         //______________________________________________________________________
         
         //! cleanup
-        inline virtual ~hash_set() throw() {}
+        inline virtual ~hash_set() noexcept {}
         
         //! setup
-        inline explicit hash_set() throw() : base_type()  {}
+        inline explicit hash_set() noexcept : base_type()  {}
         
         //! copy
         inline hash_set(const hash_set &other) : collection(), base_type()
@@ -102,7 +102,7 @@ namespace yack
         }
 
         //! return the named category
-        virtual const char *category() const throw() { return kernel::hash_set_category; }
+        virtual const char *category() const noexcept { return kernel::hash_set_category; }
 
         //______________________________________________________________________
         //
@@ -148,8 +148,8 @@ namespace yack
         // iterators
         //______________________________________________________________________
         typedef iterating::linked<const_type,const node_type,iterating::forward> const_iterator; //!< forward const iterator
-        const_iterator begin() const throw() { return (*table).head; }                           //!< forward const begin
-        const_iterator end()   const throw() { return NULL;          }                           //!< forward const end
+        const_iterator begin() const noexcept { return (*table).head; }                           //!< forward const begin
+        const_iterator end()   const noexcept { return NULL;          }                           //!< forward const end
     };
 
 }

@@ -5,7 +5,7 @@ namespace yack
     {
         namespace ode
         {
-            template <> dormand_prince<real_t>:: ~dormand_prince() throw() {}
+            template <> dormand_prince<real_t>:: ~dormand_prince() noexcept {}
 
             template <> dormand_prince<real_t>::  dormand_prince() :
             base_type(7),

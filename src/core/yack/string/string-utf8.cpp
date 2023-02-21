@@ -11,7 +11,7 @@ namespace yack
         template <> const char string<utf8>::clid[] = "utf8_string";
         
         template <>
-        const char * string<CH>:: class_uid() const throw()
+        const char * string<CH>:: class_uid() const noexcept
         {
             return clid;
         }

@@ -11,13 +11,13 @@ namespace yack
         
         static void *ram__[ YACK_WORDS_FOR(ram) ];
         
-        global:: global() throw() : allocator(), singleton<global>(),
+        global:: global() noexcept : allocator(), singleton<global>(),
         initial( memory::ram::allocated() )
         {
             new (out_of_reach::zset(ram__,sizeof(ram__))) ram();
         }
         
-        global:: ~global() throw()
+        global:: ~global() noexcept
         {
             const uint64_t left = memory::ram::allocated();
             if(left>initial)
@@ -33,14 +33,14 @@ namespace yack
             return coerce_cast<ram>(ram__)->acquire(count,block_size);
         }
         
-        void global:: release(void *&addr, size_t &size) throw()
+        void global:: release(void *&addr, size_t &size) noexcept
         {
             YACK_LOCK(access);
             coerce_cast<ram>(ram__)->release(addr,size);
         }
 
         const char   global:: call_sign[] = "memory.global";
-        const char * global:: variety() const throw() { return call_sign; }
+        const char * global:: variety() const noexcept { return call_sign; }
 
         
     }

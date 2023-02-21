@@ -3,7 +3,7 @@
 
 namespace yack
 {
-    io_bits:: io_bits() throw() :
+    io_bits:: io_bits() noexcept :
     io_list(),
     ios::ostream(),
     ios::istream(),
@@ -11,12 +11,12 @@ namespace yack
     {
     }
 
-    io_bits:: ~io_bits() throw()
+    io_bits:: ~io_bits() noexcept
     {
     }
 
 
-    io_bit * io_bits:: fast(const io_bit::type value) const throw()
+    io_bit * io_bits:: fast(const io_bit::type value) const noexcept
     {
         assert(pool.size>0);
         io_bit *b = pool.query();
@@ -74,7 +74,7 @@ namespace yack
     }
 
 
-    static inline uint8_t read8(const io_bit * &curr) throw()
+    static inline uint8_t read8(const io_bit * &curr) noexcept
     {
         uint8_t    res = 0;
         for(size_t i=8;i>0;--i)
@@ -88,7 +88,7 @@ namespace yack
     }
 
 
-    static inline uint8_t read_(const io_bit * &curr) throw()
+    static inline uint8_t read_(const io_bit * &curr) noexcept
     {
         uint8_t    res = 0;
         while(curr)
@@ -102,7 +102,7 @@ namespace yack
     }
 
 
-    void io_bits:: release() throw()
+    void io_bits:: release() noexcept
     {
         while(size) pool.store( pop_back() );
     }
@@ -124,7 +124,7 @@ namespace yack
     }
 
 
-    bool  io_bits::  query_(char &C) throw()
+    bool  io_bits::  query_(char &C) noexcept
     {
         if(size>=8)
         {
@@ -137,7 +137,7 @@ namespace yack
         }
     }
 
-    size_t io_bits:: fetch_(void *addr, const size_t size) throw()
+    size_t io_bits:: fetch_(void *addr, const size_t size) noexcept
     {
         assert(yack_good(addr,size));
         const size_t nc = size/8;
@@ -155,7 +155,7 @@ namespace yack
         return res;
     }
 
-    void io_bits:: drop() throw()
+    void io_bits:: drop() noexcept
     {
         while(size&7) pool.store( pop_front() );
     }

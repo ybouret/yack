@@ -20,12 +20,12 @@ namespace yack
 
             const char variables:: clid[] = "variables";
 
-            variables:: ~variables() throw()
+            variables:: ~variables() noexcept
             {
                 
             }
 
-            variables:: variables() throw():
+            variables:: variables() noexcept:
             vdb(),
             pdb(),
             len(0)
@@ -53,12 +53,12 @@ namespace yack
             }
 
 
-            size_t variables:: size() const throw()
+            size_t variables:: size() const noexcept
             {
                 return (*vdb.tree).size;
             }
 
-            size_t variables:: lower() const throw()
+            size_t variables:: lower() const noexcept
             {
                 const vnode *node = (*vdb.tree).head;
                 if(node)
@@ -71,7 +71,7 @@ namespace yack
                 }
             }
 
-            size_t variables:: upper() const throw()
+            size_t variables:: upper() const noexcept
             {
                 const vnode *node = (*vdb.tree).tail;
                 if(node)
@@ -84,7 +84,7 @@ namespace yack
                 }
             }
 
-            const vnode * variables:: head() const throw()
+            const vnode * variables:: head() const noexcept
             {
                 return (*vdb.tree).head;
             }
@@ -114,7 +114,7 @@ namespace yack
 
 
             template <typename NODE> static inline
-            int compare_indices_of(const NODE *lhs, const NODE *rhs) throw()
+            int compare_indices_of(const NODE *lhs, const NODE *rhs) noexcept
             {
                 return comparison::increasing(****lhs,****rhs);
 
@@ -159,7 +159,7 @@ namespace yack
                 return *p;
             }
 
-            void variables:: update_with(const string &name) throw()
+            void variables:: update_with(const string &name) noexcept
             {
                 coerce(len) = max_of(len,name.size());
                 merge_list_of<pnode>::sort( coerce((*pdb.tree)), compare_indices_of<pnode>);
@@ -226,7 +226,7 @@ namespace yack
                 return os;
             }
 
-            size_t variables:: count(const readable<bool> &used) const throw()
+            size_t variables:: count(const readable<bool> &used) const noexcept
             {
                 size_t res = 0;
                 for(const vnode *node=head();node;node=node->next)

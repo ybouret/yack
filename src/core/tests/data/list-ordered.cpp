@@ -13,7 +13,7 @@ namespace
     {
     public:
         explicit Node(const int c) : code(c), next(0), prev(0) {}
-        virtual ~Node() throw() {}
+        virtual ~Node() noexcept {}
 
         const int code;
         Node     *next;

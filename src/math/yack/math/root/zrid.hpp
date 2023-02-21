@@ -27,9 +27,9 @@ namespace yack
         class zrid : public zroot<T>
         {
         public:
-            virtual            ~zrid() throw();       //!< setup
-            explicit            zrid() throw();       //!< cleanup
-            virtual const char *name() const throw(); //!< name
+            virtual            ~zrid() noexcept;       //!< setup
+            explicit            zrid() noexcept;       //!< cleanup
+            virtual const char *name() const noexcept; //!< name
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(zrid);

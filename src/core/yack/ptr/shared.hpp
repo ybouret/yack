@@ -18,7 +18,7 @@ namespace yack
     struct shared_ptr_ref
     {
         static size_t * acquire();                   //!< acquire, set  to 1
-        static void     release(size_t * &) throw(); //!< release, must be 0
+        static void     release(size_t * &) noexcept; //!< release, must be 0
     };
 
     //__________________________________________________________________________
@@ -54,7 +54,7 @@ namespace yack
         }
 
         //! no-throw copy
-        inline shared_ptr(const shared_ptr &other) throw() :
+        inline shared_ptr(const shared_ptr &other) noexcept :
         counted_ptr<T>(other.pointee),
         ref_ptr(other.ref_ptr)
         {
@@ -63,7 +63,7 @@ namespace yack
         }
 
         //! no-throw assign by copy/swap
-        inline shared_ptr & operator=(const shared_ptr &other) throw()
+        inline shared_ptr & operator=(const shared_ptr &other) noexcept
         {
             shared_ptr temp(other);
             cswap(temp.pointee,pointee);
@@ -72,7 +72,7 @@ namespace yack
         }
 
         //! cleanup
-        inline virtual ~shared_ptr() throw()
+        inline virtual ~shared_ptr() noexcept
         {
             assert(ref_ptr);
             assert(*ref_ptr>0);
@@ -90,7 +90,7 @@ namespace yack
         //______________________________________________________________________
 
         //! counted_ptr interface
-        inline virtual size_t references() const throw() { assert(ref_ptr); return *ref_ptr; }
+        inline virtual size_t references() const noexcept { assert(ref_ptr); return *ref_ptr; }
 
 
     private:

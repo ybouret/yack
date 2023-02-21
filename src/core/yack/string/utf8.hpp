@@ -34,10 +34,10 @@ namespace yack
             T upper; //!< upper bound
 
             //! check insied
-            inline bool owns(const T value) const throw() { return value>=lower && value<=upper; }
+            inline bool owns(const T value) const noexcept { return value>=lower && value<=upper; }
 
             //! compute width
-            inline size_t width() const throw() {
+            inline size_t width() const noexcept {
                 return 1+size_t(upper)-size_t(lower);
             }
         };
@@ -61,10 +61,10 @@ namespace yack
         // C++
         //______________________________________________________________________
         utf8(const uint32_t);                   //!< setup
-        utf8(const utf8&) throw();              //!< copy
-        utf8 & operator=(const utf8 &) throw(); //!< assign
+        utf8(const utf8&) noexcept;              //!< copy
+        utf8 & operator=(const utf8 &) noexcept; //!< assign
         utf8 & operator=(uint32_t);             //!< assign
-        ~utf8() throw();                        //!< cleanup
+        ~utf8() noexcept;                        //!< cleanup
 
 
 
@@ -74,15 +74,15 @@ namespace yack
         // methods
         //______________________________________________________________________
         static void   validate(uint32_t &codepoint);       //!< check/format codepoint
-        void          xch(utf8 &)                 throw(); //!< no-throw exchange
-        size_t        bytes()               const throw(); //!< [1:4]
-        uint32_t      operator*()           const throw(); //!< 21-bits of code
-        size_t        encode(uint8_t *data) const throw(); //!< code to data[bytes]
+        void          xch(utf8 &)                 noexcept; //!< no-throw exchange
+        size_t        bytes()               const noexcept; //!< [1:4]
+        uint32_t      operator*()           const noexcept; //!< 21-bits of code
+        size_t        encode(uint8_t *data) const noexcept; //!< code to data[bytes]
 
 
         //! define operators
 #define YACK_UTF8_CMP(OP)\
-/**/    inline friend bool operator OP (const utf8 &lhs, const utf8 &rhs) throw()\
+/**/    inline friend bool operator OP (const utf8 &lhs, const utf8 &rhs) noexcept\
 /**/    { return compare(lhs,rhs) OP 0; }
 
         //! implement operators
@@ -93,7 +93,7 @@ namespace yack
 /**/    YACK_UTF8_CMP(>=)       \
 /**/    YACK_UTF8_CMP(<)        \
 /**/    YACK_UTF8_CMP(>)        \
-/**/    static int compare(const utf8 &lhs, const utf8 &rhs) throw()
+/**/    static int compare(const utf8 &lhs, const utf8 &rhs) noexcept
 
         //! implement operators
         YACK_UTF8_COMPARISONS();

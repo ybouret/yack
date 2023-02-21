@@ -4,22 +4,22 @@ namespace yack
 {
     namespace graphic
     {
-        filter:: weight:: weight() throw() :
+        filter:: weight:: weight() noexcept :
         r(0,0),
         w(0)
         {
         }
         
 
-        filter:: weight:: ~weight() throw() {}
+        filter:: weight:: ~weight() noexcept {}
 
-        filter:: weight:: weight(const coord pos, const real_t val) throw() :
+        filter:: weight:: weight(const coord pos, const real_t val) noexcept :
         r(pos),
         w(val)
         {
         }
 
-        filter:: weight:: weight(const weight &other) throw() :
+        filter:: weight:: weight(const weight &other) noexcept :
         r(other.r),
         w(other.w)
         {
@@ -39,11 +39,11 @@ namespace yack
 {
     namespace graphic
     {
-        filter:: ~filter() throw()
+        filter:: ~filter() noexcept
         {
         }
 
-        const string & filter:: key() const throw() { return name; }
+        const string & filter:: key() const noexcept { return name; }
 
         std::ostream & operator<<(std::ostream &os, const filter &F)
         {

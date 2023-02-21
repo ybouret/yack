@@ -36,19 +36,19 @@ namespace yack
         // methods
         //______________________________________________________________________
         //! test metrics
-        static bool have_same_sizes(const matrix_metrics &lhs, const matrix_metrics &rhs) throw();
+        static bool have_same_sizes(const matrix_metrics &lhs, const matrix_metrics &rhs) noexcept;
 
         //! test tranposed metrics
-        static bool are_transposed(const matrix_metrics &lhs, const matrix_metrics &rhs) throw();
+        static bool are_transposed(const matrix_metrics &lhs, const matrix_metrics &rhs) noexcept;
 
         //! rows==cols
-        bool is_square() const throw();
+        bool is_square() const noexcept;
 
         //______________________________________________________________________
         //
         // dynamic interface
         //______________________________________________________________________
-        virtual size_t granted() const throw(); //!< allocated
+        virtual size_t granted() const noexcept; //!< allocated
 
         //______________________________________________________________________
         //
@@ -56,7 +56,7 @@ namespace yack
         //______________________________________________________________________
 
         //! cleanup
-        virtual ~matrix_metrics() throw();
+        virtual ~matrix_metrics() noexcept;
 
     protected:
         //! flexible setup
@@ -68,14 +68,14 @@ namespace yack
                                 row_callback  build_row_at);
 
         //! setup empty
-        explicit matrix_metrics() throw();
+        explicit matrix_metrics() noexcept;
 
         //! no-throw swap
-        void swap_metrics_with(matrix_metrics &other) throw();
+        void swap_metrics_with(matrix_metrics &other) noexcept;
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(matrix_metrics);
-        void     deallocate() throw();
+        void     deallocate() noexcept;
 
 
     public:

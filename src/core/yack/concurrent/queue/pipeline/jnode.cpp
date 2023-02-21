@@ -16,7 +16,7 @@ namespace yack
         {
         }
 
-        jnode:: ~jnode() throw()
+        jnode:: ~jnode() noexcept
         {
         }
         

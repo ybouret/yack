@@ -6,7 +6,7 @@
 namespace yack
 {
 
-    template<> float v2d<float>:: angle() const throw()
+    template<> float v2d<float>:: angle() const noexcept
     {
         if( fabsf(y) > 0 )
         {
@@ -19,7 +19,7 @@ namespace yack
     }
 
 
-    template<> double v2d<double>:: angle() const throw()
+    template<> double v2d<double>:: angle() const noexcept
     {
         if( fabs(y) > 0 )
         {
@@ -31,7 +31,7 @@ namespace yack
         }
     }
 
-    template<> long double v2d<long double>:: angle() const throw()
+    template<> long double v2d<long double>:: angle() const noexcept
     {
         if( fabsl(y) > 0 )
         {

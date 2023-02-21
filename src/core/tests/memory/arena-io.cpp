@@ -21,11 +21,11 @@ namespace
         block *prev;
         void  *addr;
         
-        inline  block(void *p) throw() : next(0), prev(0), addr(p)
+        inline  block(void *p) noexcept : next(0), prev(0), addr(p)
         {
         }
         
-        inline ~block() throw()
+        inline ~block() noexcept
         {
         }
         

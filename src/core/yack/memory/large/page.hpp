@@ -31,7 +31,7 @@ namespace yack
             static page *acquire(const size_t size);
 
             //! release an old page
-            static void  release(page *, size_t size) throw();
+            static void  release(page *, size_t size) noexcept;
         };
 
 

@@ -35,11 +35,11 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline explicit kpool() throw() : pool_type() {} //!< setup empty
-        inline virtual ~kpool() throw() {}               //!< cleanup
+        inline explicit kpool() noexcept : pool_type() {} //!< setup empty
+        inline virtual ~kpool() noexcept {}               //!< cleanup
 
         //! copy
-        inline          kpool(const kpool &_) throw() : pool_type(_) {}
+        inline          kpool(const kpool &_) noexcept : pool_type(_) {}
 
         //! assign by copy/swap
         inline kpool & operator=(const kpool &_)
@@ -57,7 +57,7 @@ namespace yack
         inline type & push(param_type args) { return **(this->store( new NODE(args)) ); }
 
         //! delete head node
-        inline void   pop() throw() { delete this->query(); }
+        inline void   pop() noexcept { delete this->query(); }
 
         //! copy head content, delete head, return content
         inline type   pull() { const_type tmp = **head; delete this->query(); return tmp; }

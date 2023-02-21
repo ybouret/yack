@@ -30,7 +30,7 @@ namespace yack
                   const size_t rank,
                   quark::threadable::procedure proc,
                   void                        *args); //!< setup
-            ~drone() throw();                         //!< cleanup
+            ~drone() noexcept;                         //!< cleanup
 
             //__________________________________________________________________
             //

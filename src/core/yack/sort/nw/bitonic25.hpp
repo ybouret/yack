@@ -7,8 +7,8 @@ namespace yack {
     //! bitonic25
     class bitonic25 : public swaps {
       public:
-        virtual ~bitonic25() throw(); //!< cleanup
-        explicit bitonic25() throw(); //!< setup  
+        virtual ~bitonic25() noexcept; //!< cleanup
+        explicit bitonic25() noexcept; //!< setup  
         static const char   sid[];        //!< bitonic25
         static const size_t lhs[0x0099];  //!< lhs
         static const size_t rhs[0x0099];  //!< rhs

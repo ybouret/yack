@@ -39,7 +39,7 @@ namespace yack
             //__________________________________________________________________
             xlimits(const xlimit *rx,
                     const xlimit *px,
-                    const size_t  wm) throw(); //!< setup from individual limits
+                    const size_t  wm) noexcept; //!< setup from individual limits
 
             //__________________________________________________________________
             //
@@ -51,7 +51,7 @@ namespace yack
             friend std::ostream & operator<<(std::ostream &, const xlimits &);
 
             //! check if extent is acceptable : no negative or zero concentration
-            bool acceptable(const double xx) const throw();
+            bool acceptable(const double xx) const noexcept;
             
             //__________________________________________________________________
             //
@@ -64,7 +64,7 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(xlimits);
-            ~xlimits() throw();
+            ~xlimits() noexcept;
         };
 
         //______________________________________________________________________
@@ -77,8 +77,8 @@ namespace yack
         {
         public:
 
-            explicit xlimits_io() throw() : xlimits::field(), reac(), prod() {} //!< setup
-            virtual ~xlimits_io() throw()  {}                                   //!< cleanup
+            explicit xlimits_io() noexcept : xlimits::field(), reac(), prod() {} //!< setup
+            virtual ~xlimits_io() noexcept  {}                                   //!< cleanup
 
             xlimit::field reac; //!< for reac
             xlimit::field prod; //!< for prod

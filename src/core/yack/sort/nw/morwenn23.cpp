@@ -2,8 +2,8 @@
 namespace yack {
   namespace nwsrt {
     const char morwenn23 :: sid[] ="morwenn23";
-    morwenn23 :: ~morwenn23() throw() {}
-    morwenn23 ::  morwenn23() throw() : swaps(sid,23,0x0076,lhs,rhs) {}
+    morwenn23 :: ~morwenn23() noexcept {}
+    morwenn23 ::  morwenn23() noexcept : swaps(sid,23,0x0076,lhs,rhs) {}
     const size_t morwenn23 :: lhs[0x0076] = {
  0x0001, 0x0003, 0x0005, 0x0007, 0x0009, 0x000b, 0x000d, 0x000f,
  0x0011, 0x0013, 0x0015, 0x0002, 0x0006, 0x000a, 0x0001, 0x0005,

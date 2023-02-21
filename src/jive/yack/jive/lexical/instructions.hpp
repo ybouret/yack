@@ -25,8 +25,8 @@ namespace yack
             class instructions : public object, public instructions_
             {
             public:
-                explicit instructions() throw(); //!< setup
-                virtual ~instructions() throw(); //!< cleanup
+                explicit instructions() noexcept; //!< setup
+                virtual ~instructions() noexcept; //!< cleanup
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(instructions);

@@ -36,13 +36,13 @@ namespace yack
             virtual bool     strong() const;               //!< never strong
             virtual void     encode(ios::ostream &) const; //!< graphviz
             virtual pattern *clone()                const; //!< clone
-            virtual bool     is_univocal()  const throw(); //!< false
+            virtual bool     is_univocal()  const noexcept; //!< false
 
             //__________________________________________________________________
             //
             // serializable
             //__________________________________________________________________
-            virtual const char *class_uid() const throw();          //!< clid
+            virtual const char *class_uid() const noexcept;          //!< clid
             virtual size_t      serialize(ios::ostream &fp) const;  //!< uuid+jk
 
             //__________________________________________________________________
@@ -56,13 +56,13 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~optional() throw();         //!< cleanup
+            virtual ~optional() noexcept;         //!< cleanup
             
         protected:
-            explicit optional(pattern*) throw(); //!< setup
+            explicit optional(pattern*) noexcept; //!< setup
 
         private:
-            optional(const optional &) throw(); //!< copy
+            optional(const optional &) noexcept; //!< copy
             YACK_DISABLE_ASSIGN(optional);
         };
 

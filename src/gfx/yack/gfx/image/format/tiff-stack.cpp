@@ -8,7 +8,7 @@ namespace yack
     namespace graphic
     {
 
-        tiff_stack:: ~tiff_stack() throw()
+        tiff_stack:: ~tiff_stack() noexcept
         {
         }
 

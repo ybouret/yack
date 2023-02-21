@@ -32,7 +32,7 @@ namespace yack
             static const inet_addr_type loopback = INADDR_LOOPBACK; //!< alias
             static const char           className[];                //!< IPv4
 
-            static   void   initialize(sock_addr_type &) throw(); //!< set clean and family
+            static   void   initialize(sock_addr_type &) noexcept; //!< set clean and family
             static   string to_string(const sock_addr_type &);    //!< convert address to string
 
         };

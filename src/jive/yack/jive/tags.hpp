@@ -47,8 +47,8 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(tags);
             friend class singleton<tags>;
-            virtual ~tags() throw();
-            explicit tags() throw();
+            virtual ~tags() noexcept;
+            explicit tags() noexcept;
             void     setup_pdb();
         };
     }

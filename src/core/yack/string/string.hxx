@@ -7,11 +7,11 @@ namespace yack
     namespace kernel
     {
         template <>
-        const string<CH> & string<CH>::key() const throw() { return *this; }
+        const string<CH> & string<CH>::key() const noexcept { return *this; }
 
 
         template <>
-        const CH * string<CH>:: operator()(void) const throw()
+        const CH * string<CH>:: operator()(void) const noexcept
         {
             return static_cast<const CH*>(block);
         }
@@ -19,21 +19,21 @@ namespace yack
        
         
         template <>
-        void string<CH>:: xch(string &other) throw()
+        void string<CH>:: xch(string &other) noexcept
         {
             swap_with(other);
             cswap(item,other.item);
         }
 
         template <>
-        void  string<CH> :: clear() throw()
+        void  string<CH> :: clear() noexcept
         {
             memset(block,0,chars*sizeof(CH));
             chars = 0;
         }
 
         template <>
-        string<CH>:: ~string() throw()
+        string<CH>:: ~string() noexcept
         {
             item=0;
         }
@@ -83,7 +83,7 @@ namespace yack
         }
 
         template <>
-        string<CH> & string<CH>:: operator=(const CH ch) throw()
+        string<CH> & string<CH>:: operator=(const CH ch) noexcept
         {
             clear();
             item[chars=1] = ch;
@@ -121,19 +121,19 @@ namespace yack
 
 
         template <>
-        size_t string<CH>:: measure() const throw()
+        size_t string<CH>:: measure() const noexcept
         {
             return chars * sizeof(CH);
         }
 
         template <>
-        size_t string<CH>:: size() const throw()
+        size_t string<CH>:: size() const noexcept
         {
             return chars;
         }
 
         template <>
-        string<CH>::const_type &string<CH>::operator[](const size_t indx) const throw()
+        string<CH>::const_type &string<CH>::operator[](const size_t indx) const noexcept
         {
             assert(indx>=1);
             assert(indx<=chars+1);
@@ -141,7 +141,7 @@ namespace yack
         }
 
         template <>
-        string<CH>::type &string<CH>::operator[](const size_t indx) throw()
+        string<CH>::type &string<CH>::operator[](const size_t indx) noexcept
         {
             assert(indx>=1);
             assert(indx<=chars);
@@ -232,7 +232,7 @@ namespace yack
         }
 
 
-        template <> string<CH> & string<CH>:: skip(const size_t n) throw()
+        template <> string<CH> & string<CH>:: skip(const size_t n) noexcept
         {
             if(n>=chars)
             {
@@ -247,7 +247,7 @@ namespace yack
             return *this;
         }
 
-        template <> string<CH> & string<CH>:: trim(const size_t n) throw()
+        template <> string<CH> & string<CH>:: trim(const size_t n) noexcept
         {
             if(n>=chars)
             {
@@ -275,7 +275,7 @@ namespace yack
         }
         
         template <>
-        size_t string<CH>:: length_of(const CH *msg) throw()
+        size_t string<CH>:: length_of(const CH *msg) noexcept
         {
             if(msg)
             {
@@ -293,7 +293,7 @@ namespace yack
         bool string<CH>:: eq(const CH    *l,
                              const size_t nl,
                              const CH    *r,
-                             const size_t nr) throw()
+                             const size_t nr) noexcept
         {
             assert(!(NULL==l&&nl>0));
             assert(!(NULL==r&&nr>0));
@@ -316,7 +316,7 @@ namespace yack
         bool string<CH>:: neq(const CH    *l,
                               const size_t nl,
                               const CH    *r,
-                              const size_t nr) throw()
+                              const size_t nr) noexcept
         {
             assert(!(NULL==l&&nl>0));
             assert(!(NULL==r&&nr>0));
@@ -336,7 +336,7 @@ namespace yack
         }
 
         template <> int  string<CH>:: cmp(const CH *l, const size_t nl,
-                                          const CH *r, const size_t nr) throw()
+                                          const CH *r, const size_t nr) noexcept
         {
             assert(!(NULL==l&&nl>0));
             assert(!(NULL==r&&nr>0));
@@ -388,25 +388,25 @@ namespace yack
             }
         }
 
-        template <> int  string<CH>:: compare(const string &lhs, const string &rhs) throw()
+        template <> int  string<CH>:: compare(const string &lhs, const string &rhs) noexcept
         {
             return cmp(static_cast<const CH*>(lhs.block), lhs.chars,
                        static_cast<const CH*>(rhs.block), rhs.chars);
         }
 
-        template <> int  string<CH>:: callcmp(const string &lhs, const string &rhs) throw()
+        template <> int  string<CH>:: callcmp(const string &lhs, const string &rhs) noexcept
         {
             return cmp(static_cast<const CH*>(lhs.block), lhs.chars,
                        static_cast<const CH*>(rhs.block), rhs.chars);
         }
 
-        template <> int  string<CH>:: callcmp(const string &lhs, const CH *rhs) throw()
+        template <> int  string<CH>:: callcmp(const string &lhs, const CH *rhs) noexcept
         {
             return cmp(static_cast<const CH*>(lhs.block), lhs.chars,
                        rhs, length_of(rhs) );
         }
 
-        template <> int  string<CH>:: callcmp(const CH *lhs, const string &rhs) throw()
+        template <> int  string<CH>:: callcmp(const CH *lhs, const string &rhs) noexcept
         {
             return cmp(lhs, length_of(lhs),
                        static_cast<const CH*>(rhs.block), rhs.chars);
@@ -415,28 +415,28 @@ namespace yack
 
 
         template <>
-        CH  &string<CH>:: front() throw()
+        CH  &string<CH>:: front() noexcept
         {
             assert(size()>0);
             return item[1];
         }
 
         template <>
-        const CH  &string<CH>:: front() const throw()
+        const CH  &string<CH>:: front() const noexcept
         {
             assert(size()>0);
             return item[1];
         }
 
         template <>
-        CH  &string<CH>:: back() throw()
+        CH  &string<CH>:: back() noexcept
         {
             assert(size()>0);
             return item[chars];
         }
 
         template <>
-        const CH  &string<CH>:: back() const throw()
+        const CH  &string<CH>:: back() const noexcept
         {
             assert(size()>0);
             return item[chars];

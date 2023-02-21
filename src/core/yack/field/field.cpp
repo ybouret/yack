@@ -4,7 +4,7 @@
 namespace yack
 {
 
-    field:: ~field() throw()
+    field:: ~field() noexcept
     {
         if(wksp)
         {
@@ -14,7 +14,7 @@ namespace yack
         }
     }
 
-    const string & field:: key() const throw() { return name; }
+    const string & field:: key() const noexcept { return name; }
 
     void  field:: allocate(memory::embed emb[], const size_t num)
     {
@@ -24,7 +24,7 @@ namespace yack
         wksp = memory::embed::zalloc(emb,num,mgr,wlen);
     }
 
-    size_t field:: granted() const throw()
+    size_t field:: granted() const noexcept
     {
         return wlen;
     }

@@ -9,11 +9,11 @@ namespace yack
 
         const char tags::call_sign[] = "jive::tags";
 
-        tags:: ~tags() throw()
+        tags:: ~tags() noexcept
         {
         }
 
-        tags:: tags() throw() : singleton<tags>(), tags_(), pdb()
+        tags:: tags() noexcept : singleton<tags>(), tags_(), pdb()
         {
             setup_pdb();
         }

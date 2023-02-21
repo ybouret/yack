@@ -45,10 +45,10 @@ namespace yack
         //______________________________________________________________________
 
         //! cleanup
-        inline virtual ~heap() throw() { drop(); }
+        inline virtual ~heap() noexcept { drop(); }
 
         //! setup empty
-        inline explicit heap() throw() : count(0), total(0),   bytes(0), tree(NULL), compare()
+        inline explicit heap() noexcept : count(0), total(0),   bytes(0), tree(NULL), compare()
         {
         }
 
@@ -79,25 +79,25 @@ namespace yack
         //
         // dynamic interface
         //______________________________________________________________________
-        inline virtual size_t      granted()   const throw() { return bytes; }                //!< bytes
+        inline virtual size_t      granted()   const noexcept { return bytes; }                //!< bytes
 
         //______________________________________________________________________
         //
         // container interface
         //______________________________________________________________________
-        inline virtual const char *category()  const throw() { return low_level::heap_category; }  //!< heap
-        inline virtual size_t      size()      const throw() { return count; }                     //!< count
-        inline virtual size_t      capacity()  const throw() { return total; }                     //!< total
-        inline virtual size_t      available() const throw() { return total-count; }               //!< total-count
+        inline virtual const char *category()  const noexcept { return low_level::heap_category; }  //!< heap
+        inline virtual size_t      size()      const noexcept { return count; }                     //!< count
+        inline virtual size_t      capacity()  const noexcept { return total; }                     //!< total
+        inline virtual size_t      available() const noexcept { return total-count; }               //!< total-count
 
         //! free content, keep memory
-        inline virtual void        free()            throw()
+        inline virtual void        free()            noexcept
         {
             ldz();
         }
 
         //! release content and memory
-        inline virtual void release() throw()
+        inline virtual void release() noexcept
         {
             drop();
         }
@@ -115,13 +115,13 @@ namespace yack
         //______________________________________________________________________
 
         //! fast CRC32 of binary content
-        uint32_t crc() const throw()
+        uint32_t crc() const noexcept
         {
             return yack_crc32(tree,count*sizeof(type));
         }
 
         //! set to 0
-        inline void ldz() throw()
+        inline void ldz() noexcept
         {
             const size_t zlen = count * sizeof(type);
             while(count>0) destruct(&tree[--count]);
@@ -165,14 +165,14 @@ namespace yack
 
 
         //! peek top value
-        const_type & peek() const throw() {
+        const_type & peek() const noexcept {
             assert(count>0); return tree[0];
         }
         
 
 
         //! pop top value
-        inline void pop() throw() {
+        inline void pop() noexcept {
             assert(count>0); rem();
         }
 
@@ -187,7 +187,7 @@ namespace yack
 
 
         //! no-throw swap
-        inline void swap_with(heap &other) throw()
+        inline void swap_with(heap &other) noexcept
         {
             cswap(count,other.count);
             cswap(total,other.total);
@@ -223,7 +223,7 @@ namespace yack
 
 
         //! release all memory
-        inline void drop() throw()
+        inline void drop() noexcept
         {
             if(tree) {
                 static memory::allocator &mgr = ALLOCATOR::location();
@@ -275,7 +275,7 @@ namespace yack
             pqueue::insert(tree,count,args,compare);
         }
 
-        inline void rem() throw()
+        inline void rem() noexcept
         {
             pqueue::remove(tree,count,compare);
         }

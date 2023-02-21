@@ -38,14 +38,14 @@ namespace yack
             // C++
             //__________________________________________________________________
             note();
-            ~note() throw();
+            ~note() noexcept;
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
             void *query(const size_t page_exp2);                      //!< 0 <= page_exp2 <= max_page_exp2
-            void  store(void *addr, const size_t page_exp2) throw();  //!< store a previously queried page
+            void  store(void *addr, const size_t page_exp2) noexcept;  //!< store a previously queried page
             void  display() const;                                    //!< display current info
 
         private:

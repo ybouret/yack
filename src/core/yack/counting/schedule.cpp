@@ -24,26 +24,26 @@ namespace yack
         --data;
     }
     
-    size_t schedule:: granted() const throw()
+    size_t schedule:: granted() const noexcept
     {
         return used;
     }
     
-    schedule:: ~schedule() throw()
+    schedule:: ~schedule() noexcept
     {
         static memory::allocator &mem = memory::pooled::location();
         mem.release(addr,used);
         data = 0;
     }
     
-    size_t & schedule:: operator[](const size_t indx) throw()
+    size_t & schedule:: operator[](const size_t indx) noexcept
     {
         assert(indx>=1);
         assert(indx<=size());
         return data[indx];
     }
     
-    const size_t & schedule:: operator[](const size_t indx) const throw()
+    const size_t & schedule:: operator[](const size_t indx) const noexcept
     {
         assert(indx>=1);
         assert(indx<=size());

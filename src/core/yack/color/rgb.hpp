@@ -42,7 +42,7 @@ namespace yack
                 inline  rgb(param_type R, param_type G, param_type B) : r(R), g(G), b(B) {}
 
                 //! cleanup
-                inline ~rgb() throw() {}
+                inline ~rgb() noexcept {}
 
                 //! copy
                 inline  rgb(const rgb &c) : r(c.r), g(c.g), b(c.b) {}
@@ -65,23 +65,23 @@ namespace yack
                 //______________________________________________________________
 
                 //! field wise comparison
-                inline friend bool operator==(const rgb &lhs, const rgb &rhs) throw()
+                inline friend bool operator==(const rgb &lhs, const rgb &rhs) noexcept
                 {
                     return (lhs.r==rhs.r) && (lhs.g==rhs.g) && (lhs.b==rhs.b);
                 }
 
                 //! helper
-                inline size_t size() const throw() { return 3; }
+                inline size_t size() const noexcept { return 3; }
 
                 //! access helper
-                inline type &operator[](const size_t indx) throw()
+                inline type &operator[](const size_t indx) noexcept
                 {
                     assert(indx>=1); assert(indx<=3);
                     return *((&r-1)+indx);
                 }
 
                 //! const access helper
-                inline const_type &operator[](const size_t indx) const throw()
+                inline const_type &operator[](const size_t indx) const noexcept
                 {
                     assert(indx>=1); assert(indx<=3);
                     return *((&r-1)+indx);

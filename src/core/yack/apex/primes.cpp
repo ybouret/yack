@@ -9,7 +9,7 @@ namespace yack
     {
 
 
-        prime_knot:: ~prime_knot() throw() {}
+        prime_knot:: ~prime_knot() noexcept {}
 
 
         static const uint8_t first16[16] = { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53 };
@@ -77,18 +77,18 @@ namespace yack
             I.xch(s);
         }
 
-        primes:: ~primes() throw()
+        primes:: ~primes() noexcept
         {
         }
 
         const char * const primes:: call_sign = "apex::primes";
 
-        const prime_list * primes:: operator->() const throw()
+        const prime_list * primes:: operator->() const noexcept
         {
             return & plist;
         }
 
-        const prime_list & primes:: operator*() const throw()
+        const prime_list & primes:: operator*() const noexcept
         {
             return plist;
         }

@@ -25,18 +25,18 @@ namespace yack
             //
             // interface
             //__________________________________________________________________
-            virtual lockable   &access()          throw() = 0; //!< to sync
-            virtual const char *family()    const throw() = 0; //!< for info
-            virtual void operator()(kernel,void*) throw() = 0; //!< call kernel once
+            virtual lockable   &access()          noexcept = 0; //!< to sync
+            virtual const char *family()    const noexcept = 0; //!< for info
+            virtual void operator()(kernel,void*) noexcept = 0; //!< call kernel once
 
             //__________________________________________________________________
             //
             // non-virtual interface
             //__________________________________________________________________
-            void run(runnable &obj) throw(); //!< obj.run(...)
+            void run(runnable &obj) noexcept; //!< obj.run(...)
 
             //! compute efficiency
-            double efficiency(const double seq_rate, const double par_rate) const throw();
+            double efficiency(const double seq_rate, const double par_rate) const noexcept;
 
             //__________________________________________________________________
             //
@@ -50,9 +50,9 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~loop() throw(); //!< cleanup
+            virtual ~loop() noexcept; //!< cleanup
         protected:
-            explicit loop() throw(); //!< setup
+            explicit loop() noexcept; //!< setup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(loop);

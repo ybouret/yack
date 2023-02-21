@@ -7,7 +7,7 @@ namespace yack
 {
     namespace jive
     {
-        parser:: ~parser() throw()
+        parser:: ~parser() noexcept
         {
         }
 

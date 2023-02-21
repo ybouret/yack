@@ -10,7 +10,7 @@ namespace yack
 
     namespace kernel
     {
-        string_:: ~string_() throw()
+        string_:: ~string_() noexcept
         {
             static memory::allocator &mgr = memory::pooled::location();
             assert(block);
@@ -64,12 +64,12 @@ namespace yack
         }
 
 
-        const void * string_:: ro_addr() const throw()
+        const void * string_:: ro_addr() const noexcept
         {
             return block;
         }
 
-        void string_:: swap_with(string_ &other) throw()
+        void string_:: swap_with(string_ &other) noexcept
         {
             cswap(chars,other.chars);
             coerce_cswap(width,other.width);

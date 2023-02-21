@@ -9,11 +9,11 @@ namespace yack
 
     namespace memory
     {
-        ro_buffer:: ~ro_buffer() throw()
+        ro_buffer:: ~ro_buffer() noexcept
         {
         }
 
-        ro_buffer:: ro_buffer() throw()
+        ro_buffer:: ro_buffer() noexcept
         {
         }
 
@@ -38,7 +38,7 @@ namespace yack
         }
 
 
-        bool ro_buffer:: has_same_content_than(const ro_buffer &other) const throw()
+        bool ro_buffer:: has_same_content_than(const ro_buffer &other) const noexcept
         {
             const size_t n = measure();
             if(n==other.measure())

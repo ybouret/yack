@@ -50,26 +50,26 @@ namespace yack
             //__________________________________________________________________
 
             //! cleanup: display memory leaks
-            ~parcel() throw();
+            ~parcel() noexcept;
 
             //! setup from a power of two memory block
             parcel(void *       block_addr,
                    const size_t block_size,
-                   const size_t block_exp2 ) throw();
+                   const size_t block_exp2 ) noexcept;
 
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            void                 *try_acquire(size_t &size)                     throw(); //!< try acquire a piece of memory
-            static parcel        *get_release(void * &entry, size_t &count)     throw(); //!< release old memory, return owner
-            bool                  is_empty()                              const throw(); //!< check vacancy condition
-            size_t                capacity()                              const throw(); //!< max available space
+            void                 *try_acquire(size_t &size)                     noexcept; //!< try acquire a piece of memory
+            static parcel        *get_release(void * &entry, size_t &count)     noexcept; //!< release old memory, return owner
+            bool                  is_empty()                              const noexcept; //!< check vacancy condition
+            size_t                capacity()                              const noexcept; //!< max available space
             void                  display()                                       const; //!< info
-            static const parcel  *whose(const void *entry)                      throw(); //!< to check ownership
-            static int            compare(const parcel *lhs, const parcel *rhs) throw(); //!< comparison by size then address
-            static size_t         size_of(const void *addr)                     throw(); //!< retrieve allocated size
+            static const parcel  *whose(const void *entry)                      noexcept; //!< to check ownership
+            static int            compare(const parcel *lhs, const parcel *rhs) noexcept; //!< comparison by size then address
+            static size_t         size_of(const void *addr)                     noexcept; //!< retrieve allocated size
 
             //__________________________________________________________________
             //

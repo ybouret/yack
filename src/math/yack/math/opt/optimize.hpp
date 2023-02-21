@@ -43,7 +43,7 @@ namespace yack
             //! guess with x.a <= x.b <= x.c, f.b <= f.a, f.b <= f.c
             //__________________________________________________________________
             template <typename T> static
-            T parabolic_guess(const triplet<T> &x, const triplet<T> &f) throw();
+            T parabolic_guess(const triplet<T> &x, const triplet<T> &f) noexcept;
 
 
             //__________________________________________________________________

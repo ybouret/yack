@@ -44,8 +44,8 @@ namespace yack
     struct __sign
     {
         //! named sign
-        static const char *text(const sign_type)   throw(); //!< named sign
-        static const char *symbol(const sign_type) throw(); //!< -/0/+
+        static const char *text(const sign_type)   noexcept; //!< named sign
+        static const char *symbol(const sign_type) noexcept; //!< -/0/+
 
         //! value to sign
         template <typename T> static inline
@@ -63,13 +63,13 @@ namespace yack
         
 
         //! opposite sign
-        static sign_type opposite(const sign_type) throw();
+        static sign_type opposite(const sign_type) noexcept;
 
         //! in place change sign
-        static void      change(sign_type&) throw();
+        static void      change(sign_type&) noexcept;
 
         //! build lhs|rhs
-        static sign_pair pair(const sign_type lhs, const sign_type rhs) throw();
+        static sign_pair pair(const sign_type lhs, const sign_type rhs) noexcept;
 
         //! buils sign_of(rhs) | sign_of(lhs)
         template <typename T, typename U> static inline
@@ -80,7 +80,7 @@ namespace yack
 
 
         //! compute product
-        static sign_type product(const sign_type lhs, const sign_type rhs) throw();
+        static sign_type product(const sign_type lhs, const sign_type rhs) noexcept;
 
         //! compute product of
         template <typename T, typename U> static inline

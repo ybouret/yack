@@ -29,7 +29,7 @@ namespace yack
             // C++
             //__________________________________________________________________
             explicit tiff_format();         //!< setup
-            virtual ~tiff_format() throw(); //!< cleanup
+            virtual ~tiff_format() noexcept; //!< cleanup
 
             //__________________________________________________________________
             //

@@ -50,7 +50,7 @@ namespace yack
                 //______________________________________________________________
 
                 //! cleanup, release database and liberate self
-                virtual ~analyzer() throw();
+                virtual ~analyzer() noexcept;
 
                 //! setup, withhold and self registration
                 template <typename LABEL> inline
@@ -69,7 +69,7 @@ namespace yack
                 //
                 // setup methods
                 //______________________________________________________________
-                const scan_set & operator*() const throw(); //!< access to db
+                const scan_set & operator*() const noexcept; //!< access to db
 
                 //! declare a new scanner, post-process according to decl_t
                 /**
@@ -138,15 +138,15 @@ namespace yack
                 // high-level analyzing
                 //______________________________________________________________
                 lexeme *      query(source &);         //!< query next lexeme
-                void          store(lexeme *) throw(); //!< store a parsed lexeme
-                void          reset()         throw(); //!< reset all
+                void          store(lexeme *) noexcept; //!< store a parsed lexeme
+                void          reset()         noexcept; //!< reset all
 
                 //______________________________________________________________
                 //
                 // check status
                 //______________________________________________________________
                 const lexeme *peek(source &);                     //!< found next?
-                bool          owns(const lexeme *) const throw(); //!< in repository ?
+                bool          owns(const lexeme *) const noexcept; //!< in repository ?
 
                 //______________________________________________________________
                 //

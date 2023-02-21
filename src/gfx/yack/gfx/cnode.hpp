@@ -31,10 +31,10 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            cnode(const coord &) throw(); //!< setup
-            ~cnode()             throw(); //!< cleanup
-            cnode(const cnode &) throw(); //!< copy
-            const coord & operator*() const throw(); //!< access
+            cnode(const coord &) noexcept; //!< setup
+            ~cnode()             noexcept; //!< cleanup
+            cnode(const cnode &) noexcept; //!< copy
+            const coord & operator*() const noexcept; //!< access
 
             //__________________________________________________________________
             //

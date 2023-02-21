@@ -35,13 +35,13 @@ namespace yack
             sentry(const char  *file,
                    const int    line,
                    const void  *block_addr,
-                   const size_t block_size) throw();
+                   const size_t block_size) noexcept;
 
             //! store information and hash INTEGRAL type
             template <typename T> inline
             sentry(const char *file,
                    const int   line,
-                   const T    &host) throw() :
+                   const T    &host) noexcept :
             wksp()
             {
                 setup(file,line,&host,sizeof(host));
@@ -53,7 +53,7 @@ namespace yack
                    const int    line,
                    T           *entry,
                    const size_t items,
-                   const transmogrify_t &) throw()
+                   const transmogrify_t &) noexcept
             {
                 assert(yack_good(entry,items));
                 setup(file,line,entry,items*sizeof(T));
@@ -62,10 +62,10 @@ namespace yack
 
 
             //! access key
-            key_t operator*() const throw();
+            key_t operator*() const noexcept;
 
             //! recompute key, exit on error
-            ~sentry() throw();
+            ~sentry() noexcept;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(sentry);
@@ -73,7 +73,7 @@ namespace yack
             void  setup(const char  *file,
                         const int    line,
                         const void  *block_addr,
-                        const size_t block_size) throw();
+                        const size_t block_size) noexcept;
         };
 
     }

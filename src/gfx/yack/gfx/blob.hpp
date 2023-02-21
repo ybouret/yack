@@ -23,8 +23,8 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit blob(const size_t) throw(); //!< setup with tag
-            virtual ~blob()             throw(); //!< cleanup
+            explicit blob(const size_t) noexcept; //!< setup with tag
+            virtual ~blob()             noexcept; //!< cleanup
 
             //------------------------------------------------------------------
             //

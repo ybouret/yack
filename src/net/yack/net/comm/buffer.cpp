@@ -11,7 +11,7 @@ namespace yack
 
         namespace comm
         {
-            buffer:: ~buffer() throw()
+            buffer:: ~buffer() noexcept
             {
                 static memory::allocator &mgr = memory::dyadic::location();
                 mgr.withdraw(coerce(entry),coerce(bytes));
@@ -38,12 +38,12 @@ namespace yack
 
             }
 
-            void buffer:: restart() throw()
+            void buffer:: restart() noexcept
             {
                 rpos = wpos = entry;
             }
 
-            void buffer:: compact() throw()
+            void buffer:: compact() noexcept
             {
                 const size_t n = wpos-rpos;
                 memmove(entry,rpos,n);
@@ -52,7 +52,7 @@ namespace yack
             }
 
 
-            bool   buffer:: query_(char &C) throw()
+            bool   buffer:: query_(char &C) noexcept
             {
                 if(rpos<wpos) {
                     C = *(rpos++);
@@ -64,7 +64,7 @@ namespace yack
                 }
             }
 
-            size_t buffer:: fetch_(void *addr, const size_t size) throw()
+            size_t buffer:: fetch_(void *addr, const size_t size) noexcept
             {
                 assert( yack_good(addr,size) );
                 const size_t n      = min_of( written(), size );

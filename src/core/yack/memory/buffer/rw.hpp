@@ -22,15 +22,15 @@ namespace yack
         class rw_buffer : public ro_buffer
         {
         public:
-            void    *rw_addr() throw(); //!< from ro_addr
+            void    *rw_addr() noexcept; //!< from ro_addr
 
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            virtual ~rw_buffer() throw(); //!< cleanup
+            virtual ~rw_buffer() noexcept; //!< cleanup
         protected:
-            explicit rw_buffer() throw(); //!< setup
+            explicit rw_buffer() noexcept; //!< setup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(rw_buffer);

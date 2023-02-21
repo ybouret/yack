@@ -37,16 +37,16 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~runnable() throw(); //!< cleanup
+            virtual ~runnable() noexcept; //!< cleanup
 
         protected:
-            explicit runnable() throw(); //!< setup
+            explicit runnable() noexcept; //!< setup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(runnable);
             friend class loop;
-            static  void call(const context &, void *,lockable &) throw();
-            virtual void run(const context &, lockable &) throw() = 0;
+            static  void call(const context &, void *,lockable &) noexcept;
+            virtual void run(const context &, lockable &) noexcept = 0;
             
         };
     }

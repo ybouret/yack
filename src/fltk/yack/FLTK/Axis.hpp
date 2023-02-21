@@ -10,8 +10,8 @@ namespace yack
         class Axis 
         {
         public:
-            explicit Axis() throw(); //!< 0-1
-            virtual ~Axis() throw(); 
+            explicit Axis() noexcept; //!< 0-1
+            virtual ~Axis() noexcept; 
             
             const double vmin;
             const double vmax;

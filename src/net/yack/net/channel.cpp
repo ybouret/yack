@@ -5,8 +5,8 @@ namespace yack
 {
     namespace net
     {
-        channel::  channel() throw() {}
-        channel:: ~channel() throw() {}
+        channel::  channel() noexcept {}
+        channel:: ~channel() noexcept {}
     }
 }
 

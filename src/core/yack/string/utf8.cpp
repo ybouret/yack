@@ -52,16 +52,16 @@ namespace yack
         validate(code);
     }
     
-    utf8:: ~utf8() throw()
+    utf8:: ~utf8() noexcept
     {
         code=0;
     }
     
-    utf8:: utf8(const utf8 &U) throw() : code(U.code)
+    utf8:: utf8(const utf8 &U) noexcept : code(U.code)
     {
     }
     
-    utf8 & utf8::operator=(const utf8 &U) throw()
+    utf8 & utf8::operator=(const utf8 &U) noexcept
     {
         code=U.code;
         return *this;
@@ -74,24 +74,24 @@ namespace yack
         return *this;
     }
   
-    size_t utf8:: bytes() const throw()
+    size_t utf8:: bytes() const noexcept
     {
         const size_t res = (code>>info_move);
         assert(res>=1); assert(res<=4);
         return res;
     }
 
-    uint32_t utf8:: operator*() const throw()
+    uint32_t utf8:: operator*() const noexcept
     {
         return (code&code_mask);
     }
 
-    void utf8:: xch(utf8 &U) throw()
+    void utf8:: xch(utf8 &U) noexcept
     {
         cswap(code,U.code);
     }
 
-    int utf8::compare(const utf8 &lhs, const utf8 &rhs) throw()
+    int utf8::compare(const utf8 &lhs, const utf8 &rhs) noexcept
     {
         const uint32_t L = *lhs;
         const uint32_t R = *rhs;
@@ -100,7 +100,7 @@ namespace yack
 
 
 
-    size_t utf8:: encode(uint8_t *data) const throw()
+    size_t utf8:: encode(uint8_t *data) const noexcept
     {
         static const uint32_t msk6 = 1|2|4|8|16|32;
         static const uint32_t bit7 = 128;

@@ -5,7 +5,7 @@ namespace yack
 {
     namespace jive
     {
-        matching:: ~matching() throw()
+        matching:: ~matching() noexcept
         {
         }
 
@@ -19,7 +19,7 @@ namespace yack
             scheme->firsts( coerce(*firsts) );
         }
 
-        matching:: matching(const matching &other) throw() :
+        matching:: matching(const matching &other) noexcept :
         token(),
         scheme(other.scheme),
         strong(other.strong),

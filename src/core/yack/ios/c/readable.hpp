@@ -23,7 +23,7 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~readable_file() throw();               //!< cleanup
+            virtual ~readable_file() noexcept;               //!< cleanup
             explicit readable_file(const cstdin_t &);       //!< link to stdin
             explicit readable_file(const char   *filename); //!< open readable file
             explicit readable_file(const string &filename); //!< open readable file

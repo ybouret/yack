@@ -6,7 +6,7 @@ namespace yack
 {
     namespace raven
     {
-        qvector:: ~qvector() throw()
+        qvector:: ~qvector() noexcept
         {
         }
 
@@ -29,7 +29,7 @@ namespace yack
             }
         }
 
-        void qvector:: ldz() throw()
+        void qvector:: ldz() noexcept
         {
             coerce(norm2).ldz();
             for(size_t i=dimension;i>0;--i)
@@ -44,9 +44,9 @@ namespace yack
             return os;
         }
 
-        size_t qvector:: size() const throw() { return dimension; }
+        size_t qvector:: size() const noexcept { return dimension; }
 
-        const apz & qvector:: operator[](const size_t i) const throw() {
+        const apz & qvector:: operator[](const size_t i) const noexcept {
             assert(i>=1); assert(i<=dimension);
             return coeff[i];
         }
@@ -108,7 +108,7 @@ namespace yack
         }
 
 
-        int qvector:: compare(const qvector &lhs, const qvector &rhs) throw()
+        int qvector:: compare(const qvector &lhs, const qvector &rhs) noexcept
         {
             assert(lhs.size() == rhs.size() );
             return comparison::lexicographic(&lhs[1], &rhs[1], lhs.size() );

@@ -7,17 +7,17 @@ namespace yack
 
     namespace information
     {
-        delta:: ~delta() throw()
+        delta:: ~delta() noexcept
         {
             last = 0;
         }
 
 
-        delta:: delta() throw() : last(0)
+        delta:: delta() noexcept : last(0)
         {
         }
 
-        void delta:: reset() throw()
+        void delta:: reset() noexcept
         {
             last = 0;
         }
@@ -33,16 +33,16 @@ namespace yack
     namespace information
     {
 
-        delta_encoder:: delta_encoder() throw() : delta()
+        delta_encoder:: delta_encoder() noexcept : delta()
         {
 
         }
 
-        delta_encoder:: ~delta_encoder() throw()
+        delta_encoder:: ~delta_encoder() noexcept
         {
         }
 
-        uint8_t delta_encoder:: alter(const uint8_t x) throw()
+        uint8_t delta_encoder:: alter(const uint8_t x) noexcept
         {
             const uint8_t ans = x-last;
             last = x;
@@ -58,16 +58,16 @@ namespace yack
     namespace information
     {
 
-        delta_decoder:: delta_decoder() throw() : delta()
+        delta_decoder:: delta_decoder() noexcept : delta()
         {
 
         }
 
-        delta_decoder:: ~delta_decoder() throw()
+        delta_decoder:: ~delta_decoder() noexcept
         {
         }
 
-        uint8_t delta_decoder:: alter(const uint8_t x) throw()
+        uint8_t delta_decoder:: alter(const uint8_t x) noexcept
         {
             const uint8_t ans = x+last;
             last = ans;

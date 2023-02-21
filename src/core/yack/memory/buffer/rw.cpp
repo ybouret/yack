@@ -7,16 +7,16 @@ namespace yack
 
     namespace memory
     {
-        rw_buffer:: ~rw_buffer() throw()
+        rw_buffer:: ~rw_buffer() noexcept
         {
         }
 
-        rw_buffer:: rw_buffer() throw() : ro_buffer()
+        rw_buffer:: rw_buffer() noexcept : ro_buffer()
         {
         }
 
 
-        void * rw_buffer:: rw_addr() throw()
+        void * rw_buffer:: rw_addr() noexcept
         {
             return (void*)ro_addr();
         }

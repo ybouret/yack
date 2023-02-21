@@ -23,16 +23,16 @@ namespace yack
             markup(const bool   &verb,
                    std::ostream &os,
                    const char   *pfx_,
-                   const char   *tag_) throw();
+                   const char   *tag_) noexcept;
 
             //! initialize with ios::ostream, enter
             markup(const bool   &verb,
                    ios::ostream &os,
                    const char   *pfx_,
-                   const char   *tag_) throw();
+                   const char   *tag_) noexcept;
 
             //! leave
-            ~markup() throw();
+            ~markup() noexcept;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(markup);
@@ -48,8 +48,8 @@ namespace yack
             const char  *pfx;
             const char  *tag;
 
-            void enter() const throw();
-            void leave() const throw();
+            void enter() const noexcept;
+            void leave() const noexcept;
 
         };
     }

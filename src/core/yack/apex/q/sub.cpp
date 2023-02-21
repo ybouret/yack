@@ -62,7 +62,7 @@ return rational(num,rhs.den);
             YACK_APQ_SUB_LHS();
         }
 
-        void rational:: neg() throw()
+        void rational:: neg() noexcept
         {
             coerce(num).neg();
         }

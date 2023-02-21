@@ -7,8 +7,8 @@ namespace yack {
     //! vanvoorhis16
     class vanvoorhis16 : public swaps {
       public:
-        virtual ~vanvoorhis16() throw(); //!< cleanup
-        explicit vanvoorhis16() throw(); //!< setup  
+        virtual ~vanvoorhis16() noexcept; //!< cleanup
+        explicit vanvoorhis16() noexcept; //!< setup  
         static const char   sid[];        //!< vanvoorhis16
         static const size_t lhs[0x003d];  //!< lhs
         static const size_t rhs[0x003d];  //!< rhs

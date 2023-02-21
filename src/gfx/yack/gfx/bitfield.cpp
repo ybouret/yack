@@ -8,7 +8,7 @@ namespace yack
     namespace graphic
     {
 
-        bitfield:: ~bitfield() throw()
+        bitfield:: ~bitfield() noexcept
         {
             static memory::allocator &mgr = memory_allocator::location();
             if(memio)

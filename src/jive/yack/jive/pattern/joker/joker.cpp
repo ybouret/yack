@@ -6,23 +6,23 @@ namespace yack
 {
     namespace jive
     {
-        joker:: ~joker() throw() {}
+        joker:: ~joker() noexcept {}
 
-        joker:: joker(const uint32_t t, pattern *p) throw():
+        joker:: joker(const uint32_t t, pattern *p) noexcept:
         pattern(t),
         jk(p)
         {
 
         }
 
-        joker:: joker(const joker &other) throw() :
+        joker:: joker(const joker &other) noexcept :
         pattern(other.uuid),
         jk(other.jk)
         {
         }
         
 
-        const pattern & joker:: operator*() const throw()
+        const pattern & joker:: operator*() const noexcept
         {
             return *jk;
         }
@@ -39,7 +39,7 @@ namespace yack
             end(fp);
         }
 
-        void joker:: substitute(pattern *p) throw()
+        void joker:: substitute(pattern *p) noexcept
         {
             assert(NULL!=p);
             const motif &lhs = jk;

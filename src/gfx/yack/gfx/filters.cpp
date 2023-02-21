@@ -9,19 +9,19 @@ namespace yack
         const char filters::Xext[] = "X";
         const char filters::Yext[] = "Y";
 
-        filters:: filters(const filter &fx, const filter &fy) throw():
+        filters:: filters(const filter &fx, const filter &fy) noexcept:
         X( & coerce(fx) ),
         Y( & coerce(fy) )
         {
         }
 
 
-        filters:: filters(const filters &other) throw() :
+        filters:: filters(const filters &other) noexcept :
         X(other.X),
         Y(other.Y)
         {}
 
-        filters:: ~filters() throw()
+        filters:: ~filters() noexcept
         {
         }
 

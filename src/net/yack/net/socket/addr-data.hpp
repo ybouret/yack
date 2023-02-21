@@ -62,13 +62,13 @@ addr(   out_of_reach::access<inet_addr_type,sock_addr_type>(impl,metrics::addr_o
             //__________________________________________________________________
 
             //! default constructor
-            inline socket_addr_data() throw() : YACK_NET_SOCKET_ADDR_CTOR()
+            inline socket_addr_data() noexcept : YACK_NET_SOCKET_ADDR_CTOR()
             {
                 metrics::initialize(impl);
             }
 
             //! construct with a named address and and optional port
-            inline socket_addr_data(const inet_address_name id, const net16_t user_port=0) throw() : YACK_NET_SOCKET_ADDR_CTOR()
+            inline socket_addr_data(const inet_address_name id, const net16_t user_port=0) noexcept : YACK_NET_SOCKET_ADDR_CTOR()
             {
                 metrics::initialize(impl);
                 switch(id)
@@ -82,19 +82,19 @@ addr(   out_of_reach::access<inet_addr_type,sock_addr_type>(impl,metrics::addr_o
             }
 
             //! cleanup
-            inline virtual ~socket_addr_data() throw()
+            inline virtual ~socket_addr_data() noexcept
             {
                 metrics::initialize(impl);
             }
 
             //! copy
-            inline socket_addr_data(const socket_addr_data &other) throw() : YACK_NET_SOCKET_ADDR_CTOR()
+            inline socket_addr_data(const socket_addr_data &other) noexcept : YACK_NET_SOCKET_ADDR_CTOR()
             {
                 memcpy(&impl,&other.impl,sock_addr_size);
             }
 
             //! assign
-            inline socket_addr_data & operator=( const socket_addr_data &other ) throw()
+            inline socket_addr_data & operator=( const socket_addr_data &other ) noexcept
             {
                 memmove(&impl,&other.impl,sock_addr_size);
                 return *this;
@@ -106,8 +106,8 @@ addr(   out_of_reach::access<inet_addr_type,sock_addr_type>(impl,metrics::addr_o
             //__________________________________________________________________
 
 
-            virtual uint16_t         family()    const throw() { return metrics::family;    } //!< AT_INET[6]
-            virtual const char      *className() const throw() { return metrics::className; } //!< IPv[4|6]
+            virtual uint16_t         family()    const noexcept { return metrics::family;    } //!< AT_INET[6]
+            virtual const char      *className() const noexcept { return metrics::className; } //!< IPv[4|6]
 
             //! output
             friend std::ostream & operator <<( std::ostream &os, const socket_addr_data &self)
@@ -127,8 +127,8 @@ addr(   out_of_reach::access<inet_addr_type,sock_addr_type>(impl,metrics::addr_o
         private:
             sock_addr_type     impl; //!< implementation
 
-            inline net16_t  & _pr_() throw() { return out_of_reach::access<net16_t,sock_addr_type>(impl,metrics::port_offset); }
-            inline sockaddr & _ar_() throw() { return coerce_to<sockaddr>(impl); }
+            inline net16_t  & _pr_() noexcept { return out_of_reach::access<net16_t,sock_addr_type>(impl,metrics::port_offset); }
+            inline sockaddr & _ar_() noexcept { return coerce_to<sockaddr>(impl); }
 
         public:
             inet_addr_type    &addr;   //!< reference to internal address (nbo)

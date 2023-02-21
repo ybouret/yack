@@ -5,22 +5,22 @@ namespace yack
 {
     namespace information
     {
-        modulation:: ~modulation() throw()
+        modulation:: ~modulation() noexcept
         {
         }
 
-        modulation:: modulation() throw()
+        modulation:: modulation() noexcept
         {
             
         }
 
-        uint8_t modulation:: call(const uint8_t x, void *args) throw()
+        uint8_t modulation:: call(const uint8_t x, void *args) noexcept
         {
             assert(args);
             return static_cast<modulation *>(args)->alter(x);
         }
 
-        void *modulation:: self() throw()
+        void *modulation:: self() noexcept
         {
             return this;
         }

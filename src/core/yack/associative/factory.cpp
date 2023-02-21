@@ -9,11 +9,11 @@ namespace yack
     namespace kernel
     {
 
-        factory:: ~factory() throw()
+        factory:: ~factory() noexcept
         {
         }
 
-        factory:: factory() throw()
+        factory:: factory() noexcept
         {
         }
 

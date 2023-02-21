@@ -19,7 +19,7 @@ namespace yack
         {
         }
 
-        writable_file:: ~writable_file() throw()
+        writable_file:: ~writable_file() noexcept
         {
         }
 

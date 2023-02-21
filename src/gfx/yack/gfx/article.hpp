@@ -22,9 +22,9 @@ namespace yack
         class article : public object, public counted
         {
         public:
-            virtual ~article() throw();
+            virtual ~article() noexcept;
         protected:
-            explicit article() throw();
+            explicit article() noexcept;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(article);

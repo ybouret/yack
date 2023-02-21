@@ -5,7 +5,7 @@ namespace yack
     {
 
         static inline
-        real_t qerf_core(const real_t &x) throw()
+        real_t qerf_core(const real_t &x) noexcept
         {
 
             static const real_t one(1);
@@ -17,7 +17,7 @@ namespace yack
         }
 
         template <>
-        real_t qerfc<real_t>(const real_t x) throw()
+        real_t qerfc<real_t>(const real_t x) noexcept
         {
             static const real_t two(2);
             const real_t        ans = qerf_core(x);
@@ -25,7 +25,7 @@ namespace yack
         }
 
         template <>
-        real_t qerf<real_t>(const real_t x) throw()
+        real_t qerf<real_t>(const real_t x) noexcept
         {
             static const real_t two(2);
             const real_t        ans = qerf_core(x);

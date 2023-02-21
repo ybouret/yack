@@ -37,7 +37,7 @@ namespace yack
         //______________________________________________________________________
 
         //! destroy the internal wrappers
-        inline virtual ~functor() throw() { assert(function_); destroy(); }
+        inline virtual ~functor() noexcept { assert(function_); destroy(); }
 
 
         //! copy: duplicate the functor context
@@ -141,11 +141,11 @@ namespace yack
         }
 
         //! direct assignation for binder_first or manual setting
-        explicit functor( callable *proc ) throw() : function_( proc ) { assert( proc ); }
+        explicit functor( callable *proc ) noexcept : function_( proc ) { assert( proc ); }
 
     private:
         callable  *function_;
-        inline void destroy() throw()
+        inline void destroy() noexcept
         {
             object *pObj = function_; // __DMC__ bug otherwise
             function_    = NULL;
@@ -181,7 +181,7 @@ namespace yack
             {}
 
             //! destructor
-            virtual ~binder_first() throw() {}
+            virtual ~binder_first() noexcept {}
 
 
             YACK_FUNCTOR_PARAMETERS(); //!< parameters alias

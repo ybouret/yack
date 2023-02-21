@@ -4,25 +4,25 @@ namespace yack
 {
     namespace chemical
     {
-        aftermath:: aftermath() throw() : state( components::are_blocked ), value(0) {}
+        aftermath:: aftermath() noexcept : state( components::are_blocked ), value(0) {}
         
-        aftermath:: ~aftermath() throw() {}
+        aftermath:: ~aftermath() noexcept {}
         
-        aftermath:: aftermath(const aftermath &other) throw() :
+        aftermath:: aftermath(const aftermath &other) noexcept :
         state(other.state),
         value(other.value)
         {
         }
         
         aftermath:: aftermath(const components::state s,
-                              const double            v) throw() :
+                              const double            v) noexcept :
         state(s),
         value(v)
         {
             assert( !(components::are_blocked==state && fabs(value)>0) );
         }
         
-        aftermath & aftermath:: operator=(const aftermath &other) throw()
+        aftermath & aftermath:: operator=(const aftermath &other) noexcept
         {
             coerce(state) = other.state;
             coerce(value) = other.value;

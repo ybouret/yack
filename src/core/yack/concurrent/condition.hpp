@@ -36,15 +36,15 @@ namespace yack
             // C++
             //__________________________________________________________________
             explicit condition();           //!< create internal condition
-            virtual ~condition()   throw(); //!< cleanup
+            virtual ~condition()   noexcept; //!< cleanup
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            void     wait(mutex &) throw(); //!< wait on a LOCKED mutex
-            void     signal()      throw(); //!< signal one waiting thread
-            void     broadcast()   throw(); //!< broadcast all waiting threads
+            void     wait(mutex &) noexcept; //!< wait on a LOCKED mutex
+            void     signal()      noexcept; //!< signal one waiting thread
+            void     broadcast()   noexcept; //!< broadcast all waiting threads
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(condition);

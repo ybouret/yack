@@ -4,7 +4,7 @@
 
 namespace yack
 {
-    vfs:: entry:: ~entry() throw()
+    vfs:: entry:: ~entry() noexcept
     {
     }
 
@@ -20,32 +20,32 @@ namespace yack
     {
     }
 
-    const string & vfs::entry:: operator*() const throw()
+    const string & vfs::entry:: operator*() const noexcept
     {
         return *path;
     }
 
-    bool vfs::entry:: is_unk() const throw()
+    bool vfs::entry:: is_unk() const noexcept
     {
         return 0  == (attr&attr_msk);
     }
 
-    bool vfs::entry:: is_reg() const throw()
+    bool vfs::entry:: is_reg() const noexcept
     {
         return 0 !=  (attr&attr_reg);
     }
 
-    bool vfs::entry:: is_dir() const throw()
+    bool vfs::entry:: is_dir() const noexcept
     {
         return 0 !=  (attr&attr_dir);
     }
 
-    bool vfs::entry:: is_lnk() const throw()
+    bool vfs::entry:: is_lnk() const noexcept
     {
         return  0 != (attr_lnk&attr);
     }
 
-    vfs::scanner:: ~scanner() throw() {}
+    vfs::scanner:: ~scanner() noexcept {}
     vfs::scanner::  scanner(const vfs    &fs,
                             const string &dirname) :
     object(),

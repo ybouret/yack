@@ -33,7 +33,7 @@ namespace yack
         }
 
         //! cleanup
-        inline ~before_returning() throw() {
+        inline ~before_returning() noexcept {
             try
             {
                 call();
@@ -48,7 +48,7 @@ namespace yack
         YACK_DISABLE_COPY_AND_ASSIGN(before_returning);
         T &     host;
         cleanup code;
-        inline void call() throw()
+        inline void call() noexcept
         {
             (host.*code)();
         }

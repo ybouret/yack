@@ -5,7 +5,7 @@ namespace yack
 {
     namespace iterating
     {
-        const char *direction_text(const direction d) throw()
+        const char *direction_text(const direction d) noexcept
         {
             switch(d)
             {

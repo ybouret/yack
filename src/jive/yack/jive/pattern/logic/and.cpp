@@ -7,17 +7,17 @@ namespace yack
     {
         const char  op_and::clid[] = "and";
 
-        const char *op_and:: class_uid() const throw()
+        const char *op_and:: class_uid() const noexcept
         {
             return clid;
         }
 
-        op_and:: op_and() throw() : logical(mark)
+        op_and:: op_and() noexcept : logical(mark)
         {
             I_am<op_and>();
         }
 
-        op_and:: ~op_and() throw()
+        op_and:: ~op_and() noexcept
         {
         }
 
@@ -81,7 +81,7 @@ namespace yack
             return new op_and(*this);
         }
 
-        bool op_and:: is_univocal()  const throw()
+        bool op_and:: is_univocal()  const noexcept
         {
             for(const pattern *m=head;m;m=m->next)
             {

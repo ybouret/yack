@@ -20,7 +20,7 @@ namespace yack
             typedef complex<native_type>  complex_type;  //!< alias
 
             explicit lcplx_io(const data_types &native); //!< setup
-            virtual ~lcplx_io() throw();                 //!< cleanup
+            virtual ~lcplx_io() noexcept;                 //!< cleanup
 
             //! as as two long doubles
             virtual void send(const mpi   &MPI,

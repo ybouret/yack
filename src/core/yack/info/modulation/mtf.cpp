@@ -6,18 +6,18 @@ namespace yack
 
     namespace information
     {
-        mtf:: ~mtf() throw()
+        mtf:: ~mtf() noexcept
         {
             nodes.restart();
             memset(store,0,sizeof(store));
         }
 
-        mtf:: mtf() throw() : nodes(), store()
+        mtf:: mtf() noexcept : nodes(), store()
         {
             reset();
         }
 
-        void mtf:: reset() throw()
+        void mtf:: reset() noexcept
         {
             nodes.restart();
             node_t *node = store;
@@ -43,15 +43,15 @@ namespace yack
 
     namespace information
     {
-        mtf_encoder:: mtf_encoder() throw()
+        mtf_encoder:: mtf_encoder() noexcept
         {
         }
 
-        mtf_encoder:: ~mtf_encoder() throw()
+        mtf_encoder:: ~mtf_encoder() noexcept
         {
         }
         
-        uint8_t mtf_encoder:: alter(const uint8_t x) throw()
+        uint8_t mtf_encoder:: alter(const uint8_t x) noexcept
         {
             assert(256==nodes.size);
             node_t *node = nodes.head;
@@ -74,15 +74,15 @@ namespace yack
 
     namespace information
     {
-        mtf_decoder:: mtf_decoder() throw()
+        mtf_decoder:: mtf_decoder() noexcept
         {
         }
 
-        mtf_decoder:: ~mtf_decoder() throw()
+        mtf_decoder:: ~mtf_decoder() noexcept
         {
         }
 
-        uint8_t mtf_decoder:: alter(const uint8_t x) throw()
+        uint8_t mtf_decoder:: alter(const uint8_t x) noexcept
         {
             assert(256==nodes.size);
             node_t *node = nodes.head;

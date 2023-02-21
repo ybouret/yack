@@ -54,7 +54,7 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~rk45_step() throw(); //!< cleanup
+                virtual ~rk45_step() noexcept; //!< cleanup
 
             protected:
                 explicit rk45_step(const size_t); //!< setup with arrays

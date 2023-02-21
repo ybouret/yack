@@ -24,12 +24,12 @@ namespace yack
 /**/                              param_type2 arg2,                            \
 /**/                              param_type3 arg3) :                          \
 /**/        NAME1(arg1), NAME2(arg2), NAME3(arg3) {}                           \
-/**/        inline ~CLASS() throw()  {}                                        \
+/**/        inline ~CLASS() noexcept  {}                                        \
 /**/        inline CLASS(const CLASS &other) :                                 \
 /**/            NAME1(other.NAME1), NAME2(other.NAME2), NAME3(other.NAME3) {}  \
-/**/        inline static const char *__##NAME1() throw() { return #NAME1; }   \
-/**/        inline static const char *__##NAME2() throw() { return #NAME2; }   \
-/**/        inline static const char *__##NAME3() throw() { return #NAME3; }   \
+/**/        inline static const char *__##NAME1() noexcept { return #NAME1; }   \
+/**/        inline static const char *__##NAME2() noexcept { return #NAME2; }   \
+/**/        inline static const char *__##NAME3() noexcept { return #NAME3; }   \
 /**/        inline friend std::ostream &operator<<(std::ostream &os,           \
 /**/                                               const CLASS &self) {        \
 /**/            os << '(';                                                     \

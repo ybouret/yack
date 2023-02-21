@@ -32,15 +32,15 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        unit_test(const char *, proc) throw(); //!< setup
-        ~unit_test()                  throw(); //!< cleanup
+        unit_test(const char *, proc) noexcept; //!< setup
+        ~unit_test()                  noexcept; //!< cleanup
 
         //______________________________________________________________________
         //
         // methods
         //______________________________________________________________________
         void display(std::ostream &, const size_t) const; //!< display centered
-        bool is_near(const char *other) const throw();    //!< fuzzy search
+        bool is_near(const char *other) const noexcept;    //!< fuzzy search
 
         //______________________________________________________________________
         //
@@ -69,11 +69,11 @@ namespace yack
 
         //! record a new test, check if enough space and unique name
         int  operator()(const char     *name,
-                        unit_test::proc func) throw();
+                        unit_test::proc func) noexcept;
 
         //! display tests or try to launch one with remaining args
         int operator()(int      argc,
-                       char **  argv) throw();
+                       char **  argv) noexcept;
 
         //______________________________________________________________________
         //
@@ -81,16 +81,16 @@ namespace yack
         //______________________________________________________________________
 
         //! cleanup
-        virtual ~unit_tests() throw();
+        virtual ~unit_tests() noexcept;
 
     protected:
         //! setup with user's memory
-        explicit unit_tests(void *addr, const size_t size) throw();
+        explicit unit_tests(void *addr, const size_t size) noexcept;
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(unit_tests);
-        void       clear() throw();
-        unit_test *query(const char *name) throw();
+        void       clear() noexcept;
+        unit_test *query(const char *name) noexcept;
 
         unit_test   *utest;     //!< repository
         size_t       count;     //!< declared
@@ -115,10 +115,10 @@ namespace yack
         //______________________________________________________________________
 
         //! cleanup
-        inline virtual ~unit_tests_provider() throw() {}
+        inline virtual ~unit_tests_provider() noexcept {}
 
         //! setup with internal memory
-        inline explicit unit_tests_provider() throw() :
+        inline explicit unit_tests_provider() noexcept :
         unit_tests(mock,N), mock() {
             YACK_STATIC_CHECK(sizeof(mock_t)==sizeof(unit_test),MismatchSizeofTest);
         }

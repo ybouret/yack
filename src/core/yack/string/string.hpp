@@ -30,19 +30,19 @@ namespace yack
             typedef  typename writable<T>::const_type const_type; //!< alias
             typedef  typename writable<T>::type       type;       //!< alias
             static   const char                       clid[];     //!< class id,
-            static size_t  length_of(const T *msg) throw();       //!< strlen alias
+            static size_t  length_of(const T *msg) noexcept;       //!< strlen alias
             
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
             explicit string();                           //!< default empty
-            virtual ~string() throw();                   //!< cleanup
+            virtual ~string() noexcept;                   //!< cleanup
             string(const string &);                      //!< copy
             string & operator=(const string &);          //!< copy/swap
             string(const      T);                        //!< single CHAR
             string(const char *);                        //!< copy/convert
-            string & operator=(const T) throw();         //!< assign single CHAR
+            string & operator=(const T) noexcept;         //!< assign single CHAR
             string & operator=(const char *);            //!< assign/convert
 
             //! build with capacity, filled or not
@@ -55,7 +55,7 @@ namespace yack
             //
             // memory::ro_buffer interface
             //__________________________________________________________________
-            virtual const char *class_uid() const throw();
+            virtual const char *class_uid() const noexcept;
             virtual size_t      serialize(ios::ostream &) const;
 
 
@@ -63,37 +63,37 @@ namespace yack
             //
             //  specific access
             //__________________________________________________________________
-            const T * operator()() const throw(); //!< raw R/O access
+            const T * operator()() const noexcept; //!< raw R/O access
 
             //__________________________________________________________________
             //
             // memory::ro_buffer interface
             //__________________________________________________________________
-            virtual size_t measure() const throw(); //!< chars * sizeof(T)
+            virtual size_t measure() const noexcept; //!< chars * sizeof(T)
 
             //__________________________________________________________________
             //
             // readable interface
             //__________________________________________________________________
-            virtual size_t      size()                        const throw(); //!< chars
-            virtual const_type &operator[](const size_t indx) const throw(); //!< [1..chars+1]
+            virtual size_t      size()                        const noexcept; //!< chars
+            virtual const_type &operator[](const size_t indx) const noexcept; //!< [1..chars+1]
 
             //__________________________________________________________________
             //
             // writable interface
             //__________________________________________________________________
-            virtual type       &operator[](const size_t indx)       throw(); //!< [1..chars]
+            virtual type       &operator[](const size_t indx)       noexcept; //!< [1..chars]
             
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            void        xch(string &) throw(); //!< no-throw exchange
-            void        clear()       throw(); //!< clear data
-            type       &front()       throw(); //!< (*this)[1]
-            const_type &front() const throw(); //!< (*this)[1]
-            type       &back()        throw(); //!< (*this)[chars]
-            const_type &back()  const throw(); //!< (*this)[chars]
+            void        xch(string &) noexcept; //!< no-throw exchange
+            void        clear()       noexcept; //!< clear data
+            type       &front()       noexcept; //!< (*this)[1]
+            const_type &front() const noexcept; //!< (*this)[1]
+            type       &back()        noexcept; //!< (*this)[chars]
+            const_type &back()  const noexcept; //!< (*this)[chars]
 
             //__________________________________________________________________
             //
@@ -130,8 +130,8 @@ namespace yack
             //
             // skip/trim
             //__________________________________________________________________
-            string & skip(const size_t n) throw(); //!< skip n first chars
-            string & trim(const size_t n) throw(); //!< trim n last chars
+            string & skip(const size_t n) noexcept; //!< skip n first chars
+            string & trim(const size_t n) noexcept; //!< trim n last chars
 
             //__________________________________________________________________
             //
@@ -139,35 +139,35 @@ namespace yack
             //__________________________________________________________________
 
             //! fast equality operator (the difference comes with writable<T>)
-            inline friend bool operator==(const string &lhs, const string &rhs) throw()
+            inline friend bool operator==(const string &lhs, const string &rhs) noexcept
             {
                 return eq(static_cast<const_type*>(lhs.block),lhs.chars,
                           static_cast<const_type*>(rhs.block),rhs.chars);
             }
            
             //! fast equality string/message
-            inline friend bool operator==(const string &lhs, const T *rhs) throw()
+            inline friend bool operator==(const string &lhs, const T *rhs) noexcept
             {
                 return eq(static_cast<const_type*>(lhs.block),lhs.chars,
                           rhs,length_of(rhs));
             }
 
             //! fast equality message/string
-            inline friend bool operator==(const T *lhs, const string &rhs) throw()
+            inline friend bool operator==(const T *lhs, const string &rhs) noexcept
             {
                 return eq(lhs,length_of(lhs),
                           static_cast<const_type*>(rhs.block),rhs.chars);
             }
             
             //! fast difference string/message
-            inline friend bool operator!=(const string &lhs, const T *rhs) throw()
+            inline friend bool operator!=(const string &lhs, const T *rhs) noexcept
             {
                 return neq(static_cast<const_type*>(lhs.block),lhs.chars,
                           rhs,length_of(rhs));
             }
             
             //! fast difference message/string
-            inline friend bool operator!=(const T *lhs, const string &rhs) throw()
+            inline friend bool operator!=(const T *lhs, const string &rhs) noexcept
             {
                 return neq(lhs,length_of(lhs),
                           static_cast<const_type*>(rhs.block),rhs.chars);
@@ -176,17 +176,17 @@ namespace yack
             
             
             //! to compare strings
-            static int compare(const string &lhs, const string &rhs) throw();
+            static int compare(const string &lhs, const string &rhs) noexcept;
 
-            static int callcmp(const string &lhs, const string &rhs) throw(); //!< call cmp
-            static int callcmp(const string &lhs, const T      *rhs) throw(); //!< call cmp
-            static int callcmp(const T      *lhs, const string &rhs) throw(); //!< call cmp
+            static int callcmp(const string &lhs, const string &rhs) noexcept; //!< call cmp
+            static int callcmp(const string &lhs, const T      *rhs) noexcept; //!< call cmp
+            static int callcmp(const T      *lhs, const string &rhs) noexcept; //!< call cmp
 
             //! helper for comparisons
 #define YACK_STRING_CMP(OP) \
-inline bool friend operator OP (const string &lhs, const string &rhs) throw() { return compare(lhs,rhs) OP 0; }\
-inline bool friend operator OP (const string &lhs, const char   *rhs) throw() { return compare(lhs,rhs) OP 0; }\
-inline bool friend operator OP (const char   *lhs, const string &rhs) throw() { return compare(lhs,rhs) OP 0; }
+inline bool friend operator OP (const string &lhs, const string &rhs) noexcept { return compare(lhs,rhs) OP 0; }\
+inline bool friend operator OP (const string &lhs, const char   *rhs) noexcept { return compare(lhs,rhs) OP 0; }\
+inline bool friend operator OP (const char   *lhs, const string &rhs) noexcept { return compare(lhs,rhs) OP 0; }
 
             //! declare all comparison
 #define YACK_STRING_CMPS() YACK_STRING_CMP(<) YACK_STRING_CMP(>) YACK_STRING_CMP(<=) YACK_STRING_CMP(>=)
@@ -194,19 +194,19 @@ inline bool friend operator OP (const char   *lhs, const string &rhs) throw() { 
             YACK_STRING_CMPS()
 
             //! self key
-            const string &key() const throw();
+            const string &key() const noexcept;
 
 
         private:
             type *item;
             static bool eq(const T *l, const size_t nl,
-                           const T *r, const size_t nr) throw();
+                           const T *r, const size_t nr) noexcept;
             
             static bool neq(const T *l, const size_t nl,
-                            const T *r, const size_t nr) throw();
+                            const T *r, const size_t nr) noexcept;
 
             static int cmp(const T *l, const size_t nl,
-                           const T *r, const size_t nr) throw();
+                           const T *r, const size_t nr) noexcept;
 
         };
 

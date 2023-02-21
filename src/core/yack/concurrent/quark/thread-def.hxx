@@ -37,12 +37,12 @@ namespace yack
                 {
                 }
 
-                inline ~thread() throw()
+                inline ~thread() noexcept
                 {
                     finish( coerce(self), coerce(uuid) );
                 }
 
-                static inline handle get_current_handle() throw()
+                static inline handle get_current_handle() noexcept
                 {
 #if defined(YACK_BSD)
                     return pthread_self();
@@ -53,7 +53,7 @@ namespace yack
 #endif
                 }
 
-                static inline ID get_current_id()      throw()
+                static inline ID get_current_id()      noexcept
                 {
 #if defined(YACK_BSD)
                     return pthread_self();
@@ -78,7 +78,7 @@ namespace yack
                 }
 
                 //! join/wait handle
-                static inline void finish(handle &h, ID &tid) throw()
+                static inline void finish(handle &h, ID &tid) noexcept
                 {
 #if                 defined(YACK_BSD)
                     const int res = pthread_join( h, 0 );

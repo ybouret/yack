@@ -31,10 +31,10 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline explicit queue() throw() : pipe_type()  {} //!< setup empty
+        inline explicit queue() noexcept : pipe_type()  {} //!< setup empty
         inline queue(const size_t n)    : pipe_type(n) {} //!< setup with capacity
         inline queue(const queue &_)    : pipe_type(_) {} //!< copy using sequence
-        inline virtual ~queue() throw()                {} //!< cleanup
+        inline virtual ~queue() noexcept                {} //!< cleanup
 
 
     private:

@@ -65,8 +65,8 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit Array() throw();         //!< setup
-            virtual ~Array() throw();         //!< cleanup
+            explicit Array() noexcept;         //!< setup
+            virtual ~Array() noexcept;         //!< cleanup
             Array(const Array &);             //!< copy
             Array & operator=(const Array &); //!< assign
 
@@ -103,8 +103,8 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit Object() throw();         //!< setup
-            virtual ~Object() throw();         //!< cleanup
+            explicit Object() noexcept;         //!< setup
+            virtual ~Object() noexcept;         //!< cleanup
             Object(const Object &);            //!< copy
             Object & operator=(const Object &);//!< assign
             
@@ -124,13 +124,13 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            Value() throw();                   //!< is_null
-            virtual ~Value() throw();          //!< cleanup
+            Value() noexcept;                   //!< is_null
+            virtual ~Value() noexcept;          //!< cleanup
             Value(const Value &);              //!< copy
             Value & operator= (const Value &); //!< copy/swap
 
-            Value(const bool)       throw(); //!< true/flase
-            Value(const Number)     throw(); //!< number
+            Value(const bool)       noexcept; //!< true/flase
+            Value(const Number)     noexcept; //!< number
             Value(const string    &);        //!< string
             Value(const char      *);        //!< string
             Value(const asArray_  &);        //!< new array
@@ -140,14 +140,14 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            void nil()        throw(); //!< make nulll
-            void xch(Value &) throw(); //!< no-throw exchange
+            void nil()        noexcept; //!< make nulll
+            void xch(Value &) noexcept; //!< no-throw exchange
 
             //! display
             friend std::ostream & operator<<(std::ostream &os, const Value &);
 
-            template <typename T> T       &as() throw();       //!< convert (but boolean)
-            template <typename T> const T &as() const throw(); //!< convert (but boolean)
+            template <typename T> T       &as() noexcept;       //!< convert (but boolean)
+            template <typename T> const T &as() const noexcept; //!< convert (but boolean)
 
             //__________________________________________________________________
             //
@@ -185,13 +185,13 @@ namespace yack
             // C++
             //__________________________________________________________________
             explicit Pair_(const String &); //!< setup with nil
-            virtual ~Pair_() throw();       //!< cleanup
+            virtual ~Pair_() noexcept;       //!< cleanup
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            const string &key() const throw(); //!< for Object
+            const string &key() const noexcept; //!< for Object
             friend std::ostream & operator<<(std::ostream &, const Pair_ &); //!< helper
 
             //__________________________________________________________________

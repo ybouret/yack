@@ -27,9 +27,9 @@ namespace yack
         class zbis : public zroot<T>
         {
         public:
-            virtual            ~zbis() throw();       //!< cleanup
-            explicit            zbis() throw();       //!< setup
-            virtual const char *name() const throw(); //!< name
+            virtual            ~zbis() noexcept;       //!< cleanup
+            explicit            zbis() noexcept;       //!< setup
+            virtual const char *name() const noexcept; //!< name
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(zbis);

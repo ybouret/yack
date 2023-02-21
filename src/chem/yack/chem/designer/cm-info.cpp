@@ -7,7 +7,7 @@ namespace yack
 
         namespace nucleus
         {
-            cm_info:: ~cm_info() throw() 
+            cm_info:: ~cm_info() noexcept 
             {
             }
 

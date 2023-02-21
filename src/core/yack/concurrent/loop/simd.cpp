@@ -12,7 +12,7 @@ namespace yack
         class simd::worker
         {
         public:
-            inline ~worker() throw() {}
+            inline ~worker() noexcept {}
 
 
             worker(void        *args,
@@ -50,7 +50,7 @@ namespace yack
 {
     namespace concurrent
     {
-        void simd:: entry(void *args) throw()
+        void simd:: entry(void *args) noexcept
         {
             assert(args);
             static_cast<simd *>(args)->cycle();
@@ -183,13 +183,13 @@ namespace yack
             }
         }
 
-        void simd:: zkill() throw()
+        void simd:: zkill() noexcept
         {
             static memory::allocator &mgr = memory::dyadic::location();
             mgr.withdraw(squad,zbytes_);
         }
 
-        void simd:: finish(size_t count) throw()
+        void simd:: finish(size_t count) noexcept
         {
             assert(count<=threads);
             assert(ready>=count);
@@ -223,18 +223,18 @@ namespace yack
         }
 
 
-        simd:: ~simd() throw()
+        simd:: ~simd() noexcept
         {
             finish(threads);
         }
 
 
-        size_t simd:: size() const throw()
+        size_t simd:: size() const noexcept
         {
             return threads;
         }
 
-        loop::const_type & simd:: operator[](const size_t indx) const throw()
+        loop::const_type & simd:: operator[](const size_t indx) const noexcept
         {
             assert(NULL!=squad);
             assert(indx>0);
@@ -243,18 +243,18 @@ namespace yack
             return squad[indx].ctx;
         }
 
-        lockable & simd::access() throw()
+        lockable & simd::access() noexcept
         {
             return sync;
         }
 
-        const char * simd:: family() const throw()
+        const char * simd:: family() const noexcept
         {
             return clid;
         }
 
 
-        void simd:: cycle() throw()
+        void simd:: cycle() noexcept
         {
             //__________________________________________________________________
             //
@@ -333,7 +333,7 @@ namespace yack
 {
     namespace concurrent
     {
-        void simd:: operator()(kernel kcode_, void *kargs_) throw()
+        void simd:: operator()(kernel kcode_, void *kargs_) noexcept
         {
             assert(NULL==kcode);
             assert(NULL!=kcode_);

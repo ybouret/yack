@@ -12,11 +12,11 @@ namespace yack
 
             bool zroot:: verbose = false;
             
-            zroot::  zroot() throw()
+            zroot::  zroot() noexcept
             {
             }
 
-            zroot:: ~zroot() throw()
+            zroot:: ~zroot() noexcept
             {
             }
 

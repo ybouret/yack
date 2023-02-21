@@ -7,7 +7,7 @@ namespace yack
     {
         namespace syntax
         {
-            grammar:: ~grammar() throw()
+            grammar:: ~grammar() noexcept
             {
             }
 
@@ -27,7 +27,7 @@ namespace yack
                 rules.push_back( guard.yield() );
             }
 
-            const list_of<rule> & grammar:: operator*() const throw()
+            const list_of<rule> & grammar:: operator*() const noexcept
             {
                 return rules;
             }
@@ -40,7 +40,7 @@ namespace yack
                 rules.move_to_front( &coerce(r) );
             }
             
-            const rule * grammar:: top() const throw()
+            const rule * grammar:: top() const noexcept
             {
                 return rules.head;
             }

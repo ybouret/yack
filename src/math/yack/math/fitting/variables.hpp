@@ -48,8 +48,8 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                explicit variables() throw();             //!< setup empty
-                virtual ~variables() throw();             //!< cleanup
+                explicit variables() noexcept;             //!< setup empty
+                virtual ~variables() noexcept;             //!< cleanup
                 variables(const variables &);             //!< copy
                 variables & operator=(const variables &); //!< assign by copy/swap
 
@@ -87,10 +87,10 @@ namespace yack
                 //
                 // accessing methods
                 //______________________________________________________________
-                size_t       size()  const throw(); //!< number of variables
-                const vnode *head()  const throw(); //!< first variables
-                size_t       lower() const throw(); //!< lower index or 0
-                size_t       upper() const throw(); //!< upper index of 0
+                size_t       size()  const noexcept; //!< number of variables
+                const vnode *head()  const noexcept; //!< first variables
+                size_t       lower() const noexcept; //!< lower index or 0
+                size_t       upper() const noexcept; //!< upper index of 0
 
                 //! return registered variables
                 template <typename UUID> inline
@@ -184,7 +184,7 @@ namespace yack
 
 
                 //! count used variables
-                size_t count(const readable<bool> &used) const throw();
+                size_t count(const readable<bool> &used) const noexcept;
 
 
                 
@@ -194,7 +194,7 @@ namespace yack
 
                 const variable &fetch(const string &) const;
                 const variable &fetch(const char   *) const;
-                void            update_with(const string &) throw();
+                void            update_with(const string &) noexcept;
 
             public:
                 //______________________________________________________________

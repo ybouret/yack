@@ -38,7 +38,7 @@ namespace yack
             }
             
             //! release zombie block
-            inline void zrelease(void *addr) throw() {
+            inline void zrelease(void *addr) noexcept {
                 YACK_LOCK(access);
                 return release_unlocked(addr);
             }
@@ -49,7 +49,7 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(studio);
             friend class singleton< studio<T> >;
             inline studio() : singleton< studio<T> >(), zcache( sizeof(T) ) {}
-            inline virtual ~studio() throw() {}
+            inline virtual ~studio() noexcept {}
         };
         
         template <typename T>
@@ -69,14 +69,14 @@ namespace yack
 /**/    assert(block_size<=repo.block_size); \
 /**/    return repo.zacquire(); } \
 /* operator deleete */ \
-/**/  void CLASS:: operator delete(void *block_addr, size_t block_size) throw() {\
+/**/  void CLASS:: operator delete(void *block_addr, size_t block_size) noexcept {\
 /**/    (void)block_size; \
 /**/    static memory::studio<CLASS> &repo = memory::studio<CLASS>::location();\
 /**/    assert(block_size<=repo.block_size); \
 /**/    if(block_addr) repo.zrelease(block_addr); } \
 /* disable [] ops */ \
-/**/  void * CLASS:: operator new[](size_t) throw()           { memory::zcache::xdisabled(call_sign); return 0; }\
-/**/  void   CLASS:: operator delete[](void *,size_t) throw() { memory::zcache::xdisabled(call_sign); }\
+/**/  void * CLASS:: operator new[](size_t) noexcept           { memory::zcache::xdisabled(call_sign); return 0; }\
+/**/  void   CLASS:: operator delete[](void *,size_t) noexcept { memory::zcache::xdisabled(call_sign); }\
 /* get cache */ \
 /**/  memory::zcache & CLASS::provider() { \
 /**/    static memory::studio<CLASS> &repo = memory::studio<CLASS>::instance(); \

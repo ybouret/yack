@@ -46,8 +46,8 @@ namespace yack
                 class list : public object, public list_
                 {
                 public:
-                    virtual ~list() throw(); //!< cleanup
-                    explicit list() throw(); //!< setup empty
+                    virtual ~list() noexcept; //!< cleanup
+                    explicit list() noexcept; //!< setup empty
 
                 private:
                     YACK_DISABLE_COPY_AND_ASSIGN(list);
@@ -59,18 +59,18 @@ namespace yack
                 //______________________________________________________________
                 static xnode *make(const internal &);                           //!< create data=xlist
                 static xnode *make(const terminal &, lexeme *);                 //!< set    data=lexeme
-                static void   grow( xnode * &tree, xnode *node) throw();        //!< grow tree
+                static void   grow( xnode * &tree, xnode *node) noexcept;        //!< grow tree
                 static void   grow( xnode * &tree, const internal &);           //!< grow(tree,make(internal))
                 static void   grow( xnode * &tree, const terminal &, lexeme *); //!< grow(tree,make(terminal,lexeme))
-                static void   join( xnode * &tree, xnode *node) throw();        //!< set tree or merge content
+                static void   join( xnode * &tree, xnode *node) noexcept;        //!< set tree or merge content
 
-                lexeme               &lex()       throw(); //!< return content  for terminal
-                const lexeme         &lex() const throw(); //!< return content  for terminal
-                list                 &sub()       throw(); //!< retun  children for internal
-                const list           &sub() const throw(); //!< return children for internal
+                lexeme               &lex()       noexcept; //!< return content  for terminal
+                const lexeme         &lex() const noexcept; //!< return content  for terminal
+                list                 &sub()       noexcept; //!< retun  children for internal
+                const list           &sub() const noexcept; //!< return children for internal
 
-                lexeme               *rip() throw();                //!< extract lexeme, delete this
-                static void           ret(lexer &,xnode *) throw(); //!< return node to lexer, node is deleted
+                lexeme               *rip() noexcept;                //!< extract lexeme, delete this
+                static void           ret(lexer &,xnode *) noexcept; //!< return node to lexer, node is deleted
                 void                  gv(const string &)     const; //!< save/render graphviz
                 void                  gv(const char   *)     const; //!< save/render graphviz
                 
@@ -78,23 +78,23 @@ namespace yack
                 //
                 // helpers
                 //______________________________________________________________
-                const xnode           *head() const throw(); //!< first children for internal
-                const xnode           *tail() const throw(); //!< last  children for internal
-                const token           &word() const throw(); //!< return token   for terminal
-                virtual size_t         size() const throw(); //!< internal: list size, terminal: word.size
-                const string          &name() const throw(); //!< rule name
+                const xnode           *head() const noexcept; //!< first children for internal
+                const xnode           *tail() const noexcept; //!< last  children for internal
+                const token           &word() const noexcept; //!< return token   for terminal
+                virtual size_t         size() const noexcept; //!< internal: list size, terminal: word.size
+                const string          &name() const noexcept; //!< rule name
                 
                 //______________________________________________________________
                 //
                 //! concrete tree to abstract tree, may return NULL
                 //______________________________________________________________
-                static xnode         *ast(xnode *node) throw();
+                static xnode         *ast(xnode *node) noexcept;
 
                 //______________________________________________________________
                 //
                 // serializable interface
                 //______________________________________________________________
-                virtual const char * class_uid() const throw();
+                virtual const char * class_uid() const noexcept;
                 virtual size_t       serialize(ios::ostream &) const;
 
                 //______________________________________________________________
@@ -108,12 +108,12 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~xnode() throw(); //!< cleanup
+                virtual ~xnode() noexcept; //!< cleanup
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(xnode);
                 explicit xnode(const internal &);                   //!< internal
-                explicit xnode(const terminal &, lexeme *) throw(); //!< terminal
+                explicit xnode(const terminal &, lexeme *) noexcept; //!< terminal
                 void     gv_(ios::ostream &)                 const; //!< write self, child, link
 
                 void    *data; //!< lexeme/xlist

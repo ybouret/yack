@@ -16,7 +16,7 @@ namespace yack
         return ref;
     }
 
-    void shared_ptr_ref:: release(size_t *&ref) throw()
+    void shared_ptr_ref:: release(size_t *&ref) noexcept
     {
         assert(ref);
         assert(0==*ref);

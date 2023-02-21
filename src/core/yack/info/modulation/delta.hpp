@@ -20,11 +20,11 @@ namespace yack
         class delta : public modulation
         {
         public:
-            virtual     ~delta() throw(); //!< cleanup
-            virtual void reset() throw(); //!< last=0
+            virtual     ~delta() noexcept; //!< cleanup
+            virtual void reset() noexcept; //!< last=0
 
         protected:
-            explicit delta() throw(); //!< setup
+            explicit delta() noexcept; //!< setup
             uint8_t  last;            //!< pivot value
 
         private:
@@ -42,10 +42,10 @@ namespace yack
         class delta_encoder : public delta
         {
         public:
-            explicit delta_encoder() throw(); //!< setup
-            virtual ~delta_encoder() throw(); //!< cleanup
+            explicit delta_encoder() noexcept; //!< setup
+            virtual ~delta_encoder() noexcept; //!< cleanup
 
-            virtual uint8_t alter(const uint8_t x) throw(); //!< delta
+            virtual uint8_t alter(const uint8_t x) noexcept; //!< delta
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(delta_encoder);
@@ -60,10 +60,10 @@ namespace yack
         class delta_decoder : public delta
         {
         public:
-            explicit delta_decoder() throw(); //!< setup
-            virtual ~delta_decoder() throw(); //!< cleanup
+            explicit delta_decoder() noexcept; //!< setup
+            virtual ~delta_decoder() noexcept; //!< cleanup
 
-            virtual uint8_t alter(const uint8_t x) throw(); //!< delta
+            virtual uint8_t alter(const uint8_t x) noexcept; //!< delta
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(delta_decoder);

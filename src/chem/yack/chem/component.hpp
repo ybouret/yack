@@ -30,18 +30,18 @@ namespace yack
             //__________________________________________________________________
             
             //! cleanup
-            virtual ~component() throw();
+            virtual ~component() noexcept;
             
             //! setup with |cf|>0 and a persistent species
             explicit component(const species &sr,
-                               const int      cf) throw();
+                               const int      cf) noexcept;
             
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            const string  & key()       const throw(); //!< species key()
-            const species & operator*() const throw(); //!< access species
+            const string  & key()       const noexcept; //!< species key()
+            const species & operator*() const noexcept; //!< access species
 
             //__________________________________________________________________
             //

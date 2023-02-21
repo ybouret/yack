@@ -79,7 +79,7 @@ namespace yack
         template <typename COMPARE> static inline
         void remove(mutable_type *tree,
                     size_t       &count,
-                    COMPARE      &compare) throw()
+                    COMPARE      &compare) noexcept
         {
             assert(count>0);
 

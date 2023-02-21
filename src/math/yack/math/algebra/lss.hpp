@@ -37,7 +37,7 @@ namespace yack
             //__________________________________________________________________
 
             //! create empty
-            explicit lss(const bool flag) throw() :
+            explicit lss(const bool flag) noexcept :
             self_type(NULL),
             xadd(),
             fine(flag)
@@ -53,7 +53,7 @@ namespace yack
             {}
 
             //! cleanup
-            virtual ~lss() throw()
+            virtual ~lss() noexcept
             {}
 
             //__________________________________________________________________

@@ -22,11 +22,11 @@ namespace yack
         class mtf : public modulation
         {
         public:
-            virtual ~mtf() throw();       //!< cleanup
-            virtual void reset() throw(); //!< reset internal lis
+            virtual ~mtf() noexcept;       //!< cleanup
+            virtual void reset() noexcept; //!< reset internal lis
 
         protected:
-            explicit mtf() throw(); //!< setup
+            explicit mtf() noexcept; //!< setup
 
             //! internal node
             struct node_t {
@@ -54,10 +54,10 @@ namespace yack
         class mtf_encoder : public mtf
         {
         public:
-            explicit mtf_encoder() throw(); //!< setup
-            virtual ~mtf_encoder() throw(); //!< cleanup
+            explicit mtf_encoder() noexcept; //!< setup
+            virtual ~mtf_encoder() noexcept; //!< cleanup
 
-            virtual uint8_t alter(const uint8_t x) throw(); //!< mtf
+            virtual uint8_t alter(const uint8_t x) noexcept; //!< mtf
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(mtf_encoder);
@@ -72,10 +72,10 @@ namespace yack
         class mtf_decoder : public mtf
         {
         public:
-            explicit mtf_decoder() throw(); //!< setup
-            virtual ~mtf_decoder() throw(); //!< cleanup
+            explicit mtf_decoder() noexcept; //!< setup
+            virtual ~mtf_decoder() noexcept; //!< cleanup
 
-            virtual uint8_t alter(const uint8_t x) throw(); //!< mtf
+            virtual uint8_t alter(const uint8_t x) noexcept; //!< mtf
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(mtf_decoder);

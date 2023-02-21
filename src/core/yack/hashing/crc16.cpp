@@ -7,21 +7,21 @@ namespace yack
 		
 		const char crc16::clid[] = "crc16";
 		
-		crc16:: crc16() throw() : function( __length , __window ), hash(0)
+		crc16:: crc16() noexcept : function( __length , __window ), hash(0)
 		{
 		}
 		
-		crc16:: ~crc16() throw()
-		{
-			hash = 0;
-		}
-		
-		void crc16:: set() throw()
+		crc16:: ~crc16() noexcept
 		{
 			hash = 0;
 		}
 		
-		void crc16:: run( const void *buffer, size_t buflen) throw()
+		void crc16:: set() noexcept
+		{
+			hash = 0;
+		}
+		
+		void crc16:: run( const void *buffer, size_t buflen) noexcept
 		{
 			assert( !(buffer==NULL&&buflen>0) );
 			static const uint16_t crc16tab[256]=
@@ -67,7 +67,7 @@ namespace yack
             }
         }
 		
-		void crc16:: get( void *output, size_t outlen ) throw()
+		void crc16:: get( void *output, size_t outlen ) noexcept
 		{
 			fill( output, outlen, &hash, sizeof(hash) );
 		}

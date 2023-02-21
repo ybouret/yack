@@ -7,9 +7,9 @@ namespace yack
     namespace ios
     {
 
-        ohstream:: ~ohstream() throw() {}
+        ohstream:: ~ohstream() noexcept {}
 
-        ohstream:: ohstream(hashing::function &h) throw() : host(h) {}
+        ohstream:: ohstream(hashing::function &h) noexcept : host(h) {}
 
         void ohstream:: write(char C)
         {

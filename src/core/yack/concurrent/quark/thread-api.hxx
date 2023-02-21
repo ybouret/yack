@@ -19,7 +19,7 @@ namespace yack
                 }
             }
 
-            void thread_api:: quit(thread * &thr) throw()
+            void thread_api:: quit(thread * &thr) noexcept
             {
                 assert(NULL!=thr);
                 static atelier &mgr = atelier_location();
@@ -54,7 +54,7 @@ namespace yack
             assert(NULL!=impl);
         }
 
-        thread:: ~thread() throw()
+        thread:: ~thread() noexcept
         {
             assert(NULL!=impl);
             quark::thread_api::quit(impl);

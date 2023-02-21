@@ -13,12 +13,12 @@ namespace yack
         const char rational:: clid[] = "apq";
 
 
-        rational:: ~rational() throw() {}
+        rational:: ~rational() noexcept {}
 
 
         rational:: rational() : number(), num(0), den(1) {}
 
-        void rational:: xch(rational &q) throw()
+        void rational:: xch(rational &q) noexcept
         {
             coerce(num).xch( coerce(q.num) );
             coerce(den).xch( coerce(q.den) );
@@ -117,7 +117,7 @@ namespace yack
         }
 
 
-        const char * rational:: class_uid() const throw() { return clid; }
+        const char * rational:: class_uid() const noexcept { return clid; }
 
         size_t       rational:: serialize(ios::ostream &fp) const
         {

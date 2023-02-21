@@ -29,23 +29,23 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~simd() throw();         //!< cleanup
+            virtual ~simd() noexcept;         //!< cleanup
             explicit simd(const topology &); //!< setup
 
             //__________________________________________________________________
             //
             // readable interface
             //__________________________________________________________________
-            virtual size_t       size()                   const throw(); //!< threads
-            virtual const_type & operator[](const size_t) const throw(); //!< context
+            virtual size_t       size()                   const noexcept; //!< threads
+            virtual const_type & operator[](const size_t) const noexcept; //!< context
 
             //__________________________________________________________________
             //
             // loop interface
             //__________________________________________________________________
-            virtual lockable   & access()         throw();
-            virtual const char * family()   const throw();
-            virtual void operator()(kernel,void*) throw();
+            virtual lockable   & access()         noexcept;
+            virtual const char * family()   const noexcept;
+            virtual void operator()(kernel,void*) noexcept;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(simd);
@@ -61,10 +61,10 @@ namespace yack
             worker      *squad;   //!< memory for squad of workers
             size_t       ready;   //!< use to create/delete threads
             
-            void         cycle() throw();
-            static void  entry(void *) throw();
-            void         zkill() throw(); //!< return memory
-            void         finish(size_t count) throw();
+            void         cycle() noexcept;
+            static void  entry(void *) noexcept;
+            void         zkill() noexcept; //!< return memory
+            void         finish(size_t count) noexcept;
         };
 
     }

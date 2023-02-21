@@ -6,14 +6,14 @@ namespace yack
         namespace ode
         {
 
-            template <> rk45_<real_t>:: ~rk45_() throw() {}
+            template <> rk45_<real_t>:: ~rk45_() noexcept {}
 
-            template <> rk45_<real_t>::  rk45_(rk45_step<real_t> *eng) throw() : move(eng) {}
+            template <> rk45_<real_t>::  rk45_(rk45_step<real_t> *eng) noexcept : move(eng) {}
 
-            template <> rk45_<real_t>::  rk45_(const rk45_step<real_t>::pointer &eng) throw() : move(eng) {}
+            template <> rk45_<real_t>::  rk45_(const rk45_step<real_t>::pointer &eng) noexcept : move(eng) {}
 
 
-            template <> rk45<real_t>:: ~rk45() throw() {}
+            template <> rk45<real_t>:: ~rk45() noexcept {}
 
             
 

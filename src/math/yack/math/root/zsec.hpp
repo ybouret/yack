@@ -28,9 +28,9 @@ namespace yack
         class zsec : public zroot<T>
         {
         public:
-            virtual            ~zsec() throw();       //!< cleanup
-            explicit            zsec() throw();       //!< setup
-            virtual const char *name() const throw(); //!< name
+            virtual            ~zsec() noexcept;       //!< cleanup
+            explicit            zsec() noexcept;       //!< setup
+            virtual const char *name() const noexcept; //!< name
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(zsec);

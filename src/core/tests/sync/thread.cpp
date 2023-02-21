@@ -22,7 +22,7 @@ namespace
             std::cerr << "+workspace" << std::endl;
         }
 
-        inline ~workspace() throw()
+        inline ~workspace() noexcept
         {
             std::cerr << "-workspace" << std::endl;
         }
@@ -32,7 +32,7 @@ namespace
         YACK_DISABLE_COPY_AND_ASSIGN(workspace);
     };
 
-    static inline void run(void *args) throw()
+    static inline void run(void *args) noexcept
     {
         assert(NULL!=args);
         workspace &wksp = *static_cast<workspace *>(args);

@@ -8,7 +8,7 @@ namespace yack
     {
         const char hmac:: prefix[] = "hmac-";
 
-        hmac:: ~hmac() throw()
+        hmac:: ~hmac() noexcept
         {
             coerce(L) = 0;
             coerce(B) = 0;
@@ -40,7 +40,7 @@ tmp(L)
 
         void hmac:: setup(function    &H,
                           const void  *key_addr,
-                          const size_t key_size) throw()
+                          const size_t key_size) noexcept
         {
             assert(!(NULL==key_addr&&key_size>0));
             coerce(key).ldz();
@@ -63,13 +63,13 @@ tmp(L)
 
         }
 
-        void hmac:: set(function &H) throw()
+        void hmac:: set(function &H) noexcept
         {
             H.set();
             H(ikp);
         }
 
-        const memory::ro_buffer & hmac:: get(function &H) throw()
+        const memory::ro_buffer & hmac:: get(function &H) noexcept
         {
             H.get(tmp(),L);
             H.set();

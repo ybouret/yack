@@ -31,8 +31,8 @@ namespace yack {
             class engine : public operating_block_cipher
             {
             public:
-                virtual void sync()     throw(); //!< Cp = IV
-                virtual     ~engine()   throw(); //!< cleanup
+                virtual void sync()     noexcept; //!< Cp = IV
+                virtual     ~engine()   noexcept; //!< cleanup
                                                  
             protected:
                 //! setup IV and CP
@@ -58,7 +58,7 @@ namespace yack {
                                    const memory::ro_buffer     &);
                 
                 //! cleanup
-                virtual ~encrypter() throw();
+                virtual ~encrypter() noexcept;
                 
                 //! C_i = E_K(P_i&C_{i-1}), C_0 = IV
                 virtual  void call(void *target, const void *source);
@@ -79,7 +79,7 @@ namespace yack {
                                    const memory::ro_buffer     &);
                 
                 //! cleanup
-                virtual ~decrypter() throw();
+                virtual ~decrypter() noexcept;
                 
                 //! P_i = D_K(C_i ^ C_{i-1}), C_0 = IV
                 virtual  void call(void *target, const void *source);

@@ -51,7 +51,7 @@ namespace yack
         }
         
 
-        data_types:: ~data_types() throw()
+        data_types:: ~data_types() noexcept
         {
 
         }

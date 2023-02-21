@@ -6,7 +6,7 @@ namespace yack
     namespace  graphic
     {
 
-        broker:: ~broker() throw() {}
+        broker:: ~broker() noexcept {}
 
         broker:: broker(const engine     &user,
                         const dimensions &dims) :
@@ -25,19 +25,19 @@ namespace yack
         }
 
         void broker:: run(const context &site,
-                          lockable      &sync) throw()
+                          lockable      &sync) noexcept
         {
             assert(code);
             const tessellation &tess = *this;
             code(args,tess[site.indx],site,sync);
         }
 
-        const concurrent::loop & broker:: operator*() const throw()
+        const concurrent::loop & broker:: operator*() const noexcept
         {
             return *call;
         }
 
-        const concurrent::loop * broker:: operator->() const throw()
+        const concurrent::loop * broker:: operator->() const noexcept
         {
             return & *call;
         }

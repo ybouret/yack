@@ -3,11 +3,11 @@
 
 namespace yack
 {
-    releasable:: ~releasable() throw()
+    releasable:: ~releasable() noexcept
     {
     }
     
-    releasable::  releasable() throw()
+    releasable::  releasable() noexcept
     {
     }
     

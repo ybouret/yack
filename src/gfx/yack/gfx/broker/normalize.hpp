@@ -26,7 +26,7 @@ namespace yack
                 T vmin; //!< vmin
                 T vmax; //!< vmax
                 T scal; //!< vmax-vmin
-                void operator()(T &v) const throw(); //!< apply
+                void operator()(T &v) const noexcept; //!< apply
             };
 
             //! normalize each pixel with procedure

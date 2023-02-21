@@ -24,9 +24,9 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit pnode(const natural &, const size_t) throw(); //!< setup
-            virtual ~pnode()     throw();                          //!< cleanup
-            pnode(const pnode &) throw();                          //!< copy
+            explicit pnode(const natural &, const size_t) noexcept; //!< setup
+            virtual ~pnode()     noexcept;                          //!< cleanup
+            pnode(const pnode &) noexcept;                          //!< copy
 
             //__________________________________________________________________
             //
@@ -62,17 +62,17 @@ namespace yack
             //__________________________________________________________________
             npd(const natural &);              //!< setup from natural
             npd(const uint_type);              //!< setup from unsigned
-            npd() throw();                     //!< setup empty a.k.a zero
+            npd() noexcept;                     //!< setup empty a.k.a zero
             npd(const npd &);                  //!< copy
             npd & operator=(const npd &other); //!< assign 
-            virtual ~npd() throw();            //!< cleanup
+            virtual ~npd() noexcept;            //!< cleanup
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            const list_of<pnode> & operator*()  const throw(); //!< access
-            const list_of<pnode> * operator->() const throw(); //!< access
+            const list_of<pnode> & operator*()  const noexcept; //!< access
+            const list_of<pnode> * operator->() const noexcept; //!< access
 
             //! display
             friend std::ostream & operator<<(std::ostream &, const npd &);

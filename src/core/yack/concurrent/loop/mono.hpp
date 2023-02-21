@@ -26,23 +26,23 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit mono() throw(); //!< setup sequential
-            virtual ~mono() throw(); //!< cleanup
+            explicit mono() noexcept; //!< setup sequential
+            virtual ~mono() noexcept; //!< cleanup
 
             //__________________________________________________________________
             //
             // readable interface
             //__________________________________________________________________
-            virtual size_t       size()                   const throw();
-            virtual const_type & operator[](const size_t) const throw();
+            virtual size_t       size()                   const noexcept;
+            virtual const_type & operator[](const size_t) const noexcept;
 
             //__________________________________________________________________
             //
             // loop interface
             //__________________________________________________________________
-            virtual lockable   & access()         throw();
-            virtual const char * family()   const throw();
-            virtual void operator()(kernel,void*) throw();
+            virtual lockable   & access()         noexcept;
+            virtual const char * family()   const noexcept;
+            virtual void operator()(kernel,void*) noexcept;
             
 
         private:

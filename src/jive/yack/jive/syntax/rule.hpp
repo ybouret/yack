@@ -95,7 +95,7 @@ namespace yack
                
                 //! cast w.r.t uuid
                 template <typename CLASS> inline
-                CLASS *as() throw()
+                CLASS *as() noexcept
                 {
                     assert(uuid==CLASS::mark);
                     assert(NULL!=self);
@@ -104,7 +104,7 @@ namespace yack
 
                 //! cast w.r.t uuid, const
                 template <typename CLASS> inline
-                const CLASS *as() const throw()
+                const CLASS *as() const noexcept
                 {
                     assert(uuid==CLASS::mark);
                     assert(NULL!=self);
@@ -115,18 +115,18 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~rule() throw(); //!< cleanup
+                virtual ~rule() noexcept; //!< cleanup
 
             protected:
                 //! setup
                 explicit rule(const tag      &name_,
                               const rule_type type_,
-                              const uint32_t  uuid_) throw();
+                              const uint32_t  uuid_) noexcept;
 
                 void *self; //!< most derived class
 
                 //! helper to set address of most derived class
-                template <typename CLASS> void I_am() throw()
+                template <typename CLASS> void I_am() noexcept
                 {
                     self = static_cast<CLASS *>(this);
                 }

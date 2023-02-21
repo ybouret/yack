@@ -22,7 +22,7 @@ namespace yack
             class stream
             {
             public:
-                virtual ~stream() throw(); //!< cleanup
+                virtual ~stream() noexcept; //!< cleanup
 
             protected:
                 explicit stream(const char   *filename, const char *mode); //!< open a gzFile

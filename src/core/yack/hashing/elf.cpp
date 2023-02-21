@@ -5,11 +5,11 @@ namespace yack
 	namespace hashing
 	{
 		
-		elf:: elf() throw() : function( __length, __window ), hash(0)
+		elf:: elf() noexcept : function( __length, __window ), hash(0)
 		{
 		}
 		
-		elf:: ~elf() throw()
+		elf:: ~elf() noexcept
 		{
 			hash = 0;
 		}
@@ -17,12 +17,12 @@ namespace yack
         
         const char elf::clid[] = "elf";
 
-		void elf:: set() throw()
+		void elf:: set() noexcept
 		{
 			hash = 0;
 		}
 		
-		void elf:: run( const void *buffer, size_t buflen ) throw()
+		void elf:: run( const void *buffer, size_t buflen ) noexcept
 		{
 			assert( !(buffer==NULL&&buflen>0) );
 			const uint8_t *str   = (const uint8_t *)buffer;
@@ -38,7 +38,7 @@ namespace yack
 			}		
 		}
 		
-		void elf:: get( void *output, size_t outlen ) throw()
+		void elf:: get( void *output, size_t outlen ) noexcept
 		{
 			fill(output, outlen, &hash, sizeof(hash) );
 		}

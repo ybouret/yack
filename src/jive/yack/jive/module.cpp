@@ -7,7 +7,7 @@ namespace yack
 {
     namespace jive
     {
-        module:: ~module() throw()
+        module:: ~module() noexcept
         {
         }
         
@@ -65,7 +65,7 @@ namespace yack
             }
         }
         
-        void module:: newline() throw()
+        void module:: newline() noexcept
         {
             ++coerce(line);
             coerce(column) = 1;

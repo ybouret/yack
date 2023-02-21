@@ -36,13 +36,13 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
         //
         // C++
         //______________________________________________________________________
-        inline virtual ~pool_of() throw() {} //!< need cleanup before this!
+        inline virtual ~pool_of() noexcept {} //!< need cleanup before this!
         
         //! setup empty
-        inline explicit pool_of() throw() : interlinked<NODE>() {}
+        inline explicit pool_of() noexcept : interlinked<NODE>() {}
         
         //! setup from state
-        inline explicit pool_of(core_pool_of<NODE> &io) throw() :
+        inline explicit pool_of(core_pool_of<NODE> &io) noexcept :
         interlinked<NODE>()
         {
             head         = io.head; io.head = 0;
@@ -56,7 +56,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
         //______________________________________________________________________
         
         //! test ownership
-        inline virtual bool owns(const NODE *node) const throw()
+        inline virtual bool owns(const NODE *node) const noexcept
         {
             assert(node);
             for(const NODE *mine=head;mine;mine=mine->next)
@@ -67,7 +67,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
         }
         
         //! reversing
-        inline virtual void reverse() throw()
+        inline virtual void reverse() noexcept
         {
             pool_of tmp;
             while(size) tmp.store( query() );
@@ -79,7 +79,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
         // methods
         //______________________________________________________________________
         //! store a new node
-        NODE *store(NODE *node) throw()
+        NODE *store(NODE *node) noexcept
         {
             YACK_POOL_CHECK(node);
             node->next = head;
@@ -89,7 +89,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
         }
 
         //! last node for size>0
-        NODE *tail() throw()
+        NODE *tail() noexcept
         {
             assert(size>0);
             NODE *curr = head;
@@ -99,7 +99,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
         }
 
         //! const last node for size>0
-        const NODE *tail() const throw()
+        const NODE *tail() const noexcept
         {
             assert(size>0);
             const NODE *curr = head;
@@ -109,7 +109,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
         }
 
         //! stash a new node
-        NODE *stash(NODE *node) throw()
+        NODE *stash(NODE *node) noexcept
         {
             YACK_POOL_CHECK(node);
             if(size>0)
@@ -125,7 +125,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
         }
         
         //! query head
-        NODE *query() throw()
+        NODE *query() noexcept
         {
             assert(0<this->size); assert(NULL!=head);
             NODE *node =  head;
@@ -136,14 +136,14 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
         }
         
         //! no throw swap
-        inline void swap_with(pool_of &other) throw()
+        inline void swap_with(pool_of &other) noexcept
         {
             this->xch_size(other);
             cswap(head,other.head);
         }
         
         //! merge content of other
-        inline void merge(pool_of &other) throw()
+        inline void merge(pool_of &other) noexcept
         {
             while(other.size) store(other.query());
         }
@@ -152,7 +152,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
         //
         //! save state
         //______________________________________________________________________
-        inline void save(core_pool_of<NODE> &io) throw()
+        inline void save(core_pool_of<NODE> &io) noexcept
         {
             io.head = head; head=NULL;
             io.size = size; coerce(size)=0;
@@ -162,7 +162,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
         //
         //! store with increasing memory
         //______________________________________________________________________
-        NODE *store_increasing_memory(NODE *node) throw()
+        NODE *store_increasing_memory(NODE *node) noexcept
         {
             YACK_POOL_CHECK(node);
             assert(this->memory_is_increasing());

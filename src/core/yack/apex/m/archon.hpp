@@ -104,7 +104,7 @@ namespace yack
                 }
 
                 //! cleanup
-                inline ~tableau() throw()
+                inline ~tableau() noexcept
                 {
                     release_field(block_addr,coerce(items_exp2),coerce(block_exp2));
                     coerce(size)=0;

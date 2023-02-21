@@ -28,18 +28,18 @@ namespace yack
         //______________________________________________________________________
         //! setup
         template <typename T> inline
-        be_address(const T &args)  throw() : impl(&args) { setup(); }
-        be_address(const be_address &)                 throw(); //!< copy
-        virtual ~be_address()                          throw(); //!< cleanup
-        be_address(const void *, const as_address_t &) throw(); //!< setup by address
+        be_address(const T &args)  noexcept : impl(&args) { setup(); }
+        be_address(const be_address &)                 noexcept; //!< copy
+        virtual ~be_address()                          noexcept; //!< cleanup
+        be_address(const void *, const as_address_t &) noexcept; //!< setup by address
 
         //______________________________________________________________________
         //
         // buffer interface
         //______________________________________________________________________
-        virtual size_t      measure() const throw(); //!< sizeof(void*)
-        virtual const void *ro_addr() const throw(); //!< &impl
-        const   uint8_t    *begin()   const throw(); //!< for suffix_tree
+        virtual size_t      measure() const noexcept; //!< sizeof(void*)
+        virtual const void *ro_addr() const noexcept; //!< &impl
+        const   uint8_t    *begin()   const noexcept; //!< for suffix_tree
 
         //______________________________________________________________________
         //
@@ -51,7 +51,7 @@ namespace yack
         YACK_DISABLE_ASSIGN(be_address);
         const void *impl;
 
-        void setup() throw();
+        void setup() noexcept;
     };
 
 }

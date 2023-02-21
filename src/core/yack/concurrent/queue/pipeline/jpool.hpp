@@ -26,15 +26,15 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit jpool() throw();
-            virtual ~jpool() throw();
+            explicit jpool() noexcept;
+            virtual ~jpool() noexcept;
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            void     release() throw();             //!< release all memory
-            void     store(jnode *alive) throw();   //!< store an live node
+            void     release() noexcept;             //!< release all memory
+            void     store(jnode *alive) noexcept;   //!< store an live node
             jnode   *query(const job_type &);       //!< create a new live node
 
             //! build a new live node from host/method
@@ -59,7 +59,7 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(jpool);
             jnode *zget();
-            void   zput(jnode *zombie) throw();
+            void   zput(jnode *zombie) noexcept;
             pool_of<jnode> impl; //!< memory
             job_uuid       uuid; //!< current
         };

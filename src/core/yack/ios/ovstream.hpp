@@ -32,8 +32,8 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            inline explicit ovstream() throw() : ostream(), buffer() {}                    //!< setup
-            inline virtual ~ovstream() throw() {}                                          //!< cleanup
+            inline explicit ovstream() noexcept : ostream(), buffer() {}                    //!< setup
+            inline virtual ~ovstream() noexcept {}                                          //!< cleanup
             inline explicit ovstream(const size_t n) : ostream(), buffer(n,as_capacity) {} //!< setup with capacity
 
 
@@ -48,8 +48,8 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            vbytes *       operator->() throw()       { return &buffer; } //!< syntax helper
-            const vbytes * operator->() const throw() { return &buffer; } //!< syntax helper
+            vbytes *       operator->() noexcept       { return &buffer; } //!< syntax helper
+            const vbytes * operator->() const noexcept { return &buffer; } //!< syntax helper
 
             //__________________________________________________________________
             //

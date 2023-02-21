@@ -5,7 +5,7 @@ namespace yack
 
         namespace ode
         {
-            template <> midpoint<real_t>:: ~midpoint() throw() {}
+            template <> midpoint<real_t>:: ~midpoint() noexcept {}
             template <> midpoint<real_t>::  midpoint() : tableaux(2,0),
             yn( next() ),
             ym( next() )

@@ -7,8 +7,8 @@ namespace yack {
     //! green14
     class green14 : public swaps {
       public:
-        virtual ~green14() throw(); //!< cleanup
-        explicit green14() throw(); //!< setup  
+        virtual ~green14() noexcept; //!< cleanup
+        explicit green14() noexcept; //!< setup  
         static const char   sid[];        //!< green14
         static const size_t lhs[0x0033];  //!< lhs
         static const size_t rhs[0x0033];  //!< rhs

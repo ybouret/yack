@@ -30,7 +30,7 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~plugin() throw();
+                virtual ~plugin() noexcept;
 
                 //! setup with triggering expression
                 template <

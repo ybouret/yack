@@ -6,14 +6,14 @@ namespace yack {
     namespace chemical
     {
 
-        frontier:: ~frontier() throw()
+        frontier:: ~frontier() noexcept
         {
 #if 64 == YACK_NATIVE_BITS
             coerce(unused) = 0;
 #endif
         }
 
-        frontier:: frontier(const sp_fund &fund) throw() :
+        frontier:: frontier(const sp_fund &fund) noexcept :
         sp_para(fund),
         xi(0)
 #if 64 == YACK_NATIVE_BITS
@@ -31,7 +31,7 @@ namespace yack {
         }
         
 
-        void frontier:: free() throw()
+        void frontier:: free() noexcept
         {
             xi = 0;
             clear();
@@ -74,7 +74,7 @@ namespace yack {
 
         }
 
-        void frontier:: vanish(writable<double> &C) const throw()
+        void frontier:: vanish(writable<double> &C) const noexcept
         {
             for(const sp_node *sn=head;sn;sn=sn->next)
             {

@@ -38,7 +38,7 @@ namespace
             endl("[:endl:]");
         }
 
-        virtual ~Eval() throw()
+        virtual ~Eval() noexcept
         {
 
         }

@@ -23,8 +23,8 @@ namespace yack
         class zcoop : public object, public counted
         {
         public:
-            lockable & operator*() throw(); //!< get mutex
-            virtual   ~zcoop() throw();     //!< cleanup
+            lockable & operator*() noexcept; //!< get mutex
+            virtual   ~zcoop() noexcept;     //!< cleanup
             explicit   zcoop();             //!< setup with internal mutex
             
         private:
@@ -54,14 +54,14 @@ namespace yack
         // C++
         //______________________________________________________________________
         inline explicit zcoop()  : kernel::zcoop(), zcache<NODE>(), pool() {} //!< setup
-        inline virtual ~zcoop() throw() { mercy(); } //!< cleanup
+        inline virtual ~zcoop() noexcept { mercy(); } //!< cleanup
         
         //______________________________________________________________________
         //
         // methods
         //______________________________________________________________________
-        inline virtual void   release()       throw() { mercy(); }          //!< locked release
-        inline virtual size_t stowage() const throw() { return pool.size; } //!< current reseve
+        inline virtual void   release()       noexcept { mercy(); }          //!< locked release
+        inline virtual size_t stowage() const noexcept { return pool.size; } //!< current reseve
                                                                             
         //! lock and reserve zombies
         inline virtual void   reserve(size_t n)
@@ -78,14 +78,14 @@ namespace yack
         }
         
         //! locked storage of existing zombie NODE
-        inline virtual void   zstore(NODE *node) throw()
+        inline virtual void   zstore(NODE *node) noexcept
         {
             YACK_LOCK(**this);
             pool.store(node);
         }
         
         //! locked devouring or live list
-        inline virtual void   devour(list_of<NODE> &live) throw()
+        inline virtual void   devour(list_of<NODE> &live) noexcept
         {
             YACK_LOCK(**this);
             while(live.size) zstore( this->turn(live.pop_back()) );
@@ -94,7 +94,7 @@ namespace yack
         
     private:
         pool_of<NODE> pool;
-        inline void   mercy() throw()
+        inline void   mercy() noexcept
         {
             YACK_LOCK(**this);
             while(pool.size) object::zrelease(pool.query());

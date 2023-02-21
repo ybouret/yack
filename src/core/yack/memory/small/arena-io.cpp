@@ -7,7 +7,7 @@ namespace yack
     namespace memory
     {
         
-        void arena:: gc(dyadic &target) throw()
+        void arena:: gc(dyadic &target) noexcept
         {
             target.retrieve(reservoir,frame_exp2);
         }

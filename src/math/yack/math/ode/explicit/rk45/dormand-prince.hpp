@@ -36,7 +36,7 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~dormand_prince() throw(); //!< cleanup
+                virtual ~dormand_prince() noexcept; //!< cleanup
                 explicit dormand_prince();         //!< setup
 
                 //______________________________________________________________

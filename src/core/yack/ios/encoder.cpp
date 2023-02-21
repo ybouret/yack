@@ -55,7 +55,7 @@ namespace yack
             os.frame(arr,8);
         }
 
-        size_t encoder:: upack(uint8_t *b, uint64_t qw) throw()
+        size_t encoder:: upack(uint8_t *b, uint64_t qw) noexcept
         {
             assert(b!=NULL);
             if(qw<=0)

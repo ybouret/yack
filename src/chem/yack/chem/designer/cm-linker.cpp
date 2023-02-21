@@ -41,7 +41,7 @@ namespace yack
             {
             }
 
-            cm_linker:: ~cm_linker() throw()
+            cm_linker:: ~cm_linker() noexcept
             {
             }
 
@@ -95,7 +95,7 @@ namespace yack
             }
 
             
-            void cm_linker:: reduce() throw()
+            void cm_linker:: reduce() noexcept
             {
 
                 assert(ilist.size()>=2);

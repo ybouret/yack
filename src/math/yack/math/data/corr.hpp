@@ -34,8 +34,8 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit correlation() throw(); //!< setup
-            virtual ~correlation() throw(); //!< cleanup
+            explicit correlation() noexcept; //!< setup
+            virtual ~correlation() noexcept; //!< cleanup
 
             //__________________________________________________________________
             //

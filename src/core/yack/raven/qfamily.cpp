@@ -6,27 +6,27 @@ namespace yack
     namespace raven
     {
 
-        qfamily:: ~qfamily() throw()
+        qfamily:: ~qfamily() noexcept
         {
         }
 
-        qmatrix       & qfamily:: operator*()       throw()
-        {
-            return *qbase;
-        }
-
-        const qmatrix & qfamily:: operator*() const throw()
+        qmatrix       & qfamily:: operator*()       noexcept
         {
             return *qbase;
         }
 
-        qmatrix       * qfamily:: operator->()       throw()
+        const qmatrix & qfamily:: operator*() const noexcept
+        {
+            return *qbase;
+        }
+
+        qmatrix       * qfamily:: operator->()       noexcept
         {
             return & *qbase;
         }
 
 
-        const qmatrix * qfamily:: operator->() const throw()
+        const qmatrix * qfamily:: operator->() const noexcept
         {
             return & *qbase;
         }

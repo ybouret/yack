@@ -36,13 +36,13 @@ namespace yack
                 // C++
                 //______________________________________________________________
                 explicit directive(const tag &, const motif &, const action &); //!< setup
-                virtual ~directive() throw();                                   //!< cleanup
+                virtual ~directive() noexcept;                                   //!< cleanup
 
                 //______________________________________________________________
                 //
                 // methods
                 //______________________________________________________________
-                const string & key() const throw(); //!< *uuid for instructions
+                const string & key() const noexcept; //!< *uuid for instructions
 
                 //______________________________________________________________
                 //

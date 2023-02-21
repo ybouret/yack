@@ -37,10 +37,10 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            align(const string &, const size_t w, const justify how=align::left) throw(); //!< setup with string
-            align(const char   *, const size_t w, const justify how=align::left) throw(); //!< setup with text
-            align(const align &) throw();                                                 //!< copy
-            ~align() throw();                                                             //!< cleanup
+            align(const string &, const size_t w, const justify how=align::left) noexcept; //!< setup with string
+            align(const char   *, const size_t w, const justify how=align::left) noexcept; //!< setup with text
+            align(const align &) noexcept;                                                 //!< copy
+            ~align() noexcept;                                                             //!< cleanup
 
             //__________________________________________________________________
             //

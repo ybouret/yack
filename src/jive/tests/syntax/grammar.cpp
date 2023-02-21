@@ -38,7 +38,7 @@ namespace
             validate();
         }
 
-        virtual ~Gram() throw()
+        virtual ~Gram() noexcept
         {
         }
 

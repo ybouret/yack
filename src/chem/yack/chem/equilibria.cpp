@@ -8,23 +8,23 @@ namespace yack
 {
     namespace chemical
     {
-        equilibria:: ~equilibria() throw() {}
+        equilibria:: ~equilibria() noexcept {}
         
-        equilibria:: equilibria() throw() : gathering(), edb()
+        equilibria:: equilibria() noexcept : gathering(), edb()
         {
         }
         
-        size_t equilibria:: size() const throw()
+        size_t equilibria:: size() const noexcept
         {
             return (*edb.tree).size;
         }
         
-        const enode *equilibria:: head() const throw()
+        const enode *equilibria:: head() const noexcept
         {
             return (*edb.tree).head;
         }
 
-        const enode *equilibria:: tail() const throw()
+        const enode *equilibria:: tail() const noexcept
         {
             return (*edb.tree).tail;
         }

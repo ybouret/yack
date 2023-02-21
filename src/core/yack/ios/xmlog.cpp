@@ -20,22 +20,22 @@ namespace yack
     }
 
 
-    xmlog:: ~xmlog() throw()
+    xmlog:: ~xmlog() noexcept
     {
     }
     
 
-    void xmlog::incr() const throw()
+    void xmlog::incr() const noexcept
     {
         ++coerce(indent);
     }
 
-    void xmlog::decr() const throw()
+    void xmlog::decr() const noexcept
     {
         --coerce(indent);
     }
 
-    xmlog:: msg:: ~msg() throw()
+    xmlog:: msg:: ~msg() noexcept
     {
         host.decr();
         if(!lone && host.verbose)

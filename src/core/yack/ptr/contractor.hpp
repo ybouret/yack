@@ -52,10 +52,10 @@ namespace yack
         //______________________________________________________________________
         
         //! default, empty
-        inline  contractor() throw() : amount(0),  item_p(0), base_p(0) {}
+        inline  contractor() noexcept : amount(0),  item_p(0), base_p(0) {}
         
         //! clean up
-        inline ~contractor() throw() { resign(); }
+        inline ~contractor() noexcept { resign(); }
         
         
         
@@ -98,7 +98,7 @@ namespace yack
         //______________________________________________________________________
         
         //! destruct content of linear memory
-        inline void resign() throw() {
+        inline void resign() noexcept {
             assert( yack_good(base_p,amount) );
             while(amount>0)
                 destruct( &item_p[coerce(amount)--]);
@@ -107,7 +107,7 @@ namespace yack
         }
         
         //! no-throw swap
-        inline void swap_with(contractor &other) throw() {
+        inline void swap_with(contractor &other) noexcept {
             coerce_cswap(item_p,other.item_p);
             coerce_cswap(base_p,other.base_p);
             coerce_cswap(amount,other.amount);
@@ -115,23 +115,23 @@ namespace yack
         }
         
         //! access first item
-        type        * operator()(void)       throw() { return base_p; }
+        type        * operator()(void)       noexcept { return base_p; }
         
         //! access first item, const
-        const_type  * operator()(void) const throw() { return base_p; }
+        const_type  * operator()(void) const noexcept { return base_p; }
         
         //! access first item + shift
-        type *       operator()(const size_t shift)       throw() { assert(shift<amount); return base_p+shift; }
+        type *       operator()(const size_t shift)       noexcept { assert(shift<amount); return base_p+shift; }
         
         //! access first item + shift, const
-        const_type * operator()(const size_t shift) const throw() { assert(shift<amount); return base_p+shift; }
+        const_type * operator()(const size_t shift) const noexcept { assert(shift<amount); return base_p+shift; }
         
         //! access in 1:amount
-        inline type & operator[](size_t index) throw()
+        inline type & operator[](size_t index) noexcept
         { assert(index>=1); assert(index<=amount); return item_p[index]; }
         
         //! access in 1:amount
-        inline const_type & operator[](size_t index) const throw()
+        inline const_type & operator[](size_t index) const noexcept
         { assert(base_p); assert(item_p); assert(index>=1); assert(index<=amount); return item_p[index]; }
         
         
@@ -148,8 +148,8 @@ namespace yack
         mutable_type *item_p;
         mutable_type *base_p;
         
-        inline void   init() throw() { assert(base_p); assert(!item_p); item_p = base_p-1; }
-        inline size_t reserved() const throw() {
+        inline void   init() noexcept { assert(base_p); assert(!item_p); item_p = base_p-1; }
+        inline size_t reserved() const noexcept {
             return memory::aligned::package(sizeof(T)*amount);
         }
         

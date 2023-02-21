@@ -26,9 +26,9 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            data_type(const MPI_Datatype, const unsigned) throw(); //!< setup
-            ~data_type()                                  throw(); //!< cleanup
-            data_type(const data_type &)                  throw(); //!< copy
+            data_type(const MPI_Datatype, const unsigned) noexcept; //!< setup
+            ~data_type()                                  noexcept; //!< cleanup
+            data_type(const data_type &)                  noexcept; //!< copy
 
             //__________________________________________________________________
             //

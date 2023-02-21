@@ -24,8 +24,8 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~ohstream() throw();                    //!< cleanup
-            explicit ohstream(hashing::function &) throw(); //!< serup
+            virtual ~ohstream() noexcept;                    //!< cleanup
+            explicit ohstream(hashing::function &) noexcept; //!< serup
 
             //__________________________________________________________________
             //

@@ -8,7 +8,7 @@ namespace yack
     {
         namespace image
         {
-            format:: ~format() throw()
+            format:: ~format() noexcept
             {
             }
 

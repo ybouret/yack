@@ -35,14 +35,14 @@ namespace yack
             // C++
             //__________________________________________________________________
             explicit clot(const claw &); //!< create with first conservation law
-            virtual ~clot()     throw(); //!< cleanup
+            virtual ~clot()     noexcept; //!< cleanup
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            bool     attached_to(const claw &) const throw(); //!< test attached to c-law
-            bool     attached_to(const clot &) const throw(); //!< test attached to another group
+            bool     attached_to(const claw &) const noexcept; //!< test attached to c-law
+            bool     attached_to(const clot &) const noexcept; //!< test attached to another group
 
             //__________________________________________________________________
             //

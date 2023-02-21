@@ -14,7 +14,7 @@ namespace yack
     {
 
         //! Bob Jenkin's hash32
-        uint32_t ibj32(uint32_t) throw();
+        uint32_t ibj32(uint32_t) noexcept;
 
         //______________________________________________________________________
         //
@@ -35,15 +35,15 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit ibj64() throw(); //!< setup
-            virtual ~ibj64() throw(); //!< cleanup
+            explicit ibj64() noexcept; //!< setup
+            virtual ~ibj64() noexcept; //!< cleanup
 
             //__________________________________________________________________
             //
             // interface
             //__________________________________________________________________
-            virtual const char *protocol()                                   const throw();
-            virtual void        operator()(uint32_t &lword, uint32_t &rword) const throw();
+            virtual const char *protocol()                                   const noexcept;
+            virtual void        operator()(uint32_t &lword, uint32_t &rword) const noexcept;
 
             
 

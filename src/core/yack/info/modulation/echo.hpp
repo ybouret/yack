@@ -21,11 +21,11 @@ namespace yack
         class echo : public modulation
         {
         public:
-            virtual ~echo() throw(); //!< cleanup
-            explicit echo() throw(); //!< setup
+            virtual ~echo() noexcept; //!< cleanup
+            explicit echo() noexcept; //!< setup
 
-            virtual void    reset()              throw(); //!< do noting
-            virtual uint8_t alter(const uint8_t) throw(); //!< identity
+            virtual void    reset()              noexcept; //!< do noting
+            virtual uint8_t alter(const uint8_t) noexcept; //!< identity
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(echo);

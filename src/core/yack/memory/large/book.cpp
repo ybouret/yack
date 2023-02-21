@@ -14,7 +14,7 @@ namespace yack
     namespace memory
     {
 
-        book:: ~book() throw()
+        book:: ~book() noexcept
         {
             for(size_t p=max_page_exp2;p>=min_page_exp2;--p)
             {
@@ -22,7 +22,7 @@ namespace yack
             }
         }
 
-        book:: book() throw()  : chapters(0), impl()
+        book:: book() noexcept  : chapters(0), impl()
         {
             
             chapter *ch = (chapters = static_cast<chapter *>( out_of_reach::zset(impl,sizeof(impl) ) )-min_page_exp2);
@@ -67,7 +67,7 @@ namespace yack
             return  chapters[page_exp2].query();
         }
 
-        void  book:: store(void *addr, const size_t page_exp2) throw()
+        void  book:: store(void *addr, const size_t page_exp2) noexcept
         {
             assert(NULL!=addr);
             assert(page_exp2<=max_page_exp2);
@@ -76,7 +76,7 @@ namespace yack
         }
 
 
-        chapter & book:: operator[](const size_t page_exp2) throw()
+        chapter & book:: operator[](const size_t page_exp2) noexcept
         {
             assert(page_exp2<=max_page_exp2);
             assert(page_exp2>=min_page_exp2);

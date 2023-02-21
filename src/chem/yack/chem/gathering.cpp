@@ -6,14 +6,14 @@ namespace yack
 {
     namespace chemical
     {
-        gathering:: gathering() throw() : latch(), maxlen(0)
+        gathering:: gathering() noexcept : latch(), maxlen(0)
         {}
 
-        gathering:: ~gathering() throw()
+        gathering:: ~gathering() noexcept
         {
         }
 
-        void gathering:: absorb(const entity &ent) throw()
+        void gathering:: absorb(const entity &ent) noexcept
         {
             coerce(maxlen) = max_of(maxlen,ent.name.size());
         }

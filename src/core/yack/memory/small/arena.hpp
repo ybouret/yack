@@ -58,7 +58,7 @@ namespace yack
             arena(const size_t bs,
                   allocator   &dispatcher,
                   const bool   compact);
-            ~arena() throw();               //!< cleanup
+            ~arena() noexcept;               //!< cleanup
 
             //__________________________________________________________________
             //
@@ -81,10 +81,10 @@ namespace yack
              - in case of two empty chunks, return the highest memory
              into reservoir
              */
-            void  release(void *addr) throw();
+            void  release(void *addr) noexcept;
             
             //! zero the block before releasing
-            void  expunge(void *addr) throw();
+            void  expunge(void *addr) noexcept;
 
             //__________________________________________________________________
             //
@@ -110,7 +110,7 @@ namespace yack
 
             //! destruct and expunge
             template <typename T> inline
-            void revoke(T *args) throw()
+            void revoke(T *args) noexcept
             {
                 assert(sizeof(T)==block_size);
                 assert(NULL!=args);
@@ -122,9 +122,9 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            void   gc(dyadic &)   throw(); //!< garbage collector
+            void   gc(dyadic &)   noexcept; //!< garbage collector
             void   display_arena()  const; //!< current information
-            size_t wasted() const throw(); //!< wasted bytes per chunk
+            size_t wasted() const noexcept; //!< wasted bytes per chunk
 
         private:
             size_t       available;   //!< bookkeeping
@@ -146,10 +146,10 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(arena);
             void   grow();                //!< using reservoir or create new chunk
-            void   kill(chunk *) throw(); //!< return memory
-            void  *give()        throw(); //!< by acquiring
-            void   take(void *)  throw(); //!< by releasing
-            void   find(void *)  throw(); //!< find releasing
+            void   kill(chunk *) noexcept; //!< return memory
+            void  *give()        noexcept; //!< by acquiring
+            void   take(void *)  noexcept; //!< by releasing
+            void   find(void *)  noexcept; //!< find releasing
         };
         
     }

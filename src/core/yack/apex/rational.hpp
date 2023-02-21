@@ -36,7 +36,7 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~rational() throw();                    //!< cleanup
+            virtual ~rational() noexcept;                    //!< cleanup
             rational();                                     //!< 0/1
             rational(const rational &);                     //!< copy
             rational(const int_type);                       //!< num/1
@@ -135,7 +135,7 @@ namespace yack
             rational  operator-() const; //!< -self
             rational &operator--();      //!< pre  increase operator
             rational  operator--(int);   //!< post increase operator
-            void      neg() throw();     //!< in-place no-throw change sign
+            void      neg() noexcept;     //!< in-place no-throw change sign
 
 
             //__________________________________________________________________
@@ -164,7 +164,7 @@ namespace yack
             //
             // serializable interface
             //__________________________________________________________________
-            virtual const char * class_uid()       const throw(); //!< clid
+            virtual const char * class_uid()       const noexcept; //!< clid
             virtual size_t       serialize(ios::ostream &) const; //!< num+den
             static  rational     construct(ios::istream &, size_t &cumul); //!< from num+den
 
@@ -174,7 +174,7 @@ namespace yack
             //__________________________________________________________________
 
             //! no-throw exchange
-            void xch(rational &) throw();
+            void xch(rational &) noexcept;
 
 
             //! display

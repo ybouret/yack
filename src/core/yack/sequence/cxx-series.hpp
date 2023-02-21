@@ -44,7 +44,7 @@ namespace yack
         }
 
         //! clear empty linear memory
-        inline virtual ~cxx_series() throw()
+        inline virtual ~cxx_series() noexcept
         {
             static memory::allocator &mem = ALLOCATOR::location();
             ++entry;
@@ -64,10 +64,10 @@ namespace yack
         //______________________________________________________________________
 
         //! current count of objects
-        inline virtual size_t size() const throw() { return count; }
+        inline virtual size_t size() const noexcept { return count; }
 
         //! maximum count of objects
-        inline size_t         capacity() const throw() { return total; }
+        inline size_t         capacity() const noexcept { return total; }
 
         //! push back param_type
         inline void push_back(param_type args)
@@ -176,20 +176,20 @@ namespace yack
         }
 
         //! pop/clean last item
-        inline void pop_back() throw()
+        inline void pop_back() noexcept
         {
             assert(count>0);
             out_of_reach::naught( destructed( &basis[--coerce(count)] ) );
         }
 
         //! pop all
-        inline void free() throw() {
+        inline void free() noexcept {
             while(count>0) pop_back();
         }
 
 
         //! remove an item
-        inline void suppress(const size_t indx) throw()
+        inline void suppress(const size_t indx) noexcept
         {
             assert(indx>=1);
             assert(indx<=size());
@@ -199,10 +199,10 @@ namespace yack
             out_of_reach::naught( &basis[--coerce(count)] );
         }
 
-        inline type       &front() throw()       { assert(size()>0); return *basis; }       //!< first item
-        inline const_type &front() const throw() { assert(size()>0); return *basis; }       //!< first item, const
-        inline type       &back()  throw()       { assert(size()>0); return entry[count]; } //!< last item
-        inline const_type &back()  const throw() { assert(size()>0); return entry[count]; } //!< last item, const
+        inline type       &front() noexcept       { assert(size()>0); return *basis; }       //!< first item
+        inline const_type &front() const noexcept { assert(size()>0); return *basis; }       //!< first item, const
+        inline type       &back()  noexcept       { assert(size()>0); return entry[count]; } //!< last item
+        inline const_type &back()  const noexcept { assert(size()>0); return entry[count]; } //!< last item, const
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(cxx_series);
@@ -218,10 +218,10 @@ namespace yack
             static memory::allocator &mem = ALLOCATOR::instance();
             return mem.allocate<mutable_type>(coerce(items),coerce(bytes));
         }
-        virtual const_type *cxx() const throw() { return entry; }
-        virtual const_type *mem() const throw() { return basis; }
+        virtual const_type *cxx() const noexcept { return entry; }
+        virtual const_type *mem() const noexcept { return basis; }
 
-        void lift() throw()
+        void lift() noexcept
         {
             assert(count<total);
             const void  *source = basis;

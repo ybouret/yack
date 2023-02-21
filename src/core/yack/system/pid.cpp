@@ -8,7 +8,7 @@
 
 namespace yack
 {
-    process_id::type process_id::get() throw()
+    process_id::type process_id::get() noexcept
     {
 #if defined(YACK_BSD)
         return getpid();
@@ -20,7 +20,7 @@ namespace yack
 
     }
 
-    uint32_t process_id::h32() throw()
+    uint32_t process_id::h32() noexcept
     {
         const type p = get();
         return yack_crc32(&p, sizeof(p));

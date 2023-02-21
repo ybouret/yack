@@ -9,7 +9,7 @@ namespace yack
         namespace lexical
         {
 
-            comment:: ~comment() throw()
+            comment:: ~comment() noexcept
             {
                 
             }

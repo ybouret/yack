@@ -5,19 +5,19 @@ namespace yack
 
     namespace core
     {
-        zero_flux::  zero_flux(unit_t n) throw() :
+        zero_flux::  zero_flux(unit_t n) noexcept :
         size(n),
         szsz(n+n)
         {
         }
 
-        zero_flux:: ~zero_flux() throw()
+        zero_flux:: ~zero_flux() noexcept
         {
             coerce(size)=0;
             coerce(szsz)=0;
         }
 
-        zero_flux:: zero_flux(const zero_flux &zf) throw() :
+        zero_flux:: zero_flux(const zero_flux &zf) noexcept :
         size( zf.size ),
         szsz( zf.szsz )
         {
@@ -26,13 +26,13 @@ namespace yack
         namespace
         {
             static inline
-            unit_t raw1D(const zero_flux &, unit_t) throw()
+            unit_t raw1D(const zero_flux &, unit_t) noexcept
             {
                 return 0;
             }
 
             static inline
-            unit_t rawND(const zero_flux &self, unit_t indx) throw()
+            unit_t rawND(const zero_flux &self, unit_t indx) noexcept
             {
                 if(indx<0)
                 {
@@ -53,7 +53,7 @@ namespace yack
 
         }
 
-        zero_flux::proc zero_flux::raw_proc_for(const zero_flux &self) throw()
+        zero_flux::proc zero_flux::raw_proc_for(const zero_flux &self) noexcept
         {
             if(self.size<=1) return raw1D; else return rawND;
         }
@@ -61,13 +61,13 @@ namespace yack
         namespace
         {
             static inline
-            unit_t cxx1D(const zero_flux &, unit_t) throw()
+            unit_t cxx1D(const zero_flux &, unit_t) noexcept
             {
                 return 1;
             }
 
             static inline
-            unit_t cxxND(const zero_flux &self, unit_t indx) throw()
+            unit_t cxxND(const zero_flux &self, unit_t indx) noexcept
             {
                 if(indx<=0)
                 {
@@ -87,7 +87,7 @@ namespace yack
             }
         }
 
-        zero_flux::proc zero_flux::cxx_proc_for(const zero_flux &self) throw()
+        zero_flux::proc zero_flux::cxx_proc_for(const zero_flux &self) noexcept
         {
             if(self.size<=1) return cxx1D; else return cxxND;
         }

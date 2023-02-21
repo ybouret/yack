@@ -14,7 +14,7 @@ namespace yack
 
             const char converter:: call_sign[] = "ascii::converter";
 
-            converter:: ~converter() throw()
+            converter:: ~converter() noexcept
             {
             }
 

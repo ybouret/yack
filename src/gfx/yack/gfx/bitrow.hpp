@@ -29,17 +29,17 @@ namespace yack
 
             //! setup
             bitrow(void            *entry,
-                   const zero_flux &zfluz) throw();
+                   const zero_flux &zfluz) noexcept;
 
             //! cleanup
-            ~bitrow() throw();
+            ~bitrow() noexcept;
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            const uint8_t *addr() const throw(); //!< first const byte
-            uint8_t       *addr()       throw(); //!< first byte
+            const uint8_t *addr() const noexcept; //!< first const byte
+            uint8_t       *addr()       noexcept; //!< first byte
 
             //__________________________________________________________________
             //

@@ -25,8 +25,8 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline  key_walker() throw() {}
-        inline ~key_walker() throw() {}
+        inline  key_walker() noexcept {}
+        inline ~key_walker() noexcept {}
 
         //______________________________________________________________________
         //
@@ -37,7 +37,7 @@ namespace yack
          *
          */
         //______________________________________________________________________
-        inline const uint8_t * operator()(const KEY &key, size_t &len) throw()
+        inline const uint8_t * operator()(const KEY &key, size_t &len) noexcept
         {
             static const int2type< key_variety::cull<KEY>::value > which = {};
             return walk(key,len,which);
@@ -47,19 +47,19 @@ namespace yack
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(key_walker);
 
-        inline const uint8_t * walk(const KEY &key, size_t &len, const key_variety::memory_buffer &) throw()
+        inline const uint8_t * walk(const KEY &key, size_t &len, const key_variety::memory_buffer &) noexcept
         {
             len = key.measure();
             return static_cast<const uint8_t *>(key.ro_addr());
         }
         
-        inline const uint8_t * walk(const KEY &key, size_t &len, const key_variety::integral_type &) throw()
+        inline const uint8_t * walk(const KEY &key, size_t &len, const key_variety::integral_type &) noexcept
         {
             len          = sizeof(KEY);
             return static_cast<const uint8_t *>(endian::BEaddr((void*)&key,sizeof(KEY)));
         }
 
-        inline const uint8_t * walk(const KEY &key, size_t &len, const key_variety::legacy_string &) throw()
+        inline const uint8_t * walk(const KEY &key, size_t &len, const key_variety::legacy_string &) noexcept
         {
             len = key?0:strlen(key);
             return coerce_cast<uint8_t>(key);

@@ -63,8 +63,8 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            hoard()  throw(); //!< setup
-            ~hoard() throw(); //!< cleanup, garbage collection
+            hoard()  noexcept; //!< setup
+            ~hoard() noexcept; //!< cleanup, garbage collection
 
 
             //__________________________________________________________________
@@ -72,13 +72,13 @@ namespace yack
             // memory methods
             //__________________________________________________________________
             void *acquire_unlocked(exp2_t &block_exp2);                                //!< acquire zeroed block, adjust block_exp2
-            void  release_unlocked(void *block_addr, const exp2_t block_exp2) throw(); //!< release a previously acquire block
+            void  release_unlocked(void *block_addr, const exp2_t block_exp2) noexcept; //!< release a previously acquire block
 
             //__________________________________________________________________
             //
             // other methods
             //__________________________________________________________________
-            void  gc()      throw(); //!< garbage collection in memory::dyadic allocator
+            void  gc()      noexcept; //!< garbage collection in memory::dyadic allocator
             void  display() const;   //!< info
 
         private:

@@ -5,19 +5,19 @@ namespace yack
 {
     namespace kernel
     {
-        layout:: ~layout() throw()
+        layout:: ~layout() noexcept
         {
             coerce(space)=0;
             coerce(items)=0;
         }
 
-        layout:: layout(const size_t d) throw() :
+        layout:: layout(const size_t d) noexcept :
         space(d),
         items(0)
         {
         }
 
-        layout:: layout(const layout &other) throw() :
+        layout:: layout(const layout &other) noexcept :
         space(other.space),
         items(other.items)
         {
@@ -27,7 +27,7 @@ namespace yack
         void layout:: finalize_(unit_t *lower,
                                 unit_t *upper,
                                 unit_t *width,
-                                unit_t *pitch)   throw()
+                                unit_t *pitch)   noexcept
         {
             assert(lower);
             assert(upper);
@@ -48,7 +48,7 @@ namespace yack
             }
         }
 
-        bool layout:: contains_(const unit_t *cr,const unit_t *lo,const unit_t *hi) const throw()
+        bool layout:: contains_(const unit_t *cr,const unit_t *lo,const unit_t *hi) const noexcept
         {
             assert(cr!=NULL);
             assert(lo!=NULL);
@@ -65,7 +65,7 @@ namespace yack
 
         }
 
-        unit_t layout:: index_of_(const unit_t *cr, const unit_t *lower, const unit_t *pitch) const throw()
+        unit_t layout:: index_of_(const unit_t *cr, const unit_t *lower, const unit_t *pitch) const noexcept
         {
             assert(NULL!=cr);
             assert(NULL!=lower);
@@ -79,7 +79,7 @@ namespace yack
             return res;
         }
 
-        void  layout:: coord_of_(unit_t *arr, unit_t idx, const unit_t *lower, const unit_t *pitch) const throw()
+        void  layout:: coord_of_(unit_t *arr, unit_t idx, const unit_t *lower, const unit_t *pitch) const noexcept
         {
             assert(NULL!=arr);
             assert(NULL!=lower);

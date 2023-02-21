@@ -2,8 +2,8 @@
 namespace yack {
   namespace nwsrt {
     const char bitonic8 :: sid[] ="bitonic8";
-    bitonic8 :: ~bitonic8() throw() {}
-    bitonic8 ::  bitonic8() throw() : swaps(sid,8,0x0018,lhs,rhs) {}
+    bitonic8 :: ~bitonic8() noexcept {}
+    bitonic8 ::  bitonic8() noexcept : swaps(sid,8,0x0018,lhs,rhs) {}
     const size_t bitonic8 :: lhs[0x0018] = {
  0x0001, 0x0003, 0x0005, 0x0007, 0x0001, 0x0002, 0x0006, 0x0005,
  0x0003, 0x0001, 0x0005, 0x0007, 0x0004, 0x0003, 0x0002, 0x0001,

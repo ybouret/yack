@@ -9,7 +9,7 @@ namespace yack
     {
         const size_t memory::aligned::largest = base2<size_t>::max_power_of_two;
         
-        size_t memory::aligned::package(const size_t n) throw()
+        size_t memory::aligned::package(const size_t n) noexcept
         {
             assert(n<=largest);
             return YACK_MEMALIGN(n);

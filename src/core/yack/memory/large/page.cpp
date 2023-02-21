@@ -21,7 +21,7 @@ namespace yack
             return entry;
         }
 
-        void page:: release(page *entry, size_t size) throw()
+        void page:: release(page *entry, size_t size) noexcept
         {
             static allocator &mgr = global::location();
 

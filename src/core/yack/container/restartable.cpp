@@ -3,11 +3,11 @@
 
 namespace yack
 {
-    restartable:: ~restartable() throw()
+    restartable:: ~restartable() noexcept
     {
     }
     
-    restartable::  restartable() throw()
+    restartable::  restartable() noexcept
     {
     }
     

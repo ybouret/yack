@@ -7,7 +7,7 @@ namespace yack
         namespace fitting
         {
 
-            template <> gls<real_t>:: ~gls() throw()
+            template <> gls<real_t>:: ~gls() noexcept
             {
             }
 

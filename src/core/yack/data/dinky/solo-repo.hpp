@@ -28,12 +28,12 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline  explicit solo_repo() throw()  : self_type()  {} //!< setup
-        inline  virtual ~solo_repo() throw()                 {} //!< cleanup
+        inline  explicit solo_repo() noexcept  : self_type()  {} //!< setup
+        inline  virtual ~solo_repo() noexcept                 {} //!< cleanup
         inline  solo_repo(const solo_repo &_) : self_type(_) {} //!< copy
 
         //! setup with reserve
-        inline  explicit solo_repo(const size_t n) throw() : self_type() { this->cache->reserve(n); }
+        inline  explicit solo_repo(const size_t n) noexcept : self_type() { this->cache->reserve(n); }
         
     private:
         YACK_DISABLE_ASSIGN(solo_repo);

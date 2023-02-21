@@ -23,11 +23,11 @@ namespace yack
         // virtual interface
         //______________________________________________________________________
 
-        virtual            ~container()       throw();              //!< cleanup
-        virtual const char *category()  const throw() = 0;          //!< category
-        virtual size_t      capacity()  const throw() = 0;          //!< total item capacity
-        virtual size_t      available() const throw() = 0;          //!< available (memory for) items
-        virtual void        free()            throw() = 0;          //!< set size()=0, keep resources
+        virtual            ~container()       noexcept;              //!< cleanup
+        virtual const char *category()  const noexcept = 0;          //!< category
+        virtual size_t      capacity()  const noexcept = 0;          //!< total item capacity
+        virtual size_t      available() const noexcept = 0;          //!< available (memory for) items
+        virtual void        free()            noexcept = 0;          //!< set size()=0, keep resources
         virtual void        reserve(size_t)           = 0;          //!< reserve room for extra items
 
         //______________________________________________________________________
@@ -46,7 +46,7 @@ namespace yack
 
 
     protected:
-        explicit       container()        throw();         //!< setup
+        explicit       container()        noexcept;         //!< setup
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(container);

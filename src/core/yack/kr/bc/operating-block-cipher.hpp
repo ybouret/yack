@@ -23,14 +23,14 @@ namespace yack {
             // methods
             //__________________________________________________________________
             
-            virtual size_t size() const throw(); //!< internal block_cipher
-            virtual void   sync() throw() = 0;   //!< restart
+            virtual size_t size() const noexcept; //!< internal block_cipher
+            virtual void   sync() noexcept = 0;   //!< restart
             
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            virtual ~operating_block_cipher() throw(); //!< cleanup
+            virtual ~operating_block_cipher() noexcept; //!< cleanup
 
         protected:
             //! setup with internal block cipher and new name

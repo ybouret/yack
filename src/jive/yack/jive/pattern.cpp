@@ -8,11 +8,11 @@ namespace yack
     {
         bool pattern:: verbose = false;
         
-        pattern:: ~pattern() throw()
+        pattern:: ~pattern() noexcept
         {
         }
 
-        pattern:: pattern(const uint32_t t) throw() :
+        pattern:: pattern(const uint32_t t) noexcept :
         uuid(t),
         next(0),
         prev(0),
@@ -21,7 +21,7 @@ namespace yack
 
         }
 
-        void pattern:: I_am(const void *addr) throw()
+        void pattern:: I_am(const void *addr) noexcept
         {
             *(void **)out_of_reach::address(&self) = (void*)(addr);
         }
@@ -36,12 +36,12 @@ namespace yack
             return !strong();
         }
 
-        bool operator==(const pattern &lhs, const pattern &rhs) throw()
+        bool operator==(const pattern &lhs, const pattern &rhs) noexcept
         {
             return pattern::are_same(lhs,rhs);
         }
 
-        bool operator!=(const pattern &lhs, const pattern &rhs) throw()
+        bool operator!=(const pattern &lhs, const pattern &rhs) noexcept
         {
             return !pattern::are_same(lhs,rhs);
         }

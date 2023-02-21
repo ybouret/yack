@@ -23,7 +23,7 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            void     no_multiple() throw(); //!< remove multiple patterns
+            void     no_multiple() noexcept; //!< remove multiple patterns
             void     smart_merge();         //!< out of order merging
             void     rewrite();             //!< no multiple/smart merge
             
@@ -31,9 +31,9 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~bank()               throw(); //!< cleanup
+            virtual ~bank()               noexcept; //!< cleanup
         protected:                                 //|    and
-            explicit bank(const uint32_t) throw(); //!<  setup
+            explicit bank(const uint32_t) noexcept; //!<  setup
             explicit bank(const bank &);           //!< copy
             
         private:

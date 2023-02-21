@@ -7,7 +7,7 @@ namespace yack
         namespace
         {
             static inline bool have_common(const readable<int> &lhs,
-                                           const readable<int> &rhs) throw()
+                                           const readable<int> &rhs) noexcept
             {
                 assert( lhs.size() == rhs.size() );
                 for(size_t i=lhs.size();i>0;--i) {
@@ -17,7 +17,7 @@ namespace yack
             }
 
             static inline
-            void fill_detached(matrix<bool> &detached, const matrix<int> &Nu ) throw()
+            void fill_detached(matrix<bool> &detached, const matrix<int> &Nu ) noexcept
             {
                 detached.ld(false);
                 const size_t r=Nu.rows;

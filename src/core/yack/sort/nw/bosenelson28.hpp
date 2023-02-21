@@ -7,8 +7,8 @@ namespace yack {
     //! bosenelson28
     class bosenelson28 : public swaps {
       public:
-        virtual ~bosenelson28() throw(); //!< cleanup
-        explicit bosenelson28() throw(); //!< setup  
+        virtual ~bosenelson28() noexcept; //!< cleanup
+        explicit bosenelson28() noexcept; //!< setup  
         static const char   sid[];        //!< bosenelson28
         static const size_t lhs[0x00b3];  //!< lhs
         static const size_t rhs[0x00b3];  //!< rhs

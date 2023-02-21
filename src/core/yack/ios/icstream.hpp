@@ -19,7 +19,7 @@ namespace yack
         class icstream : public istream
         {
         public:
-            virtual ~icstream() throw();               //!< cleanup
+            virtual ~icstream() noexcept;               //!< cleanup
             explicit icstream(const cstdin_t &);       //!< link to stdin
             explicit icstream(const char   *filename); //!< open at beginning
             explicit icstream(const string &filename); //!< open at beginning

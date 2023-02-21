@@ -9,21 +9,21 @@ namespace yack
 {
     //! min of (a,b)
     template <typename T> inline
-    T min_of(const T lhs, const T rhs) throw()
+    T min_of(const T lhs, const T rhs) noexcept
     {
         return (lhs < rhs) ? lhs : rhs;
     }
 
     //! max of (a,b)
     template <typename T> inline
-    T max_of(const T lhs, const T rhs) throw()
+    T max_of(const T lhs, const T rhs) noexcept
     {
         return (lhs < rhs) ? rhs : lhs;
     }
 
     //! max of (a,b,c)
     template <typename T> inline
-    T max_of(const T a, const T b, const T c) throw()
+    T max_of(const T a, const T b, const T c) noexcept
     {
         return max_of(a,max_of(b,c));
     }
@@ -32,35 +32,35 @@ namespace yack
 
     //! keep within [lower:upper]
     template <typename T> inline
-    T clamp(const T lower, const T value, const T upper) throw()
+    T clamp(const T lower, const T value, const T upper) noexcept
     {
         return (value<lower) ? lower : ( (upper<value) ? upper : value );
     }
     
     //! x^2
     template <typename T> inline
-    T squared(const T x) throw()
+    T squared(const T x) noexcept
     {
         return x*x;
     }
 
     //! x^3
     template <typename T> inline
-    T cubed(const T x) throw()
+    T cubed(const T x) noexcept
     {
         return x*x*x;
     }
 
     //! x *= x, in situ
     template <typename T> inline
-    void square(T &x) throw()
+    void square(T &x) noexcept
     {
         x *= x;
     }
 
     //! x *= x in situ, return x
     template <typename T> inline
-    T square_pop(T &x) throw()
+    T square_pop(T &x) noexcept
     {
         const T ans = x;
         x *= x;
@@ -69,7 +69,7 @@ namespace yack
 
     //! x+x
     template <typename T> inline
-    T twice(const T x) throw()
+    T twice(const T x) noexcept
     {
         return x+x;
     }

@@ -12,8 +12,8 @@ namespace
     {
     public:
         float slope;
-        dummy(const float a)      throw() : slope(a)           {}
-        dummy(const dummy &other) throw() : slope(other.slope) {}
+        dummy(const float a)      noexcept : slope(a)           {}
+        dummy(const dummy &other) noexcept : slope(other.slope) {}
 
         double operator()(double x)
         {

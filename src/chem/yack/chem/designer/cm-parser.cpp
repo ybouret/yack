@@ -13,7 +13,7 @@ namespace yack
         namespace nucleus
         {
 
-            cm_parser:: ~cm_parser() throw() {}
+            cm_parser:: ~cm_parser() noexcept {}
             
             cm_parser:: cm_parser() : jive:: parser("chemical::components::parser")
             {

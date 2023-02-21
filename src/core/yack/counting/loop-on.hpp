@@ -32,7 +32,7 @@ namespace yack
         //______________________________________________________________________
 
         //! cleanup
-        inline virtual ~loop_on() throw() {}
+        inline virtual ~loop_on() noexcept {}
 
         //! setup from coordinates
         inline explicit loop_on(const COORD lo, const COORD up) :
@@ -52,7 +52,7 @@ namespace yack
 
 
         //! get content
-        inline const COORD & operator*() const throw() { return value; }
+        inline const COORD & operator*() const noexcept { return value; }
 
         //! reset by coordinates
         inline void reset(const COORD lo, const COORD up)

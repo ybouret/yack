@@ -9,7 +9,7 @@
 
 namespace yack
 {
-    partition:: ~partition() throw()
+    partition:: ~partition() noexcept
     {
     }
     
@@ -37,17 +37,17 @@ namespace yack
         yack_part_boot( static_cast<yack_part*>(addr),data);
     }
     
-    size_t partition:: size() const throw()
+    size_t partition:: size() const noexcept
     {
         return static_cast<yack_part*>(addr)->k;
     }
     
-    void partition:: on_boot() throw()
+    void partition:: on_boot() noexcept
     {
         yack_part_boot( static_cast<yack_part*>(addr),data);
     }
     
-    bool  partition::  on_next() throw()
+    bool  partition::  on_next() noexcept
     {
         return  yack_part_next( static_cast<yack_part*>(addr),data) != 0;
     }

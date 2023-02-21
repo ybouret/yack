@@ -7,12 +7,12 @@
 namespace yack
 {
 
-    uint128_t:: uint128_t() throw() :  h()
+    uint128_t:: uint128_t() noexcept :  h()
     {
         memset(h,0,sizeof(h));
     }
 
-    uint128_t:: uint128_t(uint64_t lo) throw() : h()
+    uint128_t:: uint128_t(uint64_t lo) noexcept : h()
     {
         memset(h+bytes/2,0,bytes/2);
         for(size_t i=0;i<sizeof(uint64_t);++i)
@@ -22,36 +22,36 @@ namespace yack
         }
     }
 
-    uint128_t:: uint128_t(const uint8_t data[]) throw() : h()
+    uint128_t:: uint128_t(const uint8_t data[]) noexcept : h()
     {
         memcpy(h,data,bytes);
     }
 
 
 
-    uint128_t:: ~uint128_t() throw()
+    uint128_t:: ~uint128_t() noexcept
     {
         memset(h,0,sizeof(h));
     }
 
-    uint128_t:: uint128_t(const uint128_t &other) throw() : h()
+    uint128_t:: uint128_t(const uint128_t &other) noexcept : h()
     {
         memcpy(h,other.h,sizeof(h));
     }
 
-    uint128_t & uint128_t:: operator=(const uint128_t &other) throw()
+    uint128_t & uint128_t:: operator=(const uint128_t &other) noexcept
     {
         memmove(h,other.h,sizeof(h));
         return *this;
     }
 
-    uint8_t & uint128_t:: operator[](const size_t i) throw()
+    uint8_t & uint128_t:: operator[](const size_t i) noexcept
     {
         assert(i<sizeof(h));
         return h[i];
     }
 
-    const uint8_t & uint128_t:: operator[](const size_t i) const throw()
+    const uint8_t & uint128_t:: operator[](const size_t i) const noexcept
     {
         assert(i<sizeof(h));
         return h[i];
@@ -69,12 +69,12 @@ namespace yack
         return os;
     }
 
-    bool  operator==(const uint128_t &lhs, const uint128_t &rhs) throw()
+    bool  operator==(const uint128_t &lhs, const uint128_t &rhs) noexcept
     {
         return 0 == memcmp(lhs.h,rhs.h,uint128_t::bytes);
     }
 
-    bool  operator!=(const uint128_t &lhs, const uint128_t &rhs) throw()
+    bool  operator!=(const uint128_t &lhs, const uint128_t &rhs) noexcept
     {
         return 0 != memcmp(lhs.h,rhs.h,uint128_t::bytes);
     }

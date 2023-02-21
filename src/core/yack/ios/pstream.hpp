@@ -31,7 +31,7 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~pstream() throw(); //!< set result
+            virtual ~pstream() noexcept; //!< set result
 
             //! open a command, register result
             template <typename COMMAND> inline

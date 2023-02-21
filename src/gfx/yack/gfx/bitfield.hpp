@@ -33,7 +33,7 @@ namespace yack
             // C++
             //__________________________________________________________________
             explicit bitfield(const size_t n); //!< setup bytes>=n
-            virtual ~bitfield() throw();       //!< cleanup
+            virtual ~bitfield() noexcept;       //!< cleanup
 
             //__________________________________________________________________
             //
@@ -42,7 +42,7 @@ namespace yack
 
             //! fill with items
             template <typename T>
-            void fill(const size_t items) throw()
+            void fill(const size_t items) noexcept
             {
                 assert(NULL==memio);
                 assert(items*sizeof(T)<=bytes);

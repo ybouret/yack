@@ -52,8 +52,8 @@ namespace yack
                 // methods for formats
                 //______________________________________________________________
                 void          decl(format *);                      //!< register a new format
-                const format *query(const string &) const throw(); //!< query existing format
-                const format *query(const char   *) const throw(); //!< query existing format
+                const format *query(const string &) const noexcept; //!< query existing format
+                const format *query(const char   *) const noexcept; //!< query existing format
 
                 //! on-the-fly get, assuming CODEC::name() == CODEC::clid
                 template <typename CODEC> inline
@@ -126,7 +126,7 @@ namespace yack
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(formats);
                 explicit formats();
-                virtual ~formats() throw();
+                virtual ~formats() noexcept;
                 friend class singleton<formats>;
             };
         }

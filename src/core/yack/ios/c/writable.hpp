@@ -24,7 +24,7 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual  ~writable_file() throw();                                  //!< cleanup
+            virtual  ~writable_file() noexcept;                                  //!< cleanup
             explicit  writable_file(const cstderr_t &);                         //!< link to stderr
             explicit  writable_file(const cstdout_t &);                         //!< link to stdout
             explicit  writable_file(const char   *filename, const bool append); //!< open file

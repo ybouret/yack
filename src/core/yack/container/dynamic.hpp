@@ -16,11 +16,11 @@ namespace yack
     class dynamic
     {
     public:
-        virtual size_t granted() const throw() = 0; //!< linear space
-        virtual       ~dynamic() throw();           //!< cleanup
+        virtual size_t granted() const noexcept = 0; //!< linear space
+        virtual       ~dynamic() noexcept;           //!< cleanup
 
     protected:
-        explicit       dynamic() throw();           //!< setup
+        explicit       dynamic() noexcept;           //!< setup
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(dynamic);

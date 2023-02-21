@@ -6,11 +6,11 @@ namespace yack
     namespace memory
     {
         
-        allocator:: ~allocator() throw()
+        allocator:: ~allocator() noexcept
         {
         }
         
-        allocator:: allocator() throw()
+        allocator:: allocator() noexcept
         {
         }
         

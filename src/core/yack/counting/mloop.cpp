@@ -9,7 +9,7 @@ namespace yack
     namespace kernel
     {
 
-        mloop:: ~mloop() throw()
+        mloop:: ~mloop() noexcept
         {
             if(wksp)
             {
@@ -18,14 +18,14 @@ namespace yack
             }
         }
 
-        mloop:: mloop(const size_t dim) throw() :
+        mloop:: mloop(const size_t dim) noexcept :
         levels(dim),
         wksp(0),
         wlen(0)
         {
         }
 
-        size_t mloop:: granted() const throw()
+        size_t mloop:: granted() const noexcept
         {
             return wlen;
         }

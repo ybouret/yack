@@ -10,7 +10,7 @@ namespace yack
 
     //! integer square root
     template <typename T> inline
-    T isqrt(const T s) throw()
+    T isqrt(const T s) noexcept
     {
         if(s<=1) return s;
         T x0 = s >> 1 ;

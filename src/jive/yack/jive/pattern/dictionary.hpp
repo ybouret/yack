@@ -31,14 +31,14 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit dictionary() throw(); //!< setup
-            virtual ~dictionary() throw(); //!< cleanup
+            explicit dictionary() noexcept; //!< setup
+            virtual ~dictionary() noexcept; //!< cleanup
 
             //__________________________________________________________________
             //
             // query
             //__________________________________________________________________
-            const pattern *query(const string &key) const throw(); //!< query
+            const pattern *query(const string &key) const noexcept; //!< query
             const pattern *query(const char   *key) const;         //!< query
 
             //__________________________________________________________________

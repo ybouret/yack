@@ -9,7 +9,7 @@ namespace yack
 {
     namespace ios
     {
-        readable_file:: ~readable_file() throw()
+        readable_file:: ~readable_file() noexcept
         {
         }
 

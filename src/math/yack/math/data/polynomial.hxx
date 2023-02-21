@@ -14,7 +14,7 @@ namespace yack
         }
 
         template <>
-        polynomial:: interpolate<real_t>:: ~interpolate() throw()
+        polynomial:: interpolate<real_t>:: ~interpolate() noexcept
         {
         }
 

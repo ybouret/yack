@@ -28,8 +28,8 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline  explicit core_repo() throw()  : self_type()  {} //!< setup
-        inline  virtual ~core_repo() throw()                 {} //!< cleanup
+        inline  explicit core_repo() noexcept  : self_type()  {} //!< setup
+        inline  virtual ~core_repo() noexcept                 {} //!< cleanup
         inline  core_repo(const core_repo &_) : self_type(_) {} //!< copy
         
         

@@ -4,8 +4,8 @@ namespace yack
 {
     namespace chemical
     {
-        claws::  claws() throw() : object(), claws_() {}
-        claws:: ~claws() throw() {}
+        claws::  claws() noexcept : object(), claws_() {}
+        claws:: ~claws() noexcept {}
         
     }
 

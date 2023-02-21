@@ -7,12 +7,12 @@ namespace yack
 {
     namespace ios
     {
-        serializable:: serializable() throw()
+        serializable:: serializable() noexcept
         {
             
         }
 
-        serializable:: ~serializable() throw()
+        serializable:: ~serializable() noexcept
         {
 
         }

@@ -7,11 +7,11 @@ namespace yack
 
     namespace randomized
     {
-        mt19937:: ~mt19937() throw()
+        mt19937:: ~mt19937() noexcept
         {
         }
 
-        mt19937:: mt19937(const unsigned long s) throw() :
+        mt19937:: mt19937(const unsigned long s) noexcept :
         randomized::bits(0xffffffff),
         mti(N+1),
         mt()
@@ -19,7 +19,7 @@ namespace yack
             init_genrand(s<=0? system_seed::get<unsigned long>() : s);
         }
 
-        mt19937:: mt19937(const unsigned long init_key[], const size_t key_length) throw() :
+        mt19937:: mt19937(const unsigned long init_key[], const size_t key_length) noexcept :
         randomized::bits(0xffffffff),
         mti(N+1),
         mt()
@@ -29,7 +29,7 @@ namespace yack
         }
 
         /* initializes mt[N] with a seed */
-        void mt19937:: init_genrand(const unsigned long s) throw()
+        void mt19937:: init_genrand(const unsigned long s) noexcept
         {
             mt[0]= s & 0xffffffffUL;
             for (mti=1; mti<N; mti++) {
@@ -48,7 +48,7 @@ namespace yack
         /* init_key is the array for initializing keys */
         /* key_length is its length */
         /* slight change for C++, 2004/2/26 */
-        void mt19937:: init_by_array(const unsigned long init_key[], const size_t key_length) throw()
+        void mt19937:: init_by_array(const unsigned long init_key[], const size_t key_length) noexcept
         {
             assert(yack_good(init_key,key_length));
             size_t i, j, k;
@@ -76,7 +76,7 @@ namespace yack
 
 
         /* generates a random number on [0,0xffffffff]-interval */
-        uint32_t mt19937:: next32(void) throw()
+        uint32_t mt19937:: next32(void) noexcept
         {
             unsigned long y;
             static unsigned long mag01[2]={0x0UL, MATRIX_A};

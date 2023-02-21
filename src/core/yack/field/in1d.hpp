@@ -44,7 +44,7 @@ namespace yack
         //______________________________________________________________________
 
         //! cleanup
-        inline virtual ~field1D() throw() { item+=lower; clear(width); }
+        inline virtual ~field1D() noexcept { item+=lower; clear(width); }
 
         //! setup
         template <typename ID>
@@ -64,13 +64,13 @@ namespace yack
         //______________________________________________________________________
 
         //! access
-        inline type & operator[](const unit_t x) throw()
+        inline type & operator[](const unit_t x) noexcept
         {
             assert(item); assert(x>=lower); assert(x<=upper); return item[x];
         }
 
         //! access
-        inline const_type & operator[](const unit_t x) const throw()
+        inline const_type & operator[](const unit_t x) const noexcept
         {
             assert(item); assert(x>=lower); assert(x<=upper); return item[x];
         }
@@ -127,7 +127,7 @@ namespace yack
         }
 
         // clear
-        inline void clear(unit_t n) throw()
+        inline void clear(unit_t n) noexcept
         {
             while(n>0)
             {
@@ -136,7 +136,7 @@ namespace yack
         }
 
         //! read
-        const_type & fetch(const readable<unit_t> &coord) const throw()
+        const_type & fetch(const readable<unit_t> &coord) const noexcept
         {
             assert(coord.size()>=1);
             return (*this)[coord[1]];

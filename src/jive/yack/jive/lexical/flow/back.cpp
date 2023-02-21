@@ -19,7 +19,7 @@ namespace yack
                 {
                 }
                 
-                back:: ~back() throw()
+                back:: ~back() noexcept
                 {
                 }
                 

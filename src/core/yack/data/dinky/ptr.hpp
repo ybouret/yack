@@ -30,20 +30,20 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline  dinky_ptr() throw() : pointee(0) {}                              //!< setup empty
-        inline ~dinky_ptr() throw() { pointee=0; }                               //!< cleanup
-        inline  dinky_ptr(type *addr) throw() : pointee((mutable_type*)addr) {}  //!< setup with user's address
-        inline  dinky_ptr(const dinky_ptr &_) throw() : pointee(_.pointee)   {}  //!< copy no-throw
+        inline  dinky_ptr() noexcept : pointee(0) {}                              //!< setup empty
+        inline ~dinky_ptr() noexcept { pointee=0; }                               //!< cleanup
+        inline  dinky_ptr(type *addr) noexcept : pointee((mutable_type*)addr) {}  //!< setup with user's address
+        inline  dinky_ptr(const dinky_ptr &_) noexcept : pointee(_.pointee)   {}  //!< copy no-throw
 
         //______________________________________________________________________
         //
         // methods
         //______________________________________________________________________
-        inline  bool is_empty() const throw() { return 0==pointee; } //!< test if is empty
-        inline  bool is_valid() const throw() { return 0!=pointee; } //!< test if is valid
+        inline  bool is_empty() const noexcept { return 0==pointee; } //!< test if is empty
+        inline  bool is_valid() const noexcept { return 0!=pointee; } //!< test if is valid
 
-        inline type &       operator*()       throw() { assert(pointee); return              *pointee; } //!< access
-        inline const_type & operator*() const throw() { assert(pointee); return (const_type&)*pointee; } //!< access, const
+        inline type &       operator*()       noexcept { assert(pointee); return              *pointee; } //!< access
+        inline const_type & operator*() const noexcept { assert(pointee); return (const_type&)*pointee; } //!< access, const
 
         //! display wrapper
         inline friend std::ostream & operator<<(std::ostream &os, const dinky_ptr &self)
@@ -52,13 +52,13 @@ namespace yack
         }
 
         //! test pointee equalitry
-        inline friend bool operator==(const dinky_ptr &lhs, const dinky_ptr &rhs) throw()
+        inline friend bool operator==(const dinky_ptr &lhs, const dinky_ptr &rhs) noexcept
         {
             return lhs.pointee == rhs.pointee;
         }
 
         //! test pointee difference
-        inline friend bool operator!=(const dinky_ptr &lhs, const dinky_ptr &rhs) throw()
+        inline friend bool operator!=(const dinky_ptr &lhs, const dinky_ptr &rhs) noexcept
         {
             return lhs.pointee != rhs.pointee;
         }

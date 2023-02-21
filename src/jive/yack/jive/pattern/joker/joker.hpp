@@ -22,20 +22,20 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            const pattern & operator*() const throw(); //!< get joker
+            const pattern & operator*() const noexcept; //!< get joker
             virtual void firsts(first_bytes &) const;  //!< forward to internal
 
-            void substitute(pattern *) throw();        //!< subsitute pattern
+            void substitute(pattern *) noexcept;        //!< subsitute pattern
 
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            virtual ~joker() throw();                        //!< cleanup
+            virtual ~joker() noexcept;                        //!< cleanup
 
         protected:
-            explicit joker(const uint32_t,pattern*) throw(); //!< setup
-            explicit joker(const joker &)           throw(); //!< copy
+            explicit joker(const uint32_t,pattern*) noexcept; //!< setup
+            explicit joker(const joker &)           noexcept; //!< copy
             void     viz(ios::ostream &) const;              //!< render joker and link
 
 

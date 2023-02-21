@@ -6,16 +6,16 @@
 namespace yack
 {
 
-    vfs:: vfs() throw()
+    vfs:: vfs() noexcept
     {
     }
 
-    vfs:: ~vfs() throw()
+    vfs:: ~vfs() noexcept
     {
     }
     
 
-    const char *vfs:: get_base_name(const char *path, const size_t plen) throw()
+    const char *vfs:: get_base_name(const char *path, const size_t plen) noexcept
     {
         if(plen<=0)
         {
@@ -40,13 +40,13 @@ namespace yack
         }
     }
 
-    const char *vfs:: get_base_name(const string &path) throw()
+    const char *vfs:: get_base_name(const string &path) noexcept
     {
         return get_base_name(&path[1],path.size());
     }
 
 
-    const char *vfs:: get_base_name(const char *path) throw()
+    const char *vfs:: get_base_name(const char *path) noexcept
     {
         return get_base_name(path,yack_cstring_size(path));
     }
@@ -96,7 +96,7 @@ namespace yack
 namespace yack
 {
 
-    const char *vfs:: get_extension(const char *path, const size_t plen) throw()
+    const char *vfs:: get_extension(const char *path, const size_t plen) noexcept
     {
         if(plen<=0)
         {
@@ -121,13 +121,13 @@ namespace yack
     }
 
 
-    const char *vfs:: get_extension(const char *path) throw()
+    const char *vfs:: get_extension(const char *path) noexcept
     {
         return get_extension(path,yack_cstring_size(path));
 
     }
 
-    const char *vfs:: get_extension(const string &path) throw()
+    const char *vfs:: get_extension(const string &path) noexcept
     {
         return get_extension(&path[1],path.size());
     }

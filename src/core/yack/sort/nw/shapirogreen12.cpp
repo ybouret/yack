@@ -2,8 +2,8 @@
 namespace yack {
   namespace nwsrt {
     const char shapirogreen12 :: sid[] ="shapirogreen12";
-    shapirogreen12 :: ~shapirogreen12() throw() {}
-    shapirogreen12 ::  shapirogreen12() throw() : swaps(sid,12,0x0027,lhs,rhs) {}
+    shapirogreen12 :: ~shapirogreen12() noexcept {}
+    shapirogreen12 ::  shapirogreen12() noexcept : swaps(sid,12,0x0027,lhs,rhs) {}
     const size_t shapirogreen12 :: lhs[0x0027] = {
  0x0001, 0x0003, 0x0005, 0x0007, 0x0009, 0x000b, 0x0002, 0x0006,
  0x000a, 0x0001, 0x0005, 0x0009, 0x0002, 0x0006, 0x000a, 0x0001,

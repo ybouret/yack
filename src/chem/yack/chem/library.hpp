@@ -41,22 +41,22 @@ namespace yack
             static const char clid[];           //!< chemical::library
             static const int  min_exp10 = -20;  //!< for concentration
             static const int  max_exp10 =   1;  //!< for concentration
-            static double    concentration(randomized::bits &) throw(); //!< random concentration
+            static double    concentration(randomized::bits &) noexcept; //!< random concentration
 
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            explicit library() throw();    //!< setup
-            virtual ~library() throw();    //!< cleanup
+            explicit library() noexcept;    //!< setup
+            virtual ~library() noexcept;    //!< cleanup
             library(const library &other); //!< hard copy
 
             //__________________________________________________________________
             //
             // readable interface
             //__________________________________________________________________
-            virtual size_t size() const throw();                           //!< number of species
-            virtual const_type & operator[](const size_t i) const throw(); //!< slow access
+            virtual size_t size() const noexcept;                           //!< number of species
+            virtual const_type & operator[](const size_t i) const noexcept; //!< slow access
 
             //__________________________________________________________________
             //
@@ -64,7 +64,7 @@ namespace yack
             //__________________________________________________________________
             void cfill(writable<double> &C, randomized::bits &ran) const; //!< fill random values C.size() >= size()
             
-            const   snode *head() const throw(); //!< sequential access
+            const   snode *head() const noexcept; //!< sequential access
 
             //! manual creation of a NEW species
             template <typename NAME> inline
@@ -76,7 +76,7 @@ namespace yack
 
             const species &operator()(const string &expr);        //!< on the fly parsing of new/existing species
             const species &operator()(const char   *expr);        //!< on the fly parsing of new/existing species
-            const species *look_up(const string &) const throw(); //!< no-throw look up a species by name
+            const species *look_up(const string &) const noexcept; //!< no-throw look up a species by name
             const species & operator[](const string &) const;     //!< access existing species by name
             const species & operator[](const char   *) const;     //!< access existing species by name
 

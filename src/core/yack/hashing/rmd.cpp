@@ -5,7 +5,7 @@ namespace yack
     
     namespace hashing
     {
-        rmd:: ~rmd() throw()
+        rmd:: ~rmd() noexcept
         {
             reset();
             memset(X,0,sizeof(X));
@@ -16,7 +16,7 @@ namespace yack
         // init B
 #pragma warning ( disable : 4351 )
 #endif
-        rmd:: rmd() throw() :
+        rmd:: rmd() noexcept :
         length(0),
         nx(0),
         nb(0),
@@ -28,14 +28,14 @@ namespace yack
         }
         
         
-        void rmd:: reset() throw()
+        void rmd:: reset() noexcept
         {
             coerce(length) = nx = nb = 0;
 
         }
         
 #define B2X() ( ( uint32_t(B[3]) << 24 ) |  ( uint32_t(B[2]) << 16 ) |  ( uint32_t(B[1]) << 8 ) | uint32_t(B[0]) )
-        bool rmd:: store( uint8_t b ) throw()
+        bool rmd:: store( uint8_t b ) noexcept
         {
             assert(nb<4);
             assert(nx<16);
@@ -54,7 +54,7 @@ namespace yack
             return false;
         }
         
-        const uint32_t * rmd:: block() const throw()
+        const uint32_t * rmd:: block() const noexcept
         {
             assert(0==nx);
             assert(0==nb);
@@ -62,7 +62,7 @@ namespace yack
             return X;
         }
         
-        const uint8_t * rmd:: flush() throw()
+        const uint8_t * rmd:: flush() noexcept
         {
             assert(nx<16);
             assert(nb<4);
@@ -72,12 +72,12 @@ namespace yack
             return (uint8_t *)X;
         }
         
-        uint32_t rmd:: lswlen() const throw()
+        uint32_t rmd:: lswlen() const noexcept
         {
             return uint32_t(length);
         }
         
-        uint32_t rmd:: mswlen() const throw()
+        uint32_t rmd:: mswlen() const noexcept
         {
             uint64_t tmp = length;
             tmp >>= 32;

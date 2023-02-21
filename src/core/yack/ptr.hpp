@@ -30,10 +30,10 @@ namespace yack
         //
         // methods
         //______________________________________________________________________
-        inline type       & operator*()        throw() { assert(pointee); return *pointee; } //!< access
-        inline const_type & operator*()  const throw() { assert(pointee); return *pointee; } //!< access, const
-        inline type       * operator->()       throw() { return pointee; }                   //!< transitive access
-        inline const_type * operator->() const throw() { return pointee; }                   //!< transistie access, const
+        inline type       & operator*()        noexcept { assert(pointee); return *pointee; } //!< access
+        inline const_type & operator*()  const noexcept { assert(pointee); return *pointee; } //!< access, const
+        inline type       * operator->()       noexcept { return pointee; }                   //!< transitive access
+        inline const_type * operator->() const noexcept { return pointee; }                   //!< transistie access, const
 
         //! smart display
         inline friend std::ostream & operator<<(std::ostream &os, const ptr<T> &self)
@@ -46,10 +46,10 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline virtual ~ptr() throw() { assert(NULL==pointee); }         //!< cleanup
+        inline virtual ~ptr() noexcept { assert(NULL==pointee); }         //!< cleanup
 
     protected:
-        explicit ptr(type *_) throw() : pointee( (mutable_type *)_ ) { } //!< setup
+        explicit ptr(type *_) noexcept : pointee( (mutable_type *)_ ) { } //!< setup
         mutable_type *pointee;                                           //!< the (protected) pointee
 
     private:

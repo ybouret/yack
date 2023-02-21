@@ -31,9 +31,9 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            zero_flux(const unit_t)     throw(); //!< setup
-            zero_flux(const zero_flux&) throw(); //!< copy
-            ~zero_flux() throw();                //!< cleanup
+            zero_flux(const unit_t)     noexcept; //!< setup
+            zero_flux(const zero_flux&) noexcept; //!< copy
+            ~zero_flux() noexcept;                //!< cleanup
 
             //__________________________________________________________________
             //
@@ -42,8 +42,8 @@ namespace yack
             const unit_t size; //!< size
             const unit_t szsz; //!< size*2
 
-            static  proc raw_proc_for(const zero_flux &self) throw(); //!< to map [0..size-1]
-            static  proc cxx_proc_for(const zero_flux &self) throw(); //!< to map [1..size]
+            static  proc raw_proc_for(const zero_flux &self) noexcept; //!< to map [0..size-1]
+            static  proc cxx_proc_for(const zero_flux &self) noexcept; //!< to map [1..size]
 
 
         private:
@@ -73,16 +73,16 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline  zero_flux_using(const unit_t           n) throw() : data(n),      proc( PROC(data) ) {} //!< setup
-        inline  zero_flux_using(const zero_flux_using &z) throw() : data(z.data), proc(z.proc)       {} //!< copy
-        inline ~zero_flux_using()                         throw() {}                                    //!< cleanup
+        inline  zero_flux_using(const unit_t           n) noexcept : data(n),      proc( PROC(data) ) {} //!< setup
+        inline  zero_flux_using(const zero_flux_using &z) noexcept : data(z.data), proc(z.proc)       {} //!< copy
+        inline ~zero_flux_using()                         noexcept {}                                    //!< cleanup
 
         //______________________________________________________________________
         //
         // methods
         //______________________________________________________________________
-        inline unit_t operator*()                   const throw() { return data.size; }       //!< size
-        inline unit_t operator()(const unit_t indx) const throw() { return proc(data,indx); } //!< output parameter
+        inline unit_t operator*()                   const noexcept { return data.size; }       //!< size
+        inline unit_t operator()(const unit_t indx) const noexcept { return proc(data,indx); } //!< output parameter
 
 
     private:

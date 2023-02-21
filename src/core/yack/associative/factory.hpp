@@ -24,10 +24,10 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~factory() throw();
+            virtual ~factory() noexcept;
 
         protected:
-            explicit factory() throw();
+            explicit factory() noexcept;
 
             //__________________________________________________________________
             //
@@ -67,8 +67,8 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline explicit factory() throw() : kernel::factory(), map_type() {} //!< setup
-        inline virtual ~factory() throw() {}                                 //!< cleanup
+        inline explicit factory() noexcept : kernel::factory(), map_type() {} //!< setup
+        inline virtual ~factory() noexcept {}                                 //!< cleanup
 
         //______________________________________________________________________
         //

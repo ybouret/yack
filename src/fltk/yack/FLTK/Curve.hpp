@@ -24,12 +24,12 @@ namespace yack
         public:
             explicit Curve(const string &id);
             explicit Curve(const char   *id);
-            virtual ~Curve() throw();
+            virtual ~Curve() noexcept;
             
             const string name;
             Fl_Color     color;
             
-            const string &key() const throw();
+            const string &key() const noexcept;
             typedef ark_ptr<string,Curve>      Ptr;
             typedef hash_set<string,Curve::Ptr> DB;
             
@@ -41,8 +41,8 @@ namespace yack
         class Curves : public Curve::DB
         {
         public:
-            explicit Curves() throw();
-            virtual ~Curves() throw();
+            explicit Curves() noexcept;
+            virtual ~Curves() noexcept;
             
             Curve & operator[]( const string &id ); //!< existing or create
             const Curve & operator[]( const string &id ) const; //! must exist

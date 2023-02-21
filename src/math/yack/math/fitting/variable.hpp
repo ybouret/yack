@@ -34,27 +34,27 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~variable() throw(); //!< cleanup
+                virtual ~variable() noexcept; //!< cleanup
 
 
                 //______________________________________________________________
                 //
                 // public virtual interface
                 //______________________________________________________________
-                virtual const string & alias()      const throw() = 0; //!< get alias anme
-                virtual bool           is_primary() const throw() = 0; //!< true/false
+                virtual const string & alias()      const noexcept = 0; //!< get alias anme
+                virtual bool           is_primary() const noexcept = 0; //!< true/false
 
                 //______________________________________________________________
                 //
                 // non virtual interface
                 //______________________________________________________________
-                const string & key()        const throw(); //!< name
-                size_t         operator*()  const throw(); //!< check indx()
-                bool           is_replica() const throw(); //!< !is_primary
+                const string & key()        const noexcept; //!< name
+                size_t         operator*()  const noexcept; //!< check indx()
+                bool           is_replica() const noexcept; //!< !is_primary
 
                 //! acces ARRAY item
                 template <typename ARRAY> inline
-                typename ARRAY::type & operator()(ARRAY &arr) const throw()
+                typename ARRAY::type & operator()(ARRAY &arr) const noexcept
                 {
                     assert( indx() >= 1 );
                     assert( indx() <= arr.size() );
@@ -63,7 +63,7 @@ namespace yack
 
                 //! access CONST ARRAY item
                 template <typename ARRAY> inline
-                typename ARRAY::const_type & operator()(const ARRAY &arr) const throw()
+                typename ARRAY::const_type & operator()(const ARRAY &arr) const noexcept
                 {
                     assert( indx() >= 1 );
                     assert( indx() <= arr.size() );
@@ -84,7 +84,7 @@ namespace yack
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(variable);
-                virtual size_t indx() const throw() = 0;
+                virtual size_t indx() const noexcept = 0;
             };
 
         }

@@ -7,10 +7,10 @@ namespace yack
     namespace chemical
     {
 
-        actors:: ~actors() throw() {}
+        actors:: ~actors() noexcept {}
 
 
-        actors:: actors() throw() :
+        actors:: actors() noexcept :
         molecularity(0),
         algebraic_Z(0),
         crew()
@@ -18,7 +18,7 @@ namespace yack
 
         }
 
-        const list_of<actor> * actors:: operator->() const throw()
+        const list_of<actor> * actors:: operator->() const noexcept
         {
             const list_of<actor> &self = crew;
             return &self;
@@ -39,7 +39,7 @@ namespace yack
             coerce(algebraic_Z) += int(nu)*sp.z;
         }
 
-        void actors:: remove_last() throw()
+        void actors:: remove_last() noexcept
         {
             assert(crew.size);
             const actor   *last = crew.tail;
@@ -52,7 +52,7 @@ namespace yack
             delete coerce(crew).pop_back();
         }
 
-        bool actors:: attached_to(const actor &lhs) const throw()
+        bool actors:: attached_to(const actor &lhs) const noexcept
         {
             const size_t j = **lhs;
             for(const actor *rhs=crew.head;rhs;rhs=rhs->next)
@@ -62,7 +62,7 @@ namespace yack
             return false;
         }
 
-        bool actors:: attached_to(const actors &other) const throw()
+        bool actors:: attached_to(const actors &other) const noexcept
         {
             for(const actor *lhs=other->head;lhs;lhs=lhs->next)
             {
@@ -117,7 +117,7 @@ namespace yack
         }
         
 
-        void actors:: move(writable<double> &C, const double xi) const throw()
+        void actors:: move(writable<double> &C, const double xi) const noexcept
         {
             for(const actor *a=crew.head;a;a=a->next)
             {
@@ -127,7 +127,7 @@ namespace yack
         }
 
 #if 0
-        void  actors:: mov_(writable<double> &C, const double xi) const throw()
+        void  actors:: mov_(writable<double> &C, const double xi) const noexcept
         {
             for(const actor *a=crew.head;a;a=a->next)
             {
@@ -137,7 +137,7 @@ namespace yack
         }
 #endif
 
-        bool actors:: are_genuinely_blocked_by(const readable<double> &C) const throw()
+        bool actors:: are_genuinely_blocked_by(const readable<double> &C) const noexcept
         {
             for(const actor *a=crew.head;a;a=a->next)
             {
@@ -147,7 +147,7 @@ namespace yack
         }
 
 #if 0
-        bool actors:: are_primarily_blocked_by(const readable<double> &C) const throw()
+        bool actors:: are_primarily_blocked_by(const readable<double> &C) const noexcept
         {
             for(const actor *a=crew.head;a;a=a->next)
             {
@@ -161,7 +161,7 @@ namespace yack
 
         
 
-        const xlimit     * actors:: genuine_limit(xlimit::field &xl, const readable<double> &C) const throw()
+        const xlimit     * actors:: genuine_limit(xlimit::field &xl, const readable<double> &C) const noexcept
         {
             assert(xl.num_bytes>=sizeof(xlimit));
             const actor *a = crew.head;
@@ -187,7 +187,7 @@ namespace yack
         }
 
 #if 0
-        const xlimit *actors:: primary_limit(const readable<double> &C) const throw()
+        const xlimit *actors:: primary_limit(const readable<double> &C) const noexcept
         {
             const actor *a  = crew.head;
 

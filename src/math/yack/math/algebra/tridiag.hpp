@@ -22,10 +22,10 @@ namespace yack {
         public:
             static const size_t  reserved = 4; //!< internal arrays
             const size_t         extraneous;   //!< extraneaous arrays
-            virtual ~tridiag_() throw();       //!< cleanup
+            virtual ~tridiag_() noexcept;       //!< cleanup
 
         protected:
-            explicit tridiag_(const size_t extra) throw(); //!< setup
+            explicit tridiag_(const size_t extra) noexcept; //!< setup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(tridiag_);
@@ -58,7 +58,7 @@ namespace yack {
             //__________________________________________________________________
 
             //! destructor
-            inline virtual ~tridiag() throw() {}
+            inline virtual ~tridiag() noexcept {}
 
             //! setup with size=n, at least 4 arrays
             explicit tridiag(const size_t n, const size_t extra_arrays = 0):
@@ -79,7 +79,7 @@ namespace yack {
             //
             //! get value at row i, column j
             //__________________________________________________________________
-            inline T operator()(const size_t i, const size_t j) const throw()
+            inline T operator()(const size_t i, const size_t j) const noexcept
             {
                 assert(i>0); assert(i<=mutual_size());
                 assert(j>0); assert(j<=mutual_size());
@@ -205,7 +205,7 @@ namespace yack {
 
         protected:
             //! get array [0..extraneous-1]
-            inline virtual const array_type & get_array(const size_t i) const throw()
+            inline virtual const array_type & get_array(const size_t i) const noexcept
             {
                 assert(i<extraneous);
                 const tableaux &tab = *this;

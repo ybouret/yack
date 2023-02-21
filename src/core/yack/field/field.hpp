@@ -24,8 +24,8 @@ namespace yack
         //
         // methods
         //______________________________________________________________________
-        const string  &key()     const throw(); //!< for sets
-        virtual size_t granted() const throw(); //!< wlen
+        const string  &key()     const noexcept; //!< for sets
+        virtual size_t granted() const noexcept; //!< wlen
 
         //______________________________________________________________________
         //
@@ -38,7 +38,7 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        virtual ~field() throw(); //!< cleanup
+        virtual ~field() noexcept; //!< cleanup
 
     protected:
         //! setup
@@ -86,7 +86,7 @@ namespace yack
         //______________________________________________________________________
 
         //! cleanup
-        inline virtual ~field_of() throw() {}
+        inline virtual ~field_of() noexcept {}
 
 
         //______________________________________________________________________
@@ -95,13 +95,13 @@ namespace yack
         //______________________________________________________________________
 
         //! access by [x,y,z,w]
-        inline const_type & operator()(const readable<unit_t> &coord) const throw()
+        inline const_type & operator()(const readable<unit_t> &coord) const noexcept
         {
             return fetch(coord);
         }
 
         //! access by [x,y,z,w]
-        inline type & operator()(const readable<unit_t> &coord) throw()
+        inline type & operator()(const readable<unit_t> &coord) noexcept
         {
             return (type&)fetch(coord);
         }
@@ -119,7 +119,7 @@ namespace yack
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(field_of);
 
-        virtual const_type & fetch(const readable<unit_t> &coord) const throw() = 0;
+        virtual const_type & fetch(const readable<unit_t> &coord) const noexcept = 0;
 
     };
 

@@ -30,19 +30,19 @@ namespace yack
             static const size_t h_offset = k_length+b_length;
 
             static inline
-            hasher &getHasher(void *wksp) throw()
+            hasher &getHasher(void *wksp) noexcept
             {
                 return *static_cast<hasher *>(out_of_reach::shift(wksp,h_offset));
             }
 
             static inline
-            sentry::key_t &getKey(void *wksp) throw()
+            sentry::key_t &getKey(void *wksp) noexcept
             {
                 return *static_cast<sentry::key_t *>(out_of_reach::address(wksp));
             }
 
             static inline
-            mblock & getBlk(void *wksp) throw()
+            mblock & getBlk(void *wksp) noexcept
             {
                 return *static_cast<mblock *>(out_of_reach::shift(wksp,k_length) );
             }
@@ -50,7 +50,7 @@ namespace yack
 
         }
 
-        void sentry:: setup(const char *file, const int line, const void *block_addr, const size_t block_size) throw()
+        void sentry:: setup(const char *file, const int line, const void *block_addr, const size_t block_size) noexcept
         {
             assert( yack_good(block_addr,block_size) );
             assert(NULL!=file);
@@ -89,14 +89,14 @@ namespace yack
         sentry:: sentry(const char  *file,
                         const int    line,
                         const void  *block_addr,
-                        const size_t block_size) throw():
+                        const size_t block_size) noexcept:
         wksp()
         {
             assert(yack_good(block_addr,block_size));
             setup(file,line,block_addr,block_size);
         }
 
-        sentry:: ~sentry() throw()
+        sentry:: ~sentry() noexcept
         {
             const key_t   K    = getKey(wksp);
             const mblock &B    = getBlk(wksp);
@@ -118,7 +118,7 @@ namespace yack
 
         }
 
-        sentry::key_t sentry:: operator*() const throw()
+        sentry::key_t sentry:: operator*() const noexcept
         {
             return getKey(wksp);
         }

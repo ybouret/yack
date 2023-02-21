@@ -17,12 +17,12 @@ namespace yack
     namespace ios
     {
 
-        ostream:: ~ostream() throw()
+        ostream:: ~ostream() noexcept
         {
         }
 
 
-        ostream:: ostream() throw()
+        ostream:: ostream() noexcept
         {
         }
 

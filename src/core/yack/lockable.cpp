@@ -4,20 +4,20 @@
 namespace yack
 {
 
-    lockable::  lockable() throw() {}
-    lockable:: ~lockable() throw() {}
+    lockable::  lockable() noexcept {}
+    lockable:: ~lockable() noexcept {}
 
-    lockable:: scope:: scope(lockable &args) throw() : host(args)
+    lockable:: scope:: scope(lockable &args) noexcept : host(args)
     {
         host.lock();
     }
 
-    lockable:: scope:: ~scope() throw()
+    lockable:: scope:: ~scope() noexcept
     {
         host.unlock();
     }
 
-    return_unlocked::  return_unlocked(lockable &args) throw() : host(args) {}
-    return_unlocked:: ~return_unlocked() throw() { host.unlock(); }
+    return_unlocked::  return_unlocked(lockable &args) noexcept : host(args) {}
+    return_unlocked:: ~return_unlocked() noexcept { host.unlock(); }
 
 }

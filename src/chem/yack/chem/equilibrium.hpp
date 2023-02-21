@@ -36,14 +36,14 @@ namespace yack
             // methods
             //__________________________________________________________________
             double             K(double)               const;                                 //!< non-virtual, checkin getK()
-            const components & content()               const throw();                         //!< cast
+            const components & content()               const noexcept;                         //!< cast
             friend             std::ostream & operator<<(std::ostream &, const equilibrium&); //!< display
             
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            virtual ~equilibrium() throw();  //!< cleanup
+            virtual ~equilibrium() noexcept;  //!< cleanup
 
             const void *info; //!< reserved
 

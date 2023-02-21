@@ -12,22 +12,22 @@ namespace yack
         
         uint64_t ram_ = 0;
 
-        uint64_t ram:: allocated() throw()
+        uint64_t ram:: allocated() noexcept
         {
             return ram_;
         }
 
-        ram:: ram() throw()
+        ram:: ram() noexcept
         {
         }
 
-        ram:: ~ram() throw()
+        ram:: ~ram() noexcept
         {
             
         }
         
 
-        const char * ram:: variety() const throw() { return "RAM"; }
+        const char * ram:: variety() const noexcept { return "RAM"; }
 
         void * ram:: acquire(size_t &count,  const size_t block_size)
         {
@@ -59,7 +59,7 @@ namespace yack
             if(size>ram_) system_error::critical_bsd(EACCES,"ram::release(more than allocated)");
         }
 
-        void  ram::release(void * &addr, size_t &size) throw()
+        void  ram::release(void * &addr, size_t &size) noexcept
         {
             if(addr)
             {

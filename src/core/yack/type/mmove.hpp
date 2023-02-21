@@ -13,7 +13,7 @@ namespace yack
     //! inline mmove of POD type
     //__________________________________________________________________________
     template <typename T> inline
-    void mmove(T &lhs, const T &rhs) throw()
+    void mmove(T &lhs, const T &rhs) noexcept
     {
         out_of_reach::move(&lhs,&rhs,sizeof(T));
     }

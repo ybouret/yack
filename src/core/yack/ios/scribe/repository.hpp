@@ -58,7 +58,7 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(scribes);
             friend class singleton<scribes>;
             explicit scribes();
-            virtual ~scribes() throw();
+            virtual ~scribes() noexcept;
             void          use(scribe *);
             void          chk(scribe *);
             const scribe &get(const std::type_info &tid) const;

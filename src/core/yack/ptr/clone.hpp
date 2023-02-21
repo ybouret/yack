@@ -33,10 +33,10 @@ namespace yack
         //______________________________________________________________________
         
         //! setup empty
-        inline clone_ptr() throw() : ptr<T>(0) {}
+        inline clone_ptr() noexcept : ptr<T>(0) {}
         
         //! setup anything
-        inline clone_ptr(type *addr) throw() : ptr<T>(addr)
+        inline clone_ptr(type *addr) noexcept : ptr<T>(addr)
         {
             assert(NULL!=pointee);
         }
@@ -46,7 +46,7 @@ namespace yack
         
         
         //! cleanup
-        inline virtual ~clone_ptr() throw() {
+        inline virtual ~clone_ptr() noexcept {
             assert(pointee);
             delete pointee;
             pointee = NULL;

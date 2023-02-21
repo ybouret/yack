@@ -8,9 +8,9 @@ namespace yack
     namespace math
     {
 
-        size_t crout_:: granted() const throw() { return wlen; }
+        size_t crout_:: granted() const noexcept { return wlen; }
 
-        crout_:: ~crout_() throw()
+        crout_:: ~crout_() noexcept
         {
             static memory::allocator &mgr = memory::dyadic::location();
             coerce(nmax) = 0;

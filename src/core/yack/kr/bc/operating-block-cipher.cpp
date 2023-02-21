@@ -5,7 +5,7 @@ namespace yack {
     
     namespace crypto
     {
-        operating_block_cipher:: ~operating_block_cipher() throw()
+        operating_block_cipher:: ~operating_block_cipher() noexcept
         {
             
         }
@@ -17,7 +17,7 @@ namespace yack {
         {
         }
         
-        size_t operating_block_cipher:: size() const throw() { return bc->size(); }
+        size_t operating_block_cipher:: size() const noexcept { return bc->size(); }
         
     }
     

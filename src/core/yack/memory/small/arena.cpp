@@ -18,7 +18,7 @@ namespace yack
         
         typedef list_of<chunk> chunks_list;
 
-        void arena:: kill(chunk *ch) throw()
+        void arena:: kill(chunk *ch) noexcept
         {
             assert(ch);
             assert(NULL==ch->next);
@@ -28,7 +28,7 @@ namespace yack
             chunk::delete_frame(ch,frame_size,providing);
         }
         
-        arena:: ~arena() throw()
+        arena:: ~arena() noexcept
         {
             size_t       missing = 0;
             {
@@ -128,7 +128,7 @@ namespace yack
     
     namespace memory
     {
-        void *arena:: give() throw()
+        void *arena:: give() noexcept
         {
             //------------------------------------------------------------------
             //
@@ -252,7 +252,7 @@ namespace yack
     namespace memory
     {
         
-        void  arena:: take(void *addr)  throw()
+        void  arena:: take(void *addr)  noexcept
         {
             //------------------------------------------------------------------
             //
@@ -349,7 +349,7 @@ namespace yack
         static inline
         void search_prev(chunk *    & releasing,
                          const void * addr,
-                         const size_t bs) throw()
+                         const size_t bs) noexcept
         {
             for(releasing=releasing->prev;releasing;releasing=releasing->prev)
             {
@@ -361,7 +361,7 @@ namespace yack
         static inline
         void search_next(chunk *   &  releasing,
                          const void  *addr,
-                         const size_t bs) throw()
+                         const size_t bs) noexcept
         {
             for(releasing=releasing->next;releasing;releasing=releasing->next)
             {
@@ -370,7 +370,7 @@ namespace yack
             search_error(bs);
         }
 
-        void arena::find(void *addr)  throw()
+        void arena::find(void *addr)  noexcept
         {
             assert(addr);
             assert(releasing);
@@ -383,20 +383,20 @@ namespace yack
         }
 
 
-        void  arena:: release(void *addr) throw()
+        void  arena:: release(void *addr) noexcept
         {
             find(addr);
             take(addr);
         }
 
-        void  arena:: expunge(void *addr) throw()
+        void  arena:: expunge(void *addr) noexcept
         {
             find(addr);
             memset(addr,0,block_size);
             take(addr);
         }
 
-        size_t arena:: wasted() const throw()
+        size_t arena:: wasted() const noexcept
         {
             return frame_size - block_size * new_blocks - sizeof(chunk);
         }

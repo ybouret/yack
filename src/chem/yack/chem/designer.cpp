@@ -20,7 +20,7 @@ namespace yack
 
         const char * const designer:: call_sign = "chemical::designer";
 
-        designer:: ~designer() throw()
+        designer:: ~designer() noexcept
         {
         }
 

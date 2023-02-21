@@ -7,7 +7,7 @@ namespace yack
 
         namespace
         {
-            static inline real_t cswap_incr(real_t &xmin, real_t &xmax) throw()
+            static inline real_t cswap_incr(real_t &xmin, real_t &xmax) noexcept
             {
                 if(xmax<xmin) cswap(xmin,xmax);
                 assert(xmin<=xmax);

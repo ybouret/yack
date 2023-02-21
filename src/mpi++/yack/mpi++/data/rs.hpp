@@ -37,7 +37,7 @@ namespace yack
             // C++
             //__________________________________________________________________
             explicit data_rs(const data_types &native); //!< setup with built-in types
-            virtual ~data_rs() throw();                 //!< cleanup
+            virtual ~data_rs() noexcept;                 //!< cleanup
 
             //__________________________________________________________________
             //

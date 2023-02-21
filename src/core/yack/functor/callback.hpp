@@ -37,7 +37,7 @@ namespace yack {
             explicit callback( const FUNCTION &fn ) : function_( fn ) {}
 
             //! destructor
-            virtual ~callback() throw()    {}
+            virtual ~callback() noexcept    {}
 
             //__________________________________________________________________
             //

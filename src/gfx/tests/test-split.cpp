@@ -10,7 +10,7 @@ using namespace yack;
 using namespace graphic;
 
 template <size_t CH>
-void get_chan( rgba &target, const uint8_t &source ) throw()
+void get_chan( rgba &target, const uint8_t &source ) noexcept
 {
     target.r = target.g = target.b = 0;
     target.a = 0xff;

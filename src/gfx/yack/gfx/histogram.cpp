@@ -8,33 +8,33 @@ namespace yack
     namespace graphic
     {
 
-        histogram:: ~histogram() throw()
+        histogram:: ~histogram() noexcept
         {
             reset();
         }
 
-        histogram:: histogram() throw() :
+        histogram:: histogram() noexcept :
         bin()
         {
             reset();
         }
 
-        void histogram:: reset() throw()
+        void histogram:: reset() noexcept
         {
             memset(bin,0,sizeof(bin));
         }
 
-        size_t & histogram:: operator[](const uint8_t i) throw()
+        size_t & histogram:: operator[](const uint8_t i) noexcept
         {
             return bin[i];
         }
 
-        const size_t & histogram:: operator[](const uint8_t i) const throw()
+        const size_t & histogram:: operator[](const uint8_t i) const noexcept
         {
             return bin[i];
         }
 
-        void  histogram:: merge(const histogram &H) throw()
+        void  histogram:: merge(const histogram &H) noexcept
         {
             for(size_t i=0;i<bins;++i)
             {
@@ -42,7 +42,7 @@ namespace yack
             }
         }
 
-        size_t histogram:: cardinality() const throw()
+        size_t histogram:: cardinality() const noexcept
         {
             size_t res = bin[0];
             for(size_t i=1;i<bins;++i)
@@ -52,14 +52,14 @@ namespace yack
             return res;
         }
 
-        histogram:: histogram(const histogram &other) throw() :
+        histogram:: histogram(const histogram &other) noexcept :
         bin()
         {
             memcpy(bin,other.bin,sizeof(bin));
         }
 
 
-        histogram & histogram:: operator=(const histogram &other) throw()
+        histogram & histogram:: operator=(const histogram &other) noexcept
         {
             memmove(bin,other.bin,sizeof(bin));
             return *this;
@@ -81,7 +81,7 @@ namespace yack
             save(_);
         }
 
-        uint8_t histogram:: Otsu() const throw()
+        uint8_t histogram:: Otsu() const noexcept
         {
             // Total number of pixels
             size_t total = cardinality();

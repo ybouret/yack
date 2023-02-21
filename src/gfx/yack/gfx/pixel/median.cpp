@@ -13,7 +13,7 @@ namespace yack
     namespace graphic
     {
         template <typename T> static inline
-        T scalar_median9(T arr[]) throw()
+        T scalar_median9(T arr[]) noexcept
         {
             static const network_sort9 nwsrt9;
 
@@ -26,17 +26,17 @@ namespace yack
         }
 
 
-        template <> void pixel<uint8_t>:: median3x3(uint8_t &res, uint8_t arr[]) throw()
+        template <> void pixel<uint8_t>:: median3x3(uint8_t &res, uint8_t arr[]) noexcept
         {
             res = scalar_median9(arr);
         }
 
-        template <> void pixel<float>:: median3x3(float &res, float arr[]) throw()
+        template <> void pixel<float>:: median3x3(float &res, float arr[]) noexcept
         {
             res = scalar_median9(arr);
         }
 
-        template <> void pixel<double>:: median3x3(double &res, double arr[]) throw()
+        template <> void pixel<double>:: median3x3(double &res, double arr[]) noexcept
         {
             res = scalar_median9(arr);
         }
@@ -45,13 +45,13 @@ namespace yack
     namespace graphic
     {
         template <typename COLOR> static inline
-        float _I(const COLOR &C) throw()
+        float _I(const COLOR &C) noexcept
         {
             return float( int(C.r) + int(C.g) + int(C.b) );
         }
 
         template <typename PIXEL> static inline
-        PIXEL vector_median9(const PIXEL arr[]) throw()
+        PIXEL vector_median9(const PIXEL arr[]) noexcept
         {
             static const network_sort9 nwsrt9;
 
@@ -72,12 +72,12 @@ namespace yack
             return arr[J[4]];
         }
 
-        template<> void pixel<rgba>::median3x3(rgba &res, rgba  arr[]) throw()
+        template<> void pixel<rgba>::median3x3(rgba &res, rgba  arr[]) noexcept
         {
             res = vector_median9(arr);
         }
 
-        template<> void pixel<rgb>::median3x3(rgb &res, rgb  arr[]) throw()
+        template<> void pixel<rgb>::median3x3(rgb &res, rgb  arr[]) noexcept
         {
             res = vector_median9(arr);
         }

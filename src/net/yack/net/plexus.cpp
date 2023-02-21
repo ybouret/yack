@@ -11,7 +11,7 @@ namespace yack
     {
         bool plexus::verbose = false;
 
-        plexus:: ~plexus() throw()
+        plexus:: ~plexus() noexcept
         {
             YACK_NET_PRINTLN( '[' << call_sign << ".cleanup " << hostname << ']');
         }
@@ -51,7 +51,7 @@ namespace yack
             return ip_version_from( text() );
         }
 
-        const char    * plexus:: ip_version_text(const  ip_version pf) const throw()
+        const char    * plexus:: ip_version_text(const  ip_version pf) const noexcept
         {
             switch(pf)
             {
@@ -61,7 +61,7 @@ namespace yack
             return yack_unknown;
         }
 
-        const char * plexus:: ip_protocol_text(const net::ip_protocol proto) const throw()
+        const char * plexus:: ip_protocol_text(const net::ip_protocol proto) const noexcept
         {
             switch(proto)
             {

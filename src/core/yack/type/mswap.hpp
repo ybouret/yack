@@ -13,7 +13,7 @@ namespace yack
     //! inline mswap of POD type
     //__________________________________________________________________________
     template <typename T> inline
-    void mswap(T &lhs, T &rhs) throw()
+    void mswap(T &lhs, T &rhs) noexcept
     {
         uint8_t   *p = static_cast<uint8_t *>( out_of_reach::address(&lhs) );
         uint8_t   *q = static_cast<uint8_t *>( out_of_reach::address(&rhs) );

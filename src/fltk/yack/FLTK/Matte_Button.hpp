@@ -45,7 +45,7 @@ namespace yack
             }
         public:
             Matte_Button(int,int,int,int,const char * = 0);
-            virtual ~Matte_Button() throw();
+            virtual ~Matte_Button() noexcept;
         private:
             Matte_Button( const Matte_Button & );
             Matte_Button &operator=( const Matte_Button & );

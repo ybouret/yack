@@ -34,7 +34,7 @@ namespace yack
                 // C++
                 //______________________________________________________________
                 explicit midpoint();
-                virtual ~midpoint() throw();
+                virtual ~midpoint() noexcept;
 
                 //______________________________________________________________
                 //

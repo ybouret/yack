@@ -7,11 +7,11 @@ namespace yack
 {
     namespace concurrent
     {
-        loop:: ~loop() throw()
+        loop:: ~loop() noexcept
         {
         }
 
-        loop::loop() throw() :
+        loop::loop() noexcept :
         object(),
         counted(),
         assembly()
@@ -20,12 +20,12 @@ namespace yack
 
 
         
-        void loop:: run(runnable &obj) throw()
+        void loop:: run(runnable &obj) noexcept
         {
             (*this)(runnable::call,&obj);
         }
 
-        double loop:: efficiency(const double seq, const double par) const throw()
+        double loop:: efficiency(const double seq, const double par) const noexcept
         {
             assert(seq>0);
             assert(par>0);

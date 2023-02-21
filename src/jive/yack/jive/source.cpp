@@ -6,11 +6,11 @@ namespace yack
 {
     namespace jive
     {
-        source:: ~source() throw()
+        source:: ~source() noexcept
         {
         }
 
-        source:: source(module *m) throw() :
+        source:: source(module *m) noexcept :
         intake(m),
         cache()
         {
@@ -29,13 +29,13 @@ namespace yack
             }
         }
 
-        void source::store(character *ch) throw()
+        void source::store(character *ch) noexcept
         {
             assert(ch);
             cache.push_front(ch);
         }
 
-        void source:: store(token &t) throw()
+        void source:: store(token &t) noexcept
         {
             cache.merge_front(t);
         }
@@ -70,13 +70,13 @@ namespace yack
             return NULL == peek();
         }
 
-        void source:: skip() throw()
+        void source:: skip() noexcept
         {
             assert(cache.size>0);
             delete cache.pop_front();
         }
 
-        void source:: skip(size_t n) throw()
+        void source:: skip(size_t n) noexcept
         {
             assert(cache.size>=n);
             while(n-- > 0)
@@ -86,13 +86,13 @@ namespace yack
             }
         }
 
-        module & source:: operator*() throw()
+        module & source:: operator*() noexcept
         {
             assert(intake.is_valid());
             return *intake;
         }
 
-        size_t source:: read() const throw()
+        size_t source:: read() const noexcept
         {
             return cache.size;
         }

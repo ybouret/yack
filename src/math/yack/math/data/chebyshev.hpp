@@ -34,7 +34,7 @@ namespace yack
             // C++
             //__________________________________________________________________
             explicit chebyshev();          //!< setup
-            virtual ~chebyshev() throw();  //!< cleanup
+            virtual ~chebyshev() noexcept;  //!< cleanup
 
             //__________________________________________________________________
             //
@@ -51,7 +51,7 @@ namespace yack
             }
 
             //! evaluate at x with order m<=n (mutual_size())
-            T at(const T x, const T a, const T b, const size_t m) const throw();
+            T at(const T x, const T a, const T b, const size_t m) const noexcept;
             
 
 
@@ -61,7 +61,7 @@ namespace yack
             array_type &f;
             array_type &p;
 
-            void coef(const size_t) throw();
+            void coef(const size_t) noexcept;
 
             template <typename FUNC> inline
             void load(FUNC       &func,

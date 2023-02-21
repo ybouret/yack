@@ -4,7 +4,7 @@ namespace yack
 {
     namespace apex
     {
-        void integer:: neg() throw()
+        void integer:: neg() noexcept
         {
             coerce(s) =  __sign::opposite(s);
         }

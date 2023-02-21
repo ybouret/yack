@@ -28,7 +28,7 @@ namespace yack
 
             const char istream:: clid[] = "bz::istream";
 
-            istream:: ~istream() throw()
+            istream:: ~istream() noexcept
             {
                 assert(handle);
                 int     err = BZ_OK;

@@ -31,26 +31,26 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        virtual ~exception()           throw();                 //!< cleanup
-        exception()                    throw();                 //!< setup empty
-        exception(const exception &)   throw();                 //!< nothrow copy
-        exception(const char *fmt,...) throw() YACK_PRINTF_API; //!< setup with format
+        virtual ~exception()           noexcept;                 //!< cleanup
+        exception()                    noexcept;                 //!< setup empty
+        exception(const exception &)   noexcept;                 //!< nothrow copy
+        exception(const char *fmt,...) noexcept YACK_PRINTF_API; //!< setup with format
 
         //______________________________________________________________________
         //
         // formatting methods
         //______________________________________________________________________
-        exception &add(const char *fmt,...)  throw() YACK_PRINTF_API; //!< append a formatted text
-        exception &pre(const char *fmt,...)  throw() YACK_PRINTF_API; //!< prepend a formatted text
-        exception & operator<<(const char  ) throw();                 //!< append a character
-        exception & operator<<(const char *) throw();                 //!< append a text
+        exception &add(const char *fmt,...)  noexcept YACK_PRINTF_API; //!< append a formatted text
+        exception &pre(const char *fmt,...)  noexcept YACK_PRINTF_API; //!< prepend a formatted text
+        exception & operator<<(const char  ) noexcept;                 //!< append a character
+        exception & operator<<(const char *) noexcept;                 //!< append a text
 
         //______________________________________________________________________
         //
         // output methods
         //______________________________________________________________________
-        virtual const char *what() const throw();          //!< what_text is the default
-        const char         *when() const throw();          //!< internal buffer
+        virtual const char *what() const noexcept;          //!< what_text is the default
+        const char         *when() const noexcept;          //!< internal buffer
         void                show(std::ostream &os) const;  //!< cosmetics
 
         //______________________________________________________________________
@@ -59,14 +59,14 @@ namespace yack
         //______________________________________________________________________
 
         //! format using vsnprintf, args is the address of a va_list
-        static void failsafe_format(char *buffer, const size_t buflen, const char *fmt, void *args) throw();
+        static void failsafe_format(char *buffer, const size_t buflen, const char *fmt, void *args) noexcept;
 
     protected:
         char info[when_size]; //!< internal buffer to store info
         
     private:
         YACK_DISABLE_ASSIGN(exception);
-        void clear() throw();
+        void clear() noexcept;
     };
 
 }

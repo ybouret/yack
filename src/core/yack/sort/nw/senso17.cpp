@@ -2,8 +2,8 @@
 namespace yack {
   namespace nwsrt {
     const char senso17 :: sid[] ="senso17";
-    senso17 :: ~senso17() throw() {}
-    senso17 ::  senso17() throw() : swaps(sid,17,0x0047,lhs,rhs) {}
+    senso17 :: ~senso17() noexcept {}
+    senso17 ::  senso17() noexcept : swaps(sid,17,0x0047,lhs,rhs) {}
     const size_t senso17 :: lhs[0x0047] = {
  0x0006, 0x0005, 0x0008, 0x0001, 0x0003, 0x0002, 0x0004, 0x0007,
  0x0004, 0x0009, 0x0005, 0x000a, 0x0001, 0x000f, 0x0002, 0x000b,

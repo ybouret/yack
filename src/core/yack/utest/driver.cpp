@@ -3,12 +3,12 @@
 
 namespace yack
 {
-    unit_test:: ~unit_test() throw()
+    unit_test:: ~unit_test() noexcept
     {
 
     }
 
-    unit_test:: unit_test(const char *name_, proc func_) throw() :
+    unit_test:: unit_test(const char *name_, proc func_) noexcept :
     name(name_),
     func(func_)
     {
@@ -30,7 +30,7 @@ namespace yack
     }
 
 
-    bool unit_test:: is_near(const char *other) const throw()
+    bool unit_test:: is_near(const char *other) const noexcept
     {
         assert(NULL!=other);
 
@@ -46,17 +46,17 @@ namespace yack
     }
 
 
-    void unit_tests:: clear() throw()
+    void unit_tests:: clear() noexcept
     {
         out_of_reach::zset(utest,sizeof(unit_test)*capacity);
     }
 
-    unit_tests:: ~unit_tests() throw()
+    unit_tests:: ~unit_tests() noexcept
     {
         clear();
     }
 
-    unit_tests:: unit_tests(void *addr, const size_t size) throw() :
+    unit_tests:: unit_tests(void *addr, const size_t size) noexcept :
     utest( static_cast<unit_test*>(addr) ),
     count(0),
     width(0),
@@ -66,7 +66,7 @@ namespace yack
         clear();
     }
 
-    unit_test *unit_tests:: query(const char *name) throw()
+    unit_test *unit_tests:: query(const char *name) noexcept
     {
         assert(NULL!=name);
         for(size_t i=0;i<count;++i)
@@ -82,7 +82,7 @@ namespace yack
 
 
     int  unit_tests:: operator()(const char     *name,
-                                 unit_test::proc func) throw()
+                                 unit_test::proc func) noexcept
     {
         assert(NULL!=name);
         assert(NULL!=func);
@@ -103,7 +103,7 @@ namespace yack
         return 0;
     }
 
-    static inline int compare_unit_tests(const void *lhs, const void *rhs) throw()
+    static inline int compare_unit_tests(const void *lhs, const void *rhs) noexcept
     {
         assert(NULL!=lhs);
         assert(NULL!=rhs);
@@ -113,7 +113,7 @@ namespace yack
     }
 
     int unit_tests:: operator()(int      argc,
-                                char **  argv) throw()
+                                char **  argv) noexcept
     {
 
         qsort(utest,count,sizeof(unit_test),compare_unit_tests);

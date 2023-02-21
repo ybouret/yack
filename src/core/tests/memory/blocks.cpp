@@ -10,11 +10,11 @@ namespace
     class block
     {
     public:
-        inline block(void *p, size_t n) throw() : next(0), prev(0), addr(p), size(n)
+        inline block(void *p, size_t n) noexcept : next(0), prev(0), addr(p), size(n)
         {
         }
 
-        inline ~block() throw()
+        inline ~block() noexcept
         {
         }
 

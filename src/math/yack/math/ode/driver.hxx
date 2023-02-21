@@ -5,7 +5,7 @@ namespace yack
     {
         namespace ode
         {
-            template <> driver<real_t>:: ~driver() throw() {}
+            template <> driver<real_t>:: ~driver() noexcept {}
             template <> driver<real_t>::  driver() :
             entity(),
             tableaux(3,0),

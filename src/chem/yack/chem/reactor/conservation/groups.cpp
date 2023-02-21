@@ -5,14 +5,14 @@ namespace yack
 {
     namespace chemical
     {
-        clots:: clots() throw() :
+        clots:: clots() noexcept :
         object(),
         cxx_list_of<clot>()
         {
 
         }
 
-        clots:: ~clots() throw()
+        clots:: ~clots() noexcept
         {
         }
 

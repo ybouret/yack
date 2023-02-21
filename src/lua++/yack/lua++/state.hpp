@@ -35,7 +35,7 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~State() throw(); //!< lua_close
+            virtual ~State() noexcept; //!< lua_close
             explicit State();         //!< lua_newstate
 
             //__________________________________________________________________
@@ -59,7 +59,7 @@ namespace yack
             }
 
             //! return type at idx
-            int type(const int idx) throw();
+            int type(const int idx) noexcept;
 
 
             //! getglobal and convert
@@ -87,7 +87,7 @@ namespace yack
             }
 
             //! access operator
-            lua_State * operator*() throw();
+            lua_State * operator*() noexcept;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(State);

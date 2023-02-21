@@ -33,10 +33,10 @@ namespace yack
             //__________________________________________________________________
             
             //! cleanup
-            virtual ~gradient() throw();
+            virtual ~gradient() noexcept;
             
             //! setup
-            explicit gradient(const derivative_ptr &, const T = 1e-4) throw();
+            explicit gradient(const derivative_ptr &, const T = 1e-4) noexcept;
 
             //__________________________________________________________________
             //

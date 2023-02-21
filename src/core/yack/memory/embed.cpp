@@ -9,11 +9,11 @@ namespace yack
 {
     namespace memory
     {
-        embed::~embed() throw()
+        embed::~embed() noexcept
         {
         }
         
-        embed::embed(const embed &other) throw() :
+        embed::embed(const embed &other) noexcept :
         handle(other.handle),
         offset(other.offset),
         length(other.length),
@@ -21,14 +21,14 @@ namespace yack
         {
         }
 
-        void embed:: cxx() throw()
+        void embed:: cxx() noexcept
         {
             assert(handle);
             const ptrdiff_t offset = -ptrdiff_t(width_);
             *handle = out_of_reach::shift(*handle,offset);
         }
 
-        void  embed:: cxx(embed emb[],const size_t num) throw()
+        void  embed:: cxx(embed emb[],const size_t num) noexcept
         {
             assert(!(0==emb&&num>0));
             for(size_t i=0;i<num;++i) emb[i].cxx();

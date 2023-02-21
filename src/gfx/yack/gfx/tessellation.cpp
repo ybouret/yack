@@ -6,7 +6,7 @@ namespace yack
     namespace graphic
     {
 
-        tessellation:: ~tessellation() throw()
+        tessellation:: ~tessellation() noexcept
         {
         }
 

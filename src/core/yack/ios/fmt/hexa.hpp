@@ -27,14 +27,14 @@ namespace yack
             //__________________________________________________________________
             //! setup
             template <typename T>
-            inline hexa(const T x,const bool full=false) throw() :
+            inline hexa(const T x,const bool full=false) noexcept :
             qword( uint64_t(x)  ),
             count( full? sizeof(T) : width(qword) )
             {
             }
 
-            hexa(const hexa &_) throw(); //!< copy
-            ~hexa() throw();             //!< cleanup
+            hexa(const hexa &_) noexcept; //!< copy
+            ~hexa() noexcept;             //!< cleanup
 
             //__________________________________________________________________
             //
@@ -43,7 +43,7 @@ namespace yack
 
             //! load textual data
             template <typename T>
-            static size_t text(char tab[], const T x) throw()
+            static size_t text(char tab[], const T x) noexcept
             {
                 const hexa _(x);
                 return _.load(tab);
@@ -57,9 +57,9 @@ namespace yack
             YACK_DISABLE_ASSIGN(hexa);
             const uint64_t qword;
             const size_t   count;
-            static size_t  width(const uint64_t) throw();
+            static size_t  width(const uint64_t) noexcept;
             //! load chars in tab[0..15], return number of chars
-            size_t load(char tab[]) const throw();
+            size_t load(char tab[]) const noexcept;
 
 
         };

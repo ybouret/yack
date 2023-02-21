@@ -38,8 +38,8 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline explicit klist() throw() : list_type() {}       //!< setup empty
-        inline virtual ~klist() throw() {}                     //!< cleanup
+        inline explicit klist() noexcept : list_type() {}       //!< setup empty
+        inline virtual ~klist() noexcept {}                     //!< cleanup
         inline klist(const klist &other) : list_type(other) {} //!< hard-copy
         //!assign by copy/swap
         inline klist & operator=(const klist &other) {
@@ -67,20 +67,20 @@ namespace yack
         inline type & append_front(param_type args) { return **(this->push_front( new NODE(args) )); }
 
         
-        inline type       & front()       throw() { assert(size>0); return **head; } //!< get front item
-        inline const_type & front() const throw() { assert(size>0); return **head; } //!< get front item, const
+        inline type       & front()       noexcept { assert(size>0); return **head; } //!< get front item
+        inline const_type & front() const noexcept { assert(size>0); return **head; } //!< get front item, const
 
-        inline type       & back()       throw() { assert(size>0); return **tail; }  //!< get back item
-        inline const_type & back() const throw() { assert(size>0); return **tail; }  //!< get back item, const
+        inline type       & back()       noexcept { assert(size>0); return **tail; }  //!< get back item
+        inline const_type & back() const noexcept { assert(size>0); return **tail; }  //!< get back item, const
 
-        inline void trim() throw() { delete this->pop_back();  }                      //!< delete pop_back
-        inline void skip() throw() { delete this->pop_front(); }                      //!< delete pop_front
+        inline void trim() noexcept { delete this->pop_back();  }                      //!< delete pop_back
+        inline void skip() noexcept { delete this->pop_front(); }                      //!< delete pop_front
 
         inline type pull_back()  { const_type temp = **tail; trim(); return temp; } //!< copy back/delete/return copy
         inline type pull_front() { const_type temp = **head; skip(); return temp; } //!< copy front/delete/return copy
 
-        inline void trim(size_t n) throw() { while(n-- > 0) delete this->pop_back();  } //!< trim last n values
-        inline void skip(size_t n) throw() { while(n-- > 0) delete this->pop_front(); } //!< skip fist n values
+        inline void trim(size_t n) noexcept { while(n-- > 0) delete this->pop_back();  } //!< trim last n values
+        inline void skip(size_t n) noexcept { while(n-- > 0) delete this->pop_front(); } //!< skip fist n values
 
         //! helper
         inline klist & operator<<(param_type args) {

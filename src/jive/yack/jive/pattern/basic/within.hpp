@@ -30,8 +30,8 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit within(const uint8_t, const uint8_t) throw(); //!< setup lower/upper
-            virtual ~within()                             throw(); //!< cleanup
+            explicit within(const uint8_t, const uint8_t) noexcept; //!< setup lower/upper
+            virtual ~within()                             noexcept; //!< cleanup
 
             //__________________________________________________________________
             //
@@ -42,20 +42,20 @@ namespace yack
             virtual void     firsts(first_bytes  &) const;         //!< one domain
             virtual void     encode(ios::ostream &) const;         //!< graphviz
             virtual pattern *clone()                const;         //!< clone
-            virtual bool     is_univocal()  const throw();         //!< true if lower==upper
+            virtual bool     is_univocal()  const noexcept;         //!< true if lower==upper
 
             //__________________________________________________________________
             //
             // serializable interfacer
             //__________________________________________________________________
-            virtual const char *class_uid() const throw();       //!< clid
+            virtual const char *class_uid() const noexcept;       //!< clid
             virtual size_t      serialize(ios::ostream &) const; //!< mark+lower and upper
 
             //__________________________________________________________________
             //
             // method
             //__________________________________________________________________
-            bool is_same_than(const within *other) const throw();            //!< same boundaries
+            bool is_same_than(const within *other) const noexcept;            //!< same boundaries
             friend std::ostream & operator<<(std::ostream &,const within &); //!< display
 
 

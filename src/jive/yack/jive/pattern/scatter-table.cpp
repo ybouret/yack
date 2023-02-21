@@ -6,22 +6,22 @@ namespace yack
     namespace jive
     {
 
-        scatter:: node:: node(const void *h) throw() :
+        scatter:: node:: node(const void *h) noexcept :
         object(),
         next(0),
         data(h)
         {}
 
-        scatter:: node:: node(const node &other) throw() :
+        scatter:: node:: node(const node &other) noexcept :
         object(),
         next(0),
         data(other.data)
         {}
 
 
-        scatter:: node:: ~node() throw() {}
+        scatter:: node:: ~node() noexcept {}
 
-        const void * scatter:: node:: operator*() const throw()
+        const void * scatter:: node:: operator*() const noexcept
         {
             return data;
         }
@@ -36,10 +36,10 @@ namespace yack
 {
     namespace jive
     {
-        scatter:: hasher::  hasher() throw() {}
-        scatter:: hasher:: ~hasher() throw() {}
+        scatter:: hasher::  hasher() noexcept {}
+        scatter:: hasher:: ~hasher() noexcept {}
 
-        size_t scatter::hasher:: operator()(const uint8_t &code) const throw()
+        size_t scatter::hasher:: operator()(const uint8_t &code) const noexcept
         {
             return code;
         }
@@ -57,9 +57,9 @@ namespace yack
 {
     namespace jive
     {
-        scatter:: table:: table() throw() : table_() {}
+        scatter:: table:: table() noexcept : table_() {}
 
-        scatter:: table:: ~table() throw() {}
+        scatter:: table:: ~table() noexcept {}
 
         void scatter::table:: store(const pattern &p, const void *h)
         {
@@ -91,7 +91,7 @@ namespace yack
 
         }
 
-        const scatter::node * scatter::table:: query(const uint8_t code, size_t &count) const throw()
+        const scatter::node * scatter::table:: query(const uint8_t code, size_t &count) const noexcept
         {
             const slot *s = search(code);
             if(s)

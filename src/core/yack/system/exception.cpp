@@ -7,17 +7,17 @@ namespace yack
 {
     namespace libc
     {
-        exception:: ~exception() throw()
+        exception:: ~exception() noexcept
         {
         }
 
-        exception:: exception(const exception &other) throw() :
+        exception:: exception(const exception &other) noexcept :
         excp_type(other)
         {
         }
 
 
-        exception:: exception(const int err, const char *fmt,...) throw() :
+        exception:: exception(const int err, const char *fmt,...) noexcept :
         excp_type(err)
         {
             {
@@ -43,17 +43,17 @@ namespace yack
 {
     namespace mach
     {
-        exception:: ~exception() throw()
+        exception:: ~exception() noexcept
         {
         }
 
-        exception:: exception(const exception &other) throw() :
+        exception:: exception(const exception &other) noexcept :
         excp_type(other)
         {
         }
 
 
-        exception:: exception(const int err, const char *fmt,...) throw() :
+        exception:: exception(const int err, const char *fmt,...) noexcept :
         excp_type(err)
         {
             {
@@ -77,17 +77,17 @@ namespace yack
 {
     namespace win32
     {
-        exception:: ~exception() throw()
+        exception:: ~exception() noexcept
         {
         }
 
-        exception::exception(const exception &other) throw() :
+        exception::exception(const exception &other) noexcept :
         excp_type(other)
         {
         }
 
 
-        exception::exception(const uint32_t err, const char *fmt, ...) throw() :
+        exception::exception(const uint32_t err, const char *fmt, ...) noexcept :
         excp_type(err)
         {
             {

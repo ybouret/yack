@@ -12,16 +12,16 @@ namespace
     public:
         const int k;
         
-        dummy(const int a) throw() : object(), k(a)
+        dummy(const int a) noexcept : object(), k(a)
         {
         }
         
-        dummy(const dummy &d) throw() : object(), k(d.k)
+        dummy(const dummy &d) noexcept : object(), k(d.k)
         {
         }
         
         
-        ~dummy() throw()
+        ~dummy() noexcept
         {
         }
         
@@ -31,7 +31,7 @@ namespace
             return os;
         }
         
-        const int & key() const throw() { return k; }
+        const int & key() const noexcept { return k; }
         
     private:
         YACK_DISABLE_ASSIGN(dummy);

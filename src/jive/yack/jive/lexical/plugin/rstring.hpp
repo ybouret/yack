@@ -28,7 +28,7 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~rstring() throw(); //!< cleanup
+                virtual ~rstring() noexcept; //!< cleanup
 
                 template <typename IDENTIFIER>
                 explicit rstring(const IDENTIFIER &uuid,

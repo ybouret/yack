@@ -5,13 +5,13 @@ namespace yack
 {
     namespace jive
     {
-        lexeme:: ~lexeme() throw()
+        lexeme:: ~lexeme() noexcept
         {
         }
 
         lexeme:: lexeme(const tag     &who,
                         const context &ctx,
-                        const size_t   idx) throw() :
+                        const size_t   idx) noexcept :
         context(ctx),
         name(who),
         indx(idx),

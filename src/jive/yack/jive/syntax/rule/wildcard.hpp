@@ -24,13 +24,13 @@ namespace yack
             class wildcard : public internal, public authority<const rule>
             {
             public:
-                virtual ~wildcard() throw(); //!< cleanup
+                virtual ~wildcard() noexcept; //!< cleanup
                 
             protected:
                 //! setup with name, uuid and host
                 explicit wildcard(const tag      &name_,
                                   const uint32_t  uuid_,
-                                  const rule     &host_) throw();
+                                  const rule     &host_) noexcept;
                 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(wildcard);

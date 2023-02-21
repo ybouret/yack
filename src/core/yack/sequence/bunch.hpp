@@ -36,7 +36,7 @@ namespace yack
         public:
             
             inline explicit entry(const size_t w) : array_type(w), next(0), prev(0) {}//!< setup
-            inline virtual ~entry() throw() {} //!< cleanup
+            inline virtual ~entry() noexcept {} //!< cleanup
 
             entry *next; //!< for list
             entry *prev; //!< for list
@@ -53,13 +53,13 @@ namespace yack
         //______________________________________________________________________
         
         //! setup empty
-        inline explicit bunch(const size_t w) throw() :
+        inline explicit bunch(const size_t w) noexcept :
         width(w), alive(), zpool(), work(w)
         {
         }
 
         //! cleanup
-        inline virtual ~bunch() throw() {}
+        inline virtual ~bunch() noexcept {}
 
         //______________________________________________________________________
         //
@@ -73,20 +73,20 @@ namespace yack
         }
 
         //! free entries, keep memory
-        inline void free() throw()
+        inline void free() noexcept
         {
             zpool.merge_front(alive);
         }
 
         //! release all
-        inline void release()  throw()
+        inline void release()  noexcept
         {
             alive.release();
             zpool.release();
         }
         
-        const entries * operator->() const throw() { return &alive; } //!< access
-        const entries & operator*()  const throw() { return  alive; } //!< access
+        const entries * operator->() const noexcept { return &alive; } //!< access
+        const entries & operator*()  const noexcept { return  alive; } //!< access
 
         //! search array of same coefficients
         template <typename ARRAY> inline

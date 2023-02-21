@@ -45,10 +45,10 @@ namespace yack
         //
         // methods
         //______________________________________________________________________
-        inline virtual       ~hash_compound() throw() { release(); } //!< cleanup
+        inline virtual       ~hash_compound() noexcept { release(); } //!< cleanup
 
         //! active objects
-        inline virtual size_t size()    const throw() { return (*table).size; }
+        inline virtual size_t size()    const noexcept { return (*table).size; }
 
         //! reserve nodes within pool and table
         inline virtual void reserve(size_t n)
@@ -61,61 +61,61 @@ namespace yack
         }
 
         //! for container
-        inline virtual size_t available() const throw()
+        inline virtual size_t available() const noexcept
         {
             return zpool.size;
         }
 
 
         //! for container
-        inline virtual size_t capacity() const throw()
+        inline virtual size_t capacity() const noexcept
         {
             return zpool.size+(*table).size;
         }
 
         //! associative<KEY,T> interface: search
-        inline virtual const_type *search(param_key_type key) const throw()
+        inline virtual const_type *search(param_key_type key) const noexcept
         {
             const NODE *node = table.search(hash(key),key);
             return node ? & (**node) : NULL;
         }
 
         //! associative<KEY,T> interface: remove
-        inline virtual bool remove(param_key_type  key) throw()
+        inline virtual bool remove(param_key_type  key) noexcept
         {
             return table.remove(hash(key),key,zpool,quit);
         }
 
         //! free user objects, keep memory
-        inline virtual void free() throw()
+        inline virtual void free() noexcept
         {
             table.free_with(zpool,quit);
         }
 
         //! trim superfluous nodes
-        inline void trim() throw()
+        inline void trim() noexcept
         {
             table.trim();
             while(zpool.size) object::zrelease( zpool.query() );
         }
 
         //! release all resources but hash_table
-        inline virtual void release() throw()
+        inline virtual void release() noexcept
         {
             free();
             trim();
         }
 
         //! info, query load factor
-        inline size_t load_factor() const throw() { return table.average_load(); }
+        inline size_t load_factor() const noexcept { return table.average_load(); }
 
 
     protected:
         //! setup
-        inline explicit hash_compound() throw() : ASSOCIATIVE(), hash(), table(), zpool(), adjusted(true) {}
+        inline explicit hash_compound() noexcept : ASSOCIATIVE(), hash(), table(), zpool(), adjusted(true) {}
 
         //! auto-adjust, no-throw but with marker
-        inline void     safe_adjust() throw()
+        inline void     safe_adjust() noexcept
         {
             coerce(adjusted) = false;
             try
@@ -127,7 +127,7 @@ namespace yack
         }
 
         //! node cleanup
-        static NODE *quit(NODE *node) throw()
+        static NODE *quit(NODE *node) noexcept
         {
             return out_of_reach::naught( destructed(node) );
         }

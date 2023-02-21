@@ -5,11 +5,11 @@ namespace yack
 {
     namespace kernel
     {
-        tree_node_:: tree_node_() throw()
+        tree_node_:: tree_node_() noexcept
         {
         }
 
-        tree_node_:: ~tree_node_() throw()
+        tree_node_:: ~tree_node_() noexcept
         {
         }
 

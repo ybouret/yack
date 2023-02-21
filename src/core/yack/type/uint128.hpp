@@ -27,22 +27,22 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        ~uint128_t()                             throw(); //!< cleanup
-        uint128_t(const uint128_t &)             throw(); //!< copy
-        uint128_t & operator=(const uint128_t &) throw(); //!< assign
-        uint128_t()                              throw(); //!< setup (zero)
-        uint128_t(uint64_t lo)                   throw(); //!< setup 64-bits
-        uint128_t(const uint8_t data[])          throw(); //!< setup 128-bits
+        ~uint128_t()                             noexcept; //!< cleanup
+        uint128_t(const uint128_t &)             noexcept; //!< copy
+        uint128_t & operator=(const uint128_t &) noexcept; //!< assign
+        uint128_t()                              noexcept; //!< setup (zero)
+        uint128_t(uint64_t lo)                   noexcept; //!< setup 64-bits
+        uint128_t(const uint8_t data[])          noexcept; //!< setup 128-bits
 
         //______________________________________________________________________
         //
         // methods
         //______________________________________________________________________
-        uint8_t       & operator[](const size_t i)       throw(); //!< access
-        const uint8_t & operator[](const size_t i) const throw(); //!< access, const
+        uint8_t       & operator[](const size_t i)       noexcept; //!< access
+        const uint8_t & operator[](const size_t i) const noexcept; //!< access, const
 
-        friend bool operator==(const uint128_t &lhs, const uint128_t &rhs) throw(); //!< test equality
-        friend bool operator!=(const uint128_t &lhs, const uint128_t &rhs) throw(); //!< test difference
+        friend bool operator==(const uint128_t &lhs, const uint128_t &rhs) noexcept; //!< test equality
+        friend bool operator!=(const uint128_t &lhs, const uint128_t &rhs) noexcept; //!< test difference
 
 
         //______________________________________________________________________

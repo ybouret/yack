@@ -22,16 +22,16 @@ namespace yack
             // C++
             //__________________________________________________________________
         protected:
-            explicit hash64() throw(); //!< setu[
+            explicit hash64() noexcept; //!< setu[
         public:
-            virtual ~hash64() throw(); //!< cleanup
+            virtual ~hash64() noexcept; //!< cleanup
 
             //__________________________________________________________________
             //
             // virtual interface
             //__________________________________________________________________
-            virtual const char *protocol()                                   const throw() = 0; //!< name
-            virtual void        operator()(uint32_t &lword, uint32_t &rword) const throw() = 0; //!< alog
+            virtual const char *protocol()                                   const noexcept = 0; //!< name
+            virtual void        operator()(uint32_t &lword, uint32_t &rword) const noexcept = 0; //!< alog
 
             //__________________________________________________________________
             //
@@ -40,7 +40,7 @@ namespace yack
 
             //! mix value content
             template <typename T> inline
-            T mix(const T value) const throw()
+            T mix(const T value) const noexcept
             {
                 union {
                     uint32_t dw[2];
@@ -53,7 +53,7 @@ namespace yack
 
             //! partial value content
             template <typename T,typename U> inline
-            U cut(const T value) const throw()
+            U cut(const T value) const noexcept
             {
                 union {
                     uint32_t dw[2];

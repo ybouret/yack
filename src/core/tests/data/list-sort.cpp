@@ -14,15 +14,15 @@ namespace
         Node *next, *prev;
         const size_t value;
         
-        inline Node(const size_t i) throw() : next(0), prev(0), value(i)
+        inline Node(const size_t i) noexcept : next(0), prev(0), value(i)
         {
         }
         
-        inline ~Node() throw()
+        inline ~Node() noexcept
         {
         }
         
-        static inline int Compare(const Node *lhs, const Node *rhs) throw()
+        static inline int Compare(const Node *lhs, const Node *rhs) noexcept
         {
             return comparison::increasing(lhs->value,rhs->value);
         }

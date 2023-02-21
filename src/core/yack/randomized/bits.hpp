@@ -28,36 +28,36 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~bits() throw(); //!< cleanup
+            virtual ~bits() noexcept; //!< cleanup
 
         protected:
-            explicit bits(const uint32_t umax) throw(); //!< setup
+            explicit bits(const uint32_t umax) noexcept; //!< setup
 
         public:
             //__________________________________________________________________
             //
             // virtual interface
             //__________________________________________________________________
-            virtual uint32_t next32() throw() = 0; //!< uniform in 0..umax
+            virtual uint32_t next32() noexcept = 0; //!< uniform in 0..umax
 
             //__________________________________________________________________
             //
             // non virtual interface
             //__________________________________________________________________
-            double operator()(void) throw();                   //!< default to double
-            size_t leq(const size_t value) throw();            //!< floor( ran() * value + 0.5 )
-            bool   choice() throw();                           //!< ran <= 0.5
-            unit_t in(const unit_t a, const unit_t b) throw(); //!< in [a:b]
+            double operator()(void) noexcept;                   //!< default to double
+            size_t leq(const size_t value) noexcept;            //!< floor( ran() * value + 0.5 )
+            bool   choice() noexcept;                           //!< ran <= 0.5
+            unit_t in(const unit_t a, const unit_t b) noexcept; //!< in [a:b]
 
             //! double|float|long double|uint[8:16:32:64]_t
-            template <typename T> T to() throw();
+            template <typename T> T to() noexcept;
 
             //! double|float|long double|int[8:16:32:64]_t
-            template <typename T> T symm() throw();
+            template <typename T> T symm() noexcept;
             
             //! bitwise full construction
             template <typename T> inline
-            T full() throw()
+            T full() noexcept
             {
                 T ans = 0;
                 for(size_t i=sizeof(T)*8;i>0;--i)
@@ -70,7 +70,7 @@ namespace yack
 
             //! bitwise words of exactly nbit
             template <typename T> inline
-            T gen(const size_t nbit) throw()
+            T gen(const size_t nbit) noexcept
             {
                 assert(nbit<=sizeof(T)*8);
                 if(nbit>0)
@@ -90,7 +90,7 @@ namespace yack
             }
 
             //! fill with non zero bytes
-            void fill(void *addr, size_t size) throw();
+            void fill(void *addr, size_t size) noexcept;
 
 
         private:

@@ -5,23 +5,23 @@ namespace yack
 	namespace hashing
 	{
 		
-		bjh32:: bjh32() throw() : function( __length, __window ), hash(0)
+		bjh32:: bjh32() noexcept : function( __length, __window ), hash(0)
 		{
 		}
 		
-		bjh32:: ~bjh32() throw()
+		bjh32:: ~bjh32() noexcept
 		{
 			hash = 0;
 		}
 		
         const char  bjh32:: clid[] =  "bjh32";
 		
-		void bjh32:: set() throw()
+		void bjh32:: set() noexcept
 		{
 			hash = 0;
 		}
 		
-		void bjh32:: run(const void *buffer, size_t buflen) throw()
+		void bjh32:: run(const void *buffer, size_t buflen) noexcept
 		{
 			assert( !(buffer==NULL&&buflen>0) );
 			const uint8_t   *key   = (const uint8_t *)buffer;
@@ -35,7 +35,7 @@ namespace yack
             
 		}
 		
-		void bjh32:: get( void *output, size_t outlen ) throw()
+		void bjh32:: get( void *output, size_t outlen ) noexcept
 		{
 			hash  += ( (hash) << 3);
 			hash  ^= ( (hash) >> 11);

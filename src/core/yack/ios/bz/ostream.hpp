@@ -33,7 +33,7 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~ostream() throw();               //!< cleanup
+                virtual ~ostream() noexcept;               //!< cleanup
 
                 //! open
                 template <typename OUTPUT> inline

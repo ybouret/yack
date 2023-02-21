@@ -8,12 +8,12 @@ namespace yack
     {
         namespace syntax
         {
-            option:: ~option() throw()
+            option:: ~option() noexcept
             {
             }
             
             option:: option(const tag      &name_,
-                            const rule     &host_) throw():
+                            const rule     &host_) noexcept:
             wildcard(name_,mark,host_)
             {
                 I_am<option>();

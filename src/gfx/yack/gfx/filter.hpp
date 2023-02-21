@@ -42,10 +42,10 @@ namespace yack
             class weight
             {
             public:
-                weight() throw(); //!< all zero
-                weight(const coord, const real_t) throw(); //!< setup
-                weight(const weight &)            throw(); //!< copy
-                ~weight()                         throw(); //!< cleanup
+                weight() noexcept; //!< all zero
+                weight(const coord, const real_t) noexcept; //!< setup
+                weight(const weight &)            noexcept; //!< copy
+                ~weight()                         noexcept; //!< cleanup
                 friend std::ostream & operator<<(std::ostream &, const weight &); //!< display
 
                 const coord  r; //!< relative position
@@ -62,7 +62,7 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual       ~filter() throw(); //!< cleanup
+            virtual       ~filter() noexcept; //!< cleanup
 
 
             //! generic setup
@@ -83,12 +83,12 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            const string & key() const throw(); //!< for pointer
+            const string & key() const noexcept; //!< for pointer
             friend std::ostream & operator<<(std::ostream &, const filter &); //!< display
 
             //! apply local filter
             template <typename T> inline
-            real_t operator()(const pixmap<T> &source, const coord pos) const throw()
+            real_t operator()(const pixmap<T> &source, const coord pos) const noexcept
             {
                 real_t res = 0;
                 for(size_t k=data.size();k>0;--k)

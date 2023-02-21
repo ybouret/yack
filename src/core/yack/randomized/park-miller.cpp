@@ -11,14 +11,14 @@ namespace yack
     {
         
         
-        ParkMiller:: ~ParkMiller() throw()
+        ParkMiller:: ~ParkMiller() noexcept
         {
         }
         
         static const long IM   = 2147483647;
         static const long MASK = 123459876;
 
-        static long reseed( long seed ) throw()
+        static long reseed( long seed ) noexcept
         {
             hashing::des64 h;
             while(seed==MASK)
@@ -28,13 +28,13 @@ namespace yack
             return seed;
         }
 
-        ParkMiller:: ParkMiller(const long seed) throw() :
+        ParkMiller:: ParkMiller(const long seed) noexcept :
         bits( IM-1 ),
         word( seed == 0 ? reseed( system_seed::get<long>() ) : reseed(seed))
         {
         }
         
-        uint32_t ParkMiller::next32() throw()
+        uint32_t ParkMiller::next32() noexcept
         {
             static const long IA   = 16807;
             static const long IQ   = 127773;

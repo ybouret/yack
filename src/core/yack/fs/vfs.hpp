@@ -26,16 +26,16 @@ namespace yack
         //
         // path utilities
         //______________________________________________________________________
-        static const char *get_base_name(const char *path, const size_t plen) throw(); //!< get base name
-        static const char *get_base_name(const char *path) throw();                    //!< get base name
-        static const char *get_base_name(const string &path) throw();                  //!< get base name
+        static const char *get_base_name(const char *path, const size_t plen) noexcept; //!< get base name
+        static const char *get_base_name(const char *path) noexcept;                    //!< get base name
+        static const char *get_base_name(const string &path) noexcept;                  //!< get base name
         static void        make_dir_name(string &path);                                //!< ensure path is a directory
         static string      get_dir_name(const char   *path);                           //!< get directory name
         static string      get_dir_name(const string &path);                           //!< get directory name
 
-        static const char *get_extension(const char   *path, const size_t plen) throw(); //!< get extension, NULL if none, use BASENAME!
-        static const char *get_extension(const char   *path)                    throw(); //!< get extension
-        static const char *get_extension(const string &path) throw();                    //!< get extension
+        static const char *get_extension(const char   *path, const size_t plen) noexcept; //!< get extension, NULL if none, use BASENAME!
+        static const char *get_extension(const char   *path)                    noexcept; //!< get extension
+        static const char *get_extension(const string &path) noexcept;                    //!< get extension
         
         static string      make_null_ext(const char   *path, const size_t plen); //!< remove extension
         static string      make_null_ext(const char   *path);                    //!< remove extension
@@ -76,18 +76,18 @@ namespace yack
             //__________________________________________________________________
             explicit entry(const vfs     &root,
                            const string  &here);        //!< setup with full_path
-            virtual ~entry() throw();                   //!< cleanup
+            virtual ~entry() noexcept;                   //!< cleanup
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            bool is_unk() const throw();              //!< check if unknown
-            bool is_reg() const throw();              //!< check if regular
-            bool is_dir() const throw();              //!< check if directory
-            bool is_lnk() const throw();              //!< check if link
+            bool is_unk() const noexcept;              //!< check if unknown
+            bool is_reg() const noexcept;              //!< check if regular
+            bool is_dir() const noexcept;              //!< check if directory
+            bool is_lnk() const noexcept;              //!< check if link
             YACK_PROTO_OSTREAM(entry);                //!< display
-            const string & operator*() const throw(); //!< get path content
+            const string & operator*() const noexcept; //!< get path content
             
             //__________________________________________________________________
             //
@@ -134,7 +134,7 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual       ~scanner() throw(); //!< cleanup
+            virtual       ~scanner() noexcept; //!< cleanup
         protected:
             explicit       scanner(const vfs    &fs,
                                    const string &dirname); //!< open folder
@@ -174,7 +174,7 @@ namespace yack
 
         //! helper, a.k.a rm -f
         template <typename PATH> inline
-        bool try_remove_file(const PATH &path) throw()
+        bool try_remove_file(const PATH &path) noexcept
         {
             try { remove_file(path); return true; }
             catch(...) { return false; }
@@ -215,9 +215,9 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        virtual ~vfs() throw();
+        virtual ~vfs() noexcept;
     protected:
-        explicit vfs() throw();
+        explicit vfs() noexcept;
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(vfs);
     };

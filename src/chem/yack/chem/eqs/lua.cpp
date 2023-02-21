@@ -13,7 +13,7 @@ namespace yack
 
       
         
-        luaEquilibria:: ~luaEquilibria() throw()
+        luaEquilibria:: ~luaEquilibria() noexcept
         {
         }
 
@@ -21,7 +21,7 @@ namespace yack
         {
         }
         
-        static inline bool is_empty(const string &word) throw()
+        static inline bool is_empty(const string &word) noexcept
         {
             return word.size()<=0;
         }
@@ -31,7 +31,7 @@ namespace yack
             class luaEquilibrium : public equilibrium
             {
             public:
-                inline virtual ~luaEquilibrium() throw()
+                inline virtual ~luaEquilibrium() noexcept
                 {
                 }
                 

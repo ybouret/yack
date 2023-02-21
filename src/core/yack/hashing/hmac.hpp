@@ -30,7 +30,7 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~hmac() throw(); //!< cleanup
+            virtual ~hmac() noexcept; //!< cleanup
             explicit hmac(function &H, const void *key_addr, const size_t key_size); //!< setup
             explicit hmac(function &H, const memory::ro_buffer &);                   //!< setup
 
@@ -38,8 +38,8 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            void                     set(function &H) throw(); //!< initialize H function
-            const memory::ro_buffer &get(function &H) throw(); //!< finalize
+            void                     set(function &H) noexcept; //!< initialize H function
+            const memory::ro_buffer &get(function &H) noexcept; //!< finalize
 
             //__________________________________________________________________
             //
@@ -50,7 +50,7 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(hmac);
-            void setup(function &H, const void *key_addr, const size_t key_size) throw();
+            void setup(function &H, const void *key_addr, const size_t key_size) noexcept;
 
             const digest key; //!< precomputed key
             const digest ikp; //!< input  key pad

@@ -40,11 +40,11 @@ namespace yack
             typedef list_of<arena> niche_type;         //!< niche for table
 
             blocks();           //!< setup with capacity but not arena
-            ~blocks() throw();  //!< cleanup
+            ~blocks() noexcept;  //!< cleanup
 
             void *acquire(const size_t block_size);                           //!< acquire block
-            void  release(void *block_addr, const size_t block_size) throw(); //!< release block
-            void  gc(dyadic &) throw();                                       //!< garbage collection for each arena
+            void  release(void *block_addr, const size_t block_size) noexcept; //!< release block
+            void  gc(dyadic &) noexcept;                                       //!< garbage collection for each arena
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(blocks);
@@ -60,10 +60,10 @@ namespace yack
             niche_type      *table;              //!< table address
             void            *impl_[arena_words]; //!< arena creator
 
-            void   release_table() throw();
+            void   release_table() noexcept;
             void   grow(const size_t block_size, niche_type *);
-            arena *find(niche_type *, const size_t block_size) throw();
-            bool   check(const niche_type *slot) const throw();
+            arena *find(niche_type *, const size_t block_size) noexcept;
+            bool   check(const niche_type *slot) const noexcept;
             
         };
 

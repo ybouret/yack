@@ -26,14 +26,14 @@ namespace yack
             // C++
             //__________________________________________________________________
             explicit custodian(const reactor &); //!< setup
-            virtual ~custodian() throw();        //!< cleanup
+            virtual ~custodian() noexcept;        //!< cleanup
 
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            void reset_all() throw(); //!< cleanup, mostly for debug
+            void reset_all() noexcept; //!< cleanup, mostly for debug
 
             //! correct all groups of laws
             /**

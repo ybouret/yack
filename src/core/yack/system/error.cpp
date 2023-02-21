@@ -17,13 +17,13 @@ namespace yack
 
     static const char bad[4] = { ' ', '\t', '\r', '\n' };
 
-    void system_error:: format_bsd(char *buffer, const size_t buflen, const int err) throw()
+    void system_error:: format_bsd(char *buffer, const size_t buflen, const int err) noexcept
     {
         yack_cstring_msgcpy(buffer,buflen,strerror(err));
         yack_cstring_trim(buffer,bad,sizeof(bad));
     }
 
-    static inline void display_and_exit(const char *ctx, const char *buffer) throw()
+    static inline void display_and_exit(const char *ctx, const char *buffer) noexcept
     {
         const size_t clen = yack_cstring_size(ctx);
         const size_t blen = yack_cstring_size(buffer);
@@ -39,7 +39,7 @@ namespace yack
         exit(-1);
     }
     
-    void system_error:: critical_bsd(const int res, const char *ctx) throw()
+    void system_error:: critical_bsd(const int res, const char *ctx) noexcept
     {
         char buffer[512];
         memset(buffer,0,sizeof(buffer));
@@ -54,7 +54,7 @@ namespace yack
     const system_error_t system_error::invalid = ERROR_INVALID_FUNCTION;
 
 
-    void system_error:: format_win(char *buffer, const size_t buflen, const uint32_t err) throw()
+    void system_error:: format_win(char *buffer, const size_t buflen, const uint32_t err) noexcept
     {
         assert(!(0==buffer&&buflen>0));
         memset(buffer,0,buflen);
@@ -78,7 +78,7 @@ namespace yack
         }
     }
     
-    void system_error:: critical_win(const uint32_t err, const char *ctx) throw()
+    void system_error:: critical_win(const uint32_t err, const char *ctx) noexcept
     {
         char buffer[512];
         memset(buffer,0,sizeof(buffer));
@@ -89,7 +89,7 @@ namespace yack
 
 #endif
 
-    void system_error:: never_get_here(const char *ctx) throw()
+    void system_error:: never_get_here(const char *ctx) noexcept
     {
         assert(ctx);
         char buffer[512];

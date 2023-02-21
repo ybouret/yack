@@ -25,8 +25,8 @@ namespace yack
             public:
 
                 typedef void (*procedure)(void *);                    //!< legacy C wrapper
-                explicit       threadable(procedure, void *) throw(); //!< setup
-                virtual       ~threadable() throw();                  //!< cleanup
+                explicit       threadable(procedure, void *) noexcept; //!< setup
+                virtual       ~threadable() noexcept;                  //!< cleanup
                 void           run(void);                             //!< call
 
             protected:

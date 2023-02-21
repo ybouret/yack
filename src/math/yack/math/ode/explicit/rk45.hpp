@@ -28,9 +28,9 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~rk45_()               throw(); //!< cleanup
-                explicit rk45_(rk45_step<T> *) throw(); //!< setup from new engine
-                explicit rk45_(const typename rk45_step<T>::pointer &) throw(); //!< setup from shared engine
+                virtual ~rk45_()               noexcept; //!< cleanup
+                explicit rk45_(rk45_step<T> *) noexcept; //!< setup from new engine
+                explicit rk45_(const typename rk45_step<T>::pointer &) noexcept; //!< setup from shared engine
 
                 //______________________________________________________________
                 //
@@ -75,7 +75,7 @@ ytmp( this->next() )
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~rk45() throw();          //!< cleanup
+                virtual ~rk45() noexcept;          //!< cleanup
 
                 //! setup from new engine
                 explicit rk45(rk45_step<T> *eng) : YACK_RK45_CTOR() {}

@@ -13,7 +13,7 @@ namespace yack
         {
         }
 
-        rtti:: ~rtti() throw()
+        rtti:: ~rtti() noexcept
         {
             assert(NULL==next);
             assert(NULL!=impl);
@@ -21,7 +21,7 @@ namespace yack
             impl = 0;
         }
 
-        const yack::string & rtti:: operator*() const throw()
+        const yack::string & rtti:: operator*() const noexcept
         {
             assert(impl);
             return *impl;
@@ -35,7 +35,7 @@ namespace yack
 namespace yack
 {
 
-    rtti:: ~rtti() throw()
+    rtti:: ~rtti() noexcept
     {
     }
 
@@ -48,12 +48,12 @@ namespace yack
         store( new kernel::rtti(_) );
     }
 
-    const string & rtti:: name() const throw()
+    const string & rtti:: name() const noexcept
     {
         return **head;
     }
 
-    const string & rtti:: native() const throw()
+    const string & rtti:: native() const noexcept
     {
         return **tail();
     }
@@ -92,9 +92,9 @@ namespace yack
         static const char                   call_sign[];
         static const at_exit::longevity     life_time =  YACK_MEMORY_SMALL_OBJECTS_LONGEVITY-1;
 
-        rtti_ptr *get(const char   *path, const size_t plen) throw() { return tree.search(path,plen);          }
-        rtti_ptr *get(const char   *path) throw() { assert(path);      return tree.search(path,strlen(path));  }
-        rtti_ptr *get(const string &path) throw() {                    return tree.search(path(),path.size()); }
+        rtti_ptr *get(const char   *path, const size_t plen) noexcept { return tree.search(path,plen);          }
+        rtti_ptr *get(const char   *path) noexcept { assert(path);      return tree.search(path,strlen(path));  }
+        rtti_ptr *get(const string &path) noexcept {                    return tree.search(path(),path.size()); }
 
 
         rtti & use(const std::type_info &ti)
@@ -175,8 +175,8 @@ namespace yack
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(rtti_db);
         friend class singleton<rtti_db>;
-        inline virtual ~rtti_db() throw() {}
-        inline explicit rtti_db() throw() : singleton<rtti_db>(), rtti_map()
+        inline virtual ~rtti_db() noexcept {}
+        inline explicit rtti_db() noexcept : singleton<rtti_db>(), rtti_map()
         {
             setup();
         }

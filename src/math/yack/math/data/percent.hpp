@@ -16,7 +16,7 @@ namespace yack
         {
             //! with significant digits
             template <typename T,const size_t DIGITS> static inline
-            T of(const T x, const T dx) throw()
+            T of(const T x, const T dx) noexcept
             {
                 static const T tiny(1e-30);
                 static const T hundred(100);

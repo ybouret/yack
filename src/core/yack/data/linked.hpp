@@ -28,18 +28,18 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        virtual ~linked() throw();   //!< cleanup
+        virtual ~linked() noexcept;   //!< cleanup
         
     protected:
-        explicit linked()   throw(); //!< setup
+        explicit linked()   noexcept; //!< setup
         
         //______________________________________________________________________
         //
         // methods
         //______________________________________________________________________
-        void     increase() throw(); //!< ++size
-        void     decrease() throw(); //!< --size
-        void     xch_size(linked &other) throw(); //!< exchange size values
+        void     increase() noexcept; //!< ++size
+        void     decrease() noexcept; //!< --size
+        void     xch_size(linked &other) noexcept; //!< exchange size values
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(linked);
     };
@@ -58,8 +58,8 @@ namespace yack
         //
         // virtual interface
         //______________________________________________________________________
-        virtual bool owns(const NODE*) const throw() = 0; //!< check ownership
-        virtual void reverse()               throw() = 0; //!< reverse order
+        virtual bool owns(const NODE*) const noexcept = 0; //!< check ownership
+        virtual void reverse()               noexcept = 0; //!< reverse order
         
         //______________________________________________________________________
         //
@@ -67,7 +67,7 @@ namespace yack
         //______________________________________________________________________
         
         //! check memory is increasing
-        inline bool  memory_is_increasing() const throw()
+        inline bool  memory_is_increasing() const noexcept
         {
             const NODE *node = head;
             for(size_t i=size;i>1;--i,node=node->next)
@@ -82,7 +82,7 @@ namespace yack
         
         
         //! check memory is decreasing
-        inline bool  memory_is_decreasing() const throw()
+        inline bool  memory_is_decreasing() const noexcept
         {
             const NODE *node = head;
             for(size_t i=size;i>1;--i,node=node->next)
@@ -125,10 +125,10 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline virtual ~interlinked() throw() {}
+        inline virtual ~interlinked() noexcept {}
         
     protected:
-        inline explicit interlinked() throw() : linked(), head(0) {}
+        inline explicit interlinked() noexcept : linked(), head(0) {}
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(interlinked);

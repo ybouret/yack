@@ -8,7 +8,7 @@ namespace yack
     {
 
         template <>
-        zircon<real_t>:: ~zircon() throw()
+        zircon<real_t>:: ~zircon() noexcept
         {
         }
 
@@ -45,7 +45,7 @@ namespace yack
         }
 
         template <>
-        real_t zircon<real_t>:: control(const array_type &FF) throw()
+        real_t zircon<real_t>:: control(const array_type &FF) noexcept
         {
             static const real_t half(0.5);
             for(size_t i=FF.size();i>0;--i)
@@ -54,7 +54,7 @@ namespace yack
         }
 
         template <>
-        const zircon<real_t>::array_type & zircon<real_t>:: probe(const real_t u) throw()
+        const zircon<real_t>::array_type & zircon<real_t>:: probe(const real_t u) noexcept
         {
             tao::v1::muladd(XX,X,u,S);
             return XX;

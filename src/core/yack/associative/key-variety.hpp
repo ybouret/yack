@@ -35,7 +35,7 @@ namespace yack
         //
         //! named type
         //______________________________________________________________________
-        static const char *text(const type) throw();
+        static const char *text(const type) noexcept;
 
         //______________________________________________________________________
         //

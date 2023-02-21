@@ -7,7 +7,7 @@
 namespace yack
 {
 
-    binary_spots:: ~binary_spots() throw()
+    binary_spots:: ~binary_spots() noexcept
     {
         restart();
     }
@@ -32,12 +32,12 @@ namespace yack
 
     }
 
-    size_t binary_spots::capacity() const throw()
+    size_t binary_spots::capacity() const noexcept
     {
         return bmax;
     }
 
-    void binary_spots:: restart() throw()
+    void binary_spots:: restart() noexcept
     {
         if(comb)
         {
@@ -46,17 +46,17 @@ namespace yack
         }
     }
 
-    void binary_spots:: on_boot() throw()
+    void binary_spots:: on_boot() noexcept
     {
         restart();
     }
 
-    size_t binary_spots:: size() const throw()
+    size_t binary_spots:: size() const noexcept
     {
         return comb ? comb->size() : 0;
     }
 
-    const size_t & binary_spots:: operator[](const size_t indx) const throw()
+    const size_t & binary_spots:: operator[](const size_t indx) const noexcept
     {
         assert(comb);
         return (*comb)[indx];

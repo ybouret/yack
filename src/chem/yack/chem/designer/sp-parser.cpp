@@ -12,7 +12,7 @@ namespace yack
         namespace nucleus
         {
 
-            sp_parser:: ~sp_parser() throw() {}
+            sp_parser:: ~sp_parser() noexcept {}
 
             sp_parser:: sp_parser() : jive:: parser("chemical::species::parser")
             {

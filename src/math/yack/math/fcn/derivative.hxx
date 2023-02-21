@@ -6,7 +6,7 @@ namespace yack
     {
 
         template <>
-        derivative<real_t>:: ~derivative() throw() {}
+        derivative<real_t>:: ~derivative() noexcept {}
 
 
 #define YACK_DRVS_CTRL 1.4
@@ -19,7 +19,7 @@ namespace yack
         }
 
         template <>
-        real_t derivative<real_t>:: unit_step_size() throw()
+        real_t derivative<real_t>:: unit_step_size() noexcept
         {
             static const real_t one(1);
             static const real_t three(3);
@@ -29,7 +29,7 @@ namespace yack
         }
 
         template <>
-        real_t derivative<real_t>:: diff_maxi_ftol() throw()
+        real_t derivative<real_t>:: diff_maxi_ftol() noexcept
         {
             static const real_t value = timings::round_ceil<real_t>( sqrt( numeric<real_t>::epsilon ) );
             return value;
@@ -53,7 +53,7 @@ namespace yack
         }
 
         template <>
-        bool derivative<real_t>:: converged(real_t &ans, const size_t i, real_t &err) throw()
+        bool derivative<real_t>:: converged(real_t &ans, const size_t i, real_t &err) noexcept
         {
             assert(i>=2);
             static const real_t one(1);

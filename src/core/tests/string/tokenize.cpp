@@ -4,7 +4,7 @@
 
 using namespace yack;
 
-static bool is_sep(const int ch) throw()
+static bool is_sep(const int ch) noexcept
 {
     return ' ' == ch;
 }

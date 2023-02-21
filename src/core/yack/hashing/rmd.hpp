@@ -15,30 +15,30 @@ namespace yack
         class rmd
         {
         public:
-            rmd() throw();  //!< setup
-            ~rmd() throw(); //!< destructor
+            rmd() noexcept;  //!< setup
+            ~rmd() noexcept; //!< destructor
             
           
             //! reset all fields
-            void reset() throw();
+            void reset() noexcept;
             
             //! store in bytes, then in words
             /**
              return true when 16 * 4 bytes are ready
              */
-            bool store( uint8_t b ) throw();
+            bool store( uint8_t b ) noexcept;
             
             //! return a full block
-            const uint32_t *block() const throw();
+            const uint32_t *block() const noexcept;
             
             //! assemble the last block
-            const uint8_t *flush() throw();
+            const uint8_t *flush() noexcept;
 
             //! internal length
             const size_t   length;
             
-            uint32_t lswlen() const throw(); //!< least significant word len
-            uint32_t mswlen() const throw(); //!<  most signigicant word len
+            uint32_t lswlen() const noexcept; //!< least significant word len
+            uint32_t mswlen() const noexcept; //!<  most signigicant word len
             
         private:
             size_t   nx;

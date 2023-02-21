@@ -5,8 +5,8 @@
 
 namespace yack
 {
-    object::  object() throw() {}
-    object:: ~object() throw() {}
+    object::  object() noexcept {}
+    object:: ~object() noexcept {}
 
     typedef memory::small_object_allocator<YACK_LIMIT_SIZE> objects;
 
@@ -17,7 +17,7 @@ namespace yack
         return objs.acquire(block_size);
     }
 
-    void object:: operator delete(void *block_addr,const size_t block_size) throw()
+    void object:: operator delete(void *block_addr,const size_t block_size) noexcept
     {
         assert(block_size>0);
         if(NULL!=block_addr)
@@ -34,7 +34,7 @@ namespace yack
         return objs.acquire(block_size);
     }
 
-    void object:: operator delete[](void *block_addr, const size_t block_size) throw()
+    void object:: operator delete[](void *block_addr, const size_t block_size) noexcept
     {
         assert(block_size>0);
         if(NULL!=block_addr)
@@ -45,7 +45,7 @@ namespace yack
     }
 
 
-    void * object::operator new(size_t block_size, void *addr) throw()
+    void * object::operator new(size_t block_size, void *addr) noexcept
     {
         assert(block_size>0);
         assert(addr!=NULL);
@@ -53,7 +53,7 @@ namespace yack
         return addr;
     }
 
-    void object:: operator delete(void *, void *) throw()
+    void object:: operator delete(void *, void *) noexcept
     {}
 
 }

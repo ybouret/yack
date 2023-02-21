@@ -7,7 +7,7 @@ namespace yack
     namespace chemical
     {
         static inline
-        limitation deduce_limitation(const xlimit *reac, const xlimit *prod) throw()
+        limitation deduce_limitation(const xlimit *reac, const xlimit *prod) noexcept
         {
             if(reac)
             {
@@ -38,7 +38,7 @@ namespace yack
         
         xlimits:: xlimits(const xlimit *rx,
                           const xlimit *px,
-                          const size_t  wm) throw() :
+                          const size_t  wm) noexcept :
         reac(rx),
         prod(px),
         type( deduce_limitation(reac,prod) ),
@@ -105,7 +105,7 @@ namespace yack
             return os;
         }
 
-        bool xlimits:: acceptable(const double xx) const throw()
+        bool xlimits:: acceptable(const double xx) const noexcept
         {
             switch(type)
             {

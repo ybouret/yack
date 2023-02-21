@@ -72,7 +72,7 @@ namespace yack
         namespace
         {
             static inline
-            void MDinit(uint32_t *MDbuf) throw()
+            void MDinit(uint32_t *MDbuf) noexcept
             {
                 MDbuf[0] = 0x67452301UL;
                 MDbuf[1] = 0xefcdab89UL;
@@ -82,7 +82,7 @@ namespace yack
             }
             
             static inline
-            void compress(uint32_t *MDbuf, const uint32_t *X) throw()
+            void compress(uint32_t *MDbuf, const uint32_t *X) noexcept
             {
                 uint32_t aa = MDbuf[0],  bb = MDbuf[1],  cc = MDbuf[2],
                 dd = MDbuf[3],  ee = MDbuf[4];
@@ -324,7 +324,7 @@ namespace yack
 		// init MDbuf
 #pragma warning ( disable : 4351 )
 #endif
-        rmd160 :: rmd160()  throw() :
+        rmd160 :: rmd160()  noexcept :
         function(__length,__window),
         RMD(),
         MDbuf()
@@ -332,7 +332,7 @@ namespace yack
             memset(MDbuf,0,sizeof(MDbuf));
         }
         
-        rmd160:: ~rmd160() throw()
+        rmd160:: ~rmd160() noexcept
         {
             memset(MDbuf,0,sizeof(MDbuf));
         }
@@ -341,13 +341,13 @@ namespace yack
         const char rmd160:: clid[] = "rmd160";
         
         
-        void rmd160:: set() throw()
+        void rmd160:: set() noexcept
         {
             RMD.reset();
             MDinit(MDbuf);
         }
         
-        void rmd160:: run(const void *buf, size_t len) throw()
+        void rmd160:: run(const void *buf, size_t len) noexcept
         {
             const uint8_t *p = (const uint8_t *)buf;
             for( size_t i=len;i>0;--i,++p)
@@ -357,7 +357,7 @@ namespace yack
             }
         }
         
-        void rmd160::get(void *output, size_t outlen) throw()
+        void rmd160::get(void *output, size_t outlen) noexcept
         {
             MDfinish(MDbuf, RMD.flush(), RMD.lswlen(), RMD.mswlen() );
             uint8_t hashcode[RMDsize/8];

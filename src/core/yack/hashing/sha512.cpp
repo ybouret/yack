@@ -298,24 +298,24 @@ d += temp1; h = temp1 + temp2;              \
 		
 		////////////////////////////////////////////////////////////////////////
 		
-		sha512::sha512() throw() : function(__length, __window), ctx()
+		sha512::sha512() noexcept : function(__length, __window), ctx()
 		{
 		}
 		
 		const char sha512:: clid[] = "sha512";
 
-        void sha512:: set() throw()
+        void sha512:: set() noexcept
 		{
 			sha512_set( &ctx );
 		}
 		
-		void sha512:: run( const void *buffer, size_t buflen ) throw()
+		void sha512:: run( const void *buffer, size_t buflen ) noexcept
 		{
 			assert( !(buflen>0&&NULL==buffer) );
 			sha512_run( &ctx, (const uint8_t *)buffer, buflen );
 		}
 		
-		void sha512::get(void *output, size_t outlen ) throw()
+		void sha512::get(void *output, size_t outlen ) noexcept
 		{
 			assert( !(output==NULL&&outlen>0) );
 			uint8_t  digest[64];
@@ -323,31 +323,31 @@ d += temp1; h = temp1 + temp2;              \
 			fill( output, outlen, digest, __length );
 		}
 		
-		sha512:: ~sha512() throw()
+		sha512:: ~sha512() noexcept
 		{
 			memset( &ctx, 0 , sizeof(ctx) );
 		}
 		
 		////////////////////////////////////////////////////////////////////////
-		sha384::sha384() throw() : function(__length, __window), ctx()
+		sha384::sha384() noexcept : function(__length, __window), ctx()
 		{
 		}
 		
         const char sha384:: clid[] = "sha384";
 		
 		
-		void sha384:: set() throw()
+		void sha384:: set() noexcept
 		{
 			sha384_set( &ctx );
 		}
 		
-		void sha384:: run( const void *buffer, size_t buflen ) throw()
+		void sha384:: run( const void *buffer, size_t buflen ) noexcept
 		{
 			assert( !(buflen>0&&NULL==buffer) );
 			sha512_run( &ctx, (const uint8_t *)buffer, buflen );
 		}
 		
-		void sha384::get(void *output, size_t outlen ) throw()
+		void sha384::get(void *output, size_t outlen ) noexcept
 		{
 			assert( !(output==NULL&&outlen>0) );
 			uint8_t  digest[64];
@@ -355,7 +355,7 @@ d += temp1; h = temp1 + temp2;              \
 			fill( output, outlen, digest,__length );
 		}
 		
-		sha384:: ~sha384() throw()
+		sha384:: ~sha384() noexcept
 		{
 			memset( &ctx, 0 , sizeof(ctx) );
 		}

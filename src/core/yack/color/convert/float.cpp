@@ -8,20 +8,20 @@ namespace yack
     {
 
         template <>
-        void convert<rgba,float>::make(rgba &c, const float &f) throw()
+        void convert<rgba,float>::make(rgba &c, const float &f) noexcept
         {
             c.r = c.g = c.b = unit_real<float>::to_byte(f);
         }
         
         template <>
-        void convert<rgb,float>::make(rgb &c, const float &f) throw()
+        void convert<rgb,float>::make(rgb &c, const float &f) noexcept
         {
             c.r = c.g = c.b = unit_real<float>::to_byte(f);
         }
 
 
         template <>
-        void convert<uint8_t,float>::make(uint8_t &c, const float &f) throw()
+        void convert<uint8_t,float>::make(uint8_t &c, const float &f) noexcept
         {
             c = unit_real<float>::to_byte(f);
         }

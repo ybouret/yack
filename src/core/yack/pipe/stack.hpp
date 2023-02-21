@@ -30,10 +30,10 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline explicit stack() throw() : pipe_type()  {} //!< setup empty
+        inline explicit stack() noexcept : pipe_type()  {} //!< setup empty
         inline stack(const size_t n)    : pipe_type(n) {} //!< setup with capacity
         inline stack(const stack &_)    : pipe_type(_) {} //!< copy using sequence
-        inline virtual ~stack() throw()                {} //!< cleanup
+        inline virtual ~stack() noexcept                {} //!< cleanup
 
 
     private:

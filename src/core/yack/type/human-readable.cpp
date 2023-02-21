@@ -32,7 +32,7 @@ namespace yack
     }
 
 
-    human_readable:: human_readable(const uint64_t qw) throw() :
+    human_readable:: human_readable(const uint64_t qw) noexcept :
     ip(0),
     fp(0),
     rx(0)
@@ -61,7 +61,7 @@ namespace yack
         std::cerr << ip << '.' << fp << rx << std::endl;
     }
 
-    human_readable:: ~human_readable() throw()
+    human_readable:: ~human_readable() noexcept
     {
 
     }

@@ -33,7 +33,7 @@ namespace yack
             struct condition_api
             {
                 static condition *init();                      //!< create a condition
-                static void       quit(condition * &) throw(); //!< delete a condition
+                static void       quit(condition * &) noexcept; //!< delete a condition
             };
         }
     }

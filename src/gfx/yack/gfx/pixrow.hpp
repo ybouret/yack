@@ -23,24 +23,24 @@ namespace yack
             YACK_DECL_ARGS_(T,type); //!< aliases
 
             //! direct access
-            inline type & operator()(const unit_t x) throw() {
+            inline type & operator()(const unit_t x) noexcept {
                 assert(x>=0); assert(x<*w); assert(0!=p);
                 return p[x];
             }
 
             //! direct CONSST access
-            inline const_type & operator()(const unit_t x) const throw() {
+            inline const_type & operator()(const unit_t x) const noexcept {
                 assert(x>=0); assert(x<*w); assert(0!=p);
                 return p[x];
             }
 
             //! zero-flux access
-            inline type & operator[](const unit_t x) throw() {
+            inline type & operator[](const unit_t x) noexcept {
                 return p[ w(x) ];
             }
 
             //! zero-flux CONST access
-            inline const_type & operator[](const unit_t x) const throw() {
+            inline const_type & operator[](const unit_t x) const noexcept {
                 return p[ w(x) ];
             }
 
@@ -48,7 +48,7 @@ namespace yack
         public:  const zero_flux &w; //!< zero flux computation reference
 
         private:
-            pixrow() throw();
+            pixrow() noexcept;
             ~pixrow();
             YACK_DISABLE_COPY_AND_ASSIGN(pixrow);
         };

@@ -33,7 +33,7 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~explicit_step() throw();                //!< cleanup
+                virtual ~explicit_step() noexcept;                //!< cleanup
 
             protected:
                 explicit explicit_step(const size_t num_arrays); //!< setup

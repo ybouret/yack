@@ -36,8 +36,8 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            inline explicit data_knot() throw() : next(0), prev(0), node(0), data(0), impl() {} //!< setup
-            inline virtual ~data_knot() throw() { if(data) free(); }                            //!< cleanup
+            inline explicit data_knot() noexcept : next(0), prev(0), node(0), data(0), impl() {} //!< setup
+            inline virtual ~data_knot() noexcept { if(data) free(); }                            //!< cleanup
 
             //__________________________________________________________________
             //
@@ -52,7 +52,7 @@ namespace yack
             }
 
             //! destruct data
-            inline data_knot *free() throw()
+            inline data_knot *free() noexcept
             {
                 assert(NULL!=data);
                 data->~mutable_type();
@@ -61,12 +61,12 @@ namespace yack
                 return this;
             }
 
-            inline bool         is_alive()  const throw() { return NULL != data; }              //!< check satus
-            inline type       & operator*()       throw() { assert(is_alive()); return *data; } //!< access data
-            inline const_type & operator*() const throw() { assert(is_alive()); return *data; } //!< access const data
+            inline bool         is_alive()  const noexcept { return NULL != data; }              //!< check satus
+            inline type       & operator*()       noexcept { assert(is_alive()); return *data; } //!< access data
+            inline const_type & operator*() const noexcept { assert(is_alive()); return *data; } //!< access const data
 
-            inline type       * operator->()       throw() { assert(is_alive()); return data; } //!< drill-down
-            inline const_type * operator->() const throw() { assert(is_alive()); return data; } //!< drill-down
+            inline type       * operator->()       noexcept { assert(is_alive()); return data; } //!< drill-down
+            inline const_type * operator->() const noexcept { assert(is_alive()); return data; } //!< drill-down
 
             //! forward display to node
             template <typename OSTREAM>

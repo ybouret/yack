@@ -29,9 +29,9 @@ namespace yack
             class factor
             {
             public:
-                factor()               throw(); //!< zero
-                factor(const factor &) throw(); //!< copy
-                ~factor()              throw(); //!< cleanup
+                factor()               noexcept; //!< zero
+                factor(const factor &) noexcept; //!< copy
+                ~factor()              noexcept; //!< cleanup
                 friend std::ostream & operator<<(std::ostream &, const factor &); //!< display
 
                 const coord  r; //!< relative pos
@@ -45,7 +45,7 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            static  size_t inside(const unit_t r) throw(); //!< count points x^2+y^2<=r2
+            static  size_t inside(const unit_t r) noexcept; //!< count points x^2+y^2<=r2
 
 
             //__________________________________________________________________
@@ -61,7 +61,7 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~blur() throw();        //!< cleanup
+            virtual ~blur() noexcept;        //!< cleanup
 
         protected:
             explicit blur(const float sig); //!< setup metrics
@@ -84,7 +84,7 @@ namespace yack
             // C++
             //__________________________________________________________________
             explicit blurring(const float sig); //!< setup
-            virtual ~blurring() throw();        //!< cleanup
+            virtual ~blurring() noexcept;        //!< cleanup
 
             //__________________________________________________________________
             //

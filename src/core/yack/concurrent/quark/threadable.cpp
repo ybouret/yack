@@ -7,14 +7,14 @@ namespace yack
     {
         namespace quark
         {
-            threadable:: ~threadable() throw()
+            threadable:: ~threadable() noexcept
             {
                 assert(proc!=NULL);
                 proc=0;
                 args=0;
             }
 
-            threadable:: threadable(procedure stub_proc, void *stub_args) throw() :
+            threadable:: threadable(procedure stub_proc, void *stub_args) noexcept :
             proc(stub_proc),
             args(stub_args)
             {

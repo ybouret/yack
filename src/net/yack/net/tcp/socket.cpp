@@ -7,7 +7,7 @@ namespace yack
     {
 
 
-        tcp_socket:: ~tcp_socket() throw()
+        tcp_socket:: ~tcp_socket() noexcept
         {
         }
 

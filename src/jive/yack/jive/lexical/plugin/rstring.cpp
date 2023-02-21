@@ -10,7 +10,7 @@ namespace yack
         {
             YACK_JIVE_PLUGIN_IMPL(rstring);
 
-            rstring:: ~rstring() throw()
+            rstring:: ~rstring() noexcept
             {
 
             }

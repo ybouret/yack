@@ -51,10 +51,10 @@ namespace yack
             //! copy
             inline  node_type(const node_type &other) : next(0), prev(0), data(other.data) {}
             //! cleanup
-            inline ~node_type() throw() {}
+            inline ~node_type() noexcept {}
             
             //! access
-            inline const_type & operator*() const throw() { return data; }
+            inline const_type & operator*() const noexcept { return data; }
             
             node_type *next; //!< for list/pool
             node_type *prev; //!< for list
@@ -74,28 +74,28 @@ namespace yack
         //______________________________________________________________________
         
         //! setup empty
-        inline explicit sorted_list() throw() : active(), zombie() {}
+        inline explicit sorted_list() noexcept : active(), zombie() {}
         
         //! setup with capacity
-        inline explicit sorted_list(const size_t n) throw() : active(), zombie() { reserve(n); }
+        inline explicit sorted_list(const size_t n) noexcept : active(), zombie() { reserve(n); }
         
         //! cleanup
-        inline virtual ~sorted_list() throw() { release_all(); }
+        inline virtual ~sorted_list() noexcept { release_all(); }
         
         //______________________________________________________________________
         //
         // container interfacer
         //______________________________________________________________________
-        inline virtual const char * category() const throw()
+        inline virtual const char * category() const noexcept
         {
             return low_level::sorted_list_name;
         } //!< get its name
         
-        inline virtual size_t size()     const throw()  { return active.size; }             //!< active.size
-        inline virtual size_t capacity() const throw()  { return active.size+zombie.size; } //!< active.size+zombie.size
-        inline virtual size_t available() const throw() { return zombie.size; }             //!< zombie.size
-        inline virtual void   free()            throw() { zombify(); }                      //!< empty active
-        inline virtual void   release()         throw() { release_all(); }                  //!< release all
+        inline virtual size_t size()     const noexcept  { return active.size; }             //!< active.size
+        inline virtual size_t capacity() const noexcept  { return active.size+zombie.size; } //!< active.size+zombie.size
+        inline virtual size_t available() const noexcept { return zombie.size; }             //!< zombie.size
+        inline virtual void   free()            noexcept { zombify(); }                      //!< empty active
+        inline virtual void   release()         noexcept { release_all(); }                  //!< release all
         inline virtual void   reserve(size_t n)
         {
             while(n-- > 0) zombie.store( zacquire() );
@@ -188,22 +188,22 @@ namespace yack
         
         
         //! head node, the 'smallest'
-        inline const node_type *head() const throw() { return active.head; }
+        inline const node_type *head() const noexcept { return active.head; }
         
         //! tail node, the 'greatest'
-        inline const node_type *tail() const throw() { return active.tail; }
+        inline const node_type *tail() const noexcept { return active.tail; }
         
         //! 'lower' value
-        inline const_type & front() const throw() { assert(active.head); return **active.head; }
+        inline const_type & front() const noexcept { assert(active.head); return **active.head; }
         
         //! 'upper' value
-        inline const_type & back() const throw() { assert(active.tail); return **active.tail; }
+        inline const_type & back() const noexcept { assert(active.tail); return **active.tail; }
         
         //! remove head
-        inline void pop_front() throw() { assert(active.head); zombify( active.pop_front() ); }
+        inline void pop_front() noexcept { assert(active.head); zombify( active.pop_front() ); }
         
         //! remove tail
-        inline void pop_back() throw()  { assert(active.tail); zombify( active.pop_back() ); }
+        inline void pop_back() noexcept  { assert(active.tail); zombify( active.pop_back() ); }
         
         //! remove head, return its copy
         inline const_type pull_front() {
@@ -257,29 +257,29 @@ namespace yack
             }
         }
         
-        inline void zombify(node_type *node) throw()
+        inline void zombify(node_type *node) noexcept
         {
             assert(NULL!=node);
             zombie.store( out_of_reach::naught( destructed(node) ) );
         }
         
-        inline void zombify() throw()
+        inline void zombify() noexcept
         {
             while(active.size>0) zombify(active.pop_back());
             
         }
         
-        inline void release_zombie() throw()
+        inline void release_zombie() noexcept
         {
             while(zombie.size>0) zrelease(zombie.query());
         }
         
-        inline void release_active() throw()
+        inline void release_active() noexcept
         {
             while(active.size>0) zrelease( destructed(active.pop_back()) );
         }
         
-        inline void release_all() throw()
+        inline void release_all() noexcept
         {
             release_zombie();
             release_active();
@@ -291,7 +291,7 @@ namespace yack
         }
         
         
-        static void zrelease(node_type *node) throw() {
+        static void zrelease(node_type *node) noexcept {
             object::zrelease(node);
         }
         

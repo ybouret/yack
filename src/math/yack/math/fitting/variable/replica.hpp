@@ -27,19 +27,19 @@ namespace yack
                 // C++
                 //______________________________________________________________
                 explicit replica(const string &, const primary::handle &); //!< setup name+link
-                virtual ~replica() throw();                                //!< cleanup
+                virtual ~replica() noexcept;                                //!< cleanup
 
                 //______________________________________________________________
                 //
                 // methods
                 //______________________________________________________________
-                virtual const string & alias()      const throw(); //!< link->name
-                virtual bool           is_primary() const throw(); //!< false
+                virtual const string & alias()      const noexcept; //!< link->name
+                virtual bool           is_primary() const noexcept; //!< false
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(replica);
                 const primary::handle link;
-                virtual size_t indx() const throw(); //!< return indx_
+                virtual size_t indx() const noexcept; //!< return indx_
             };
 
         }

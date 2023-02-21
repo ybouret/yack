@@ -12,7 +12,7 @@ namespace yack
 
         namespace gz
         {
-            istream:: ~istream() throw()
+            istream:: ~istream() noexcept
             {
             }
 

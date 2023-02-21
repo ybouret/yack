@@ -10,7 +10,7 @@ namespace yack
     namespace memory
     {
 
-        int parcel:: compare(const parcel *lhs, const parcel *rhs) throw()
+        int parcel:: compare(const parcel *lhs, const parcel *rhs) noexcept
         {
             assert(NULL!=lhs);
             assert(NULL!=rhs);
@@ -35,13 +35,13 @@ namespace yack
         }
 
 
-        bool parcel:: is_empty() const throw()
+        bool parcel:: is_empty() const noexcept
         {
             return (NULL==head->user) && (head->next == tail);
         }
 
 
-        parcel:: ~parcel() throw()
+        parcel:: ~parcel() noexcept
         {
             if(!is_empty())
             {
@@ -57,7 +57,7 @@ namespace yack
 
         parcel:: parcel(void        *block_addr,
                         const size_t block_size,
-                        const size_t block_exp2 ) throw():
+                        const size_t block_exp2 ) noexcept:
         head( static_cast<stamp_t *>(block_addr) ),
         tail(0),
         next(0),
@@ -81,7 +81,7 @@ namespace yack
         }
 
 
-        size_t  parcel:: capacity() const throw()
+        size_t  parcel:: capacity() const noexcept
         {
             size_t cap = 0;
             for(const stamp_t *node=head;node;node=node->next)
@@ -92,7 +92,7 @@ namespace yack
             return cap;
         }
 
-        size_t parcel:: size_of(const void *addr) throw()
+        size_t parcel:: size_of(const void *addr) noexcept
         {
             assert(addr);
             return (static_cast<const stamp_t*>(addr)-1)->size;
@@ -112,7 +112,7 @@ namespace yack
     namespace memory
     {
 
-        static inline void update_stamp(parcel::stamp_t *s) throw()
+        static inline void update_stamp(parcel::stamp_t *s) noexcept
         {
             assert(s);
             assert(s->next);
@@ -121,7 +121,7 @@ namespace yack
             assert(s->size>0);
         }
 
-        void * parcel:: try_acquire(size_t &size) throw()
+        void * parcel:: try_acquire(size_t &size) noexcept
         {
             // find first fitting space
             stamp_t *best = head;
@@ -199,7 +199,7 @@ namespace yack
     namespace memory
     {
 
-        const parcel  * parcel:: whose(const void *entry) throw()
+        const parcel  * parcel:: whose(const void *entry) noexcept
         {
             assert(entry);
             const stamp_t *s = static_cast<const stamp_t *>(entry)-1;
@@ -208,7 +208,7 @@ namespace yack
         }
 
         
-        parcel * parcel:: get_release(void * &entry, size_t &count) throw()
+        parcel * parcel:: get_release(void * &entry, size_t &count) noexcept
         {
             assert(entry);
             assert(count>0);

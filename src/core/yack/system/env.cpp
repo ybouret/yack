@@ -30,12 +30,12 @@ namespace yack
                 if(!lpvEnv) throw win32::exception(::GetLastError(), "GetEnvironmentStrings()");
             }
 
-            inline LPTSTR operator*() throw()
+            inline LPTSTR operator*() noexcept
             {
                 return (LPSTR)lpvEnv;
             }
 
-            inline ~ESQuery() throw()
+            inline ~ESQuery() noexcept
             {
                 ::FreeEnvironmentStrings(lpvEnv);
                 lpvEnv = 0;

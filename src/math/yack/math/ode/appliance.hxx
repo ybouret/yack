@@ -8,7 +8,7 @@ namespace yack
         {
 
             template <>
-            appliance<real_t>:: ~appliance() throw()
+            appliance<real_t>:: ~appliance() noexcept
             {
             }
 

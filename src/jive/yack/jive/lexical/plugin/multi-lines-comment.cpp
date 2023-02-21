@@ -8,7 +8,7 @@ namespace yack
 
         namespace lexical
         {
-            multi_lines_comment:: ~multi_lines_comment() throw()
+            multi_lines_comment:: ~multi_lines_comment() noexcept
             {
             }
 
@@ -18,12 +18,12 @@ namespace yack
                 drop(".");
             }
 
-            void multi_lines_comment:: enter(token &) throw()
+            void multi_lines_comment:: enter(token &) noexcept
             {
 
             }
 
-            void multi_lines_comment:: leave(token &) throw()
+            void multi_lines_comment:: leave(token &) noexcept
             {
 
             }

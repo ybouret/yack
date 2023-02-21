@@ -16,7 +16,7 @@ namespace yack
             reverse  //!< reverse
         };
 
-        const char *direction_text(const direction d) throw(); //!< textual direction
+        const char *direction_text(const direction d) noexcept; //!< textual direction
     }
 
 }

@@ -5,11 +5,11 @@ namespace yack
 	namespace hashing
 	{
 		
-		sfh:: sfh() throw() : function( __length, __window ), hash(0)
+		sfh:: sfh() noexcept : function( __length, __window ), hash(0)
 		{
 		}
 		
-		sfh:: ~sfh() throw()
+		sfh:: ~sfh() noexcept
 		{
 			hash = 0;
 		}
@@ -17,7 +17,7 @@ namespace yack
         
         const char sfh::clid[] = "sfh";
 
-		void sfh:: set() throw()
+		void sfh:: set() noexcept
 		{
 			hash = 0;
 		}
@@ -31,7 +31,7 @@ namespace yack
 		}
 		
 		
-		void sfh:: run( const void *buffer, size_t buflen ) throw()
+		void sfh:: run( const void *buffer, size_t buflen ) noexcept
 		{
 			assert( !(buffer==NULL&&buflen>0) );
 			const uint8_t *data  = (const uint8_t *) buffer;
@@ -71,7 +71,7 @@ namespace yack
 			
 		}
 		
-		void sfh:: get( void *output, size_t outlen ) throw()
+		void sfh:: get( void *output, size_t outlen ) noexcept
 		{
 			/* Force "avalanching" of final 127 bits */
 			hash ^= hash << 3;

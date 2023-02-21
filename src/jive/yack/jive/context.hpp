@@ -28,8 +28,8 @@ namespace yack
             //! generic setup
             template <typename LABEL> inline
             explicit context(LABEL &id) : tag( tags::make(id) ), line(1), column(1) { }
-            virtual ~context()       throw(); //!< cleanup
-            context(const context &) throw(); //!< no-throw copy
+            virtual ~context()       noexcept; //!< cleanup
+            context(const context &) noexcept; //!< no-throw copy
 
             //__________________________________________________________________
             //
@@ -37,7 +37,7 @@ namespace yack
             //_________________________________________________________________
 
             //! prepend tag:line:col:
-            exception & stamp(exception &) const throw();
+            exception & stamp(exception &) const noexcept;
 
             //! tag:line:col
             friend std::ostream & operator<<(std::ostream &, const context &);

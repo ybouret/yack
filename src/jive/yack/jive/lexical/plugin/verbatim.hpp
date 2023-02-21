@@ -29,7 +29,7 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~verbatim() throw(); //!< cleanup
+                virtual ~verbatim() noexcept; //!< cleanup
 
                 //! setup with enter/leave char
                 template <
@@ -59,10 +59,10 @@ namespace yack
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(verbatim);
                 void         setup();
-                virtual void enter(token &) throw();
+                virtual void enter(token &) noexcept;
                 void         leave(token &);
-                behavior     on_dot(token &) throw();
-                behavior     on_endl(token &) throw();
+                behavior     on_dot(token &) noexcept;
+                behavior     on_endl(token &) noexcept;
             };
 
         }

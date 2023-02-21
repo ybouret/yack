@@ -8,11 +8,11 @@
 
 namespace yack
 {
-    container:: ~container() throw()
+    container:: ~container() noexcept
     {
     }
     
-    container:: container() throw()
+    container:: container() noexcept
     {
     }
     

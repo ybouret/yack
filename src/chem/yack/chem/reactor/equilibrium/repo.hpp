@@ -39,8 +39,8 @@ namespace yack {
             //
             // C++
             //__________________________________________________________________
-            explicit eq_repo() throw(); //!< setup
-            virtual ~eq_repo() throw(); //!< cleanup
+            explicit eq_repo() noexcept; //!< setup
+            virtual ~eq_repo() noexcept; //!< cleanup
 
             //__________________________________________________________________
             //

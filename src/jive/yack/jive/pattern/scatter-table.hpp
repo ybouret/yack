@@ -36,15 +36,15 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                explicit node(const void*) throw(); //!< setup
-                node(const node &)         throw(); //!< copy
-                virtual ~node()            throw(); //!< cleanup
+                explicit node(const void*) noexcept; //!< setup
+                node(const node &)         noexcept; //!< copy
+                virtual ~node()            noexcept; //!< cleanup
                 
                 //______________________________________________________________
                 //
                 // methods
                 //______________________________________________________________
-                const void * operator*() const throw(); //!< access data
+                const void * operator*() const noexcept; //!< access data
 
                 //______________________________________________________________
                 //
@@ -78,14 +78,14 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                hasher() throw();
-                ~hasher() throw();
+                hasher() noexcept;
+                ~hasher() noexcept;
 
                 //______________________________________________________________
                 //
                 //! code to key function
                 //______________________________________________________________
-                size_t operator()(const uint8_t &code) const throw();
+                size_t operator()(const uint8_t &code) const noexcept;
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(hasher);
@@ -113,8 +113,8 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                explicit table() throw();
-                virtual ~table() throw();
+                explicit table() noexcept;
+                virtual ~table() noexcept;
 
                 //______________________________________________________________
                 //
@@ -129,7 +129,7 @@ namespace yack
                  - the nodes are in chronological order
                  */
                 //______________________________________________________________
-                const node * query(const uint8_t code, size_t &count) const throw();
+                const node * query(const uint8_t code, size_t &count) const noexcept;
 
                 //______________________________________________________________
                 //

@@ -19,7 +19,7 @@ namespace yack
         size_t size; //!< number of elements
 
         //! inline pop
-        inline NODE *pop() throw() {
+        inline NODE *pop() noexcept {
             assert(head); assert(size>0);
             NODE *node=head;
             head=head->next;
@@ -29,7 +29,7 @@ namespace yack
         }
 
         //! inline push
-        inline NODE *push(NODE *node) throw() {
+        inline NODE *push(NODE *node) noexcept {
             assert(node); assert(NULL==node->next);
             node->next = head;
             head       = node;

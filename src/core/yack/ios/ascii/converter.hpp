@@ -53,7 +53,7 @@ namespace yack
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(converter);
                 explicit converter();
-                virtual ~converter() throw();
+                virtual ~converter() noexcept;
                 friend class singleton<converter>;
                 tree_type tree;
 

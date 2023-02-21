@@ -12,12 +12,12 @@ namespace yack
             bool   scanner:: verbose = false;
             size_t scanner:: output_width = 20;
 
-            scanner:: ~scanner() throw()
+            scanner:: ~scanner() noexcept
             {
             }
 
 
-            const string & scanner:: key() const throw()
+            const string & scanner:: key() const noexcept
             {
                 return *label;
             }
@@ -47,17 +47,17 @@ namespace yack
                 coerce(*table).store(*m,& *task);
             }
 
-            behavior scanner:: on_produce(const token &) throw()
+            behavior scanner:: on_produce(const token &) noexcept
             {
                 return produce;
             }
 
-            behavior scanner:: on_discard(const token &) throw()
+            behavior scanner:: on_discard(const token &) noexcept
             {
                 return discard;
             }
 
-            behavior scanner:: on_newline(const token &) throw()
+            behavior scanner:: on_newline(const token &) noexcept
             {
                 assert(flux);
                 (**flux).newline();
@@ -98,12 +98,12 @@ namespace yack
         namespace lexical
         {
 
-            bool  scanner:: standalone() const throw()
+            bool  scanner:: standalone() const noexcept
             {
                 return indx == &indx_;
             }
 
-            bool scanner:: linked_to(const scanner &host) const throw()
+            bool scanner:: linked_to(const scanner &host) const noexcept
             {
                 if( host.indx == indx )
                 {
@@ -131,7 +131,7 @@ namespace yack
                 }
             }
 
-            static inline bool is_word(const character *ch) throw()
+            static inline bool is_word(const character *ch) noexcept
             {
                 if(!ch)
                 {

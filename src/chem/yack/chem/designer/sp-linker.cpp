@@ -25,7 +25,7 @@ namespace yack
             {
             }
 
-            sp_linker:: ~sp_linker() throw()
+            sp_linker:: ~sp_linker() noexcept
             {
             }
             

@@ -32,8 +32,8 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline  explicit coop_repo(const proxy_type &_) throw() : self_type(_)  {} //!< setup
-        inline  virtual ~coop_repo() throw()                                    {} //!< cleanup
+        inline  explicit coop_repo(const proxy_type &_) noexcept : self_type(_)  {} //!< setup
+        inline  virtual ~coop_repo() noexcept                                    {} //!< cleanup
         inline  coop_repo(const coop_repo &_) : self_type(_)                    {} //!< copy
         
         

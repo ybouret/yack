@@ -16,12 +16,12 @@ namespace yack
 
         namespace quark
         {
-            unode_type:: unode_type(const size_t i) throw() :
+            unode_type:: unode_type(const size_t i) noexcept :
             next(0), prev(0), core(i), rank(0), indx(0) {}
 
-            unode_type:: ~unode_type() throw() {}
+            unode_type:: ~unode_type() noexcept {}
 
-            size_t unode_type:: operator*() const throw() { return core; }
+            size_t unode_type:: operator*() const noexcept { return core; }
 
         }
 
@@ -36,7 +36,7 @@ namespace yack
 
         namespace quark
         {
-            topology:: ~topology() throw() {}
+            topology:: ~topology() noexcept {}
 
 
             void topology:: linear(const size_t n)
@@ -54,7 +54,7 @@ namespace yack
                 linear( max_of<size_t>(1,n) );
             }
 
-            void topology:: update() throw()
+            void topology:: update() noexcept
             {
                 size_t rank=0;
                 size_t indx=1;
@@ -170,7 +170,7 @@ namespace yack
 
         }
 
-        topology:: ~topology() throw() {}
+        topology:: ~topology() noexcept {}
 
         topology:: topology() : topology_( new quark::topology() )
         {

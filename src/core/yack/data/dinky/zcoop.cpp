@@ -6,7 +6,7 @@ namespace yack
     namespace kernel
     {
        
-        zcoop:: ~zcoop() throw()
+        zcoop:: ~zcoop() noexcept
         {
             assert(sync);
             delete sync;
@@ -18,7 +18,7 @@ namespace yack
         {
         }
         
-        lockable & zcoop:: operator*() throw() {
+        lockable & zcoop:: operator*() noexcept {
             assert(sync);
             return *sync;
         }

@@ -35,10 +35,10 @@ namespace yack
         //______________________________________________________________________
 
         //! setup with cache
-        inline explicit data_set(const fund_type &fund) throw() : dlist(fund) {}
+        inline explicit data_set(const fund_type &fund) noexcept : dlist(fund) {}
 
         //! cleanup
-        inline virtual ~data_set() throw() {}
+        inline virtual ~data_set() noexcept {}
 
         //! copy
         inline data_set(const data_set &_) : dlist(_.dlist) {}
@@ -54,8 +54,8 @@ namespace yack
         //
         // access methods
         //______________________________________________________________________
-        const list_type * operator->() const throw() { return &dlist; } //!< access, const
-        const list_type & operator*()  const throw() { return  dlist; } //!< access, const
+        const list_type * operator->() const noexcept { return &dlist; } //!< access, const
+        const list_type & operator*()  const noexcept { return  dlist; } //!< access, const
 
         //______________________________________________________________________
         //
@@ -108,8 +108,8 @@ namespace yack
         inline void       dismiss(param_type args)    { (void) remove(args); }         //!< ensure a value is not present
         inline data_set & operator+=(param_type args) { ensure(args); return *this; }  //!< ensure(args)
         inline data_set & operator-=(param_type args) { dismiss(args); return *this; } //!< dismiss(args)
-        inline void       pop_upper() throw()         { dlist.cut_tail(); }            //!< remove upper value
-        inline void       pop_lower() throw()         { dlist.cut_head(); }            //!< remove lower value
+        inline void       pop_upper() noexcept         { dlist.cut_tail(); }            //!< remove upper value
+        inline void       pop_lower() noexcept         { dlist.cut_head(); }            //!< remove lower value
         inline type       pull_upper()                { return dlist.pull_tail(); }    //!< pull upper value
         inline type       pull_lower()                { return dlist.pull_head(); }    //!< pull lower value
 
@@ -182,7 +182,7 @@ namespace yack
         }
 
 
-        inline void       free() throw()                    { dlist.clear(); }              //!< free content
+        inline void       free() noexcept                    { dlist.clear(); }              //!< free content
         inline data_set & operator+=(const data_set &other) { merge(other); return *this; } //!< merge other
         inline data_set & operator-=(const data_set &other) { purge(other); return *this; } //!< purge other
 

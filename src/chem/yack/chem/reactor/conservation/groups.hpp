@@ -30,8 +30,8 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit clots() throw(); //!< setup
-            virtual ~clots() throw(); //!< cleanup
+            explicit clots() noexcept; //!< setup
+            virtual ~clots() noexcept; //!< cleanup
 
             //__________________________________________________________________
             //

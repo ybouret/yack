@@ -55,7 +55,7 @@ namespace yack
                 }
 
                 //! cleanup
-                inline virtual ~samples_of() throw()
+                inline virtual ~samples_of() noexcept
                 {
                 }
 
@@ -112,9 +112,9 @@ namespace yack
                 //
                 // fast access
                 //______________________________________________________________
-                inline size_t        size() const throw() { return (*samples.tree).size; } //!< number of samples
-                inline const s_node *head() const throw() { return (*samples.tree).head; } //!< fast iterator
-                inline const s_node *tail() const throw() { return (*samples.tree).tail; } //!< fast iterator
+                inline size_t        size() const noexcept { return (*samples.tree).size; } //!< number of samples
+                inline const s_node *head() const noexcept { return (*samples.tree).head; } //!< fast iterator
+                inline const s_node *tail() const noexcept { return (*samples.tree).tail; } //!< fast iterator
 
                 //______________________________________________________________
                 //
@@ -122,7 +122,7 @@ namespace yack
                 //______________________________________________________________
 
                 //! sum of all dimensions
-                virtual size_t dimension() const throw()
+                virtual size_t dimension() const noexcept
                 {
                     size_t res = 0;
                     for(const s_node *node=head();node;node=node->next)
@@ -222,7 +222,7 @@ namespace yack
                 }
 
                 //! sequential release
-                inline virtual void release() throw()
+                inline virtual void release() noexcept
                 {
                     for(const s_node *node=tail();node;node=node->prev)
                     {

@@ -18,7 +18,7 @@ namespace yack
             return self.mass_action(K_eq,conc, xi, xmul);
         }
         
-        const char * components:: state_text(const state s) throw()
+        const char * components:: state_text(const state s) noexcept
         {
             switch (s) {
                 case are_blocked: return "[BLOCKED]";
@@ -30,12 +30,12 @@ namespace yack
 
         const char components:: clid[] = "chemical::components";
         
-        components:: ~components() throw()
+        components:: ~components() noexcept
         {
         }
         
         
-        components:: components() throw() :
+        components:: components() noexcept :
         reac(),
         prod(),
         d_nu(0),
@@ -80,7 +80,7 @@ namespace yack
 
 
 
-        const component * components::query(const species &s) const throw()
+        const component * components::query(const species &s) const noexcept
         {
             const component::pointer *ppC = cdb.search(s.name);
             if(ppC) {
@@ -106,12 +106,12 @@ namespace yack
 
 
 
-        const cnode * components:: head() const throw()
+        const cnode * components:: head() const noexcept
         {
             return (*cdb.tree).head;
         }
         
-        size_t components:: size() const throw()
+        size_t components:: size() const noexcept
         {
             return (*cdb.tree).size;
         }
@@ -119,7 +119,7 @@ namespace yack
         
         const xlimits & components:: genuine_limits(xlimits_io             &xio,
                                                     const readable<double> &C,
-                                                    const size_t            w) const throw()
+                                                    const size_t            w) const noexcept
         {
             assert(xio.num_bytes>=sizeof(xlimits));
             return * new (*xio) xlimits(reac.genuine_limit(xio.reac,C),prod.genuine_limit(xio.prod,C),w);
@@ -397,13 +397,13 @@ namespace yack
             return fabs(MA_ini-MA_end)<=0 ? extent::is_degenerated : extent::is_significant;
         }
 
-        void components:: move(writable<double> &C, const double xi) const throw()
+        void components:: move(writable<double> &C, const double xi) const noexcept
         {
             prod.move(C, xi);
             reac.move(C,-xi);
         }
         
-        bool components:: attached_to(const components &other) const throw()
+        bool components:: attached_to(const components &other) const noexcept
         {
             for(const cnode *node=head();node;node=node->next)
             {
@@ -416,7 +416,7 @@ namespace yack
             return false;
         }
 
-        bool components:: detached_of(const components &other) const throw()
+        bool components:: detached_of(const components &other) const noexcept
         {
             for(const cnode *node=head();node;node=node->next)
             {
@@ -429,12 +429,12 @@ namespace yack
             return true;
         }
 
-        bool components:: uses(const species &s) const throw()
+        bool components:: uses(const species &s) const noexcept
         {
             return NULL != cdb.search(s.name);
         }
 
-        size_t components:: span() const throw()
+        size_t components:: span() const noexcept
         {
             size_t res = 0;
             for(const cnode *node=head();node;node=node->next)
@@ -464,12 +464,12 @@ namespace yack
     namespace chemical
     {
 
-        bool components:: neutral() const throw()
+        bool components:: neutral() const noexcept
         {
             return reac.algebraic_Z == prod.algebraic_Z;
         }
 
-        bool components:: minimal() const throw()
+        bool components:: minimal() const noexcept
         {
             if(size()<=1)
             {
@@ -488,7 +488,7 @@ namespace yack
             }
         }
 
-        components::state components:: state_at(const readable<double> &C) const throw()
+        components::state components:: state_at(const readable<double> &C) const noexcept
         {
             return (reac.are_genuinely_blocked_by(C) && reac.are_genuinely_blocked_by(C)) ? are_blocked : are_running;
         }

@@ -4,11 +4,11 @@
 
 namespace yack
 {
-    addrbook:: ~addrbook() throw()
+    addrbook:: ~addrbook() noexcept
     {
     }
     
-    addrbook::  addrbook() throw() : addrbook_()
+    addrbook::  addrbook() noexcept : addrbook_()
     {
     }
     
@@ -25,7 +25,7 @@ namespace yack
         return  addrbook_::insert((void*)addr,key.begin(),key.measure());
     }
 
-    bool addrbook:: search(const void *addr) const throw()
+    bool addrbook:: search(const void *addr) const noexcept
     {
         const be_address key(addr,as_address);
         return NULL !=  addrbook_::search(key.begin(),key.measure());

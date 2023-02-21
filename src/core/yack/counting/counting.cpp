@@ -4,18 +4,18 @@
 namespace yack
 {
     
-    counting:: counting(const cardinality_t num) throw() :
+    counting:: counting(const cardinality_t num) noexcept :
     index(1),
     total(num)
     {
         assert(num>0);
     }
     
-    counting:: ~counting() throw()
+    counting:: ~counting() noexcept
     {
     }
 
-    void counting:: boot() throw()
+    void counting:: boot() noexcept
     {
         coerce(index)=1;
         on_boot();

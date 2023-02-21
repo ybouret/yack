@@ -33,7 +33,7 @@ namespace yack
                 //______________________________________________________________
 
                 //! cleanup
-                virtual ~istream() throw();
+                virtual ~istream() noexcept;
 
                 //! setup
                 template <typename INPUT> inline

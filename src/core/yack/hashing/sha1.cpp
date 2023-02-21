@@ -276,25 +276,25 @@ e += S(a,5) + F(b,c,d) + K + x; b = S(b,30);        \
         } // RFC1321
         
         
-        sha1::sha1() throw() : function(__length, __window), ctx()
+        sha1::sha1() noexcept : function(__length, __window), ctx()
         {
         }
         
         const char sha1:: clid[] = "sha1";
         
         
-        void sha1:: set() throw()
+        void sha1:: set() noexcept
         {
             RFC3174::sha1_set( &ctx );
         }
         
-        void sha1:: run( const void *buffer, size_t buflen ) throw()
+        void sha1:: run( const void *buffer, size_t buflen ) noexcept
         {
             assert( !(buflen>0&&NULL==buffer) );
             RFC3174::sha1_run( &ctx, (const uint8_t *)buffer, buflen );
         }
         
-        void sha1::get(void *output, size_t outlen ) throw()
+        void sha1::get(void *output, size_t outlen ) noexcept
         {
             assert( !(output==NULL&&outlen>0) );
             uint8_t  digest[20];
@@ -302,7 +302,7 @@ e += S(a,5) + F(b,c,d) + K + x; b = S(b,30);        \
             fill( output, outlen, digest, sizeof(digest) );
         }
         
-        sha1:: ~sha1() throw()
+        sha1:: ~sha1() noexcept
         {
             memset( &ctx, 0 , sizeof(ctx) );
         }

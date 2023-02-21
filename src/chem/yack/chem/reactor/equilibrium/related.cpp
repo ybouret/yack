@@ -10,7 +10,7 @@ namespace yack
         
         static inline
         bool have_common_species(const readable<int> &lhs,
-                                 const readable<int> &rhs) throw()
+                                 const readable<int> &rhs) noexcept
         {
             for(size_t i=lhs.size();i>0;--i)
             {

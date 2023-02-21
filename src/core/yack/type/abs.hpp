@@ -28,7 +28,7 @@ namespace yack
         struct absolute<float>
         {
             //! get
-            static inline float of(const float x) throw() { return fabsf(x); }
+            static inline float of(const float x) noexcept { return fabsf(x); }
         };
 
         //! specific absolute value
@@ -36,7 +36,7 @@ namespace yack
         struct absolute<double>
         {
             //! get
-            static inline double of(const double x) throw() { return fabs(x); }
+            static inline double of(const double x) noexcept { return fabs(x); }
         };
 
         //! specific absolute value
@@ -44,7 +44,7 @@ namespace yack
         struct absolute<long double>
         {
             //! get
-            static inline double of(const long double x) throw() { return fabsl(x); }
+            static inline double of(const long double x) noexcept { return fabsl(x); }
         };
     }
 

@@ -41,15 +41,15 @@ namespace yack
                 //______________________________________________________________
 
                 //! setup
-                yuv() throw();
+                yuv() noexcept;
                 //! cleanup
-                ~yuv() throw();
+                ~yuv() noexcept;
                 //! copy
-                yuv(const yuv & ) throw();
+                yuv(const yuv & ) noexcept;
                 //! assign
-                yuv & operator=(const yuv &) throw();
+                yuv & operator=(const yuv &) noexcept;
                 //! setup
-                yuv(const_type Y, const_type U, const_type V) throw();
+                yuv(const_type Y, const_type U, const_type V) noexcept;
 
                 //______________________________________________________________
                 //
@@ -67,14 +67,14 @@ namespace yack
 
 
                 //! yuv->r
-                inline mutable_type get_r() const throw()
+                inline mutable_type get_r() const noexcept
                 {
                     static const_type cv(1.13983);
                     return clamp_y(y+cv*v);
                 }
 
                 //! yuv->g
-                inline mutable_type get_g() const throw()
+                inline mutable_type get_g() const noexcept
                 {
                     static const_type cu(-0.39465);
                     static const_type cv(-0.58060);
@@ -82,7 +82,7 @@ namespace yack
                 }
 
                 //! yuv->b
-                inline mutable_type get_b() const throw()
+                inline mutable_type get_b() const noexcept
                 {
                     static const_type cu(2.03211);
                     return clamp_y(y+cu*u);
@@ -94,13 +94,13 @@ namespace yack
                 //______________________________________________________________
 
                 //! Y
-                static inline mutable_type clamp_y(const_type Y) throw()
+                static inline mutable_type clamp_y(const_type Y) noexcept
                 {
                     return (Y<=0) ? 0 : ( (1<=Y) ? 1 : Y);
                 }
 
                 //! U
-                static inline mutable_type clamp_u(const_type U) throw()
+                static inline mutable_type clamp_u(const_type U) noexcept
                 {
                     static const_type umin(YACK_YUV_UMIN);
                     static const_type umax(YACK_YUV_UMAX);
@@ -109,7 +109,7 @@ namespace yack
                 }
 
                 //! V
-                static inline mutable_type clamp_v(const_type V) throw()
+                static inline mutable_type clamp_v(const_type V) noexcept
                 {
                     static const_type vmin(YACK_YUV_VMIN);
                     static const_type vmax(YACK_YUV_VMAX);
@@ -123,7 +123,7 @@ namespace yack
                 //______________________________________________________________
 
                 //! Y
-                static inline mutable_type to_y(const_type r, const_type g, const_type b) throw()
+                static inline mutable_type to_y(const_type r, const_type g, const_type b) noexcept
                 {
                     static const_type cr(0.299);
                     static const_type cg(0.587);
@@ -132,7 +132,7 @@ namespace yack
                 }
 
                 //! U
-                static inline mutable_type to_u(const_type r, const_type g, const_type b) throw()
+                static inline mutable_type to_u(const_type r, const_type g, const_type b) noexcept
                 {
                     static const_type cr(-0.14713);
                     static const_type cg(-0.28886);
@@ -141,7 +141,7 @@ namespace yack
                 }
 
                 //! V
-                static inline mutable_type to_v(const_type r, const_type g, const_type b) throw()
+                static inline mutable_type to_v(const_type r, const_type g, const_type b) noexcept
                 {
                     static const_type cr(+0.61500);
                     static const_type cg(-0.51498);
@@ -150,10 +150,10 @@ namespace yack
                 }
 
                 //! [0..1]^3 to yuv
-                static yuv from_reals(const_type r, const_type g, const_type b) throw();
+                static yuv from_reals(const_type r, const_type g, const_type b) noexcept;
 
                 //! [0..255]^3 to yuv
-                static yuv from_bytes(const uint8_t r, const uint8_t g, const uint8_t b) throw();
+                static yuv from_bytes(const uint8_t r, const uint8_t g, const uint8_t b) noexcept;
 
             };
 

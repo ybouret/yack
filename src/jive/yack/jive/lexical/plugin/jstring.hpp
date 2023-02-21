@@ -29,7 +29,7 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~jstring() throw(); //!< cleanup
+                virtual ~jstring() noexcept; //!< cleanup
 
                 template <typename IDENTIFIER>
                 explicit jstring(const IDENTIFIER &uuid,

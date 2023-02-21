@@ -104,7 +104,7 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
         //! sort in increasing order
         //______________________________________________________________________
         template <typename ARRAY> inline
-        void increasing(ARRAY &arr) const throw()
+        void increasing(ARRAY &arr) const noexcept
         {
             quick_sort_incr(arr,1,arr.size());
         }
@@ -114,7 +114,7 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
         //! sort in decreasing order
         //______________________________________________________________________
         template <typename ARRAY> inline
-        void decreasing(ARRAY &arr) const throw()
+        void decreasing(ARRAY &arr) const noexcept
         {
             quick_sort_decr(arr,1,arr.size());
         }
@@ -124,7 +124,7 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
         //! sort in absolute value decreasing order
         //______________________________________________________________________
         template <typename ARRAY> inline
-        void decreasing_abs(ARRAY &arr) const throw()
+        void decreasing_abs(ARRAY &arr) const noexcept
         {
             quick_sort_decr_abs(arr,1,arr.size());
         }
@@ -141,8 +141,8 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(network_sort);
         friend class singleton<network_sort>;
-        explicit network_sort() throw();
-        virtual ~network_sort() throw();
+        explicit network_sort() noexcept;
+        virtual ~network_sort() noexcept;
 
         
         
@@ -152,7 +152,7 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
         //
         //----------------------------------------------------------------------
         template <typename ARRAY> static inline
-        size_t partition_incr( ARRAY &arr, const size_t lo, const size_t hi) throw()
+        size_t partition_incr( ARRAY &arr, const size_t lo, const size_t hi) noexcept
         {
             assert(hi>=lo);
 
@@ -169,7 +169,7 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
         }
 
         template <typename ARRAY>  inline
-        void dispatch_incr(ARRAY &arr, const size_t lo, const size_t hi) const throw()
+        void dispatch_incr(ARRAY &arr, const size_t lo, const size_t hi) const noexcept
         {
             assert(hi>=lo);
             switch(hi-lo)
@@ -180,7 +180,7 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
         }
 
         template <typename ARRAY>   inline
-        void quick_sort_incr(ARRAY &arr, const size_t lo, const size_t hi) const throw()
+        void quick_sort_incr(ARRAY &arr, const size_t lo, const size_t hi) const noexcept
         {
             assert(lo>0);
             if(lo<hi)
@@ -199,7 +199,7 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
         //----------------------------------------------------------------------
 
         template <typename ARRAY> static inline
-        size_t partition_decr(ARRAY &arr, const size_t lo, const size_t hi) throw()
+        size_t partition_decr(ARRAY &arr, const size_t lo, const size_t hi) noexcept
         {
             typename ARRAY::const_type pivot = arr[ (lo+hi)>>1 ];
             size_t  i     = lo-1;
@@ -214,7 +214,7 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
         }
 
         template <typename ARRAY> inline
-        void dispatch_decr(ARRAY &arr, const size_t lo, const size_t hi) const throw()
+        void dispatch_decr(ARRAY &arr, const size_t lo, const size_t hi) const noexcept
         {
             assert(hi>=lo);
             switch(hi-lo)
@@ -225,7 +225,7 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
         }
 
         template <typename ARRAY> inline
-        void quick_sort_decr(ARRAY &arr, const size_t lo, const size_t hi) const throw()
+        void quick_sort_decr(ARRAY &arr, const size_t lo, const size_t hi) const noexcept
         {
             assert(lo>0);
             if(lo<hi)
@@ -244,7 +244,7 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
         //
         //----------------------------------------------------------------------
         template <typename ARRAY> static inline
-        size_t partition_decr_abs(ARRAY &arr, const size_t lo, const size_t hi) throw()
+        size_t partition_decr_abs(ARRAY &arr, const size_t lo, const size_t hi) noexcept
         {
             typename ARRAY::const_type pivot = std::abs(arr[ (lo+hi)>>1 ]);
             size_t  i     = lo-1;
@@ -259,7 +259,7 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
         }
 
         template <typename ARRAY>  inline
-        void dispatch_decr_abs(ARRAY &arr, const size_t lo, const size_t hi) const throw()
+        void dispatch_decr_abs(ARRAY &arr, const size_t lo, const size_t hi) const noexcept
         {
             assert(hi>=lo);
             switch(hi-lo)
@@ -270,7 +270,7 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
         }
 
         template <typename ARRAY>   inline
-        void quick_sort_decr_abs(ARRAY &arr, const size_t lo, const size_t hi) const throw()
+        void quick_sort_decr_abs(ARRAY &arr, const size_t lo, const size_t hi) const noexcept
         {
             assert(lo>0);
             if(lo<hi)

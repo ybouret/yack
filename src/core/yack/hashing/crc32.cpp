@@ -7,16 +7,16 @@ namespace yack
         
         const char crc32:: clid[] = "crc32";
 
-		crc32:: crc32() throw() : function( __length , __window ), hash(0)
+		crc32:: crc32() noexcept : function( __length , __window ), hash(0)
 		{
 		}
 		
-		crc32:: ~crc32() throw()
+		crc32:: ~crc32() noexcept
 		{
 			hash = 0;
 		}
 		
-		void crc32:: set() throw()
+		void crc32:: set() noexcept
 		{
 			hash = 0;
 		}
@@ -92,7 +92,7 @@ namespace yack
         
 
         
-		void crc32:: run( const void *buffer, size_t buflen ) throw()
+		void crc32:: run( const void *buffer, size_t buflen ) noexcept
 		{
 			assert( !(buffer==NULL&&buflen>0) );
 			
@@ -105,7 +105,7 @@ namespace yack
 		}
 		
 		
-		void crc32:: get( void *output, size_t outlen ) throw()
+		void crc32:: get( void *output, size_t outlen ) noexcept
 		{
 			fill( output, outlen, &hash, sizeof(hash) );
 		}

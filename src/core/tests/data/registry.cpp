@@ -29,7 +29,7 @@ public:
     }
     
     
-    ~dummy() throw()
+    ~dummy() noexcept
     {
     }
     
@@ -39,7 +39,7 @@ public:
         return os;
     }
     
-    const string & key() const throw() { return k; }
+    const string & key() const noexcept { return k; }
     
 private:
     YACK_DISABLE_ASSIGN(dummy);

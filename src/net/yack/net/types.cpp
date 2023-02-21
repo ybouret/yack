@@ -16,12 +16,12 @@ namespace yack {
      const socket_type invalid_socket = INVALID_SOCKET;
 #endif
 
-        exception:: ~exception() throw()
+        exception:: ~exception() noexcept
         {
             memset(what_,0,sizeof(what_));
         }
 
-        exception:: exception(const exception &other) throw() :
+        exception:: exception(const exception &other) noexcept :
         yack::exception(other),
         code_(other.code_),
         what_()
@@ -29,7 +29,7 @@ namespace yack {
             memcpy(what_,other.what_,sizeof(what_));
         }
 
-        exception:: exception(const error_code err, const char *fmt, ...) throw() :
+        exception:: exception(const error_code err, const char *fmt, ...) noexcept :
         yack::exception(),
         code_(err),
         what_()
@@ -45,7 +45,7 @@ namespace yack {
             YACK_SYSTEM_ERROR_FORMAT(what_,sizeof(what_),code_);
         }
 
-        const char * exception:: what() const throw()
+        const char * exception:: what() const noexcept
         {
             return what_;
         }

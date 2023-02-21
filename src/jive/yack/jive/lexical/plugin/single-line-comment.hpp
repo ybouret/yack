@@ -27,7 +27,7 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~single_line_comment() throw(); //!< cleanup
+                virtual ~single_line_comment() noexcept; //!< cleanup
 
                 //! setup with triggering expression
                 template <
@@ -45,8 +45,8 @@ namespace yack
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(single_line_comment);
                 void         compile();
-                void         leave(token &) throw();  //!< restore endl
-                virtual void enter(token &) throw();  //!< token matches expr
+                void         leave(token &) noexcept;  //!< restore endl
+                virtual void enter(token &) noexcept;  //!< token matches expr
             };
 
             //! helper for inline single line comment
@@ -55,7 +55,7 @@ namespace yack
 /**/  {\
 /**/   public:\
 /**/    YACK_JIVE_PLUGIN_DECL(NAME);    \
-/**/    inline virtual ~NAME() throw() {}\
+/**/    inline virtual ~NAME() noexcept {}\
 /**/    template<typename IDENTIFIER>\
 /**/    inline explicit NAME(const IDENTIFIER &uuid,analyzer &host) :\
 /**/      single_line_comment(uuid,EXPR,host) {} \

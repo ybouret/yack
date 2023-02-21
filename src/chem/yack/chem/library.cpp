@@ -12,7 +12,7 @@ namespace yack
     namespace chemical
     {
 
-        double library:: concentration(randomized::bits &ran) throw()
+        double library:: concentration(randomized::bits &ran) noexcept
         {
             static const double lower = min_exp10;
             static const double ampli = max_exp10-min_exp10;
@@ -34,11 +34,11 @@ namespace yack
 
         const char library:: clid[] = "chemical::library";
 
-        library:: ~library() throw()
+        library:: ~library() noexcept
         {
         }
 
-        library:: library() throw() : gathering(), readable<const species>(), sdb()
+        library:: library() noexcept : gathering(), readable<const species>(), sdb()
         {
         }
 
@@ -56,17 +56,17 @@ namespace yack
 
 
 
-        const snode * library:: head() const throw()
+        const snode * library:: head() const noexcept
         {
             return (*sdb.tree).head;
         }
 
-        library::const_type & library:: operator[](const size_t i) const throw()
+        library::const_type & library:: operator[](const size_t i) const noexcept
         {
            return *** (*sdb.tree).get(i);
         }
 
-        size_t library:: size() const throw()
+        size_t library:: size() const noexcept
         {
             return (*sdb.tree).size;
         }
@@ -100,7 +100,7 @@ namespace yack
         }
 
 
-        const species * library:: look_up(const string &uid) const throw()
+        const species * library:: look_up(const string &uid) const noexcept
         {
             const species::pointer *pps = sdb.search(uid);
             return pps ? & **pps : NULL;

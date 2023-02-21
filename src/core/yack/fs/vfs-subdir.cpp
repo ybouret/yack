@@ -5,7 +5,7 @@
 
 namespace yack
 {
-    static inline bool is_sep(const int ch) throw()
+    static inline bool is_sep(const int ch) noexcept
     {
         return ch == '/' || ch == '\\';
     }

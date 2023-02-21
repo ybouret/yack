@@ -31,10 +31,10 @@ namespace yack
             virtual void       *acquire(size_t &count, const size_t block_size) = 0;
 
             //! release a previously acquire memory area
-            virtual void        release(void * &addr, size_t &size)     throw() = 0;
+            virtual void        release(void * &addr, size_t &size)     noexcept = 0;
 
             //! name for allocator
-            virtual const char *variety()                         const throw() = 0;
+            virtual const char *variety()                         const noexcept = 0;
 
             //__________________________________________________________________
             //
@@ -60,7 +60,7 @@ namespace yack
             //! helper to release memory from a field of objects
             template <typename T> inline
             void withdraw(T    * &entry,
-                          size_t &bytes) throw()
+                          size_t &bytes) noexcept
             {
                 void * &addr = *(void **) &entry;
                 release(addr,bytes);
@@ -70,10 +70,10 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~allocator() throw(); //!< cleanup
+            virtual ~allocator() noexcept; //!< cleanup
 
         protected:
-            explicit allocator() throw(); //!< setup
+            explicit allocator() noexcept; //!< setup
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(allocator);

@@ -21,9 +21,9 @@ namespace yack
         class socket_addr
         {
         public:
-            virtual            ~socket_addr()     throw();      //!< cleanup
-            virtual uint16_t    family()    const throw() = 0;  //!< AF_INET[6]
-            virtual const char *className() const throw() = 0;  //!< "IPv[4|6]"
+            virtual            ~socket_addr()     noexcept;      //!< cleanup
+            virtual uint16_t    family()    const noexcept = 0;  //!< AF_INET[6]
+            virtual const char *className() const noexcept = 0;  //!< "IPv[4|6]"
             
             sockaddr         &addr; //!< reference for BSD
             const sa_length_t size; //!< effective length of addr
@@ -31,7 +31,7 @@ namespace yack
 
         protected:
             //! setup with references
-            explicit socket_addr(sockaddr &ar, const sa_length_t sz, net16_t &pr) throw();
+            explicit socket_addr(sockaddr &ar, const sa_length_t sz, net16_t &pr) noexcept;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(socket_addr);

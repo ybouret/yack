@@ -12,11 +12,11 @@ namespace yack
 
             const char sample_::clid[] = "fitting::sample";
 
-            sample_:: ~sample_() throw()
+            sample_:: ~sample_() noexcept
             {
             }
 
-            const string & sample_:: key() const throw() { return name; }
+            const string & sample_:: key() const noexcept { return name; }
 
             void sample_:: throw_multiple_name(const string &id) const
             {
@@ -28,13 +28,13 @@ namespace yack
                 throw imported::exception(clid,"no '%s'", id());
             }
 
-            variables    & sample_:: operator*() throw()
+            variables    & sample_:: operator*() noexcept
             {
                 return vars_;
             }
 
 
-            const variables & sample_:: operator*() const throw()
+            const variables & sample_:: operator*() const noexcept
             {
                 return vars_;
             }

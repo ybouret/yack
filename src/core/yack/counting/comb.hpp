@@ -23,19 +23,19 @@ namespace yack
         // C++
         //______________________________________________________________________
         explicit combination(const size_t n, const size_t k); //!< setup
-        virtual ~combination() throw();                       //!< cleanup
+        virtual ~combination() noexcept;                       //!< cleanup
         
         //______________________________________________________________________
         //
         // interface
         //______________________________________________________________________
-        virtual size_t size() const throw(); //!< k
+        virtual size_t size() const noexcept; //!< k
 
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(combination);
-        virtual void   on_boot() throw();       //!< [1..k]
-        virtual bool   on_next() throw();       //!< find next combination
+        virtual void   on_boot() noexcept;       //!< [1..k]
+        virtual bool   on_next() noexcept;       //!< find next combination
     };
     
 }

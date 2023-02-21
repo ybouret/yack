@@ -27,7 +27,7 @@ namespace yack
         {
         }
 
-        jpeg_format:: ~jpeg_format() throw()
+        jpeg_format:: ~jpeg_format() noexcept
         {
         }
         
@@ -89,7 +89,7 @@ namespace yack
         {
         public:
             inline explicit JPEG_RGB_Line(const size_t width) : RGB_Line(3*width) {}
-            inline virtual ~JPEG_RGB_Line() throw() {}
+            inline virtual ~JPEG_RGB_Line() noexcept {}
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(JPEG_RGB_Line);
@@ -270,7 +270,7 @@ namespace yack
                 buffer[0] = samples;
             }
 
-            inline virtual ~JPEG_Buffer() throw()
+            inline virtual ~JPEG_Buffer() noexcept
             {
                 static memory::allocator &mgr = memory_allocator::location();
                 mgr.withdraw(samples,bytes);
@@ -278,7 +278,7 @@ namespace yack
                 buffer[0] = NULL;
             }
 
-            inline JSAMPLE ** & operator*() throw() { return jsbuff; }
+            inline JSAMPLE ** & operator*() noexcept { return jsbuff; }
 
 
         private:
@@ -298,7 +298,7 @@ namespace yack
         static inline
         void JPEG_Row_Convert1(pixrow<rgba>   &row,
                                const JSAMPLE *samples,
-                               const unit_t   width) throw()
+                               const unit_t   width) noexcept
         {
             assert(samples);
             assert(*row.w == width);
@@ -312,7 +312,7 @@ namespace yack
         static inline
         void JPEG_Row_Convert3(pixrow<rgba>   &row,
                                const JSAMPLE *samples,
-                               const unit_t   width) throw()
+                               const unit_t   width) noexcept
         {
             assert(samples);
             assert(*row.w == width);

@@ -51,14 +51,14 @@ namespace yack
                     //__________________________________________________________
 
                     //! cleanup
-                    virtual ~column() throw();
+                    virtual ~column() noexcept;
 
                     //! build with given procedure
                     template <typename T> inline
                     column(sequence<T>  &seq,
                            const size_t  num,
                            const builder cnv,
-                           const append  inc) throw() :
+                           const append  inc) noexcept :
                     next(0),
                     prev(0),
                     addr(&seq),
@@ -74,8 +74,8 @@ namespace yack
                     // methods
                     //__________________________________________________________
                     void       push(const char *,const size_t, const char*);    //!< use conv/grow
-                    void       free()                                  throw(); //!< use zero
-                    static int compare(const column *, const column *) throw(); //!< compare by index
+                    void       free()                                  noexcept; //!< use zero
+                    static int compare(const column *, const column *) noexcept; //!< compare by index
 
                     //__________________________________________________________
                     //
@@ -95,7 +95,7 @@ namespace yack
                     erase        drop;
 
                     template <typename T> static inline
-                    void zero(column &self) throw() { static_cast< sequence<T> *>(self.addr)->free(); }
+                    void zero(column &self) noexcept { static_cast< sequence<T> *>(self.addr)->free(); }
                 };
 
 
@@ -105,8 +105,8 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                explicit loader() throw(); //!< init empty
-                virtual ~loader() throw(); //!< cleanup
+                explicit loader() noexcept; //!< init empty
+                virtual ~loader() noexcept; //!< cleanup
 
                 //______________________________________________________________
                 //
@@ -134,7 +134,7 @@ namespace yack
                 YACK_DISABLE_COPY_AND_ASSIGN(loader);
                 columns cols;
                 void    check_index(const size_t indx, const string &name) const;
-                void    use(column *) throw();
+                void    use(column *) noexcept;
 
                 template <typename T> static inline
                 void incr(column      &self,

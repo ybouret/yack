@@ -8,7 +8,7 @@ using namespace yack;
 namespace
 {
     template <typename U>
-    static inline bool CheckIntegralFor() throw()
+    static inline bool CheckIntegralFor() noexcept
     {
         typedef typename integral_for<U>::type V;
         return (sizeof(V) == sizeof(U)) && ( is_signed<U>::value == is_signed<V>::value );

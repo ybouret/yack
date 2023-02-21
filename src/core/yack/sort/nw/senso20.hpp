@@ -7,8 +7,8 @@ namespace yack {
     //! senso20
     class senso20 : public swaps {
       public:
-        virtual ~senso20() throw(); //!< cleanup
-        explicit senso20() throw(); //!< setup  
+        virtual ~senso20() noexcept; //!< cleanup
+        explicit senso20() noexcept; //!< setup  
         static const char   sid[];        //!< senso20
         static const size_t lhs[0x005c];  //!< lhs
         static const size_t rhs[0x005c];  //!< rhs

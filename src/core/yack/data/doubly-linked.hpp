@@ -40,7 +40,7 @@ namespace yack
         //______________________________________________________________________
 
         //! cleanup
-        inline virtual ~doubly_linked() throw() {}
+        inline virtual ~doubly_linked() noexcept {}
 
         //! setup with no argument
         inline explicit doubly_linked() :

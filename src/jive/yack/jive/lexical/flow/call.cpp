@@ -21,7 +21,7 @@ namespace yack
                 {
                 }
                 
-                call:: ~call() throw()
+                call:: ~call() noexcept
                 {
                 }
                 

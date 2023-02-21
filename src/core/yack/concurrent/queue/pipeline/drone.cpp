@@ -20,7 +20,7 @@ namespace yack
         {
         }
 
-        drone:: ~drone() throw()
+        drone:: ~drone() noexcept
         {
         }
 

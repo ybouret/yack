@@ -6,7 +6,7 @@ namespace yack
     {
 
         template <>
-        svd<real_t>:: ~svd() throw()
+        svd<real_t>:: ~svd() noexcept
         {
         }
 

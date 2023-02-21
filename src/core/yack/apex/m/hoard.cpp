@@ -33,7 +33,7 @@ namespace yack
             std::cerr << "<apex::hoard/>" << std::endl;
         }
 
-        void  hoard:: gc() throw()
+        void  hoard:: gc() noexcept
         {
             for(size_t i=min_block_exp2;i<=max_block_exp2;++i)
             {
@@ -53,13 +53,13 @@ namespace yack
         }
 
 
-        hoard:: ~hoard() throw()
+        hoard:: ~hoard() noexcept
         {
             gc();
             repo = 0;
         }
 
-        hoard:: hoard() throw() : repo(0), impl()
+        hoard:: hoard() noexcept : repo(0), impl()
         {
             repo = static_cast<repository*>( out_of_reach::zset(impl,sizeof(impl)) )-min_block_exp2;
             for(size_t i=min_block_exp2,bs=min_block_size;i<=max_block_exp2;++i,bs <<= 1)
@@ -98,7 +98,7 @@ namespace yack
             
         }
 
-        void hoard:: release_unlocked(void *block_addr, const exp2_t block_exp2) throw()
+        void hoard:: release_unlocked(void *block_addr, const exp2_t block_exp2) noexcept
         {
             assert(NULL!=block_addr);
             assert(block_exp2>=min_block_exp2);

@@ -7,8 +7,8 @@ namespace yack {
     namespace chemical {
 
 
-        eq_group::  eq_group() throw() : object(), eq_group_()  {}
-        eq_group:: ~eq_group() throw() {}
+        eq_group::  eq_group() noexcept : object(), eq_group_()  {}
+        eq_group:: ~eq_group() noexcept {}
 
 
         std::ostream & operator<<(std::ostream &os, const eq_group &self)

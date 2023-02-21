@@ -51,7 +51,7 @@ namespace yack
             //__________________________________________________________________
 
             //! setup empty
-            inline explicit suffix_tree() throw() :
+            inline explicit suffix_tree() noexcept :
             root(),
             data(),
             repo(),
@@ -60,7 +60,7 @@ namespace yack
             }
 
             //! cleanup
-            inline virtual ~suffix_tree() throw()
+            inline virtual ~suffix_tree() noexcept
             {
             }
 
@@ -94,7 +94,7 @@ namespace yack
             //__________________________________________________________________
 
             //! release all memory
-            inline void release() throw()
+            inline void release() noexcept
             {
                 root.release();
                 data.release();
@@ -103,7 +103,7 @@ namespace yack
             }
 
             //! free content, keep nodes and knots
-            inline   void   free() throw()
+            inline   void   free() noexcept
             {
                 purge(root);
                 while(data.size)
@@ -111,7 +111,7 @@ namespace yack
             }
 
             //! available nodes for the tree
-            inline size_t cache() const throw() { return repo.size; }
+            inline size_t cache() const noexcept { return repo.size; }
 
             //! put data nodes in cache
             inline void cache(size_t n)
@@ -123,7 +123,7 @@ namespace yack
             }
 
             //! max depth
-            inline size_t depth() const throw()
+            inline size_t depth() const noexcept
             {
                 size_t deep = 0;
                 for(const knot_type *knot=data.head;knot;knot=knot->next)
@@ -135,7 +135,7 @@ namespace yack
             }
 
             //! reverse data order
-            inline void reverse() throw()
+            inline void reverse() noexcept
             {
                 data.reverse();
             }
@@ -145,7 +145,7 @@ namespace yack
             //! search method
             //__________________________________________________________________
             template <typename ITERATOR> inline
-            const_type *search(ITERATOR iter, size_t n) const throw()
+            const_type *search(ITERATOR iter, size_t n) const noexcept
             {
                 const node_type *node = NULL;
                 const node_list *curr = &root;
@@ -183,7 +183,7 @@ namespace yack
             //! search method, mutable
             //__________________________________________________________________
             template <typename ITERATOR> inline
-            type *search(ITERATOR iter, size_t n) throw()
+            type *search(ITERATOR iter, size_t n) noexcept
             {
                 const suffix_tree &self = *this; return (type *)(self.search(iter,n));
             }
@@ -261,7 +261,7 @@ namespace yack
             //! remove
             //__________________________________________________________________
             template <typename ITERATOR> inline
-            bool remove(ITERATOR iter, size_t n) throw()
+            bool remove(ITERATOR iter, size_t n) noexcept
             {
                 node_type *node = NULL;
                 node_list *curr = &root;
@@ -330,14 +330,14 @@ namespace yack
 
 
             //! const data access
-            inline const list_of<knot_type> & operator *() const throw() { return data; }
+            inline const list_of<knot_type> & operator *() const noexcept { return data; }
 
             //! const data access
-            inline const list_of<knot_type> * operator->() const throw() { return &data; }
+            inline const list_of<knot_type> * operator->() const noexcept { return &data; }
 
 
             //! exchange contant, keep resources
-            inline void exchange_content_with(suffix_tree &other) throw()
+            inline void exchange_content_with(suffix_tree &other) noexcept
             {
                 root.swap_with(other.root);
                 data.swap_with(other.data);
@@ -388,7 +388,7 @@ namespace yack
             //
             //! recursively purge nodes, disarding knots
             //__________________________________________________________________
-            inline void purge(node_list &nodes) throw()
+            inline void purge(node_list &nodes) noexcept
             {
                 while(nodes.size>0)
                 {
@@ -401,7 +401,7 @@ namespace yack
             //
             //! prune from a vacant node
             //__________________________________________________________________
-            inline void prune(node_type *node) throw()
+            inline void prune(node_type *node) noexcept
             {
                 assert(NULL!=node);
                 assert(NULL==node->knot);

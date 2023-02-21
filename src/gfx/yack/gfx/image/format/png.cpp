@@ -27,7 +27,7 @@ namespace yack
         {
         }
 
-        png_format:: ~png_format() throw()
+        png_format:: ~png_format() noexcept
         {
         }
 
@@ -41,7 +41,7 @@ namespace yack
             class PNG_Common
             {
             public:
-                inline virtual ~PNG_Common() throw() {}
+                inline virtual ~PNG_Common() noexcept {}
 
 
                 inline void failed(const char *fn) const
@@ -52,7 +52,7 @@ namespace yack
 
 
             protected:
-                inline explicit PNG_Common() throw() {}
+                inline explicit PNG_Common() noexcept {}
 
 
 
@@ -86,7 +86,7 @@ namespace yack
 
                 }
 
-                virtual ~PNG_Reader() throw()
+                virtual ~PNG_Reader() noexcept
                 {
                     png_destroy_read_struct(&png, &info, NULL);
                 }

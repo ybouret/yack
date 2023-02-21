@@ -22,7 +22,7 @@ namespace yack
             size_t(1) << 7
         };
         
-        bool natural::bit(const size_t ibit) const throw()
+        bool natural::bit(const size_t ibit) const noexcept
         {
             
             assert(ibit<bits());
@@ -39,14 +39,14 @@ namespace yack
         {
             typedef   uint8_t & (*apn_get_proc)(natural::word_type &, const size_t);
             
-            static inline   uint8_t & getBE(natural::word_type &w, const size_t at) throw()
+            static inline   uint8_t & getBE(natural::word_type &w, const size_t at) noexcept
             {
                 assert(at<sizeof(w));
                 uint8_t *p= (uint8_t *)&w;
                 return p[(sizeof(w)-1)-at];
             }
             
-            static inline   uint8_t & getLE(natural::word_type &w, const size_t at) throw()
+            static inline   uint8_t & getLE(natural::word_type &w, const size_t at) noexcept
             {
                 assert(at<sizeof(w));
                 uint8_t *p = (uint8_t *)&w;
@@ -80,7 +80,7 @@ namespace yack
         }
         
         
-        natural & natural:: shr() throw()
+        natural & natural:: shr() noexcept
         {
             if(words)
             {
@@ -97,7 +97,7 @@ namespace yack
             return *this;
         }
         
-        void natural:: set_bit(const size_t ibit) throw()
+        void natural:: set_bit(const size_t ibit) noexcept
         {
             size_t        iB = ibit>>3;
             const size_t  ib = ibit - (iB<<3); assert(ib<8);
@@ -229,17 +229,17 @@ namespace yack
             return res;
         }
         
-        static uint8_t apn_or(const uint8_t x, const uint8_t y) throw()
+        static uint8_t apn_or(const uint8_t x, const uint8_t y) noexcept
         {
             return x|y;
         }
         
-        static uint8_t apn_and(const uint8_t x, const uint8_t y) throw()
+        static uint8_t apn_and(const uint8_t x, const uint8_t y) noexcept
         {
             return x&y;
         }
         
-        static uint8_t apn_xor(const uint8_t x, const uint8_t y) throw()
+        static uint8_t apn_xor(const uint8_t x, const uint8_t y) noexcept
         {
             return x^y;
         }

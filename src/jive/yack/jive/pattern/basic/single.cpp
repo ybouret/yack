@@ -8,20 +8,20 @@ namespace yack
     {
         const char single::clid[] = "single";
 
-        const char * single:: class_uid() const throw() { return clid; }
+        const char * single:: class_uid() const noexcept { return clid; }
 
-        single:: ~single() throw()
+        single:: ~single() noexcept
         {
         }
 
-        single:: single(const uint8_t ch) throw() :
+        single:: single(const uint8_t ch) noexcept :
         pattern(mark),
         code(ch)
         {
             I_am<single>();
         }
 
-        bool single:: is_same_than(const single *other) const throw()
+        bool single:: is_same_than(const single *other) const noexcept
         {
             assert(other);
             return code == other->code;
@@ -91,7 +91,7 @@ namespace yack
             return new single(code);
         }
 
-        bool single:: is_univocal() const throw()
+        bool single:: is_univocal() const noexcept
         {
             return true;
         }

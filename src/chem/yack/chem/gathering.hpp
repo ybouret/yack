@@ -24,14 +24,14 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~gathering() throw(); //!< cleanup
-            explicit gathering() throw(); //!< setup
+            virtual ~gathering() noexcept; //!< cleanup
+            explicit gathering() noexcept; //!< setup
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            void           absorb(const entity &)              throw(); //!< update maxlen
+            void           absorb(const entity &)              noexcept; //!< update maxlen
             std::ostream & pad(std::ostream &os, const entity &) const; //!< pad up to maxlen
 
             //__________________________________________________________________

@@ -293,25 +293,25 @@ d += temp1; h = temp1 + temp2;              \
 		}
 		
 		
-		sha256::sha256() throw() : function(__length, __window), ctx()
+		sha256::sha256() noexcept : function(__length, __window), ctx()
 		{
 		}
 		
 		const char sha256:: clid[] ="sha256";
 
 		
-		void sha256:: set() throw()
+		void sha256:: set() noexcept
 		{
 			sha256_set( &ctx );
 		}
 		
-		void sha256:: run( const void *buffer, size_t buflen ) throw()
+		void sha256:: run( const void *buffer, size_t buflen ) noexcept
 		{
 			assert( !(buflen>0&&NULL==buffer) );
 			sha256_run( &ctx, (const uint8_t *)buffer, buflen );
 		}
 		
-		void sha256::get(void *output, size_t outlen ) throw()
+		void sha256::get(void *output, size_t outlen ) noexcept
 		{
 			assert( !(output==NULL&&outlen>0) );
 			uint8_t  digest[32];
@@ -319,7 +319,7 @@ d += temp1; h = temp1 + temp2;              \
 			fill( output, outlen, digest, sizeof(digest) );
 		}
 		
-		sha256:: ~sha256() throw()
+		sha256:: ~sha256() noexcept
 		{
 			memset( &ctx, 0 , sizeof(ctx) );
 		}
@@ -328,7 +328,7 @@ d += temp1; h = temp1 + temp2;              \
 		
 		////////////////////////////////////////////////////////////////////////
 		
-		sha224::sha224() throw() : function(__length, __window), ctx()
+		sha224::sha224() noexcept : function(__length, __window), ctx()
 		{
 		}
 		
@@ -336,18 +336,18 @@ d += temp1; h = temp1 + temp2;              \
         
 		
 		
-		void sha224:: set() throw()
+		void sha224:: set() noexcept
 		{
 			sha224_set( &ctx );
 		}
 		
-		void sha224:: run( const void *buffer, size_t buflen ) throw()
+		void sha224:: run( const void *buffer, size_t buflen ) noexcept
 		{
 			assert( !(buflen>0&&NULL==buffer) );
 			sha256_run( &ctx, (const uint8_t *)buffer, buflen );
 		}
 		
-		void sha224::get(void *output, size_t outlen ) throw()
+		void sha224::get(void *output, size_t outlen ) noexcept
 		{
 			assert( !(output==NULL&&outlen>0) );
 			uint8_t  digest[28];
@@ -355,7 +355,7 @@ d += temp1; h = temp1 + temp2;              \
 			fill( output, outlen, digest, sizeof(digest) );
 		}
 		
-		sha224:: ~sha224() throw()
+		sha224:: ~sha224() noexcept
 		{
 			memset( &ctx, 0 , sizeof(ctx) );
 		}

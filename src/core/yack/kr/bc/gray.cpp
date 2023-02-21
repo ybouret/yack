@@ -10,7 +10,7 @@ namespace yack {
 
 
 		#define YOCTO_GRAY_ENCODE(N) \
-		template <> YOCTO_GRAY(N) gray<YOCTO_GRAY(N)>::encode( YOCTO_GRAY(N) n ) throw() \
+		template <> YOCTO_GRAY(N) gray<YOCTO_GRAY(N)>::encode( YOCTO_GRAY(N) n ) noexcept \
 		{\
 			return n ^ (n>>1);\
 		}
@@ -27,7 +27,7 @@ namespace yack {
 
 
 #define YOCTO_GRAY_DECODE(N) \
-template <> YOCTO_GRAY(N) gray<YOCTO_GRAY(N)>::decode( YOCTO_GRAY(N) n ) throw()\
+template <> YOCTO_GRAY(N) gray<YOCTO_GRAY(N)>::decode( YOCTO_GRAY(N) n ) noexcept\
 {\
         size_t        ish = 1;\
         YOCTO_GRAY(N) ans = n;\

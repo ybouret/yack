@@ -24,13 +24,13 @@ namespace yack
         class mloop : public dynamic
         {
         public:
-            virtual       ~mloop()         throw(); //!< cleanup
-            virtual size_t granted() const throw(); //!< allocated
+            virtual       ~mloop()         noexcept; //!< cleanup
+            virtual size_t granted() const noexcept; //!< allocated
 
             const size_t levels; //!< number of levels
 
         protected:
-            explicit mloop(const size_t dim)             throw(); //!< setup
+            explicit mloop(const size_t dim)             noexcept; //!< setup
             void     allocate_cxx(memory::embed[], const size_t); //!< allocate
 
         private:
@@ -62,7 +62,7 @@ namespace yack
         //______________________________________________________________________
 
         //! cleanup
-        inline virtual ~mloop() throw() {}
+        inline virtual ~mloop() noexcept {}
 
         //! setup
         inline explicit mloop(const T     *ini,
@@ -88,10 +88,10 @@ namespace yack
         //______________________________________________________________________
 
         //! size=levels
-        virtual inline size_t size() const throw() { return levels; }
+        virtual inline size_t size() const noexcept { return levels; }
 
         //! access values
-        virtual inline const_type & operator[](const size_t i) const throw()
+        virtual inline const_type & operator[](const size_t i) const noexcept
         {
             assert(values); assert(i>=1); assert(i<=levels); return values[i];
         }
@@ -183,14 +183,14 @@ namespace yack
             }
         }
 
-        static inline void incr(mutable_type &v) throw() { ++v; }
-        static inline void decr(mutable_type &v) throw() { --v; }
-        inline size_t      scan(size_t dim) const throw()
+        static inline void incr(mutable_type &v) noexcept { ++v; }
+        static inline void decr(mutable_type &v) noexcept { --v; }
+        inline size_t      scan(size_t dim) const noexcept
         {
             return ++dim > levels ? 1 : dim;
         }
 
-        void update(const size_t odim) throw()
+        void update(const size_t odim) noexcept
         {
             assert(odim>=1);
             assert(odim<=levels);
@@ -223,13 +223,13 @@ namespace yack
         //______________________________________________________________________
 
         //! reset initial values
-        virtual void on_boot() throw()
+        virtual void on_boot() noexcept
         {
             for(size_t i=levels;i>0;--i) values[i] = origin[i];
         }
 
         //! find next frame
-        virtual bool on_next() throw()
+        virtual bool on_next() noexcept
         {
             if(index<=total)
             {

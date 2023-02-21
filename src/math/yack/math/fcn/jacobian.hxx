@@ -5,7 +5,7 @@ namespace yack
     namespace math
     {
         template <>
-        jacobian<real_t>:: jacobian(const size_t ndat, const real_t h) throw() :
+        jacobian<real_t>:: jacobian(const size_t ndat, const real_t h) noexcept :
         tableaux(2,ndat),
         scal(h),
         fp( next() ),
@@ -14,7 +14,7 @@ namespace yack
         }
         
         template <>
-        jacobian<real_t>:: ~jacobian() throw()
+        jacobian<real_t>:: ~jacobian() noexcept
         {
             
         }

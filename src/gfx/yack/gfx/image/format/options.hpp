@@ -26,8 +26,8 @@ namespace yack
         class options : public options_db
         {
         public:
-            explicit options() throw();
-            virtual ~options() throw();
+            explicit options() noexcept;
+            virtual ~options() noexcept;
             
             //! parse 'key=val[:other_key=other_val]
             options & operator<<(const string &);
@@ -36,10 +36,10 @@ namespace yack
             options & operator<<(const char   *);
 
             //! search helper
-            const string *query(const char   *) const throw();
+            const string *query(const char   *) const noexcept;
 
             //! look up helper
-            static const string *look_up(const options *, const char *) throw();
+            static const string *look_up(const options *, const char *) noexcept;
 
 
         private:

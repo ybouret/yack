@@ -17,10 +17,10 @@ namespace yack
             {
             public:
                 static const char   clid[];                      //!< "[least-squares]"
-                static const char * ok(const bool flag) throw(); //!< textual
+                static const char * ok(const bool flag) noexcept; //!< textual
 
-                virtual ~least_squares_() throw();
-                explicit least_squares_() throw();
+                virtual ~least_squares_() noexcept;
+                explicit least_squares_() noexcept;
 
 
             private:

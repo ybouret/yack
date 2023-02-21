@@ -7,12 +7,12 @@ namespace yack
 {
     namespace memory
     {
-        shelf:: ~shelf() throw()
+        shelf:: ~shelf() noexcept
         {
             empty();
         }
         
-        shelf:: shelf() throw() :
+        shelf:: shelf() noexcept :
         bytes(0),
         entry(0),
         owner(0)
@@ -21,7 +21,7 @@ namespace yack
         
         shelf:: shelf(const void  *addr,
                       const size_t size,
-                      allocator   &user) throw() :
+                      allocator   &user) noexcept :
         bytes(0),
         entry(0),
         owner(0)
@@ -32,7 +32,7 @@ namespace yack
             owner         = &user;
         }
         
-        void shelf:: trade(shelf &other) throw()
+        void shelf:: trade(shelf &other) noexcept
         {
             coerce_cswap(bytes,other.bytes);
             coerce_cswap(entry,other.entry);
@@ -41,7 +41,7 @@ namespace yack
         
 
         
-        void shelf:: empty() throw()
+        void shelf:: empty() noexcept
         {
             if(bytes)
             {
@@ -53,7 +53,7 @@ namespace yack
 
         void shelf:: store(const void  *addr,
                            const size_t size,
-                           allocator   &user) throw()
+                           allocator   &user) noexcept
         {
             assert( yack_good(addr,size) );
             shelf target(addr,size,user);

@@ -9,7 +9,7 @@ namespace yack
         namespace syntax
         {
 
-            static inline bool is_proxy(const xnode *node) throw()
+            static inline bool is_proxy(const xnode *node) noexcept
             {
                 assert(node);
                 const rule &self = **node; assert(self.type==internal_type);
@@ -24,7 +24,7 @@ namespace yack
                 return false;
             }
 
-            static inline bool is_group(const xnode *node) throw()
+            static inline bool is_group(const xnode *node) noexcept
             {
                 assert(node);
                 const rule &self = **node; assert(self.type==internal_type);
@@ -40,7 +40,7 @@ namespace yack
             }
 
             static inline
-            xnode * ast_internal(xnode *node) throw()
+            xnode * ast_internal(xnode *node) noexcept
             {
                 //--------------------------------------------------------------
                 //
@@ -117,7 +117,7 @@ namespace yack
                 }
             }
             
-            xnode * xnode:: ast(xnode *node) throw()
+            xnode * xnode:: ast(xnode *node) noexcept
             {
                 assert(node);
                 const rule &r = **node;

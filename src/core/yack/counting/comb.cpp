@@ -8,7 +8,7 @@
 
 namespace yack
 {
-    combination:: ~combination() throw()
+    combination:: ~combination() noexcept
     {
     }
     
@@ -38,17 +38,17 @@ namespace yack
         yack_comb_boot(static_cast<yack_comb*>(addr),data);
     }
     
-    void combination:: on_boot() throw()
+    void combination:: on_boot() noexcept
     {
         yack_comb_boot( static_cast<yack_comb*>(addr),data);
     }
     
-    bool  combination::  on_next() throw()
+    bool  combination::  on_next() noexcept
     {
         return  yack_comb_next( static_cast<yack_comb*>(addr),data) != 0;
     }
     
-    size_t combination:: size() const throw()
+    size_t combination:: size() const noexcept
     {
         return static_cast<const yack_comb*>(addr)->k;
     }

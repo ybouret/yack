@@ -22,7 +22,7 @@ namespace yack
             tag(id);
         }
 
-        std::ostream & operator<<(std::ostream & os, const mutex &m) throw()
+        std::ostream & operator<<(std::ostream & os, const mutex &m) noexcept
         {
             try
             {
@@ -34,7 +34,7 @@ namespace yack
             return os;
         }
 
-        void mutex::tag(const char *id) throw()
+        void mutex::tag(const char *id) noexcept
         {
             static const size_t max_len = sizeof(name)-1;
             const        size_t tag_len = id ? strlen(id) : 0;
@@ -48,7 +48,7 @@ namespace yack
         }
 
 
-        mutex:: ~mutex() throw()
+        mutex:: ~mutex() noexcept
         {
             assert(impl);
             if(verbose) std::cerr << "-" << *this << std::endl;
@@ -56,7 +56,7 @@ namespace yack
             assert(!impl);
         }
 
-        void mutex:: lock() throw()
+        void mutex:: lock() noexcept
         {
             assert(impl);
             quark::mutex_api::lock(impl);
@@ -64,14 +64,14 @@ namespace yack
         }
 
 
-        void mutex:: unlock() throw()
+        void mutex:: unlock() noexcept
         {
             assert(impl);
             if(verbose) std::cerr << "<" << *this << " [UNLOCKING]" << std::endl;
             quark::mutex_api::unlock(impl);
         }
 
-        bool mutex:: try_lock() throw()
+        bool mutex:: try_lock() noexcept
         {
             assert(impl);
             return quark::mutex_api::try_lock(impl);

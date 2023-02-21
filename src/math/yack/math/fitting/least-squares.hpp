@@ -61,7 +61,7 @@ namespace yack
                 //______________________________________________________________
 
                 //! cleanup
-                virtual ~least_squares() throw() {}
+                virtual ~least_squares() noexcept {}
 
 
                 //! setup
@@ -103,7 +103,7 @@ namespace yack
                 //
                 //! mae atry
                 //______________________________________________________________
-                void   make_atry(const double u) throw()
+                void   make_atry(const double u) noexcept
                 {
                     for(const vnode *node= (**curr).head();node;node=node->next)
                     {

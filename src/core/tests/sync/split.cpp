@@ -8,12 +8,12 @@ using namespace yack;
 
 namespace
 {
-    static inline void do_nothing(const v2d<int> &) throw()
+    static inline void do_nothing(const v2d<int> &) noexcept
     {
         
     }
     
-    static inline void do_count(const v2d<int> &, size_t &count) throw()
+    static inline void do_count(const v2d<int> &, size_t &count) noexcept
     {
         ++count;
     }

@@ -16,7 +16,7 @@ namespace yack
         public:
 
             explicit string_io();
-            virtual ~string_io() throw();
+            virtual ~string_io() noexcept;
 
             virtual void send(const mpi   &MPI,
                               const void  *ptr,

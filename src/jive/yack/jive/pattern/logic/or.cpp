@@ -7,17 +7,17 @@ namespace yack
     {
         const char  op_or::clid[] = "or";
 
-        const char *op_or:: class_uid() const throw()
+        const char *op_or:: class_uid() const noexcept
         {
             return clid;
         }
 
-        op_or:: op_or() throw() : bank(mark)
+        op_or:: op_or() noexcept : bank(mark)
         {
             I_am<op_or>();
         }
 
-        op_or:: ~op_or() throw()
+        op_or:: ~op_or() noexcept
         {
         }
 
@@ -77,7 +77,7 @@ namespace yack
             return new op_or(*this);
         }
 
-        bool op_or:: is_univocal()  const throw()
+        bool op_or:: is_univocal()  const noexcept
         {
             switch(size)
             {

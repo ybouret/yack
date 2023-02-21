@@ -50,7 +50,7 @@ namespace yack
             Fl_Widget *push() const {return push_;}
             int push(Fl_Widget*);
             Gel_Tabs(int,int,int,int,const char * = 0);
-            virtual ~Gel_Tabs() throw();
+            virtual ~Gel_Tabs() noexcept;
             Fl_Widget *which(int event_x, int event_y);
         };
     }

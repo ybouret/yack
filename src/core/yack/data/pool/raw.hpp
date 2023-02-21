@@ -23,14 +23,14 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline virtual ~raw_pool_of() throw() {}
-        inline explicit raw_pool_of() throw() : pool_of<NODE>(), restartable() {}
+        inline virtual ~raw_pool_of() noexcept {}
+        inline explicit raw_pool_of() noexcept : pool_of<NODE>(), restartable() {}
         
         //______________________________________________________________________
         //
         // methods
         //______________________________________________________________________
-        inline virtual void restart() throw() { this->head=NULL; coerce(this->size) = 0; }
+        inline virtual void restart() noexcept { this->head=NULL; coerce(this->size) = 0; }
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(raw_pool_of);

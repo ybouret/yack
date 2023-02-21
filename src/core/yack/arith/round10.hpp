@@ -17,7 +17,7 @@ namespace yack
         {
             //! round using n decimals
             template <unsigned n> static inline
-            T floor_with(const T value) throw()
+            T floor_with(const T value) noexcept
             {
                 static const T _n_(n);
                 static const T ten(10);

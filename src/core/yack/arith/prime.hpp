@@ -41,7 +41,7 @@ namespace yack
             static const size_t pi8   = n8;     //!< PrimePi(8)
             static const size_t pi16  = n8+n16; //!< PrimePi(16)
 
-            static uint64_t     get16(const size_t indx) throw(); //!< indx in [0:PrimePi(16)-1]
+            static uint64_t     get16(const size_t indx) noexcept; //!< indx in [0:PrimePi(16)-1]
         };
 
 
@@ -51,8 +51,8 @@ namespace yack
     //! prime for 64bits unsigned
     struct prime64
     {
-        static bool     is(const uint64_t n) throw(); //!< check is prime
-        static uint64_t next(uint64_t n)     throw(); //!< get next prime
+        static bool     is(const uint64_t n) noexcept; //!< check is prime
+        static uint64_t next(uint64_t n)     noexcept; //!< get next prime
     };
 
 

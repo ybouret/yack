@@ -31,7 +31,7 @@ namespace yack {
             // C++
             //__________________________________________________________________
             explicit frontiers(const size_t); //!< setup with capacity
-            virtual ~frontiers()     throw(); //!< setup with capacity
+            virtual ~frontiers()     noexcept; //!< setup with capacity
 
             //__________________________________________________________________
             //
@@ -42,7 +42,7 @@ namespace yack {
             void operator()(const double xi, const species &sp, const sp_fund &fn);
 
             //! checking
-            bool are_increasing() const throw();
+            bool are_increasing() const noexcept;
 
 
         private:

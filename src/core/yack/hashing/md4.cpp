@@ -235,7 +235,7 @@ namespace yack
 			
 		} // RFC 1320
 		
-		md4::md4() throw() : function(__length, __window), ctx()
+		md4::md4() noexcept : function(__length, __window), ctx()
 		{
 		}
 		
@@ -243,18 +243,18 @@ namespace yack
 
 		
 		
-		void md4:: set() throw()
+		void md4:: set() noexcept
 		{
 			RFC1320::MD4Init( &ctx );
 		}
 		
-		void md4:: run( const void *buffer, size_t buflen ) throw()
+		void md4:: run( const void *buffer, size_t buflen ) noexcept
 		{
 			assert( !(buflen>0&&NULL==buffer) );
 			RFC1320::MD4Update( &ctx, (const uint8_t *)buffer, buflen );
 		}
 		
-		void md4::get(void *output, size_t outlen ) throw()
+		void md4::get(void *output, size_t outlen ) noexcept
 		{
 			assert( !(output==NULL&&outlen>0) );
 			uint8_t  digest[16];
@@ -262,7 +262,7 @@ namespace yack
 			fill( output, outlen, digest, sizeof(digest) );
 		}
 		
-		md4:: ~md4() throw()
+		md4:: ~md4() noexcept
 		{
 			memset( &ctx, 0 , sizeof(ctx) );
 		}

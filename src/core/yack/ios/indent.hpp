@@ -19,9 +19,9 @@ namespace yack
         class indent
         {
         public:
-            indent(const size_t sz, const char sp = ' ') throw(); //!< setup
-            indent(const indent &)                       throw(); //!< copy
-            virtual ~indent()                            throw(); //!< cleanup
+            indent(const size_t sz, const char sp = ' ') noexcept; //!< setup
+            indent(const indent &)                       noexcept; //!< copy
+            virtual ~indent()                            noexcept; //!< cleanup
 
             //! generic output
             template <typename OSTREAM> inline
@@ -48,9 +48,9 @@ namespace yack
         class xindent : public indent
         {
         public:
-            inline xindent(const size_t sz, const char sp = ' ') throw() : indent(sz*N,sp) {} //!< setup
-            inline xindent(const xindent &_) throw() : indent(_) {} //!< copy
-            inline virtual ~xindent() throw() {} //!< cleanup
+            inline xindent(const size_t sz, const char sp = ' ') noexcept : indent(sz*N,sp) {} //!< setup
+            inline xindent(const xindent &_) noexcept : indent(_) {} //!< copy
+            inline virtual ~xindent() noexcept {} //!< cleanup
 
         private:
             YACK_DISABLE_ASSIGN(xindent);

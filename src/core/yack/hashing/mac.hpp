@@ -44,7 +44,7 @@ function( FUNCTION::__length, FUNCTION::__window), H(), M(H,
             YACK_HMAC_ON_PROLOG() usr  YACK_HMAC_ON_EPILOG() {}
 
             //! cleanup
-            inline virtual ~hmac_on() throw() {}
+            inline virtual ~hmac_on() noexcept {}
 
             //__________________________________________________________________
             //
@@ -52,23 +52,23 @@ function( FUNCTION::__length, FUNCTION::__window), H(), M(H,
             //__________________________________________________________________
 
             //! prepare function
-            inline virtual void set() throw() { M.set(H); }
+            inline virtual void set() noexcept { M.set(H); }
 
             //! run function
-            inline virtual void run(const void *block_addr, size_t block_size) throw()
+            inline virtual void run(const void *block_addr, size_t block_size) noexcept
             {
                 H.run(block_addr,block_size);
             }
 
             //! get function from hmac
-            inline virtual void get(void *output, const size_t outlen) throw()
+            inline virtual void get(void *output, const size_t outlen) noexcept
             {
                 const memory::ro_buffer &md = M.get(H);
                 fill(output,outlen,md.ro_addr(),md.measure());
             }
 
             //! compound name
-            virtual const char *name() const throw() { return &id[0]; }
+            virtual const char *name() const noexcept { return &id[0]; }
 
             //__________________________________________________________________
             //

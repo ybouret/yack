@@ -7,13 +7,13 @@ namespace yack
 
     namespace memory
     {
-        chapter:: chapter(const size_t sz) throw() :
+        chapter:: chapter(const size_t sz) noexcept :
         page_size(sz)
         {
             assert(page_size>=sizeof(page));
         }
 
-        chapter:: ~chapter() throw()
+        chapter:: ~chapter() noexcept
         {
             while(size) page::release(pop_back(),page_size);
         }
@@ -31,7 +31,7 @@ namespace yack
             }
         }
 
-        void chapter:: store(void *addr) throw()
+        void chapter:: store(void *addr) noexcept
         {
             assert(addr);
             store_increasing_memory(static_cast<page*>(out_of_reach::zset(addr,sizeof(page))));

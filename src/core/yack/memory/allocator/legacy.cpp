@@ -22,7 +22,7 @@ namespace yack
             }
         }
 
-        void *legacy:: c_alloc(const size_t n) throw()
+        void *legacy:: c_alloc(const size_t n) noexcept
         {
             try
             {
@@ -36,7 +36,7 @@ namespace yack
         }
         
 
-        void legacy:: release(void *addr) throw()
+        void legacy:: release(void *addr) noexcept
         {
             if(addr)
             {

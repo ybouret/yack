@@ -60,7 +60,7 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~c_file() throw();                  //!< cleanup
+            virtual ~c_file() noexcept;                  //!< cleanup
         protected:
             explicit c_file(const cstdin_t  &);         //!< link to stdin
             explicit c_file(const cstdout_t &);         //!< link to stdout

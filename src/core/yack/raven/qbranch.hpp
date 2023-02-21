@@ -27,15 +27,15 @@ namespace yack
             // C++
             //__________________________________________________________________
             explicit qbranch();           //!< setup empty
-            virtual ~qbranch() throw();   //!< cleanup
+            virtual ~qbranch() noexcept;   //!< cleanup
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            void                     prune()            throw();                  //!< remove all families
-            const list_of<qfamily> & operator*()  const throw();                  //!< access, const
-            const list_of<qfamily> * operator->() const throw();                  //!< access, const
+            void                     prune()            noexcept;                  //!< remove all families
+            const list_of<qfamily> & operator*()  const noexcept;                  //!< access, const
+            const list_of<qfamily> * operator->() const noexcept;                  //!< access, const
             friend std::ostream    & operator<<(std::ostream &, const qbranch &); //!< display
 
             //__________________________________________________________________

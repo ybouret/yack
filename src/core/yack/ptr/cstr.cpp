@@ -41,30 +41,30 @@ ch( static_cast<char *>(memory::legacy::acquire(in_mem)) )
     }
 
 
-    cstr_ptr:: ~cstr_ptr() throw()
+    cstr_ptr:: ~cstr_ptr() noexcept
     {
         memory::legacy::release(ch);
         ch=0;
     }
 
-    const void *cstr_ptr:: ro_addr() const throw()
+    const void *cstr_ptr:: ro_addr() const noexcept
     {
         return ch;
     }
 
-    size_t cstr_ptr:: measure() const throw()
+    size_t cstr_ptr:: measure() const noexcept
     {
         return length;
     }
 
 
-    char       & cstr_ptr:: operator[](const size_t indx) throw()
+    char       & cstr_ptr:: operator[](const size_t indx) noexcept
     {
         assert(indx<length);
         return ch[indx];
     }
 
-    const char & cstr_ptr:: operator[](const size_t indx) const throw()
+    const char & cstr_ptr:: operator[](const size_t indx) const noexcept
     {
         assert(indx<=length);
         return ch[indx];

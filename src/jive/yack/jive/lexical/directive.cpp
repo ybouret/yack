@@ -7,7 +7,7 @@ namespace yack
     {
         namespace lexical
         {
-            directive:: ~directive() throw()
+            directive:: ~directive() noexcept
             {
             }
 
@@ -22,7 +22,7 @@ namespace yack
             {
             }
 
-            const string & directive:: key() const throw()
+            const string & directive:: key() const noexcept
             {
                 return *name;
             }

@@ -25,8 +25,8 @@ namespace yack
             //__________________________________________________________________
             explicit lexeme(const tag     &,
                             const context &,
-                            const size_t) throw(); //!< setup from directive uuid and context
-            virtual ~lexeme()             throw(); //!< cleanup
+                            const size_t) noexcept; //!< setup from directive uuid and context
+            virtual ~lexeme()             noexcept; //!< cleanup
             
             //__________________________________________________________________
             //

@@ -15,7 +15,7 @@ namespace yack
 {
     namespace memory
     {
-        chunk:: ~chunk() throw()
+        chunk:: ~chunk() noexcept
         {
             assert(NULL==next);
             assert(NULL==prev);
@@ -24,7 +24,7 @@ namespace yack
 
         static inline
         size_t chunk_blocks(const size_t chunk_size,
-                            const size_t block_size) throw()
+                            const size_t block_size) noexcept
         {
             assert(block_size>0);
             const size_t num_blocks = chunk_size/block_size;
@@ -38,7 +38,7 @@ namespace yack
             }
         }
 
-        void chunk:: format(const size_t block_size) throw()
+        void chunk:: format(const size_t block_size) noexcept
         {
             assert(0==first_available);
             for(uint8_t q=0,*p=data; q!=provided_number; p += block_size)
@@ -50,7 +50,7 @@ namespace yack
 
         chunk:: chunk(const size_t block_size,
                       void        *chunk_data,
-                      const size_t chunk_size) throw() :
+                      const size_t chunk_size) noexcept :
         first_available(0),
         still_available( chunk_blocks(chunk_size,block_size) ),
         operated_number(0),
@@ -64,7 +64,7 @@ namespace yack
         }
 
         
-        bool chunk:: owns(const void *addr, const size_t block_size) const throw()
+        bool chunk:: owns(const void *addr, const size_t block_size) const noexcept
         {
             assert(block_size>0);
             const uint8_t *p = static_cast<const uint8_t *>(addr);
@@ -82,13 +82,13 @@ namespace yack
         }
         
         
-        bool chunk:: contains(const void *addr) const throw()
+        bool chunk:: contains(const void *addr) const noexcept
         {
             const uint8_t *p = static_cast<const uint8_t *>(addr);
             return (p>=data&&p<last);
         }
         
-        ownership chunk:: whose(const void *addr) const throw()
+        ownership chunk:: whose(const void *addr) const noexcept
         {
             assert(addr!=NULL);
             const uint8_t *p = static_cast<const uint8_t *>(addr);
@@ -110,7 +110,7 @@ namespace yack
         }
 
 
-        void * chunk:: acquire(const size_t block_size) throw()
+        void * chunk:: acquire(const size_t block_size) noexcept
         {
             //------------------------------------------------------------------
             //
@@ -135,7 +135,7 @@ namespace yack
             return p;                                              // done
         }
 
-        bool chunk:: release(void *block_addr, const size_t block_size) throw()
+        bool chunk:: release(void *block_addr, const size_t block_size) noexcept
         {
             //------------------------------------------------------------------
             //
@@ -176,7 +176,7 @@ namespace yack
 
 
         static inline size_t blocks_for(const size_t chunk_size,
-                                        const size_t block_size) throw()
+                                        const size_t block_size) noexcept
         {
             assert(chunk_size>=chunk::header);
             return (chunk_size-chunk::header)/block_size;
@@ -184,7 +184,7 @@ namespace yack
 
         size_t chunk:: optimized_frame_size(const size_t block_size,
                                             size_t      &blocks,
-                                            const bool   compact) throw()
+                                            const bool   compact) noexcept
         {
             //------------------------------------------------------------------
             //
@@ -282,7 +282,7 @@ namespace yack
 
         void chunk:: delete_frame(chunk     *ch,
                                   size_t     full_bytes,
-                                  allocator &dispatcher) throw()
+                                  allocator &dispatcher) noexcept
         {
             assert(ch!=NULL);
             destruct(ch);

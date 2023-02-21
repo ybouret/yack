@@ -20,7 +20,7 @@ namespace yack
 
         //! trim last bad chars
         template <typename T, typename FUNCTION> static inline
-        kernel::string<T> & trim_if(FUNCTION &is_bad, kernel::string<T> &s) throw()
+        kernel::string<T> & trim_if(FUNCTION &is_bad, kernel::string<T> &s) noexcept
         {
             size_t n = 0;
             while( (n<s.size()) && is_bad(s[s.size()-n]) ) ++n;
@@ -29,7 +29,7 @@ namespace yack
 
         //! skip first bad chars
         template <typename T, typename FUNCTION> static inline
-        string & skip_if(FUNCTION &is_bad, kernel::string<T> &s) throw()
+        string & skip_if(FUNCTION &is_bad, kernel::string<T> &s) noexcept
         {
             size_t n = 0;
             while(n<s.size() && is_bad(s[n+1]) ) ++n;
@@ -38,14 +38,14 @@ namespace yack
 
         //! strip
         template <typename T, typename FUNCTION> static inline
-        kernel::string<T> & strip_if(FUNCTION &is_bad, kernel::string<T> &s) throw()
+        kernel::string<T> & strip_if(FUNCTION &is_bad, kernel::string<T> &s) noexcept
         {
             return skip_if(is_bad,trim_if(is_bad,s));
         }
 
         //! trim with data
         template <typename T> static inline
-        kernel::string<T> & trim_with(const T *bad, const size_t num, kernel::string<T> &s) throw()
+        kernel::string<T> & trim_with(const T *bad, const size_t num, kernel::string<T> &s) noexcept
         {
             assert(!(bad==NULL&&num>0));
             const belongs_to<T> is_bad = { bad, num };
@@ -54,7 +54,7 @@ namespace yack
 
         //! skip with data
         template <typename T> static inline
-        kernel::string<T> & skip_with(const T *bad, const size_t num, kernel::string<T> &s) throw()
+        kernel::string<T> & skip_with(const T *bad, const size_t num, kernel::string<T> &s) noexcept
         {
             assert(!(bad==NULL&&num>0));
             const belongs_to<T> is_bad = { bad, num };
@@ -63,15 +63,15 @@ namespace yack
 
         //! strip with data
         template <typename T> static inline
-        kernel::string<T> & strip_with(const T *bad, const size_t num, kernel::string<T> &s) throw()
+        kernel::string<T> & strip_with(const T *bad, const size_t num, kernel::string<T> &s) noexcept
         {
             assert(!(bad==NULL&&num>0));
             const belongs_to<T> is_bad = { bad, num };
             return strip_if(is_bad,s);
         }
 
-        static void make_lower(string &) throw(); //!< make all lower
-        static void make_upper(string &) throw(); //!< make all upper
+        static void make_lower(string &) noexcept; //!< make all lower
+        static void make_upper(string &) noexcept; //!< make all upper
 
 
     private:
@@ -81,7 +81,7 @@ namespace yack
         {
             const T *entry;
             size_t   count;
-            inline bool operator()(const T ch) const throw()
+            inline bool operator()(const T ch) const noexcept
             {
                 const T *p  = entry;
                 size_t   n  = count;

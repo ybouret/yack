@@ -4,41 +4,41 @@ namespace yack
 {
     namespace ios
     {
-        character:: ~character() throw()
+        character:: ~character() noexcept
         {
             assert(NULL==next);
             assert(NULL==prev);
         }
         
-        character:: character() throw() :
+        character:: character() noexcept :
         next(0), prev(0), code(0) {}
         
         
-        character:: character(const uint8_t ch) throw() :
+        character:: character(const uint8_t ch) noexcept :
         next(0), prev(0), code(ch) {}
         
-        character:: character(const character &other) throw() :
+        character:: character(const character &other) noexcept :
         next(0), prev(0), code(other.code) {}
         
         
-        character & character:: operator=( const character &other ) throw()
+        character & character:: operator=( const character &other ) noexcept
         {
             code = other.code;
             return *this;
         }
         
-        character & character:: operator=( const uint8_t ch ) throw()
+        character & character:: operator=( const uint8_t ch ) noexcept
         {
             code = ch;
             return *this;
         }
         
-        uint8_t & character:: operator*()       throw()
+        uint8_t & character:: operator*()       noexcept
         {
             return code;
         }
         
-        const uint8_t & character:: operator*() const throw()
+        const uint8_t & character:: operator*() const noexcept
         {
             return code;
         }

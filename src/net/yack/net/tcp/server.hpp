@@ -23,7 +23,7 @@ namespace yack
         {
         public:
             //! cleanup
-            virtual ~tcp_server_() throw();
+            virtual ~tcp_server_() noexcept;
 
         protected:
             //! build tcp_socket and connect to address
@@ -50,7 +50,7 @@ namespace yack
             //__________________________________________________________________
 
             //! cleanup
-            virtual ~tcp_server() throw();
+            virtual ~tcp_server() noexcept;
 
             //! setup
             explicit tcp_server(const plexus    &network,

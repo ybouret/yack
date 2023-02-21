@@ -7,7 +7,7 @@ namespace yack {
     {
         const char * const block_cipher_ecb:: clid = "ECB";
         
-        block_cipher_ecb:: encrypter:: ~encrypter() throw()
+        block_cipher_ecb:: encrypter:: ~encrypter() noexcept
         {
         }
         
@@ -21,14 +21,14 @@ namespace yack {
             bc->call(target,source);
         }
         
-        void   block_cipher_ecb:: encrypter::  sync() throw() {}
+        void   block_cipher_ecb:: encrypter::  sync() noexcept {}
         
     }
     
     namespace crypto
     {
         
-        block_cipher_ecb:: decrypter:: ~decrypter() throw()
+        block_cipher_ecb:: decrypter:: ~decrypter() noexcept
         {
         }
         
@@ -42,7 +42,7 @@ namespace yack {
             bc->call(target,source);
         }
         
-        void   block_cipher_ecb:: decrypter::  sync() throw() {}
+        void   block_cipher_ecb:: decrypter::  sync() noexcept {}
 
     }
     

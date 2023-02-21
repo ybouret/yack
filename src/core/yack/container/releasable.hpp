@@ -17,11 +17,11 @@ namespace yack
     class releasable
     {
     public:
-        virtual     ~releasable() throw();     //!< cleanup
-        virtual void release()    throw() = 0; //!< release resources
+        virtual     ~releasable() noexcept;     //!< cleanup
+        virtual void release()    noexcept = 0; //!< release resources
 
     protected:
-        explicit releasable() throw();         //!< setup
+        explicit releasable() noexcept;         //!< setup
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(releasable);

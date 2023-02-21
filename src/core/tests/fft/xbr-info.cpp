@@ -12,7 +12,7 @@ using namespace yack;
 namespace
 {
     static inline
-    size_t  count_xbitrev(const size_t size, size_t &jmax) throw()
+    size_t  count_xbitrev(const size_t size, size_t &jmax) noexcept
     {
         assert(size);
         size_t       count = 0;
@@ -35,7 +35,7 @@ namespace
         return count;
     }
     
-    static inline void emit_xbitrev(const size_t size) throw()
+    static inline void emit_xbitrev(const size_t size) noexcept
     {
         const size_t n     = (size << 1);
         size_t       jmax  = 0;

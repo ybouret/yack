@@ -8,13 +8,13 @@ namespace yack
     {
         const char within::clid[] = "within";
 
-        const char * within:: class_uid() const throw() { return clid; }
+        const char * within:: class_uid() const noexcept { return clid; }
 
-        within:: ~within() throw()
+        within:: ~within() noexcept
         {
         }
 
-        within:: within(const uint8_t lo, const uint8_t up) throw() :
+        within:: within(const uint8_t lo, const uint8_t up) noexcept :
         pattern(mark),
         lower(lo),
         upper(up)
@@ -71,7 +71,7 @@ namespace yack
             fc << new domain(lower,upper);
         }
 
-        bool within:: is_same_than(const within *other) const throw()
+        bool within:: is_same_than(const within *other) const noexcept
         {
             assert(other);
             return (lower==other->lower) && (upper==other->upper);
@@ -97,7 +97,7 @@ namespace yack
             return new within(lower,upper);
         }
 
-        bool within:: is_univocal() const throw()
+        bool within:: is_univocal() const noexcept
         {
             return lower==upper;
         }

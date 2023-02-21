@@ -22,7 +22,7 @@ namespace yack {
 
             typedef  arc_ptr<const booleans> ptr;       //!< alias
             explicit booleans(const size_t, const bool); //!< setup
-            virtual ~booleans() throw();                 //!< cleanup
+            virtual ~booleans() noexcept;                 //!< cleanup
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(booleans);

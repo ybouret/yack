@@ -6,17 +6,17 @@ namespace yack
 {
     namespace jive
     {
-        dictionary:: ~dictionary() throw()
+        dictionary:: ~dictionary() noexcept
         {
         }
 
-        dictionary:: dictionary() throw() : dictionary_()
+        dictionary:: dictionary() noexcept : dictionary_()
         {
         }
 
         static const char fn[] = "dictionary: ";
 
-        const pattern * dictionary:: query(const string &key) const throw()
+        const pattern * dictionary:: query(const string &key) const noexcept
         {
             const motif *ptr = search(key);
             if(ptr) return & **ptr; else return NULL;

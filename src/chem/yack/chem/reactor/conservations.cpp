@@ -51,7 +51,7 @@ namespace yack
                     iota::load(Q[j],Q0[indx[j]]);
             }
 
-            static inline unsigned sum_of(const readable<unsigned> &arr) throw()
+            static inline unsigned sum_of(const readable<unsigned> &arr) noexcept
             {
                 unsigned res = 0;
                 for(size_t i=arr.size();i>0;--i)
@@ -62,7 +62,7 @@ namespace yack
             }
             
             static inline int compare_cb(const readable<unsigned> &lhs,
-                                         const readable<unsigned> &rhs) throw()
+                                         const readable<unsigned> &rhs) noexcept
             {
                 
                 assert(lhs.size()==rhs.size());
@@ -100,9 +100,9 @@ namespace yack
                 {
                 }
 
-                virtual ~collector() throw() { }
+                virtual ~collector() noexcept { }
 
-                bool validate(const readable<apz> &v) const throw()
+                bool validate(const readable<apz> &v) const noexcept
                 {
                     assert(v.size()==width);
                     size_t np = 0;

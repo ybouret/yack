@@ -28,11 +28,11 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            virtual       ~scribe() throw();                      //!< cleanup
+            virtual       ~scribe() noexcept;                      //!< cleanup
             virtual string to_string(const void *addr) const = 0; //!< interface
 
         protected:
-            explicit scribe(const rtti &) throw(); //!< setup
+            explicit scribe(const rtti &) noexcept; //!< setup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(scribe);

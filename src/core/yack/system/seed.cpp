@@ -15,7 +15,7 @@ namespace yack
             time_t           seed_time;
             size_t           seed_word;
 
-            inline seed_stamp * next() throw()
+            inline seed_stamp * next() noexcept
             {
                 seed_time = time(NULL);
                 seed_word++;
@@ -25,7 +25,7 @@ namespace yack
         };
     }
 
-    uint64_t system_seed:: get64() throw()
+    uint64_t system_seed:: get64() noexcept
     {
 
         static hashing::sha1 hash;

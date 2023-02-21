@@ -69,7 +69,7 @@ namespace yack
                 //
                 // methods
                 //______________________________________________________________
-                const string &       key() const throw(); //!< name for ark_ptr
+                const string &       key() const noexcept; //!< name for ark_ptr
 
                 //______________________________________________________________
                 //
@@ -81,7 +81,7 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~codec() throw();     //!< cleanup
+                virtual ~codec() noexcept;     //!< cleanup
 
             protected:
                 explicit codec(const char *); //!< setup name

@@ -24,7 +24,7 @@ namespace yack
         // C++
         //______________________________________________________________________
         //! cleanup
-        virtual ~arrays() throw();
+        virtual ~arrays() noexcept;
 
     protected:
         //! setup all memory
@@ -51,17 +51,17 @@ namespace yack
                     size_t &     acquired_) const;
 
         //! allocator release part
-        static void deallocate(void * &, size_t &) throw();
+        static void deallocate(void * &, size_t &) noexcept;
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(arrays);
-        void release_blocks() throw();
-        void release_arrays() throw();
+        void release_blocks() noexcept;
+        void release_arrays() noexcept;
 
     public:
-        virtual size_t granted()     const throw(); //!< bytes for object
-        size_t         mutual_size() const throw(); //!< mutual size per array
-        size_t         fixed_bytes() const throw(); //!< allocated for arrays
+        virtual size_t granted()     const noexcept; //!< bytes for object
+        size_t         mutual_size() const noexcept; //!< mutual size per array
+        size_t         fixed_bytes() const noexcept; //!< allocated for arrays
     };
 
 
@@ -90,7 +90,7 @@ namespace yack
         //______________________________________________________________________
 
         //! cleanup
-        inline virtual ~arrays_of() throw() {}
+        inline virtual ~arrays_of() noexcept {}
 
         //! setup memory
         inline explicit arrays_of(const size_t num_arrays,
@@ -110,16 +110,16 @@ namespace yack
 
 
         //! collection interface
-        inline virtual size_t size() const throw() { return count; }
+        inline virtual size_t size() const noexcept { return count; }
 
         //! readable interface
-        inline virtual const array_type &operator[](const size_t indx) const throw()
+        inline virtual const array_type &operator[](const size_t indx) const noexcept
         {
             assert(NULL!=arr); assert(indx>=1); assert(indx<=size()); return arr[indx];
         }
 
         //! writable interface
-        inline virtual array_type &operator[](const size_t indx) throw()
+        inline virtual array_type &operator[](const size_t indx) noexcept
         {
             assert(NULL!=arr); assert(indx>=1); assert(indx<=size()); return arr[indx];
         }
@@ -128,7 +128,7 @@ namespace yack
         //
         //! get next array for setup
         //______________________________________________________________________
-        array_type & next() throw() { assert(use<size()); return arr[++use]; }
+        array_type & next() noexcept { assert(use<size()); return arr[++use]; }
 
         //______________________________________________________________________
         //
@@ -160,7 +160,7 @@ namespace yack
         //
         //! release memory for objects
         //______________________________________________________________________
-        inline virtual void release() throw()
+        inline virtual void release() noexcept
         {
             { operative_type nil(NULL,0); mem.swap_with(nil); }
             deallocate(position,acquired);
@@ -175,7 +175,7 @@ namespace yack
         operative_type  mem;
         size_t          use;
 
-        inline void link() throw()
+        inline void link() noexcept
         {
             object_type *obj = static_cast<object_type*>(position);
             const size_t stp = capacity;

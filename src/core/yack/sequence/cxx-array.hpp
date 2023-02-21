@@ -31,7 +31,7 @@ namespace yack
         // interface
         //______________________________________________________________________
         //! initial count of objects
-        inline virtual size_t       size() const throw() { return count; }
+        inline virtual size_t       size() const noexcept { return count; }
         
         
         //______________________________________________________________________
@@ -39,7 +39,7 @@ namespace yack
         // C++
         //______________________________________________________________________
         //! clear empty linear memory
-        inline virtual ~cxx_array_() throw()
+        inline virtual ~cxx_array_() noexcept
         {
             static memory::allocator &mem = ALLOCATOR::location();
             ++entry;
@@ -78,8 +78,8 @@ namespace yack
             static memory::allocator &mem = ALLOCATOR::instance();
             return mem.allocate<mutable_type>(coerce(items),coerce(bytes));
         }
-        virtual const_type *cxx() const throw() { return entry; }
-        virtual const_type *mem() const throw() { return basis; }
+        virtual const_type *cxx() const noexcept { return entry; }
+        virtual const_type *mem() const noexcept { return basis; }
 
     };
 
@@ -106,7 +106,7 @@ namespace yack
         //______________________________________________________________________
         
         //! cleanup
-        inline virtual ~cxx_array() throw() { }
+        inline virtual ~cxx_array() noexcept { }
         
         //! setup with default argument
         inline explicit cxx_array(const size_t n) :

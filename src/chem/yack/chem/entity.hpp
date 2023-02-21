@@ -37,7 +37,7 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~entity() throw(); //!< cleanup
+            virtual ~entity() noexcept; //!< cleanup
             entity(const entity &);    //!< copy
 
             //! setup with name+indx
@@ -55,7 +55,7 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            const string & key()               const throw(); //!< name
+            const string & key()               const noexcept; //!< name
 
             //__________________________________________________________________
             //

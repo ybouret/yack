@@ -25,7 +25,7 @@ namespace yack
             {
             public:
                 //! close
-                virtual ~ostream() throw();
+                virtual ~ostream() noexcept;
 
                 //! open
                 explicit ostream(const char *filename, const int level=6);

@@ -54,9 +54,9 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                inline virtual ~sequential() throw() {}           //!< cleanup
+                inline virtual ~sequential() noexcept {}           //!< cleanup
             protected:
-                inline explicit sequential() throw() : saved() {} //!< setup
+                inline explicit sequential() noexcept : saved() {} //!< setup
 
 
             private:
