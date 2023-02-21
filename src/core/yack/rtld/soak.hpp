@@ -66,7 +66,7 @@ namespace yack
 		//______________________________________________________________________
 
 		//! internal safe printf
-		static void        print(FILE* stream, const char* format, ...) throw() YACK_PRINTF_CHECK(2, 3);
+		static void        print(FILE* stream, const char* format, ...) noexcept YACK_PRINTF_CHECK(2, 3);
 		static bool        verbose; //!< verbose flag
 
 		//! helper for verbose messages
@@ -79,7 +79,7 @@ namespace yack
 			static const char  call[];        //!< "call"
 
 			//! YACK_SOAK_VERBOSE(soak::print(stderr,fmt,id,msg))
-			static void        disp(const char* id, const char* msg) throw();
+			static void        disp(const char* id, const char* msg) noexcept;
 		};
 
 
@@ -100,13 +100,13 @@ namespace yack
 		{
 		public:
 			//! cleanup
-			inline virtual           ~app() throw() {}
+			inline virtual           ~app() noexcept {}
 
 			//! soname from call_sign
-			static inline const char* soname() throw() { return APPLICATION::call_sign; }
+			static inline const char* soname() noexcept { return APPLICATION::call_sign; }
 
 			//! get initialized (by derived class) instance
-			static inline APPLICATION& _() throw() {
+			static inline APPLICATION& _() noexcept {
 				if (!was_init())
 				{
 					soak::print(stderr, "%s was not initialized!!\n", APPLICATION::call_sign);
@@ -116,7 +116,7 @@ namespace yack
 			}
 
 			//! return status
-			static inline int was_init() throw()
+			static inline int was_init() noexcept
 			{
 				return (NULL != instance) ? 1 : 0;
 			}
@@ -124,10 +124,10 @@ namespace yack
 
 		protected:
 			//! constructor
-			inline explicit app() throw() {}
+			inline explicit app() noexcept {}
 
 			//! cleanup
-			inline static void quit() throw()
+			inline static void quit() noexcept
 			{
 				message::disp(soname(), message::quit);
 				if (instance)
@@ -141,9 +141,9 @@ namespace yack
 			/**
 			 use static members for initialization
 			 */
-			inline static APPLICATION* init() throw()
+			inline static APPLICATION* init() noexcept
 			{
-				assert(!was_init() || die("alread initialized"));
+				assert(!was_init() || yack_die("alread initialized"));
 				YACK_SOAK_TRY(soname())
 				{
 					message::disp(soname(), message::init);

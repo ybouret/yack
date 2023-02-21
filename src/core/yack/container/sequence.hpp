@@ -90,14 +90,14 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline virtual ~sequence() throw() {}
+        inline virtual ~sequence() noexcept {}
     protected:
-        inline explicit sequence() throw() : container() {}
+        inline explicit sequence() noexcept : container() {}
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(sequence);
-        virtual const_type *_front() const throw() = 0;
-        virtual const_type *_back()  const throw() = 0;
+        virtual const_type *_front() const noexcept = 0;
+        virtual const_type *_back()  const noexcept = 0;
 
     };
     

@@ -79,13 +79,13 @@ namespace yack
         
     protected:
         //! setup
-        inline explicit singleton() throw() : concurrent::single(CLASS::call_sign,CLASS::life_time)
+        inline explicit singleton() noexcept : concurrent::single(CLASS::call_sign,CLASS::life_time)
         {
             if(verbose) enter();
         }
         
         //! cleanup
-        inline virtual ~singleton() throw()
+        inline virtual ~singleton() noexcept
         {
             if(verbose) leave();
         }
@@ -94,7 +94,7 @@ namespace yack
         //
         //! suppress function, may be called by derived class
         //______________________________________________________________________
-        static inline void suppress_() throw()
+        static inline void suppress_() noexcept
         {
             YACK_GIANT_LOCK();
             if(instance_) {
@@ -105,7 +105,7 @@ namespace yack
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(singleton);
-        static inline void destroy(void*) throw()
+        static inline void destroy(void*) noexcept
         {
             if(instance_) {
                 instance_->~CLASS();

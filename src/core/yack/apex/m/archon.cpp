@@ -13,13 +13,13 @@ namespace yack
 
         static void *hoard__[ YACK_WORDS_FOR(hoard) ];
 
-        archon:: ~archon() throw()
+        archon:: ~archon() noexcept
         {
             out_of_reach::zset( destructed(cache), sizeof(hoard__) );
             cache = 0;
         }
 
-        archon:: archon() throw() :
+        archon:: archon() noexcept :
         singleton<archon>(),
         cache( new ( out_of_reach::zset(hoard__,sizeof(hoard__)) ) hoard() )
         {
@@ -32,7 +32,7 @@ namespace yack
             return cache->acquire_unlocked(block_exp2);
         }
 
-        void archon::release(void *block_addr, exp2_t block_exp2) throw()
+        void archon::release(void *block_addr, exp2_t block_exp2) noexcept
         {
             YACK_LOCK(access);
             cache->release_unlocked(block_addr,block_exp2);

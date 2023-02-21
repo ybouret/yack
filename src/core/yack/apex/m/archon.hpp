@@ -40,8 +40,8 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            void *acquire(exp2_t &block_exp2);                            //!< locked acquire
-            void  release(void   *block_addr, exp2_t block_exp2) throw(); //!< locked release
+            void *acquire(exp2_t &block_exp2);                             //!< locked acquire
+            void  release(void   *block_addr, exp2_t block_exp2) noexcept; //!< locked release
 
             //__________________________________________________________________
             //
@@ -70,7 +70,7 @@ namespace yack
 
             //! release a field of 1<<items_exp2 items
             template <typename T> static inline
-            void release_field(T * &entry, exp2_t &items_exp2, exp2_t &block_exp2) throw()
+            void release_field(T * &entry, exp2_t &items_exp2, exp2_t &block_exp2) noexcept
             {
                 assert(entry);
                 assert(items_exp2+ilog2_of<T>::value==block_exp2);
@@ -116,13 +116,13 @@ namespace yack
                 //______________________________________________________________
 
                 //! access [0..size-1]
-                inline T       & operator[](const size_t indx) throw()       { assert(indx<size); return block_addr[indx]; }
+                inline T       & operator[](const size_t indx) noexcept { assert(indx<size); return block_addr[indx]; }
 
                 //! const access[0..size-1]
-                inline const T & operator[](const size_t indx) const throw() { assert(indx<size); return block_addr[indx]; }
+                inline const T & operator[](const size_t indx) const noexcept { assert(indx<size); return block_addr[indx]; }
 
                 //! internal bytes
-                size_t bytes() const throw()
+                size_t bytes() const noexcept
                 {
                     return size_t(1) << block_exp2;
                 }
@@ -142,8 +142,8 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(archon);
-            explicit archon() throw();
-            virtual ~archon() throw();
+            explicit archon() noexcept;
+            virtual ~archon() noexcept;
             friend class singleton<archon>;
             hoard *cache; //!< internal cache
         };
