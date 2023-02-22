@@ -128,7 +128,7 @@ if(${YACK_CC} MATCHES "gcc.*" )
 	SET(YACK_GNU            ON)
 	YACK_FIND_COMPILER_VERSION()
 	
- 	set(CMAKE_C_FLAGS   "-Wall -pipe -fPIC -pedantic -std=c99")
+ 	set(CMAKE_C_FLAGS   "-Wall -pipe -fPIC -std=gnu99")
 	set(CMAKE_CXX_FLAGS "-Wall -pipe -fPIC -fexceptions -Weffc++" )
 	
 	if(${YACK_COMPILER_MAJOR} GREATER 4)
