@@ -107,7 +107,7 @@ macro(YACK_FIND_COMPILER_VERSION)
 endmacro(YACK_FIND_COMPILER_VERSION)
 
 # macro to modify flags
-macro(yack_add_flags flag)
+macro(YACK_ADD_FLAGS flag)
 	message( STATUS "[YACK] adding C/C++ FLAGS : '${flag}'" )
 	set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} ${flag}")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${flag}")
@@ -129,10 +129,14 @@ if(${YACK_CC} MATCHES "gcc.*" )
 	YACK_FIND_COMPILER_VERSION()
 	
  	set(CMAKE_C_FLAGS   "-Wall -pipe -fPIC -pedantic")
-	set(CMAKE_CXX_FLAGS "-Wall -pipe -fPIC -fexceptions -Weffc++ -std=c++11" )
+	set(CMAKE_CXX_FLAGS "-Wall -pipe -fPIC -fexceptions -Weffc++" )
 	
 	if(${YACK_COMPILER_MAJOR} GREATER 4)
  		YACK_ADD_FLAGS("-Wextra")
+	endif()
+	
+	if(${YACK_COMPILER_VERSION} VERSION_GREATER_EQUAL "4.8.1")
+		YACK_ADD_FLAGS("-std=c++11")
 	endif()
 	
 	set(YACK_FLAGS_DEBUG   "-O0 -g")
