@@ -182,7 +182,7 @@ if(${YACK_CC} MATCHES "icc.*" )
 	YACK_FIND_COMPILER_VERSION()
 
 	set(CMAKE_C_FLAGS   "-Wall -pipe -wd981 -fPIC -xHost")
-	set(CMAKE_CXX_FLAGS "-Wall -pipe -wd981 -fPIC -xHost -fexceptions" )
+	set(CMAKE_CXX_FLAGS "-Wall -pipe -wd981 -fPIC -xHost -fexceptions -std=c++11" )
 	
 	set(YACK_FLAGS_DEBUG   "-O0 -g")
 	set(YACK_FLAGS_RELEASE "-O2 -DNDEBUG=1 -D_FORTIFY_SOURCE=2")
