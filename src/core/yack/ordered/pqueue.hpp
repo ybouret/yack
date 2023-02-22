@@ -100,10 +100,7 @@ namespace yack
         }
 
         //! release content and memory
-        inline virtual void release() noexcept
-        {
-            drop();
-        }
+        inline virtual void release() noexcept { drop(); }
 
         //! reserve extra
         inline virtual void reserve(size_t n)
