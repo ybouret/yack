@@ -4,6 +4,7 @@
 #define YACK_SETUPXX_INCLUDED 1
 
 #include "yack/system/setup.h"
+#include "yack/noexcept.hpp"
 
 //! disable copy constructor of CLASS
 #define YACK_DISABLE_COPY(CLASS)   private: CLASS(const CLASS&)
