@@ -198,16 +198,16 @@ namespace yack
 #define YACK_SOAK_FINISH(CLASS,PARAMS,LOADER)                                  \
 /**/    private:                                                               \
 /**/      YACK_DISABLE_COPY_AND_ASSIGN(CLASS);                                 \
-/**/      inline virtual ~CLASS() noexcept {}                                   \
+/**/      inline virtual ~CLASS() noexcept {}                                  \
 /**/      friend class soak::app<CLASS>;                                       \
 /**/  };                                                                       \
 /**/ YACK_DLL_EXTERN()                                                         \
-/**/ YACK_EXPORT void YACK_DLL_API CLASS##Quit() noexcept { CLASS::Quit(); }    \
-/**/ YACK_EXPORT int  YACK_DLL_API CLASS##Init(PARAMS) noexcept {               \
+/**/ YACK_EXPORT void YACK_DLL_API CLASS##Quit() noexcept { CLASS::Quit(); }   \
+/**/ YACK_EXPORT int  YACK_DLL_API CLASS##Init(PARAMS) noexcept {              \
 /**/   do { LOADER; } while(false);                                            \
 /**/   return (NULL != CLASS::Init()) ? YACK_SOAK_SUCCESS : YACK_SOAK_FAILURE; \
 /**/ }                                                                         \
-/**/ YACK_EXPORT int YACK_DLL_API CLASS##WasInit() noexcept                     \
+/**/ YACK_EXPORT int YACK_DLL_API CLASS##WasInit() noexcept                    \
 /**/   { return CLASS::WasInit(); }                                            \
 /**/ YACK_DLL_FINISH()                                                         \
 /**/ const char CLASS::call_sign[] = #CLASS

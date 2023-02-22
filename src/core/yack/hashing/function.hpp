@@ -74,17 +74,7 @@ namespace yack
             //! hash a message
             void        block(void *output, size_t outlen, const char *msg) noexcept;
             
-            
-            //__________________________________________________________________
-            //
-            // getting hash keys
-            //__________________________________________________________________
-            size_t hkey()  noexcept;                                               //!< from current key
-            size_t hkey(const void *block_addr, const size_t block_size) noexcept; //!< set/run/to
-            size_t hkey(const char *msg) noexcept;                                 //!< set/run/to
-            size_t hkey(const memory::ro_buffer &buf) noexcept;                    //!< set/run/to
-            
-		protected:
+        protected:
             //! initialize function length and window
 			explicit function( size_t L, size_t W) noexcept;
 			

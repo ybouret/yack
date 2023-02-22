@@ -1,37 +1,49 @@
 #include "yack/rtld/soak.hpp"
+#include "yack/hashing/sha1.hpp"
+#include "yack/hashing/to.hpp"
 #include "yack/concurrent/loop/simd.hpp"
 
-
+using namespace yack;
 
 #include <cmath>
 #include <cstdio>
 
+YACK_SOAK_DECLARE(Hasher);
+
+// C++
+inline explicit Hasher() noexcept : H()
+{
+}
+
+// members
+hashing::sha1 H;
+
+YACK_SOAK_POLISH(Hasher);
+
+
+YACK_SOAK_PUBLIC(unsigned,HasherGet(const char *text) throw())
+{
+    return hashing::to<unsigned>(Hasher::_().H,text);
+}
+YACK_SOAK_RETURN()
+
+
 static int count = 0;
+
 
 static inline void enter() noexcept
 {
     ++count;
-    if (stderr)
-    {
-        fflush(stderr);
-        fprintf(stderr, "Entering CXX Engine #%d\n", count);
-        fflush(stderr);
-    }
+    soak::print(stderr,"<C++ %s.dll Enter #%d>\n",Hasher::call_sign,count);
+    soak::verbose = true;
 }
 
 static inline void leave() noexcept
 {
     --count;
-    if (stderr)
-    {
-        fflush(stderr);
-        fprintf(stderr, "Leaving CXX Engine #%d\n",count);
-        fflush(stderr);
-    }
+    soak::print(stderr,"<C++ %s.dll Leave #%d/>\n",Hasher::call_sign,count);
+
 }
 
 YACK_DLL_SETUP(enter,leave);
 
-YACK_DLL_EXTERN()
-
-YACK_DLL_FINISH()
