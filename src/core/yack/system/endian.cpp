@@ -1,7 +1,5 @@
 #include "yack/system/endian.hpp"
-#include "yack/setup.hpp"
 #include "yack/type/hexa.hpp"
-//#include <iostream>
 
 namespace yack {
 

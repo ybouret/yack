@@ -4,7 +4,7 @@
 #ifndef YACK_ENDIAN_INCLUDED
 #define YACK_ENDIAN_INCLUDED 1
 
-#include "yack/system/setup.h"
+#include "yack/setup.hpp"
 
 namespace yack
 {
