@@ -34,7 +34,7 @@
 #if defined(_MSC_VER)
 #define YACK_MICROSOFT 1
 #define YACK_COMPILER "microsoft"
-#define YACK_MAJOR __MSC_VER__
+#define YACK_MAJOR _MSC_VER
 #define YACK_MINOR 0
 #define YACK_PATCH 0
 #endif
