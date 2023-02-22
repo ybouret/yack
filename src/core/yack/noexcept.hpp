@@ -6,6 +6,7 @@
 
 #include "yack/system/compiler.h"
 
+//! (A.B.C) < (D.E.F)
 #define YACK_VERSION_LESSER(A,B,C,D,E,F) \
 /**/ ( \
 /**/   (A<D) || \
@@ -14,10 +15,17 @@
 /**/    ) \
 /**/ )
 
+
+// adapting to old g++
 #if defined(YACK_GNU)
 
+#if YACK_VERSION_LESSER(YACK_MAJOR,YACK_MINOR,YACK_PATCH,4,8,1)
+#define noexcept throw()
 #endif
 
 
 #endif
+
+#endif
+
 

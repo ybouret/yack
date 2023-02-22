@@ -136,7 +136,7 @@ if(${YACK_CC} MATCHES "gcc.*" )
 	endif()
 	
 	if(${YACK_COMPILER_VERSION} VERSION_GREATER_EQUAL "4.8.1")
-		YACK_ADD_FLAGS("-std=c++11")
+		 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 	endif()
 	
 	set(YACK_FLAGS_DEBUG   "-O0 -g")
