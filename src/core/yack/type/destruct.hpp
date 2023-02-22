@@ -4,7 +4,7 @@
 #ifndef YACK_TYPE_DESTRUCT_INCLUDED
 #define YACK_TYPE_DESTRUCT_INCLUDED 1
 
-#include "yack/system/setup.h"
+#include "yack/setup.hpp"
 
 namespace yack
 {

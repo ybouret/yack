@@ -4,7 +4,7 @@
 #ifndef YACK_SYNC_QUARK_CONDITION_INCLUDED
 #define YACK_SYNC_QUARK_CONDITION_INCLUDED 1
 
-#include "yack/system/setup.h"
+#include "yack/setup.hpp"
 
 namespace yack
 {
