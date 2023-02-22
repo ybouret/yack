@@ -24,6 +24,7 @@
 
 #include <FL/Fl.H>
 #include <FL/Fl_Button.H>
+#include "yack/noexcept.hpp"
 
 #define FL_MATTE_BUTTON_HEIGHT 23		// buttons have fixed height -- just like Apple's..! ;)
 
