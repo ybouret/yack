@@ -4,7 +4,7 @@
 #include <cmath>
 #include <cstdio>
 
-static inline void enter()
+static inline void enter() noexcept
 {
     if(stderr)
     {

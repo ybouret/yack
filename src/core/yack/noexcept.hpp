@@ -7,12 +7,12 @@
 #include "yack/system/compiler.h"
 
 //! (A.B.C) < (D.E.F)
-#define YACK_VERSION_LESSER(A,B,C,D,E,F) \
-/**/ ( \
-/**/   (A<D) || \
-/**/    ( (A==D) && \
+#define YACK_VERSION_LESSER(A,B,C,D,E,F)   \
+/**/ (                                     \
+/**/   (A<D) ||                            \
+/**/    ( (A==D) &&                        \
 /**/      ( (B<E) || ( (B==E) && (C<F) ) ) \
-/**/    ) \
+/**/    )                                  \
 /**/ )
 
 
