@@ -23,8 +23,17 @@
 #define noexcept throw()
 #endif
 
+#endif
+
+// adapting to old icc
+#if defined(YACK_INTEL)
+
+#if (__ICC<=1310)
+#define noexcept throw()
+#endif
 
 #endif
+
 
 #endif
 
