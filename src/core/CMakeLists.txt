@@ -354,6 +354,17 @@ install( FILES ${raven_decl} DESTINATION include/yack/raven )
 
 ########################################################################
 ##
+## cameo
+##
+########################################################################
+file(GLOB cameo_impl yack/cameo/*.cpp)
+file(GLOB cameo_decl yack/cameo/*.hpp)
+set(cameo ${cameo_impl} ${cameo_decl})
+SOURCE_GROUP(cameo FILES ${cameo})
+install( FILES ${cameo_decl} DESTINATION include/yack/cameo )
+
+########################################################################
+##
 ## ios
 ##
 ########################################################################
@@ -667,6 +678,7 @@ ${fft}
 ${functor}
 ${apex} ${apex_m} ${apex_n} ${apex_z} ${apex_q} ${apex_kernel} ${apex_alga} 
 ${raven}
+${cameo}
 ${concurrent} ${concurrent_quark} ${concurrent_loop} ${concurrent_queue} ${concurrent_queue_pipeline}
 ${ios} ${ios_c} ${ios_gz} ${ios_bz} ${ios_fmt} ${ios_gv} ${ios_ascii} ${ios_serializer} ${ios_scribe}
 ${randomized}

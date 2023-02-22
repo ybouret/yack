@@ -38,7 +38,6 @@ namespace yack
         // types and definitions
         //______________________________________________________________________
         YACK_DECL_ARGS(T,type);         //!< aliases
-        //typedef priority_queue<T> algo; //!< alias
 
         //______________________________________________________________________
         //
@@ -117,7 +116,7 @@ namespace yack
         //! fast CRC32 of binary content
         inline uint32_t crc() const noexcept { return yack_crc32(tree,count*sizeof(type)); }
 
-        //! push a new value
+        //! push a new value with memory management
         inline void push(param_type args) {
             if(count>=total)
                 duplicate_and_grow(args);
@@ -125,15 +124,17 @@ namespace yack
                 grow(args);
         }
 
-        //! syntax helper
-        inline pqueue & operator<<(param_type args) {
-            push(args); return *this;
+        //! push a new value with ENOUGH memory for internal computation
+        inline void push_(param_type args) {
+            assert(count<total); grow(args);
         }
 
-        //! add a new value with ENOUGH memory
-        inline void push_(param_type args) { assert(count<total); grow(args); }
+        //! fast inserting with ENOUGH memory
+        inline pqueue & operator<<(param_type args) {
+            assert(count<total); grow(args); return *this;
+        }
 
-
+        
         //! peek top value
         const_type & peek() const noexcept {
             assert(count>0); return tree[0];
@@ -183,13 +184,12 @@ namespace yack
 
 
     private:
+        size_t             count;   //!< active
+        size_t             total;   //!< capacity
+        size_t             bytes;   //!< total bytes
+        mutable_type      *tree;    //!< data structure
+        mutable COMPARATOR compare; //!< comparator
         YACK_DISABLE_ASSIGN(pqueue);
-        size_t             count;
-        size_t             total;
-        size_t             bytes;
-        mutable_type      *tree;
-        mutable COMPARATOR compare;
-
 
         //! release all memory
         inline void drop() noexcept

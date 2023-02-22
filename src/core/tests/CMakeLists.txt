@@ -68,6 +68,9 @@ source_group(color FILES ${color})
 file(GLOB raven raven/*.cpp)
 source_group(raven FILES ${raven})
 
+file(GLOB cameo cameo/*.cpp)
+source_group(cameo FILES ${cameo})
+
 set(HERE ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_executable(test-core main.cpp main.hpp
@@ -94,6 +97,7 @@ ${kr}
 ${field}
 ${color}
 ${raven}
+${cameo}
 )
 
 yack_link_libraries(test-core)
