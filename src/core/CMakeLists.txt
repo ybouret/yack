@@ -357,7 +357,7 @@ install( FILES ${raven_decl} DESTINATION include/yack/raven )
 ## cameo
 ##
 ########################################################################
-file(GLOB cameo_impl yack/cameo/*.cpp)
+file(GLOB cameo_impl yack/cameo/*.cpp yack/cameo/*.hxx)
 file(GLOB cameo_decl yack/cameo/*.hpp)
 set(cameo ${cameo_impl} ${cameo_decl})
 SOURCE_GROUP(cameo FILES ${cameo})

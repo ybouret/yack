@@ -349,4 +349,8 @@ add_test(color:gs   test-core color_gs)
 add_test(raven:space  test-core raven_space)
 add_test(raven:family test-core raven_family)
 
+add_test(cameo:add test-core cameo_add)
+add_test(cameo:mul test-core cameo_mul)
+
+
 yack_testing(core)

@@ -56,6 +56,7 @@ namespace yack
 			//__________________________________________________________________
 			inline explicit add() noexcept : object_type(), self_type() {}
 			inline virtual ~add() noexcept {}
+			inline explicit add(const size_t n) : object_type(), self_type(n, as_capacity) {}
 
 			//__________________________________________________________________
 			//

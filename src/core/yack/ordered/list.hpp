@@ -84,15 +84,15 @@ namespace yack
         
         //______________________________________________________________________
         //
-        // container interfacer
+        // container interface
         //______________________________________________________________________
         inline virtual const char * category() const noexcept
         {
             return low_level::sorted_list_name;
         } //!< get its name
         
-        inline virtual size_t size()     const noexcept  { return active.size; }             //!< active.size
-        inline virtual size_t capacity() const noexcept  { return active.size+zombie.size; } //!< active.size+zombie.size
+        inline virtual size_t size()      const noexcept { return active.size; }             //!< active.size
+        inline virtual size_t capacity()  const noexcept { return active.size+zombie.size; } //!< active.size+zombie.size
         inline virtual size_t available() const noexcept { return zombie.size; }             //!< zombie.size
         inline virtual void   free()            noexcept { zombify(); }                      //!< empty active
         inline virtual void   release()         noexcept { release_all(); }                  //!< release all

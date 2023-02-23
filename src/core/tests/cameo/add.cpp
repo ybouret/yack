@@ -42,6 +42,9 @@ namespace {
 YACK_UTEST(cameo_add)
 {
     randomized::rand_ ran;
+    {
+        cameo::add<float> xadd(5);
+    }
 
     perform_add<int>(ran);
     perform_add<float>(ran);
