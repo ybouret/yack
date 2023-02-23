@@ -92,6 +92,22 @@ namespace yack
 				return range(seq.begin(), seq.size());
 			}
 
+			template <typename ARR>
+			inline T tableau(ARR& arr)
+			{
+				size_t n = arr.size();
+				resume(n);
+				while (n > 0) push_(arr[n--]);
+				return sum();
+			}
+			
+			template <typename U>
+			inline T tableau(U arr[], const size_t num)
+			{
+				assert(yack_good(arr, num));
+				return range(arr, num);
+			}
+
 			template <typename LHS, typename RHS>
 			inline T dot(LHS& lhs, RHS& rhs)
 			{
