@@ -21,12 +21,11 @@ namespace {
 			T  res = n > 0 ? 1 : 0;
 			for(size_t i=0;i<n;++i)
 			{ 
-				const T rxp = ran.symm<T>(); //std::cerr << rxp << std::endl;
+				const T rxp = ran.symm<T>(); 
 				const T tmp = (ran.choice() ? -1 : 1) * std::pow(ten, amp*rxp);
 				res *= tmp;
 				xmul << tmp;
 			}
-			//std::cerr << xmul << std::endl;
 			std::cerr << res << " / " << xmul.product() << std::endl;
 		}
 	}
@@ -43,5 +42,13 @@ YACK_UTEST(cameo_mul)
 	perform<double>(ran);
 	perform<long double>(ran);
 
+	{
+		cameo::mul<double> xm;
+		xm.upower(3, 3);
+		std::cerr << xm << std::endl;
+		xm.ipower(4, 2);
+		xm.ipower(4, -3);
+		std::cerr << xm << std::endl;
+	}
 }
 YACK_UDONE()
