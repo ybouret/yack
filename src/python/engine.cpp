@@ -40,11 +40,41 @@ YACK_SOAK_POLISH(Hasher);
 // export the HasherGet function
 //
 //------------------------------------------------------------------------------
-YACK_SOAK_PUBLIC(unsigned,HasherGet(const char *text) throw())
+YACK_SOAK_PUBLIC(unsigned, HasherGet(const char* text) throw())
 {
-    return hashing::to<unsigned>(Hasher::_().H,text);
+	return hashing::to<unsigned>(Hasher::_().H, text);
 }
 YACK_SOAK_RETURN()
+
+using namespace yack;
+
+class SIMD : public  concurrent::topology, public concurrent::simd
+{
+public:
+	static const char* topo;
+
+	inline virtual ~SIMD() noexcept {}
+	inline explicit SIMD() :
+		concurrent::topology(topo),
+		concurrent::simd(static_cast<const concurrent::topology &>(*this))
+	{
+
+	}
+private:
+	YACK_DISABLE_COPY_AND_ASSIGN(SIMD);
+};
+
+const char* SIMD::topo = NULL;
+
+YACK_SOAK_DERIVED(Engine, SIMD);
+
+inline Engine() : SIMD()
+{
+
+}
+
+
+YACK_SOAK_FINISH(Engine, const char* args, SIMD::topo = args);
 
 
 static int count = 0;
@@ -52,17 +82,17 @@ static int count = 0;
 
 static inline void enter() noexcept
 {
-    ++count;
-    soak::print(stderr,"<C++ %s.dll Enter #%d>\n",Hasher::call_sign,count);
-    soak::verbose = true;
+	++count;
+	soak::print(stderr, "<C++ %s.dll Enter #%d>\n", Hasher::call_sign, count);
+	soak::verbose = true;
 }
 
 static inline void leave() noexcept
 {
-    --count;
-    soak::print(stderr,"<C++ %s.dll Leave #%d/>\n",Hasher::call_sign,count);
+	--count;
+	soak::print(stderr, "<C++ %s.dll Leave #%d/>\n", Hasher::call_sign, count);
 
 }
 
-YACK_DLL_SETUP(enter,leave);
+YACK_DLL_SETUP(enter, leave);
 
