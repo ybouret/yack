@@ -66,7 +66,7 @@ namespace yack
 		template <>
 		mul<real_t>& mul<real_t>:: operator=(const real_t init)
 		{
-			free();
+			this->free();
 			push(init);
 			return *this;
 		}
