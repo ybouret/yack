@@ -51,7 +51,7 @@ using namespace yack;
 class SIMD : public  concurrent::topology, public concurrent::simd
 {
 public:
-	static const char* topo;
+	static  unsigned topo;
 
 	inline virtual ~SIMD() noexcept {}
 	inline explicit SIMD() :
@@ -64,17 +64,17 @@ private:
 	YACK_DISABLE_COPY_AND_ASSIGN(SIMD);
 };
 
-const char* SIMD::topo = NULL;
+unsigned SIMD::topo = 0;
 
 YACK_SOAK_DERIVED(Engine, SIMD);
 
 inline Engine() : SIMD()
 {
-
+    YACK_SOAK_VERBOSE(soak::print(stderr,"|SIMD|=%u\n", unsigned( size() )) );
 }
 
 
-YACK_SOAK_FINISH(Engine, const char* args, SIMD::topo = args);
+YACK_SOAK_FINISH(Engine, const unsigned args, SIMD::topo = args );
 
 
 static int count = 0;
@@ -83,14 +83,14 @@ static int count = 0;
 static inline void enter() noexcept
 {
 	++count;
-	soak::print(stderr, "<C++ %s.dll Enter #%d>\n", Hasher::call_sign, count);
+	soak::print(stderr, "<C++ %s.dll Enter #%d>\n", Engine::call_sign, count);
 	soak::verbose = true;
 }
 
 static inline void leave() noexcept
 {
 	--count;
-	soak::print(stderr, "<C++ %s.dll Leave #%d/>\n", Hasher::call_sign, count);
+	soak::print(stderr, "<C++ %s.dll Leave #%d/>\n", Engine::call_sign, count);
 
 }
 
