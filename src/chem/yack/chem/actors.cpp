@@ -78,22 +78,22 @@ namespace yack
             for(const actor *a=crew.head;a;a=a->next)
             {
                 const double j = ***a;   assert(C[j]>=0);
-                ops.upower(C[j],a->nu);
+                ops.push(C[j],a->nu);
             }
-            return ops.query();
+            return ops.product();
         }
 
         double actors:: mass_action(const readable<double> &C,
                                     const double            xi,
                                     rmulops                &ops) const
         {
-            assert(ops.size()==0||ops.size()==1);
+            assert(ops.size()==1);
             for(const actor *a=crew.head;a;a=a->next)
             {
                 const double j  = ***a;           assert(C[j]>=0);
-                ops.upower(max_of(C[j]+(a->nu)*xi,0.0),a->nu);
+                ops.push(max_of(C[j]+(a->nu)*xi,0.0),a->nu);
             }
-            return ops.query();
+            return ops.product();
         }
         
         greatest actors:: grad_action(writable<double>       &psi,
@@ -106,11 +106,11 @@ namespace yack
             {
                 xmul            = factor; assert(1==xmul.size());
                 const double j  = ***a;
-                xmul.ld(a->nu);
-                xmul.upower(C[j],a->nm);
-                for(const actor *b=a->prev;b;b=b->prev) xmul.upower(C[***b],b->nu);
-                for(const actor *b=a->next;b;b=b->next) xmul.upower(C[***b],b->nu);
-                const greatest tmp( fabs( psi[j] = xmul.query() ), j);
+                xmul.push(a->nu);
+                xmul.push(C[j],a->nm);
+                for(const actor *b=a->prev;b;b=b->prev) xmul.push(C[***b],b->nu);
+                for(const actor *b=a->next;b;b=b->next) xmul.push(C[***b],b->nu);
+                const greatest tmp( fabs( psi[j] = xmul.product() ), j);
                 res << tmp;
             }
             return res;

@@ -39,12 +39,12 @@ namespace yack
                 YACK_DISABLE_COPY_AND_ASSIGN(mixed_equilibrium);
                 virtual double getK(double) const
                 {
-                    K_eval.ld1();
+                    K_eval = 1;
                     for(size_t j=weight.size();j>0;--j)
                     {
                         K_eval.ipower(K_core[j],weight[j]);
                     }
-                    return K_eval.query();
+                    return K_eval.product();
                 }
             };
         }

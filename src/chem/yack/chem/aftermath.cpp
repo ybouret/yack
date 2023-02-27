@@ -62,12 +62,12 @@ namespace yack
         double ridder_denom(const triplet<double> &f,
                             rmulops               &xmul)
         {
-            const double absb = fabs(f.b);   assert(absb>0);
-            xmul.resume(3);                  assert(0==xmul.size());
-            xmul.ld(f.a);                    assert(1==xmul.size());
-            xmul.ld(f.c);                    assert(2==xmul.size());
-            xmul.upower(1.0/absb,2);         assert(4==xmul.size());
-            const double rhs = xmul.query(); assert(rhs<=0);
+            const double absb = fabs(f.b);     assert(absb>0);
+            xmul.resume(3);                    assert(0==xmul.size());
+            xmul.push(f.a);                    assert(1==xmul.size());
+            xmul.push(f.c);                    assert(2==xmul.size());
+            xmul.push(1.0/absb,2);             assert(4==xmul.size());
+            const double rhs = xmul.product(); assert(rhs<=0);
             return absb * sqrt(1.0-rhs);
         }
         

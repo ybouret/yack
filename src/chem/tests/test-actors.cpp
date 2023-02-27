@@ -36,7 +36,7 @@ YACK_UTEST(actors)
     ops = Kw;
     std::cerr << "Reac=" << reac.mass_action(C,ops) << std::endl;
 
-    ops.ld1();
+    ops = 1;
     std::cerr << "Prod=" << prod.mass_action(C,ops) << std::endl;
 
     xlimit::field xf;

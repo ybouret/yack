@@ -182,7 +182,7 @@ namespace yack
             const double rma = reac.mass_action(C,xmul);
 
             // product side
-            xmul.ld1();
+            xmul = 1;
             const double pma = prod.mass_action(C,xmul);
 
             // difference
@@ -200,7 +200,7 @@ namespace yack
             const double rma = reac.mass_action(C,xmul);
 
             // product side
-            xmul.ld(1.0/scal);
+            xmul = 1.0/scal;
             const double pma = prod.mass_action(C,xmul);
 
             // difference
@@ -229,7 +229,7 @@ namespace yack
             const double den = reac.mass_action(C,ops);
 
             // product side
-            ops.ld1();
+            ops = 1;
             const double num = prod.mass_action(C,ops);
 
             if(fabs(den)<=0)
@@ -262,7 +262,7 @@ namespace yack
             const double rma = reac.mass_action(C,-xi,xmul);
 
             // product side
-            xmul.ld1();
+            xmul = 1;
             const double pma = prod.mass_action(C,xi,xmul);
 
             // difference
