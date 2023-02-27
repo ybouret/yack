@@ -57,7 +57,7 @@ add_test(triplet    test-math triplet)
 
 #algebra
 add_test(iota        test-math iota)
-add_test(crout       test-math crout)
+add_test(crout       test-math crout 2)
 add_test(det         test-math det)
 add_test(lss         test-math lss)
 add_test(jacobi      test-math jacobi)
