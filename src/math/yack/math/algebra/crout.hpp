@@ -566,6 +566,48 @@ namespace yack
                     }
                 }
             }
+
+
+            //__________________________________________________________________
+            //
+            //! compute adjoint matrix with helper
+            //__________________________________________________________________
+            template <typename U>
+            inline void adjoint(matrix<T> &target, const matrix<U> &source, cameo::add<T> &xadd, cameo::mul<T> &xmul)
+            {
+                assert(target.is_square());
+                assert(target.rows <=nmax);
+                assert(matrix_metrics::have_same_sizes(target,source));
+
+                const size_t n = target.rows;
+                switch(n)
+                {
+                    case 0:
+                        return;
+                    case 1:
+                        target[1][1] = 1;
+                        return;
+                    default:
+                        break;
+                }
+                matrix<T> m(n-1,n-1);
+                for(size_t i=n;i>0;--i)
+                {
+                    for(size_t j=n;j>0;--j)
+                    {
+                        source.compute_minor(m,j,i);
+                        if(build(m,xadd))
+                        {
+                            const bool minus = 0 != ( (i+j) & 1);
+                            target[i][j] =  minus ?  -determinant(m,xmul) : determinant(m,xmul);
+                        }
+                        else
+                        {
+                            target[i][j] = 0;
+                        }
+                    }
+                }
+            }
             
             //__________________________________________________________________
             //
