@@ -4,7 +4,7 @@
 #define YACK_DATA_STATS_INCLUDED 1
 
 #include "yack/sequence/vector.hpp"
-#include "yack/math/adder.hpp"
+#include "yack/cameo/add.hpp"
 
 namespace yack
 {
@@ -19,7 +19,7 @@ namespace yack
         {
             //! from iterator
             template <typename ITERATOR> static
-            inline T of(ITERATOR it, const size_t n, math::adder<T> &xadd)
+            inline T of(ITERATOR it, const size_t n, cameo::add<T> &xadd)
             {
                 assert(n>0);
                 return xadd.range(it,n)/n;
@@ -28,7 +28,7 @@ namespace yack
 
             //! for a whole sequence
             template <typename SEQUENCE> static
-            inline T of(SEQUENCE &seq, math::adder<T> &xadd)
+            inline T of(SEQUENCE &seq, cameo::add<T> &xadd)
             {
                 return of( seq.begin(), seq.size(), xadd);
             }
@@ -46,7 +46,7 @@ namespace yack
             
             //! from iterator with sorted sum
             template <typename ITERATOR> static inline
-            T of(ITERATOR it, const size_t n, const T ave,  math::adder<T> &xadd)
+            T of(ITERATOR it, const size_t n, const T ave,  cameo::add<T> &xadd)
             {
                 assert(n>1);
                 xadd.resume(n);
@@ -54,15 +54,15 @@ namespace yack
                 {
                     const T  del = *(it++) - ave;
                     const T  sqr = del*del;
-                    xadd.ld(sqr);
+                    xadd.push_(sqr);
                 }
-                return xadd.get() / (n-1);
+                return xadd.sum() / (n-1);
             }
 
 
             //! for a whole sequence
             template <typename SEQUENCE> static
-            inline T of(SEQUENCE &seq, const T ave, math::adder<T> &xadd)
+            inline T of(SEQUENCE &seq, const T ave, cameo::add<T> &xadd)
             {
                 return of( seq.begin(), seq.size(), ave, xadd);
             }
