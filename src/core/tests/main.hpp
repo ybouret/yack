@@ -130,7 +130,7 @@ namespace yack
     template <>
     inline apq bring:: get<apq>(randomized::bits &ran)
     {
-        return apq(ran,apex_bits,10);
+        return apq(ran,apex_bits/2,apex_bits/2);
     }
 
     // V2D
