@@ -3,7 +3,6 @@
 #define YACK_RTLD_DSO_H_INCLUDED 1
 
 #include "yack/system/setup.h"
-#include "yack/system/compiler.h"
 
 #if defined(__cplusplus)
 #define YACK_DLL_EXTERN() extern "C" {

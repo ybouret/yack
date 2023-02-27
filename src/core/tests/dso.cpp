@@ -1,4 +1,5 @@
 #include "yack/rtld/dso.h"
+#include "yack/noexcept.hpp"
 
 
 #include <cmath>
