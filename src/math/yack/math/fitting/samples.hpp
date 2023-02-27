@@ -152,10 +152,10 @@ namespace yack
                     {
                         single_type &s = coerce(***node);
                         const size_t n = s.dimension();
-                        xadd  += s.D2(func,aorg)*n;
+                        xadd.push_(s.D2(func,aorg)*n);
                         total += n;
                     }
-                    return (total>0) ? xadd.get() /  total : 0;
+                    return (total>0) ? xadd.sum() /  total : 0;
                 }
 
                 virtual ORDINATE D2_full(sequential_type            &func,
@@ -177,7 +177,7 @@ namespace yack
                     {
                         single_type &s = coerce(***node);
                         const size_t n = s.dimension();
-                        xadd  += s.D2_full(func,aorg,used,scal,drvs)*n;
+                        xadd.push_(s.D2_full(func,aorg,used,scal,drvs)*n);
                         total += n;
                     }
                     
@@ -213,7 +213,7 @@ namespace yack
                         }
 
                         epilog(nvar);
-                        return xadd.get() /  total;
+                        return xadd.sum() /  total;
                     }
                     else
                     {

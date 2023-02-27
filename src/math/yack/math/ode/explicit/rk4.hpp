@@ -4,7 +4,7 @@
 
 #include "yack/math/ode/types.hpp"
 #include "yack/sequence/arrays.hpp"
-#include "yack/math/adder.hpp"
+#include "yack/cameo/add.hpp"
 
 namespace yack
 {
@@ -69,7 +69,7 @@ namespace yack
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(rk4);
-                adder<T> xadd;
+                cameo::add<T> xadd;
             };
 
         }

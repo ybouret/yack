@@ -30,7 +30,7 @@ namespace
         size_t outer = 8;
         if(who=="apq") outer=4;
 
-        adder<T>      xadd;
+        cameo::add<T> xadd;
         crout<T>      cr(nmax);
         for(size_t n=1;n<=nmax;++n)
         {

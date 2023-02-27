@@ -132,7 +132,20 @@ namespace yack
 				return sum();
 			}
 
+            inline T operator()(const T a, const T b, const T c)
+            {
+                resume(3); push_(a); push_(b); push_(c); return sum();
+            }
 
+            inline T operator()(const T a, const T b, const T c, const T d)
+            {
+                resume(4); push_(a); push_(b); push_(c); push_(d); return sum();
+            }
+
+            inline T operator()(const T a, const T b, const T c, const T d, const T e)
+            {
+                resume(4); push_(a); push_(b); push_(c); push_(d); push_(e); return sum();
+            }
 
 		private:
 			YACK_DISABLE_COPY_AND_ASSIGN(add);

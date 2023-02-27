@@ -6,7 +6,7 @@
 
 #include "yack/sequence/list.hpp"
 #include "yack/type/v2d.hpp"
-#include "yack/math/adder.hpp"
+#include "yack/cameo/add.hpp"
 
 
 namespace yack
@@ -48,7 +48,7 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            adder<T> xadd; //!< extended additions
+            cameo::add<T> xadd; //!< extended additions
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(correlation);

@@ -5,19 +5,19 @@
 
 #include "yack/sequence/vector.hpp"
 #include "yack/ios/ocstream.hpp"
-#include "yack/math/adder.hpp"
+#include "yack/cameo/add.hpp"
 
 using namespace yack;
 using namespace math;
 
-double X2(const readable<double> &x, const double mu, adder<double> &xadd )
+double X2(const readable<double> &x, const double mu, cameo::add<double> &xadd )
 {
     const size_t n = x.size(); YACK_ASSERT(n>0);
     xadd.resume(n);
     for(size_t i=n;i>0;--i) {
-        xadd.ld( squared(x[i]-mu) );
+        xadd.push_( squared(x[i]-mu) );
     }
-    return xadd.get()/n;
+    return xadd.sum()/n;
 }
 
 YACK_UTEST(proto_diff1d)
@@ -29,7 +29,7 @@ YACK_UTEST(proto_diff1d)
     //randomized::shared_bits      sran = new randomized::rand_();
     //randomized::shared_bits      sran = new randomized::ParkMiller();
     randomized::gaussian<double> gran( sran );
-    adder<double>                xadd(N);
+    cameo::add<double>           xadd(N);
 
     vector<double> x(N,as_capacity);
     ios::ocstream  fp("diff1d.dat");

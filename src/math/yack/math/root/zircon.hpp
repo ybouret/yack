@@ -9,7 +9,7 @@
 #include "yack/math/algebra/svd.hpp"
 #include "yack/ios/ocstream.hpp"
 #include "yack/math/triplet.hpp"
-#include "yack/math/adder.hpp"
+#include "yack/cameo/add.hpp"
 #include <cmath>
 
 namespace yack
@@ -94,21 +94,21 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            array_type &X;     //!< current position
-            array_type &F;     //!< current values
-            array_type &G;     //!< current control gradient
-            array_type &W;     //!< singular values
-            array_type &S;     //!< computed step
-            array_type &XX;    //!< temporary vector
-            array_type &FF;    //!< temporary vector
-            array_type &VV;    //!< temporary vector
-            matrix<T>   J;     //!< jacobian
-            matrix<T>   Jt;    //!< current jacobian
-            matrix<T>   U;     //!< for svd
-            matrix<T>   V;     //!< for svd
-            svd<T>      study; //!< study definition by svd
-            jacobian<T> fdjac; //!< finite difference jacobian, with inital scaling
-            adder<T>    xadd;  //!< for sums
+            array_type   &X;     //!< current position
+            array_type   &F;     //!< current values
+            array_type   &G;     //!< current control gradient
+            array_type   &W;     //!< singular values
+            array_type   &S;     //!< computed step
+            array_type   &XX;    //!< temporary vector
+            array_type   &FF;    //!< temporary vector
+            array_type   &VV;    //!< temporary vector
+            matrix<T>     J;     //!< jacobian
+            matrix<T>     Jt;    //!< current jacobian
+            matrix<T>     U;     //!< for svd
+            matrix<T>     V;     //!< for svd
+            svd<T>        study; //!< study definition by svd
+            jacobian<T>   fdjac; //!< finite difference jacobian, with inital scaling
+            cameo::add<T> xadd;  //!< for sums
 
             //! prepare memory
             void setup(size_t dims);

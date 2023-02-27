@@ -27,7 +27,7 @@ namespace yack
 
             assert(n>0);
             assert(n<=mutual_size());
-            adder<real_t> xadd(n);
+            cameo::add<real_t> xadd(n);
             const comp_t  fact = two/n;
 
             for(size_t j=0;j<n;)

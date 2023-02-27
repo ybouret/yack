@@ -4,7 +4,7 @@
 #include "yack/randomized/gaussian.hpp"
 
 #include "yack/sort/heap.hpp"
-#include "yack/math/adder.hpp"
+#include "yack/cameo/add.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/ios/ocstream.hpp"
 
@@ -35,7 +35,7 @@ namespace
             }
         }
 
-        adder<double> xadd;
+        cameo::add<double> xadd;
         std::cerr << "D=" << xadd.tableau(d)/n << std::endl;
     }
 

@@ -6,7 +6,7 @@
 #define YACK_ODE_EXPLICIT_CASH_KARP_INCLUDED 1
 
 #include "yack/math/ode/explicit/rk45/step.hpp"
-#include "yack/math/adder.hpp"
+#include "yack/cameo/add.hpp"
 
 namespace yack
 {
@@ -58,8 +58,8 @@ namespace yack
                                         callback          *proc);
                 
             private:
-                array_type &ak2, &ak3, &ak4, &ak5, &ak6, &ytmp;
-                adder<T>    xadd;
+                array_type   &ak2, &ak3, &ak4, &ak5, &ak6, &ytmp;
+                cameo::add<T> xadd;
             };
 
         }

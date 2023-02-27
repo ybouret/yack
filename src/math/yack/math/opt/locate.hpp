@@ -6,7 +6,7 @@
 
 #include "yack/math/triplet.hpp"
 #include "yack/math/real-function.hpp"
-#include "yack/math/adder.hpp"
+#include "yack/cameo/add.hpp"
 #include <cmath>
 
 namespace yack

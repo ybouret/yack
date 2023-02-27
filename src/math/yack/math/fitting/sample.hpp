@@ -7,7 +7,7 @@
 #include "yack/math/fitting/sequential.hpp"
 #include "yack/container/matrix.hpp"
 #include "yack/sequence/vector.hpp"
-#include "yack/math/adder.hpp"
+#include "yack/cameo/add.hpp"
 #include "yack/math/fcn/derivative.hpp"
 #include "yack/math/data/corr.hpp"
 
@@ -36,7 +36,7 @@ namespace yack
                 //______________________________________________________________
                 typedef sequential<ABSCISSA,ORDINATE>      sequential_type;    //!< alias
                 typedef vector<ORDINATE,allocator>         ordinates;          //!< alias
-                typedef adder<ORDINATE>                    adder_type;         //!< alias
+                typedef cameo::add<ORDINATE>               adder_type;         //!< alias
                 typedef derivative<ORDINATE>               drvs_type;          //!< alias
                 typedef int (*comparator)(const ABSCISSA &, const ABSCISSA &); //!< alias to create schedule
 

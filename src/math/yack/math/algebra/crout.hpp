@@ -7,7 +7,7 @@
 #include "yack/math/algebra/crout_.hpp"
 #include "yack/container/matrix.hpp"
 #include "yack/memory/operative.hpp"
-#include "yack/math/adder.hpp"
+#include "yack/cameo/add.hpp"
 #include "yack/math/multiplier.hpp"
 
 namespace yack
@@ -150,7 +150,7 @@ namespace yack
             //
             //! try to build the LU decomposition a square matrix, with effort
             //__________________________________________________________________
-            inline bool build(matrix<T> &a, adder<T> &xadd)
+            inline bool build(matrix<T> &a, cameo::add<T> &xadd)
             {
                 //______________________________________________________________
                 //
@@ -290,7 +290,7 @@ namespace yack
             //
             //! in place solve with decomposed matrix and effort
             //__________________________________________________________________
-            inline void solve(const matrix<T> &a, writable<T> &b, adder<T> &xadd) const
+            inline void solve(const matrix<T> &a, writable<T> &b, cameo::add<T> &xadd) const
             {
                 //______________________________________________________________
                 //
@@ -321,13 +321,13 @@ namespace yack
                         b[ip]=b[i];
                         if(ii)
                         {
-                            xadd.ldz();
+                            xadd.free();
                             xadd.push(sum);
                             for(size_t j=ii;j<i;++j)
                             {
                                 xadd.push(-a_i[j]*b[j]);
                             }
-                            sum = xadd.get();
+                            sum = xadd.sum();
                         }
                         else
                         {
@@ -344,11 +344,11 @@ namespace yack
                 //______________________________________________________________
                 for (size_t i=n;i>0;--i) {
                     const readable<T> &a_i = a[i];
-                    xadd.ldz();
+                    xadd.free();
                     xadd.push(b[i]);
                     for (size_t j=n;j>i;--j)
                         xadd.push( -a_i[j]*b[j] );
-                    b[i]=xadd.get()/a_i[i];
+                    b[i]=xadd.sum()/a_i[i];
                 }
             }
 
@@ -391,7 +391,7 @@ namespace yack
             //
             //! in place multiple solve with decomposed matrix and effort
             //__________________________________________________________________
-            inline void solve(const matrix<T> &a, matrix<T> &b, adder<T> &xadd)
+            inline void solve(const matrix<T> &a, matrix<T> &b, cameo::add<T> &xadd)
             {
                 //______________________________________________________________
                 //
@@ -501,7 +501,7 @@ namespace yack
             //
             //! compute inverse from a decomposed matrix and effort
             //__________________________________________________________________
-            inline void inverse(const matrix<T> &a, matrix<T> &I, adder<T> &xadd)
+            inline void inverse(const matrix<T> &a, matrix<T> &I, cameo::add<T> &xadd)
             {
                 //______________________________________________________________
                 //
@@ -657,16 +657,16 @@ namespace yack
                 }
             }
 
-            inline void pass1(matrix<T> &a, const size_t j, adder<T> &xadd)
+            inline void pass1(matrix<T> &a, const size_t j, cameo::add<T> &xadd)
             {
                 for(size_t i=1;i<j;i++)
                 {
                     writable<type> &a_i = a[i];
-                    xadd.ldz();
+                    xadd.free();
                     xadd.push(a_i[j]);
                     for (size_t k=1;k<i;k++)
                         xadd.push( -a_i[k]*a[k][j] );
-                    a_i[j]=xadd.get();
+                    a_i[j]=xadd.sum();
                 }
             }
 
@@ -683,14 +683,14 @@ namespace yack
                 return abs_of(a_i[j]=sum);
             }
 
-            inline scalar_type pass2(matrix<T> &a, const size_t i, const size_t j, adder<T> &xadd)
+            inline scalar_type pass2(matrix<T> &a, const size_t i, const size_t j, cameo::add<T> &xadd)
             {
                 writable<type> &a_i = a[i];
-                xadd.ldz();
+                xadd.free();
                 xadd.push(a_i[j]);
                 for (size_t k=1;k<j;k++)
                     xadd.push( -a_i[k]*a[k][j] );
-                return abs_of(a_i[j]=xadd.get());
+                return abs_of(a_i[j]=xadd.sum());
             }
 
         };

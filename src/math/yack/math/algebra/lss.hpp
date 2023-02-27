@@ -29,7 +29,7 @@ namespace yack
             //__________________________________________________________________
             typedef crout<T>            algo_type; //!< LU decomposition
             typedef auto_ptr<algo_type> self_type; //!< for memory management
-            typedef adder<T>            xadd_type; //!< for fine computation
+            typedef cameo::add<T>       xadd_type; //!< for fine computation
 
             //__________________________________________________________________
             //

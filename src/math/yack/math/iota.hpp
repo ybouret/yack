@@ -4,7 +4,7 @@
 #define YACK_IOTA_INCLUDED 1
 
 #include "yack/container/matrix.hpp"
-#include "yack/math/adder.hpp"
+#include "yack/cameo/add.hpp"
 
 namespace yack {
 
@@ -165,16 +165,16 @@ namespace yack {
             {
                 //! lhs[1..lhs.size()] * rhs[1..lhs.size()]
                 template <typename LHS, typename RHS> static inline
-                T of(LHS &lhs, RHS &rhs, adder<T> &xadd)
+                T of(LHS &lhs, RHS &rhs, cameo::add<T> &xadd)
                 {
                     assert(lhs.size()<=rhs.size());
 
-                    xadd.ldz();
+                    xadd.free();
                     for(size_t i=lhs.size();i>0;--i)
                     {
                         xadd.push( lhs[i]*rhs[i] );
                     }
-                    return xadd.get();
+                    return xadd.sum();
                 }
 
                 //! lhs[1..lhs.size()] * rhs[1..lhs.size()]
@@ -203,7 +203,7 @@ namespace yack {
             {
                 //! |lhs|^2
                 template <typename LHS> static inline
-                T of(LHS &lhs, adder<T> &xadd)
+                T of(LHS &lhs, cameo::add<T> &xadd)
                 {
                     xadd.ldz();
                     for(size_t i=lhs.size();i>0;--i)
@@ -227,7 +227,7 @@ namespace yack {
 
                 //! |lhs^2-rhs^2|
                 template <typename LHS, typename RHS> static inline
-                T of(LHS &lhs, RHS &rhs, adder<T> &xadd)
+                T of(LHS &lhs, RHS &rhs, cameo::add<T> &xadd)
                 {
                     xadd.ldz();
                     for(size_t i=lhs.size();i>0;--i)
@@ -270,7 +270,7 @@ namespace yack {
             //! lhs = M * rhs
             //------------------------------------------------------------------
             template <typename T, typename U, typename LHS, typename RHS> static inline
-            void mul(LHS &lhs, const matrix<U> &M, RHS &rhs, adder<T> &xadd)
+            void mul(LHS &lhs, const matrix<U> &M, RHS &rhs, cameo::add<T> &xadd)
             {
                 assert(lhs.size()>=M.rows);
                 assert(rhs.size()>=M.cols);
@@ -295,7 +295,7 @@ namespace yack {
             //! lhs -= M * rhs
             //------------------------------------------------------------------
             template <typename T, typename U, typename LHS, typename RHS> static inline
-            void mulneg(LHS &lhs, const matrix<U> &M, RHS &rhs, adder<T> &xadd)
+            void mulneg(LHS &lhs, const matrix<U> &M, RHS &rhs, cameo::add<T> &xadd)
             {
                 assert(lhs.size()>=M.rows);
                 assert(rhs.size()>=M.cols);
@@ -319,7 +319,7 @@ namespace yack {
             //! lhs += M * rhs
             //------------------------------------------------------------------
             template <typename T, typename U, typename LHS, typename RHS> static inline
-            void muladd(LHS &lhs, const matrix<U> &M, RHS &rhs, adder<T> &xadd)
+            void muladd(LHS &lhs, const matrix<U> &M, RHS &rhs, cameo::add<T> &xadd)
             {
                 assert(lhs.size()>=M.rows);
                 assert(rhs.size()>=M.cols);
@@ -360,7 +360,7 @@ namespace yack {
             //! A = B * C
             //------------------------------------------------------------------
             template <typename T, typename U, typename V> static inline
-            void mmul(matrix<T> &A, const matrix<U> &B, const matrix<V> &C, adder<T> &xadd)
+            void mmul(matrix<T> &A, const matrix<U> &B, const matrix<V> &C, cameo::add<T> &xadd)
             {
                 assert(A.rows==B.rows);
                 assert(A.cols==C.cols);
@@ -373,12 +373,12 @@ namespace yack {
                     const readable<T> &B_i = B[i];
                     for(size_t j=nc;j>0;--j)
                     {
-                        xadd.ldz();
+                        xadd.free();
                         for(size_t k=nk;k>0;--k)
                         {
                             xadd.push( B_i[k] * C[k][j] );
                         }
-                        A_i[j] = xadd.get();
+                        A_i[j] = xadd.sum();
                     }
                 }
             }
