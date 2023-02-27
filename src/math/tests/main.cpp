@@ -4,10 +4,10 @@ YACK_UTEST_DECL(80)
 {
     YACK_UTEST(numeric);
     YACK_UTEST(triplet);
-    YACK_UTEST(multiplier);
 
     YACK_UTEST(iota);
     YACK_UTEST(crout);
+    YACK_UTEST(det);
     YACK_UTEST(lss);
     YACK_UTEST(jacobi);
     YACK_UTEST(svd);

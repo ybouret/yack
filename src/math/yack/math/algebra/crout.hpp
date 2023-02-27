@@ -8,7 +8,7 @@
 #include "yack/container/matrix.hpp"
 #include "yack/memory/operative.hpp"
 #include "yack/cameo/add.hpp"
-#include "yack/math/multiplier.hpp"
+#include "yack/cameo/mul.hpp"
 
 namespace yack
 {
@@ -448,7 +448,7 @@ namespace yack
             //
             //! determinant of a decomposed matrix with effort (integral types)
             //__________________________________________________________________
-            inline type determinant(const matrix<T> &a, multiplier<T> &xmul) const
+            inline type determinant(const matrix<T> &a, cameo::mul<T> &xmul) const
             {
                 //______________________________________________________________
                 //
@@ -462,9 +462,9 @@ namespace yack
                 //
                 // diagonal product
                 //______________________________________________________________
-                xmul.set1();
-                for(size_t i=a.rows;i>0;--i) xmul *= a[i][i];
-                return dneg ? -xmul.query() : xmul.query();
+                xmul.free();
+                for(size_t i=a.rows;i>0;--i) xmul.push(a[i][i]);
+                return dneg ? -xmul.product() : xmul.product();
             }
 
 
