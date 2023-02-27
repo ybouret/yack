@@ -76,7 +76,7 @@ namespace yack
                 if( cl.excess(C0, Cs[ic], io) )
                 {
                     sr    << cl;
-                    xs[ic] = io.get();
+                    xs[ic] = io.sum();
                     YACK_XMLOG(xml," (+) " << std::setw(15) << xs[ic] << " @" << cl);
                 }
             }
@@ -166,7 +166,7 @@ namespace yack
                         // keep head
                         //------------------------------------------------------
                         cstk.push_back( sr.pop_front() );
-                        xs[ic] = io.get();
+                        xs[ic] = io.sum();
                         YACK_XMLOG(xml," (+) " << std::setw(15) << xs[ic] << " @" << cl);
                     }
                     else

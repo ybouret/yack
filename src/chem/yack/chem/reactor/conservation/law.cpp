@@ -70,17 +70,17 @@ namespace yack
                            writable<double>       &Cout,
                            raddops                &xadd) const
         {
-            xadd.ldz();
+            xadd.free();
             for(const actor *a=crew.head;a;a=a->next)
             {
                 xadd.push( Corg[***a] * a->nu );
             }
-            const double xs = xadd.get();
+            const double xs = xadd.sum();
             if(xs<0)
             {
                 const double xc = -xs;
                 iota::load(Cout,Corg);
-                xadd.ldz();
+                xadd.free();
                 for(const actor *a=crew.head;a;a=a->next)
                 {
                     const double d = (xc * a->nu) / nrm2;

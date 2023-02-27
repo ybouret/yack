@@ -229,10 +229,10 @@ namespace yack {
 
         double equalizer:: gained_thru(const squad &sq)
         {
-            xadd.ldz();
+            xadd.resume( sq.size );
             for(const eq_node *node=sq.head;node;node=node->next)
                 xadd.push( gain[****node] );
-            return xadd.get();
+            return xadd.sum();
         }
 
 
@@ -310,7 +310,7 @@ namespace yack {
             // compute gain
             //------------------------------------------------------------------
             const readable<bool> &used = *cs.fixed;
-            xadd.ldz();
+            xadd.resume( eq.size() );
             for(const cnode *cn = eq.head(); cn; cn=cn->next)
             {
                 const component &cm = ***cn;
@@ -324,7 +324,7 @@ namespace yack {
             }
 
 
-            gain[ei] = xadd.get();
+            gain[ei] = xadd.sum();
             if(xml.verbose)
             {
                 eq.display_compact(*xml << " | ",Ci,*cs.fixed) << std::endl;
@@ -376,7 +376,7 @@ namespace yack {
                 const species  &s = ***sn;
                 const size_t    j = *s;
                 const double    c = C0[j];
-                xadd.ldz();
+                xadd.free();
                 xadd.push(c);
                 for(const eq_node *en=sq.head;en;en=en->next)
                 {
@@ -385,7 +385,7 @@ namespace yack {
                     xadd.push( Ceqz[ei][j] );
                     xadd.push( -c );
                 }
-                const double c1 = C0[j] = xadd.get();
+                const double c1 = C0[j] = xadd.sum();
                 YACK_XMLOG(xml, "--> [" << s.name << "] = " << std::setw(15) << c << " -> " << std::setw(15) << c1);
             }
 

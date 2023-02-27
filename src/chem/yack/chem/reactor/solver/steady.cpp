@@ -105,14 +105,14 @@ namespace yack {
         
         double steady:: Hamiltonian(const readable<double> &C)
         {
-            xadd.ldz();
+            xadd.resume(running.size);
             for(const eq_node *node=running.head;node;node=node->next)
             {
                 const equilibrium &eq = ***node;
                 const size_t       ei = *eq;     assert( fabs(sigma[ei])>0 );
                 xadd.push( squared( eq.mass_action(K[ei],C,xmul)/sigma[ei] ) );
             }
-            return xadd.get()/2;
+            return xadd.sum()/2;
         }
         
         double steady:: operator()(const double u)

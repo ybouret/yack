@@ -375,7 +375,7 @@ namespace yack
                                             const readable<double> &Cend,
                                             raddops                &add) const
         {
-            add.free();
+            add.resume( size() );
             for(const cnode *node=head();node;node=node->next)
             {
                 const component &c = ***node;
@@ -383,7 +383,7 @@ namespace yack
                 const double     x = (Cend[j]-Cini[j])/c.nu;
                 add << x;
             }
-            return add.get()/size();
+            return add.sum()/size();
         }
 
 
