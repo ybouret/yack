@@ -2,6 +2,7 @@
 #include "yack/hashing/sha1.hpp"
 #include "yack/hashing/to.hpp"
 #include "yack/concurrent/loop/simd.hpp"
+#include "yack/cameo/add.hpp"
 
 using namespace yack;
 
@@ -73,8 +74,27 @@ inline Engine() : SIMD()
     YACK_SOAK_VERBOSE(soak::print(stderr,"|SIMD|=%u\n", unsigned( size() )) );
 }
 
+inline double Average(const double *arr, const unsigned num)
+{
+    assert( yack_good(arr,num) );
+    return num > 0 ? xadd.range(arr,num)/num : 0;
+}
+
+cameo::add<double> xadd;
 
 YACK_SOAK_FINISH(Engine, const unsigned args, SIMD::topo = args );
+
+YACK_SOAK_PUBLIC(double, EngineAverage(const double *arr, const unsigned num) noexcept)
+{
+    YACK_SOAK_TRY("EngineAverage")
+    {
+        return Engine::_().Average(arr,num);
+    }
+    YACK_SOAK_CATCH();
+    return 0;
+}
+YACK_SOAK_RETURN()
+
 
 
 static int count = 0;
