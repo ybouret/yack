@@ -10,52 +10,97 @@ namespace yack
 {
 	namespace cameo
 	{
+
+        //______________________________________________________________________
+        //
+        //
+        //! a real number and its expibebt
+        //
+        //______________________________________________________________________
 		template <typename T>
 		class tagged_real
 		{
-		public:
-			tagged_real(const T) noexcept;
-			~tagged_real()       noexcept;
-			tagged_real(const tagged_real&) noexcept;
+        public:
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+			tagged_real(const T) noexcept;            //!< setup
+			~tagged_real()       noexcept;            //!< cleanup
+			tagged_real(const tagged_real&) noexcept; //!< copy
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
+            //! comparator for sorted_list
 			inline friend bool operator<(const tagged_real& lhs, const tagged_real& rhs) noexcept
 			{
 				return lhs.exponent < rhs.exponent;
 			}
 
+            //! display to debug
 			inline friend std::ostream& operator<<(std::ostream& os, const tagged_real& self)
 			{
 				os << self.value << '[' << self.exponent << ']';
 				return os;
 			}
 
-			const T   value;
-			const int exponent;
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+			const T   value;      //!< original value
+			const int exponent;   //!< frexp(value,&exponent)
 
 		private:
 			YACK_DISABLE_ASSIGN(tagged_real);
 		};
 
+        //______________________________________________________________________
+        //
+        //
+        //! multiplier
+        //
+        //______________________________________________________________________
 		template <typename T>
 		class mul : public object_type, public sorted_list< tagged_real<T> >
 		{
 		public:
-			typedef tagged_real<T>    type;
-			typedef sorted_list<type> self_type;
+            //__________________________________________________________________
+            //
+            // types
+            //__________________________________________________________________
+			typedef tagged_real<T>    type;      //!< alias
+			typedef sorted_list<type> self_type; //!< alias
 
-			explicit mul() noexcept;
-			virtual ~mul() noexcept;
-			explicit mul(const size_t);
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+			explicit mul() noexcept;       //!< setup   empty
+			virtual ~mul() noexcept;       //!< cleanup
+			explicit mul(const size_t);    //!< setup with capacity
 
-			mul& operator=(const T init);
-			mul& operator<<(const T args);
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            void push(const T args);                   //!< append args
+            void push(const T args, const size_t n);   //!< append args^n
+            void ipower(const T x, const ptrdiff_t i); //!< append args&i
+            T    product();                            //!< compute product
 
-			void push(const T args);
-			void push(const T args, const size_t n);
-			void upower(const T x, const size_t n);
-			void ipower(const T x, const ptrdiff_t i);
+            //__________________________________________________________________
+            //
+            // helpers
+            //__________________________________________________________________
+            mul& operator=(const T init);    //!< initialize
+			mul& operator<<(const T args);   //!< append a new multiplicand
 
-			T product();
+
+
 
 
 		private:

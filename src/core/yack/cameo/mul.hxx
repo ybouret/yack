@@ -78,12 +78,7 @@ namespace yack
 			return *this;
 		}
 
-		template <>
-		void mul<real_t>::upower(const real_t args, const size_t n)
-		{
-			const type x(args);
-			insert(x, n);
-		}
+        
 
 		template <>
 		void mul<real_t>::ipower(const real_t args, const ptrdiff_t n)

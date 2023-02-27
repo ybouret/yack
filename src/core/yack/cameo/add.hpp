@@ -42,8 +42,8 @@ namespace yack
 			//
 			// types
 			//__________________________________________________________________
-			YACK_DECL_ARGS(T, type);
-			typedef pqueue<T, add_comparator<T>, allocator_type> self_type;
+			YACK_DECL_ARGS(T, type);                                        //!< aliases
+			typedef pqueue<T, add_comparator<T>, allocator_type> self_type; //!< alias
 
 			using self_type::size;
 			using self_type::pull;
@@ -54,14 +54,16 @@ namespace yack
 			//
 			// C++
 			//__________________________________________________________________
-			inline explicit add() noexcept : object_type(), self_type() {}
-			inline virtual ~add() noexcept {}
-			inline explicit add(const size_t n) : object_type(), self_type(n, as_capacity) {}
+			inline explicit add() noexcept : object_type(), self_type() {}                    //!< setup empty
+			inline virtual ~add() noexcept {}                                                 //!< cleanup
+			inline explicit add(const size_t n) : object_type(), self_type(n, as_capacity) {} //!< setup with capacity
 
 			//__________________________________________________________________
 			//
 			// methods
 			//__________________________________________________________________
+
+            //! get the current sum
 			inline T sum() {
 				switch (size())
 				{
@@ -79,6 +81,7 @@ namespace yack
 				goto REDUCE;
 			}
 
+            //! sum of a range
 			template <typename ITERATOR>
 			inline T range(ITERATOR i, size_t n)
 			{
@@ -87,12 +90,14 @@ namespace yack
 				return sum();
 			}
 
+            //! sum of a sequence
 			template <typename SEQUENCE>
 			inline T range(SEQUENCE& seq)
 			{
 				return range(seq.begin(), seq.size());
 			}
 
+            //! sum of a C++ array
 			template <typename ARR>
 			inline T tableau(ARR& arr)
 			{
@@ -101,7 +106,8 @@ namespace yack
 				while (n > 0) push_(arr[n--]);
 				return sum();
 			}
-			
+
+            //! sum of a C array
 			template <typename U>
 			inline T tableau(U arr[], const size_t num)
 			{
@@ -109,6 +115,7 @@ namespace yack
 				return range(arr, num);
 			}
 
+            //! dot product
 			template <typename LHS, typename RHS>
 			inline T dot(LHS& lhs, RHS& rhs)
 			{

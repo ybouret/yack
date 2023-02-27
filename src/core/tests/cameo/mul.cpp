@@ -44,7 +44,7 @@ YACK_UTEST(cameo_mul)
 
 	{
 		cameo::mul<double> xm;
-		xm.upower(3, 3);
+		xm.push(3, 3);
 		std::cerr << xm << std::endl;
 		xm.ipower(4, 2);
 		xm.ipower(4, -3);
