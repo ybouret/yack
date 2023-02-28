@@ -35,7 +35,7 @@ namespace yack
          \param tree    linear space
          \param count   insert position (updated)
          \param args    for copy constructor
-         \param compare comparison function
+         \param compare comparison function, test only < 0
          */
         template <typename COMPARE> static inline
         void insert(mutable_type *tree,
@@ -75,6 +75,7 @@ namespace yack
             //------------------------------------------------------------------
         }
 
+        
         //! removing top element
         template <typename COMPARE> static inline
         void remove(mutable_type *tree,
