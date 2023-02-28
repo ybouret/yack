@@ -91,7 +91,7 @@ namespace yack
                 case 0: // shouldn't get here..
                     return;
 
-                case 1: // last iterm
+                case 1: // last item
                     out_of_reach::naught( destructed( &tree[0]) );
                     count = 0;
                     return;
