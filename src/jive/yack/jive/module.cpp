@@ -2,6 +2,7 @@
 #include "yack/jive/module.hpp"
 #include "yack/ios/icstream.hpp"
 #include "yack/ios/imstream.hpp"
+#include "yack/ios/itstream.hpp"
 
 namespace yack
 {
@@ -48,6 +49,21 @@ namespace yack
         handle( new ios::imstream(addr,size) ),
         origin( from_data )
         {}
+
+        module::  module(const string &listname, const ios::characters &charlist) :
+        context(listname),
+        handle( new ios::itstream(charlist) ),
+        origin( from_list )
+        {
+        }
+
+        module::  module(const char *listname, const ios::characters &charlist) :
+        context(listname),
+        handle( new ios::itstream(charlist) ),
+        origin( from_list )
+        {
+        }
+
 
 
         character *module:: get()

@@ -18,8 +18,12 @@ namespace yack
         class itstream : public ios::istream
         {
         public:
-            explicit itstream(const characters &) noexcept;
-            virtual ~itstream()                   noexcept;
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit itstream(const characters &) noexcept; //!< setup from persistent characters
+            virtual ~itstream()                   noexcept; //!< cleanup
 
         private:
             const character *curr;

@@ -35,7 +35,8 @@ namespace yack
             enum whence
             {
                 from_file, //!< loaded from file
-                from_data  //!< loaded from data
+                from_data, //!< loaded from data
+                from_list  //!< loaded from list of chars
             };
             
 
@@ -86,6 +87,12 @@ namespace yack
                 return open_data(dataname,dataname);
             }
 
+            //! open persistent list of chars
+            template <typename LISTNAME> inline
+            static module *open_list(const LISTNAME &listname, const ios::characters &charlist)
+            {
+                return open_list(listname,charlist);
+            }
 
             //__________________________________________________________________
             //
@@ -115,6 +122,10 @@ namespace yack
 
             module(const string &dataname, const void *addr, const size_t size);
             module(const char   *dataname, const void *addr, const size_t size);
+
+            module(const string &listname, const ios::characters &charlist);
+            module(const char  *listname, const ios::characters &charlist);
+
 
             
         };
