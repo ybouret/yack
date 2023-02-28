@@ -15,6 +15,27 @@ namespace yack
         {
         }
 
+        characters:: characters(const char  *msg) :
+        characters_()
+        {
+            if(msg)
+            {
+            GROW:
+                const char c = *(msg++);
+                if(0==c) return;
+                add(c);
+                goto GROW;
+            }
+        }
+
+        characters:: characters(const uint8_t c) :
+        characters_()
+        {
+            add(c);
+        }
+
+        
+
         characters:: ~characters() noexcept
         {
         }

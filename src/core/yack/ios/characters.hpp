@@ -44,9 +44,11 @@ namespace yack
             //__________________________________________________________________
             characters()          noexcept;              //!< setup empty
             virtual ~characters() noexcept;              //!< cleanup
-            characters(const characters &);             //!< copy
-            characters & operator=(const characters &); //!< assign by copy swap
-            
+            characters(const characters &);              //!< copy
+            characters & operator=(const characters &);  //!< assign by copy swap
+            characters(const char  *);                   //!< start with text
+            characters(const uint8_t);                   //!< start with char
+
             //__________________________________________________________________
             //
             // methods

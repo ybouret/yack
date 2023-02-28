@@ -9,6 +9,7 @@
 #include "yack/ios/icstream.hpp"
 #include "yack/ios/decoder.hpp"
 #include "yack/ios/imstream.hpp"
+#include "yack/ios/itstream.hpp"
 
 #include "yack/utest/run.hpp"
 #include <cstring>
@@ -239,12 +240,26 @@ YACK_UTEST(ios_streams)
             std::cerr << "]" << std::endl;
         }
 
+        {
+            ios::characters src = msg;
+            std::cerr << "itstream: [";
+            ios::itstream fp(src);
+            char C;
+            while( fp.query(C) )
+            {
+                std::cerr << C;
+            }
+            std::cerr << "]" << std::endl;
+
+        }
+
     }
 
 
     YACK_SIZEOF(ios::istream);
     YACK_SIZEOF(ios::icstream);
     YACK_SIZEOF(ios::imstream);
+    YACK_SIZEOF(ios::itstream);
 
     
 
