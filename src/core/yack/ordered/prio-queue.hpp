@@ -5,6 +5,7 @@
 #define YACK_HEAP_INCLUDED 1
 
 #include "yack/ordered/priority-queue.hpp"
+#include <iostream>
 
 namespace yack
 {
@@ -25,11 +26,12 @@ namespace yack
 
         inline ~prio_queue() noexcept { finish(); }
 
-        inline prio_queue(mutable_type     *ptr,
-                          const size_t      num,
-                          const prio_queue &other) :
+        inline  prio_queue(mutable_type     *ptr,
+                           const size_t      num,
+                           const prio_queue &other) :
         tree(ptr), count(0), total(num), compare()
         {
+            std::cerr << "prio_queue(" << ptr << "," << num << ")" << std::endl;
             assert( yack_good(ptr,num) );
             assert( other.count <= num );
             try {
