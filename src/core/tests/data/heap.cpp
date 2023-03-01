@@ -130,8 +130,9 @@ namespace
     {
     public:
         YACK_DECL_ARGS(T,type);
-        typedef heap<T,COMPARATOR,MEM_BUFFER> self_type;
-        typedef prio_queue<T,COMPARATOR>      prioQ;
+        //typedef heap<T,COMPARATOR,MEM_BUFFER> self_type;
+        typedef prio_queue<T,COMPARATOR>      pqueue_type;
+        typedef MEM_BUFFER                    buffer_type;
 
         inline explicit heap() noexcept : M(), Q(M.workspace,M.num_items) {}
 
@@ -152,12 +153,16 @@ namespace
             Q.insert(args);
         }
 
-        virtual inline void        free() noexcept { Q.finish(); }
+        virtual inline void        free()            noexcept { Q.finish(); }
         virtual inline size_t      size()      const noexcept { return Q.count; }
         virtual inline size_t      capacity()  const noexcept { return Q.total; }
         virtual inline size_t      available() const noexcept { return Q.total - Q.count; }
         virtual inline const char *category()  const noexcept { return heap_category; }
-        virtual inline void        reserve(size_t) {}
+        virtual inline void        reserve(size_t n)
+        {
+            static const int2type<MEM_BUFFER::flexible> behavior = {};
+            reserve(behavior,n);
+        }
 
         virtual inline void        release() noexcept
         {
@@ -165,26 +170,45 @@ namespace
             release(behavior);
         }
 
-        inline const prioQ & getQ() const noexcept { return Q; }
+        inline const pqueue_type & getQ() const noexcept { return Q; }
 
     private:
-        MEM_BUFFER M;
-        prioQ      Q;
+        buffer_type M;
+        pqueue_type Q;
 
         YACK_DISABLE_COPY_AND_ASSIGN(heap);
 
         inline void release( const int2type<false> & ) noexcept { Q.finish(); }
+        inline void reserve( const int2type<false> &, size_t n)
+        {
+            throw exception("no possible reserve(%u)", unsigned(n));
+        }
 
         inline void release( const int2type<true>  & ) noexcept {
             Q.finish();
             if(Q.total>0)
             {
-                MEM_BUFFER M0;
-                prioQ      Q0(M0.workspace,M0.num_items);
+                buffer_type M0;
+                pqueue_type Q0(M0.workspace,M0.num_items);
                 M0.swap_with(M);
                 Q0.swap_with(Q);
             }
         }
+
+        inline void reserve(const int2type<true> &, size_t n)
+        {
+            if(n>0)
+            {
+                const size_t new_capacity = Q.total + n;
+                buffer_type  m(new_capacity);
+                pqueue_type  q(m.workspace,m.num_items); assert(q.total>Q.total);
+                out_of_reach::swap(q.tree,Q.tree,(q.count=Q.count)*sizeof(type));
+                Q.count = 0;
+                m.swap_with(M);
+                q.swap_with(Q);
+            }
+        }
+
 
     };
 
@@ -203,6 +227,7 @@ YACK_UTEST(data_heap)
     std::cerr << "fih:  " << fih.size()  << " / " << fih.capacity()  << std::endl;
     std::cerr << "dih1: " << dih1.size() << " / " << dih1.capacity() << std::endl;
     std::cerr << "dih2: " << dih2.size() << " / " << dih2.capacity() << std::endl;
+    std::cerr << std::endl;
 
     fih.release();
     dih1.release();
@@ -211,8 +236,13 @@ YACK_UTEST(data_heap)
     std::cerr << "fih:  " << fih.size()  << " / " << fih.capacity()  << std::endl;
     std::cerr << "dih1: " << dih1.size() << " / " << dih1.capacity() << std::endl;
     std::cerr << "dih2: " << dih2.size() << " / " << dih2.capacity() << std::endl;
+    std::cerr << std::endl;
 
-
+    dih1.reserve(4);
+    dih2.reserve(4);
+    std::cerr << "dih1: " << dih1.size() << " / " << dih1.capacity() << std::endl;
+    std::cerr << "dih2: " << dih2.size() << " / " << dih2.capacity() << std::endl;
+    std::cerr << std::endl;
 
 
 
@@ -229,36 +259,7 @@ YACK_UTEST(data_heap)
 #endif
 
 
-    return 0;
-
-    {
-        { alloc_buffer<int,memory::pooled> demo; }
-
-        alloc_buffer<int,memory::pooled>  ab(12);
-        std::cerr << "#items=" << ab.num_items << " / #bytes=" << ab.num_bytes << std::endl;
-
-
-        {
-            fixed_buffer<int,4> data;
-            prio_queue<int,icompare> Q(data.workspace,data.num_items);
-
-            Q.insert(-1); std::cerr <<  "-> " <<  Q.tree[0] << std::endl;
-            Q.insert(2);  std::cerr <<  "-> " <<  Q.tree[0] << std::endl;
-            Q.insert(-3); std::cerr <<  "-> " <<  Q.tree[0] << std::endl;
-            Q.insert(4);  std::cerr <<  "-> " <<  Q.tree[0] << std::endl;
-        }
-
-        {
-            fixed_buffer<string,8> data;
-            prio_queue<string,scompare> Q(data.workspace,data.num_items);
-            while(Q.count<Q.total)
-            {
-                const string tmp = bring::get<string>(ran);
-                Q.insert(tmp);
-                std::cerr << "-> " << tmp << " -> " << Q.tree[0] << std::endl;
-            }
-        }
-    }
+    
 
 
 
