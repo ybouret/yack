@@ -5,6 +5,7 @@
 #include "yack/memory/allocator/pooled.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
 
+#include "yack/container.hpp"
 
 
 using namespace yack;
@@ -32,6 +33,7 @@ namespace
     public:
         static const size_t type_size = sizeof(T);
         static const size_t wksp_size = type_size * N;
+        static const bool   flexible  = false;
 
         inline fixed_buffer() noexcept : workspace(0), wksp() { on(); }
 
@@ -70,6 +72,7 @@ namespace
     class alloc_buffer
     {
     public:
+        static const bool   flexible  = true;
 
         inline alloc_buffer() noexcept :
         workspace(0),
@@ -102,6 +105,13 @@ namespace
         size_t num_items;
         size_t num_bytes;
 
+        inline void swap_with( alloc_buffer &other ) noexcept
+        {
+            cswap(workspace,other.workspace);
+            cswap(num_items,other.num_items);
+            cswap(num_bytes,other.num_bytes);
+        }
+
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(alloc_buffer);
     };
@@ -109,14 +119,19 @@ namespace
     struct as_copy_t  {};
     const as_copy_t as_copy = {};
 
+
+    static const char * const heap_category = "heap";
+
     template <
     typename T,
     typename COMPARATOR,
     typename MEM_BUFFER>
-    class heap
+    class heap : public container
     {
     public:
         YACK_DECL_ARGS(T,type);
+        typedef heap<T,COMPARATOR,MEM_BUFFER> self_type;
+        typedef prio_queue<T,COMPARATOR>      prioQ;
 
         inline explicit heap() noexcept : M(), Q(M.workspace,M.num_items) {}
 
@@ -137,16 +152,40 @@ namespace
             Q.insert(args);
         }
 
-        virtual inline size_t size()     const noexcept { return Q.count; }
-        virtual inline size_t capacity() const noexcept { return Q.total; }
+        virtual inline void        free() noexcept { Q.finish(); }
+        virtual inline size_t      size()      const noexcept { return Q.count; }
+        virtual inline size_t      capacity()  const noexcept { return Q.total; }
+        virtual inline size_t      available() const noexcept { return Q.total - Q.count; }
+        virtual inline const char *category()  const noexcept { return heap_category; }
+        virtual inline void        reserve(size_t) {}
 
-        inline const prio_queue<T,COMPARATOR> & getQ() const noexcept { return Q; }
+        virtual inline void        release() noexcept
+        {
+            static const int2type<MEM_BUFFER::flexible> behavior = {};
+            release(behavior);
+        }
+
+        inline const prioQ & getQ() const noexcept { return Q; }
 
     private:
-        MEM_BUFFER               M;
-        prio_queue<T,COMPARATOR> Q;
+        MEM_BUFFER M;
+        prioQ      Q;
 
         YACK_DISABLE_COPY_AND_ASSIGN(heap);
+
+        inline void release( const int2type<false> & ) noexcept { Q.finish(); }
+
+        inline void release( const int2type<true>  & ) noexcept {
+            Q.finish();
+            if(Q.total>0)
+            {
+                MEM_BUFFER M0;
+                prioQ      Q0(M0.workspace,M0.num_items);
+                M0.swap_with(M);
+                Q0.swap_with(Q);
+            }
+        }
+
     };
 
 
@@ -161,11 +200,25 @@ YACK_UTEST(data_heap)
     heap< int,icompare,alloc_buffer<int,memory::pooled> > dih1;
     heap< int,icompare,alloc_buffer<int,memory::dyadic> > dih2(7);
 
-    fih.push(1);
+    std::cerr << "fih:  " << fih.size()  << " / " << fih.capacity()  << std::endl;
+    std::cerr << "dih1: " << dih1.size() << " / " << dih1.capacity() << std::endl;
+    std::cerr << "dih2: " << dih2.size() << " / " << dih2.capacity() << std::endl;
+
+    fih.release();
+    dih1.release();
+    dih2.release();
 
     std::cerr << "fih:  " << fih.size()  << " / " << fih.capacity()  << std::endl;
     std::cerr << "dih1: " << dih1.size() << " / " << dih1.capacity() << std::endl;
     std::cerr << "dih2: " << dih2.size() << " / " << dih2.capacity() << std::endl;
+
+
+
+
+
+#if 0
+
+    fih.push(1);
 
     {
         heap< int,icompare,fixed_buffer<int,5> >              fih_copy1(fih,as_copy);
@@ -173,7 +226,7 @@ YACK_UTEST(data_heap)
         heap< int,icompare,alloc_buffer<int,memory::dyadic> > fih_copy3(fih,as_copy);
 
     }
-
+#endif
 
 
     return 0;

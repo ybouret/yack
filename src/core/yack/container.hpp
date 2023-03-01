@@ -28,7 +28,7 @@ namespace yack
         virtual size_t      capacity()  const noexcept = 0;          //!< total item capacity
         virtual size_t      available() const noexcept = 0;          //!< available (memory for) items
         virtual void        free()            noexcept = 0;          //!< set size()=0, keep resources
-        virtual void        reserve(size_t)           = 0;          //!< reserve room for extra items
+        virtual void        reserve(size_t)            = 0;          //!< reserve room for extra items
 
         //______________________________________________________________________
         //
