@@ -161,12 +161,17 @@ YACK_UTEST(data_heap)
     heap< int,icompare,alloc_buffer<int,memory::pooled> > dih1;
     heap< int,icompare,alloc_buffer<int,memory::dyadic> > dih2(7);
 
+    fih.push(1);
+
     std::cerr << "fih:  " << fih.size()  << " / " << fih.capacity()  << std::endl;
     std::cerr << "dih1: " << dih1.size() << " / " << dih1.capacity() << std::endl;
     std::cerr << "dih2: " << dih2.size() << " / " << dih2.capacity() << std::endl;
 
     {
-        heap< int,icompare,fixed_buffer<int,5> > fih_copy(fih,as_copy);
+        heap< int,icompare,fixed_buffer<int,5> >              fih_copy1(fih,as_copy);
+        heap< int,icompare,alloc_buffer<int,memory::pooled> > fih_copy2(fih,as_copy);
+        heap< int,icompare,alloc_buffer<int,memory::dyadic> > fih_copy3(fih,as_copy);
+
     }
 
 
