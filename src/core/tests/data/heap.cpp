@@ -246,7 +246,6 @@ YACK_UTEST(data_heap)
 
 
 
-#if 0
 
     fih.push(1);
 
@@ -256,10 +255,9 @@ YACK_UTEST(data_heap)
         heap< int,icompare,alloc_buffer<int,memory::dyadic> > fih_copy3(fih,as_copy);
 
     }
-#endif
-
-
     
+
+
 
 
 
