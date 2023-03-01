@@ -13,6 +13,14 @@ namespace
         }
     };
 
+    struct scompare
+    {
+        inline int operator()(const string &lhs, const string &rhs) noexcept
+        {
+            return string::compare(lhs,rhs);
+        }
+    };
+
     template <typename T, const size_t N>
     class fixed_buffer
     {
@@ -35,7 +43,6 @@ namespace
         T                  *workspace;
         static const size_t num_items = N;
 
-
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(fixed_buffer);
         void *wksp[ YACK_WORDS_GEQ(wksp_size) ];
@@ -47,14 +54,27 @@ YACK_UTEST(data_heap)
     randomized::rand_ ran;
 
 
-    fixed_buffer<int,4> data;
+    {
+        fixed_buffer<int,4> data;
+        prio_queue<int,icompare> Q(data.workspace,data.num_items);
 
-    prio_queue<int,icompare> Q(data.workspace,data.num_items);
+        Q.insert(-1);
+        Q.insert(2);
+        Q.insert(-3);
+        Q.insert(4);
+    }
 
-    Q.insert(-1);
-    Q.insert(2);
-    Q.insert(-3);
-    Q.insert(4);
+    {
+        fixed_buffer<string,8> data;
+        prio_queue<string,scompare> Q(data.workspace,data.num_items);
+        while(Q.count<Q.total)
+        {
+            const string tmp = bring::get<string>(ran);
+            Q.insert(tmp);
+            std::cerr << "-> " << tmp << " -> " << Q.tree[0] << std::endl;
+
+        }
+    }
 
 
 }
