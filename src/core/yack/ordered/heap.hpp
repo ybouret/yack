@@ -10,13 +10,53 @@
 namespace yack
 {
 
+    namespace low_level
+    {
+
+        //______________________________________________________________________
+        //
+        //
+        //! low-level heap for category and exceptions
+        //
+        //______________________________________________________________________
+        class heap : public container
+        {
+        public:
+            //__________________________________________________________________
+            //
+            // interface
+            //__________________________________________________________________
+            virtual const char *category() const noexcept; //!< "heap"
+
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~heap() noexcept; //!< cleanup
+
+        protected:
+            explicit heap() noexcept; //!< setup
+
+        private:
+            YACK_DISABLE_ASSIGN(heap);
+        };
+
+
+    }
+
+    //__________________________________________________________________________
+    //
+    //
+    //!
+    //
+    //__________________________________________________________________________
     template <typename T>
-    class heap 
+    class heap : public low_level::heap
     {
     public:
         YACK_DECL_ARGS(T,type);
 
-        explicit heap() noexcept
+        explicit heap() noexcept : low_level::heap()
         {
         }
 
