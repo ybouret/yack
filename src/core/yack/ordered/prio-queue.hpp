@@ -9,14 +9,29 @@
 
 namespace yack
 {
-
+    //__________________________________________________________________________
+    //
+    //
+    //! operating prio-queue on a memory area
+    //
+    //__________________________________________________________________________
     template <typename T, typename COMPARATOR>
     class prio_queue
     {
     public:
+        //______________________________________________________________________
+        //
+        // types and definitions
+        //______________________________________________________________________
         YACK_DECL_ARGS(T,type);
         typedef priority_queue<T> pq;
 
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+
+        //! setup from user's memory
         inline prio_queue(mutable_type *ptr,
                           const size_t  num) noexcept :
         tree(ptr), count(0), total(num), compare()
@@ -24,8 +39,10 @@ namespace yack
             assert( yack_good(ptr,num) );
         }
 
+        //! cleanup memory
         inline ~prio_queue() noexcept { finish(); }
 
+        //! hard copy
         inline  prio_queue(mutable_type     *ptr,
                            const size_t      num,
                            const prio_queue &other) :
@@ -42,12 +59,18 @@ namespace yack
             } catch(...) { pq::finish(tree,count); throw; }
         }
 
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
 
+        //! insert a new value
         inline void insert(param_type args) {
             assert(count<total);
             pq::insert(tree,count,args,compare);
         }
 
+        //! remove top value
         inline void remove() noexcept
         {
             assert(count>0); assert(count<=total);
@@ -55,8 +78,10 @@ namespace yack
             assert(count<total);
         }
 
+        //! remove all values
         inline void finish() noexcept { pq::finish(tree,count); }
 
+        //! noexcept swap with another queue
         inline void swap_with(prio_queue &other) noexcept
         {
             cswap(tree,other.tree);
@@ -64,10 +89,14 @@ namespace yack
             coerce_cswap(total,other.total);
         }
 
-        mutable_type      *tree;
-        size_t             count;
-        const size_t       total;
-        COMPARATOR         compare;
+        //______________________________________________________________________
+        //
+        // members
+        //______________________________________________________________________
+        mutable_type      *tree;    //!< user's memory base
+        size_t             count;   //!< items in tree
+        const size_t       total;   //!< maximum items in tree
+        COMPARATOR         compare; //!< comparator
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(prio_queue);

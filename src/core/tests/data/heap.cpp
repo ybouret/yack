@@ -6,6 +6,7 @@
 #include "yack/memory/allocator/dyadic.hpp"
 
 #include "yack/container.hpp"
+#include "yack/container/as-copy.hpp"
 
 
 using namespace yack;
@@ -116,8 +117,7 @@ namespace
         YACK_DISABLE_COPY_AND_ASSIGN(alloc_buffer);
     };
 
-    struct as_copy_t  {};
-    const as_copy_t as_copy = {};
+
 
 
     static const char * const heap_category = "heap";
@@ -130,7 +130,6 @@ namespace
     {
     public:
         YACK_DECL_ARGS(T,type);
-        //typedef heap<T,COMPARATOR,MEM_BUFFER> self_type;
         typedef prio_queue<T,COMPARATOR>      pqueue_type;
         typedef MEM_BUFFER                    buffer_type;
 
@@ -255,7 +254,7 @@ YACK_UTEST(data_heap)
         heap< int,icompare,alloc_buffer<int,memory::dyadic> > fih_copy3(fih,as_copy);
 
     }
-    
+
 
 
 

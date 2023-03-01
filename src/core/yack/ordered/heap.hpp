@@ -4,15 +4,14 @@
 #define YACK_HEAP_INCLUDED 1
 
 #include "yack/ordered/priority-queue.hpp"
-#include "yack/arith/align.hpp"
-#include "yack/check/static.hpp"
-#include "yack/container/dynamic.hpp"
+#include "yack/container.hpp"
+#include "yack/container/as-copy.hpp"
 
 namespace yack
 {
 
     template <typename T>
-    class heap : public dynamic
+    class heap 
     {
     public:
         YACK_DECL_ARGS(T,type);
