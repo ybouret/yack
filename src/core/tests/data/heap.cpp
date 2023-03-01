@@ -32,7 +32,24 @@ namespace
         }
     };
 
+    template <typename HEAP>
+    static inline void perform( HEAP &h, randomized::bits &ran )
+    {
+        typedef typename HEAP::mutable_type type;
+        static const bool versatile = HEAP::buffer_type::versatile;
+        std::cerr << "versatile=" << versatile << std::endl;
 
+        h.release();
+        const size_t n = versatile ? 10 + ran.leq(10) : h.capacity();
+        for(size_t i=n;i>0;--i)
+        {
+            type tmp = bring::get<type>(ran);
+            h.push(tmp);
+            std::cerr << "\t<< " << tmp << " -> " << h.peek() << std::endl;
+        }
+        std::cerr << "size=" << h.size() << " / " << h.capacity() << std::endl;
+
+    }
 
     
 
@@ -71,14 +88,21 @@ YACK_UTEST(data_heap)
 
 
     fih.push(1);
+    dih1.push(2);    YACK_ASSERT(2==dih1.peek());
+    dih1.reserve(3); YACK_ASSERT(2==dih1.peek());
+    std::cerr << "dih1: " << dih1.size() << " / " << dih1.capacity() << std::endl;
+
+
 
     {
         heap< int,icompare,compiled_buffer<int,7> >              fih_copy1(fih,as_copy);
         heap< int,icompare,run_time_buffer<int,memory::pooled> > fih_copy2(fih,as_copy);
         heap< int,icompare,run_time_buffer<int,memory::dyadic> > fih_copy3(fih,as_copy);
-
     }
 
+    perform(fih,ran);
+    perform(dih1,ran);
+    perform(dih2,ran);
 
 
 

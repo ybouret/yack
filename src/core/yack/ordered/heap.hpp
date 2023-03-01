@@ -44,6 +44,7 @@ namespace yack
             // methods
             //__________________________________________________________________
             void no_possible_reserve() const; //!< throw for non-versatile buffer
+            void push_on_memory_full() const; //!< throw for full non-versatile buffer
 
         private:
             YACK_DISABLE_ASSIGN(heap);
@@ -80,26 +81,36 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline explicit heap() noexcept      : common_type(), M(),  Q(M.workspace,M.num_items) {} //!< default setup
-        inline explicit heap(const size_t n) : common_type(), M(n), Q(M.workspace,M.num_items) {} //!< setup with required capacity
+        inline explicit heap() noexcept      : common_type(), my(),  pq(my.workspace,my.num_items) {} //!< default setup
+        inline explicit heap(const size_t n) : common_type(), my(n), pq(my.workspace,my.num_items) {} //!< setup with required capacity
         inline virtual ~heap() noexcept {}
 
         //! generic copy with same comparator but maybe a different memory model
         template <typename OTH_BUFFER>
         inline heap(const heap<T,COMPARATOR,OTH_BUFFER> &other, const as_copy_t &) :
-        M(other.size()), Q(M.workspace,M.num_items,other.getQ())
+        my(other.size()), pq(my.workspace,my.num_items,other.getQ())
         {
 
         }
+
+        //! generic copy with same comparator but maybe a different memory model and extra
+        template <typename OTH_BUFFER>
+        inline heap(const heap<T,COMPARATOR,OTH_BUFFER> &other, const as_copy_t &, const size_t extra) :
+        my(other.size()+extra), pq(my.workspace,my.num_items,other.getQ())
+        {
+
+        }
+
+
 
         //______________________________________________________________________
         //
         // container interface
         //______________________________________________________________________
-        virtual inline void        free()            noexcept { Q.finish(); }
-        virtual inline size_t      size()      const noexcept { return Q.count; }
-        virtual inline size_t      capacity()  const noexcept { return Q.total; }
-        virtual inline size_t      available() const noexcept { return Q.total - Q.count; }
+        virtual inline void        free()            noexcept { pq.finish(); }
+        virtual inline size_t      size()      const noexcept { return pq.count; }
+        virtual inline size_t      capacity()  const noexcept { return pq.total; }
+        virtual inline size_t      available() const noexcept { return pq.total - pq.count; }
         virtual inline void        reserve(size_t n)
         {
             static const int2type<MEM_BUFFER::versatile> behavior = {};
@@ -117,42 +128,65 @@ namespace yack
         // methods
         //______________________________________________________________________
         //! access underlying priority queue, mostly for copy
-        inline const pqueue_type & getQ() const noexcept { return Q; }
+        inline const pqueue_type & getQ() const noexcept { return pq; }
 
         //______________________________________________________________________
         //
         // heap API
         //______________________________________________________________________
+
+        //! push with enough memory
+        inline void push_(param_type args)
+        {
+            assert(pq.count<pq.total);
+            pq.insert(args);
+        }
+
+        //! push with safe memory
         inline void push(param_type args)
         {
-            Q.insert(args);
+            static const int2type<MEM_BUFFER::versatile> behavior = {};
+            push(behavior,args);
+        }
+
+        inline const_type & peek() const noexcept
+        {
+            assert(pq.count>0);
+            assert(pq.tree!=0);
+            return pq.tree[0];
         }
 
 
 
     private:
-        buffer_type M;
-        pqueue_type Q;
+        buffer_type my;
+        pqueue_type pq;
 
         YACK_DISABLE_COPY_AND_ASSIGN(heap);
 
         // methods for compiled_buffer
-        inline void release( const int2type<false> & ) noexcept { Q.finish(); }
+        inline void release( const int2type<false> & ) noexcept { pq.finish(); }
         inline void reserve( const int2type<false> &, size_t)
         {
             no_possible_reserve();
         }
 
+        inline void push( const int2type<false> &, const_type &args )
+        {
+            if(pq.count>=pq.total) push_on_memory_full();
+            pq.insert(args);
+        }
+
 
         // methods for run_time_buffer
         inline void release( const int2type<true>  & ) noexcept {
-            Q.finish();
-            if(Q.total>0)
+            pq.finish();
+            if(pq.total>0)
             {
                 buffer_type M0;
                 pqueue_type Q0(M0.workspace,M0.num_items);
-                M0.swap_with(M);
-                Q0.swap_with(Q);
+                M0.swap_with(my);
+                Q0.swap_with(pq);
             }
         }
 
@@ -160,16 +194,39 @@ namespace yack
         {
             if(n>0)
             {
-                const size_t new_capacity = Q.total + n;
-                buffer_type  m(new_capacity);
-                pqueue_type  q(m.workspace,m.num_items); assert(q.total>Q.total);
-                out_of_reach::swap(q.tree,Q.tree,(q.count=Q.count)*sizeof(type));
-                Q.count = 0;
-                m.swap_with(M);
-                q.swap_with(Q);
+                // create local heap with more memory
+                heap h(pq.total+n);
+
+                // give it full control
+                out_of_reach::swap(pq.tree,h.pq.tree,(h.pq.count=pq.count)*sizeof(type));
+                pq.count = 0;
+
+                // exchange
+                pq.swap_with(h.pq);
+                my.swap_with(h.my);
+
             }
         }
 
+
+        inline void push( const int2type<true> &, const_type &args )
+        {
+            const size_t capa = pq.total;
+            if(pq.count<capa)
+                pq.insert(args);
+            else
+            {
+                // larger hard copy
+                heap h(*this,as_copy,next_increase(capa));
+
+                // insert in new heap
+                h.pq.insert(args);
+
+                // exchange
+                pq.swap_with(h.pq);
+                my.swap_with(h.my);
+            }
+        }
 
     };
 
