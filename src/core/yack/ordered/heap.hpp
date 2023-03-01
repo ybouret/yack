@@ -125,9 +125,11 @@ namespace yack
         //
         // methods
         //______________________________________________________________________
+
         //! access underlying priority queue, mostly for copy
         inline const pqueue_type & getQ() const noexcept { return pq; }
 
+        //! display using local heap copy
         inline friend std::ostream & operator<<( std::ostream &os, const heap &self)
         {
             if(self.pq.count<=0)
@@ -172,6 +174,7 @@ namespace yack
             pq.remove();
         }
 
+        //! peek highest priority value
         inline const_type & peek() const noexcept
         {
             assert(pq.count>0);
@@ -179,6 +182,7 @@ namespace yack
             return pq.tree[0];
         }
 
+        //! pull highest priority value
         inline mutable_type pull() {
             assert(pq.count>0);
             assert(pq.tree!=0);
@@ -195,21 +199,22 @@ namespace yack
 
         YACK_DISABLE_COPY_AND_ASSIGN(heap);
 
+        //______________________________________________________________________
+        //
         // methods for compiled_buffer
+        //______________________________________________________________________
         inline void release( const int2type<false> & ) noexcept { pq.finish(); }
-        inline void reserve( const int2type<false> &, size_t)
-        {
-            no_possible_reserve();
-        }
-
+        inline void reserve( const int2type<false> &, size_t) { no_possible_reserve(); }
         inline void push( const int2type<false> &, const_type &args )
         {
             if(pq.count>=pq.total) push_on_memory_full();
             pq.insert(args);
         }
 
-
+        //______________________________________________________________________
+        //
         // methods for run_time_buffer
+        //______________________________________________________________________
         inline void release( const int2type<true>  & ) noexcept {
             pq.finish();
             if(pq.total>0)
