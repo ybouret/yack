@@ -1,3 +1,6 @@
+#include "yack/ordered/run-time-buffer.hpp"
+#include "yack/ordered/compiled-buffer.hpp"
+
 #include "yack/ordered/prio-queue.hpp"
 #include "yack/utest/run.hpp"
 #include "../main.hpp"
@@ -27,98 +30,7 @@ namespace
             return string::compare(lhs,rhs);
         }
     };
-
-    template <typename T, const size_t N>
-    class fixed_buffer
-    {
-    public:
-        static const size_t type_size = sizeof(T);
-        static const size_t wksp_size = type_size * N;
-        static const bool   flexible  = false;
-
-        inline fixed_buffer() noexcept : workspace(0), wksp() { on(); }
-
-        inline fixed_buffer(const size_t n) :
-        workspace(0),
-        wksp()
-        {
-            if(n>num_items) throw exception("fixed_buffer overflow");
-            on();
-        }
-
-
-
-        inline ~fixed_buffer() noexcept
-        {
-            workspace = 0;
-        }
-
-        T                  *workspace;
-        static const size_t num_items = N;
-
-    private:
-        YACK_DISABLE_COPY_AND_ASSIGN(fixed_buffer);
-        void *wksp[ YACK_WORDS_GEQ(wksp_size) ];
-
-        inline void on() noexcept {
-            YACK_STATIC_ZSET(wksp);
-            workspace = coerce_cast<T>(&wksp[0]);
-        }
-
-
-    };
-
-
-    template <typename T, typename ALLOCATOR>
-    class alloc_buffer
-    {
-    public:
-        static const bool   flexible  = true;
-
-        inline alloc_buffer() noexcept :
-        workspace(0),
-        num_items(0),
-        num_bytes(0)
-        {
-        }
-
-        inline alloc_buffer(const size_t n) :
-        workspace(0),
-        num_items(n),
-        num_bytes(0)
-        {
-            static memory::allocator &mgr = ALLOCATOR::instance();
-            workspace = mgr.allocate<T>(num_items,num_bytes);
-        }
-
-
-
-        inline ~alloc_buffer() noexcept
-        {
-            if(workspace) {
-                static memory::allocator &mgr = ALLOCATOR::location();
-                mgr.withdraw(workspace,num_bytes);
-                num_items = 0;
-            }
-        }
-
-        T     *workspace;
-        size_t num_items;
-        size_t num_bytes;
-
-        inline void swap_with( alloc_buffer &other ) noexcept
-        {
-            cswap(workspace,other.workspace);
-            cswap(num_items,other.num_items);
-            cswap(num_bytes,other.num_bytes);
-        }
-
-    private:
-        YACK_DISABLE_COPY_AND_ASSIGN(alloc_buffer);
-    };
-
-
-
+    
 
     static const char * const heap_category = "heap";
 
@@ -159,13 +71,13 @@ namespace
         virtual inline const char *category()  const noexcept { return heap_category; }
         virtual inline void        reserve(size_t n)
         {
-            static const int2type<MEM_BUFFER::flexible> behavior = {};
+            static const int2type<MEM_BUFFER::versatile> behavior = {};
             reserve(behavior,n);
         }
 
         virtual inline void        release() noexcept
         {
-            static const int2type<MEM_BUFFER::flexible> behavior = {};
+            static const int2type<MEM_BUFFER::versatile> behavior = {};
             release(behavior);
         }
 
@@ -219,9 +131,9 @@ YACK_UTEST(data_heap)
     randomized::rand_ ran;
 
 
-    heap< int,icompare,fixed_buffer<int,5> >              fih;
-    heap< int,icompare,alloc_buffer<int,memory::pooled> > dih1;
-    heap< int,icompare,alloc_buffer<int,memory::dyadic> > dih2(7);
+    heap< int,icompare,compiled_buffer<int,5> >           fih;
+    heap< int,icompare,run_time_buffer<int,memory::pooled> > dih1;
+    heap< int,icompare,run_time_buffer<int,memory::dyadic> > dih2(7);
 
     std::cerr << "fih:  " << fih.size()  << " / " << fih.capacity()  << std::endl;
     std::cerr << "dih1: " << dih1.size() << " / " << dih1.capacity() << std::endl;
@@ -249,9 +161,9 @@ YACK_UTEST(data_heap)
     fih.push(1);
 
     {
-        heap< int,icompare,fixed_buffer<int,5> >              fih_copy1(fih,as_copy);
-        heap< int,icompare,alloc_buffer<int,memory::pooled> > fih_copy2(fih,as_copy);
-        heap< int,icompare,alloc_buffer<int,memory::dyadic> > fih_copy3(fih,as_copy);
+        heap< int,icompare,compiled_buffer<int,7> >              fih_copy1(fih,as_copy);
+        heap< int,icompare,run_time_buffer<int,memory::pooled> > fih_copy2(fih,as_copy);
+        heap< int,icompare,run_time_buffer<int,memory::dyadic> > fih_copy3(fih,as_copy);
 
     }
 

@@ -44,6 +44,9 @@ namespace yack
 
     }
 
+    class compiled_buffer;
+    class run_time_buffer;
+
     //__________________________________________________________________________
     //
     //
