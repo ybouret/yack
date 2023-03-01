@@ -12,28 +12,49 @@ namespace yack
 
     namespace low_level
     {
+        //! common action
         struct compiled_buffer
         {
+            //! throw if required>capacity
             static void  check_overflow(const size_t required,
                                         const size_t capacity);
         };
     }
 
+    //__________________________________________________________________________
+    //
+    //
+    //! buffer allocated during compilation
+    //
+    //__________________________________________________________________________
     template <typename T, const size_t N>
     class compiled_buffer
     {
     public:
-        YACK_DECL_ARGS_(T,type);
-        static const size_t type_size = sizeof(type);
-        static const size_t wksp_size = type_size * N;
-        static const bool   versatile = false;
-        static const size_t num_items = N;
+        //______________________________________________________________________
+        //
+        // types and definitions
+        //______________________________________________________________________
+        YACK_DECL_ARGS_(T,type);                          //!< aliases
+        static const size_t type_size = sizeof(type);     //!< alias
+        static const size_t wksp_size = type_size * N;    //!< minimal workspace size
+        static const bool   versatile = false;            //!< is not versatile
+        static const size_t num_items = N;                //!< number of available itemds
 
-        inline  compiled_buffer() noexcept      : workspace(0), wksp() { on();  }
-        inline  compiled_buffer(const size_t n) : workspace(0), wksp() { on(n); }
-        inline ~compiled_buffer() noexcept                             { off(); }
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        inline  compiled_buffer() noexcept      : workspace(0), wksp() { on();  } //!< default
+        inline  compiled_buffer(const size_t n) : workspace(0), wksp() { on(n); } //!< ok if n<=N
+        inline ~compiled_buffer() noexcept                             { off(); } //!< cleanup
 
-        mutable_type *workspace;
+
+        //______________________________________________________________________
+        //
+        // members
+        //______________________________________________________________________
+        mutable_type *workspace; //!< first item address
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(compiled_buffer);

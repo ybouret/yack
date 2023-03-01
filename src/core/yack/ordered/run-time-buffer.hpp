@@ -10,15 +10,29 @@ namespace yack
 {
     
 
-
+    //__________________________________________________________________________
+    //
+    //
+    //! run-time allocated buffer
+    //
+    //__________________________________________________________________________
     template <typename T, typename ALLOCATOR>
     class run_time_buffer
     {
     public:
-        YACK_DECL_ARGS_(T,type);
+        //______________________________________________________________________
+        //
+        // types and definitions
+        //______________________________________________________________________
+        YACK_DECL_ARGS_(T,type);             //!< aliases
+        static const bool versatile  = true; //!< is versatile
 
-        static const bool   versatile  = true;
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
 
+        //! setup empty
         inline run_time_buffer() noexcept :
         workspace(0),
         num_items(0),
@@ -26,6 +40,7 @@ namespace yack
         {
         }
 
+        //! setup with capacity
         inline run_time_buffer(const size_t n) :
         workspace(0),
         num_items(n),
@@ -35,8 +50,7 @@ namespace yack
             workspace = mgr.allocate<T>(num_items,num_bytes);
         }
 
-
-
+        //! release resources
         inline ~run_time_buffer() noexcept
         {
             if(workspace) {
@@ -46,6 +60,12 @@ namespace yack
             }
         }
 
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+
+        //! no-throw swap
         inline void swap_with( run_time_buffer &other ) noexcept
         {
             cswap(workspace,other.workspace);
@@ -53,9 +73,13 @@ namespace yack
             cswap(num_bytes,other.num_bytes);
         }
 
-        mutable_type *workspace;
-        size_t        num_items;
-        size_t        num_bytes;
+        //______________________________________________________________________
+        //
+        // members
+        //______________________________________________________________________
+        mutable_type *workspace; //!< address of first item
+        size_t        num_items; //!< number of items
+        size_t        num_bytes; //!< number of bytes
 
 
 

@@ -1,11 +1,10 @@
 
 //! \file
 
-#ifndef YACK_HEAP_INCLUDED
-#define YACK_HEAP_INCLUDED 1
+#ifndef YACK_PRIO_QUEUE_INCLUDED
+#define YACK_PRIO_QUEUE_INCLUDED 1
 
 #include "yack/ordered/priority-queue.hpp"
-#include <iostream>
 
 namespace yack
 {
@@ -23,8 +22,8 @@ namespace yack
         //
         // types and definitions
         //______________________________________________________________________
-        YACK_DECL_ARGS(T,type);
-        typedef priority_queue<T> pq;
+        YACK_DECL_ARGS(T,type);         //!< aliases
+        typedef priority_queue<T> pq;   //!< alias
 
         //______________________________________________________________________
         //
@@ -48,7 +47,6 @@ namespace yack
                            const prio_queue &other) :
         tree(ptr), count(0), total(num), compare()
         {
-            std::cerr << "prio_queue(" << ptr << "," << num << ")" << std::endl;
             assert( yack_good(ptr,num) );
             assert( other.count <= num );
             try {
