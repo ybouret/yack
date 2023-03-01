@@ -6,6 +6,7 @@
 #include "yack/type/args.hpp"
 #include "yack/type/mswap.hpp"
 #include "yack/type/out-of-reach.hpp"
+#include "yack/type/destruct.hpp"
 
 namespace yack
 {
@@ -141,7 +142,12 @@ namespace yack
 
         }
 
-
+        //! helper to destruct all
+        static inline void finish(mutable_type *tree, size_t &count) noexcept
+        {
+            while(count>0)
+                out_of_reach::naught( destructed( &tree[--count]) );
+        }
     };
 
 }
