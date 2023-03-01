@@ -2,6 +2,10 @@
 #include "yack/utest/run.hpp"
 #include "../main.hpp"
 
+#include "yack/memory/allocator/pooled.hpp"
+
+
+
 using namespace yack;
 
 namespace
@@ -47,11 +51,61 @@ namespace
         YACK_DISABLE_COPY_AND_ASSIGN(fixed_buffer);
         void *wksp[ YACK_WORDS_GEQ(wksp_size) ];
     };
+
+
+    template <typename T, typename ALLOCATOR>
+    class alloc_buffer
+    {
+    public:
+
+        inline alloc_buffer() noexcept :
+        workspace(0),
+        num_items(0),
+        num_bytes(0)
+        {
+        }
+
+        inline alloc_buffer(const size_t n) :
+        workspace(0),
+        num_items(n),
+        num_bytes(0)
+        {
+            static memory::allocator &mgr = ALLOCATOR::instance();
+            workspace = mgr.allocate<T>(num_items,num_bytes);
+        }
+
+
+
+        inline ~alloc_buffer() noexcept
+        {
+            if(workspace) {
+                static memory::allocator &mgr = ALLOCATOR::location();
+                mgr.withdraw(workspace,num_bytes);
+                num_items = 0;
+            }
+        }
+
+        T     *workspace;
+        size_t num_items;
+        size_t num_bytes;
+
+    private:
+        YACK_DISABLE_COPY_AND_ASSIGN(alloc_buffer);
+    };
+
+
+
+
 }
 
 YACK_UTEST(data_heap)
 {
     randomized::rand_ ran;
+
+    { alloc_buffer<int,memory::pooled> demo; }
+
+    alloc_buffer<int,memory::pooled>  ab(12);
+    std::cerr << "#items=" << ab.num_items << " / #bytes=" << ab.num_bytes << std::endl;
 
 
     {
@@ -72,7 +126,6 @@ YACK_UTEST(data_heap)
             const string tmp = bring::get<string>(ran);
             Q.insert(tmp);
             std::cerr << "-> " << tmp << " -> " << Q.tree[0] << std::endl;
-
         }
     }
 

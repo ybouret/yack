@@ -55,6 +55,13 @@ namespace yack
 
         inline void finish() noexcept { pq::finish(tree,count); }
 
+        inline void swap_with(prio_queue &other) noexcept
+        {
+            cswap(tree,other.tree);
+            cswap(count,other.count);
+            coerce_cswap(total,other.total);
+        }
+
         mutable_type      *tree;
         size_t             count;
         const size_t       total;
