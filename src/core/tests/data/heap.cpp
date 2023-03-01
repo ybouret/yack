@@ -45,7 +45,7 @@ namespace
         {
             type tmp = bring::get<type>(ran);
             h.push(tmp);
-            std::cerr << "\t<< " << tmp << " -> " << h.peek() << std::endl;
+            std::cerr << "\t" << h << std::endl;
         }
         std::cerr << "size=" << h.size() << " / " << h.capacity() << std::endl;
 

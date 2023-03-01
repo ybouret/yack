@@ -101,8 +101,6 @@ namespace yack
 
         }
 
-
-
         //______________________________________________________________________
         //
         // container interface
@@ -130,6 +128,23 @@ namespace yack
         //! access underlying priority queue, mostly for copy
         inline const pqueue_type & getQ() const noexcept { return pq; }
 
+        inline friend std::ostream & operator<<( std::ostream &os, const heap &self)
+        {
+            if(self.pq.count<=0)
+            {
+                os << "{}";
+            }
+            else
+            {
+                heap h(self,as_copy); assert(h.size()>=1);
+                os << "{";
+                os << h.pull();
+                while(h.size()) os << ", " << h.pull();
+                os << " }";
+            }
+            return os;
+        }
+
         //______________________________________________________________________
         //
         // heap API
@@ -149,11 +164,27 @@ namespace yack
             push(behavior,args);
         }
 
+        //! pop
+        inline void pop() noexcept
+        {
+            assert(pq.count>0);
+            assert(pq.tree!=0);
+            pq.remove();
+        }
+
         inline const_type & peek() const noexcept
         {
             assert(pq.count>0);
             assert(pq.tree!=0);
             return pq.tree[0];
+        }
+
+        inline mutable_type pull() {
+            assert(pq.count>0);
+            assert(pq.tree!=0);
+            const_type res = pq.tree[0];
+            pq.remove();
+            return res;
         }
 
 
