@@ -46,8 +46,8 @@ namespace yack
             virtual ~characters() noexcept;              //!< cleanup
             characters(const characters &);              //!< copy
             characters & operator=(const characters &);  //!< assign by copy swap
-            characters(const char  *);                   //!< start with text
-            characters(const uint8_t);                   //!< start with char
+            explicit characters(const char  *);                   //!< start with text
+            explicit characters(const uint8_t);                   //!< start with char
 
             //__________________________________________________________________
             //

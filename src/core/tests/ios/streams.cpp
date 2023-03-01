@@ -241,7 +241,7 @@ YACK_UTEST(ios_streams)
         }
 
         {
-            ios::characters src = msg;
+            ios::characters src(msg);
             std::cerr << "itstream: [";
             ios::itstream fp(src);
             char C;
