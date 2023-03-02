@@ -4,6 +4,7 @@
 #define YACK_FIT_CSAMPLE_INCLUDED 1
 
 #include "yack/math/fitting/sample/of.hpp"
+#include "yack/check/crc32.h"
 
 namespace yack
 {

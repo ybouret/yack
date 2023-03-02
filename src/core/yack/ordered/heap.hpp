@@ -108,21 +108,21 @@ namespace yack
         //
         // container interface
         //______________________________________________________________________
-        virtual inline void        free()            noexcept { pq.finish(); }
-        virtual inline size_t      size()      const noexcept { return pq.count; }
-        virtual inline size_t      capacity()  const noexcept { return pq.total; }
-        virtual inline size_t      available() const noexcept { return pq.total - pq.count; }
+        virtual inline void        free()            noexcept { pq.finish();     }            //!< clear queue
+        virtual inline size_t      size()      const noexcept { return pq.count; }            //!< items in queue
+        virtual inline size_t      capacity()  const noexcept { return pq.total; }            //!< capacity
+        virtual inline size_t      available() const noexcept { return pq.total - pq.count; } //!< currently available
         virtual inline void        reserve(size_t n)
         {
             static const int2type<MEM_BUFFER::versatile> behavior = {};
             reserve(behavior,n);
-        }
+        } //!< reserve n extra items
 
         virtual inline void        release() noexcept
         {
             static const int2type<MEM_BUFFER::versatile> behavior = {};
             release(behavior);
-        }
+        } //!< release maximum memory
 
         //______________________________________________________________________
         //

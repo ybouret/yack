@@ -10,16 +10,20 @@ namespace yack
 {
     namespace cameo
     {
-
+        //______________________________________________________________________
+        //
+        //
+        //! adding with compiled time memory buffer
+        //
+        //______________________________________________________________________
         template <typename T, const size_t N>
         class static_add : public adding::proto<T, compiled_buffer<T,N> >
         {
         public:
-            typedef adding::proto<T, compiled_buffer<T,N> > self_type;
+            typedef adding::proto<T, compiled_buffer<T,N> > self_type; //!< alias
 
-            inline explicit static_add() noexcept : self_type() {}
-            inline virtual ~static_add() noexcept               {}
-
+            inline explicit static_add() noexcept : self_type() {}     //!< setup
+            inline virtual ~static_add() noexcept               {}     //!< cleanup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(static_add);

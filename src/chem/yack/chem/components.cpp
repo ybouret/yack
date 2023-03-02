@@ -381,7 +381,7 @@ namespace yack
                 const component &c = ***node;
                 const size_t     j = **c;
                 const double     x = (Cend[j]-Cini[j])/c.nu;
-                add << x;
+                add.push_(x);
             }
             return add.sum()/size();
         }

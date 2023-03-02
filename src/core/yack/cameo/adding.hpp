@@ -38,6 +38,10 @@ namespace yack
                 }
             };
 
+            //__________________________________________________________________
+            //
+            //! API for add/static_add
+            //__________________________________________________________________
             template <typename T, typename MEM_BUFFER>
             class proto : public object_type, public heap<T,comparator<T>,MEM_BUFFER>
             {
@@ -62,9 +66,9 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                inline explicit proto() noexcept      : object_type(), heap_type()  {}
-                inline explicit proto(const size_t n) : object_type(), heap_type(n) {}
-                inline virtual ~proto() noexcept                                    {}
+                inline explicit proto() noexcept      : object_type(), heap_type()  {} //!< setup default
+                inline explicit proto(const size_t n) : object_type(), heap_type(n) {} //!< setup with possible capacity
+                inline virtual ~proto() noexcept                                    {} //!< cleanup
 
                 //______________________________________________________________
                 //
