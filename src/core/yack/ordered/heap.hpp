@@ -24,6 +24,9 @@ namespace yack
         class heap : public container
         {
         public:
+            static const char lbrack; //!< '['
+            static const char rbrack; //!< ']'
+            static const char colon;  //!< ':'
             //__________________________________________________________________
             //
             // interface
@@ -134,15 +137,15 @@ namespace yack
         {
             if(self.pq.count<=0)
             {
-                os << "{}";
+                os << lbrack << rbrack;
             }
             else
             {
                 heap h(self,as_copy); assert(h.size()>=1);
-                os << "{";
+                os << lbrack;
                 os << h.pull();
-                while(h.size()) os << ", " << h.pull();
-                os << " }";
+                while(h.size()) os << colon << h.pull();
+                os << rbrack;
             }
             return os;
         }
@@ -152,7 +155,7 @@ namespace yack
         // heap API
         //______________________________________________________________________
 
-        //! push with enough memory
+        //! push with ENOUGH memory
         inline void push_(param_type args)
         {
             assert(pq.count<pq.total);

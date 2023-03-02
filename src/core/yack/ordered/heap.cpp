@@ -6,6 +6,11 @@ namespace yack
 {
     namespace low_level
     {
+
+        const char heap::lbrack = '[';
+        const char heap::rbrack = ']';
+        const char heap::colon  = ':';
+        
         heap:: ~heap() noexcept
         {
         }
