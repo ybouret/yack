@@ -1,13 +1,17 @@
-#include "yack/cameo/add.hpp"
+
+
+#include "yack/cameo/static-add.hpp"
 #include "yack/utest/run.hpp"
 #include "../main.hpp"
 #include "yack/sequence/vector.hpp"
 #include "yack/sequence/list.hpp"
+#include "yack/system/rtti.hpp"
 
 using namespace yack;
 
 namespace {
 
+#if 0
     template <typename T>
     static inline
     void perform_add( randomized::bits &ran )
@@ -36,23 +40,35 @@ namespace {
 
         }
     }
+#endif
+
+    template <typename T>
+    static inline void show_size()
+    {
+        std::cerr << "with <" << rtti::name<T>() << ">" << std::endl;
+        std::cerr << sizeof(cameo::static_add<T,1>) << std::endl;
+        std::cerr << sizeof(cameo::static_add<T,2>) << std::endl;
+        std::cerr << sizeof(cameo::static_add<T,3>) << std::endl;
+        std::cerr << sizeof(cameo::static_add<T,4>) << std::endl;
+        std::cerr << sizeof(cameo::static_add<T,5>) << std::endl;
+        std::cerr << sizeof(cameo::static_add<T,6>) << std::endl;
+        std::cerr << sizeof(cameo::static_add<T,7>) << std::endl;
+        std::cerr << sizeof(cameo::static_add<T,8>) << std::endl;
+
+
+    }
 
 }
 
-YACK_UTEST(cameo_add)
+YACK_UTEST(cameo_static_add)
 {
     randomized::rand_ ran;
-    {
-        cameo::add<float> xadd(5);
-    }
+    show_size<float>();
+    show_size<double>();
+    show_size<long double>();
 
 
 
-    perform_add<int>(ran);
-    perform_add<float>(ran);
-    perform_add<double>(ran);
-    perform_add<long double>(ran);
 
-    
 }
 YACK_UDONE()
