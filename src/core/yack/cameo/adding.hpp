@@ -149,6 +149,22 @@ namespace yack
                     return sum();
                 }
 
+                //! dot product of lhs[0..n-1] * rhs[0..n-1]
+                template <typename LHS, typename RHS>
+                inline T dot(LHS *lhs, RHS *rhs, size_t n) {
+                    assert( yack_good(lhs,n) );
+                    assert( yack_good(rhs,n) );
+                    resume(n);
+                    while(n-- > 0) {
+                        const_type l = *(lhs++);
+                        const_type r = *(rhs++);
+                        const_type p = l*r;
+                        push_(p);
+                    }
+                    return sum();
+                }
+
+
                 //! a+b
                 inline T operator()(const T a, const T b)
                 {

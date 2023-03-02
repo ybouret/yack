@@ -104,6 +104,13 @@ namespace yack
             static const real_t       half(0.5);
             static const real_t       one(1);
             const network_sort5       srt;
+            static const real_t       _alpha[3] = { REAL(3.0),   REAL(12.0),  REAL(-32.0)/3  };
+            static const real_t       _beta[3]  = { REAL(-10.0), REAL(-28.0), REAL(32.0)     };
+            static const real_t       _gamma[3] = { REAL(8.0),   REAL(16.0),  REAL(-64.0)/3  };
+
+            //3   * delta[0] + 12 * delta[1] - 32 * delta[2]/3,
+            //-10 * delta[0] - 28 * delta[1] + 32 * delta[2],
+            //8   * delta[0] + 16 * delta[1] - 64 * delta[2]/3
 
             //------------------------------------------------------------------
             //
@@ -137,7 +144,8 @@ namespace yack
                 ios::ocstream::overwrite("instri.dat");
             }
 
-            int decreasing = 0;
+            int                         decreasing = 0;
+            cameo::static_add<real_t,3> xadd;
         CYCLE:
             ++cycle;
             YACK_LOCATE(fn << "---------------- cycle #" << cycle << " ----------------");
@@ -262,9 +270,9 @@ namespace yack
                             const real_t        delta[3] = { f.c - f.a, f.b - f.a, f_t - f.a };
                             const Cubic<real_t> C        = {
                                 f.a,
-                                3   * delta[0] + 12 * delta[1] - 32 * delta[2]/3,
-                                -10 * delta[0] - 28 * delta[1] + 32 * delta[2],
-                                8   * delta[0] + 16 * delta[1] - 64 * delta[2]/3
+                                xadd.dot(delta,_alpha,3),
+                                xadd.dot(delta,_beta,3),
+                                xadd.dot(delta,_gamma,3)
                             };
                             const Quadratic<real_t> Q = { 3*C.gamma, twice(C.beta), C.alpha };
 

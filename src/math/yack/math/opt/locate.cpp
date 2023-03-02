@@ -9,6 +9,7 @@
 #include "yack/signs.hpp"
 #include "yack/sort/indexing.hpp"
 #include "yack/math/numeric.hpp"
+#include "yack/cameo/static-add.hpp"
 
 #include <iomanip>
 
@@ -101,15 +102,23 @@ namespace yack
 }
 
 #define real_t float
+#define REAL(X) X##f
 #include "locate.hxx"
 
 #undef  real_t
+#undef  REAL
+
 #define real_t double
+#define REAL(X) X
 #include "locate.hxx"
 
 
 #undef  real_t
+#undef  REAL
+
 #define real_t long double
+#define REAL(X) X##L
+
 #include "locate.hxx"
 
 
