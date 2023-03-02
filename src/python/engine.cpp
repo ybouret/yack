@@ -3,6 +3,7 @@
 #include "yack/hashing/to.hpp"
 #include "yack/concurrent/loop/simd.hpp"
 #include "yack/cameo/add.hpp"
+#include "yack/sequence/vector.hpp"
 
 using namespace yack;
 
@@ -69,7 +70,7 @@ unsigned SIMD::topo = 0;
 
 YACK_SOAK_DERIVED(Engine, SIMD);
 
-inline Engine() : SIMD()
+inline Engine() : SIMD(), xadd( size() ), vadd( size()  )
 {
     YACK_SOAK_VERBOSE(soak::print(stderr,"|SIMD|=%u\n", unsigned( size() )) );
 }
@@ -80,7 +81,44 @@ inline double Average(const double *arr, const unsigned num)
     return num > 0 ? xadd.range(arr,num)/num : 0;
 }
 
+inline double AverageMP(const double *arr, const unsigned num)
+{
+    if(num<=0) return 0;
+
+    struct ops {
+        Engine       &eng;
+        const double *arr;
+        size_t        num;
+
+        static inline void call(const concurrent::context &ctx,
+                                void                      *ptr,
+                                lockable      &)
+        {
+            assert(ptr);
+            ops    &self   = *static_cast<ops *>(ptr); // get ops
+            double &dest   = self.eng.vadd[ctx.indx];  // get destination
+            size_t  length = self.num;
+            size_t  offset = 0;
+            ctx.crop(length,offset);
+            const double *data = self.arr+offset;
+            {
+                double sum = 0;
+                while(length-- > 0)
+                {
+                    sum += *(data++);
+                }
+                dest = sum;
+            }
+        }
+    };
+
+    ops params = { *this, arr, num };
+    (*this)(ops::call,&params);
+    return xadd.tableau(vadd)/num;
+}
+
 cameo::add<double> xadd;
+vector<double>     vadd;
 
 YACK_SOAK_FINISH(Engine, const unsigned args, SIMD::topo = args );
 
@@ -95,6 +133,16 @@ YACK_SOAK_PUBLIC(double, EngineAverage(const double *arr, const unsigned num) no
 }
 YACK_SOAK_RETURN()
 
+YACK_SOAK_PUBLIC(double, EngineAverageMP(const double *arr, const unsigned num) noexcept)
+{
+    YACK_SOAK_TRY("EngineAverageMP")
+    {
+        return Engine::_().AverageMP(arr,num);
+    }
+    YACK_SOAK_CATCH();
+    return 0;
+}
+YACK_SOAK_RETURN()
 
 
 static int count = 0;
