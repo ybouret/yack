@@ -46,11 +46,17 @@ YACK_UTEST(cameo_add)
         cameo::add<float> xadd(5);
     }
 
+
+
     perform_add<int>(ran);
     perform_add<float>(ran);
     perform_add<double>(ran);
     perform_add<long double>(ran);
 
-
+    {
+        cameo:: static_add<double,8> sadd;
+        sadd.resume(3);
+        std::cerr << sadd(5,4,3,1,2) << std::endl;
+    }
 }
 YACK_UDONE()
