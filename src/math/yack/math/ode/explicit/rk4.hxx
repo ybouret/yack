@@ -19,7 +19,7 @@ namespace yack
             k3( next() ),
             k4( next() ),
             yt( next() ),
-            xadd(4)
+            xadd()
             {}
 
 #if !defined(YACK_RK4_CB)
