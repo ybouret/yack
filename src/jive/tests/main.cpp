@@ -24,6 +24,8 @@ YACK_UTEST_DECL(32)
     YACK_UTEST(vfs);
     YACK_UTEST(vfs_rm);
 
+    YACK_UTEST(dynamo);
+
 }
 YACK_UTEST_EXEC()
 

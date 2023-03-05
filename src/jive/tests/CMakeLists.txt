@@ -17,6 +17,7 @@ ${io}
 ${pattern}
 ${lexical}
 ${syntax}
+dynamo.cpp
 )
 
 target_link_libraries(test-jive yack-jive)
@@ -48,6 +49,7 @@ add_test(eval         test-jive eval)
 
 add_test(vfs          test-jive vfs)
 add_test(vfs:rm       test-jive vfs_rm)
+add_test(dynamo       test-jive dynamo)
 
 
 
