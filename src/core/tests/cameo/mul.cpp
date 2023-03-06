@@ -29,6 +29,31 @@ namespace {
 			std::cerr << res << " / " << xmul.product() << std::endl;
 		}
 	}
+
+    template <typename T>
+    static inline void perform_cplx(randomized::bits& ran)
+    {
+        typedef complex<T> cplx_t;
+        cameo::mul<cplx_t> xmul;
+        static const T ten(10);
+        static const T amp(20);
+
+        for (size_t n = 0; n <= 10; ++n)
+        {
+            xmul.free();
+            cplx_t  res = n > 0 ? 1 : 0;
+            for(size_t i=0;i<n;++i)
+            {
+                const T re = (ran.choice() ? -1 : 1) * std::pow(ten, amp*ran.symm<T>() );
+                const T im = (ran.choice() ? -1 : 1) * std::pow(ten, amp*ran.symm<T>() );
+                const cplx_t tmp(re,im);
+                res *= tmp;
+                xmul << tmp;
+            }
+            std::cerr << res << " / " << xmul.product() << std::endl;
+        }
+    }
+
 }
 
 YACK_UTEST(cameo_mul)
@@ -38,10 +63,17 @@ YACK_UTEST(cameo_mul)
 	{ cameo::mul<float>  xmul; }
 	{ cameo::mul<double> xmul(7); }
 
+    std::cerr << "-- reals" << std::endl;
 	perform<float>(ran);
 	perform<double>(ran);
 	perform<long double>(ran);
 
+    std::cerr << "-- complexes" << std::endl;
+    perform_cplx<float>(ran);
+    perform_cplx<double>(ran);
+    perform_cplx<long double>(ran);
+
+    std::cerr << "-- special cases" << std::endl;
 	{
 		cameo::mul<double> xm;
 		xm.push(3, 3);

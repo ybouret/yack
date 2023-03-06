@@ -131,7 +131,8 @@ namespace yack
         {
             const T rere = lhs.re * rhs.re;
             const T imim = lhs.im * rhs.im;
-            //return complex(rere-imim,(lhs.re+lhs.im)*(rhs.re+rhs.im) - rere - imim);
+            return complex(rere-imim,(lhs.re+lhs.im)*(rhs.re+rhs.im) - rere - imim);
+#if 0
             T       arr[3] = {(lhs.re+lhs.im)*(rhs.re+rhs.im), -rere, -imim };
             aswap(arr[0],arr[2]);
             aswap(arr[0],arr[1]);
@@ -139,6 +140,7 @@ namespace yack
             assert( std::abs(arr[0]) <= std::abs(arr[1]) );
             assert( std::abs(arr[1]) <= std::abs(arr[2]) );
             return complex(rere-imim,(arr[0]+arr[1]) + arr[2]);
+#endif
         }
         
         //! x*z

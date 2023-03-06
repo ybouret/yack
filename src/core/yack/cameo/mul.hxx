@@ -9,16 +9,11 @@ namespace yack
 
 		}
 
-		static inline int exponent_of(const real_t args) noexcept
-		{
-			int ex = 0;
-			(void)std::frexp(args, &ex);
-			return ex;
-		}
+        
 		template <>
 		tagged_real<real_t>::tagged_real(const real_t args) noexcept :
 			value(args),
-			exponent(exponent_of(args))
+			exponent(exponent_for(args))
 		{
 
 		}
