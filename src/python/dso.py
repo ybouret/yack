@@ -28,6 +28,6 @@ print(platform.system())
 #     print("dll=", sys.argv[1])
 #     dso = DSO(sys.argv[1])
 
-soname = "./dsoxx.dll"
+soname = "./engine.dll"
 if os.path.isfile(soname):
     dso = DSO(soname)
