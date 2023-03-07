@@ -18,15 +18,15 @@ namespace yack
         //______________________________________________________________________
         //
         //
-        //! sub list of active species
+        //! sub list of active species for 
         //
         //______________________________________________________________________
         class alist : public alist_
         {
         public:
             typedef auto_ptr<const alist> ptr; //!< alias
-            explicit alist() noexcept;          //!< setup empty
-            virtual ~alist() noexcept;          //!< cleanup
+            explicit alist() noexcept;         //!< setup empty
+            virtual ~alist() noexcept;         //!< cleanup
             explicit alist(const snode *);     //!< active from library
 
 
