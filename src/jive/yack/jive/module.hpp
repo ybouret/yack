@@ -91,7 +91,7 @@ namespace yack
             template <typename LISTNAME> inline
             static module *open_list(const LISTNAME &listname, const ios::characters &charlist)
             {
-                return open_list(listname,charlist);
+                return new module(listname,charlist);
             }
 
             //__________________________________________________________________

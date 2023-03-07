@@ -8,3 +8,4 @@ yack_link_libraries(test-aqueous)
 yack_testing(aqueous)
 
 add_test(lib test-aqueous lib)
+add_test(weasel test-aqueous weasel)
