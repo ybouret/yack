@@ -32,7 +32,7 @@ namespace yack
                 const rule &extra = agg("extra") <<     pm  << cf_ << cc;
                 const rule &eq    = agg("eq") << first << zom(extra);
 
-                top( act("weasel") << zom(eq) );
+                top( act("weasel") << zom(choice(eq,sp) ) );
                 
                 
                 // lexical only extra
