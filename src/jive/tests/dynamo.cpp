@@ -6,6 +6,8 @@
 
 #include "yack/jive/lexical/plugin/single-line-comment.hpp"
 #include "yack/jive/lexical/plugin/multi-lines-comment.hpp"
+#include "yack/jive/lexical/plugin/jstring.hpp"
+#include "yack/jive/lexical/plugin/rstring.hpp"
 
 namespace yack
 {
@@ -19,11 +21,23 @@ namespace yack
 
             explicit dynamo() : parser( "dynamo" )
             {
+                const rule &SEP     = mark(':');
                 const rule &END     = mark(';');
                 const rule &UID     = term("UID","\\.[:word:]+");
                 const rule &UID_    = act("UID_") << UID << END;
-                top( agg("dynamo") << UID_ );
+
+                const rule &RID     = term("RID","[:word:]+");
+
+                const rule &DCL     = act("DCL") << RID << SEP;
+                const rule &JSTR    = load<lexical::jstring>("JSTR");
+                const rule &RSTR    = load<lexical::rstring>("RSTR");
+
+                const rule &ALIAS   = agg("ALIAS") << DCL << choice(RID,JSTR,RSTR) << END;
+
+                top( agg("dynamo") << UID_ << zom(ALIAS) );
                 gv();
+
+
 
                 plug( jive::lexical::cxx_comment::clid, "C++Comment");
                 plug( jive::lexical::c_comments::clid,  "C_Comments");
