@@ -9,6 +9,13 @@ namespace yack
         entity:: ~entity() noexcept
         {
         }
+
+        entity:: entity(const entity &other) :
+        name( other.name  ),
+        primary( other.primary ),
+        replica( other.replica )
+        {
+        }
         
 
     }
