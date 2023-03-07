@@ -23,6 +23,9 @@ namespace yack
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(linker);
+                void         cleanup() noexcept;
+                virtual void on_init() noexcept;
+                virtual void on_quit() noexcept;
             };
         }
 
