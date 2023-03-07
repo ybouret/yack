@@ -19,6 +19,8 @@ namespace yack
             virtual ~actors() noexcept;
             actors(const actors &);
 
+            YACK_PROTO_OSTREAM(actors);
+            
         private:
             YACK_DISABLE_ASSIGN(actors);
         };

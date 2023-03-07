@@ -35,7 +35,18 @@ namespace yack
             return sp;
         }
 
+        void actor:: display_first(std::ostream &os) const
+        {
+            if(nu>1) os << nu;
+            os << sp;
+        }
 
+        void actor:: display_extra(std::ostream &os) const
+        {
+            os << '+';
+            if(nu>1) os << nu;
+            os << sp;
+        }
 
 
 

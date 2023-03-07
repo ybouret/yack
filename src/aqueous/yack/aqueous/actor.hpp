@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_AQUEOUS_ACTOR_INCLUDED
@@ -19,6 +18,8 @@ namespace yack
             actor(const actor &)                            noexcept;
             const species & operator*() const noexcept;
 
+            void display_first(std::ostream &) const;
+            void display_extra(std::ostream &) const;
 
             const unsigned nu; //!< nu>0
             const unsigned nm; //!< nu-1
