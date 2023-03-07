@@ -5,30 +5,50 @@
 
 #include "yack/string.hpp"
 #include "yack/large-object.hpp"
+#include "yack/proto-ostream.hpp"
 
 namespace yack
 {
     namespace aqueous
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! base class for enties: a name and two indices
+        //
+        //______________________________________________________________________
         class entity 
         {
         public:
-            virtual ~entity() noexcept;
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~entity() noexcept;  //!< cleanup
+            entity(const entity &other); //!< copy
+
+            //! setup with name and index
             template <typename NAME> inline
             explicit entity(NAME         &uuid,
-                            const size_t  gidx,
-                            const size_t  cidx) :
+                            const size_t  indx) :
             name(uuid),
-            primary(gidx),
-            replica(cidx)
+            primary(indx),
+            replica(indx)
             {
-                assert(gidx>=1);
-                assert(cidx>=1);
+                assert(primary>0);
             }
-            
-            entity(const entity &other);
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            const string & key() const noexcept; //!< key for ark_ptr
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
             const string name;      //!< unique name
             const size_t primary;   //!< global index
             const size_t replica;   //!< index in cluster

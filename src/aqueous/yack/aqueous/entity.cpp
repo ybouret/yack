@@ -16,7 +16,11 @@ namespace yack
         replica( other.replica )
         {
         }
-        
+
+        const string & entity:: key() const noexcept
+        {
+            return name;
+        }
 
     }
 }
