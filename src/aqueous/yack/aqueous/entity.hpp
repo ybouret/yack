@@ -11,7 +11,7 @@ namespace yack
     namespace aqueous
     {
 
-        class entity : public object
+        class entity 
         {
         public:
             virtual ~entity() noexcept;
