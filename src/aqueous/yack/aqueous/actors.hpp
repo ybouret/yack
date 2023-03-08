@@ -10,17 +10,38 @@ namespace yack
 {
     namespace aqueous
     {
+        //______________________________________________________________________
+        //
+        //
+        //! base class for actors
+        //
+        //______________________________________________________________________
         typedef cxx_list_of<actor> actors_;
 
+        //______________________________________________________________________
+        //
+        //
+        //! list of actors: reactants or product
+        //
+        //______________________________________________________________________
         class actors : public actors_
         {
         public:
-            explicit actors() noexcept;
-            virtual ~actors() noexcept;
-            actors(const actors &);
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit actors() noexcept; //!< setup empty
+            virtual ~actors() noexcept; //!< cleanup
+            actors(const actors &);     //!< copy using actor copy constructor
 
-            YACK_PROTO_OSTREAM(actors);
-            
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            YACK_PROTO_OSTREAM(actors); //!< display
+            string to_string() const;   //!< stringify
+
         private:
             YACK_DISABLE_ASSIGN(actors);
         };

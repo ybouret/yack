@@ -41,6 +41,8 @@ namespace yack
             os << sp;
         }
 
+
+
         void actor:: display_extra(std::ostream &os) const
         {
             os << '+';
@@ -48,7 +50,15 @@ namespace yack
             os << sp;
         }
 
+        string actor:: to_string_first() const
+        {
+            return nu>1 ? vformat("%u[%s]",nu,sp.name()) : vformat("[%s]",sp.name());
+        }
 
+        string actor:: to_string_extra() const
+        {
+            return nu>1 ? vformat("+%u[%s]",nu,sp.name()) : vformat("+[%s]",sp.name());
+        }
 
     }
 

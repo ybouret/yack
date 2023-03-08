@@ -33,6 +33,21 @@ namespace yack
             return os;
         }
 
+        string actors:: to_string() const
+        {
+            const actor *node = head;
+            if(node)
+            {
+                string res = node->to_string_first();
+                for(node=node->next;node;node=node->next)
+                    res += node->to_string_extra();
+                return res;
+            }
+            else
+            {
+                return '.';
+            }
+        }
 
     }
 

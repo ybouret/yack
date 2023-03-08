@@ -11,27 +11,55 @@ namespace yack
 {
     namespace aqueous
     {
-
+        //______________________________________________________________________
+        //
+        //
+        // types for components
+        //
+        //______________________________________________________________________
         typedef suffix_set<string,component::ptr> components_db; //!< databse of components
         typedef components_db::knot_type          cnode;         //!< alias
 
+        //______________________________________________________________________
+        //
+        //
+        //! components are a database of components
+        //
+        //______________________________________________________________________
         class components : public large_object, public counted
         {
         public:
-            static const char * const clid;
-            
-            explicit components() noexcept;
-            virtual ~components() noexcept;
-            components(const components &);
+            //__________________________________________________________________
+            //
+            // definitions
+            //__________________________________________________________________
+            static const char * const clid; //!< "components"
 
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit components() noexcept; //!< setup empty
+            virtual ~components() noexcept; //!< cleanup
+            components(const components &); //!< hard copy
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
             const components_db::tree_type * operator->() const noexcept;      //!< get internal tree
             const components_db::tree_type & operator*()  const noexcept;      //!< get internal tree
 
-            void operator()(const int nu, const species &sp);
-            YACK_PROTO_OSTREAM(components);
-
-            const actors reac;
-            const actors prod;
+            void operator()(const int nu, const species &sp); //!< declare a new components
+            YACK_PROTO_OSTREAM(components);                   //!< display
+            string to_string() const;                         //!< stringify
+            
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const actors reac; //!< list of reactants
+            const actors prod; //!< list of products
             
         private:
             YACK_DISABLE_ASSIGN(components);

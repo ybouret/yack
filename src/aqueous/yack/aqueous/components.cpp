@@ -59,10 +59,17 @@ namespace yack
 
         }
 
+        static const char rightleft[] = " <=> ";
+
         std::ostream & operator<<(std::ostream &os, const components &self)
         {
-            os << self.reac << " <=> " << self.prod;
+            os << self.reac << rightleft << self.prod;
             return os;
+        }
+
+        string components:: to_string() const
+        {
+            return reac.to_string() + rightleft + prod.to_string();
         }
 
         
