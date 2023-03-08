@@ -1,5 +1,5 @@
-
 #include "yack/aqueous/entity.hpp"
+#include <cstring>
 
 namespace yack
 {
