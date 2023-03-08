@@ -52,7 +52,18 @@ namespace yack
             void operator()(const int nu, const species &sp); //!< declare a new components
             YACK_PROTO_OSTREAM(components);                   //!< display
             string to_string() const;                         //!< stringify
-            
+
+            template <typename ARR> inline
+            void fill( ARR &nu, const unsigned level) const
+            {
+                for(const cnode *node=(*this)->head;node;node=node->next)
+                {
+                    const component &c = ***node;
+                    const species   &s = *c;
+                    nu[s.indx[level]] = c.nu;
+                }
+            }
+
             //__________________________________________________________________
             //
             // members

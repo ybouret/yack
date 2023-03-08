@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_AQUEOUS_EQUILIBRIA_INCLUDED
