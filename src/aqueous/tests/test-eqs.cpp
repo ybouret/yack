@@ -1,5 +1,5 @@
 
-#include "yack/aqueous/components.hpp"
+#include "yack/aqueous/equilibria.hpp"
 #include "yack/aqueous/library.hpp"
 #include "yack/utest/run.hpp"
 
@@ -8,17 +8,19 @@ using namespace aqueous;
 
 YACK_UTEST(eqs)
 {
-    library lib;
+    library    lib;
+    equilibria eqs;
     const species & h = lib("H+",  1);
     const species & w = lib("HO-",-1);
 
     {
-        components water;
+        equilibrium &water = eqs( new const_equilibrium("water",1e-14,eqs.next_indx() ) );
         water(1,h);
         water(1,w);
         std::cerr << water << std::endl;
 
     }
+
 }
 YACK_UDONE()
 

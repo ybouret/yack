@@ -33,23 +33,24 @@ namespace yack
             //
             // definitions
             //__________________________________________________________________
+            static const char * const clid; //!< "equilibria"
 
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            explicit equilibria() noexcept;
-            virtual ~equilibria() noexcept;
+            explicit equilibria() noexcept; //!< setup emptys
+            virtual ~equilibria() noexcept; //!< cleanup
+            equilibria(const equilibria &); //!< hard cloning
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            const eqs_db::tree_type * operator->() const noexcept; //!< get internal tree
-            const eqs_db::tree_type & operator*()  const noexcept; //!< get internal tree
+            const eqs_db::tree_type & operator->() const noexcept; //!< drill-down
 
             size_t        next_indx() const noexcept; //!< size+1
-            equilibrium & use( equilibrium *eq );
+            equilibrium & operator()( equilibrium *eq );
 
 
         private:
