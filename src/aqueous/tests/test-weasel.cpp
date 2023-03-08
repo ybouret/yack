@@ -17,22 +17,17 @@ YACK_UTEST(weasel)
 
     if(argc>1)
     {
-        const string    fn = argv[1];
-        ios::icstream   fp(fn);
-        ios::characters line;
-        while((std::cout << "> ").flush(),fp.gets(line))
+        const string fn = argv[1];
+        jive::source src( jive::module::open_file(fn) );
+        auto_ptr<weasel::xnode> tree = wp.parse(src);
+        if(tree.is_valid())
         {
-            line.strip(" \t");
-            if(line.size<=0) continue;
-            jive::source                  src( jive::module::open_list("line",line) );
-            auto_ptr<weasel::xnode> tree = wp.parse(src);
-            if(tree.is_valid())
-            {
-                weasel::linker::simplify( & *tree );
-                wl.walk(*tree,NULL);
-                tree->gv("tree.dot");
-            }
+            weasel::linker::simplify( & *tree );
+            wl.walk(*tree,NULL);
+            tree->gv("tree.dot");
         }
+
+        
     }
 
 
