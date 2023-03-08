@@ -24,7 +24,6 @@ namespace yack
             void linker:: simplify(xnode *node)
             {
                 assert(node);
-                //std::cerr << "simplify [" << node->name() << "]" << std::endl;
                 const rule &r = **node;
                 switch(r.type)
                 {
@@ -39,7 +38,6 @@ namespace yack
                         }
                         if(node->name()=="xa")
                         {
-                            //std::cerr << "need to cut!" << std::endl;
                             assert(l.size>=2);
                             assert(l.head->name() == "+");
                             delete l.pop_front();

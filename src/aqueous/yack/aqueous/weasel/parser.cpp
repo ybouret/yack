@@ -1,5 +1,7 @@
 
 #include "yack/aqueous/weasel/parser.hpp"
+#include "yack/jive/lexical/plugin/single-line-comment.hpp"
+#include "yack/jive/lexical/plugin/multi-lines-comment.hpp"
 
 namespace yack
 {
@@ -19,6 +21,7 @@ namespace yack
                 rule::verbose = true;
 
                 // describe a single species
+                //const rule &end   = opt(term(';'));
                 const rule &pp    = term('+');                                 // plus sign
                 const rule &mm    = term('-');                                 // minus sign
                 const rule &pc    = oom(pp);                                   // positive charge(s)
@@ -41,10 +44,17 @@ namespace yack
                 const rule &cm    = agg("cm") << opt( cat(ca,mark("<=>")) ) << ca;
 
                 // describe equilibrium
-                top( agg("weasel") << zom( choice(sp,cm)) );
+                const rule &eq  =
+                agg("eq") << id << mark(':') << cm;
+
+                const rule &decl = cat( choice(eq,sp), opt( mark(';') ) );
+
+                top( agg("weasel") << zom( decl ) );
 
                 
                 // lexical only extra
+                plug( jive::lexical::cxx_comment::clid, "C++Comment");
+                plug( jive::lexical::c_comments::clid,  "C_Comments");
                 drop("[:blank:]+");
                 endl("[:endl:]");
             }
