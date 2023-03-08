@@ -49,10 +49,10 @@ namespace yack
             // methods
             //__________________________________________________________________
 
-            const species_db::tree_type * operator->() const noexcept;      //!< get internal tree
-            const species_db::tree_type & operator*()  const noexcept;      //!< get internal tree
+            const species_db::tree_type & operator->() const noexcept;      //!< drill-down
             const species &               operator[](const string &) const; //!< get by name
             const species &               operator[](const char   *) const; //!< get by name
+            YACK_PROTO_OSTREAM(library); //!< display
 
             //__________________________________________________________________
             //

@@ -22,8 +22,9 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~gathering() noexcept; //!< cleanup
-            explicit gathering() noexcept; //!< setup length=0
+            virtual ~gathering()         noexcept; //!< cleanup
+            explicit gathering()         noexcept; //!< setup length=0
+            gathering(const gathering &) noexcept; //!< copy
 
             //__________________________________________________________________
             //
@@ -39,7 +40,7 @@ namespace yack
             const size_t length; //!< max name length
 
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(gathering);
+            YACK_DISABLE_ASSIGN(gathering);
         };
     }
 

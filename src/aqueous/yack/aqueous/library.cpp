@@ -1,5 +1,6 @@
 #include "yack/aqueous/library.hpp"
 #include "yack/system/imported.hpp"
+#include <iomanip>
 
 namespace yack
 {
@@ -18,15 +19,12 @@ namespace yack
 
 
 
-        const species_db::tree_type * library:: operator->() const noexcept
-        {
-            return & sdb.tree;
-        }
-
-        const species_db::tree_type & library:: operator*() const noexcept
+        const species_db::tree_type & library:: operator->() const noexcept
         {
             return sdb.tree;
         }
+
+        
 
         const species & library:: grow(species *sp)
         {
@@ -47,6 +45,20 @@ namespace yack
         const species & library:: operator[](const char   *name) const
         {
             const string _(name); return (*this)[_];
+        }
+
+        std::ostream & operator<<(std::ostream &os, const library &self)
+        {
+            for(const snode *node=self->head;node;node=node->next)
+            {
+                const species &s = ***node;
+                self.pad(std::cerr << s,s)
+                << " | z=" << std::setw(3) << s.z
+                << " | #="  << s.n
+                << std::endl;
+            }
+
+            return os;
         }
 
 

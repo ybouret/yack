@@ -14,6 +14,11 @@ namespace yack
 
         }
 
+        gathering:: gathering(const gathering &other) noexcept : length(other.length)
+        {
+
+        }
+
 
         void gathering:: update(const entity &ent) noexcept
         {
