@@ -2,6 +2,7 @@
 #include "yack/aqueous/weasel/parser.hpp"
 #include "yack/jive/lexical/plugin/single-line-comment.hpp"
 #include "yack/jive/lexical/plugin/multi-lines-comment.hpp"
+#include "yack/jive/lexical/plugin/rstring.hpp"
 
 namespace yack
 {
@@ -43,10 +44,14 @@ namespace yack
                 const rule &ca    = choice(term('.'),ac);
                 const rule &cm    = agg("cm") << opt( cat(ca,mark("<=>")) ) << ca;
 
-                // describe equilibrium
-                const rule &eq  =
-                agg("eq") << id << mark(':') << cm;
 
+                // describe equilibrium
+                const rule &sep = mark(':');
+                const rule &str = load<jive::lexical::rstring>("str");
+                const rule &eq  =
+                agg("eq") << id << sep << cm << sep << str;
+
+                // possible input
                 const rule &decl = cat( choice(eq,sp), opt( mark(';') ) );
 
                 top( agg("weasel") << zom( decl ) );

@@ -119,7 +119,7 @@ namespace yack
             
             xnode * xnode:: ast(xnode *node) noexcept
             {
-                assert(node);
+                if(!node) return NULL;
                 const rule &r = **node;
                 switch (r.type)
                 {

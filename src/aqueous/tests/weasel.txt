@@ -1,1 +1,6 @@
+// declare water
+water:[H+]+[HO-]:'1e-14';
+Na+;
+Cl-;
+K+;
 
