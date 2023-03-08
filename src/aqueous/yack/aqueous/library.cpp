@@ -31,7 +31,7 @@ namespace yack
         const species & library:: grow(species *sp)
         {
             assert(NULL!=sp);
-            const species::ptr p = sp; assert(sdb.size()+1==sp->primary);
+            const species::ptr p = sp; assert(sdb.size()+1==sp->indx[0]);
             if(!sdb.insert(p)) throw imported::exception(clid,"multiple [%s]", p->name());
             update(*p);
             return *p;

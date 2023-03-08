@@ -12,9 +12,9 @@ namespace yack
 
         entity:: entity(const entity &other) :
         name( other.name  ),
-        primary( other.primary ),
-        replica( other.replica )
+        indx()
         {
+            memcpy( &coerce(indx[0]), &other.indx[0], sizeof(indx) );
         }
 
         const string & entity:: key() const noexcept

@@ -30,13 +30,13 @@ namespace yack
 
             //! setup with name and index
             template <typename NAME> inline
-            explicit entity(NAME         &uuid,
-                            const size_t  indx) :
-            name(uuid),
-            primary(indx),
-            replica(indx)
+            explicit entity(NAME         &uid,
+                            const size_t  idx) :
+            name(uid),
+            indx()
             {
-                assert(primary>0);
+                assert(idx>0);
+                coerce(indx[0]) = coerce(indx[1])  = idx;
             }
 
             //__________________________________________________________________
@@ -50,8 +50,7 @@ namespace yack
             // members
             //__________________________________________________________________
             const string name;      //!< unique name
-            const size_t primary;   //!< global index
-            const size_t replica;   //!< index in cluster
+            const size_t indx[2];   //!< 0:global 1:local
 
 
         private:

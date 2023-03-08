@@ -19,6 +19,16 @@ namespace yack
         {
         }
 
+        components:: components(const components &other) :
+        large_object(),
+        counted(),
+        reac( other.reac ),
+        prod( other.prod ),
+        cdb(  other.cdb  )
+        {
+
+        }
+
         const char * const components::clid = "components";
 
         void components:: operator()(const int nu, const species &sp)
