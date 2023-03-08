@@ -1,6 +1,8 @@
 // declare water
+H+ HO- SO4-- 
 water:[H+]+[HO-]:'1e-14';
-Na+;
-Cl-;
-K+;
+sulfuric:[H2SO4] <=> [H+]+2[SO4--]:'1'
+water2:.<=>[H+]+[HO-]:'Kw';
+iwater:[H+]+[HO-] <=> .:'1/Kw';
+
 

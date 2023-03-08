@@ -19,7 +19,7 @@ namespace yack
 
             parser:: parser() : jive::parser("weasel")
             {
-                rule::verbose = true;
+                //rule::verbose = true;
 
                 // describe a single species
                 //const rule &end   = opt(term(';'));
@@ -62,6 +62,16 @@ namespace yack
                 plug( jive::lexical::c_comments::clid,  "C_Comments");
                 drop("[:blank:]+");
                 endl("[:endl:]");
+
+                validate();
+
+                {
+                    list<string> terminals, internals;
+                    collect_keywords(terminals,internals);
+                    std::cerr << "terminals: " << terminals << std::endl;
+                    std::cerr << "internals: " << internals << std::endl;
+
+                }
             }
 
         }
