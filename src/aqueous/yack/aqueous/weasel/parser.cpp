@@ -39,27 +39,10 @@ namespace yack
                 // describe components lhs/rhs
                 const rule &ca    = choice(term('.'),ac);
                 const rule &cm    = agg("cm") << opt( cat(ca,mark("<=>")) ) << ca;
+
+                // describe equilibrium
                 top( agg("weasel") << zom( choice(sp,cm)) );
 
-#if 0
-
-                const rule &cc    = act("cc") << mark('[') << sp << mark(']'); // species as component
-                const rule &pm    = choice(pp,mm);                             // \pm
-                const rule &cf    = term("cf","[1-9][0-9]*");                  // positive coefficient
-                const rule &oc    = opt(cf);                                   // optional coefficient
-                const rule &first = agg("first") << opt(pm) << oc << cc;       // first actor
-                const rule &extra = agg("extra") <<     pm  << oc << cc;       // extra actor(s)
-                const rule &Kn    = term("Kn",RX_KN);
-
-                // equilibrium: id '=' first extra* '@'
-                const rule &eq    =
-                agg("eq") << id << mark('=')
-                << first << zom(extra)
-                << Kn;
-                ;
-
-                top( act("weasel") << zom(choice(eq,sp) ) );
-#endif
                 
                 // lexical only extra
                 drop("[:blank:]+");

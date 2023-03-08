@@ -11,7 +11,7 @@ namespace yack
     {
         namespace weasel
         {
-
+            
             //! Weasel Exerts A Species/Equilibrium Language
             class parser : public jive::parser
             {

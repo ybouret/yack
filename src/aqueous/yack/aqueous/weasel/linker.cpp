@@ -1,5 +1,6 @@
 
 #include "yack/aqueous/weasel/linker.hpp"
+#include "yack/aqueous/weasel/types.hpp"
 
 namespace yack
 {
@@ -21,7 +22,9 @@ namespace yack
                 signs.free();
             }
 
-            void linker:: on_init() noexcept
+            
+
+            void linker:: on_init()
             {
                 std::cerr << "linker+init" << std::endl;
                 cleanup();
