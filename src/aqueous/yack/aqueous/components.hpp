@@ -47,8 +47,7 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            const components_db::tree_type * operator->() const noexcept;      //!< get internal tree
-            const components_db::tree_type & operator*()  const noexcept;      //!< get internal tree
+            const components_db::tree_type & operator->() const noexcept;      //!< get internal tree
 
             void operator()(const int nu, const species &sp); //!< declare a new components
             YACK_PROTO_OSTREAM(components);                   //!< display

@@ -29,6 +29,13 @@ namespace yack
 
         }
 
+        const components_db::tree_type & components:: operator->() const noexcept
+        {
+            return cdb.tree;
+        }
+
+
+
         const char * const components::clid = "components";
 
         void components:: operator()(const int nu, const species &sp)
