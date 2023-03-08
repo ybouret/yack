@@ -13,6 +13,8 @@ namespace yack
         namespace weasel
         {
             typedef jive::syntax::xnode xnode;
+            typedef jive::syntax::rule  rule;
+
         }
     }
 }

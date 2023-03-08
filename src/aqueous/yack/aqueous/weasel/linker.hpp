@@ -19,6 +19,8 @@ namespace yack
             public:
                 explicit linker();
                 virtual ~linker() noexcept;
+
+                static void simplify(xnode *node);
                 
 
                 list<sign_type> signs;

@@ -89,6 +89,7 @@ namespace yack
                 //! concrete tree to abstract tree, may return NULL
                 //______________________________________________________________
                 static xnode         *ast(xnode *node) noexcept;
+                
 
                 //______________________________________________________________
                 //

@@ -1,6 +1,5 @@
 
 #include "yack/aqueous/weasel/linker.hpp"
-#include "yack/aqueous/weasel/types.hpp"
 
 namespace yack
 {
@@ -22,7 +21,32 @@ namespace yack
                 signs.free();
             }
 
-            
+            void linker:: simplify(xnode *node)
+            {
+                assert(node);
+                //std::cerr << "simplify [" << node->name() << "]" << std::endl;
+                const rule &r = **node;
+                switch(r.type)
+                {
+                    case jive::syntax::terminal_type:
+                        return;
+
+                    case jive::syntax::internal_type:
+                        jive::syntax::xlist &l = node->sub();
+                        for(xnode *ch=l.head;ch;ch=ch->next)
+                        {
+                            simplify(ch);
+                        }
+                        if(node->name()=="xa")
+                        {
+                            //std::cerr << "need to cut!" << std::endl;
+                            assert(l.size>=2);
+                            assert(l.head->name() == "+");
+                            delete l.pop_front();
+                        }
+                        return;
+                }
+            }
 
             void linker:: on_init()
             {

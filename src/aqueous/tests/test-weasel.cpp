@@ -26,9 +26,9 @@ YACK_UTEST(weasel)
             if(line.size<=0) continue;
             jive::source                  src( jive::module::open_list("line",line) );
             auto_ptr<weasel::xnode> tree = wp.parse(src);
-
             if(tree.is_valid())
             {
+                weasel::linker::simplify( & *tree );
                 wl.walk(*tree,NULL);
                 tree->gv("tree.dot");
             }
