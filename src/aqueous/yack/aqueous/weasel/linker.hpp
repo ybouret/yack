@@ -27,12 +27,13 @@ namespace yack
                 static void simplify(xnode *node); //!< suppress the extra actor leading '+'
                 
                 const hashing::perfect terms;
+                const hashing::perfect instr;
                 list<sign_type>        signs; //!< stack of signs for species name
                 list<string>           roots; //!< stack of roots for species name
                 list<string>           codes; //!< stack of lua codes for eqs
                 list<apn>              coefs; //!< stack of coefficients
                 size_t                 voids; //!< number of voids
-                
+
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(linker);
                 void         cleanup() noexcept;

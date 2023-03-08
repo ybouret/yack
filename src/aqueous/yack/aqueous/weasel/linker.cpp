@@ -11,7 +11,7 @@ namespace yack
 
             const char * const linker::clid = "linker";
 
-            static const char *terms_kw[] =
+            static const char *terminals_kw[] =
             {
                 "+",
                 "-",
@@ -28,9 +28,17 @@ namespace yack
 #define wl_coef  4
 #define wl_void  5
 
+            static const char *internals_kw[] =
+            {
+                "sp"
+            };
+
+#define wl_sp 0
+
             linker:: linker()  :
             jive::syntax::translator(),
-            terms(YACK_HASHING_PERFECT(terms_kw)),
+            terms(YACK_HASHING_PERFECT(terminals_kw)),
+            instr(YACK_HASHING_PERFECT(internals_kw)),
             signs()
             {
             }
@@ -125,6 +133,14 @@ namespace yack
             {
                 std::cerr << clid;
                 translator::on_internal(name,args);
+
+                switch(instr(name))
+                {
+                    default:
+                        //throw exception("not implemented for '%s'", name() );
+                        ;
+                }
+
             }
 
         }
