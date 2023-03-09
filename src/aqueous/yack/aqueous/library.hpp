@@ -64,6 +64,9 @@ namespace yack
                 return grow( new species(name,algz,sdb.size()+1) );
             }
 
+            const species *query(const string &) const noexcept;
+            const species *query(const char   *) const;
+
 
 
 

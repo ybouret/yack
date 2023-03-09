@@ -75,8 +75,15 @@ namespace yack
         //! remove back
         inline void cut_tail() noexcept
         {
-            assert(size);
+            assert(size>=0);
             cache->zstore( cache->turn( pop_back() ) );
+        }
+
+        //! remove back n
+        inline void cut_tail(size_t n) noexcept
+        {
+            assert(size>=n);
+            while(n-- > 0) cut_tail();
         }
         
         //! remove front
@@ -85,7 +92,14 @@ namespace yack
             assert(size);
             cache->zstore( cache->turn( pop_front() ) );
         }
-        
+
+        //! remove front n
+        inline void cut_head(size_t n) noexcept
+        {
+            assert(size>=n);
+            while(n-- > 0) cut_head();
+        }
+
         //! insert new node after mine
         template <typename U>
         inline void after(node_type *mine, const U &u)

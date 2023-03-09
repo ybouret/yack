@@ -14,6 +14,7 @@ YACK_UTEST(weasel)
     weasel::parser wp;
     weasel::linker wl;
     wp.gv();
+    library lib;
 
     if(argc>1)
     {
@@ -23,7 +24,8 @@ YACK_UTEST(weasel)
         if(tree.is_valid())
         {
             weasel::linker::simplify( & *tree );
-            wl.walk(*tree,NULL);
+            weasel::linker::params params = { lib };
+            wl.walk(*tree,&params);
             tree->gv("tree.dot");
         }
 

@@ -61,6 +61,17 @@ namespace yack
             return os;
         }
 
+        const species * library:: query(const string &name) const noexcept
+        {
+            const species::ptr *pp = sdb.search(name);
+            return pp ? & **pp : NULL;
+        }
+
+        const species * library:: query(const char  *name) const
+        {
+            const string _(name);
+            return query(_);
+        }
 
 
 

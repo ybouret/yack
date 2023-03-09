@@ -1,4 +1,5 @@
 // declare water
+A
 H+ HO- SO4-- 
 water:[H+]+[HO-]:'1e-14';
 sulfuric:[H2SO4] <=> [H+]+2[SO4--]:'1'

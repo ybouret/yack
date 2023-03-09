@@ -50,10 +50,10 @@ namespace yack
             void linker:: cleanup() noexcept
             {
                 voids = 0;
-                coefs.free();
-                codes.free();
-                roots.free();
-                signs.free();
+                coefs.clear();
+                codes.clear();
+                roots.clear();
+                signs.clear();
             }
 
             void linker:: simplify(xnode *node)
@@ -100,11 +100,11 @@ namespace yack
                 switch( terms( *l.name ) )
                 {
                     case wl_plus:
-                        signs << positive;
+                        signs << zpos;
                         break;
 
                     case wl_minus:
-                        signs << negative;
+                        signs << zneg;
                         break;
 
                     case wl_root:
@@ -134,11 +134,39 @@ namespace yack
                 std::cerr << clid;
                 translator::on_internal(name,args);
 
+                assert(data);
+                params  &usr = *static_cast<params *>(data);
+                library &lib = usr.lib;
+
                 switch(instr(name))
                 {
+                    case wl_sp: {
+                        std::cerr << "species with " << args << " args" << std::endl;
+                        string       id = roots.pull_tail();
+                        size_t       n  = args-1;
+                        int          z  = 0;
+                        while(n-- > 0)
+                        {
+                            switch( signs.pull_tail() )
+                            {
+                                case zpos: ++z; id += '+'; break;
+                                case zneg: --z; id += '-'; break;
+                            }
+                        }
+                        std::cerr << "found " << id << std::endl;
+                        if(lib.query(id))
+                        {
+                            
+                        }
+                        else
+                        {
+
+                        }
+
+                    } break;
+
                     default:
-                        //throw exception("not implemented for '%s'", name() );
-                        ;
+                        throw exception("not implemented for '%s'", name() );
                 }
 
             }
