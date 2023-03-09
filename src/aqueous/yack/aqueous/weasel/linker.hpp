@@ -57,6 +57,9 @@ namespace yack
                 virtual void on_quit() noexcept;
                 virtual void on_terminal(const lexeme &);
                 virtual void on_internal(const string &, const size_t );
+
+                void on_species(const size_t args, library &lib);
+                void on_actor(const size_t args);
             };
         }
 

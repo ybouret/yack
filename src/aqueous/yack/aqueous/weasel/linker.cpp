@@ -30,10 +30,12 @@ namespace yack
 
             static const char *internals_kw[] =
             {
-                "sp"
+                "sp",
+                "fa"
             };
 
 #define wl_sp 0
+#define wl_fa 1
 
             linker:: linker()  :
             jive::syntax::translator(),
@@ -140,35 +142,48 @@ namespace yack
 
                 switch(instr(name))
                 {
-                    case wl_sp: {
-                        std::cerr << "species with " << args << " args" << std::endl;
-                        string       id = roots.pull_tail();
-                        size_t       n  = args-1;
-                        int          z  = 0;
-                        while(n-- > 0)
-                        {
-                            switch( signs.pull_tail() )
-                            {
-                                case zpos: ++z; id += '+'; break;
-                                case zneg: --z; id += '-'; break;
-                            }
-                        }
-                        std::cerr << "found " << id << std::endl;
-                        if(lib.query(id))
-                        {
-                            
-                        }
-                        else
-                        {
-
-                        }
-
-                    } break;
-
+                    case wl_sp:  on_species(args,lib); break;
+                    case wl_fa:  on_actor(args);       break;
                     default:
-                        throw exception("not implemented for '%s'", name() );
+                        throw imported::exception(clid,"not implemented for '%s'", name() );
                 }
 
+            }
+
+            void linker:: on_species(const size_t args, library &lib)
+            {
+                string       id = roots.pull_tail();
+                size_t       n  = args-1;
+                int          z  = 0;
+                while(n-- > 0)
+                {
+                    switch( signs.pull_tail() )
+                    {
+                        case zpos: ++z; id += '+'; break;
+                        case zneg: --z; id += '-'; break;
+                    }
+                }
+                std::cerr << "found " << id << std::endl;
+                const species *sp = lib.query(id);
+                if(!sp) sp = & lib(id,z);
+                specs << *sp;
+            }
+
+            void linker:: on_actor(const size_t args)
+            {
+                unsigned nu = 1;
+                assert(specs.size>0);
+                switch(args)
+                {
+                    case 1:
+                        break;
+
+                    case 2:
+                        break;
+
+                    default:
+                        throw imported::exception(clid,"invalid actor/%u",unsigned(args));
+                }
             }
 
         }
