@@ -12,8 +12,8 @@ namespace yack
     {
         namespace weasel
         {
-            typedef jive::syntax::xnode xnode;
-            typedef jive::syntax::rule  rule;
+            typedef jive::syntax::xnode xnode; //!< alias
+            typedef jive::syntax::rule  rule;  //!< alias
 
         }
     }

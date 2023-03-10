@@ -11,14 +11,20 @@ namespace yack
 {
     namespace aqueous
     {
-
+        //______________________________________________________________________
+        //
+        //
+        //! equilibria with internal lua state
+        //
+        //______________________________________________________________________
         class lua_equilibria : public equilibria
         {
         public:
-            explicit lua_equilibria();
-            virtual ~lua_equilibria() noexcept;
+            explicit lua_equilibria();           //!< setup
+            virtual ~lua_equilibria() noexcept;  //!< cleanup
 
-            Lua::VM vm;
+            Lua::VM vm; //!< shared virtual machine
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(lua_equilibria);
         };

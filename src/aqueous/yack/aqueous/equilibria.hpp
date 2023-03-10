@@ -48,8 +48,8 @@ namespace yack
             //__________________________________________________________________
             const eqs_db::tree_type & operator->() const noexcept; //!< drill-down
 
-            size_t        next_indx() const noexcept; //!< size+1
-            equilibrium & operator()( equilibrium *eq );
+            size_t        next_indx() const noexcept;    //!< size+1
+            equilibrium & operator()( equilibrium *eq ); //!< register
 
 
         private:

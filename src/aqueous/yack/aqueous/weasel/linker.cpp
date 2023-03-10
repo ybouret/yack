@@ -18,7 +18,7 @@ namespace yack
                 "id",
                 "str",
                 "cf",
-                "."
+                ".",
             };
 
 #define wl_plus  0
@@ -30,12 +30,18 @@ namespace yack
 
             static const char *internals_kw[] =
             {
+                "weasel",
                 "sp",
-                "fa"
+                "fa",
+                "xa",
+                "ac"
             };
 
-#define wl_sp 0
-#define wl_fa 1
+#define wl_ok 0
+#define wl_sp 1
+#define wl_fa 2
+#define wl_xa 3
+#define wl_ac 4
 
             linker:: linker()  :
             jive::syntax::translator(),
@@ -51,6 +57,8 @@ namespace yack
 
             void linker:: cleanup() noexcept
             {
+                sides.release();
+                folks.release();
                 voids = 0;
                 coefs.clear();
                 codes.clear();
@@ -119,7 +127,7 @@ namespace yack
 
                     case wl_coef: {
                         const string __ = l.data.to_string();
-                        const apn    nu = apn::parse_dec(__(), __.size());
+                        const apn    nu = apn::parse_dec(__(), __.size()); assert(nu>0);
                         coefs << nu;
                     } break;
 
@@ -127,7 +135,7 @@ namespace yack
                         break;
 
                     default:
-                        throw exception("not implemented for '%s'", (*l.name)() );
+                        throw imported::exception(clid,"no terminal '%s'", (*l.name)() );
                 }
             }
 
@@ -143,9 +151,13 @@ namespace yack
                 switch(instr(name))
                 {
                     case wl_sp:  on_species(args,lib); break;
-                    case wl_fa:  on_actor(args);       break;
+                    case wl_fa:
+                    case wl_xa:  on_actor(args);       break;
+                    case wl_ac:  on_actors(args);      break;
+                        break;
+                    case wl_ok: return;
                     default:
-                        throw imported::exception(clid,"not implemented for '%s'", name() );
+                        throw imported::exception(clid,"no internal'%s'", name() );
                 }
 
             }
@@ -163,28 +175,54 @@ namespace yack
                         case zneg: --z; id += '-'; break;
                     }
                 }
-                std::cerr << "found " << id << std::endl;
                 const species *sp = lib.query(id);
-                if(!sp) sp = & lib(id,z);
-                specs << *sp;
+                if(sp)
+                {
+                    specs << *sp;
+                }
+                else
+                {
+                    specs << lib(id,z);
+                }
+
+            }
+
+
+            unsigned linker:: pull_coeff()
+            {
+                assert(coefs.size>0);
+                const unsigned nu = (*coefs.tail)->cast_to<unsigned>("coefficient");
+                coefs.cut_tail();
+                return nu;
             }
 
             void linker:: on_actor(const size_t args)
             {
-                unsigned nu = 1;
                 assert(specs.size>0);
                 switch(args)
                 {
-                    case 1:
-                        break;
+                    case 1: { // standalone component
+                        folks.push_back( new actor(*specs.pull_tail(),1) );
+                    } break;
 
-                    case 2:
-                        break;
+                    case 2: {
+                        folks.push_back( new actor(*specs.pull_tail(),pull_coeff()) );
+                    } break;
 
                     default:
                         throw imported::exception(clid,"invalid actor/%u",unsigned(args));
                 }
             }
+
+            void linker:: on_actors(const size_t args)
+            {
+                //std::cerr << "extracting #" << args << " from " << folks << std::endl;
+                assert(args<=folks.size);
+                actors *A = sides.store( new actors() );
+                for(size_t i=args;i>0;--i) A->push_front(folks.pop_back());
+                std::cerr << "\t -> " << *A << std::endl;
+            }
+
 
         }
 

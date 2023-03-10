@@ -24,7 +24,7 @@ namespace yack
         //! list of actors: reactants or product
         //
         //______________________________________________________________________
-        class actors : public actors_
+        class actors : public object, public actors_
         {
         public:
             //__________________________________________________________________
@@ -41,7 +41,12 @@ namespace yack
             //__________________________________________________________________
             YACK_PROTO_OSTREAM(actors); //!< display
             string to_string() const;   //!< stringify
-
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            actors *next; //!< for pool
+            
         private:
             YACK_DISABLE_ASSIGN(actors);
         };

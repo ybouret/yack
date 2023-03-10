@@ -28,10 +28,9 @@ YACK_UTEST(weasel)
             wl.walk(*tree,&params);
             tree->gv("tree.dot");
         }
-
-        
     }
 
+    std::cerr << "lib=" << std::endl << lib << std::endl;
 
 }
 YACK_UDONE()

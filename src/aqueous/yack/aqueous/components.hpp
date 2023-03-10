@@ -53,6 +53,7 @@ namespace yack
             YACK_PROTO_OSTREAM(components);                   //!< display
             string to_string() const;                         //!< stringify
 
+            //! transfer coefficients
             template <typename ARR> inline
             void fill( ARR &nu, const unsigned level) const
             {

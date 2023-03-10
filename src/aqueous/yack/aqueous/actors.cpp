@@ -9,11 +9,11 @@ namespace yack
 
         }
 
-        actors:: actors() noexcept : actors_()
+        actors:: actors() noexcept : actors_(), next(0)
         {
         }
 
-        actors:: actors(const actors &other) : actors_(other)
+        actors:: actors(const actors &other) : actors_(other), next(0)
         {
         }
 

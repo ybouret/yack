@@ -95,6 +95,24 @@ namespace yack
             return NULL;
         }
 
+        //! extract tail pointer
+        inline T *pull_tail() noexcept
+        {
+            assert(this->tail);
+            T *ptr = & (***(this->tail));
+            this->cut_tail();
+            return ptr;
+        }
+
+        //! extract head pointer
+        inline T *pull_head() noexcept
+        {
+            assert(this->head);
+            T *ptr = & (***(this->head));
+            this->cut_head();
+            return ptr;
+        }
+
     private:
         YACK_DISABLE_ASSIGN(dinky_manifest);
     };

@@ -10,6 +10,7 @@
 #include "yack/hashing/perfect.hpp"
 #include "yack/apex/natural.hpp"
 #include "yack/aqueous/library.hpp"
+#include "yack/aqueous/equilibria.hpp"
 #include "yack/data/dinky/solo-list.hpp"
 #include "yack/data/dinky/solo-repo.hpp"
 
@@ -49,7 +50,9 @@ namespace yack
                 solo_list<apn>           coefs; //!< stack of coefficients
                 size_t                   voids; //!< number of voids
                 solo_repo<const species> specs; //!< compiled species
-
+                actors                   folks; //!< compiled actors
+                cxx_pool_of<actors>      sides; //!< compiled sides
+                
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(linker);
                 void         cleanup() noexcept;
@@ -58,8 +61,10 @@ namespace yack
                 virtual void on_terminal(const lexeme &);
                 virtual void on_internal(const string &, const size_t );
 
-                void on_species(const size_t args, library &lib);
-                void on_actor(const size_t args);
+                void     on_species(const size_t args, library &lib);
+                void     on_actor(const size_t args);
+                unsigned pull_coeff();
+                void     on_actors(const size_t args);
             };
         }
 
