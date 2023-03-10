@@ -23,7 +23,8 @@ namespace yack
             //
             // definitions
             //__________________________________________________________________
-            typedef ark_ptr<string,species> ptr; //!< shared pointer
+            typedef ark_ptr<string,species> ptr;     //!< shared pointer
+            static bool                     verbose; //!< global verbosity
 
             //__________________________________________________________________
             //

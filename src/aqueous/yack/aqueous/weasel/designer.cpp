@@ -73,6 +73,17 @@ namespace yack
                 }
             }
 
+            void designer:: checkDB()
+            {
+                for(size_t i=0;i<ndb;++i)
+                {
+                    library        lib;
+                    lua_equilibria eqs;
+                    (*this)(lib,eqs,jive::module::open_data(edb[i]));
+                }
+
+            }
+
 
         }
     }

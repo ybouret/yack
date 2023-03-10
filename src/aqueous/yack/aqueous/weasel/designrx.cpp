@@ -15,7 +15,6 @@ namespace yack
         {
             void linker:: on_rx(const string &rx)
             {
-                std::cerr << "using '" << rx << "'" << std::endl;
                 jive::matching  match(rx);
                 size_t          count = 0;
                 for(size_t i=0;i<designer::ndb;++i)
@@ -27,11 +26,9 @@ namespace yack
                         throw imported::exception(designer::call_sign,"bad db entry");
                     const string id(tkn.token(),tkn.units());
                     strops::strip_with(" \t", 2, coerce(id));
-                    std::cerr << "testing '" << id << "'" << std::endl;
                     if(match.exactly(id))
                     {
                         ++count;
-                        std::cerr << "Matching!!" << std::endl;
                         found << string(txt);
                     }
                 }

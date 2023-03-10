@@ -5,6 +5,8 @@ namespace yack
 {
     namespace aqueous
     {
+        bool species::verbose = false;
+        
         species:: ~species() noexcept
         {
         }

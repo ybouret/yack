@@ -120,8 +120,8 @@ namespace yack
             
             void linker:: on_terminal(const lexeme &l)
             {
-                std::cerr << clid;
-                translator::on_terminal(l);
+                //std::cerr << clid; translator::on_terminal(l);
+
                 switch( terms( *l.name ) )
                 {
                     case wl_plus:
@@ -163,8 +163,7 @@ namespace yack
 
             void linker:: on_internal(const string &name, const size_t args)
             {
-                std::cerr << clid;
-                translator::on_internal(name,args);
+                //std::cerr << clid; translator::on_internal(name,args);
 
                 assert(data);
                 params  &usr = *static_cast<params *>(data);
@@ -206,6 +205,8 @@ namespace yack
                 else
                 {
                     specs << lib(id,z);
+                    if(species::verbose)
+                        std::cerr << clid << " +" << *(specs.tail) << std::endl;
                 }
 
             }
@@ -239,16 +240,13 @@ namespace yack
 
             void linker:: on_actors(const size_t args)
             {
-                //std::cerr << "extracting #" << args << " from " << folks << std::endl;
                 assert(args<=folks.size);
                 actors *A = sides.store( new actors() );
                 for(size_t i=args;i>0;--i) A->push_front(folks.pop_back());
-                std::cerr << "\t -> " << *A << std::endl;
             }
 
             void linker:: on_compound(const size_t args)
             {
-                std::cerr << "compound with #" << args << std::endl;
                 switch(args)
                 {
                     case 1: // assume product only
@@ -268,7 +266,6 @@ namespace yack
                 }
                 assert(reacs.size>0);
                 assert(prods.size>0);
-                std::cerr << "reac: " << *reacs.head << " | prods: " << *prods.head << std::endl;
             }
 
             namespace
@@ -315,10 +312,6 @@ namespace yack
                 assert(reacs.size>0);
                 assert(prods.size>0);
                 assert(codes.size>0);
-                std::cerr << "creating <" << **(roots.tail) << ">" << std::endl;
-                std::cerr << "reacs: " << *(reacs.head) << std::endl;
-                std::cerr << "prods: " << *(prods.head) << std::endl;
-                std::cerr << "value: " << *(codes.tail) << std::endl;
 
                 equilibrium    *pEq  = 0;
 
@@ -359,7 +352,7 @@ namespace yack
                     eq( int(a->nu), **a );
                 }
 
-                eq.display(std::cerr) << std::endl;
+                if(species::verbose) eq.display(std::cerr << clid  << " +") << std::endl;
             }
 
 

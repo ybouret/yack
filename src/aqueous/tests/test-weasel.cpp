@@ -12,7 +12,7 @@ using namespace aqueous;
 
 YACK_UTEST(weasel)
 {
-
+    species::verbose = true;
     library        lib;
     lua_equilibria eqs;
     eqs.vm->dostring("Kw=1e-14");
@@ -35,6 +35,7 @@ YACK_UTEST(weasel)
         std::cerr << "\t" << wd.edb[i] << std::endl;
     }
 
+    wd.checkDB();
 
 
 }
