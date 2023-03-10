@@ -199,7 +199,7 @@ namespace yack
             unsigned linker:: pull_coeff()
             {
                 assert(coefs.size>0);
-                const unsigned nu = (*coefs.tail)->cast_to<unsigned>("coefficient");
+                const unsigned nu = (*coefs.tail)->cast_to<int>("coefficient");
                 coefs.cut_tail();
                 return nu;
             }
@@ -306,13 +306,12 @@ namespace yack
                 std::cerr << "value: " << *(codes.tail) << std::endl;
 
                 assert(data);
-                params         &usr  = *static_cast<params *>(data);
-                lua_equilibria &eqs  = usr.eqs;
+                equilibrium    *pEq  = 0;
 
                 // preparing lua/const equilibrium
-                equilibrium    *eq   = 0;
-
                 {
+                    params         &usr  = *static_cast<params *>(data);
+                    lua_equilibria &eqs  = usr.eqs;
                     Lua::VM        &lvm  = eqs.vm;
                     const string    code = codes.pull_tail();
                     const string    name = roots.pull_tail();
@@ -321,17 +320,29 @@ namespace yack
                     if(LUA_TFUNCTION==lvm->type(-1))
                     {
                         // make a lua eq
-                        eq = & eqs( new lua_eq(name,code,lvm,indx) );
+                        pEq = & eqs( new lua_eq(name,code,lvm,indx) );
                     }
                     else
                     {
                         // make a constant eq
-                        eq = & eqs( new const_equilibrium(name, lvm->eval<double>(code), indx ) );
+                        pEq = & eqs( new const_equilibrium(name, lvm->eval<double>(code), indx ) );
                     }
                 }
 
-                assert(NULL!=eq);
+                assert(NULL!=pEq);
+                equilibrium &eq = *pEq;
                 // filling eq
+                auto_ptr<actors> reac = reacs.query();
+                auto_ptr<actors> prod = prods.query();
+                for(const actor *a=reac->head;a;a=a->next)
+                {
+                    eq( - int(a->nu), **a );
+                }
+
+                for(const actor *a=prod->head;a;a=a->next)
+                {
+                    eq( int(a->nu), **a );
+                }
 
             }
 
