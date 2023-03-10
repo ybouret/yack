@@ -79,7 +79,8 @@ namespace yack
                 cxx_pool_of<actors>      sides; //!< compiled sides
                 cxx_pool_of<actors>      reacs; //!< store reacs for eq
                 cxx_pool_of<actors>      prods; //!< store prods for eq
-
+                solo_list<string>        found; //!< post compilation
+                
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(linker);
                 void         cleanup() noexcept;

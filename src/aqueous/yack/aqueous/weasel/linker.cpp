@@ -72,6 +72,8 @@ namespace yack
 
             void linker:: cleanup() noexcept
             {
+                prods.release();
+                reacs.release();
                 sides.release();
                 folks.release();
                 coefs.clear();
@@ -107,13 +109,12 @@ namespace yack
 
             void linker:: on_init()
             {
-                std::cerr << "linker+init" << std::endl;
                 cleanup();
+                found.clear();
             }
 
             void linker:: on_quit() noexcept
             {
-                std::cerr << "linker+quit" << std::endl;
                 cleanup();
             }
             
@@ -319,11 +320,11 @@ namespace yack
                 std::cerr << "prods: " << *(prods.head) << std::endl;
                 std::cerr << "value: " << *(codes.tail) << std::endl;
 
-                assert(data);
                 equilibrium    *pEq  = 0;
 
                 // preparing lua/const equilibrium
                 {
+                    assert(data);
                     params         &usr  = *static_cast<params *>(data);
                     lua_equilibria &eqs  = usr.eqs;
                     Lua::VM        &lvm  = eqs.vm;
@@ -362,10 +363,7 @@ namespace yack
             }
 
 
-            void linker:: on_rx(const string &rx)
-            {
-                std::cerr << "using '" << rx << "'" << std::endl;
-            }
+           
 
         }
 

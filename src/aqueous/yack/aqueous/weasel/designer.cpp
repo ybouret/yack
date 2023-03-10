@@ -2,6 +2,10 @@
 #include "yack/aqueous/weasel/designer.hpp"
 #include "yack/aqueous/weasel/parser.hpp"
 #include "yack/aqueous/weasel/linker.hpp"
+#include "yack/jive/pattern/matching.hpp"
+#include "yack/string/tokenizer.hpp"
+#include "yack/system/imported.hpp"
+#include "yack/string/ops.hpp"
 
 namespace yack
 {
@@ -11,12 +15,6 @@ namespace yack
         namespace weasel
         {
 
-            const char * const designer::edb[] =
-            {
-#include "db.hxx"
-            };
-
-            const size_t designer:: ndb = sizeof(edb) / sizeof(edb[0]);
 
             class designer::compiler : public parser, public linker
             {
@@ -62,7 +60,19 @@ namespace yack
                 linker::params  data = { lib, eqs };
                 linker::simplify(root);
                 impl->walk(*root, &data);
+
+                designer                &self = *this;
+                solo_list<string>        todo;
+                todo.swap_with(impl->found);
+                while(todo.size)
+                {
+                    const string &built_in = **(todo.head);
+                    std::cerr << " +'" << built_in << "'" << std::endl;
+                    self(lib,eqs,jive::module::open_data(built_in));
+                    todo.cut_head();
+                }
             }
+
 
         }
     }
