@@ -34,7 +34,8 @@ namespace yack
                 "sp",
                 "fa",
                 "xa",
-                "ac"
+                "ac",
+                "cm"
             };
 
 #define wl_ok 0
@@ -42,6 +43,7 @@ namespace yack
 #define wl_fa 2
 #define wl_xa 3
 #define wl_ac 4
+#define wl_cm 5
 
             linker:: linker()  :
             jive::syntax::translator(),
@@ -131,8 +133,10 @@ namespace yack
                         coefs << nu;
                     } break;
 
-                    case wl_void:
+                    case wl_void: // store a new empty set of actors
+                        sides.store( new actors() );
                         break;
+
 
                     default:
                         throw imported::exception(clid,"no terminal '%s'", (*l.name)() );
@@ -154,7 +158,7 @@ namespace yack
                     case wl_fa:
                     case wl_xa:  on_actor(args);       break;
                     case wl_ac:  on_actors(args);      break;
-                        break;
+                    case wl_cm:  on_compound(args);    break;
                     case wl_ok: return;
                     default:
                         throw imported::exception(clid,"no internal'%s'", name() );
@@ -221,6 +225,31 @@ namespace yack
                 actors *A = sides.store( new actors() );
                 for(size_t i=args;i>0;--i) A->push_front(folks.pop_back());
                 std::cerr << "\t -> " << *A << std::endl;
+            }
+
+            void linker:: on_compound(const size_t args)
+            {
+                std::cerr << "compound with #" << args << std::endl;
+                switch(args)
+                {
+                    case 1: // assume product only
+                        assert(sides.size>=1);
+                        reacs.store( new actors()  );
+                        prods.store( sides.query() );
+                        break;
+
+                    case 2: // prepare reac/prod
+                        assert(sides.size>=2);
+                        prods.store( sides.query() );
+                        reacs.store( sides.query() );
+                        break;
+
+                    default:
+                        throw imported::exception(clid,"invalid compound/%u",unsigned(args));
+                }
+                assert(reacs.size>0);
+                assert(prods.size>0);
+                std::cerr << "reac: " << *reacs.head << " | prods: " << *prods.head << std::endl;
             }
 
 

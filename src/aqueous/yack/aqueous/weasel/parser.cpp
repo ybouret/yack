@@ -31,7 +31,7 @@ namespace yack
                 const rule &sp    = agg("sp") << id << opt(choice(pc,nc));     // single species
 
                 // describe a component
-                const rule &cc    = act("cc") << mark('[') << sp << mark(']'); // species as component
+                const rule &cc    = grp("cc") << mark('[') << sp << mark(']'); // species as component
 
                 // describe actors
                 const rule &cf    = term("cf","[1-9][0-9]*");                  // positive coefficient

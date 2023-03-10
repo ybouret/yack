@@ -52,7 +52,9 @@ namespace yack
                 solo_repo<const species> specs; //!< compiled species
                 actors                   folks; //!< compiled actors
                 cxx_pool_of<actors>      sides; //!< compiled sides
-                
+                cxx_pool_of<actors>      reacs;   //!< store lhs for eq
+                cxx_pool_of<actors>      prods;   //!< store rhs for eq
+
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(linker);
                 void         cleanup() noexcept;
@@ -65,6 +67,8 @@ namespace yack
                 void     on_actor(const size_t args);
                 unsigned pull_coeff();
                 void     on_actors(const size_t args);
+                void     on_compound(const size_t args);
+
             };
         }
 
