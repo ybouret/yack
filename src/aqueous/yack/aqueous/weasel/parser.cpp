@@ -3,6 +3,7 @@
 #include "yack/jive/lexical/plugin/single-line-comment.hpp"
 #include "yack/jive/lexical/plugin/multi-lines-comment.hpp"
 #include "yack/jive/lexical/plugin/rstring.hpp"
+#include "yack/jive/lexical/plugin/bstring.hpp"
 
 namespace yack
 {
@@ -51,8 +52,11 @@ namespace yack
                 const rule &eq  =
                 agg("eq") << id << sep << cm << sep << str;
 
+                // expression to load database
+                const rule &rx = load<jive::lexical::bstring>("rx");
+
                 // possible input
-                const rule &decl = cat( choice(eq,sp), opt( mark(';') ) );
+                const rule &decl = cat( choice(eq,sp,rx), opt( mark(';') ) );
 
                 top( agg("weasel") << zom( decl ) );
 

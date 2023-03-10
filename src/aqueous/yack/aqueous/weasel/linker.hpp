@@ -74,7 +74,6 @@ namespace yack
                 solo_list<string>        roots; //!< stack of roots for species name
                 solo_list<string>        codes; //!< stack of lua codes for eqs
                 solo_list<apn>           coefs; //!< stack of coefficients
-                size_t                   voids; //!< number of voids
                 solo_repo<const species> specs; //!< compiled species
                 actors                   folks; //!< compiled actors
                 cxx_pool_of<actors>      sides; //!< compiled sides
@@ -95,6 +94,7 @@ namespace yack
                 void     on_actors(const size_t args);
                 void     on_compound(const size_t args);
                 void     on_eq();
+                void     on_rx(const string &rx);
             };
         }
 

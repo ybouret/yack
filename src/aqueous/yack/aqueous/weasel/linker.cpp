@@ -20,6 +20,7 @@ namespace yack
                 "str",
                 "cf",
                 ".",
+                "rx"
             };
 
 #define wl_plus  0
@@ -28,6 +29,7 @@ namespace yack
 #define wl_code  3
 #define wl_coef  4
 #define wl_void  5
+#define wl_rx    6
 
             static const char *internals_kw[] =
             {
@@ -56,7 +58,6 @@ namespace yack
             roots(),
             codes(),
             coefs(),
-            voids(0),
             specs(),
             folks(),
             sides(),
@@ -73,7 +74,6 @@ namespace yack
             {
                 sides.release();
                 folks.release();
-                voids = 0;
                 coefs.clear();
                 codes.clear();
                 roots.clear();
@@ -149,9 +149,14 @@ namespace yack
                         sides.store( new actors() );
                         break;
 
+                    case wl_rx: // use regular expression
+                    {
+                        const string rx = l.data.to_string(1,1);;
+                        on_rx(rx);
+                    } break;
 
                     default:
-                        throw imported::exception(clid,"no terminal '%s'", (*l.name)() );
+                        throw imported::exception(clid,"terminal '%s' not implemented", (*l.name)() );
                 }
             }
 
@@ -354,6 +359,12 @@ namespace yack
                 }
 
                 eq.display(std::cerr) << std::endl;
+            }
+
+
+            void linker:: on_rx(const string &rx)
+            {
+                std::cerr << "using '" << rx << "'" << std::endl;
             }
 
         }
