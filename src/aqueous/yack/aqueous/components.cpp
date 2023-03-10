@@ -79,6 +79,21 @@ namespace yack
             return reac.to_string() + rightleft + prod.to_string();
         }
 
+
+        double components:: mass_action(const readable<double> &C,
+                                        const double            K,
+                                        cameo::mul<double>     &xmul)
+        {
+            assert(K>0);
+            xmul.free();
+            xmul.push(K);
+            reac.mass_action(C,xmul);
+            const double rhs = xmul.product();
+
+            xmul.push(1);
+            prod.mass_action(C,xmul);
+            return rhs - xmul.product();
+        }
         
     }
 }

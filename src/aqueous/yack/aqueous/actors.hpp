@@ -5,6 +5,7 @@
 
 #include "yack/aqueous/actor.hpp"
 #include "yack/data/list/cxx.hpp"
+#include "yack/cameo/mul.hpp"
 
 namespace yack
 {
@@ -41,6 +42,11 @@ namespace yack
             //__________________________________________________________________
             YACK_PROTO_OSTREAM(actors); //!< display
             string to_string() const;   //!< stringify
+
+            //! append terms to xmul
+            void mass_action(const readable<double> &C,
+                             cameo::mul<double>     &xmul) const;
+            
             //__________________________________________________________________
             //
             // members

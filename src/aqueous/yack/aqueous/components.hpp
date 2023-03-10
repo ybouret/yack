@@ -65,6 +65,11 @@ namespace yack
                 }
             }
 
+            double mass_action(const readable<double> &C,
+                               const double            K,
+                               cameo::mul<double>     &xmul);
+
+
             //__________________________________________________________________
             //
             // members
