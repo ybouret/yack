@@ -24,13 +24,17 @@ namespace yack
             // definitions
             //__________________________________________________________________
             typedef ark_ptr<string,equilibrium> ptr; //!< shared pointer
-
+            static  double t_display;                //!< global display time
+            
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
             virtual equilibrium *clone() const = 0; //!< for virtual copy
             double               K(double);         //!< check getK(t) > 0
+
+            //! display with padding
+            std::ostream        &display(std::ostream &, const size_t length = 0);
 
             //__________________________________________________________________
             //

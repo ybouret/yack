@@ -52,7 +52,16 @@ namespace yack
             jive::syntax::translator(),
             terms(YACK_HASHING_PERFECT(terminals_kw)),
             instr(YACK_HASHING_PERFECT(internals_kw)),
-            signs()
+            signs(),
+            roots(),
+            codes(),
+            coefs(),
+            voids(0),
+            specs(),
+            folks(),
+            sides(),
+            reacs(),
+            prods()
             {
             }
 
@@ -344,6 +353,7 @@ namespace yack
                     eq( int(a->nu), **a );
                 }
 
+                eq.display(std::cerr) << std::endl;
             }
 
         }

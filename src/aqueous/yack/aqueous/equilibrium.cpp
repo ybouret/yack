@@ -1,5 +1,6 @@
 #include "yack/aqueous/equilibrium.hpp"
 #include "yack/system/imported.hpp"
+#include <iomanip>
 
 namespace yack
 {
@@ -21,6 +22,20 @@ namespace yack
         {
 
         }
+
+        double equilibrium::t_display = 0;
+        std::ostream & equilibrium:: display(std::ostream &os,
+                                             const size_t  length)
+        {
+            os << name;
+            for(size_t i=name.size();i<=length;++i) os << ' ';
+            os << " : (" << std::setw(15) << K(t_display) << ") : ";
+            const components &self = *this;
+            os << self;
+            return os;
+        }
+
+        
 
     }
 

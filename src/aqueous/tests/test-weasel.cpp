@@ -35,6 +35,7 @@ YACK_UTEST(weasel)
     }
 
     std::cerr << "lib=" << std::endl << lib << std::endl;
+    std::cerr << "eqs=" << std::endl << eqs << std::endl;
 
 }
 YACK_UDONE()

@@ -49,15 +49,16 @@ namespace yack
 
         std::ostream & operator<<(std::ostream &os, const library &self)
         {
+            os << '{' << std::endl;
             for(const snode *node=self->head;node;node=node->next)
             {
                 const species &s = ***node;
-                self.pad(std::cerr << s,s)
+                self.pad(std::cerr << '\t' << s,s)
                 << " | z=" << std::setw(3) << s.z
                 << " | #="  << s.n
                 << std::endl;
             }
-
+            os << '}';
             return os;
         }
 

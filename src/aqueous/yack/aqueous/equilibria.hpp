@@ -50,7 +50,7 @@ namespace yack
 
             size_t        next_indx() const noexcept;    //!< size+1
             equilibrium & operator()( equilibrium *eq ); //!< register
-
+            YACK_PROTO_OSTREAM(equilibria);              //!< display
 
         private:
             YACK_DISABLE_ASSIGN(equilibria);

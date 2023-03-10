@@ -21,31 +21,56 @@ namespace yack
         
         namespace weasel
         {
-
+            //__________________________________________________________________
+            //
+            //
+            //! convert syntax tree intro species+equilibria
+            //
+            //__________________________________________________________________
             class linker : public jive::syntax::translator
             {
             public:
-                static const char * const clid;
+                //______________________________________________________________
+                //
+                // definitions
+                //______________________________________________________________
+                static const char * const clid; //!< linker
 
+                //! algebraic unit charge
                 enum charge {
-                    zneg = -1,
-                    zpos = +1
+                    zneg = -1, //!< negative
+                    zpos = +1  //!< positive
                 };
 
+                //! lightweight parameters
                 struct params
                 {
-                    library        &lib;
-                    lua_equilibria &eqs;
+                    library        &lib; //!< holding library
+                    lua_equilibria &eqs; //!< equilibria with a Lua::VM
                 };
 
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
                 explicit linker();
                 virtual ~linker() noexcept;
 
-                static void simplify(xnode *node); //!< suppress the extra actor leading '+'
-                
-                const hashing::perfect   terms;
-                const hashing::perfect   instr;
-                solo_list<charge>        signs;
+                //______________________________________________________________
+                //
+                // methods
+                //______________________________________________________________
+
+                //! suppress the extra actor leading '+', mandatory
+                static void simplify(xnode *node);
+
+                //______________________________________________________________
+                //
+                // members
+                //______________________________________________________________
+                const hashing::perfect   terms; //!< terminals perfect hashing
+                const hashing::perfect   instr; //!< internals perfect hashing
+                solo_list<charge>        signs; //!< stack of signs
                 solo_list<string>        roots; //!< stack of roots for species name
                 solo_list<string>        codes; //!< stack of lua codes for eqs
                 solo_list<apn>           coefs; //!< stack of coefficients
@@ -53,8 +78,8 @@ namespace yack
                 solo_repo<const species> specs; //!< compiled species
                 actors                   folks; //!< compiled actors
                 cxx_pool_of<actors>      sides; //!< compiled sides
-                cxx_pool_of<actors>      reacs;   //!< store lhs for eq
-                cxx_pool_of<actors>      prods;   //!< store rhs for eq
+                cxx_pool_of<actors>      reacs; //!< store reacs for eq
+                cxx_pool_of<actors>      prods; //!< store prods for eq
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(linker);
