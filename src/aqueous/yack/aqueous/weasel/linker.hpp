@@ -10,7 +10,7 @@
 #include "yack/hashing/perfect.hpp"
 #include "yack/apex/natural.hpp"
 #include "yack/aqueous/library.hpp"
-#include "yack/aqueous/equilibria.hpp"
+#include "yack/aqueous/lua/equilibria.hpp"
 #include "yack/data/dinky/solo-list.hpp"
 #include "yack/data/dinky/solo-repo.hpp"
 
@@ -34,7 +34,8 @@ namespace yack
 
                 struct params
                 {
-                    library &lib;
+                    library        &lib;
+                    lua_equilibria &eqs;
                 };
 
                 explicit linker();
@@ -68,7 +69,7 @@ namespace yack
                 unsigned pull_coeff();
                 void     on_actors(const size_t args);
                 void     on_compound(const size_t args);
-
+                void     on_eq();
             };
         }
 

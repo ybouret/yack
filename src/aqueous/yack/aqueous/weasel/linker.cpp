@@ -1,6 +1,7 @@
 
 #include "yack/aqueous/weasel/linker.hpp"
 #include "yack/system/imported.hpp"
+#include "yack/lua++/function.hpp"
 
 namespace yack
 {
@@ -35,7 +36,8 @@ namespace yack
                 "fa",
                 "xa",
                 "ac",
-                "cm"
+                "cm",
+                "eq"
             };
 
 #define wl_ok 0
@@ -44,6 +46,7 @@ namespace yack
 #define wl_xa 3
 #define wl_ac 4
 #define wl_cm 5
+#define wl_eq 6
 
             linker:: linker()  :
             jive::syntax::translator(),
@@ -124,7 +127,7 @@ namespace yack
                         break;
 
                     case wl_code:
-                        codes << l.data.to_string();
+                        codes << l.data.to_string(1,1);
                         break;
 
                     case wl_coef: {
@@ -156,9 +159,10 @@ namespace yack
                 {
                     case wl_sp:  on_species(args,lib); break;
                     case wl_fa:
-                    case wl_xa:  on_actor(args);       break;
-                    case wl_ac:  on_actors(args);      break;
-                    case wl_cm:  on_compound(args);    break;
+                    case wl_xa:  on_actor(args);           break;
+                    case wl_ac:  on_actors(args);          break;
+                    case wl_cm:  on_compound(args);        break;
+                    case wl_eq:  assert(3==args); on_eq(); break;
                     case wl_ok: return;
                     default:
                         throw imported::exception(clid,"no internal'%s'", name() );
@@ -252,6 +256,77 @@ namespace yack
                 std::cerr << "reac: " << *reacs.head << " | prods: " << *prods.head << std::endl;
             }
 
+            namespace
+            {
+
+                class lua_eq : public equilibrium
+                {
+                public:
+                    inline virtual ~lua_eq() noexcept {}
+                    inline explicit lua_eq(const string  &uid,
+                                           const string  &fid,
+                                           const Lua::VM &lvm,
+                                           const size_t  idx) :
+                    equilibrium(uid,idx),
+                    f(lvm,fid)
+                    {
+                    }
+
+                    inline lua_eq(const lua_eq &other) :
+                    equilibrium(other),
+                    f(other.f)
+                    {
+                    }
+
+                    inline virtual equilibrium *clone() const {
+                        return new lua_eq(*this);
+                    }
+
+                    Lua::Function<double> f;
+
+                private:
+                    YACK_DISABLE_ASSIGN(lua_eq);
+                    inline virtual double getK(const double t) {
+                        return f(t);
+                    }
+                };
+            }
+
+            void linker:: on_eq()
+            {
+                assert(roots.size>0);
+                assert(reacs.size>0);
+                assert(prods.size>0);
+                assert(codes.size>0);
+                std::cerr << "creating <" << **(roots.tail) << ">" << std::endl;
+                std::cerr << "reacs: " << *(reacs.head) << std::endl;
+                std::cerr << "prods: " << *(prods.head) << std::endl;
+                std::cerr << "value: " << *(codes.tail) << std::endl;
+
+                assert(data);
+                params         &usr  = *static_cast<params *>(data);
+                lua_equilibria &eqs  = usr.eqs;
+                equilibrium    *eq   = 0;
+
+                {
+                    Lua::State     &L    = *eqs.vm;
+                    const string    code = codes.pull_tail();
+                    const string    name = roots.pull_tail();
+                    const size_t    indx = eqs.next_indx();
+                    L.getglobal(code);
+                    if(LUA_TFUNCTION==L.type(-1))
+                    {
+                        // make a lua eq
+                        eq = & eqs( new lua_eq(name,code,eqs.vm,indx) );
+                    }
+                    else
+                    {
+                        // make a constant eq
+                        eq = & eqs( new const_equilibrium(name, L.eval<double>(code), indx ) );
+                    }
+                }
+
+            }
 
         }
 

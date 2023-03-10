@@ -14,7 +14,11 @@ YACK_UTEST(weasel)
     weasel::parser wp;
     weasel::linker wl;
     wp.gv();
-    library lib;
+    library        lib;
+    lua_equilibria eqs;
+
+    eqs.vm->dostring("Kw=1e-14");
+    eqs.vm->dostring("function Kf(t) return 1+t; end");
 
     if(argc>1)
     {
@@ -24,7 +28,7 @@ YACK_UTEST(weasel)
         if(tree.is_valid())
         {
             weasel::linker::simplify( & *tree );
-            weasel::linker::params params = { lib };
+            weasel::linker::params params = { lib, eqs };
             wl.walk(*tree,&params);
             tree->gv("tree.dot");
         }
