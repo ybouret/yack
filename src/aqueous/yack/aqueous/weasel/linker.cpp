@@ -294,6 +294,8 @@ namespace yack
 
             void linker:: on_eq()
             {
+
+                // sanity check
                 assert(roots.size>0);
                 assert(reacs.size>0);
                 assert(prods.size>0);
@@ -306,25 +308,30 @@ namespace yack
                 assert(data);
                 params         &usr  = *static_cast<params *>(data);
                 lua_equilibria &eqs  = usr.eqs;
+
+                // preparing lua/const equilibrium
                 equilibrium    *eq   = 0;
 
                 {
-                    Lua::State     &L    = *eqs.vm;
+                    Lua::VM        &lvm  = eqs.vm;
                     const string    code = codes.pull_tail();
                     const string    name = roots.pull_tail();
                     const size_t    indx = eqs.next_indx();
-                    L.getglobal(code);
-                    if(LUA_TFUNCTION==L.type(-1))
+                    lvm->getglobal(code);
+                    if(LUA_TFUNCTION==lvm->type(-1))
                     {
                         // make a lua eq
-                        eq = & eqs( new lua_eq(name,code,eqs.vm,indx) );
+                        eq = & eqs( new lua_eq(name,code,lvm,indx) );
                     }
                     else
                     {
                         // make a constant eq
-                        eq = & eqs( new const_equilibrium(name, L.eval<double>(code), indx ) );
+                        eq = & eqs( new const_equilibrium(name, lvm->eval<double>(code), indx ) );
                     }
                 }
+
+                assert(NULL!=eq);
+                // filling eq
 
             }
 
