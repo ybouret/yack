@@ -128,6 +128,12 @@ namespace yack
             return z==0;
         }
 
+        bool components:: is_minimal() const noexcept
+        {
+            
+            return true;
+        }
+
         
     }
 }
