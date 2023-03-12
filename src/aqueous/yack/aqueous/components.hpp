@@ -69,6 +69,10 @@ namespace yack
                                const double            K,
                                cameo::mul<double>     &xmul);
 
+            double mass_action(const readable<double> &C,
+                               const double            xi,
+                               const double            K,
+                               cameo::mul<double>     &xmul);
 
             //__________________________________________________________________
             //

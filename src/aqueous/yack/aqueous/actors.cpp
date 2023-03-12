@@ -59,6 +59,20 @@ namespace yack
                 xmul.push(C[sp.indx[0]],a->nu);
             }
         }
+
+
+        void actors:: mass_action(const readable<double> &C,
+                                  const double            xi,
+                                  cameo::mul<double>     &xmul) const
+        {
+            for(const actor *a=head;a;a=a->next)
+            {
+                const species &sp = **a;
+                const double   nu = a->nu;
+                const double   c  = max_of<double>(C[sp.indx[0]]+(nu*xi),0.0);
+                xmul.push(c,nu);
+            }
+        }
     }
 
 }

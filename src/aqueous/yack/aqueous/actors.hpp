@@ -11,6 +11,8 @@ namespace yack
 {
     namespace aqueous
     {
+
+
         //______________________________________________________________________
         //
         //
@@ -28,6 +30,12 @@ namespace yack
         class actors : public object, public actors_
         {
         public:
+            enum status
+            {
+                are_blocked,
+                are_running
+            };
+
             //__________________________________________________________________
             //
             // C++
@@ -46,7 +54,14 @@ namespace yack
             //! append terms to xmul
             void mass_action(const readable<double> &C,
                              cameo::mul<double>     &xmul) const;
-            
+
+            //! append terms to xmul, using C+nu*xi
+            /**
+             \warning take care of sign of xi!
+             */
+            void mass_action(const readable<double> &C,
+                             const double            xi,
+                             cameo::mul<double>     &xmul) const;
             //__________________________________________________________________
             //
             // members

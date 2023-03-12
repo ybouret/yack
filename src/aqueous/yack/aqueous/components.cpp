@@ -90,10 +90,29 @@ namespace yack
             reac.mass_action(C,xmul);
             const double rhs = xmul.product();
 
+            assert(0==xmul.size());
             xmul.push(1);
             prod.mass_action(C,xmul);
             return rhs - xmul.product();
         }
+
+        double components:: mass_action(const readable<double> &C,
+                                        const double            xi,
+                                        const double            K,
+                                        cameo::mul<double>     &xmul)
+        {
+            assert(K>0);
+            xmul.free();
+            xmul.push(K);
+            reac.mass_action(C,-xi,xmul);
+            const double rhs = xmul.product();
+
+            assert(0==xmul.size());
+            xmul.push(1);
+            prod.mass_action(C,xi,xmul);
+            return rhs - xmul.product();
+        }
+
         
     }
 }
