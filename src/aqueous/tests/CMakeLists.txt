@@ -10,4 +10,5 @@ yack_testing(aqueous)
 add_test(lib    test-aqueous lib)
 add_test(weasel test-aqueous weasel)
 add_test(eqs    test-aqueous eqs)
+add_test(lim    test-aqueous lim)
 

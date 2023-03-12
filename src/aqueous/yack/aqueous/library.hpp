@@ -7,6 +7,7 @@
 #include "yack/aqueous/species.hpp"
 #include "yack/aqueous/com/gathering.hpp"
 #include "yack/associative/suffix/set.hpp"
+#include "yack/randomized/bits.hpp"
 
 namespace yack
 {
@@ -36,6 +37,9 @@ namespace yack
             // definitions
             //__________________________________________________________________
             static const char * const clid; //!< "library"
+            static const int          pmin = -20;
+            static const int          pmax = 1;
+            static double             conc(randomized::bits &) noexcept;
 
             //__________________________________________________________________
             //
@@ -53,6 +57,7 @@ namespace yack
             const species &               operator[](const string &) const; //!< get by name
             const species &               operator[](const char   *) const; //!< get by name
             YACK_PROTO_OSTREAM(library); //!< display
+            void conc(writable<double> &C, randomized::bits &ran) const;
 
             //__________________________________________________________________
             //
@@ -64,9 +69,28 @@ namespace yack
                 return grow( new species(name,algz,sdb.size()+1) );
             }
 
+            //__________________________________________________________________
+            //
+            // query species
+            //__________________________________________________________________
             const species *query(const string &) const noexcept; //!< query by name
             const species *query(const char   *) const;          //!< query by name alias
 
+            template <typename ARR>
+            std::ostream & operator()(std::ostream &os,
+                                      ARR          &arr,
+                                      const char   *pfx = NULL) const
+            {
+                if(!pfx) pfx = "";
+                os << '{' << std::endl;
+                for(const snode *node=(*this)->head;node;node=node->next)
+                {
+                    const species &s = ***node;
+                    pad(os << "  " << pfx << s,s) << " = " << arr[ s.indx[0] ] << std::endl;
+                }
+                os << '}';
+                return os;
+            }
 
 
 

@@ -23,7 +23,7 @@ namespace yack
             double   xi;
 
             void     initialize() noexcept;
-            void     get_extent(const actors           &A,
+            bool     get_extent(const actors           &A,
                                 const readable<double> &C);
 
             //void     get_demand();

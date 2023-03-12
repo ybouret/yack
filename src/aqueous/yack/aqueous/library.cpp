@@ -17,7 +17,18 @@ namespace yack
 
         }
 
+        double library:: conc(randomized::bits &ran) noexcept
+        {
+            return pow(10.0,pmin + ran.to<double>() * (pmax-pmin));
+        }
 
+        void library:: conc(writable<double> &C, randomized::bits &ran) const
+        {
+            for(const snode *node=(*this)->head;node;node=node->next)
+            {
+                C[ (***node).indx[0] ] = conc(ran);
+            }
+        }
 
         const species_db::tree_type & library:: operator->() const noexcept
         {

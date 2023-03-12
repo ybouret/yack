@@ -22,7 +22,7 @@ namespace yack
             xi = 0;
         }
 
-        void xlimit:: get_extent(const actors           &A,
+        bool xlimit:: get_extent(const actors           &A,
                                  const readable<double> &C)
         {
             // initialize
@@ -68,7 +68,7 @@ namespace yack
                 }
             }
 
-
+            return size>0;
         }
 
         

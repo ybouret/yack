@@ -69,6 +69,7 @@ namespace yack
 
                 validate();
 
+                if(false)
                 {
                     list<string> terminals, internals;
                     collect_keywords(terminals,internals);
