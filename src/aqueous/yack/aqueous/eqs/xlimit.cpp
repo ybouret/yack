@@ -22,6 +22,13 @@ namespace yack
             xi = 0;
         }
 
+        std::ostream & operator<<(std::ostream &os, const xlimit &self)
+        {
+            const sp_repo &repo = self;
+            os << repo << " @" << self.xi;
+            return os;
+        }
+
         bool xlimit:: get_extent(const actors           &A,
                                  const readable<double> &C)
         {
@@ -68,7 +75,15 @@ namespace yack
                 }
             }
 
-            return size>0;
+            if(size>0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
         }
 
         

@@ -64,6 +64,7 @@ namespace yack
                 throw;
             }
 
+
         }
 
         static const char rightleft[] = " <=> ";
@@ -111,6 +112,20 @@ namespace yack
             xmul.push(1);
             prod.mass_action(C,xi,xmul);
             return rhs - xmul.product();
+        }
+
+
+        bool components:: is_neutral() const noexcept
+        {
+            int z = 0;
+            for(const cnode *node= (*this)->head; node; node=node->next)
+            {
+                const component &cc = ***node;
+                const species   &sp = *cc;
+                const int        nu = cc.nu;
+                z += nu * sp.z;
+            }
+            return z==0;
         }
 
         

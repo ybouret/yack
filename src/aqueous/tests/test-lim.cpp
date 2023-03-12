@@ -1,9 +1,5 @@
-
-
-#include "yack/aqueous/weasel/parser.hpp"
-#include "yack/aqueous/weasel/linker.hpp"
-#include "yack/aqueous/weasel/types.hpp"
 #include "yack/aqueous/weasel/designer.hpp"
+#include "yack/aqueous/eqs/xlimits.hpp"
 
 #include "yack/utest/run.hpp"
 #include "yack/ios/icstream.hpp"
@@ -33,11 +29,16 @@ YACK_UTEST(lim)
     lib.conc(C0,ran);
     lib(std::cerr << "C0=",C0) << std::endl;
 
+    xlimits xlm;
     for(enode *en=eqs->head;en;en=en->next)
     {
         equilibrium   &eq = ***en;
         const double   K  = eq.K(0);
         std::cerr << "ma=" << eq.mass_action(C0,K,xmul) << std::endl;
+        const limitation l = xlm(eq,C0);
+        std::cerr << "limited by " << xlimits::text(l) << std::endl;
+        if(xlm.reac.size) std::cerr << "reac: " << xlm.reac << std::endl;
+        if(xlm.prod.size) std::cerr << "prod: " << xlm.prod << std::endl;
     }
 
 

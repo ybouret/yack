@@ -65,14 +65,19 @@ namespace yack
                 }
             }
 
+            //! compute mass action
             double mass_action(const readable<double> &C,
                                const double            K,
                                cameo::mul<double>     &xmul);
 
+            //! compute mass action with extent
             double mass_action(const readable<double> &C,
                                const double            xi,
                                const double            K,
                                cameo::mul<double>     &xmul);
+
+            bool is_neutral() const noexcept;
+            bool is_minimal() const noexcept;
 
             //__________________________________________________________________
             //
@@ -84,6 +89,7 @@ namespace yack
         private:
             YACK_DISABLE_ASSIGN(components);
             components_db cdb;
+            
         };
 
     }

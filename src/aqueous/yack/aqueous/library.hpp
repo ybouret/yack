@@ -36,10 +36,10 @@ namespace yack
             //
             // definitions
             //__________________________________________________________________
-            static const char * const clid; //!< "library"
-            static const int          pmin = -20;
-            static const int          pmax = 1;
-            static double             conc(randomized::bits &) noexcept;
+            static const char * const clid;                              //!< "library"
+            static const int          pmin = -20;                        //!< cmin = 10^pmin
+            static const int          pmax = 1;                          //!< cmax = 10^pmax
+            static double             conc(randomized::bits &) noexcept; //!< in cmin..cmax
 
             //__________________________________________________________________
             //
@@ -56,8 +56,8 @@ namespace yack
             const species_db::tree_type & operator->() const noexcept;      //!< drill-down
             const species &               operator[](const string &) const; //!< get by name
             const species &               operator[](const char   *) const; //!< get by name
-            YACK_PROTO_OSTREAM(library); //!< display
-            void conc(writable<double> &C, randomized::bits &ran) const;
+            YACK_PROTO_OSTREAM(library);                                    //!< display
+            void conc(writable<double> &C, randomized::bits &ran) const;    //!< random conc
 
             //__________________________________________________________________
             //
@@ -76,6 +76,7 @@ namespace yack
             const species *query(const string &) const noexcept; //!< query by name
             const species *query(const char   *) const;          //!< query by name alias
 
+            //! display associated array
             template <typename ARR>
             std::ostream & operator()(std::ostream &os,
                                       ARR          &arr,

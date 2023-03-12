@@ -11,27 +11,68 @@ namespace yack
 {
     namespace aqueous
     {
-        enum limitation
+        //______________________________________________________________________
+        //
+        //
+        //! availability state
+        //
+        //______________________________________________________________________
+        enum availability
         {
-            limited_by_none,
-            limited_by_reac,
-            limited_by_prod,
-            limited_by_both
+            are_blocked, //!< missing at least one reac and at least one component
+            are_running  //!< one side can move
         };
 
+        //______________________________________________________________________
+        //
+        //
+        //! different limitations
+        //
+        //______________________________________________________________________
+        enum limitation
+        {
+            limited_by_none, //!< no limitation
+            limited_by_reac, //!< limited by reac only
+            limited_by_prod, //!< limited by prod only
+            limited_by_both  //!< limited by both
+        };
+
+
+        //______________________________________________________________________
+        //
+        //
+        //! find limiting extents and status
+        //
+        //______________________________________________________________________
         class xlimits : public sp_proxy
         {
         public:
-            explicit xlimits();
-            virtual ~xlimits() noexcept;
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit xlimits();            //!< setup
+            virtual ~xlimits() noexcept;   //!< cleanup
 
-            xlimit reac;
-            xlimit prod;
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
 
-            limitation operator()(const components       &,
-                                  const readable<double> &);
+            //! helper
+            static const char * text(const limitation) noexcept;
 
+            //! find extents and deduce flag
+            limitation          operator()(const components       &,
+                                           const readable<double> &);
 
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            xlimit       reac; //!< reactant limits
+            xlimit       prod; //!< product  limits
+            availability flag; //!< flag
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(xlimits);

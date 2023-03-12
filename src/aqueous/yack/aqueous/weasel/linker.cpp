@@ -353,6 +353,7 @@ namespace yack
                 }
 
                 if(species::verbose) eq.display(std::cerr << clid  << " +") << std::endl;
+                if(!eq.is_neutral()) throw imported::exception(clid,"<%s> is not neutal", eq.name());
             }
 
 

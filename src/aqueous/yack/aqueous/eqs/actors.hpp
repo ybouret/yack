@@ -21,6 +21,8 @@ namespace yack
         //______________________________________________________________________
         typedef cxx_list_of<actor> actors_;
 
+
+
         //______________________________________________________________________
         //
         //
@@ -30,12 +32,6 @@ namespace yack
         class actors : public object, public actors_
         {
         public:
-            enum status
-            {
-                are_blocked,
-                are_running
-            };
-
             //__________________________________________________________________
             //
             // C++
