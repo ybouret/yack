@@ -21,8 +21,17 @@ set(aqueous_lua ${aqueous_lua_decl} ${aqueous_lua_srcs})
 SOURCE_GROUP(aqueous/lua FILES ${aqueous_lua})
 install( FILES ${aqueous_lua_decl} DESTINATION include/yack/aqueous/lua )
 
+#eqs
+file(GLOB aqueous_eqs_decl yack/aqueous/eqs/*.hpp)
+file(GLOB aqueous_eqs_srcs yack/aqueous/eqs/*.cpp yack/aqueous/eqs/*.hxx)
+set(aqueous_eqs ${aqueous_eqs_decl} ${aqueous_eqs_srcs})
+SOURCE_GROUP(aqueous/eqs FILES ${aqueous_eqs})
+install( FILES ${aqueous_eqs_decl} DESTINATION include/yack/aqueous/eqs )
+
+
 add_library(yack-aqueous STATIC
 ${aqueous_main}
+${aqueous_eqs}
 ${aqueous_weasel}
 ${aqueous_lua}
 )
