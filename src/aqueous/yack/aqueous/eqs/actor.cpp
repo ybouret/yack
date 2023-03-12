@@ -1,5 +1,5 @@
 
-#include "yack/aqueous/actor.hpp"
+#include "yack/aqueous/eqs/actor.hpp"
 
 namespace yack
 {

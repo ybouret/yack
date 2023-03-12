@@ -5,7 +5,7 @@
 #define YACK_AQUEOUS_LIBRARY_INCLUDED 1
 
 #include "yack/aqueous/species.hpp"
-#include "yack/aqueous/gathering.hpp"
+#include "yack/aqueous/com/gathering.hpp"
 #include "yack/associative/suffix/set.hpp"
 
 namespace yack

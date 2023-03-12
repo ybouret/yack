@@ -7,6 +7,13 @@ set(aqueous_main ${aqueous_main_decl} ${aqueous_main_srcs})
 SOURCE_GROUP(aqueous FILES ${aqueous_main})
 install( FILES ${aqueous_main_decl} DESTINATION include/yack/aqueous )
 
+#com
+file(GLOB aqueous_com_decl yack/aqueous/com/*.hpp)
+file(GLOB aqueous_com_srcs yack/aqueous/com/*.cpp yack/aqueous/com/*.hxx)
+set(aqueous_com ${aqueous_com_decl} ${aqueous_com_srcs})
+SOURCE_GROUP(aqueous/com FILES ${aqueous_com})
+install( FILES ${aqueous_com_decl} DESTINATION include/yack/aqueous/com )
+
 #weasel
 file(GLOB aqueous_weasel_decl yack/aqueous/weasel/*.hpp)
 file(GLOB aqueous_weasel_srcs yack/aqueous/weasel/*.cpp yack/aqueous/weasel/*.hxx)
@@ -31,6 +38,7 @@ install( FILES ${aqueous_eqs_decl} DESTINATION include/yack/aqueous/eqs )
 
 add_library(yack-aqueous STATIC
 ${aqueous_main}
+${aqueous_com}
 ${aqueous_eqs}
 ${aqueous_weasel}
 ${aqueous_lua}

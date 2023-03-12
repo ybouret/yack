@@ -3,7 +3,7 @@
 #ifndef YACK_AQUEOUS_EQUILIBRIUM_INCLUDED
 #define YACK_AQUEOUS_EQUILIBRIUM_INCLUDED 1
 
-#include "yack/aqueous/components.hpp"
+#include "yack/aqueous/eqs/components.hpp"
 
 namespace yack
 {

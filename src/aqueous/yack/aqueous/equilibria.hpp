@@ -4,7 +4,7 @@
 #define YACK_AQUEOUS_EQUILIBRIA_INCLUDED 1
 
 #include "yack/aqueous/equilibrium.hpp"
-#include "yack/aqueous/gathering.hpp"
+#include "yack/aqueous/com/gathering.hpp"
 
 namespace yack
 {

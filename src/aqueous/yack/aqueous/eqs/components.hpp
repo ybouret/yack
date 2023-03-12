@@ -4,7 +4,7 @@
 #ifndef YACK_AQUEOUS_COMPONENTS_INCLUDED
 #define YACK_AQUEOUS_COMPONENTS_INCLUDED 1
 
-#include "yack/aqueous/component.hpp"
+#include "yack/aqueous/eqs/component.hpp"
 #include "yack/associative/suffix/set.hpp"
 
 namespace yack

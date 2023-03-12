@@ -3,7 +3,7 @@
 #ifndef YACK_AQUEOUS_SPECIES_INCLUDED
 #define YACK_AQUEOUS_SPECIES_INCLUDED 1
 
-#include "yack/aqueous/entity.hpp"
+#include "yack/aqueous/com/entity.hpp"
 #include "yack/ptr/ark.hpp"
 
 namespace yack

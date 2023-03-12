@@ -3,7 +3,7 @@
 #ifndef YACK_AQUEOUS_GATHERING_INCLUDED
 #define YACK_AQUEOUS_GATHERING_INCLUDED 1
 
-#include "yack/aqueous/entity.hpp"
+#include "yack/aqueous/com/entity.hpp"
 
 namespace yack
 {

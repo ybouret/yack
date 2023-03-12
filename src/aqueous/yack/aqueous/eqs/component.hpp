@@ -3,7 +3,7 @@
 #ifndef YACK_AQUEOUS_COMPONENT_INCLUDED
 #define YACK_AQUEOUS_COMPONENT_INCLUDED 1
 
-#include "yack/aqueous/actors.hpp"
+#include "yack/aqueous/eqs/actors.hpp"
 
 namespace yack
 {

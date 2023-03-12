@@ -3,7 +3,7 @@
 #ifndef YACK_AQUEOUS_ACTORS_INCLUDED
 #define YACK_AQUEOUS_ACTORS_INCLUDED 1
 
-#include "yack/aqueous/actor.hpp"
+#include "yack/aqueous/eqs/actor.hpp"
 #include "yack/data/list/cxx.hpp"
 #include "yack/cameo/mul.hpp"
 

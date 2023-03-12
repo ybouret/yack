@@ -1,5 +1,5 @@
 
-#include "yack/aqueous/components.hpp"
+#include "yack/aqueous/eqs/components.hpp"
 #include "yack/system/imported.hpp"
 
 namespace yack

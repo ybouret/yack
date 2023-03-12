@@ -1,4 +1,4 @@
-#include "yack/aqueous/entity.hpp"
+#include "yack/aqueous/com/entity.hpp"
 #include <cstring>
 
 namespace yack

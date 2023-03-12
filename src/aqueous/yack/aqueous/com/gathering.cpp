@@ -1,4 +1,4 @@
-#include "yack/aqueous/gathering.hpp"
+#include "yack/aqueous/com/gathering.hpp"
 
 namespace yack
 {
