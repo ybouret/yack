@@ -72,7 +72,8 @@ namespace yack
 
             // update
             coerce(d_nu) += nu;
-            coerce(idnu) = d_nu != 0 ? 1.0/d_nu : 0.0;
+            coerce(idnu) = d_nu !=0 ? 1.0/d_nu : 0;
+
         }
 
         static const char rightleft[] = " <=> ";
@@ -123,6 +124,17 @@ namespace yack
             return lhs - rhs;
         }
 
+
+        void components:: move(writable<double> &C, const double xi) const noexcept
+        {
+            for(const cnode *node=(*this)->head;node;node=node->next)
+            {
+                const component &cc = ***node;
+                const species   &sp = *cc;
+                const size_t     i  = sp.indx[0];
+                C[i] = max_of( C[i]+(cc.nu*xi), 0.0);
+            }
+        }
 
         bool components:: is_neutral() const noexcept
         {

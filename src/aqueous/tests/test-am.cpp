@@ -46,6 +46,9 @@ YACK_UTEST(am)
         const double   K  = eq.K(0);
         std::cerr << "ma=" << eq.mass_action(C0,K,xmul) << std::endl;
         aftermath am = aftermath::solve(eq,K,C0, Cs,xlim,xmul,xadd);
+        std::cerr << "am=" << am << std::endl;
+        lib(std::cerr << "Cs=",Cs) << std::endl;
+        std::cerr << "ma=" << eq.mass_action(Cs,K,xmul) << std::endl;
     }
 
 

@@ -37,10 +37,16 @@ namespace yack
             const availability state; //!< current state
             const double       value; //!< current value
 
+
             //__________________________________________________________________
             //
-            //! calling algorithm
+            // methods
             //__________________________________________________________________
+
+            //! display
+            YACK_PROTO_OSTREAM(aftermath);
+
+            //! solving algorithm
             static aftermath solve(const equilibrium      &E,
                                    const double            K,
                                    const readable<double> &C0,

@@ -78,6 +78,9 @@ namespace yack
                                const double            K,
                                cameo::mul<double>     &xmul) const;
 
+            //! move C
+            void move(writable<double> &C, const double xi) const noexcept;
+
             bool is_neutral() const noexcept; //!< check neutrality
             bool is_minimal() const noexcept; //!< check co-primality
 
@@ -88,7 +91,7 @@ namespace yack
             const actors reac; //!< list of reactants
             const actors prod; //!< list of products
             const int    d_nu; //!< D_r Nu
-            const double idnu; //!< 1.0/d_nu
+            const double idnu; //!< 1.0/|d_nu|
             
         private:
             YACK_DISABLE_ASSIGN(components);

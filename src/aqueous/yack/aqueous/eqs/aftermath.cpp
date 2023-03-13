@@ -1,5 +1,6 @@
 
 #include "yack/aqueous/eqs/aftermath.hpp"
+#include <iomanip>
 
 namespace yack
 {
@@ -27,6 +28,14 @@ namespace yack
         {
 
         }
+
+        std::ostream & operator<<(std::ostream &os, const aftermath &am)
+        {
+            os << xlimits::avail_text(am.state) << " @(" << std::setw(15) << am.value << ")";
+            return os;
+        }
+
+
     }
 
 }
@@ -139,8 +148,20 @@ namespace yack
                     //
                     //----------------------------------------------------------
                 case limited_by_reac: assert(xlim.reac.size>0); assert(xlim.prod.size==0);
-                    make_no_reac(E, Cs, x, f, xlim, xmul);
-                    exit(0);
+                    switch( __sign::of(f.b=E.mass_action(Cs,K,xmul)) )
+                    {
+                        case __zero__: return aftermath( am_for(E,C0,Cs,xadd) );   // early return
+                        case positive: f.a = f.b; x.c=xlim.reac.xi; f.c=-1; break; // in [0:x.c>0]
+                        case negative:
+                            f.c = f.b;
+                            assert(E.d_nu<0);
+                            assert(E.idnu<0);
+                            x.a  = -pow(K,E.idnu);
+                            while( (f.a = E.mass_action(Cs,K,x.a,xmul) ) <= 0)
+                                x.a += x.a;
+                            break;
+                    }
+
                     break;
 
                     //----------------------------------------------------------
@@ -159,6 +180,8 @@ namespace yack
                             x.c  = pow(K,E.idnu);
                             while( (f.c = E.mass_action(Cs,K,x.c,xmul) ) >= 0)
                                 x.c += x.c;
+                            assert(x.c>0);
+                            assert(f.c<0);
                             break;
                     }
                     break;
@@ -166,6 +189,45 @@ namespace yack
 
             std::cerr << "x=" << x << std::endl;
             std::cerr << "f=" << f << std::endl;
+
+
+            
+            double width = fabs(x.c-x.a);
+        BISECT:
+            assert(f.a>0);
+            assert(f.c<0);
+            f.b = E.mass_action(Cs,K,x.b=clamp(x.a,0.5*(x.a+x.c),x.c),xmul);
+            switch( __sign::of(f.b) )
+            {
+                case __zero__:  E.move(Cs,x.b); return aftermath( am_for(E,C0,Cs,xadd) ); // early return
+                case positive:  f.a = f.b; x.a = x.b; break;
+                case negative:  f.c = f.b; x.c = x.b; break;
+            }
+            const double new_width = fabs(x.c-x.a);
+            if(new_width<width)
+            {
+                width = new_width;
+                goto BISECT;
+            }
+
+            std::cerr << "update with " << x.b << std::endl;
+
+            bool converged = true;
+            for(const cnode *node=E->head;node;node=node->next)
+            {
+                const component &cm = ***node;                 // compnent
+                const size_t     ii = (*cm).indx[0];           // index species
+                const double     c0 = Cs[ii];                  // starting point
+                const double     c1 = (Cs[ii] += cm.nu * x.b); // final point
+                if(fabs(c0-c1)>0)
+                {
+                    converged = false;
+                }
+            }
+
+            std::cerr << "converged: " << converged << std::endl;
+
+
             exit(0);
             return aftermath();
         }
