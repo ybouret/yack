@@ -111,6 +111,7 @@ namespace yack
             // initializing limit and local triplets
             //
             //------------------------------------------------------------------
+        CYCLE:
             triplet<double>  x = { 0 ,0, 0};
             triplet<double>  f = { 0, 0, 0};
             const limitation l = xlim(E,Cs);
@@ -226,10 +227,8 @@ namespace yack
             }
 
             std::cerr << "converged: " << converged << std::endl;
-
-
-            exit(0);
-            return aftermath();
+            if(!converged) goto CYCLE;
+            return aftermath( am_for(E,C0,Cs,xadd) );
         }
 
     }
