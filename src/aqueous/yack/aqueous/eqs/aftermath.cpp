@@ -79,21 +79,13 @@ namespace yack
 
             iota::load(Cs,C0);
 
-            triplet<double>  x = { 0 ,0,                       0};
-            triplet<double>  f = { 0, E.mass_action(Cs,K,xmul),0};
 
-            switch( __sign::of(f.c) )
-            {
-                case __zero__: return aftermath(0); // early return
 
-                case positive:
-                    break;
-
-                case negative:
-                    break;
-            }
-
+            triplet<double>  x = { 0 ,0, 0};
+            triplet<double>  f = { 0, 0, 0};
             const limitation l = xlim(E,Cs);
+
+
             std::cerr << E.name << " is " << xlim << std::endl;
             switch(l)
             {
@@ -102,21 +94,40 @@ namespace yack
 
                 case limited_by_both: assert(xlim.reac.size>0); assert(xlim.prod.size>0);
                     if(xlim.flag == is_blocked) return aftermath();
-                    make_no_prod(E, K, Cs, x, f, xlim, xmul);
-                    make_no_reac(E, Cs, x, f, xlim, xmul);
-                    std::cerr << "x=" << x << std::endl;
-                    std::cerr << "f=" << f << std::endl;
+                    switch( __sign::of(f.b=E.mass_action(Cs,K,xmul)) )
+                    {
+                        case __zero__: return aftermath(0);
+                        case positive: f.a = f.b; make_no_reac(E, Cs, x, f, xlim, xmul);    assert(f.c<0);  break;
+                        case negative: f.c = f.b; make_no_prod(E, K, Cs, x, f, xlim, xmul); assert(f.a>0);  break;
+                    }
+
                     break;
 
                 case limited_by_reac: assert(xlim.reac.size>0); assert(xlim.prod.size==0);
                     make_no_reac(E, Cs, x, f, xlim, xmul);
+                    exit(0);
                     break;
 
                 case limited_by_prod: assert(xlim.reac.size==0); assert(xlim.prod.size>0);
-                    make_no_prod(E, K, Cs, x, f, xlim, xmul);
+                    switch( __sign::of(f.b=E.mass_action(Cs,K,xmul)) )
+                    {
+                        case __zero__: return aftermath(0);
+                        case negative: f.c = f.b; make_no_prod(E, K, Cs, x, f, xlim, xmul); assert(f.a>0); break;
+                        case positive: f.a = f.b;
+                        {
+
+                            assert(E.d_nu>0);
+                            assert(E.idnu>0);
+                            x.c  = pow(K,E.idnu);
+                            while( (f.c = E.mass_action(Cs,K,x.c,xmul) ) >= 0)
+                                x.c += x.c;
+                        } break;
+                    }
                     break;
             }
 
+            std::cerr << "x=" << x << std::endl;
+            std::cerr << "f=" << f << std::endl;
             exit(0);
             return aftermath();
         }

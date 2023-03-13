@@ -51,7 +51,7 @@ namespace yack
 
 
         void actors:: mass_action(const readable<double> &C,
-                                    cameo::mul<double>     &xmul) const
+                                  cameo::mul<double>     &xmul) const
         {
             for(const actor *a=head;a;a=a->next)
             {

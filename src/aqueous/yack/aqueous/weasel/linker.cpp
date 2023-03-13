@@ -62,7 +62,8 @@ namespace yack
             folks(),
             sides(),
             reacs(),
-            prods()
+            prods(),
+            found()
             {
             }
 
@@ -72,6 +73,7 @@ namespace yack
 
             void linker:: cleanup() noexcept
             {
+                found.clear();
                 prods.release();
                 reacs.release();
                 sides.release();

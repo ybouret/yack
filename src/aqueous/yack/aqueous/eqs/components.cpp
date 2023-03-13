@@ -17,6 +17,8 @@ namespace yack
         counted(),
         reac(),
         prod(),
+        d_nu(0),
+        idnu(0),
         cdb()
         {
         }
@@ -26,6 +28,8 @@ namespace yack
         counted(),
         reac( other.reac ),
         prod( other.prod ),
+        d_nu( other.d_nu ),
+        idnu( other.idnu ),
         cdb(  other.cdb  )
         {
 
@@ -66,7 +70,9 @@ namespace yack
                 throw;
             }
 
-
+            // update
+            coerce(d_nu) += nu;
+            coerce(idnu) = d_nu != 0 ? 1.0/d_nu : 0.0;
         }
 
         static const char rightleft[] = " <=> ";
@@ -91,29 +97,30 @@ namespace yack
             xmul.free();
             xmul.push(K);
             reac.mass_action(C,xmul);
-            const double rhs = xmul.product();
+            const double lhs = xmul.product();
 
             assert(0==xmul.size());
             xmul.push(1);
             prod.mass_action(C,xmul);
-            return rhs - xmul.product();
+            return lhs - xmul.product();
         }
 
         double components:: mass_action(const readable<double> &C,
-                                        const double            xi,
                                         const double            K,
+                                        const double            xi,
                                         cameo::mul<double>     &xmul) const
         {
             assert(K>0);
             xmul.free();
-            xmul.push(K);
+            xmul.push(K); assert(1==xmul.size());
             reac.mass_action(C,-xi,xmul);
-            const double rhs = xmul.product();
+            const double lhs = xmul.product();
 
             assert(0==xmul.size());
-            xmul.push(1);
+            xmul.push(1); assert(1==xmul.size());
             prod.mass_action(C,xi,xmul);
-            return rhs - xmul.product();
+            const double rhs = xmul.product();
+            return lhs - rhs;
         }
 
 

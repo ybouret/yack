@@ -87,6 +87,8 @@ namespace yack
             //__________________________________________________________________
             const actors reac; //!< list of reactants
             const actors prod; //!< list of products
+            const int    d_nu; //!< D_r Nu
+            const double idnu; //!< 1.0/d_nu
             
         private:
             YACK_DISABLE_ASSIGN(components);
