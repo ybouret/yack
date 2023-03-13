@@ -36,6 +36,8 @@ namespace yack
             //! display with padding
             std::ostream        &display(std::ostream &, const size_t length = 0);
 
+            YACK_PROTO_OSTREAM(equilibrium);
+
             //__________________________________________________________________
             //
             // C++
@@ -96,10 +98,12 @@ namespace yack
             virtual double getK(double) noexcept;
         };
 
-        typedef core_repo<const equilibrium> eq_list;
-        typedef coop_repo<const equilibrium> eq_repo;
-        typedef typename eq_list::node_type  eq_node;
-        
+        typedef core_repo<const equilibrium>  eq_list;
+        typedef coop_repo<const equilibrium>  eq_repo;
+        typedef typename eq_list::node_type   eq_node;
+
+
+
     }
 
 }

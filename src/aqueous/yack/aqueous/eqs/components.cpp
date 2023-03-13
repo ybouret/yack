@@ -251,7 +251,20 @@ namespace yack
             }
         }
 
-        
+        bool components:: is_connected_to(const species &sp) const noexcept
+        {
+            return NULL != cdb.search(sp.name);
+        }
+
+        bool components:: is_connected_to(const components &other) const noexcept
+        {
+            for(const cnode *node=other->head;node;node=node->next)
+            {
+                if( is_connected_to(****node) ) return true;
+            }
+            return false;
+        }
+
     }
 }
 

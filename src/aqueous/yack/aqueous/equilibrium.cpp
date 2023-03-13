@@ -35,6 +35,11 @@ namespace yack
             return os;
         }
 
+        std::ostream & operator<<(std::ostream &os, const equilibrium &eq)
+        {
+            os << '<' << eq.name << '>';
+            return os;
+        }
         
 
     }

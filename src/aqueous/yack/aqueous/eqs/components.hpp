@@ -77,14 +77,19 @@ namespace yack
                       const double            K,
                       cameo::mul<double>     &xmul) const;
 
+            //! compute slope at given concentraion
             double slope(const readable<double> &C,
                          const double            K,
                          cameo::mul<double>     &xmul,
                          cameo::add<double>     &xadd) const;
 
+            //! evaluate quotient
             double quotient(const readable<double> &C,
                             const double            K,
                             cameo::mul<double>     &xmul) const;
+
+            bool is_connected_to(const species &)    const noexcept;
+            bool is_connected_to(const components &) const noexcept;
 
             //! transfer coefficients
             template <typename ARR> inline
