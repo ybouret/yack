@@ -96,7 +96,12 @@ namespace yack
 
             iota::load(Cs,C0);
 
-            
+
+            //------------------------------------------------------------------
+            //
+            // initializing limit and local triplets
+            //
+            //------------------------------------------------------------------
             triplet<double>  x = { 0 ,0, 0};
             triplet<double>  f = { 0, 0, 0};
             const limitation l = xlim(E,Cs);
@@ -105,39 +110,56 @@ namespace yack
             std::cerr << E.name << " is " << xlim << std::endl;
             switch(l)
             {
+                    //----------------------------------------------------------
+                    //
+                    // no limitation : bad
+                    //
+                    //----------------------------------------------------------
                 case limited_by_none: assert(0==xlim.reac.size); assert(0==xlim.prod.size);
                     throw imported::exception("aftermath","empty <%s>", E.name());
 
+                    //----------------------------------------------------------
+                    //
+                    // both limits: check w.r.t current mass action
+                    //
+                    //----------------------------------------------------------
                 case limited_by_both: assert(xlim.reac.size>0); assert(xlim.prod.size>0);
                     if(xlim.flag == is_blocked) return aftermath();
                     switch( __sign::of(f.b=E.mass_action(Cs,K,xmul)) )
                     {
-                        case __zero__: return aftermath( am_for(E,C0,Cs,xadd) );
-                        case positive: f.a = f.b; make_no_reac(E, Cs, x, f, xlim, xmul);    assert(f.c<0);  break;
-                        case negative: f.c = f.b; make_no_prod(E, K, Cs, x, f, xlim, xmul); assert(f.a>0);  break;
+                        case __zero__: return aftermath( am_for(E,C0,Cs,xadd) );                                   // early return
+                        case positive: f.a = f.b; make_no_reac(E, Cs, x, f, xlim, xmul);    assert(f.c<0);  break; // in [0:x.c>0]
+                        case negative: f.c = f.b; make_no_prod(E, K, Cs, x, f, xlim, xmul); assert(f.a>0);  break; // in [x.a<0:0]
                     }
-
                     break;
 
+                    //----------------------------------------------------------
+                    //
+                    // reactants only: check w.r.t mass action
+                    //
+                    //----------------------------------------------------------
                 case limited_by_reac: assert(xlim.reac.size>0); assert(xlim.prod.size==0);
                     make_no_reac(E, Cs, x, f, xlim, xmul);
                     exit(0);
                     break;
 
+                    //----------------------------------------------------------
+                    //
+                    // poroducts only: check w.r.t mass action
+                    //
+                    //----------------------------------------------------------
                 case limited_by_prod: assert(xlim.reac.size==0); assert(xlim.prod.size>0);
                     switch( __sign::of(f.b=E.mass_action(Cs,K,xmul)) )
                     {
-                        case __zero__: return aftermath( am_for(E,C0,Cs,xadd) );
-                        case negative: f.c = f.b; make_no_prod(E, K, Cs, x, f, xlim, xmul); assert(f.a>0); break;
+                        case __zero__: return aftermath( am_for(E,C0,Cs,xadd) );                                  // early return
+                        case negative: f.c = f.b; make_no_prod(E, K, Cs, x, f, xlim, xmul); assert(f.a>0); break; // in [x.a<0:0]
                         case positive: f.a = f.b;
-                        {
-
                             assert(E.d_nu>0);
                             assert(E.idnu>0);
                             x.c  = pow(K,E.idnu);
                             while( (f.c = E.mass_action(Cs,K,x.c,xmul) ) >= 0)
                                 x.c += x.c;
-                        } break;
+                            break;
                     }
                     break;
             }
