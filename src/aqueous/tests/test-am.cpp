@@ -50,6 +50,9 @@ void build_eq(equilibrium    &eq,
     }
 }
 
+static const char * const AM = "am.dat";
+static unsigned           AI = 0;
+
 static inline
 void perform(const double      K,
              const schedule   *reac,
@@ -68,9 +71,15 @@ void perform(const double      K,
     const size_t   M = lib->size;
     vector<double> C0(M,0);
     vector<double> Cs(M,0);
-    lib.conc(C0,ran);
-    const aftermath am = aftermath::solve(eq,K,C0,Cs,xlim,xmul,xadd);
-    std::cerr << "\t\t" << am << std::endl;
+
+    for(size_t iter=0;iter<8;++iter)
+    {
+        lib.conc(C0,ran);
+        const aftermath am = aftermath::solve(eq,K,C0,Cs,xlim,xmul,xadd);
+        const double    Q  = eq.quotient(Cs,K,xmul);
+        //std::cerr << "\t\t" << am << std::endl;
+        ios::ocstream::echo(AM, "%u %.15g\n",++AI,Q);
+    }
 }
 
 
@@ -79,9 +88,9 @@ void perform(const size_t      nmax,
              randomized::bits &ran)
 {
 
+    ios::ocstream::overwrite(AM);
 
-
-    for(int k=-1;k<=2;++k)
+    for(int k=-10;k<=10;++k)
     {
         const double K = pow(10.0,k);
         std::cerr << std::endl;
@@ -130,7 +139,7 @@ YACK_UTEST(am)
     randomized::rand_ ran;
     species::verbose = true;
 
-    perform(3,ran);
+    perform(5,ran);
 
     return 0;
 

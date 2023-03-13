@@ -199,6 +199,25 @@ namespace yack
             return -xadd.sum();
         }
 
+        double components:: quotient(const readable<double> &C,
+                                     const double            K,
+                                     cameo::mul<double>     &xmul) const
+        {
+            assert(K>0);
+            xmul.free();
+            for(const cnode *node=(*this)->head;node;node=node->next)
+            {
+                const component &cc = ***node;
+                const species   &sp = *cc;
+                const size_t     ii = sp.indx[0];
+                const double     c  = C[ii];
+                if(c<=0) return 0;
+                xmul.ipower(c,cc.nu);
+            }
+            xmul.push(1.0/K);
+            return xmul.product();
+        }
+
 
         bool components:: is_neutral() const noexcept
         {

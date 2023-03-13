@@ -82,6 +82,9 @@ namespace yack
                          cameo::mul<double>     &xmul,
                          cameo::add<double>     &xadd) const;
 
+            double quotient(const readable<double> &C,
+                            const double            K,
+                            cameo::mul<double>     &xmul) const;
 
             //! transfer coefficients
             template <typename ARR> inline
