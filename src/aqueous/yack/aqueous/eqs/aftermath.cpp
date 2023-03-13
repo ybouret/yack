@@ -66,6 +66,23 @@ namespace yack
             xmul = 1; E.prod.mass_action(C,x.c = xlim.reac.xi,xmul); f.c = -xmul.product();
         }
 
+        static inline
+        double am_for(const components       &E,
+                      const readable<double> &C0,
+                      const readable<double> &Cs,
+                      cameo::add<double>     &xadd)
+        {
+            const size_t size = E->size; assert(size>0);
+            xadd.free();
+            for(const cnode *node = E->head; node; node=node->next)
+            {
+                const component &cc = ***node;
+                const size_t     i  = (*cc).indx[0];
+                xadd.push( (Cs[i]-C0[i]) / cc.nu );
+            }
+            assert(size==xadd.size());
+            return xadd.sum()/size;
+        }
 
 
         aftermath aftermath:: solve(const equilibrium      &E,
@@ -79,8 +96,7 @@ namespace yack
 
             iota::load(Cs,C0);
 
-
-
+            
             triplet<double>  x = { 0 ,0, 0};
             triplet<double>  f = { 0, 0, 0};
             const limitation l = xlim(E,Cs);
@@ -96,7 +112,7 @@ namespace yack
                     if(xlim.flag == is_blocked) return aftermath();
                     switch( __sign::of(f.b=E.mass_action(Cs,K,xmul)) )
                     {
-                        case __zero__: return aftermath(0);
+                        case __zero__: return aftermath( am_for(E,C0,Cs,xadd) );
                         case positive: f.a = f.b; make_no_reac(E, Cs, x, f, xlim, xmul);    assert(f.c<0);  break;
                         case negative: f.c = f.b; make_no_prod(E, K, Cs, x, f, xlim, xmul); assert(f.a>0);  break;
                     }
@@ -111,7 +127,7 @@ namespace yack
                 case limited_by_prod: assert(xlim.reac.size==0); assert(xlim.prod.size>0);
                     switch( __sign::of(f.b=E.mass_action(Cs,K,xmul)) )
                     {
-                        case __zero__: return aftermath(0);
+                        case __zero__: return aftermath( am_for(E,C0,Cs,xadd) );
                         case negative: f.c = f.b; make_no_prod(E, K, Cs, x, f, xlim, xmul); assert(f.a>0); break;
                         case positive: f.a = f.b;
                         {

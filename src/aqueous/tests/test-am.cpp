@@ -8,8 +8,12 @@
 using namespace yack;
 using namespace aqueous;
 
+#include "yack/jive/syntax/rule.hpp"
+
 YACK_UTEST(am)
 {
+    //jive::syntax::rule::verbose = true;
+
     randomized::rand_ ran;
     species::verbose = true;
     library            lib;
@@ -35,13 +39,13 @@ YACK_UTEST(am)
 
     lib(std::cerr << "C0=",C0) << std::endl;
 
+
     for(enode *en=eqs->head;en;en=en->next)
     {
         equilibrium   &eq = ***en;
         const double   K  = eq.K(0);
         std::cerr << "ma=" << eq.mass_action(C0,K,xmul) << std::endl;
         aftermath am = aftermath::solve(eq,K,C0, Cs,xlim,xmul,xadd);
-        
     }
 
 

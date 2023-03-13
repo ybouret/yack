@@ -73,7 +73,6 @@ namespace yack
 
             void linker:: cleanup() noexcept
             {
-                found.clear();
                 prods.release();
                 reacs.release();
                 sides.release();
