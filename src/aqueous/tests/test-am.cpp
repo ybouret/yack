@@ -4,15 +4,14 @@
 
 #include "yack/utest/run.hpp"
 #include "yack/ios/icstream.hpp"
+#include "yack/math/iota.hpp"
 
 using namespace yack;
 using namespace aqueous;
-
-#include "yack/jive/syntax/rule.hpp"
+using namespace math;
 
 YACK_UTEST(am)
 {
-    //jive::syntax::rule::verbose = true;
 
     randomized::rand_ ran;
     species::verbose = true;
@@ -50,7 +49,7 @@ YACK_UTEST(am)
         eq.fill(nu,0);
         std::cerr << "nu=" << nu << std::endl;
         std::cerr << "ma=" << eq.mass_action(C0,K,xmul) << std::endl;
-        aftermath am = aftermath::solve(eq,K,C0, Cs,xlim,xmul,xadd);
+        const aftermath am = aftermath::solve(eq,K,C0, Cs,xlim,xmul,xadd);
         std::cerr << "am=" << am << std::endl;
         lib(std::cerr << "Cs=",Cs) << std::endl;
         std::cerr << "ma=" << eq.mass_action(Cs,K,xmul) << std::endl;
@@ -60,6 +59,10 @@ YACK_UTEST(am)
             lib(std::cerr << "psi=",psi,"d_") << std::endl;
             const double sigma = xadd.dot(nu,psi);
             std::cerr << "sigma=" << sigma << " / " << eq.slope(Cs,K,xmul,xadd) << std::endl;
+
+            iota::save(C0,Cs);
+            const aftermath am2 = aftermath::solve(eq,K,C0,Cs,xlim,xmul,xadd);
+            std::cerr << "am2 = " << am2 << std::endl;
         }
     }
 
