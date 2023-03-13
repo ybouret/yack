@@ -5,6 +5,7 @@
 
 #include "yack/aqueous/com/entity.hpp"
 #include "yack/data/dinky/coop-repo.hpp"
+#include "yack/data/dinky/core-repo.hpp"
 #include "yack/ptr/ark.hpp"
 
 namespace yack
@@ -57,8 +58,14 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(species);
         };
 
-
-        typedef coop_repo<const species> sp_repo;   //!< alias
+        //______________________________________________________________________
+        //
+        //
+        // defining species related lists
+        //
+        //______________________________________________________________________
+        typedef coop_repo<const species> sp_repo;   //!< with shared cache
+        typedef core_repo<const species> sp_list;   //!< with no cache
         typedef sp_repo::node_type       sp_node;   //!< alias
         typedef sp_repo::zpool_type      sp_zpool;  //!< alias
         typedef sp_repo::proxy_type      sp_proxy;  //!< alias

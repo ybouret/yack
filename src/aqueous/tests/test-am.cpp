@@ -77,8 +77,10 @@ void perform(const double      K,
         lib.conc(C0,ran);
         const aftermath am = aftermath::solve(eq,K,C0,Cs,xlim,xmul,xadd);
         const double    Q  = eq.quotient(Cs,K,xmul);
-        //std::cerr << "\t\t" << am << std::endl;
         ios::ocstream::echo(AM, "%u %.15g\n",++AI,Q);
+        iota::save(C0,Cs);
+        const aftermath am2 = aftermath::solve(eq,K,C0,Cs,xlim,xmul,xadd);
+        YACK_ASSERT(fabs(am2.value)<=0);
     }
 }
 
