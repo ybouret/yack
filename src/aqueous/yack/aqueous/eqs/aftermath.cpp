@@ -6,8 +6,8 @@ namespace yack
     namespace aqueous
     {
         aftermath:: aftermath() noexcept :
-        flag(are_blocked),
-        xi(0)
+        state(are_blocked),
+        value(0)
         {
         }
 
@@ -16,14 +16,14 @@ namespace yack
         }
 
         aftermath:: aftermath(const aftermath &am) noexcept :
-        flag(am.flag),
-        xi(am.xi)
+        state(am.state),
+        value(am.value)
         {
         }
 
         aftermath:: aftermath(const double x)      noexcept :
-        flag(are_running),
-        xi(x)
+        state(are_running),
+        value(x)
         {
 
         }
@@ -36,11 +36,12 @@ namespace yack
     namespace aqueous
     {
         aftermath aftermath:: solve(const equilibrium      &E,
-                                      const double            K,
-                                      const readable<double> &C0,
-                                      writable<double>       &Cs,
-                                      xlimits                &xlim,
-                                      cameo::mul<double>     &xmul)
+                                    const double            K,
+                                    const readable<double> &C0,
+                                    writable<double>       &Cs,
+                                    xlimits                &xlim,
+                                    cameo::mul<double>     &xmul,
+                                    cameo::add<double>     &xadd)
         {
             switch(xlim(E,C0))
             {

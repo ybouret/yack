@@ -1,6 +1,8 @@
 
 #include "yack/aqueous/eqs/components.hpp"
 #include "yack/system/imported.hpp"
+#include "yack/type/abs.hpp"
+#include "yack/arith/gcd.h"
 
 namespace yack
 {
@@ -130,8 +132,21 @@ namespace yack
 
         bool components:: is_minimal() const noexcept
         {
-            
-            return true;
+            const cnode *node= (*this)->head;
+            if(node)
+            {
+                uint64_t g = absolute( (***node).nu );
+                for(node=node->next;node;node=node->next)
+                {
+                    g = yack_gcd64(g, absolute( (***node).nu ));
+                }
+                return 1 == g;
+            }
+            else
+            {
+                // no node
+                return true;
+            }
         }
 
         

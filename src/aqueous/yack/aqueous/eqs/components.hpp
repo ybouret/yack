@@ -76,8 +76,8 @@ namespace yack
                                const double            K,
                                cameo::mul<double>     &xmul);
 
-            bool is_neutral() const noexcept;
-            bool is_minimal() const noexcept;
+            bool is_neutral() const noexcept; //!< check neutrality
+            bool is_minimal() const noexcept; //!< check co-primality
 
             //__________________________________________________________________
             //
