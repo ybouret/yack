@@ -4,6 +4,7 @@
 #define YACK_AQUEOUS_ACTOR_INCLUDED 1
 
 #include "yack/aqueous/species.hpp"
+#include "yack/cameo/mul.hpp"
 
 namespace yack
 {
@@ -35,8 +36,15 @@ namespace yack
             void   display_first(std::ostream &) const; //!< display as first actor
             void   display_extra(std::ostream &) const; //!< display as extra actor
             string to_string_first()             const; //!< stringify as first actor
-            string to_string_extra()             const; //!< stringifu as extra actor
+            string to_string_extra()             const; //!< stringify as extra actor
 
+            //! load xmul with mass action
+            void   mass_action(const readable<double> &C,
+                               cameo::mul<double>     &xmul) const;
+
+            //! load xmul with grad action, return species index
+            size_t  grad_action(const readable<double> &C,
+                                cameo::mul<double>     &xmul) const;
             //__________________________________________________________________
             //
             // members

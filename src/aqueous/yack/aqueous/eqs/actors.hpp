@@ -5,7 +5,6 @@
 
 #include "yack/aqueous/eqs/actor.hpp"
 #include "yack/data/list/cxx.hpp"
-#include "yack/cameo/mul.hpp"
 
 namespace yack
 {

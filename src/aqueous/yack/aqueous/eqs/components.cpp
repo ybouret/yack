@@ -136,6 +136,40 @@ namespace yack
             }
         }
 
+
+        static void update_grad(writable<double>       &psi,
+                                const actor            *a,
+                                const readable<double> &C,
+                                cameo::mul<double>     &xmul)
+        {
+            const size_t i = a->grad_action(C,xmul);
+            for(const actor *b=a->prev;b;b=b->prev)  b->mass_action(C,xmul);
+            for(const actor *b=a->next;b;b=b->next)  b->mass_action(C,xmul);
+            psi[i] = xmul.product();
+        }
+
+        void components:: grad(writable<double>       &psi,
+                               const readable<double> &C,
+                               const double            K,
+                               cameo::mul<double>     &xmul) const
+        {
+            psi.ld(0);
+
+            for(const actor *a=reac.head;a;a=a->next)
+            {
+                xmul = K;
+                update_grad(psi,a,C,xmul);
+            }
+
+            for(const actor *a=prod.head;a;a=a->next)
+            {
+                xmul = -1;
+                update_grad(psi,a,C,xmul);
+            }
+
+        }
+        
+
         bool components:: is_neutral() const noexcept
         {
             int z = 0;

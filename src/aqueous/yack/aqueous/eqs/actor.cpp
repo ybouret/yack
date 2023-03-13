@@ -60,6 +60,27 @@ namespace yack
             return nu>1 ? vformat("+%u[%s]",nu,sp.name()) : vformat("+[%s]",sp.name());
         }
 
+        void actor:: mass_action(const readable<double> &C,
+                                 cameo::mul<double>     &xmul) const
+        {
+            xmul.push( C[sp.indx[0]], nu);
+        }
+
+        size_t  actor:: grad_action(const readable<double> &C,
+                                    cameo::mul<double>     &xmul) const
+        {
+            const size_t i = sp.indx[0];
+
+            if(nm>0)
+            {
+                assert(nu>1);
+                xmul.push(nu);
+                xmul.push(C[i],nm);
+            }
+
+            return i;
+        }
+
     }
 
 }

@@ -34,6 +34,9 @@ YACK_UTEST(am)
     const size_t   M = lib->size;
     vector<double> C0(M+2,0);
     vector<double> Cs(M,0);
+    vector<double> psi(M,0);
+    vector<int>    nu(M,0);
+    
     lib.conc(C0,ran);
     for(size_t i=M;i>0;--i) if( ran.choice() ) C0[i] = 0;
 
@@ -44,11 +47,20 @@ YACK_UTEST(am)
     {
         equilibrium   &eq = ***en;
         const double   K  = eq.K(0);
+        eq.fill(nu,0);
+        std::cerr << "nu=" << nu << std::endl;
         std::cerr << "ma=" << eq.mass_action(C0,K,xmul) << std::endl;
         aftermath am = aftermath::solve(eq,K,C0, Cs,xlim,xmul,xadd);
         std::cerr << "am=" << am << std::endl;
         lib(std::cerr << "Cs=",Cs) << std::endl;
         std::cerr << "ma=" << eq.mass_action(Cs,K,xmul) << std::endl;
+        if(am.state == is_running)
+        {
+            eq.grad(psi,Cs,K,xmul);
+            lib(std::cerr << "psi=",psi,"d_") << std::endl;
+            const double sigma = xadd.dot(nu,psi);
+            std::cerr << "sigma=" << sigma << std::endl;
+        }
     }
 
 
