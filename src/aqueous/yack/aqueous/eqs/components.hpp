@@ -7,6 +7,7 @@
 #include "yack/aqueous/eqs/component.hpp"
 #include "yack/associative/suffix/set.hpp"
 #include "yack/data/dinky/coop-repo.hpp"
+#include "yack/cameo/add.hpp"
 
 namespace yack
 {
@@ -75,6 +76,11 @@ namespace yack
                       const readable<double> &C,
                       const double            K,
                       cameo::mul<double>     &xmul) const;
+
+            double slope(const readable<double> &C,
+                         const double            K,
+                         cameo::mul<double>     &xmul,
+                         cameo::add<double>     &xadd) const;
 
 
             //! transfer coefficients

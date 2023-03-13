@@ -137,15 +137,22 @@ namespace yack
         }
 
 
-        static void update_grad(writable<double>       &psi,
+        static inline double expand_grad(const actor            *a,
+                                         const readable<double> &C,
+                                         cameo::mul<double>     &xmul)
+        {
+            for(const actor *b=a->prev;b;b=b->prev)  b->mass_action(C,xmul);
+            for(const actor *b=a->next;b;b=b->next)  b->mass_action(C,xmul);
+            return xmul.product();
+        }
+
+        static inline void   update_grad(writable<double>       &psi,
                                 const actor            *a,
                                 const readable<double> &C,
                                 cameo::mul<double>     &xmul)
         {
             const size_t i = a->grad_action(C,xmul);
-            for(const actor *b=a->prev;b;b=b->prev)  b->mass_action(C,xmul);
-            for(const actor *b=a->next;b;b=b->next)  b->mass_action(C,xmul);
-            psi[i] = xmul.product();
+            psi[i] = expand_grad(a,C,xmul);
         }
 
         void components:: grad(writable<double>       &psi,
@@ -168,7 +175,30 @@ namespace yack
             }
 
         }
-        
+
+        double components:: slope(const readable<double> &C,
+                                  const double            K,
+                                  cameo::mul<double>     &xmul,
+                                  cameo::add<double>     &xadd) const
+        {
+            xadd.free();
+            for(const actor *a=reac.head;a;a=a->next)
+            {
+                xmul = K;
+                (void) a->grad_action(C,xmul);
+                xadd.push( (a->nu*expand_grad(a,C,xmul)) );
+            }
+
+            for(const actor *a=prod.head;a;a=a->next)
+            {
+                xmul = 1;
+                (void) a->grad_action(C,xmul);
+                xadd.push( (a->nu*expand_grad(a,C,xmul)) );
+            }
+
+            return -xadd.sum();
+        }
+
 
         bool components:: is_neutral() const noexcept
         {

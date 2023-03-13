@@ -59,7 +59,7 @@ YACK_UTEST(am)
             eq.grad(psi,Cs,K,xmul);
             lib(std::cerr << "psi=",psi,"d_") << std::endl;
             const double sigma = xadd.dot(nu,psi);
-            std::cerr << "sigma=" << sigma << std::endl;
+            std::cerr << "sigma=" << sigma << " / " << eq.slope(Cs,K,xmul,xadd) << std::endl;
         }
     }
 

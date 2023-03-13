@@ -25,10 +25,11 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            aftermath()                  noexcept; //!< blocked,0
-            aftermath(const aftermath &) noexcept; //!< copy
-            ~aftermath()                 noexcept; //!< cleanup
-            aftermath(const double x)    noexcept; //!< running, x
+            aftermath()                                noexcept; //!< blocked,0
+            aftermath(const aftermath &)               noexcept; //!< copy
+            ~aftermath()                               noexcept; //!< cleanup
+            aftermath(const double x)                  noexcept; //!< running, x
+            aftermath(const double x, const double dx) noexcept; //!< running, x, error
 
             //__________________________________________________________________
             //
@@ -36,7 +37,7 @@ namespace yack
             //__________________________________________________________________
             const availability state; //!< current state
             const double       value; //!< current value
-
+            const double       error; //!< numerical mass action
 
             //__________________________________________________________________
             //

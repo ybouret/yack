@@ -8,7 +8,8 @@ namespace yack
     {
         aftermath:: aftermath() noexcept :
         state(is_blocked),
-        value(0)
+        value(0),
+        error(0)
         {
         }
 
@@ -18,20 +19,31 @@ namespace yack
 
         aftermath:: aftermath(const aftermath &am) noexcept :
         state(am.state),
-        value(am.value)
+        value(am.value),
+        error(am.error)
         {
         }
 
-        aftermath:: aftermath(const double x)      noexcept :
+        aftermath:: aftermath(const double x) noexcept :
         state(is_running),
-        value(x)
+        value(x),
+        error(0)
+        {
+
+        }
+
+        aftermath:: aftermath(const double x, const double dx) noexcept :
+        state(is_running),
+        value(x),
+        error(dx)
         {
 
         }
 
         std::ostream & operator<<(std::ostream &os, const aftermath &am)
         {
-            os << xlimits::avail_text(am.state) << " @(" << std::setw(15) << am.value << ")";
+            os << xlimits::avail_text(am.state) << " @" << am.value << " => " << am.error;
+
             return os;
         }
 
@@ -116,8 +128,6 @@ namespace yack
             triplet<double>  f = { 0, 0, 0};
             const limitation l = xlim(E,Cs);
 
-
-            std::cerr << E.name << " is " << xlim << std::endl;
             switch(l)
             {
                     //----------------------------------------------------------
@@ -188,8 +198,6 @@ namespace yack
                     break;
             }
 
-            std::cerr << "x=" << x << std::endl;
-            std::cerr << "f=" << f << std::endl;
 
 
             
@@ -211,7 +219,6 @@ namespace yack
                 goto BISECT;
             }
 
-            std::cerr << "update with " << x.b << std::endl;
 
             bool converged = true;
             for(const cnode *node=E->head;node;node=node->next)
@@ -226,9 +233,10 @@ namespace yack
                 }
             }
 
-            std::cerr << "converged: " << converged << std::endl;
             if(!converged) goto CYCLE;
-            return aftermath( am_for(E,C0,Cs,xadd) );
+
+            // converged with numerical error
+            return aftermath( am_for(E,C0,Cs,xadd), E.mass_action(Cs,K,xmul) );
         }
 
     }
