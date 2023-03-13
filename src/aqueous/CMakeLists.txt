@@ -35,6 +35,13 @@ set(aqueous_eqs ${aqueous_eqs_decl} ${aqueous_eqs_srcs})
 SOURCE_GROUP(aqueous/eqs FILES ${aqueous_eqs})
 install( FILES ${aqueous_eqs_decl} DESTINATION include/yack/aqueous/eqs )
 
+#realm
+file(GLOB aqueous_realm_decl yack/aqueous/realm/*.hpp)
+file(GLOB aqueous_realm_srcs yack/aqueous/realm/*.cpp yack/aqueous/realm/*.hxx)
+set(aqueous_realm ${aqueous_realm_decl} ${aqueous_realm_srcs})
+SOURCE_GROUP(aqueous/realm FILES ${aqueous_realm})
+install( FILES ${aqueous_realm_decl} DESTINATION include/yack/aqueous/realm )
+
 
 add_library(yack-aqueous STATIC
 ${aqueous_main}
@@ -42,6 +49,7 @@ ${aqueous_com}
 ${aqueous_eqs}
 ${aqueous_weasel}
 ${aqueous_lua}
+${aqueous_realm}
 )
 
 install( TARGETS yack-aqueous ARCHIVE DESTINATION lib )

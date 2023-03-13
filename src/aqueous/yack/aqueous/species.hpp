@@ -66,7 +66,7 @@ namespace yack
         //______________________________________________________________________
         typedef coop_repo<const species> sp_repo;   //!< with shared cache
         typedef core_repo<const species> sp_list;   //!< with no cache
-        typedef sp_repo::node_type       sp_node;   //!< alias
+        typedef sp_repo::node_type       sp_node;   //!< same for list/repo
         typedef sp_repo::zpool_type      sp_zpool;  //!< alias
         typedef sp_repo::proxy_type      sp_proxy;  //!< alias
 
