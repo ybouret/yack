@@ -6,15 +6,135 @@
 #include "yack/ios/icstream.hpp"
 #include "yack/math/iota.hpp"
 
+#include "yack/counting/part.hpp"
+
 using namespace yack;
 using namespace aqueous;
 using namespace math;
+
+
+
+static inline
+void add_comp(equilibrium    &eq,
+              library        &lib,
+              const schedule &comp,
+              unsigned       &indx,
+              int             cfac)
+{
+    for(size_t i=1;i<=comp.size();++i)
+    {
+        ++indx;
+        const string   name = vformat("a%u",indx);
+        const species &sp   = lib(name,0);
+        const size_t   nu   = comp[i];
+        eq( cfac * int(nu), sp);
+    }
+}
+
+
+
+static inline
+void build_eq(equilibrium    &eq,
+              library        &lib,
+              const schedule *reac,
+              const schedule *prod)
+{
+    unsigned indx=0;
+    if(reac) {
+        add_comp(eq,lib,*reac,indx,-1);
+    }
+
+    if(prod) {
+        add_comp(eq,lib,*prod,indx,1);
+
+    }
+}
+
+static inline
+void perform(const double      K,
+             const schedule   *reac,
+             const schedule   *prod,
+             randomized::bits &ran)
+{
+    cameo::mul<double> xmul;
+    cameo::add<double> xadd;
+    xlimits            xlim;
+
+    const_equilibrium eq("eq",K,1);
+    library           lib;
+    build_eq(eq,lib,reac,prod);
+    eq.display(std::cerr << "\t") << std::endl;
+
+    const size_t   M = lib->size;
+    vector<double> C0(M,0);
+    vector<double> Cs(M,0);
+    lib.conc(C0,ran);
+    const aftermath am = aftermath::solve(eq,K,C0,Cs,xlim,xmul,xadd);
+    std::cerr << "\t\t" << am << std::endl;
+}
+
+
+static inline
+void perform(const size_t      nmax,
+             randomized::bits &ran)
+{
+
+
+
+    for(int k=-1;k<=2;++k)
+    {
+        const double K = pow(10.0,k);
+        std::cerr << std::endl;
+        std::cerr << "-------- " << K << " --------" << std::endl;
+
+        for(size_t lhs=1;lhs<=nmax;++lhs)
+        {
+            std::cerr << "lhs=" << lhs << std::endl;
+            partition reac(lhs);
+            do
+            {
+                perform(K,&reac,NULL,ran);
+                perform(K,NULL,&reac,ran);
+            }
+            while(reac.next());
+
+            for(size_t rhs=1;rhs<=nmax;++rhs)
+            {
+                std::cerr << "\tlhs=" << lhs << " / rhs=" << rhs << std::endl;
+                partition prod(rhs);
+
+                reac.boot();
+                do
+                {
+                    prod.boot();
+                    do
+                    {
+                        perform(K,&reac,&prod,ran);
+                    }
+                    while(prod.next());
+                }
+                while(reac.next());
+
+            }
+        }
+    }
+
+
+
+}
+
 
 YACK_UTEST(am)
 {
 
     randomized::rand_ ran;
     species::verbose = true;
+
+    perform(3,ran);
+
+    return 0;
+
+
     library            lib;
     lua_equilibria     eqs;
     weasel::designer  &wd = weasel::designer::instance();
