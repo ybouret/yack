@@ -85,7 +85,7 @@ namespace yack
 
         double components:: mass_action(const readable<double> &C,
                                         const double            K,
-                                        cameo::mul<double>     &xmul)
+                                        cameo::mul<double>     &xmul) const
         {
             assert(K>0);
             xmul.free();
@@ -102,7 +102,7 @@ namespace yack
         double components:: mass_action(const readable<double> &C,
                                         const double            xi,
                                         const double            K,
-                                        cameo::mul<double>     &xmul)
+                                        cameo::mul<double>     &xmul) const
         {
             assert(K>0);
             xmul.free();

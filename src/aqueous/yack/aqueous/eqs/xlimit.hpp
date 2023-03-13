@@ -5,21 +5,11 @@
 #define YACK_AQUEOUS_XLIMIT_INCLUDED 1
 
 #include "yack/aqueous/eqs/actors.hpp"
-#include "yack/data/dinky/coop-repo.hpp"
 
 namespace yack
 {
     namespace aqueous
     {
-        //______________________________________________________________________
-        //
-        //
-        // base classes for xlimit
-        //
-        //______________________________________________________________________
-        typedef coop_repo<const species> sp_repo;   //!< alias
-        typedef sp_repo::zpool_type      sp_zpool;  //!< alias
-        typedef sp_repo::proxy_type      sp_proxy;  //!< alias
 
         //______________________________________________________________________
         //

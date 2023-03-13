@@ -6,6 +6,7 @@ YACK_UTEST_DECL(16)
     YACK_UTEST(weasel);
     YACK_UTEST(eqs);
     YACK_UTEST(lim);
+    YACK_UTEST(am);
 }
 YACK_UTEST_EXEC()
 

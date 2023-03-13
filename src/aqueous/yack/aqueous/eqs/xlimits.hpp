@@ -19,8 +19,8 @@ namespace yack
         //______________________________________________________________________
         enum availability
         {
-            are_blocked, //!< missing at least one reac and at least one component
-            are_running  //!< one side can move
+            is_blocked, //!< missing at least one reac and at least one component
+            is_running  //!< one side can move
         };
 
         //______________________________________________________________________
@@ -59,20 +59,24 @@ namespace yack
             // methods
             //__________________________________________________________________
 
-            //! helper
-            static const char * text(const limitation) noexcept;
+
+            static const char * limit_text(const limitation)   noexcept;  //!< helper
+            static const char * avail_text(const availability) noexcept;  //!< helper
+
 
             //! find extents and deduce flag
             limitation          operator()(const components       &,
                                            const readable<double> &);
-
+            YACK_PROTO_OSTREAM(xlimits); //!< display
+            
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
             xlimit       reac; //!< reactant limits
             xlimit       prod; //!< product  limits
-            availability flag; //!< flag
+            limitation   type; //!< computed limitation
+            availability flag; //!< computed availability
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(xlimits);

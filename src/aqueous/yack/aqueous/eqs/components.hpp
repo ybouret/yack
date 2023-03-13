@@ -6,6 +6,7 @@
 
 #include "yack/aqueous/eqs/component.hpp"
 #include "yack/associative/suffix/set.hpp"
+#include "yack/data/dinky/coop-repo.hpp"
 
 namespace yack
 {
@@ -19,6 +20,7 @@ namespace yack
         //______________________________________________________________________
         typedef suffix_set<string,component::ptr> components_db; //!< databse of components
         typedef components_db::knot_type          cnode;         //!< alias
+  
 
         //______________________________________________________________________
         //
@@ -68,13 +70,13 @@ namespace yack
             //! compute mass action
             double mass_action(const readable<double> &C,
                                const double            K,
-                               cameo::mul<double>     &xmul);
+                               cameo::mul<double>     &xmul) const;
 
             //! compute mass action with extent
             double mass_action(const readable<double> &C,
                                const double            xi,
                                const double            K,
-                               cameo::mul<double>     &xmul);
+                               cameo::mul<double>     &xmul) const;
 
             bool is_neutral() const noexcept; //!< check neutrality
             bool is_minimal() const noexcept; //!< check co-primality

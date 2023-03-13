@@ -11,4 +11,6 @@ add_test(lib    test-aqueous lib)
 add_test(weasel test-aqueous weasel)
 add_test(eqs    test-aqueous eqs)
 add_test(lim    test-aqueous lim)
+add_test(am     test-aqueous am)
+
 
