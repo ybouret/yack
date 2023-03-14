@@ -99,10 +99,11 @@ namespace yack
                 inline
                 void operator()( const raven::qvector &cf )
                 {
-                    //std::cerr << cf << std::endl;
                     assert(dim==cf.size());
 
+                    //----------------------------------------------------------
                     // convert and count not null coeff
+                    //----------------------------------------------------------
                     arr.ld(0);
                     size_t num = 0;
                     for(size_t i=dim;i>0;--i)
@@ -115,18 +116,24 @@ namespace yack
                         }
                     }
 
+                    //----------------------------------------------------------
                     // exclude not enough coeff
+                    //----------------------------------------------------------
                     if(num<2) return;
 
+                    //----------------------------------------------------------
                     // exclude multiple coeff
+                    //----------------------------------------------------------
                     for(const ivec *v=head;v;v=v->next)
                     {
                         if( *v == arr ) return;
                     }
 
+                    //----------------------------------------------------------
                     // keep it
+                    //----------------------------------------------------------
                     push_back( new ivec(arr) );
-                    std::cerr << "\t" << *tail << std::endl;
+                    if(species::verbose) (std::cerr << '.').flush();
                 }
 
             private:
@@ -142,13 +149,15 @@ namespace yack
             YACK_XMLOG(xml,"Mu   = " << Mu);;
 
             ivecs weights(N);
+            if(species::verbose) xml() << " [";
             {
                 raven::qbranch build;
                 build.batch(Mu,N,ivecs::confirm,weights);
             }
-            weights.sort();
-            std::cerr << weights << std::endl;
+            if(species::verbose) std::cerr << "]" << std::endl;
 
+            weights.sort();
+            
             cxx_array<int>           coef(M);
             addrbook                 source;
             addrbook                 target;
@@ -185,6 +194,8 @@ namespace yack
                     missing << *static_cast<const species *>(addr);
                 }
                 std::cerr << " missing: " << missing << std::endl;
+                if(missing.size<=0) continue;
+
             }
 
         }
