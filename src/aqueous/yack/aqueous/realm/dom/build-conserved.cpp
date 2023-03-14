@@ -107,7 +107,8 @@ namespace yack
 
         }
 
-        void domain:: build_conserved(const xmlog &xml)
+        void domain:: build_conserved(const xmlog &xml,
+                                      const matrix<int> &alpha)
         {
             //YACK_XMLOG(xml,"build_conserved");
             if(M<=N) return ;

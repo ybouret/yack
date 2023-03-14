@@ -58,12 +58,9 @@ namespace yack
         }
 
 
-        void domain:: create_topology(const xmlog &xml)
+        void domain:: create_topology(const xmlog &xml, matrix<int> &alpha)
         {
-            eq_list  roaming;
-            eq_list  defined;
-            sp_list  endless;
-            sp_list  limited;
+          
             addrbook sdb;
 
 
@@ -82,12 +79,12 @@ namespace yack
                     if(eq.prod.size<=0 || eq.reac.size<=0)
                     {
                         assert(is_roaming(nu));
-                        roaming << eq;
+                        coerce(roaming) << eq;
                         eq.report_to(sdb);   //!< register roaming specie(s)
                     }
                     else
                     {
-                        defined << eq;
+                        coerce(defined) << eq;
                     }
 
                 }
@@ -108,7 +105,8 @@ namespace yack
             //------------------------------------------------------------------
             // initialize alpha
             //------------------------------------------------------------------
-            matrix<int> alpha(Nu);
+            alpha.make(N,M);
+            alpha.assign(Nu);
 
         CYCLE:
             {
@@ -118,7 +116,7 @@ namespace yack
                 eq_list roam;
                 while(defined.size>0)
                 {
-                    eq_node           * en = defined.pop_front();
+                    eq_node           * en = coerce(defined).pop_front();
                     const equilibrium & eq = ***en;
                     if( is_roaming( alpha[ eq.indx[1] ]) )
                     {
@@ -130,10 +128,10 @@ namespace yack
                         keep.push_back(en);
                     }
                 }
-                defined.swap_with(keep);
+                coerce(defined).swap_with(keep);
                 if(roam.size)
                 {
-                    roaming.merge_back(roam);
+                    coerce(roaming).merge_back(roam);
                     goto CYCLE;
                 }
             }
@@ -143,11 +141,11 @@ namespace yack
                 const species &sp = ***sn;
                 if(sdb.search(&sp))
                 {
-                    endless << sp;
+                    coerce(endless) << sp;
                 }
                 else
                 {
-                    limited << sp;
+                    coerce(limited) << sp;
                 }
             }
 
