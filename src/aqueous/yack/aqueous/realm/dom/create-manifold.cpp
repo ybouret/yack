@@ -219,10 +219,12 @@ namespace yack
 
         void domain:: create_manifold(const xmlog &xml)
         {
+            // create compressed topology
             matrix<int> Mu;
             if(N!=raven::qselect::compress(Mu,Nu)) throw imported::exception(clid,"invalid topology compression");
             YACK_XMLOG(xml,"Mu   = " << Mu);;
 
+            // use RAVEn
             configs conf(*this,live,Nu);
             if(species::verbose) xml() << " [";
             {
@@ -231,8 +233,10 @@ namespace yack
             }
             if(species::verbose) std::cerr << "]" << std::endl;
 
+            // prepare equilibri[um|a]
             std::cerr << "#config=" << conf.size << std::endl;
             conf.sort();
+
             for(const config *cfg=conf.head;cfg;cfg=cfg->next)
             {
                 std::cerr << cfg->weight << " => " << cfg->stoich << " => " << cfg->missed << std::endl;
