@@ -57,14 +57,14 @@ namespace yack
             const sp_list          bounded;
             const matrix<int>      Nu;      //!< topology
             const matrix<int>      NuT;     //!< Nu'
-            const matrix<unsigned> Qm;      //!< conservation matrix
             domain                *next;    //!< for domains
             domain                *prev;    //!< for domains
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(domain);
             void make_dimensions(const xmlog &); //!< gather equilibria and species, indexing...
-            void create_topology(const xmlog &, matrix<int>&); //!< deduce Nu
+            void create_topology(const xmlog &); //!< deduce Nu
+            void create_manifold(const xmlog &);
             void build_conserved(const xmlog &, const matrix<int>&); //!< build conservation
         };
 

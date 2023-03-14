@@ -58,10 +58,10 @@ namespace yack
         }
 
 
-        void domain:: create_topology(const xmlog &xml, matrix<int> &alpha)
+        void domain:: create_topology(const xmlog &xml)
         {
           
-            addrbook sdb;
+            //addrbook sdb;
 
 
             //------------------------------------------------------------------
@@ -76,6 +76,7 @@ namespace yack
                     const size_t       ei = eq.indx[1];
                     writable<int>     &nu = Nu_[ei];
                     eq.fill(nu,1);
+#if 0
                     if(eq.prod.size<=0 || eq.reac.size<=0)
                     {
                         assert(is_roaming(nu));
@@ -86,7 +87,7 @@ namespace yack
                     {
                         coerce(defined) << eq;
                     }
-
+#endif
                 }
             }
 
@@ -102,6 +103,7 @@ namespace yack
             coerce(NuT).assign(Nu,transposed);
             YACK_XMLOG(xml, "Nu   = " << Nu);
 
+#if 0
             //------------------------------------------------------------------
             // initialize alpha
             //------------------------------------------------------------------
@@ -154,7 +156,7 @@ namespace yack
             YACK_XMLOG(xml,"--> defined = " << defined);
             YACK_XMLOG(xml,"--> bounded = " << bounded);
             YACK_XMLOG(xml,"--> endless = " << endless);
-            
+#endif
         }
 
     }

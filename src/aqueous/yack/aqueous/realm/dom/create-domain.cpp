@@ -16,9 +16,10 @@ namespace yack
             YACK_XMLOG(xml, "here = " << *this);
             assert(size>0);
             make_dimensions(xml);
-            matrix<int> alpha;
-            create_topology(xml,alpha);
-            build_conserved(xml,alpha);
+            //matrix<int> alpha;
+            create_topology(xml);
+            create_manifold(xml);
+            //build_conserved(xml,alpha);
         }
     }
 
