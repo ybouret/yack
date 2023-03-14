@@ -15,6 +15,12 @@ namespace yack
         N(0),
         M(0),
         live(),
+        roaming(),
+        defined(),
+        endless(),
+        bounded(),
+        Nu(),
+        NuT(),
         next(0),
         prev(0)
         {

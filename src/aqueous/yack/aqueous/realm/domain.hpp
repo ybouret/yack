@@ -51,10 +51,10 @@ namespace yack
             const size_t           N;       //!< this->size
             const size_t           M;       //!< live->size
             const sp_list          live;    //!< live species with sub-indices
-            const eq_list          roaming;
-            const eq_list          defined;
-            const sp_list          endless;
-            const sp_list          bounded;
+            const eq_list          roaming; //!< roaming equilibria
+            const eq_list          defined; //!< defined equilibria
+            const sp_list          endless; //!< endless species
+            const sp_list          bounded; //!< bounded species
             const matrix<int>      Nu;      //!< topology
             const matrix<int>      NuT;     //!< Nu'
             domain                *next;    //!< for domains
