@@ -5,6 +5,7 @@
 #include "yack/math/algebra/ortho-family.hpp"
 #include "yack/raven/qbranch.hpp"
 #include "yack/raven/qselect.hpp"
+#include "yack/math/iota.hpp"
 
 
 namespace yack
@@ -43,42 +44,87 @@ namespace yack
         namespace
         {
 
-            typedef cxx_array<unsigned>           uarray;
-            typedef vector<uarray,memory::dyadic> uarrays;
-            class conserved : public uarrays
+            typedef cxx_array<unsigned> uarr;
+
+            class uvec : public object, public uarr
             {
             public:
-                const size_t dims;
-                inline  conserved(const size_t d) noexcept :  uarrays(), dims(d) {}
+                inline explicit uvec(const uarr &arr) :
+                object(),
+                uarr(arr),
+                nrm1(norm(*this)),
+                next(0),
+                prev(0)
+                {
+                }
+
+                inline virtual ~uvec() noexcept {}
+
+#if 0
+                inline friend
+                std::ostream & operator<<(std::ostream &os, const uvec &self)
+                {
+                    const uarr &a = self;
+                    os << '|' << a  << '|' << '=' << self.nrm1;
+                    return os;
+                }
+#endif
+
+                inline static int compare(const uvec *lhs,
+                                          const uvec *rhs) noexcept
+                {
+                    if(lhs->nrm1<rhs->nrm1)
+                    {
+                        return -1;
+                    }
+                    else
+                    {
+                        if(rhs->nrm1<lhs->nrm1)
+                        {
+                            return 1;
+                        }
+                        else
+                        {
+                            return -comparison::lexicographic(*lhs,*rhs);
+                        }
+
+                    }
+
+                }
+
+
+                const unsigned nrm1;
+                uvec          *next;
+                uvec          *prev;
+
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(uvec);
+
+                inline static unsigned norm(const uarr &arr) noexcept
+                {
+                    unsigned sum = 0;
+                    for(size_t i=arr.size();i>0;--i) sum += arr[i];
+                    return sum;
+                }
+            };
+
+            class conserved : public cxx_list_of<uvec>
+            {
+            public:
+                const size_t dim;
+                uarr         arr;
+
+                inline  conserved(const size_t d) : dim(d), arr(dim) {}
                 inline ~conserved() noexcept {}
-
-                static inline unsigned sum(const uarray &arr) noexcept
-                {
-                    unsigned res = 0;
-                    for(size_t i=arr.size();i>0;--i) res += arr[i];
-                    return res;
-                }
-
-                static inline int compare(const uarray &lhs,
-                                          const uarray &rhs) noexcept
-                {
-                    const unsigned l = sum(lhs);
-                    const unsigned r = sum(rhs);
-                    return comparison::increasing(l,r);
-                }
-
-                void sort() noexcept
-                {
-                    hsort(*this,compare);
-                }
 
                 inline void operator()(const raven::qvector &cf)
                 {
-                    assert(dims==cf.size());
-                    std::cerr << cf << std::endl;
-                    size_t num = 0;
-                    uarray arr(dims);
-                    for(size_t i=dims;i>0;--i)
+                    assert(dim==cf.size());
+                    //std::cerr << cf << std::endl;
+                    size_t         num = 0;
+                    arr.ld(0);
+
+                    for(size_t i=dim;i>0;--i)
                     {
                         const apq &q = cf[i];
                         switch( q.num.s )
@@ -91,48 +137,145 @@ namespace yack
                                 break;
                         }
                     }
-                    for(size_t i=size();i>0;--i)
+
+                    if(num<2) return;
+
+                    for(const uvec *v=head;v;v=v->next)
                     {
-                        if( (*this)[i] == arr ) return;
+                        if( (*v) == arr ) return;
                     }
 
-                    std::cerr << "arr=" << arr << std::endl;
-                    (*this) << arr;
+                    //std::cerr << "arr=" << arr << std::endl;
+                    push_back( new uvec(arr) );
                 }
 
-                
+                inline void sort()
+                {
+                    merge_list_of<uvec>::sort(*this, uvec::compare);
+                }
+
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(conserved);
             };
 
+            
+
+
         }
 
-        void domain:: build_conserved(const xmlog &xml,
+        static inline
+        size_t compress_topology(matrix<int>       &P,
+                                 const matrix<int> &alpha)
+        {
+            const size_t       nr = alpha.rows;
+            const size_t       nc = alpha.cols;
+            cxx_series<size_t> ir(nr);
+            for(size_t i=1;i<=nr;++i)
+            {
+                if( raven::qselect::count_valid(alpha[i]))  ir << i;
+            }
+            const size_t np = ir.size();
+            if(np>0)
+            {
+                P.make(np,nc);
+                for(size_t i=1;i<=np;++i)
+                    math::iota::load(P[i], alpha[ ir[i] ]);
+                if(alga::rank(P)!=np) throw imported::exception(domain::clid,"invalid compressed topology");
+                return np;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        static inline
+        size_t compress_ortho(matrix<int>       &Q0,
+                              const matrix<int> &Q)
+        {
+            const size_t       nr = Q.rows; assert(Q.rows==Q.cols);
+            cxx_series<size_t> ir(nr);
+            for(size_t i=1;i<=nr;++i)
+            {
+                const readable<int> &Qi = Q[i];
+                if( raven::qselect::count_valid(Qi) <=  0 )  continue;
+
+                bool original = true;
+                for(size_t j=ir.size();j>0;--j)
+                {
+                    if( alga::colinear(Qi,Q[ir[j]]))
+                    {
+                        original = false;
+                        break;
+                    }
+                }
+
+                if(original) ir << i;
+
+            }
+
+            const size_t nq = ir.size();
+            if(nq<=0)
+            {
+                return 0;
+            }
+            else
+            {
+                Q0.make(nq,nr);
+                for(size_t i=1;i<=nq;++i)
+                {
+                    math::iota::load(Q0[i],Q[ir[i]]);
+                }
+                return alga::rank(Q0);
+            }
+
+        }
+
+        void domain:: build_conserved(const xmlog       &xml,
                                       const matrix<int> &alpha)
         {
-            //YACK_XMLOG(xml,"build_conserved");
-            if(M<=N) return ;
+            //------------------------------------------------------------------
+            // compress topology
+            //------------------------------------------------------------------
+            matrix<int>  P;
+            const size_t p = compress_topology(P,alpha);
+            YACK_XMLOG(xml, "P    = " << P);
+            if(p<=0)
+            {
+                YACK_XMLOG(xml,"no possible conservation");
+                return;
+            }
 
-            // initialize
-            const size_t q = M-N;   // rank of ortho
-            matrix<int>  Q(M,M);    // ortho family
-
+            //------------------------------------------------------------------
             // compute ortho-space
-            if(!math::ortho_family::build(Q,Nu,true)) throw imported::exception(clid,"couldn't compute Nu _|_");
-            YACK_XMLOG(xml, "Q    = " << Q); assert(q==alga::rank(Q));
+            //------------------------------------------------------------------
+            const size_t q = M-p;
+            matrix<int>  Q(M,M);
+            if(!math::ortho_family::build(Q,P,true)) throw imported::exception(clid,"couldn't compute _|_");
+            YACK_XMLOG(xml, "Q    = " << Q); assert( q == alga::rank(Q) );
 
+            //------------------------------------------------------------------
             // compress ortho-space
+            //------------------------------------------------------------------
             matrix<int> Q0;
-            if( raven::qselect::compress(Q0,Q) != q ) throw imported::exception(clid,"invalid ortho-compression");
-            YACK_XMLOG(xml, "Q0   = " << Q0); assert(q==alga::rank(Q));
+            if( compress_ortho(Q0,Q) != q ) throw imported::exception(clid,"invalid ortho-compression");
+            YACK_XMLOG(xml, "Q0   = " << Q0); assert(q==alga::rank(Q0));
 
+            //------------------------------------------------------------------
+            //
+            //------------------------------------------------------------------
             conserved      cv(M);
             {
                 raven::qbranch b;
                 b.batch(Q0,q,cv);
             }
             cv.sort();
-            std::cerr << cv << std::endl;
+            unsigned k=0;
+            for(const uvec *v=cv.head;v;v=v->next)
+            {
+                std::cerr << " V" << ++k << " = " << *v << std::endl;
+            }
+
 
         }
         

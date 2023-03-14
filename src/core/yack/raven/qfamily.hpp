@@ -190,7 +190,12 @@ namespace yack
                 for(node=node->next;node;node=node->next)
                 {
                     if(Q.guess(replica,mu[**node])) {
-                        if( replica !=  primary ) return false;
+                        if( replica !=  primary )
+                        {
+                            //std::cerr << "*** primary: " << primary << std::endl;
+                            //std::cerr << "*** replica: " << replica << std::endl;
+                            return false;
+                        }
                     }
                 }
 

@@ -111,7 +111,8 @@ namespace yack
         CYCLE:
             {
                 update_alpha(alpha,roaming,sdb);
-                YACK_XMLOG(xml,"alpha=" << alpha);
+                YACK_XMLOG(xml,"alpha= " << alpha);
+
                 eq_list keep;
                 eq_list roam;
                 while(defined.size>0)
@@ -145,18 +146,15 @@ namespace yack
                 }
                 else
                 {
-                    coerce(limited) << sp;
+                    coerce(bounded) << sp;
                 }
             }
 
             YACK_XMLOG(xml,"--> roaming = " << roaming);
             YACK_XMLOG(xml,"--> defined = " << defined);
-            YACK_XMLOG(xml,"--> limited = " << limited);
+            YACK_XMLOG(xml,"--> bounded = " << bounded);
             YACK_XMLOG(xml,"--> endless = " << endless);
-
-
-            exit(0);
-
+            
         }
 
     }
