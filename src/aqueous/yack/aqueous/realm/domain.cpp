@@ -12,11 +12,22 @@ namespace yack
         domain:: domain(const equilibrium &first)   :
         large_object(),
         eq_list(),
+        N(0),
+        M(0),
+        live(),
         next(0),
         prev(0)
         {
             (*this) << first;
         }
+
+        int domain:: compare(const eq_node *lhs, const eq_node *rhs) noexcept
+        {
+            const equilibrium &L = ***lhs;
+            const equilibrium &R = ***rhs;
+            return comparison::increasing(L.indx[0],R.indx[0]);
+        }
+
 
         bool domain:: accepts(const equilibrium &rhs) const noexcept
         {

@@ -10,21 +10,34 @@ namespace yack
 {
     namespace aqueous
     {
-
+        //______________________________________________________________________
+        //
+        //
+        //! chemical system
+        //
+        //______________________________________________________________________
         class realm : public domains
         {
         public:
-            const library    &lib;
-            const equilibria &eqs;
-
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
             explicit realm(const library    &,
-                           const equilibria &);
-            virtual ~realm() noexcept;
+                           const equilibria &); //!< setup
+            virtual ~realm() noexcept;          //!< cleanup
 
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const library    &lib; //!< persistent library
+            const equilibria &eqs; //!< persistent equilibrium
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(realm);
-            void build_domains(const xmlog &);
+            void build_domains(const xmlog &); //!< create and order domains
         };
 
     }

@@ -265,6 +265,15 @@ namespace yack
             return false;
         }
 
+        void components:: report_to(addrbook &db) const
+        {
+            for(const cnode *node=(*this)->head;node;node=node->next)
+            {
+                const species &s = ****node;
+                db.ensure(&s);
+            }
+        }
+
     }
 }
 

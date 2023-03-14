@@ -8,6 +8,7 @@
 #include "yack/associative/suffix/set.hpp"
 #include "yack/data/dinky/coop-repo.hpp"
 #include "yack/cameo/add.hpp"
+#include "yack/associative/addrbook.hpp"
 
 namespace yack
 {
@@ -53,6 +54,7 @@ namespace yack
             const components_db::tree_type & operator->() const noexcept; //!< get internal tree
             void   operator()(const int nu, const species &sp);           //!< declare a new components
             string to_string()  const;                                    //!< stringify
+            void   report_to(addrbook &) const;                           //!< append species
             bool   is_neutral() const noexcept;                           //!< check neutrality
             bool   is_minimal() const noexcept;                           //!< check co-primality
             YACK_PROTO_OSTREAM(components);                               //!< display
@@ -88,7 +90,10 @@ namespace yack
                             const double            K,
                             cameo::mul<double>     &xmul) const;
 
+            //! check if species is used
             bool is_connected_to(const species &)    const noexcept;
+
+            //! check if a species is shaed
             bool is_connected_to(const components &) const noexcept;
 
             //! transfer coefficients
