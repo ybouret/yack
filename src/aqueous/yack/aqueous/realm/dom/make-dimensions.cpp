@@ -62,6 +62,7 @@ namespace yack
             }
 
             YACK_XMLOG(xml,"live = " <<live);
+            if(M<N) throw imported::exception(clid,"too many equilibria!!");
         }
     }
 

@@ -39,6 +39,7 @@ namespace yack
             //__________________________________________________________________
             static const char * const clid; //!< "components"
 
+
             //__________________________________________________________________
             //
             // C++
@@ -96,6 +97,7 @@ namespace yack
             //! check if a species is shaed
             bool is_connected_to(const components &) const noexcept;
 
+            
             //! transfer coefficients
             template <typename ARR> inline
             void fill( ARR &nu, const unsigned level) const
@@ -109,6 +111,7 @@ namespace yack
                 }
             }
 
+
             //__________________________________________________________________
             //
             // members
@@ -117,7 +120,7 @@ namespace yack
             const actors prod; //!< list of products
             const int    d_nu; //!< D_r Nu
             const double idnu; //!< 1.0/|d_nu|
-            
+
         private:
             YACK_DISABLE_ASSIGN(components);
             components_db cdb;

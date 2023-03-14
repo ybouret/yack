@@ -9,6 +9,9 @@ namespace yack
 
         void domain:: create_topology(const xmlog &xml)
         {
+            addrbook sdb;
+            addrbook edb;
+
             //------------------------------------------------------------------
             // compute topology matrix
             //------------------------------------------------------------------
@@ -19,12 +22,18 @@ namespace yack
                 {
                     const equilibrium &eq = ***en;
                     eq.fill(Nu_[eq.indx[1]],1);
+                    if(eq.prod.size<=0 || eq.reac.size<=0)
+                    {
+                        edb.ensure(&eq);     //!< register roaming equilibrium
+                        eq.report_to(sdb);   //!< register roaming specie(s)
+                    }
                 }
             }
 
-            const size_t rank = alga::rank(Nu);
-            if( rank < N ) throw imported::exception(clid,"rank=%u < %u, check dependencies!!", unsigned(rank), unsigned(N) );
-
+            {
+                const size_t rank = alga::rank(Nu);
+                if( rank < N ) throw imported::exception(clid,"rank=%u < %u, check dependencies!!", unsigned(rank), unsigned(N) );
+            }
 
             //------------------------------------------------------------------
             // deduce transposed
@@ -32,6 +41,9 @@ namespace yack
             coerce(NuT).make(M,N);
             coerce(NuT).assign(Nu,transposed);
             YACK_XMLOG(xml, "Nu   = " << Nu);
+
+
+
         }
 
     }
