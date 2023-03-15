@@ -4,7 +4,7 @@
 #define YACK_AQUEOUS_CONSERVATION_INCLUDED 1
 
 #include "yack/aqueous/eqs/actors.hpp"
-//#include "yack/data/dinky/core-repo.hpp"
+#include "yack/cameo/add.hpp"
 
 namespace yack
 {
@@ -30,14 +30,17 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            YACK_PROTO_OSTREAM(conservation); //!< display
-
-            bool overlaps(const conservation &) const noexcept;
+            YACK_PROTO_OSTREAM(conservation);                     //!< display
+            bool   overlaps(const conservation &) const noexcept; //!< testing species in common
+            void   finalize() noexcept;                           //!< update nrm2
+            double excess(const readable<double> &C, cameo::add<double> &) const; //!< <*this|C>
+            void   deltaC(writable<double> &dC, const double) const noexcept;
 
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
+            const double  nrm2; //!< sum(nu^2)
             conservation *next; //!< for list
             conservation *prev; //!< for list
         private:
@@ -53,44 +56,7 @@ namespace yack
         typedef cxx_list_of<conservation> conservations;
 
 
-        //______________________________________________________________________
-        //
-        //
-        //! base class for conserved
-        //
-        //______________________________________________________________________
-        typedef core_repo<const conservation> conserved_;
-
-        //______________________________________________________________________
-        //
-        //
-        //! group of dependent conservation laws
-        //
-        //______________________________________________________________________
-        class conserved : public object, public conserved_
-        {
-        public:
-            //__________________________________________________________________
-            //
-            // C++
-            //__________________________________________________________________
-            explicit conserved(const conservation &first);
-            virtual ~conserved() noexcept;
-
-            bool accepts(const conservation &) const noexcept;
-
-            //__________________________________________________________________
-            //
-            //  members
-            //__________________________________________________________________
-            conserved *next; //!< for list
-            conserved *prev; //!< for list
-
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(conserved);
-        };
-
-        typedef cxx_list_of<conserved> conserved_group;
+      
 
     }
 }

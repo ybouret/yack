@@ -306,7 +306,8 @@ namespace yack
                         law->push_back( new actor(sp,nu) );
                     }
                 }
-                YACK_XMLOG(xml,"V" << ++k << " = " << cof << " => 0=d" << *law);
+                law->finalize();
+                YACK_XMLOG(xml,"V" << ++k << " = " << cof << " => 0=d" << *law << " |" << law->nrm2 << "|");
             }
 
             //------------------------------------------------------------------
@@ -314,15 +315,18 @@ namespace yack
             // creating groups
             //
             //------------------------------------------------------------------
-            conserved_group &groups = coerce(clog);
+            YACK_XMLSUB(xml,"build_preserved");
             for(const conservation *law=laws.head;law;law=law->next)
+                coerce(pack).dispatch(*law);
+
+            YACK_XMLOG(xml, "#pack = " << pack.size);
+            if(xml.verbose)
             {
-                for(conserved *lhs=groups.head;lhs;lhs=lhs->next)
+                for(const conserved *grp=pack.head;grp;grp=grp->next)
                 {
-                    
+                    *xml << "|_" << grp->size << " : " << *grp  << std::endl;
                 }
             }
-
 
 
 

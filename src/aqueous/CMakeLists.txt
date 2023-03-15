@@ -49,6 +49,13 @@ set(aqueous_realm_dom ${aqueous_realm_dom_decl} ${aqueous_realm_dom_srcs})
 SOURCE_GROUP(aqueous/realm/dom FILES ${aqueous_realm_dom})
 #install( FILES ${aqueous_realm_dom_decl} DESTINATION include/yack/aqueous/realm/dom )
 
+#realm/claw
+file(GLOB aqueous_realm_claw_decl yack/aqueous/realm/claw/*.hpp)
+file(GLOB aqueous_realm_claw_srcs yack/aqueous/realm/claw/*.cpp)
+set(aqueous_realm_claw ${aqueous_realm_claw_decl} ${aqueous_realm_claw_srcs})
+SOURCE_GROUP(aqueous/realm/claw FILES ${aqueous_realm_claw})
+#install( FILES ${aqueous_realm_claw_decl} DESTINATION include/yack/aqueous/realm/claw )
+
 
 add_library(yack-aqueous STATIC
 ${aqueous_main}
@@ -56,7 +63,7 @@ ${aqueous_com}
 ${aqueous_eqs}
 ${aqueous_weasel}
 ${aqueous_lua}
-${aqueous_realm} ${aqueous_realm_dom}
+${aqueous_realm} ${aqueous_realm_dom} ${aqueous_realm_claw} 
 )
 
 install( TARGETS yack-aqueous ARCHIVE DESTINATION lib )

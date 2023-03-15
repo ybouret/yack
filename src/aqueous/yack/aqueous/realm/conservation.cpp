@@ -10,7 +10,11 @@ namespace yack
         }
 
         conservation:: conservation() noexcept :
-        object(), actors_(), next(0), prev(0)
+        object(),
+        actors_(),
+        nrm2(0),
+        next(0),
+        prev(0)
         {
         }
 
@@ -45,17 +49,29 @@ namespace yack
             return false;
         }
 
-    }
-}
-
-
-namespace yack
-{
-    namespace aqueous
-    {
-        conserved:: ~conserved() noexcept
+        void conservation:: finalize() noexcept
         {
+            double sum = 0; assert(size>=2);
+            for(const actor *l=head;l;l=l->next)
+            {
+                sum += squared(l->nu);
+            }
+            coerce(nrm2) = sum;
         }
+
+        double conservation:: excess(const readable<double> &C,
+                                     cameo::add<double>     &xadd) const
+        {
+            xadd.resume(size);
+            for(const actor *l=head;l;l=l->next)
+            {
+                const species &s = **l;
+                xadd.push( l->nu * C[s.indx[top_level]]);
+            }
+            return xadd.sum();
+        }
+
+
     }
 
 }
