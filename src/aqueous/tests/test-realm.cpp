@@ -1,6 +1,7 @@
 
 #include "yack/aqueous/weasel/designer.hpp"
 #include "yack/aqueous/realm.hpp"
+#include "yack/aqueous/realm/claw/custodian.hpp"
 
 #include "yack/utest/run.hpp"
 
@@ -25,6 +26,25 @@ YACK_UTEST(realm)
 
     vector<double> K;
     realm cs(lib,eqs,K);
+
+    const size_t   M = lib->size;
+    vector<double> C(M,0);
+
+
+    lib.conc(C,ran);
+    for(size_t i=M;i>0;--i) if( ran.choice() ) C[i] = -C[i];
+
+    lib(std::cerr << "C=",C) << std::endl;
+    
+
+    custodian     keeper(M);
+    const domain    *dom = cs.head;
+    const conserved *grp = dom->pack.head;
+    if(grp)
+    {
+        keeper.process(cs,C,*grp);
+    }
+
 
 
 

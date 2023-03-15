@@ -34,7 +34,7 @@ namespace yack
             bool   overlaps(const conservation &) const noexcept; //!< testing species in common
             void   finalize() noexcept;                           //!< update nrm2
             double excess(const readable<double> &C, cameo::add<double> &) const; //!< <*this|C>
-            void   deltaC(writable<double> &dC, const double) const noexcept;
+            //void   deltaC(writable<double> &dC, const double) const noexcept;
 
             //__________________________________________________________________
             //

@@ -1,13 +1,14 @@
 
 //! \file
 
-#ifndef YACK_AQUEOUS_PRESERVED_INCLUDED
-#define YACK_AQUEOUS_PRESERVED_INCLUDED 1
+#ifndef YACK_AQUEOUS_CUSTODIAN_INCLUDED
+#define YACK_AQUEOUS_CUSTODIAN_INCLUDED 1
 
 #include "yack/aqueous/realm/claw/conserved.hpp"
 #include "yack/data/dinky/solo-list.hpp"
 #include "yack/data/dinky/solo-repo.hpp"
 #include "yack/sequence/cxx-array.hpp"
+#include "yack/ios/xmlog.hpp"
 
 namespace yack
 {
@@ -26,11 +27,11 @@ namespace yack
             virtual ~custodian() noexcept;
 
             void prepare() noexcept; //!< clear totalC  
-            void process(writable<double> &C,
+            void process(const xmlog      &xml,
+                         writable<double> &C,
                          const conserved  &laws);
 
-            cxx_array<double>             totalC; //!< [M] injected
-            cxx_array<double>             deltaC; //!< [M] last increase
+            cxx_array<double>             injected; //!< [M] injected
             broken_list                   broken;
             excess_list                   excess;
             cameo::add<double>            xadd;

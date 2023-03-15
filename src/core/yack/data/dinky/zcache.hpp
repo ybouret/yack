@@ -26,21 +26,27 @@ namespace yack
         // virtual: NODE interface
         //______________________________________________________________________
         virtual void   zstore(NODE *)  noexcept         = 0; //!< store a zombie node
-        virtual NODE  *zquery()                        = 0; //!< query a new zombie node
+        virtual NODE  *zquery()                         = 0; //!< query a new zombie node
         virtual void   devour(list_of<NODE> &) noexcept = 0; //!< turn all alives anto zombies
-       
+
         //______________________________________________________________________
         //
         // virtual: cache management
         //______________________________________________________________________
         virtual size_t stowage() const noexcept         = 0; //!< available
-        virtual void   reserve(size_t)                 = 0; //!< reserve zombies
+        virtual void   reserve(size_t)                  = 0; //!< reserve zombies
         
         //______________________________________________________________________
         //
-        // methods
+        // non-virtual methods
         //______________________________________________________________________
-        
+
+        inline void ingest(NODE *live) noexcept
+        {
+            assert(NULL!=live);
+            zstore( turn(live) );
+        }
+
         //! make a live dinky_node
         template <typename U> inline
         NODE *create(const U &args) {
@@ -62,7 +68,8 @@ namespace yack
             assert(live);
             return static_cast<NODE *>(out_of_reach:: naught( destructed(live) ));
         }
-        
+
+
         //______________________________________________________________________
         //
         // C++

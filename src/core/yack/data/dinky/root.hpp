@@ -69,14 +69,16 @@ namespace yack
         //! remove node
         inline void cut(NODE *node) noexcept {
             assert(node);
-            cache->zstore( cache->turn( pop(node) ) );
+            cache->ingest( pop(node) );
+            //cache->zstore( cache->turn( pop(node) ) );
         }
         
         //! remove back
         inline void cut_tail() noexcept
         {
             assert(size>=0);
-            cache->zstore( cache->turn( pop_back() ) );
+            cache->ingest( pop_back() );
+            //cache->zstore( cache->turn( pop_back() ) );
         }
 
         //! remove back n
@@ -90,7 +92,8 @@ namespace yack
         inline void cut_head() noexcept
         {
             assert(size);
-            cache->zstore( cache->turn( pop_front() ) );
+            cache->ingest( pop_front() );
+            //cache->zstore( cache->turn( pop_front() ) );
         }
 
         //! remove front n

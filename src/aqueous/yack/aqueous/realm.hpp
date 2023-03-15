@@ -16,7 +16,7 @@ namespace yack
         //! chemical system
         //
         //______________________________________________________________________
-        class realm : public domains
+        class realm : public domains, public xmlog
         {
         public:
             //__________________________________________________________________

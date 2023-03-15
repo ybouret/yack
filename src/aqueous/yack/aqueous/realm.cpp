@@ -13,11 +13,11 @@ namespace yack
                       const equilibria       &eqs_,
                       const readable<double> &eks) :
         domains(),
+        xmlog("[realm]",std::cerr,species::verbose),
         lib(lib_),
         eqs(eqs_)
         {
-            xmlog xml("[realm]",std::cerr,species::verbose);
-
+            const xmlog &xml = *this;
             //------------------------------------------------------------------
             //
             // make partition of independents equilibria
