@@ -58,6 +58,7 @@ namespace yack
             const eq_node * const  last;    //!< last in 1..N eqs
             const sp_list          live;    //!< live species with sub-indices
             const conservations    laws;    //!< conservation laws
+            const conserved_group  clog;    //!< conservation laws in one group
             const eq_list          roaming; //!< roaming equilibria
             const eq_list          defined; //!< defined equilibria
             const sp_list          endless; //!< endless species

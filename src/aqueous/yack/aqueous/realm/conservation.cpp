@@ -31,7 +31,32 @@ namespace yack
             return os;
         }
 
+        bool conservation:: overlaps(const conservation &rhs) const noexcept
+        {
+            for(const actor *l=head;l;l=l->next)
+            {
+                const species &L = **l;
+                for(const actor *r=rhs.head;r;r=r->next)
+                {
+                    const species &R = **r;
+                    if( &L == &R ) return true;
+                }
+            }
+            return false;
+        }
 
     }
+}
+
+
+namespace yack
+{
+    namespace aqueous
+    {
+        conserved:: ~conserved() noexcept
+        {
+        }
+    }
+
 }
 

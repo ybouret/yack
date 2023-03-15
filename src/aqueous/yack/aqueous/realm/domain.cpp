@@ -18,6 +18,7 @@ namespace yack
         last(NULL),
         live(),
         laws(),
+        clog(),
         roaming(),
         defined(),
         endless(),

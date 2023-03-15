@@ -108,14 +108,14 @@ namespace yack
                 }
             };
 
-            class conserved : public cxx_list_of<uvec>
+            class conserving : public cxx_list_of<uvec>
             {
             public:
                 const size_t dim;
                 uarr         arr;
 
-                inline  conserved(const size_t d) : dim(d), arr(dim) {}
-                inline ~conserved() noexcept {}
+                inline  conserving(const size_t d) : dim(d), arr(dim) {}
+                inline ~conserving() noexcept {}
 
                 inline void operator()(const raven::qvector &cf)
                 {
@@ -155,7 +155,7 @@ namespace yack
                 }
 
             private:
-                YACK_DISABLE_COPY_AND_ASSIGN(conserved);
+                YACK_DISABLE_COPY_AND_ASSIGN(conserving);
             };
 
             
@@ -224,8 +224,6 @@ namespace yack
                 hub << eq;
             }
 
-            std::cerr << "using " << hub << std::endl;
-
             const size_t nh = hub.size;
             if(nh<=0)
             {
@@ -256,7 +254,6 @@ namespace yack
                 const size_t   sj = sp.indx[sub_level];
                 for(size_t i=nh;i>0;--i) P[i][sj] = 0;
             }
-            std::cerr << "P=" << P << std::endl;
             const size_t p = alga::rank(P);
             if(p!=nh) throw imported::exception(clid,"invalid defined equilibri[um|a] rank!!");
 
@@ -268,21 +265,21 @@ namespace yack
             const size_t q = M-p;
             matrix<int>  Q(M,M);
             if(!math::ortho_family::build(Q,P,true)) throw imported::exception(clid,"couldn't compute _|_");
-            YACK_XMLOG(xml, "Q    = " << Q); assert( q == alga::rank(Q) );
+            //YACK_XMLOG(xml, "Q    = " << Q); assert( q == alga::rank(Q) );
 
             //------------------------------------------------------------------
             // compress ortho-space
             //------------------------------------------------------------------
             matrix<int> Q0;
             if( compress_ortho(Q0,Q) != q ) throw imported::exception(clid,"invalid ortho-compression");
-            YACK_XMLOG(xml, "Q0   = " << Q0);
+            //YACK_XMLOG(xml, "Q0   = " << Q0);
 
             //------------------------------------------------------------------
             //
             // computing conserved vectors by RAVEn
             //
             //------------------------------------------------------------------
-            conserved      cv(M);
+            conserving      cv(M);
             {
                 raven::qbranch b;
                 b.batch(Q0,q,cv);
@@ -309,10 +306,23 @@ namespace yack
                         law->push_back( new actor(sp,nu) );
                     }
                 }
-                std::cerr << " V" << ++k << " = " << cof << " => 0=d" << *law << std::endl;
-
+                YACK_XMLOG(xml,"V" << ++k << " = " << cof << " => 0=d" << *law);
             }
-            std::cerr << "Nu=" << Nu << std::endl;
+
+            //------------------------------------------------------------------
+            //
+            // creating groups
+            //
+            //------------------------------------------------------------------
+            conserved_group &groups = coerce(clog);
+            for(const conservation *law=laws.head;law;law=law->next)
+            {
+                for(conserved *lhs=groups.head;lhs;lhs=lhs->next)
+                {
+                    
+                }
+            }
+
 
 
 
