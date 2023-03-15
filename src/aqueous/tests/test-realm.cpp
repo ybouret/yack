@@ -23,7 +23,8 @@ YACK_UTEST(realm)
     std::cerr << "lib=" << std::endl << lib << std::endl;
     std::cerr << "eqs=" << std::endl << eqs << std::endl;
 
-    realm cs(lib,eqs);
+    vector<double> K;
+    realm cs(lib,eqs,K);
 
 
 

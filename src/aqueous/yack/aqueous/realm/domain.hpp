@@ -13,6 +13,8 @@ namespace yack
 {
     namespace aqueous
     {
+        class library;
+        
         //______________________________________________________________________
         //
         //
@@ -42,7 +44,10 @@ namespace yack
             bool       accepts(const equilibrium &) const noexcept;        //!< if a species is shared
             bool       accepts(const domain      &) const noexcept;        //!< if a species is shared
             static int compare(const eq_node *, const eq_node *) noexcept; //!< by increasing indx[0]
-            void       create(const xmlog &);                              //!< create all data
+            void       create(const xmlog            &,
+                              const library          &lib,
+                              equilibria             &eqs,
+                              const readable<double> &eks); //!< create all data
 
             //__________________________________________________________________
             //
@@ -64,7 +69,10 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(domain);
             void make_dimensions(const xmlog &); //!< gather equilibria and species, indexing...
             void create_topology(const xmlog &); //!< deduce Nu
-            void create_manifold(const xmlog &);
+            void create_manifold(const xmlog            &,
+                                 const library          &,
+                                 equilibria             &,
+                                 const readable<double> &);
             void build_conserved(const xmlog &, const matrix<int>&); //!< build conservation
         };
 

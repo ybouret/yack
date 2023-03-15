@@ -214,34 +214,180 @@ namespace yack
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(configs);
             };
-
         }
 
-        void domain:: create_manifold(const xmlog &xml)
+        static inline string cof2str(const int cf)
         {
-            // create compressed topology
-            matrix<int> Mu;
-            if(N!=raven::qselect::compress(Mu,Nu)) throw imported::exception(clid,"invalid topology compression");
-            YACK_XMLOG(xml,"Mu   = " << Mu);;
+            switch(cf)
+            {
+                case -1: return string('-');
+                case  1: return string();
+                default:
+                    break;
+            }
+            return vformat("%d*",cf);
+        }
 
+        static inline
+        string make_eqname(const eq_list       &eqs,
+                           const readable<int> &cof)
+        {
+            assert(cof.size()<=eqs.size);
+            string res;
+            bool           first = true;
+            const eq_node *en    = eqs.head;
+            for(size_t ii=1;ii<=cof.size();++ii,en=en->next)
+            {
+                const int cf = cof[ii];
+                if(cf)
+                {
+                    const equilibrium &eq = ***en;
+                    if(first)
+                    {
+                        res += cof2str(cf) + eq.name;
+                        first = false;
+                    }
+                    else
+                    {
+                        if(cf>0) res += '+';
+                        res += cof2str(cf) + eq.name;
+                    }
+                }
+            }
+            return res;
+        }
+
+        namespace
+        {
+            class mixed_equilibrium : public  equilibrium
+            {
+            public:
+
+                //! parameters to evaluate constant
+                class params : public object
+                {
+                public:
+                    const size_t indx0; //!< global index
+                    const int    coeff; //!< coefficient
+                    params      *next;  //!< for linked
+
+                    inline explicit params(const size_t i,
+                                           const int    c) noexcept :
+                    object(),
+                    indx0(i),
+                    coeff(c),
+                    next(0)
+                    {
+                        assert(indx0>0);
+                        assert(coeff!=0);
+                    }
+
+                    inline virtual ~params() noexcept
+                    {
+                    }
+
+                    inline friend std::ostream & operator<<(std::ostream &os, const params &self)
+                    {
+                        os << "(" << self.coeff << "@" << self.indx0 << ")";
+                        return os;
+                    }
+
+                private:
+                    YACK_DISABLE_COPY_AND_ASSIGN(params);
+                };
+
+                inline explicit mixed_equilibrium(const string          &uid,
+                                                  const size_t           idx,
+                                                  const size_t           sub,
+                                                  const readable<double> &eks,
+                                                  const eq_list          &eqs,
+                                                  const readable<int>    &cof) :
+                equilibrium(uid,idx),
+                K_(eks)
+                {
+                    coerce(indx[1]) = sub;
+                    assert(eqs.size>=cof.size());
+                    const size_t   nc = cof.size();
+                    const eq_node *en = eqs.head;
+                    for(size_t i=1;i<=nc;++i,en=en->next)
+                    {
+                        assert(en);
+                        const int          cf = cof[i]; if(0==cf) continue;
+                        const equilibrium &eq = ***en;
+                        coerce(par).store( new params(eq.indx[0],cf) );
+                    }
+                    assert(par.size>=2);
+                    coerce(par).reverse();
+                    std::cerr << par << std::endl;
+                }
+
+                inline virtual ~mixed_equilibrium() noexcept
+                {
+                }
+
+
+
+
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(mixed_equilibrium);
+                const readable<double>   &K_;
+                const cxx_pool_of<params> par;
+                cameo::mul<double>        xmul;
+
+                virtual equilibrium * clone() const { throw exception("mixed_equilibirium is not clonable"); }
+                virtual double getK(double)
+                {
+                    xmul.free();
+
+                    return xmul.product();
+                }
+            };
+        }
+
+        void domain:: create_manifold(const xmlog            &xml,
+                                      const library          &lib,
+                                      equilibria             &eqs,
+                                      const readable<double> &eks)
+        {
+            //------------------------------------------------------------------
+            // create compressed topology
+            //------------------------------------------------------------------
+            matrix<int> Mu;
+            if(N!=raven::qselect::compress(Mu,Nu))
+                throw imported::exception(clid,"invalid topology compression");
+            YACK_XMLOG(xml,"Mu   = " << Mu);
+
+            //------------------------------------------------------------------
             // use RAVEn
+            //------------------------------------------------------------------
             configs conf(*this,live,Nu);
-            if(species::verbose) xml() << " [";
+            if(species::verbose) *xml << "RAVEn [";
             {
                 raven::qbranch build;
                 build.batch(Mu,N,configs::confirm,conf);
             }
-            if(species::verbose) std::cerr << "]" << std::endl;
+            if(species::verbose) xml() << "]" << std::endl;
 
+            //------------------------------------------------------------------
             // prepare equilibri[um|a]
-            std::cerr << "#config=" << conf.size << std::endl;
+            //------------------------------------------------------------------
             conf.sort();
 
             for(const config *cfg=conf.head;cfg;cfg=cfg->next)
             {
                 std::cerr << cfg->weight << " => " << cfg->stoich << " => " << cfg->missed << std::endl;
+                const string  name = make_eqname(*this,cfg->weight);
+                std::cerr << " => " << name << std::endl;
+                const size_t idx = eqs.next_indx();
+                const size_t sub = size+1;
+                equilibrium &meq = eqs( new mixed_equilibrium(name,idx,sub,eks,*this,cfg->weight) );
+                (*this) << meq;
+                assert( meq.indx[0] == eqs->size );
+                assert( meq.indx[1] == size );
             }
 
+            std::cerr << "#config=" << conf.size << "/" << N << std::endl;
+            std::cerr << *this << std::endl;
 
 
         }

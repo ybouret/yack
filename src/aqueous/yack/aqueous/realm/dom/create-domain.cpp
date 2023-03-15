@@ -10,16 +10,17 @@ namespace yack
 
         const char * const domain::clid = "aqueous::domain";
 
-        void domain:: create(const xmlog &xml)
+        void domain:: create(const xmlog            &xml,
+                             const library          &lib,
+                             equilibria             &eqs,
+                             const readable<double> &eks)
         {
             YACK_XMLSUB(xml,"create_domain");
             YACK_XMLOG(xml, "here = " << *this);
             assert(size>0);
             make_dimensions(xml);
-            //matrix<int> alpha;
             create_topology(xml);
-            create_manifold(xml);
-            //build_conserved(xml,alpha);
+            create_manifold(xml,lib,eqs,eks);
         }
     }
 

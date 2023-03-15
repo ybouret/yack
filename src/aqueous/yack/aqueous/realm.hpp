@@ -23,8 +23,9 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit realm(const library    &,
-                           const equilibria &); //!< setup
+            explicit realm(const library          &,
+                           const equilibria       &,
+                           const readable<double> &); //!< setup
             virtual ~realm() noexcept;          //!< cleanup
 
 
@@ -33,7 +34,7 @@ namespace yack
             // members
             //__________________________________________________________________
             const library    &lib; //!< persistent library
-            const equilibria &eqs; //!< persistent equilibrium
+            equilibria        eqs; //!< original persistent equilibrium
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(realm);
