@@ -24,7 +24,7 @@ namespace yack
             // create partitions
             for(domain *dom=head;dom;dom=dom->next)
             {
-                dom->create(xml,lib,eqs,eks);
+                dom->create(xml,eqs,eks);
             }
         }
 

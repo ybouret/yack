@@ -11,7 +11,6 @@ namespace yack
         const char * const domain::clid = "aqueous::domain";
 
         void domain:: create(const xmlog            &xml,
-                             const library          &lib,
                              equilibria             &eqs,
                              const readable<double> &eks)
         {
@@ -20,7 +19,7 @@ namespace yack
             assert(size>0);
             make_dimensions(xml);
             create_topology(xml);
-            create_manifold(xml,lib,eqs,eks);
+            create_manifold(xml,eqs,eks);
         }
     }
 

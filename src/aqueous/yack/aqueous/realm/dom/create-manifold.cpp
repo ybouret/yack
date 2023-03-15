@@ -287,12 +287,14 @@ namespace yack
                     {
                     }
 
+#if 0
                     inline friend std::ostream & operator<<(std::ostream &os, const params &self)
                     {
                         os << "(" << self.coeff << "@" << self.indx0 << ")";
                         return os;
                     }
-
+#endif
+                    
                 private:
                     YACK_DISABLE_COPY_AND_ASSIGN(params);
                 };
@@ -349,7 +351,6 @@ namespace yack
         }
 
         void domain:: create_manifold(const xmlog            &xml,
-                                      const library          &lib,
                                       equilibria             &eqs,
                                       const readable<double> &eks)
         {
