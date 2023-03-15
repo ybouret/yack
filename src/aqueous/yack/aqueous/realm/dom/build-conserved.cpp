@@ -234,6 +234,7 @@ namespace yack
         void domain:: build_conserved(const xmlog       &xml,
                                       const matrix<int> &alpha)
         {
+#if 0
             //------------------------------------------------------------------
             // compress topology
             //------------------------------------------------------------------
@@ -276,7 +277,8 @@ namespace yack
                 std::cerr << " V" << ++k << " = " << *v << std::endl;
             }
 
-
+#endif
+            
         }
         
     }

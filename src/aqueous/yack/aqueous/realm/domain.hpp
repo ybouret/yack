@@ -54,6 +54,7 @@ namespace yack
             //__________________________________________________________________
             const size_t           N;       //!< this->size
             const size_t           M;       //!< live->size
+            const size_t           L;       //!< lattice size
             const eq_node * const  last;    //!< last in 1..N eqs
             const sp_list          live;    //!< live species with sub-indices
             const eq_list          roaming; //!< roaming equilibria
@@ -67,11 +68,26 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(domain);
-            void make_dimensions(const xmlog &); //!< gather equilibria and species, indexing...
-            void create_topology(const xmlog &); //!< deduce Nu
-            void create_manifold(const xmlog            &,
-                                 equilibria             &,
-                                 const readable<double> &);
+
+            //! index equilibria and species
+            void make_dimensions(const xmlog &);
+
+            //! deduce Nu and NuT
+            void create_topology(const xmlog &);
+
+            //! create manifold
+            /**
+             create all coupling, appending new eqs and updating last
+             \param xml for output
+             \param eqs new equilibria with global indidces are store
+             \param eks external array of constants, must be allocated later
+             */
+            void create_manifold(const xmlog            &xml,
+                                 equilibria             &eqs,
+                                 const readable<double> &eks);
+
+            void make_categories(const xmlog &);
+
             void build_conserved(const xmlog &, const matrix<int>&); //!< build conservation
         };
 

@@ -12,6 +12,13 @@ namespace yack
     namespace aqueous
     {
 
+        //! index level
+        enum index_level
+        {
+            top_level = 0, //!< global/realm
+            sub_level = 1  //!< local/domain
+        };
+
         //______________________________________________________________________
         //
         //

@@ -38,7 +38,9 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(realm);
-            void build_domains(const xmlog &); //!< create and order domains
+
+            //! group equilibria in domains
+            void build_domains(const xmlog &);
         };
 
     }

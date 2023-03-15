@@ -25,37 +25,7 @@ namespace yack
             }
         }
 
-        static inline bool is_roaming(const readable<int> &nu) noexcept
-        {
-            static const unsigned NONE = 0x00;
-            static const unsigned REAC = 0x01;
-            static const unsigned PROD = 0x02;
-            static const unsigned BOTH = REAC | PROD;
-
-            unsigned flag = NONE;
-            for(size_t j=nu.size();j>0;--j)
-            {
-                switch( __sign::of(nu[j]) )
-                {
-                    case __zero__: continue;
-                    case positive: flag |= PROD; break;
-                    case negative: flag |= REAC; break;
-                }
-            }
-
-            switch(flag)
-            {
-                case REAC:
-                case PROD:
-                case NONE:
-                    return true;
-
-                case BOTH:
-                    break;
-            }
-            assert(BOTH==flag);
-            return false;
-        }
+       
 
 
         void domain:: create_topology(const xmlog &xml)

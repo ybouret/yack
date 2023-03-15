@@ -355,7 +355,9 @@ namespace yack
                                       const readable<double> &eks)
         {
             //------------------------------------------------------------------
+            //
             // create compressed topology
+            //
             //------------------------------------------------------------------
             matrix<int> Mu;
             if(N!=raven::qselect::compress(Mu,Nu))
@@ -363,7 +365,9 @@ namespace yack
             YACK_XMLOG(xml,"Mu   = " << Mu);
 
             //------------------------------------------------------------------
+            //
             // use RAVEn
+            //
             //------------------------------------------------------------------
             configs conf(*this,live,Nu);
             if(species::verbose) *xml << "RAVEn [";
@@ -374,25 +378,33 @@ namespace yack
             if(species::verbose) xml() << "]" << std::endl;
 
             //------------------------------------------------------------------
+            //
             // prepare equilibri[um|a]
+            //
             //------------------------------------------------------------------
             conf.sort();
 
             for(const config *cfg=conf.head;cfg;cfg=cfg->next)
             {
+                //--------------------------------------------------------------
                 // gathering parameters
+                //--------------------------------------------------------------
                 const readable<int> &w   = cfg->weight;
                 const string         uid = make_eqname(*this,w);
                 const size_t         idx = eqs.next_indx();
                 const size_t         sub = size+1;
 
+                //--------------------------------------------------------------
                 // create and register mixed_equilibrium
+                //--------------------------------------------------------------
                 equilibrium  &meq = eqs( new mixed_equilibrium(uid,idx,sub,eks,*this,w) );
                 (*this) << meq;
                 assert( meq.indx[0] == eqs->size );
                 assert( meq.indx[1] == size );
 
-                // fill in
+                //--------------------------------------------------------------
+                // fill in species with stoich
+                //--------------------------------------------------------------
                 {
                     const sp_node *sn = live.head;
                     for(size_t j=1;j<=M;++j,sn=sn->next)
@@ -405,11 +417,18 @@ namespace yack
                 }
             }
 
+            //------------------------------------------------------------------
+            //
+            // update last for originals equilibria
+            //
+            //------------------------------------------------------------------
             {
                 const eq_node *node = head;
                 for(size_t i=N;i>0;--i) node=node->next;
                 coerce(last) = node;
             }
+
+            coerce(L) = size;
 
             if(species::verbose)
             {
@@ -430,7 +449,7 @@ namespace yack
                     eqs.pad(*xml<<eq,eq) << " : " << cc << " | " << cfg->missed << std::endl;
                 }
             }
-            YACK_XMLOG(xml,"#config=" << conf.size << "+" << N << " => " << size);
+            YACK_XMLOG(xml,"#config=" << conf.size << "+" << N << " => " << L);
 
 
 

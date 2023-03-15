@@ -18,10 +18,18 @@ namespace yack
         {
             xmlog xml("[realm]",std::cerr,species::verbose);
 
-            // make partition
+            //------------------------------------------------------------------
+            //
+            // make partition of independents equilibria
+            //
+            //------------------------------------------------------------------
             build_domains(xml);
 
+            //------------------------------------------------------------------
+            //
             // create partitions
+            //
+            //------------------------------------------------------------------
             for(domain *dom=head;dom;dom=dom->next)
             {
                 dom->create(xml,eqs,eks);
