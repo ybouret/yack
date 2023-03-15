@@ -28,7 +28,7 @@ namespace yack
 
         std::ostream & gathering:: pad(std::ostream &os, const entity &ent) const
         {
-            for(size_t i=ent.name.size();i<=length;++i) os << ' ';
+            for(size_t i=ent.name.size();i<length;++i) os << ' ';
             return os;
         }
 

@@ -1,5 +1,6 @@
 
 #include "yack/aqueous/realm/domain.hpp"
+#include "yack/aqueous/library.hpp"
 #include "yack/system/imported.hpp"
 #include "yack/apex/alga.hpp"
 #include "yack/raven/qbranch.hpp"
@@ -318,7 +319,7 @@ namespace yack
                     }
                     assert(par.size>=2);
                     coerce(par).reverse();
-                    std::cerr << par << std::endl;
+                    //std::cerr << par << std::endl;
                 }
 
                 inline virtual ~mixed_equilibrium() noexcept
@@ -338,7 +339,10 @@ namespace yack
                 virtual double getK(double)
                 {
                     xmul.free();
-
+                    for(const params *p=par.head;p;p=p->next)
+                    {
+                        xmul.ipower(K_[p->indx0], p->coeff);
+                    }
                     return xmul.product();
                 }
             };
@@ -375,19 +379,58 @@ namespace yack
 
             for(const config *cfg=conf.head;cfg;cfg=cfg->next)
             {
-                std::cerr << cfg->weight << " => " << cfg->stoich << " => " << cfg->missed << std::endl;
-                const string  name = make_eqname(*this,cfg->weight);
-                std::cerr << " => " << name << std::endl;
-                const size_t idx = eqs.next_indx();
-                const size_t sub = size+1;
-                equilibrium &meq = eqs( new mixed_equilibrium(name,idx,sub,eks,*this,cfg->weight) );
+                // gathering parameters
+                const readable<int> &w   = cfg->weight;
+                const string         uid = make_eqname(*this,w);
+                const size_t         idx = eqs.next_indx();
+                const size_t         sub = size+1;
+
+                // create and register mixed_equilibrium
+                equilibrium  &meq = eqs( new mixed_equilibrium(uid,idx,sub,eks,*this,w) );
                 (*this) << meq;
                 assert( meq.indx[0] == eqs->size );
                 assert( meq.indx[1] == size );
+
+                // fill in
+                {
+                    const sp_node *sn = live.head;
+                    for(size_t j=1;j<=M;++j,sn=sn->next)
+                    {
+                        const int      nu = cfg->stoich[j]; if(0 == nu) continue;
+                        const species &sp = (***sn);        assert(sp.indx[1]==j);
+                        meq(nu,sp);
+                    }
+                    if(!meq.is_neutral()) throw imported::exception(domain::clid,"<%s> is not neutal!!",meq.name());
+                }
             }
 
-            std::cerr << "#config=" << conf.size << "/" << N << std::endl;
-            std::cerr << *this << std::endl;
+            {
+                const eq_node *node = head;
+                for(size_t i=N;i>0;--i) node=node->next;
+                coerce(last) = node;
+            }
+
+            if(species::verbose)
+            {
+                *xml << "-------- original --------" << std::endl;
+                for(const eq_node *node=head;node!=last;node=node->next)
+                {
+                    const equilibrium &eq = ***node;
+                    const components  &cc = eq;
+                    eqs.pad(*xml<<eq,eq) << " : " << cc << std::endl;
+                }
+
+                *xml << "-------- combined --------" << std::endl;
+                const config      *cfg=conf.head;
+                for(const eq_node *node=last;node;node=node->next,cfg=cfg->next)
+                {
+                    const equilibrium &eq = ***node;
+                    const components  &cc = eq;
+                    eqs.pad(*xml<<eq,eq) << " : " << cc << " | " << cfg->missed << std::endl;
+                }
+            }
+            YACK_XMLOG(xml,"#config=" << conf.size << "+" << N << " => " << size);
+
 
 
         }

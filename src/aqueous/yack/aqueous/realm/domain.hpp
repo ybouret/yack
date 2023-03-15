@@ -55,6 +55,7 @@ namespace yack
             //__________________________________________________________________
             const size_t           N;       //!< this->size
             const size_t           M;       //!< live->size
+            const eq_node * const  last;    //!< last in 1..N eqs
             const sp_list          live;    //!< live species with sub-indices
             const eq_list          roaming; //!< roaming equilibria
             const eq_list          defined; //!< defined equilibria

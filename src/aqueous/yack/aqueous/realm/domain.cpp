@@ -14,6 +14,7 @@ namespace yack
         eq_list(),
         N(0),
         M(0),
+        last(NULL),
         live(),
         roaming(),
         defined(),
