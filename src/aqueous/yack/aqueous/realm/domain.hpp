@@ -5,9 +5,9 @@
 #define YACK_AQUEOUS_DOMAIN_INCLUDED 1
 
 #include "yack/aqueous/equilibria.hpp"
-#include "yack/data/dinky/core-list.hpp"
-#include "yack/ios/xmlog.hpp"
+#include "yack/aqueous/realm/conservation.hpp"
 #include "yack/container/matrix.hpp"
+#include "yack/ios/xmlog.hpp"
 
 namespace yack
 {
@@ -57,6 +57,7 @@ namespace yack
             const size_t           L;       //!< lattice size
             const eq_node * const  last;    //!< last in 1..N eqs
             const sp_list          live;    //!< live species with sub-indices
+            const conservations    laws;    //!< conservation laws
             const eq_list          roaming; //!< roaming equilibria
             const eq_list          defined; //!< defined equilibria
             const sp_list          endless; //!< endless species

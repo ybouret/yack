@@ -163,7 +163,7 @@ namespace yack
 
         }
 
-        
+
         static inline
         size_t compress_ortho(matrix<int>       &Q0,
                               const matrix<int> &Q)
@@ -239,6 +239,8 @@ namespace yack
             //
             //------------------------------------------------------------------
             matrix<int> P(nh,M);
+
+            // loading topology
             {
                 size_t i = 1;
                 for(const eq_node *en=hub.head;en;en=en->next,++i)
@@ -246,6 +248,8 @@ namespace yack
                     (***en).fill(P[i],sub_level);
                 }
             }
+
+            // reducing topology
             for(const sp_node *sn=endless.head;sn;sn=sn->next)
             {
                 const species &sp = ***sn;
@@ -284,10 +288,29 @@ namespace yack
                 b.batch(Q0,q,cv);
             }
             cv.sort();
+
+            //------------------------------------------------------------------
+            //
+            // creating conservations
+            //
+            //------------------------------------------------------------------
             unsigned k=0;
             for(const uvec *v=cv.head;v;v=v->next)
             {
-                std::cerr << " V" << ++k << " = " << *v << std::endl;
+                const readable<unsigned> &cof = *v; assert( raven::qselect::count_valid(cof) >= 2);
+                conservation             *law = coerce(laws).push_back( new conservation() );
+                for(const sp_node *sn=live.head;sn;sn=sn->next)
+                {
+                    const species &sp = ***sn;
+                    const size_t   sj = sp.indx[sub_level];
+                    const unsigned nu = cof[sj];
+                    if(nu!=0)
+                    {
+                        law->push_back( new actor(sp,nu) );
+                    }
+                }
+                std::cerr << " V" << ++k << " = " << cof << " => 0=d" << *law << std::endl;
+
             }
             std::cerr << "Nu=" << Nu << std::endl;
 
