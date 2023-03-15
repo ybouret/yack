@@ -9,22 +9,46 @@ namespace yack
 {
     namespace aqueous
     {
-
+        //______________________________________________________________________
+        //
+        //
+        //! conservation law
+        //
+        //______________________________________________________________________
         class conservation : public object, public actors_
         {
         public:
-            explicit conservation() noexcept;
-            virtual ~conservation() noexcept;
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit conservation() noexcept; //!< setup
+            virtual ~conservation() noexcept; //!< cleanup
 
-            YACK_PROTO_OSTREAM(conservation);
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            YACK_PROTO_OSTREAM(conservation); //!< display
 
-            conservation *next;
-            conservation *prev;
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            conservation *next; //!< for list
+            conservation *prev; //!< for list
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(conservation);
         };
 
+        //______________________________________________________________________
+        //
+        //
+        //! conservation law
+        //
+        //______________________________________________________________________
         typedef cxx_list_of<conservation> conservations;
+
     }
 }
 
