@@ -14,6 +14,7 @@ namespace yack
 {
     namespace aqueous
     {
+        class realm;
 
         class custodian
         {
@@ -30,6 +31,10 @@ namespace yack
             void process(const xmlog      &xml,
                          writable<double> &C,
                          const conserved  &laws);
+
+            void process(const xmlog      &xml,
+                         writable<double> &C,
+                         const realm      &cs);
 
             cxx_array<double>             injected; //!< [M] injected
             broken_list                   broken;

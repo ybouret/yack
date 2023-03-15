@@ -24,7 +24,7 @@ namespace yack
                                  writable<double> &C,
                                  const conserved  &laws)
         {
-            YACK_XMLSUB(xml,"custodian::process");
+            YACK_XMLSUB(xml,"custodian::process::laws");
 
             broken.clear();
             excess.clear();
@@ -32,10 +32,9 @@ namespace yack
             YACK_XMLOG(xml,"|laws|=" << laws.size);
             //------------------------------------------------------------------
             //
-            // initialize
+            // initialize broken/excess
             //
             //------------------------------------------------------------------
-
             for(const conserved::node_type *node=laws.head;node;node=node->next)
             {
                 const conservation &law = ***node;
@@ -48,14 +47,25 @@ namespace yack
                 }
             }
 
+            //------------------------------------------------------------------
+            //
+            // select law with smallest excess
+            //
+            //------------------------------------------------------------------
         FIX:
             YACK_XMLOG(xml, "|broken| = " << broken.size << " / " << laws.size);
             if(broken.size<=0) { assert(0==excess.size); return; }
 
+            //------------------------------------------------------------------
+            // initialize look up
+            //------------------------------------------------------------------
             broken_node *brn = broken.head;
             excess_node *xsn = excess.head;
             double       opt = **xsn; assert(opt<0);
+
+            //------------------------------------------------------------------
             // selecting node
+            //------------------------------------------------------------------
             excess_node     *xst = xsn->next;
             for(broken_node *brt = brn->next;brt;brt=brt->next,xst=xst->next)
             {
@@ -66,14 +76,16 @@ namespace yack
                     brn = brt;
                     xsn = xst;
                 }
-
             }
+
+            //------------------------------------------------------------------
+            // process winner
+            //------------------------------------------------------------------
             const conservation &law = ***brn;
             const double        q   = -opt;
 
             YACK_XMLOG(xml,"(*) " << std::setw(15) << opt << " @" << law);
 
-            // compute increase
             const double den = law.nrm2;
             for(const actor *a=law.head;a;a=a->next)
             {
@@ -83,13 +95,17 @@ namespace yack
                 C[sj]        += dc;
                 injected[sj] += dc;
             }
-            //std::cerr << "injected=" << injected << std::endl;
 
-            broken.cut(brn); // remove corrected
-            excess.clear();  // cleanup
+            //------------------------------------------------------------------
+            // winner is done, won't come back
+            //------------------------------------------------------------------
+            broken.cut(brn);
+            excess.clear();
 
+            //------------------------------------------------------------------
+            // rebuild list from remaining broken
+            //------------------------------------------------------------------
             {
-                //broken_list filter;
                 core_repo<const conservation> filter;
                 while(broken.size)
                 {

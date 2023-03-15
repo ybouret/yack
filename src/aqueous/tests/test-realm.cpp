@@ -42,7 +42,7 @@ YACK_UTEST(realm)
     const conserved *grp = dom->pack.head;
     if(grp)
     {
-        keeper.process(cs,C,*grp);
+        keeper.process(cs,C,cs);
     }
 
 

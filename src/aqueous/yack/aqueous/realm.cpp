@@ -36,8 +36,35 @@ namespace yack
             }
         }
 
-       
+
     }
     
 }
+
+#include "yack/aqueous/realm/claw/custodian.hpp"
+
+namespace yack
+{
+    namespace aqueous
+    {
+        void custodian:: process(const xmlog      &xml,
+                                 writable<double> &C,
+                                 const realm      &cs)
+        {
+            YACK_XMLSUB(xml,"custodian::process");
+            prepare();
+            for(const domain *dom = cs.head;dom;dom=dom->next)
+            {
+                for(const conserved *cns=dom->pack.head;cns;cns=cns->next)
+                {
+                    process(xml,C,*cns);
+                }
+            }
+        }
+    }
+}
+
+
+
+
 
