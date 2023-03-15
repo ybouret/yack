@@ -306,7 +306,9 @@ namespace yack
                                                   const eq_list          &eqs,
                                                   const readable<int>    &cof) :
                 equilibrium(uid,idx),
-                K_(eks)
+                K_(eks),
+                par(),
+                xmul()
                 {
                     coerce(indx[1]) = sub;
                     assert(eqs.size>=cof.size());
@@ -321,7 +323,6 @@ namespace yack
                     }
                     assert(par.size>=2);
                     coerce(par).reverse();
-                    //std::cerr << par << std::endl;
                 }
 
                 inline virtual ~mixed_equilibrium() noexcept

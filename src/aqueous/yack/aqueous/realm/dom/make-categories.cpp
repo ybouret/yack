@@ -62,6 +62,8 @@ namespace yack
                         eq_roam.ensure(&eq);
                         eq.report_to(sp_roam);
                     }
+                    if(eq.reac.size<=0 && eq.prod.size>0 ) coerce(splitting) << eq;
+                    if(eq.reac.size>0  && eq.prod.size<=0) coerce(combining) << eq;
                 }
             }
 
