@@ -11,13 +11,13 @@ namespace yack
         }
 
         custodian:: custodian(const size_t M) :
-        injected(M)
+        cxx_array<double>(M)
         {
         }
 
         void custodian:: prepare() noexcept
         {
-            injected.ld(0);
+            ld(0);
         }
 
         void custodian:: process(const xmlog      &xml,
@@ -92,8 +92,8 @@ namespace yack
                 const species &sp = **a;
                 const size_t   sj = sp.indx[top_level];
                 const double   dc = (q*a->nu)/den;
-                C[sj]        += dc;
-                injected[sj] += dc;
+                C[sj]       += dc;
+                (*this)[sj] += dc;
             }
 
             //------------------------------------------------------------------

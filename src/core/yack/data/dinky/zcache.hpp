@@ -41,6 +41,7 @@ namespace yack
         // non-virtual methods
         //______________________________________________________________________
 
+        //! ingest a live node
         inline void ingest(NODE *live) noexcept
         {
             assert(NULL!=live);
