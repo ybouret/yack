@@ -46,6 +46,7 @@ namespace yack
 
         void domain:: make_categories(const xmlog &xml)
         {
+            YACK_XMLSUB(xml,"make_categories");
             matrix<int> alpha(L,M);
             addrbook    eq_roam;
             addrbook    sp_roam;

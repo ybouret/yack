@@ -88,7 +88,7 @@ namespace yack
 
             void make_categories(const xmlog &);
 
-            void build_conserved(const xmlog &, const matrix<int>&); //!< build conservation
+            void build_conserved(const xmlog &); //!< build conservation
         };
 
         //______________________________________________________________________

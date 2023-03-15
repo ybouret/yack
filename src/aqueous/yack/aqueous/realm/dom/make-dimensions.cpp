@@ -16,7 +16,8 @@ namespace yack
         
         void domain:: make_dimensions(const xmlog &xml)
         {
-             addrbook db;
+            YACK_XMLSUB(xml,"make_dimensions");
+            addrbook db;
 
             //------------------------------------------------------------------
             // register all species and setup equilibria local indices
@@ -47,7 +48,7 @@ namespace yack
             // sort live
             //------------------------------------------------------------------
             merge_list_of<sp_node>::sort(mine,compare_sp_nodes);
-
+            
             //------------------------------------------------------------------
             // setup species local indices
             //------------------------------------------------------------------

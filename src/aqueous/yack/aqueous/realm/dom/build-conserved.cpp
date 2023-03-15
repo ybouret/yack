@@ -163,32 +163,7 @@ namespace yack
 
         }
 
-        static inline
-        size_t compress_topology(matrix<int>       &P,
-                                 const matrix<int> &alpha)
-        {
-            const size_t       nr = alpha.rows;
-            const size_t       nc = alpha.cols;
-            cxx_series<size_t> ir(nr);
-            for(size_t i=1;i<=nr;++i)
-            {
-                if( raven::qselect::count_valid(alpha[i]))  ir << i;
-            }
-            const size_t np = ir.size();
-            if(np>0)
-            {
-                P.make(np,nc);
-                for(size_t i=1;i<=np;++i)
-                    math::iota::load(P[i], alpha[ ir[i] ]);
-                if(alga::rank(P)!=np) throw imported::exception(domain::clid,"invalid compressed topology");
-                return np;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
+        
         static inline
         size_t compress_ortho(matrix<int>       &Q0,
                               const matrix<int> &Q)
@@ -231,24 +206,60 @@ namespace yack
 
         }
 
-        void domain:: build_conserved(const xmlog       &xml,
-                                      const matrix<int> &alpha)
+        void domain:: build_conserved(const xmlog       &xml)
         {
-#if 0
+
+            YACK_XMLSUB(xml,"build_conserved");
+
             //------------------------------------------------------------------
-            // compress topology
+            //
+            // extracting defined/original
+            //
             //------------------------------------------------------------------
-            matrix<int>  P;
-            const size_t p = compress_topology(P,alpha);
-            YACK_XMLOG(xml, "P    = " << P);
-            if(p<=0)
+            eq_list hub;
+            for(const eq_node *en=defined.head;en;en=en->next)
             {
-                YACK_XMLOG(xml,"no possible conservation");
+                const equilibrium &eq = ***en;
+                if(eq.indx[sub_level]>N) break;
+                hub << eq;
+            }
+
+            std::cerr << "using " << hub << std::endl;
+
+            const size_t nh = hub.size;
+            if(nh<=0)
+            {
+                YACK_XMLOG(xml, "no defined equilibrium");
                 return;
             }
 
             //------------------------------------------------------------------
+            //
+            // computing reduced topology matrix
+            //
+            //------------------------------------------------------------------
+            matrix<int> P(nh,M);
+            {
+                size_t i = 1;
+                for(const eq_node *en=hub.head;en;en=en->next,++i)
+                {
+                    (***en).fill(P[i],sub_level);
+                }
+            }
+            for(const sp_node *sn=endless.head;sn;sn=sn->next)
+            {
+                const species &sp = ***sn;
+                const size_t   sj = sp.indx[sub_level];
+                for(size_t i=nh;i>0;--i) P[i][sj] = 0;
+            }
+            std::cerr << "P=" << P << std::endl;
+            const size_t p = alga::rank(P);
+            if(p!=nh) throw imported::exception(clid,"invalid defined equilibri[um|a] rank!!");
+
+            //------------------------------------------------------------------
+            //
             // compute ortho-space
+            //
             //------------------------------------------------------------------
             const size_t q = M-p;
             matrix<int>  Q(M,M);
@@ -260,9 +271,11 @@ namespace yack
             //------------------------------------------------------------------
             matrix<int> Q0;
             if( compress_ortho(Q0,Q) != q ) throw imported::exception(clid,"invalid ortho-compression");
-            YACK_XMLOG(xml, "Q0   = " << Q0); assert(q==alga::rank(Q0));
+            YACK_XMLOG(xml, "Q0   = " << Q0);
 
             //------------------------------------------------------------------
+            //
+            // computing conserved vectors by RAVEn
             //
             //------------------------------------------------------------------
             conserved      cv(M);
@@ -276,9 +289,10 @@ namespace yack
             {
                 std::cerr << " V" << ++k << " = " << *v << std::endl;
             }
+            std::cerr << "Nu=" << Nu << std::endl;
 
-#endif
-            
+
+
         }
         
     }
