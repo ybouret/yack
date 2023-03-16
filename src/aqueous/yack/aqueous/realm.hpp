@@ -30,6 +30,8 @@ namespace yack
             virtual ~realm() noexcept;          //!< cleanup
 
 
+          
+
             //__________________________________________________________________
             //
             // members

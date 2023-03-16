@@ -65,6 +65,28 @@ namespace yack
             return false;
         }
 
+        void domain:: reg_db(addrbook          &db,
+                             const equilibrium &eq) const
+        {
+            db.free();
+            for(const cnode *cn=eq->head;cn;cn=cn->next)
+            {
+                const species &sp = ****cn;
+                if( reg[ sp.indx[top_level]] ) db.ensure(&sp);
+            }
+        }
+
+        bool domain:: reg_in(const addrbook    &db,
+                             const equilibrium &eq) const noexcept
+        {
+            for(const cnode *cn=eq->head;cn;cn=cn->next)
+            {
+                const species &sp = ****cn;
+                if( !reg[ sp.indx[top_level]] ) continue;
+                if(db.search(&sp)) return true;
+            }
+            return false;
+        }
 
     }
 

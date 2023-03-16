@@ -50,6 +50,14 @@ namespace yack
                               equilibria             &eqs,
                               const readable<double> &eks); //!< create all data
 
+            //! register regular species of equilibrium
+            void       reg_db(addrbook          &,
+                              const equilibrium &) const;
+
+            //! look for common regular species  in equilibirum
+            bool       reg_in(const addrbook    &,
+                              const equilibrium &) const noexcept;
+
             //__________________________________________________________________
             //
             // members

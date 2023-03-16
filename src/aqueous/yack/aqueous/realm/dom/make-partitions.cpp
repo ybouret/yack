@@ -42,6 +42,7 @@ namespace yack
 
         }
 
+#if 0
         static inline
         bool found_common_regular_in(const addrbook       &db,
                                      const equilibrium    &eq,
@@ -55,6 +56,7 @@ namespace yack
             }
             return false;
         }
+#endif
 
         void domain::make_partitions(const xmlog &xml)
         {
@@ -65,72 +67,73 @@ namespace yack
             //------------------------------------------------------------------
             // create full detached matrix
             //------------------------------------------------------------------
-            for(const eq_node *lhs=head;lhs;lhs=lhs->next)
             {
-                const equilibrium &L = ***lhs;
-                const size_t       l = L.indx[sub_level];
-                detached[l][l] = false;
-                for(const eq_node *rhs=lhs->next;rhs;rhs=rhs->next)
+                YACK_XMLSUB(xml, "reactive");
+                for(const eq_node *lhs=head;lhs;lhs=lhs->next)
                 {
-                    const equilibrium &R = ***rhs;
-                    const size_t       r = R.indx[sub_level];
-                    detached[r][l] = detached[l][r] = !L.is_connected_to(R);
+                    const equilibrium &L = ***lhs;
+                    const size_t       l = L.indx[sub_level];
+                    detached[l][l] = false;
+                    for(const eq_node *rhs=lhs->next;rhs;rhs=rhs->next)
+                    {
+                        const equilibrium &R = ***rhs;
+                        const size_t       r = R.indx[sub_level];
+                        detached[r][l] = detached[l][r] = !L.is_connected_to(R);
+                    }
+                    //YACK_XMLOG(xml, detached[l] << " @" << L);
                 }
-                //YACK_XMLOG(xml, detached[l] << " @" << L);
-            }
 
-            //------------------------------------------------------------------
-            // create reacting partition
-            //------------------------------------------------------------------
-            create_partition( coerce(reacting), *this, detached);
 
-            if(xml.verbose)
-            {
-                *xml << "-------- reacting --------" << std::endl;
-                for(const cluster *cls=reacting.head;cls;cls=cls->next)
+                //------------------------------------------------------------------
+                // create reacting partition
+                //------------------------------------------------------------------
+                create_partition( coerce(reacting), *this, detached);
+
+
+                if(xml.verbose)
                 {
-                    *xml << *cls << std::endl;
+                    for(const cluster *cls=reacting.head;cls;cls=cls->next)
+                    {
+                        *xml << *cls << std::endl;
+                    }
+                    *xml << "|reacting|=" << reacting.size << std::endl;
                 }
-                *xml << "|reacting|=" << reacting.size << std::endl;
             }
 
             //------------------------------------------------------------------
             // create retaking partition
             //------------------------------------------------------------------
-            detached.ld(false);
-            addrbook db;
-            for(const eq_node *lhs=defined.head;lhs;lhs=lhs->next)
             {
-                const equilibrium &L = ***lhs;
-                const size_t       l = L.indx[sub_level];
-                db.free();
-                for(const cnode *cn=L->head;cn;cn=cn->next)
+                YACK_XMLSUB(xml, "retaking");
+                detached.ld(false);
+                addrbook db;
+                for(const eq_node *lhs=defined.head;lhs;lhs=lhs->next)
                 {
-                    const species &sp = ****cn;
-                    if( reg[ sp.indx[top_level]] ) db.ensure(&sp);
+                    const equilibrium &L = ***lhs;
+                    const size_t       l = L.indx[sub_level];
+                    reg_db(db,L);
+                    for(const eq_node *rhs=lhs->next;rhs;rhs=rhs->next)
+                    {
+                        const equilibrium &R = ***rhs; if(reg_in(db,R)) continue;
+                        const size_t       r = R.indx[sub_level];
+                        detached[l][r] = detached[r][l] = true;
+                    }
+
+                    //YACK_XMLOG(xml, detached[l] << " @" << L);
                 }
 
-                for(const eq_node *rhs=lhs->next;rhs;rhs=rhs->next)
+                create_partition( coerce(retaking), defined, detached);
+
+                if(xml.verbose)
                 {
-                    const equilibrium &R = ***rhs;
-                    const size_t       r = R.indx[sub_level];
-                    if(found_common_regular_in(db,R,reg))
-                        continue;
-                    detached[l][r] = detached[r][l] = true;
+                    for(const cluster *cls=retaking.head;cls;cls=cls->next)
+                    {
+                        *xml << *cls << std::endl;
+                    }
+                    *xml << "|retaking|=" << retaking.size << std::endl;
                 }
-                YACK_XMLOG(xml, detached[l] << " @" << L);
             }
-            create_partition( coerce(retaking), defined, detached);
-            
-            if(xml.verbose)
-            {
-                *xml << "-------- retaking --------" << std::endl;
-                for(const cluster *cls=retaking.head;cls;cls=cls->next)
-                {
-                    *xml << *cls << std::endl;
-                }
-                *xml << "|retaking|=" << retaking.size << std::endl;
-            }
+
         }
     }
 

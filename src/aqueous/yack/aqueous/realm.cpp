@@ -39,7 +39,7 @@ namespace yack
             lib(std::cerr << "reg=",reg);
         }
 
-
+       
     }
     
 }
