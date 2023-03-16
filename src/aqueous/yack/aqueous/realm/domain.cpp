@@ -19,6 +19,8 @@ namespace yack
         live(),
         laws(),
         pack(),
+        reacting(),
+        retaking(),
         combining(),
         splitting(),
         roaming(),

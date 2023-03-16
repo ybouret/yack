@@ -101,7 +101,7 @@ namespace yack
 
         typedef core_repo<const equilibrium>  eq_list; //!< simple list
         typedef coop_repo<const equilibrium>  eq_repo; //!< list with cache
-        typedef typename eq_list::node_type   eq_node; //!< common node
+        typedef eq_list::node_type            eq_node; //!< common node
 
 
 
