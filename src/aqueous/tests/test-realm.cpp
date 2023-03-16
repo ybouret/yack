@@ -37,13 +37,9 @@ YACK_UTEST(realm)
     lib(std::cerr << "C=",C) << std::endl;
     
 
-    custodian     keeper(M);
-    const domain    *dom = cs.head;
-    const conserved *grp = dom->pack.head;
-    if(grp)
-    {
-        keeper.process(cs,C,cs);
-    }
+    custodian        keeper(M);
+    keeper.process(C,cs);
+
 
 
     YACK_SIZEOF(domain);

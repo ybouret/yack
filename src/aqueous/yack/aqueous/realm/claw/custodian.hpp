@@ -45,7 +45,7 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            void prepare() noexcept; //!< clear totalC  
+            void prepare() noexcept; //!< ld(0)
 
             //! process a groupe of laws by minimal displacement
             void process(const xmlog      &xml,
@@ -53,8 +53,7 @@ namespace yack
                          const conserved  &laws);
 
             //! process all the groups of laws for each domain of the realm
-            void process(const xmlog      &xml,
-                         writable<double> &C,
+            void process(writable<double> &C,
                          const realm      &cs);
 
 

@@ -9,14 +9,13 @@ namespace yack
     namespace aqueous
     {
 
-        static inline
-        bool is_roaming(const readable<int> &nu) noexcept
-        {
-            static const unsigned NONE = 0x00;
-            static const unsigned REAC = 0x01;
-            static const unsigned PROD = 0x02;
-            static const unsigned BOTH = REAC | PROD;
+        static const unsigned NONE = 0x00;
+        static const unsigned REAC = 0x01;
+        static const unsigned PROD = 0x02;
+        static const unsigned BOTH = REAC | PROD;
 
+        static inline unsigned category_of(const readable<int> &nu) noexcept
+        {
             unsigned flag = NONE;
             for(size_t j=nu.size();j>0;--j)
             {
@@ -27,7 +26,22 @@ namespace yack
                     case negative: flag |= REAC; break;
                 }
             }
+            return flag;
+        }
 
+        static inline unsigned category_of(const equilibrium &eq) noexcept
+        {
+            unsigned flag = NONE;
+            if(eq.reac.size>0) flag |= REAC;
+            if(eq.prod.size>0) flag |= PROD;
+            return flag;
+        }
+
+        static inline
+        bool is_roaming(const readable<int> &nu) noexcept
+        {
+
+            const unsigned flag = category_of(nu);
             switch(flag)
             {
                 case REAC:
@@ -62,8 +76,6 @@ namespace yack
                         eq_roam.ensure(&eq);
                         eq.report_to(sp_roam);
                     }
-                    if(eq.reac.size<=0 && eq.prod.size>0 ) coerce(splitting) << eq;
-                    if(eq.reac.size>0  && eq.prod.size<=0) coerce(combining) << eq;
                 }
             }
 
@@ -108,14 +120,30 @@ namespace yack
                 const equilibrium &eq = ***en;
                 if(eq_roam.search(&eq))
                 {
-                    coerce(roaming) << eq;
+                    switch(category_of(eq))
+                    {
+                        case NONE:
+                        case BOTH:
+                            coerce(roaming) << eq;
+                            break;
+
+                        case REAC:
+                            coerce(splitting) << eq;
+                            break;
+
+                        case PROD:
+                            coerce(combining) << eq;
+                            break;
+                    }
                 }
                 else
                 {
                     coerce(defined) << eq;
                 }
+                
             }
 
+            // dispatching all species
             for(const sp_node *sn=live.head;sn;sn=sn->next)
             {
                 const species &sp = ***sn;
@@ -129,11 +157,16 @@ namespace yack
                 }
             }
 
-            YACK_XMLOG(xml,"roaming: " << roaming);
-            YACK_XMLOG(xml,"defined: " << defined);
 
-            YACK_XMLOG(xml,"endless: " << endless);
-            YACK_XMLOG(xml,"bounded: " << bounded);
+            YACK_XMLOG(xml,"-------- equilibria --------");
+            YACK_XMLOG(xml,"roaming     : " << roaming);
+            YACK_XMLOG(xml,"|_splitting : " << splitting);
+            YACK_XMLOG(xml,"|_combining : " << combining);
+            YACK_XMLOG(xml,"defined     : " << defined);
+
+            YACK_XMLOG(xml,"--------   species  --------");
+            YACK_XMLOG(xml,"bounded     : " << bounded);
+            YACK_XMLOG(xml,"endless     : " << endless);
 
 
 

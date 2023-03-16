@@ -47,10 +47,10 @@ namespace yack
 {
     namespace aqueous
     {
-        void custodian:: process(const xmlog      &xml,
-                                 writable<double> &C,
+        void custodian:: process( writable<double> &C,
                                  const realm      &cs)
         {
+            const xmlog &xml = cs;
             YACK_XMLSUB(xml,"custodian::process");
             prepare();
             for(const domain *dom = cs.head;dom;dom=dom->next)

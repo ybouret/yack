@@ -11,7 +11,10 @@ namespace yack
         }
 
         custodian:: custodian(const size_t M) :
-        cxx_array<double>(M)
+        cxx_array<double>(M),
+        broken(),
+        excess(),
+        xadd()
         {
         }
 
