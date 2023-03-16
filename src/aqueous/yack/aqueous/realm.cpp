@@ -15,7 +15,8 @@ namespace yack
         domains(),
         xmlog("[realm]",std::cerr,species::verbose),
         lib(lib_),
-        eqs(eqs_)
+        eqs(eqs_),
+        reg(lib->size,true)
         {
             const xmlog &xml = *this;
             //------------------------------------------------------------------
@@ -34,6 +35,8 @@ namespace yack
             {
                 dom->create(xml,eqs,eks);
             }
+
+            lib(std::cerr << "reg=",reg);
         }
 
 

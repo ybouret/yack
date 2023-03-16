@@ -35,8 +35,9 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit  domain(const equilibrium &first); //!< setup with a first equilibrium
-            virtual  ~domain() noexcept;                //!< cleanup
+            explicit  domain(const equilibrium    &first,
+                             const readable<bool> &); //!< setup with a first equilibrium
+            virtual  ~domain() noexcept;              //!< cleanup
 
             //__________________________________________________________________
             //
@@ -53,6 +54,7 @@ namespace yack
             //
             // members
             //__________________________________________________________________
+            const readable<bool>  &reg;       //!< flags if species is defined
             const size_t           N;         //!< this->size
             const size_t           M;         //!< live->size
             const size_t           L;         //!< lattice size
@@ -64,7 +66,7 @@ namespace yack
             const partition        retaking;  //!< retaking from lattice (make positive)
             const eq_list          combining; //!< combining only
             const eq_list          splitting; //!< splitting only
-            const eq_list          roaming;   //!< roaming equilibria
+            const eq_list          roaming;   //!< other roaming equilibria
             const eq_list          defined;   //!< defined equilibria
             const sp_list          endless;   //!< endless species
             const sp_list          bounded;   //!< bounded species

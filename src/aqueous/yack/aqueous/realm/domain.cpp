@@ -9,9 +9,11 @@ namespace yack
         {
         }
 
-        domain:: domain(const equilibrium &first)   :
+        domain:: domain(const equilibrium    &first,
+                        const readable<bool> &flags)   :
         large_object(),
         eq_list(),
+        reg(flags),
         N(0),
         M(0),
         L(0),

@@ -5,6 +5,7 @@
 
 #include "yack/aqueous/realm/domain.hpp"
 #include "yack/aqueous/library.hpp"
+#include "yack/sequence/cxx-array.hpp"
 
 namespace yack
 {
@@ -33,8 +34,9 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const library    &lib; //!< persistent library
-            equilibria        eqs; //!< original persistent equilibrium
+            const library        &lib; //!< persistent library
+            equilibria            eqs; //!< original persistent equilibrium
+            const cxx_array<bool> reg; //!< regular species
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(realm);

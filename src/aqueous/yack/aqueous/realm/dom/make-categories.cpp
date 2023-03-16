@@ -61,6 +61,12 @@ namespace yack
         void domain:: make_categories(const xmlog &xml)
         {
             YACK_XMLSUB(xml,"make_categories");
+
+            //------------------------------------------------------------------
+            //
+            // create global topology
+            //
+            //------------------------------------------------------------------
             matrix<int> alpha(L,M);
             addrbook    eq_roam;
             addrbook    sp_roam;
@@ -79,7 +85,6 @@ namespace yack
                 }
             }
 
-            //YACK_XMLOG(xml,"alpha=" << alpha);
 
         UPDATE_ALPHA:
             for(addrbook::const_iterator it=eq_roam.begin();it!=eq_roam.end();++it)
@@ -150,6 +155,7 @@ namespace yack
                 if(sp_roam.search(&sp))
                 {
                     coerce(endless) << sp;
+                    coerce( reg[ sp.indx[top_level]] ) = false;
                 }
                 else
                 {
