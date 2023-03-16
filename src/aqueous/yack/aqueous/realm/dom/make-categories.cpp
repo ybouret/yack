@@ -159,10 +159,10 @@ namespace yack
 
 
             YACK_XMLOG(xml,"-------- equilibria --------");
-            YACK_XMLOG(xml,"roaming     : " << roaming);
-            YACK_XMLOG(xml,"|_splitting : " << splitting);
-            YACK_XMLOG(xml,"|_combining : " << combining);
-            YACK_XMLOG(xml,"defined     : " << defined);
+            YACK_XMLOG(xml,"splitting : " << splitting);
+            YACK_XMLOG(xml,"combining : " << combining);
+            YACK_XMLOG(xml,"->roaming : " << roaming);
+            YACK_XMLOG(xml,"->defined : " << defined);
 
             YACK_XMLOG(xml,"--------   species  --------");
             YACK_XMLOG(xml,"bounded     : " << bounded);
