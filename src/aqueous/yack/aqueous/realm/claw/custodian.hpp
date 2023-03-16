@@ -47,11 +47,7 @@ namespace yack
             //__________________________________________________________________
             void prepare() noexcept; //!< ld(0)
 
-            //! process a groupe of laws by minimal displacement
-            void process(const xmlog      &xml,
-                         writable<double> &C,
-                         const conserved  &laws);
-
+            
             //! process all the groups of laws for each domain of the realm
             void process(writable<double> &C,
                          const realm      &cs);
@@ -63,6 +59,11 @@ namespace yack
             broken_list                   broken;
             excess_list                   excess;
             cameo::add<double>            xadd;
+
+            //! process a groupe of laws by minimal displacement
+            void process(const xmlog      &xml,
+                         writable<double> &C,
+                         const conserved  &laws);
         };
     }
 
