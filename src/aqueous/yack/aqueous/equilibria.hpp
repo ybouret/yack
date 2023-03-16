@@ -52,6 +52,24 @@ namespace yack
             equilibrium & operator()( equilibrium *eq ); //!< register
             YACK_PROTO_OSTREAM(equilibria);              //!< display
 
+            //! display associated array
+            template <typename ARR>
+            std::ostream & operator()(std::ostream &os,
+                                      ARR          &arr,
+                                      const size_t  lvl,
+                                      const char   *pfx = NULL) const
+            {
+                if(!pfx) pfx = "";
+                os << '{' << std::endl;
+                for(const enode *node=(*this)->head;node;node=node->next)
+                {
+                    const equilibrium &eq = ***node;
+                    pad(os << "  " << pfx << eq,eq) << " = " << arr[ eq.indx[lvl] ] << std::endl;
+                }
+                os << '}';
+                return os;
+            }
+
         private:
             YACK_DISABLE_ASSIGN(equilibria);
             eqs_db edb;

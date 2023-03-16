@@ -6,6 +6,7 @@
 
 #include "yack/aqueous/equilibria.hpp"
 #include "yack/aqueous/realm/claw/preserved.hpp"
+#include "yack/aqueous/realm/cluster.hpp"
 #include "yack/container/matrix.hpp"
 #include "yack/ios/xmlog.hpp"
 
@@ -59,6 +60,8 @@ namespace yack
             const sp_list          live;      //!< live species with sub-indices
             const conservations    laws;      //!< conservation laws
             const preserved        pack;      //!< groups of interlinked conservations
+            const partition        reacting;  //!< reacting from lattice (make reaction)
+            const partition        retaking;  //!< retaking from lattice (make positive)
             const eq_list          combining; //!< combining only
             const eq_list          splitting; //!< splitting only
             const eq_list          roaming;   //!< roaming equilibria
@@ -90,9 +93,9 @@ namespace yack
                                  equilibria             &eqs,
                                  const readable<double> &eks);
 
-            void make_categories(const xmlog &);
-
+            void make_categories(const xmlog &); //!< categorize equilibria
             void build_conserved(const xmlog &); //!< build conservation
+            void make_partitions(const xmlog &); //!< partition
         };
 
         //______________________________________________________________________

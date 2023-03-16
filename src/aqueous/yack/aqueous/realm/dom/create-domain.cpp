@@ -22,6 +22,7 @@ namespace yack
             create_manifold(xml,eqs,eks);
             make_categories(xml);
             build_conserved(xml);
+            make_partitions(xml);
         }
     }
 
