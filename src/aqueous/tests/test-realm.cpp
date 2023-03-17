@@ -43,9 +43,14 @@ YACK_UTEST(realm)
     keeper.process(C,cs);
     lib(std::cerr << "C1=",C) << std::endl;
 
-    const size_t   N = eqs->size;
+    const size_t   N = cs.eqs->size;
     collector collect(N);
 
+    if(cs.head)
+    {
+        collect.probe(*cs.head,C);
+    }
+    
     if(false)
     {
         YACK_SIZEOF(domain);

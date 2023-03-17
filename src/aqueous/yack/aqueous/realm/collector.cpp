@@ -16,7 +16,7 @@ namespace yack
 
         }
 
-        void survey:: initialize() noexcept
+        void survey:: reset() noexcept
         {
             extent  = 0; vanish.clear();
             request = 0; nullify.clear();
@@ -26,14 +26,17 @@ namespace yack
                                   const species &sp,
                                   bool          &fp)
         {
+            std::cerr << "on_positive " << sp << std::endl;
             if(fp)
             {
                 fp     = false;
                 extent =  xi;
                 vanish << sp;
+                assert(vanish.size>0);
             }
             else
             {
+                assert(vanish.size>0);
                 switch( __sign::of(xi,extent) )
                 {
                     case negative: // new winner
@@ -50,16 +53,16 @@ namespace yack
                     case positive: // looser
                         break;
                 }
-
+                assert(vanish.size>0);
             }
         }
 
-        void survey:: operator()(const actors           &A,
-                                 const readable<double> &C)
+        void survey:: probe(const actors           &A,
+                            const readable<double> &C)
         {
-            initialize();
+            reset();
 
-            bool first_positive = false;
+            bool first_positive = true;
             for(const actor *a = A.head; a; a=a->next)
             {
                 const species &s = **a;

@@ -23,10 +23,31 @@ namespace yack
             survey(const sp_proxy &proxy) noexcept ;
             ~survey() noexcept;
 
-            void initialize() noexcept;
-            void operator()(const actors           &A,
-                            const readable<double> &C);
-           
+            void reset() noexcept;
+            void probe(const actors           &A,
+                         const readable<double> &C);
+
+            friend std::ostream & operator<<(std::ostream &os, const survey &self)
+            {
+                if(self.vanish.size) {
+                    os << "vanish: " << self.vanish << " @" << self.extent;
+                }
+                else
+                {
+                    os << "no vanish";
+                }
+                os << " | ";
+                if(self.nullify.size)
+                {
+                    os << "nullify: " << self.nullify << " @" << self.request;
+                }
+                else
+                {
+                    os << "no nullify";
+                }
+                return os;
+            }
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(survey);
             void on_positive(const double xi, const species &s, bool &first);
@@ -45,6 +66,25 @@ namespace yack
             {
             }
 
+            void reset() noexcept
+            {
+                reac.reset();
+                prod.reset();
+            }
+
+            void probe(const components &eq, const readable<double> &C)
+            {
+                reac.probe(eq.reac,C);
+                prod.probe(eq.prod,C);
+            }
+
+            friend std::ostream & operator<<(std::ostream &os,
+                                      const surveys &self)
+            {
+                os << "reac: " << self.reac << " | prod: " << self.prod;
+                return os;
+            }
+
             survey reac;
             survey prod;
 
@@ -57,6 +97,7 @@ namespace yack
         {
         public:
 
+            //! 
             explicit collector(const size_t n) :
             sp_proxy( new sp_zpool() ),
             surv(n,static_cast<const sp_proxy&>(*this))
@@ -64,6 +105,22 @@ namespace yack
             }
 
             virtual ~collector() noexcept {}
+
+            void reset() noexcept
+            {
+                for(size_t i=surv.size();i>0;--i) surv[i].reset();
+            }
+
+            void probe(const domain &dom, const readable<double> &C)
+            {
+                for(const eq_node *node=dom.defined.head;node;node=node->next)
+                {
+                    const equilibrium &eq = ***node;
+                    const size_t       ei = eq.indx[sub_level];
+                    surv[ei].probe(eq,C);
+                    std::cerr << eq << " => " << surv[ei] << std::endl;
+                }
+            }
 
             cxx_array<surveys>  surv;
 
