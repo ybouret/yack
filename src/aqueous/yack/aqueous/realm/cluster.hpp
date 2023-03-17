@@ -62,7 +62,6 @@ namespace yack
         //
         //______________________________________________________________________
         typedef cxx_list_of<cluster> partition;
-
         
 
     }

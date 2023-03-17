@@ -2,6 +2,7 @@
 #include "yack/aqueous/weasel/designer.hpp"
 #include "yack/aqueous/realm.hpp"
 #include "yack/aqueous/realm/claw/custodian.hpp"
+#include "yack/aqueous/realm/collector.hpp"
 
 #include "yack/utest/run.hpp"
 
@@ -27,7 +28,6 @@ YACK_UTEST(realm)
     vector<double> K;
     realm cs(lib,eqs,K);
 
-    return 0;
 
     const size_t   M = lib->size;
     vector<double> C(M,0);
@@ -36,23 +36,27 @@ YACK_UTEST(realm)
     lib.conc(C,ran);
     for(size_t i=M;i>0;--i) if( ran.choice() ) C[i] = -C[i];
 
-    lib(std::cerr << "C=",C) << std::endl;
+    lib(std::cerr << "C0=",C) << std::endl;
     
 
     custodian        keeper(M);
     keeper.process(C,cs);
+    lib(std::cerr << "C1=",C) << std::endl;
 
+    const size_t   N = eqs->size;
+    collector collect(N);
 
-
-    YACK_SIZEOF(domain);
-    YACK_SIZEOF(realm);
-    YACK_SIZEOF(custodian);
-    YACK_SIZEOF(conservation);
-    YACK_SIZEOF(conserved);
-    YACK_SIZEOF(preserved);
-    YACK_SIZEOF(sp_list);
-    YACK_SIZEOF(eq_list);
-
+    if(false)
+    {
+        YACK_SIZEOF(domain);
+        YACK_SIZEOF(realm);
+        YACK_SIZEOF(custodian);
+        YACK_SIZEOF(conservation);
+        YACK_SIZEOF(conserved);
+        YACK_SIZEOF(preserved);
+        YACK_SIZEOF(sp_list);
+        YACK_SIZEOF(eq_list);
+    }
 
 }
 YACK_UDONE()

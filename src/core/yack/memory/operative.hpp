@@ -51,7 +51,12 @@ namespace yack
 
             //! construct helper
             template <typename T, typename U>
-            static inline void init1(void *addr, const void *args) { new (addr) T( *static_cast<const U*>(args) ); }
+            static inline void init1(void       *addr,
+                                     const void *args) {
+                assert(NULL!=args);
+                new (addr) T( *static_cast<const U*>(args) );
+
+            }
 
 
             //! destruct helper

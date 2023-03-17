@@ -1,4 +1,3 @@
-
 #include "yack/memory/operative.hpp"
 
 namespace yack
@@ -37,7 +36,6 @@ namespace yack
             assert(width>0);
             assert(start);
             assert(clear);
-            
             uint8_t *addr = static_cast<uint8_t*>(base);
             try {
                 while(live<count)
