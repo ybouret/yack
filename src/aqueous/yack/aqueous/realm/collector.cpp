@@ -39,18 +39,24 @@ namespace yack
                 assert(vanish.size>0);
                 switch( __sign::of(xi,extent) )
                 {
+                        //------------------------------------------------------
                     case negative: // new winner
+                        //------------------------------------------------------
                         assert(xi<extent);
                         extent = xi;
                         vanish.clear();
                         vanish << sp;
                         break;
 
+                        //------------------------------------------------------
                     case __zero__: // ex-aequo
+                        //------------------------------------------------------
                         vanish << sp;
                         break;
 
+                        //------------------------------------------------------
                     case positive: // looser
+                        //------------------------------------------------------
                         break;
                 }
                 assert(vanish.size>0);

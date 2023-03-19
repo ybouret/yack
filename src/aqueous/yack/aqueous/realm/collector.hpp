@@ -12,6 +12,15 @@ namespace yack
     namespace aqueous
     {
 
+        class zlimit
+        {
+        public:
+            double  extent;
+            sp_repo vanish;
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(zlimit);
+        };
+
         class survey
         {
         public:
