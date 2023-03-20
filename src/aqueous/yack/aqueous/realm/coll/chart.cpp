@@ -18,12 +18,13 @@ namespace yack
             {
             }
 
-            void chart:: settle(const components       &E,
+            bool chart:: settle(const components       &E,
                                 const readable<double> &C,
                                 const readable<bool>   &R)
             {
                 reac.detect(E.reac,C,R);
                 prod.detect(E.prod,C,R);
+                return (reac.oor.size<=0 && prod.oor.size<=0);
             }
 
             std::ostream & operator<<(std::ostream &os, const chart &self)

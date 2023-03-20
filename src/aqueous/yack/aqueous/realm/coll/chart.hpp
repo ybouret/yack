@@ -41,10 +41,11 @@ namespace yack
                  \param C global concentrations
                  \param R global regular flags
                  */
-                void settle(const components       &E,
+                bool settle(const components       &E,
                             const readable<double> &C,
                             const readable<bool>   &R);
                 YACK_PROTO_OSTREAM(chart);
+
                 
                 //______________________________________________________________
                 //

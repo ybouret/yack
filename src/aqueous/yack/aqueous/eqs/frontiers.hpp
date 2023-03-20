@@ -51,8 +51,8 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            xlimit      regular; //!< regular limiting extent from c>0
-            boundaries  invalid; //!< invalid required extent from c<0
+            xlimit      lim; //!<  limiting extent from c>0
+            boundaries  oor; //!<  out of range extent from c<0
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(frontiers);

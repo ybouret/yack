@@ -12,16 +12,16 @@ namespace yack
 
         frontiers:: frontiers(const zl_proxy &zlp,
                               const sp_proxy &spp) noexcept :
-        regular(spp),
-        invalid(zlp,spp)
+        lim(spp),
+        oor(zlp,spp)
         {
 
         }
 
         void frontiers:: reopen() noexcept
         {
-            regular.reset();
-            invalid.clear();
+            lim.reset();
+            oor.clear();
         }
 
         void frontiers:: detect(const actors           &A,
@@ -36,11 +36,11 @@ namespace yack
                 const double   c  = C[j];
                 if(c>=0)
                 {
-                    regular.insert(c/a->nu,sp);
+                    lim.insert(c/a->nu,sp);
                 }
                 else
                 {
-                    invalid.insert(c/a->nu,sp);
+                    oor.insert(c/a->nu,sp);
                 }
 
             }
@@ -48,7 +48,26 @@ namespace yack
 
         std::ostream & operator<<(std::ostream &os, const frontiers &self)
         {
-            os << "regular: " << self.regular << " | invalid: " << self.invalid;
+
+            static const char none [] = "none";
+            os << "lim: ";
+            if(self.lim.size)
+            {
+                os << self.lim;
+            }
+            else
+            {
+                os << none;
+            }
+            os << " | oor: ";
+            if(self.oor.size)
+            {
+                os << self.oor;
+            }
+            else
+            {
+                os << none;
+            }
             return os;
         }
 

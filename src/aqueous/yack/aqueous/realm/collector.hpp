@@ -7,6 +7,8 @@
 #include "yack/aqueous/realm/domain.hpp"
 #include "yack/aqueous/realm/coll/chart.hpp"
 #include "yack/sequence/cxx-array.hpp"
+#include "yack/data/dinky/solo-repo.hpp"
+
 
 namespace yack
 {
@@ -55,12 +57,15 @@ namespace yack
              \param C global concentrations
              \param R global regular flags
              */
-            void probe(const eq_list          &eqs,
+            void probe(const xmlog            &xml,
+                       const gathering        &fmt,
+                       const eq_list          &eqs,
                        const readable<double> &C,
                        const readable<bool>   &R);
 
 
-            
+            solo_repo<const equilibrium> unbal;
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(collector);
             
