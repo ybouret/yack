@@ -22,6 +22,7 @@ namespace yack
                                   const species &sp)
         {
             assert(xi<0);
+            
             zl_node *node =  annex(spore,xi,sp);
         }
 

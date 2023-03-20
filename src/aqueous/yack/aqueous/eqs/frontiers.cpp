@@ -24,9 +24,24 @@ namespace yack
             invalid.clear();
         }
 
-        void frontiers:: detect(const actors &A, const readable<double> &C)
+        void frontiers:: detect(const actors           &A,
+                                const readable<double> &C)
         {
-            
+            reopen();
+            for(const actor *a=A.head;a;a=a->next)
+            {
+                const species &sp = **a;
+                const double   c  = C[sp.indx[top_level]];
+                if(c>=0)
+                {
+                    regular.insert(c/a->nu,sp);
+                }
+                else
+                {
+                    invalid.insert(c/a->nu,sp);
+                }
+
+            }
         }
 
     }
