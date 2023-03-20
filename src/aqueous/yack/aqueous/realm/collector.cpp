@@ -6,6 +6,16 @@ namespace yack
     {
 
         
+        collector:: ~collector() noexcept
+        {
+
+        }
+
+        collector:: collector(const size_t n) :
+        collecting::caches(),
+        collector_(n,*this)
+        {
+        }
 
     }
 
