@@ -34,8 +34,11 @@ namespace yack
                 const size_t       ei = eq.indx[cat_level];
                 chart             &ch = self[ei];
                 const bool         ok = ch.settle(eq,C,R);
-                if(xml.verbose) fmt.pad(*xml << eq,eq) << " : "  << ch << std::endl;
-                if(!ok) unbal << eq;
+                if(!ok)
+                {
+                    if(xml.verbose) fmt.pad(*xml << eq,eq) << " : "  << ch << std::endl;
+                    unbal << eq;
+                }
             }
             YACK_XMLOG(xml, "unbalanced = " << unbal);
 
