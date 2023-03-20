@@ -121,7 +121,7 @@ namespace yack
         LOCATED:
             assert( (**lower).extent < xi );
             assert( xi < (**probe).extent );
-            std::cerr << "located " << xi << " between " << (**lower).extent << " and " << (**probe).extent << std::endl;
+            //std::cerr << "located " << xi << " between " << (**lower).extent << " and " << (**probe).extent << std::endl;
 
             (void) insert_after(lower,cache->create(spore,xi,sp));
             assert(check());
