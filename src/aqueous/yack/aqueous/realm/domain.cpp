@@ -91,13 +91,15 @@ namespace yack
 
         static inline
         void eq_viz(ios::ostream      &fp,
-                    const eq_node     *en,
+                    const eq_node     *node,
+                    const size_t       imax,
                     const char        *ppty)
         {
             const string _(ppty);
-            for(;en;en=en->next)
+            for(;node;node=node->next)
             {
-                const equilibrium &eq = ***en;
+                const equilibrium &eq = ***node;
+                if(eq.indx[top_level]>imax) continue;
                 eq.viz(fp,_);
             }
         }
@@ -106,11 +108,11 @@ namespace yack
         void domain:: viz(ios::ostream &fp) const
         {
             fp("subgraph cluster_%d{\n",iviz);
-
-            eq_viz(fp,combining.head,",style=\"bold,dashed\",shape=trapezium");
-            eq_viz(fp,splitting.head,",style=\"bold,dashed\",shape=invtrapezium");
-            eq_viz(fp,roaming.head,",style=\"bold,dashed\",shape=box");
-            eq_viz(fp,defined.head,",style=bold,shape=box");
+            
+            eq_viz(fp,combining.head,N,",style=\"bold,dashed\",shape=trapezium");
+            eq_viz(fp,splitting.head,N,",style=\"bold,dashed\",shape=invtrapezium");
+            eq_viz(fp,roaming.head,N,",style=\"bold,dashed\",shape=box");
+            eq_viz(fp,defined.head,N,",style=bold,shape=box");
 
 
             fp << "}\n";
