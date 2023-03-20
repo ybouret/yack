@@ -18,7 +18,8 @@ namespace yack
 
         equilibrium:: equilibrium(const equilibrium &other) :
         components(other),
-        entity(other)
+        entity(other),
+        rank(other.rank)
         {
 
         }

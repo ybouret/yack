@@ -323,6 +323,7 @@ namespace yack
                     }
                     assert(par.size>=2);
                     coerce(par).reverse();
+                    coerce(rank) = par.size;
                 }
 
                 inline virtual ~mixed_equilibrium() noexcept

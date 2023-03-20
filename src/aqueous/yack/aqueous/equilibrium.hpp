@@ -34,11 +34,16 @@ namespace yack
             double               K(double);                  //!< check getK(t) > 0
             YACK_PROTO_OSTREAM(equilibrium);                 //!< display name
 
-            //! display with padding
-            std::ostream        &display(std::ostream &, const size_t length = 0);
 
-            void viz(ios::ostream &, const string &ppty) const;
+            std::ostream &display(std::ostream &, const size_t length = 0); //!< display with padding
+            void          viz(ios::ostream &, const string &ppty) const;    //!< save for GraphViz
             
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const size_t rank;
 
             //__________________________________________________________________
             //
@@ -52,7 +57,8 @@ namespace yack
             explicit equilibrium(NAME        &uid,
                                  const size_t idx) :
             components(),
-            entity(uid,idx)
+            entity(uid,idx),
+            rank(1)
             {
             }
 
