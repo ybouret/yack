@@ -56,9 +56,9 @@ namespace yack
                 }
             }
 
-            zl_node *upper = tail; assert(upper!=lower);
+            const zl_node *upper = tail; assert(upper!=lower);
             {
-                zlimit &ztail = **upper;
+                zlimit &ztail = coerce(**upper);
                 switch( __sign::of(xi,ztail.extent) )
                 {
                     case positive: (void) annex(spore,xi,sp); return; // gt upper
@@ -66,6 +66,14 @@ namespace yack
                     case negative: break;                             // lt upper => break
                 }
             }
+
+            zl_node *probe = lower->next; assert(probe!=NULL);
+            while(probe!=upper)
+            {
+                lower=probe;
+                probe=probe->next;
+            }
+
 
             throw exception("not implemented");
 
