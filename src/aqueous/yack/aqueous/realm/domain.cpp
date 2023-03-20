@@ -99,7 +99,7 @@ namespace yack
             for(;node;node=node->next)
             {
                 const equilibrium &eq = ***node;
-                if(eq.indx[top_level]>imax) continue;
+                if(eq.indx[sub_level]>imax) continue;
                 eq.viz(fp,_);
             }
         }
