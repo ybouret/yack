@@ -6,6 +6,7 @@
 
 #include "yack/aqueous/realm/domain.hpp"
 #include "yack/sequence/cxx-array.hpp"
+#include "yack/aqueous/eqs/boundaries.hpp"
 
 namespace yack
 {

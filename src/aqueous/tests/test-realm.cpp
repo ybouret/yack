@@ -50,7 +50,14 @@ YACK_UTEST(realm)
     {
         collect.probe(*cs.head,C);
     }
+
+    const zl_proxy zlp = new zl_zpool();
+    const sp_proxy spp = new sp_zpool();
+    boundaries     bnd(zlp,spp);
     
+    std::cerr << bnd << std::endl;
+
+
     if(false)
     {
         YACK_SIZEOF(domain);

@@ -10,16 +10,6 @@ namespace yack
     namespace aqueous
     {
 
-#if 0
-        class boundaries;
-        class frontier;
-        class limitation;
-        class borders;
-        class edge;
-        class fence;
-        class rim;
-#endif
-
         //______________________________________________________________________
         //
         //
@@ -35,6 +25,11 @@ namespace yack
             //__________________________________________________________________
             explicit zlimit(const sp_proxy &) noexcept; //!< setup
             virtual ~zlimit()                 noexcept; //!< cleanup
+            
+            //! setup with first species/extent
+            explicit zlimit(const sp_proxy &pp,
+                            const double    xi,
+                            const species  &sp);
 
             //__________________________________________________________________
             //
@@ -53,9 +48,8 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(zlimit);
         };
 
-        typedef coop_repo<zlimit>       zlimits;
-        typedef zlimits::node_type      boundary;
-        
+    
+
 
 
     }

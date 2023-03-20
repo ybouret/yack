@@ -36,7 +36,7 @@ namespace yack
                 dom->create(xml,eqs,eks);
             }
 
-            lib(std::cerr << "reg=",reg);
+            lib(std::cerr << "reg=",reg) << std::endl;
         }
 
        

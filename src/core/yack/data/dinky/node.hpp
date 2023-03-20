@@ -35,12 +35,26 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        template <typename U>
-        inline explicit dinky_node(const U &u, const alt_t &) :  YACK_DINKY_NODE_CTOR(), data(u)       {} //!< setup from user's args
         inline explicit dinky_node() :                           YACK_DINKY_NODE_CTOR(), data()        {} //!< default setup, if exists
         inline explicit dinky_node(const dinky_node &_) :        YACK_DINKY_NODE_CTOR(), data(_.data)  {} //!< copy constructor
-        inline virtual ~dinky_node() noexcept { assert(!next); assert(!prev); }                          //!< cleanup
-        
+        inline virtual ~dinky_node() noexcept { assert(!next); assert(!prev); }                           //!< cleanup
+
+        //! setup with one argument for data
+        template <typename U>
+        inline explicit dinky_node(const U &u, const alt_t &) :
+        YACK_DINKY_NODE_CTOR(), data(u) {}
+
+        //! setup with two arguments for data
+        template <typename U, typename V>
+        inline explicit dinky_node(const U &u, const V &v, const alt_t &) :
+        YACK_DINKY_NODE_CTOR(), data(u,v) {}
+
+        //! setup with three arguments for data
+        template <typename U, typename V, typename W>
+        inline explicit dinky_node(const U &u, const V &v, const W &w, const alt_t &) :
+        YACK_DINKY_NODE_CTOR(), data(u,v,w) {}
+
+
         //______________________________________________________________________
         //
         // access methods

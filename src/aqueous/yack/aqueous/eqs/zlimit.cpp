@@ -16,6 +16,15 @@ namespace yack
         {
         }
 
+        zlimit:: zlimit(const sp_proxy &pp,
+                        const double    xi,
+                        const species  &sp) :
+        sp_repo(pp),
+        extent(xi)
+        {
+            (*this) << sp;
+        }
+
         void zlimit:: reset() noexcept
         {
             extent = 0;

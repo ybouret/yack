@@ -48,7 +48,21 @@ namespace yack
             zstore( turn(live) );
         }
 
-        //! make a live dinky_node
+        //! make a live dinly_node, default
+        inline NODE *create() {
+            NODE *node = zquery();
+            try
+            {
+                return new (node) NODE();
+            }
+            catch(...)
+            {
+                zstore(node);
+                throw;
+            }
+        }
+
+        //! make a live dinky_node with one argument
         template <typename U> inline
         NODE *create(const U &args) {
             NODE *node = zquery();
@@ -62,7 +76,40 @@ namespace yack
                 throw;
             }
         }
-        
+
+        //! make a live dinky_node with two arguments
+        template <typename U, typename V> inline
+        NODE *create(const U &u, const V &v) {
+            NODE *node = zquery();
+            try
+            {
+                return new (node) NODE(u,v,transmogrify);
+            }
+            catch(...)
+            {
+                zstore(node);
+                throw;
+            }
+        }
+
+        //! make a live dinky_node with three arguments
+        template <typename U, typename V, typename W> inline
+        NODE *create(const U &u, const V &v, const W &w) {
+            NODE *node = zquery();
+            try
+            {
+                return new (node) NODE(u,v,w,transmogrify);
+            }
+            catch(...)
+            {
+                zstore(node);
+                throw;
+            }
+        }
+
+
+
+
         //! turn live into zombie
         inline static NODE *turn(NODE *live) noexcept
         {
