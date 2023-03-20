@@ -25,13 +25,15 @@ namespace yack
         }
 
         void frontiers:: detect(const actors           &A,
-                                const readable<double> &C)
+                                const readable<double> &C,
+                                const readable<bool>   &R)
         {
             reopen();
             for(const actor *a=A.head;a;a=a->next)
             {
                 const species &sp = **a;
-                const double   c  = C[sp.indx[top_level]];
+                const size_t   j  = sp.indx[top_level]; if( !R[j] ) continue;
+                const double   c  = C[j];
                 if(c>=0)
                 {
                     regular.insert(c/a->nu,sp);

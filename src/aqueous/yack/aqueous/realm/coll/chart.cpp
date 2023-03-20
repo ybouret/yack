@@ -19,10 +19,11 @@ namespace yack
             }
 
             void chart:: settle(const components       &E,
-                                const readable<double> &C)
+                                const readable<double> &C,
+                                const readable<bool>   &R)
             {
-                reac.detect(E.reac,C);
-                prod.detect(E.prod,C);
+                reac.detect(E.reac,C,R);
+                prod.detect(E.prod,C,R);
             }
 
             std::ostream & operator<<(std::ostream &os, const chart &self)

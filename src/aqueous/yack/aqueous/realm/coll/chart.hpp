@@ -34,8 +34,16 @@ namespace yack
                 //
                 // methods
                 //______________________________________________________________
-                void settle(const components       &,
-                            const readable<double> &);
+
+                //! detect all status
+                /**
+                 \param E components with its reac and its prod
+                 \param C global concentrations
+                 \param R global regular flags
+                 */
+                void settle(const components       &E,
+                            const readable<double> &C,
+                            const readable<bool>   &R);
                 YACK_PROTO_OSTREAM(chart);
                 
                 //______________________________________________________________

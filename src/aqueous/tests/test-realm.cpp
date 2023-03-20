@@ -55,8 +55,8 @@ YACK_UTEST(realm)
             for(size_t i=M;i>0;--i) if( ran.choice() ) C[i] = -C[i];
 
             lib(std::cerr << "C0=",C) << std::endl;
-            collect.probe(cs.head->defined,C);
-            
+            collect.probe(cs.head->defined,C,cs.reg);
+
         }
     }
 

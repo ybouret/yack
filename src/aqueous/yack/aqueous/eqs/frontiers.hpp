@@ -35,9 +35,15 @@ namespace yack
             //! erase everything
             void        reopen() noexcept;
 
-            //! classify all frontiers according to C signs
+            //! classify all frontiers
+            /**
+             \param A actors
+             \param C concentrations
+             \param R global regular flags
+             */
             void        detect(const actors           &A,
-                               const readable<double> &C);
+                               const readable<double> &C,
+                               const readable<bool>   &R);
 
             YACK_PROTO_OSTREAM(frontiers);
 

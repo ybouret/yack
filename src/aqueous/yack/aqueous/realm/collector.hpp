@@ -44,8 +44,20 @@ namespace yack
             explicit collector(const size_t n); //!<  setup
             virtual ~collector() noexcept;      //!< cleanup
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
+            //! settle all frontiers for each defined
+            /**
+             \param eqs list of defined equilibria
+             \param C global concentrations
+             \param R global regular flags
+             */
             void probe(const eq_list          &eqs,
-                       const readable<double> &C);
+                       const readable<double> &C,
+                       const readable<bool>   &R);
 
 
             
