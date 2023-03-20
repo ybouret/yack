@@ -11,29 +11,79 @@ namespace yack
         }
 
         xlimit:: xlimit(const sp_proxy &_) noexcept :
-        sp_repo(_),
-        xi(0)
+        zlimit(_)
         {
         }
 
-        void xlimit:: initialize() noexcept
+
+
+
+
+        void xlimit:: insert(const double   xi,
+                             const species &sp)
         {
-            clear();
-            xi = 0;
+            assert(xi>=0);
+            if(size<=0)
+            {
+                extent   = xi;
+                (*this) << sp;
+                return;
+            }
+            else
+            {
+                switch( __sign::of(xi,extent) )
+                {
+                        //------------------------------------------------------
+                        // new winner
+                        //------------------------------------------------------
+                    case negative: assert(xi<extent);
+                        extent = xi;
+                        clear();
+                        (*this) << sp;
+                        break;
+
+                        //------------------------------------------------------
+                        // ex-aequo
+                        //------------------------------------------------------
+                    case __zero__:
+                        (*this) << sp;
+                        break;
+
+                        //------------------------------------------------------
+                        // looser
+                        //------------------------------------------------------
+                    case positive:
+                        break;
+                }
+            }
+
         }
 
-        std::ostream & operator<<(std::ostream &os, const xlimit &self)
+
+        bool xlimit::search(const actors           &A,
+                            const readable<double> &C)
         {
-            const sp_repo &repo = self;
-            os << repo << " @" << self.xi;
-            return os;
+
+            reset();
+
+            for(const actor *a=A.head;a;a=a->next)
+            {
+                const species &s = **a;
+                const double   c = C[s.indx[0]];
+                if(c>=0)
+                    insert(c/a->nu,s);
+            }
+
+            return size>0;
         }
 
+
+#if 0
         bool xlimit:: get_extent(const actors           &A,
                                  const readable<double> &C)
         {
             // initialize
-            initialize();
+            reset();
 
             // find first positive extent
             const actor *a = A.head;
@@ -43,7 +93,7 @@ namespace yack
                 const double   c = C[s.indx[0]];
                 if(c>=0)
                 {
-                    xi = c/a->nu;
+                    extent = c/a->nu;
                     (*this) << s;
                     a=a->next;
                     break;
@@ -58,11 +108,11 @@ namespace yack
                 if(c>=0)
                 {
                     const double x = c/a->nu;
-                    switch( __sign::of(x,xi) )
+                    switch( __sign::of(x,extent) )
                     {
 
-                        case negative: assert(x<xi); // new winner
-                            xi = x; clear(); (*this) << s;
+                        case negative: assert(x<extent); // new winner
+                            extent = x; clear(); (*this) << s;
                             break;
 
                         case __zero__:
@@ -85,7 +135,7 @@ namespace yack
             }
 
         }
-
+#endif
         
     }
 

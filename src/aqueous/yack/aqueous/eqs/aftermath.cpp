@@ -71,7 +71,7 @@ namespace yack
                           const xlimits          &xlim,
                           cameo::mul<double>     &xmul)
         {
-            const double xx = xlim.prod.xi;
+            const double xx = xlim.prod.extent;
             x.a = -xx; xmul = K; E.reac.mass_action(C,xx,xmul); f.a =  xmul.product();
         }
 
@@ -84,7 +84,7 @@ namespace yack
                           const xlimits          &xlim,
                           cameo::mul<double>     &xmul)
         {
-            xmul = 1; E.prod.mass_action(C,x.c = xlim.reac.xi,xmul); f.c = -xmul.product();
+            xmul = 1; E.prod.mass_action(C,x.c = xlim.reac.extent,xmul); f.c = -xmul.product();
         }
 
         static inline
@@ -161,8 +161,8 @@ namespace yack
                 case limited_by_reac: assert(xlim.reac.size>0); assert(xlim.prod.size==0);
                     switch( __sign::of(f.b=E.mass_action(Cs,K,xmul)) )
                     {
-                        case __zero__: return aftermath( am_for(E,C0,Cs,xadd) );   // early return
-                        case positive: f.a = f.b; x.c=xlim.reac.xi; f.c=-1; break; // in [0:x.c>0]
+                        case __zero__: return aftermath( am_for(E,C0,Cs,xadd) );        // early return
+                        case positive: f.a = f.b; x.c=xlim.reac.extent; f.c=-1; break; // in [0:x.c>0]
                         case negative:
                             f.c = f.b;
                             assert(E.d_nu<0);

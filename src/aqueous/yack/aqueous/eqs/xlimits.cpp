@@ -45,13 +45,13 @@ namespace yack
                                         const readable<double> &C0)
         {
             flag = is_running;
-            if( reac.get_extent(eq.reac,C0))
+            if( reac.search(eq.reac,C0))
             {
                 // limited by reac
-                if(prod.get_extent(eq.prod,C0))
+                if(prod.search(eq.prod,C0))
                 {
                     // and limited by prod
-                    if( fabs(prod.xi) <=0 && fabs(reac.xi) <=0 ) flag = is_blocked;
+                    if( fabs(prod.extent) <=0 && fabs(reac.extent) <=0 ) flag = is_blocked;
                     return (type=limited_by_both);
                 }
                 else
@@ -63,7 +63,7 @@ namespace yack
             else
             {
                 // not limited by reac => are_running
-                if(prod.get_extent(eq.prod,C0))
+                if(prod.search(eq.prod,C0))
                 {
                     // but limited by prod
                     return (type=limited_by_prod);
