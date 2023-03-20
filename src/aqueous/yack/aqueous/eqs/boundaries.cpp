@@ -18,10 +18,11 @@ namespace yack
         {
         }
 
-        void  boundaries:: expand(const double   xi,
+        void  boundaries:: insert(const double   xi,
                                   const species &sp)
         {
-            (void) annex(spore,xi,sp);
+            assert(xi<0);
+            zl_node *node =  annex(spore,xi,sp);
         }
 
     }

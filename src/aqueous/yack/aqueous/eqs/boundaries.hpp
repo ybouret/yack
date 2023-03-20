@@ -16,6 +16,7 @@ namespace yack
         typedef zlimits::proxy_type     zl_proxy;
         typedef zlimits::zpool_type     zl_zpool;
 
+        //! boundaries for actors
         class boundaries : public zlimits 
         {
         public:
@@ -23,7 +24,8 @@ namespace yack
                                 const sp_proxy &) noexcept;
             virtual ~boundaries() noexcept;
 
-            void     expand(const double   xi,
+            //! insert with xi<0
+            void     insert(const double   xi,
                              const species &sp);
 
 
