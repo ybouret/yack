@@ -44,14 +44,20 @@ YACK_UTEST(realm)
     {
         keeper.process(C,cs);
         lib(std::cerr << "C1=",C) << std::endl;
-
     }
 
-
-    collector collect(cs.eqs->size);
     if(cs.head)
     {
-        collect.probe(cs.head->defined,C);
+        collector collect(cs.eqs->size);
+        for(size_t iter=0;iter<=2;++iter)
+        {
+            lib.conc(C,ran);
+            for(size_t i=M;i>0;--i) if( ran.choice() ) C[i] = -C[i];
+
+            lib(std::cerr << "C0=",C) << std::endl;
+            collect.probe(cs.head->defined,C);
+            
+        }
     }
 
 

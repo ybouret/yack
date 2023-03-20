@@ -50,7 +50,8 @@ namespace yack
             void     insert(const double   xi,
                             const species &sp);
 
-
+            //! check for debuggin
+            bool check() const noexcept;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(boundaries);

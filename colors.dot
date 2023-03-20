@@ -1,7 +1,8 @@
 
-graph {
+digraph {
   node [colorscheme=set19] # Apply colorscheme to all nodes
-  1 [color=1]
+  edge [colorscheme=set19]
+  1 [color=1,fontcolor=1]
   2 [color=2]
   3 [color=3]
   4 [color=4]
@@ -10,4 +11,6 @@ graph {
   7 [color=7]
   8 [color=8]
   9 [color=9]
+	
+   1->2 [color=1]
 }
