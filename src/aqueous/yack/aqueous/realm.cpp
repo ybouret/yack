@@ -39,6 +39,24 @@ namespace yack
             lib(std::cerr << "reg=",reg) << std::endl;
         }
 
+        void realm:: graphviz(const string &filename) const
+        {
+            {
+                ios::ocstream fp(filename);
+
+                fp << "digraph G {\n";
+                fp << "node [colorscheme=set19];\n";
+                fp << "edge [colorscheme=set19];\n";
+
+                lib.viz(fp,reg);
+
+                fp << "}\n";
+
+            }
+
+            ios::vizible::render(filename);
+        }
+
        
     }
     

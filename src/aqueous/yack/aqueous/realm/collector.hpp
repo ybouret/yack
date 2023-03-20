@@ -53,6 +53,8 @@ namespace yack
 
             //! settle all frontiers for each defined
             /**
+             \param xml for output
+             \param fmt for output
              \param eqs list of defined equilibria
              \param C global concentrations
              \param R global regular flags
@@ -64,7 +66,11 @@ namespace yack
                        const readable<bool>   &R);
 
 
-            solo_repo<const equilibrium> unbal;
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            solo_repo<const equilibrium> unbal; //!< list of unbalanced equilibria
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(collector);

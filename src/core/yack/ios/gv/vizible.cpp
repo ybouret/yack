@@ -6,6 +6,7 @@
 #include "yack/ios/fmt/hexa.hpp"
 #include "yack/type/cstring.h"
 #include "yack/ios/ostream.hpp"
+#include "yack/string.hpp"
 #include <cstring>
 #include <cstdlib>
 
@@ -80,7 +81,22 @@ namespace yack
             return fp;
         }
 
+        ostream & vizible:: text(ostream &fp, const string &msg)
+        {
+            for(size_t i=1;i<=msg.size();++i)
+                text(fp,msg[i]);
+            return fp;
+        }
+
         ostream & vizible:: add_label(ostream &fp,const char *msg)
+        {
+            fp << "label=\"";
+            text(fp,msg);
+            fp << "\"";
+            return fp;
+        }
+
+        ostream & vizible:: add_label(ostream &fp,const string &msg)
         {
             fp << "label=\"";
             text(fp,msg);

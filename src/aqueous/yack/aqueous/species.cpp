@@ -1,5 +1,6 @@
 
 #include "yack/aqueous/species.hpp"
+#include "yack/ios/ostream.hpp"
 
 namespace yack
 {
@@ -18,7 +19,16 @@ namespace yack
             return os;
         }
 
+        void species:: viz(ios::ostream &fp, const bool is_reg) const
+        {
+            logo(fp) << '[';
+            add_label(fp,name);
+
+            fp << ']';
+            end(fp);
+        }
     }
 
 }
+
 

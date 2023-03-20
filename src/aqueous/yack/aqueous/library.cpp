@@ -85,6 +85,15 @@ namespace yack
             return query(_);
         }
 
+        void library:: viz(ios::ostream         &fp,
+                           const readable<bool> &reg) const
+        {
+            for(const snode *sn=(*this)->head;sn;sn=sn->next)
+            {
+                const species &sp = ***sn;
+                sp.viz(fp,reg[sp.indx[top_level]]);
+            }
+        }
 
 
     }

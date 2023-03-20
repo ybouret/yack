@@ -44,6 +44,8 @@ namespace yack
                 bool settle(const components       &E,
                             const readable<double> &C,
                             const readable<bool>   &R);
+
+                //! display result
                 YACK_PROTO_OSTREAM(chart);
 
                 

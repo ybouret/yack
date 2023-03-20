@@ -31,10 +31,12 @@ namespace yack
             //
             // helpers
             //__________________________________________________________________
-            static ostream& uuid(ostream &, const void *);                     //!< address to hexa
-            static ostream& text(ostream &, const char c);                     //!< encoded char
-            static ostream& text(ostream &, const char *);                     //!< encoded chars
-            static ostream& add_label(ostream &,const char*);                  //!< label=\"...\"
+            static ostream& uuid(ostream &, const void   *);                   //!< address to hexa
+            static ostream& text(ostream &, const char   c);                   //!< encoded char
+            static ostream& text(ostream &, const char   *);                   //!< encoded chars
+            static ostream& text(ostream &, const string &);                   //!< encoded chars
+            static ostream& add_label(ostream &,const char   *);               //!< label=\"...\"
+            static ostream& add_label(ostream &,const string &);               //!< label=\"...\"
             static ostream& end(ostream &);                                    //!< append ";\n"
             static ostream& arrow(ostream &, const void *, const void *);      //!< prepare arrow
             static ostream& digraph_init(ostream &os, const char *);           //!< init digraph

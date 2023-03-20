@@ -40,6 +40,8 @@ namespace yack
             equilibria            eqs; //!< original persistent equilibrium
             const cxx_array<bool> reg; //!< regular species
 
+            void graphviz(const string &filename) const;
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(realm);
 

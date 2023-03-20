@@ -7,6 +7,7 @@
 #include "yack/data/dinky/coop-repo.hpp"
 #include "yack/data/dinky/core-repo.hpp"
 #include "yack/ptr/ark.hpp"
+#include "yack/ios/gv/vizible.hpp"
 
 namespace yack
 {
@@ -18,7 +19,7 @@ namespace yack
         //! a species is an entity with an algebraic charge
         //
         //______________________________________________________________________
-        class species : public object, public counted, public entity
+        class species : public object, public counted, public entity, public ios::vizible
         {
         public:
             //__________________________________________________________________
@@ -46,6 +47,8 @@ namespace yack
 
             YACK_PROTO_OSTREAM(species); //!< display [name]
 
+
+            void viz(ios::ostream &fp, const bool is_reg) const;
 
             //__________________________________________________________________
             //

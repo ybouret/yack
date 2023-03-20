@@ -28,6 +28,7 @@ YACK_UTEST(realm)
     vector<double> K;
     realm cs(lib,eqs,K);
 
+    cs.graphviz("cs.dot");
 
     const size_t   M = lib->size;
     vector<double> C(M,0);
