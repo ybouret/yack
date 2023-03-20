@@ -44,6 +44,12 @@ namespace yack
             }
         }
 
+        std::ostream & operator<<(std::ostream &os, const frontiers &self)
+        {
+            os << "{regular: " << self.regular << " | invalid: " << self.invalid <<"}";
+            return os;
+        }
+
     }
 
 }

@@ -6,6 +6,7 @@
 
 #include "yack/aqueous/eqs/frontiers.hpp"
 #include "yack/aqueous/realm/coll/caches.hpp"
+#include "yack/aqueous/eqs/components.hpp"
 
 namespace yack
 {
@@ -29,6 +30,14 @@ namespace yack
                 explicit chart(const caches &) noexcept; //!< setup
                 virtual ~chart()               noexcept; //!< cleanup
 
+                //______________________________________________________________
+                //
+                // methods
+                //______________________________________________________________
+                void operator()(const components       &,
+                                const readable<double> &);
+                YACK_PROTO_OSTREAM(chart);
+                
                 //______________________________________________________________
                 //
                 // members

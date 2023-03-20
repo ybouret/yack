@@ -39,6 +39,8 @@ namespace yack
             void        detect(const actors           &A,
                                const readable<double> &C);
 
+            YACK_PROTO_OSTREAM(frontiers);
+
             //__________________________________________________________________
             //
             // members

@@ -17,7 +17,20 @@ namespace yack
             prod(cc.zlp,cc.spp)
             {
             }
-            
+
+            void chart:: operator()(const components       &E,
+                                    const readable<double> &C)
+            {
+                reac.detect(E.reac,C);
+                prod.detect(E.prod,C);
+            }
+
+            std::ostream & operator<<(std::ostream &os, const chart &self)
+            {
+                os << "reac: " << self.reac << " | prod: " << self.prod;
+                return os;
+            }
+
         }
     }
 }

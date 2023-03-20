@@ -31,12 +31,23 @@ namespace yack
         public collector_
         {
         public:
-            typedef collecting::chart chart_type;
+            //__________________________________________________________________
+            //
+            // definition
+            //__________________________________________________________________
+            typedef collecting::chart chart; //!< alias
 
-
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
             explicit collector(const size_t n); //!<  setup
             virtual ~collector() noexcept;      //!< cleanup
-            
+
+            void probe(const eq_list          &eqs,
+                       const readable<double> &C);
+
+
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(collector);

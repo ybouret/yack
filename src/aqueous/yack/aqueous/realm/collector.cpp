@@ -17,6 +17,12 @@ namespace yack
         {
         }
 
+        void collector:: probe(const eq_list          &eqs,
+                               const readable<double> &C)
+        {
+            
+        }
+
     }
 
 }
