@@ -11,28 +11,50 @@ namespace yack
 {
     namespace aqueous
     {
-        typedef coop_list<zlimit>       zlimits;
-        typedef zlimits::node_type      zl_node;
-        typedef zlimits::proxy_type     zl_proxy;
-        typedef zlimits::zpool_type     zl_zpool;
+        //______________________________________________________________________
+        //
+        //
+        // types for boundaries
+        //
+        //______________________________________________________________________
+        typedef coop_list<zlimit>       zlimits;  //!< base class for boundaries
+        typedef zlimits::node_type      zl_node;  //!< alias
+        typedef zlimits::proxy_type     zl_proxy; //!< alias
+        typedef zlimits::zpool_type     zl_zpool; //!< alis
 
-        //! boundaries for actors
+        //______________________________________________________________________
+        //
+        //
+        //! boundaries for invalid actors
+        //
+        //______________________________________________________________________
         class boundaries : public zlimits 
         {
         public:
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+
+            //! construct with cache for zlimits and each zlimit
             explicit boundaries(const zl_proxy &,
                                 const sp_proxy &) noexcept;
-            virtual ~boundaries() noexcept;
+            virtual ~boundaries() noexcept; //!< cleanup
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            
             //! insert with xi<0
             void     insert(const double   xi,
-                             const species &sp);
+                            const species &sp);
 
 
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(boundaries);
-            const sp_proxy spore;
+            const sp_proxy spore; //!< used for each zlimit
         };
 
     }

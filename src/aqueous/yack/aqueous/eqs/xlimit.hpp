@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_AQUEOUS_XLIMIT_INCLUDED
@@ -32,7 +31,7 @@ namespace yack
             // methods
             //__________________________________________________________________
 
-            //! search min of positive extents
+            //! search min of positive extents amongst actors
             /**
              \param A actors
              \param C global concentrations
