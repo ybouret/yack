@@ -40,7 +40,47 @@ namespace yack
             os << '<' << eq.name << '>';
             return os;
         }
-        
+
+
+        static inline
+        void viz_arrow(ios::ostream        &fp,
+                       const ios::vizible &source,
+                       const ios::vizible &target,
+                       const int           color,
+                       const unsigned      nu)
+        {
+            source.link(fp, &target) << '[';
+            fp("color=%d",color);
+            if(nu>1)
+            {
+                fp(",label=\"%u\"",nu);
+            }
+            source.end(fp << ']');
+        }
+
+        void equilibrium:: viz(ios::ostream &fp, const string &ppty) const
+        {
+            const int color = 1 + (indx[sub_level]%9);
+            logo(fp) << '[';
+            add_label(fp,name);
+            fp(",color=%d",color);
+            fp << ppty;
+            fp << ']';
+            end(fp);
+
+            for(const actor *a=reac.head;a;a=a->next)
+            {
+                viz_arrow(fp,**a,*this,color,a->nu);
+            }
+
+
+            for(const actor *a=prod.head;a;a=a->next)
+            {
+                viz_arrow(fp,*this,**a,color,a->nu);
+            }
+
+        }
+
 
     }
 

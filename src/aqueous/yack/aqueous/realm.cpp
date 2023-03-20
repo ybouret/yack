@@ -16,7 +16,8 @@ namespace yack
         xmlog("[realm]",std::cerr,species::verbose),
         lib(lib_),
         eqs(eqs_),
-        reg(lib->size,true)
+        reg(lib->size,true),
+        grp(lib->size,0)
         {
             const xmlog &xml = *this;
             //------------------------------------------------------------------
@@ -31,12 +32,26 @@ namespace yack
             // create partitions
             //
             //------------------------------------------------------------------
+            int    iviz = 0;
+            size_t igrp = 0;
             for(domain *dom=head;dom;dom=dom->next)
             {
                 dom->create(xml,eqs,eks);
+                coerce(dom->iviz) = iviz++;
+                for(const conservation *cv=dom->laws.head;cv;cv=cv->next)
+                {
+                    ++igrp;
+                    for(const actor *a=cv->head;a;a=a->next)
+                    {
+                        coerce(grp[(**a).indx[top_level]]) = igrp;
+                    }
+                }
             }
 
             lib(std::cerr << "reg=",reg) << std::endl;
+
+
+
         }
 
         void realm:: graphviz(const string &filename) const
@@ -48,7 +63,12 @@ namespace yack
                 fp << "node [colorscheme=set19];\n";
                 fp << "edge [colorscheme=set19];\n";
 
-                lib.viz(fp,reg);
+                lib.viz(fp,reg,grp);
+
+                for(const domain *dom=head;dom;dom=dom->next)
+                {
+                    dom->viz(fp);
+                }
 
                 fp << "}\n";
 

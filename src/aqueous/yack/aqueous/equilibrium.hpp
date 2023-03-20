@@ -16,7 +16,7 @@ namespace yack
         //! equilibrium = components + entity + constant(time)
         //
         //______________________________________________________________________
-        class equilibrium : public components, public entity
+        class equilibrium : public components, public entity, public ios::vizible
         {
         public:
             //__________________________________________________________________
@@ -37,6 +37,7 @@ namespace yack
             //! display with padding
             std::ostream        &display(std::ostream &, const size_t length = 0);
 
+            void viz(ios::ostream &, const string &ppty) const;
             
 
             //__________________________________________________________________

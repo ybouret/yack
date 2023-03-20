@@ -48,7 +48,9 @@ namespace yack
             YACK_PROTO_OSTREAM(species); //!< display [name]
 
 
-            void viz(ios::ostream &fp, const bool is_reg) const;
+            void viz(ios::ostream &fp,
+                     const bool    is_reg,
+                     const size_t  igrp) const;
 
             //__________________________________________________________________
             //

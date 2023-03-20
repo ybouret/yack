@@ -36,10 +36,11 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const library        &lib; //!< persistent library
-            equilibria            eqs; //!< original persistent equilibrium
-            const cxx_array<bool> reg; //!< regular species
-
+            const library          &lib; //!< persistent library
+            equilibria              eqs; //!< original persistent equilibrium
+            const cxx_array<bool>   reg; //!< regular species
+            const cxx_array<size_t> grp; //!< group index for species
+            
             void graphviz(const string &filename) const;
 
         private:

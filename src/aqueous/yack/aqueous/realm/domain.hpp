@@ -58,6 +58,8 @@ namespace yack
             bool       reg_in(const addrbook    &,
                               const equilibrium &) const noexcept;
 
+            void viz(ios::ostream &) const;
+
             //__________________________________________________________________
             //
             // members
@@ -82,7 +84,8 @@ namespace yack
             const matrix<int>      NuT;       //!< Nu'
             domain                *next;      //!< for domains
             domain                *prev;      //!< for domains
-
+            const int              iviz;      //!< graphviz index
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(domain);
 
