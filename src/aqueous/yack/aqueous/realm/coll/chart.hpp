@@ -13,14 +13,28 @@ namespace yack
     {
         namespace collecting
         {
+            //__________________________________________________________________
+            //
+            //
+            //! chart of frontiers for reactants and products
+            //
+            //__________________________________________________________________
             class chart
             {
             public:
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
                 explicit chart(const caches &) noexcept; //!< setup
                 virtual ~chart()               noexcept; //!< cleanup
-                
-                frontiers reac;
-                frontiers prod;
+
+                //______________________________________________________________
+                //
+                // members
+                //______________________________________________________________
+                frontiers reac; //!< frontiers for reactant
+                frontiers prod; //!< frontiers for products
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(chart);
             };

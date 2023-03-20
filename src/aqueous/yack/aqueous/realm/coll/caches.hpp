@@ -12,15 +12,28 @@ namespace yack
 
         namespace collecting
         {
-            
+            //__________________________________________________________________
+            //
+            //
+            //! shared caches for collector
+            //
+            //__________________________________________________________________
             class caches
             {
             public:
-                explicit caches();
-                virtual ~caches() noexcept;
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
+                explicit caches();           //!< create caches
+                virtual ~caches() noexcept;  //!< cleanup
 
-                const zl_proxy zlp;
-                const sp_proxy spp;
+                //______________________________________________________________
+                //
+                // members
+                //______________________________________________________________
+                const zl_proxy zlp; //!< ZLimit  Proxy
+                const sp_proxy spp; //!< SPecies Proxy
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(caches);

@@ -31,7 +31,11 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
+
+            //! erase everything
             void        reopen() noexcept;
+
+            //! classify all frontiers according to C signs
             void        detect(const actors           &A,
                                const readable<double> &C);
 

@@ -45,7 +45,7 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            
+
             //! insert with xi<0
             void     insert(const double   xi,
                             const species &sp);
@@ -55,6 +55,8 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(boundaries);
             const sp_proxy spore; //!< used for each zlimit
+            void insert1(const double xi, const species &sp);
+            
         };
 
     }
