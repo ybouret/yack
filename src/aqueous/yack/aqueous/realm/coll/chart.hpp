@@ -34,8 +34,8 @@ namespace yack
                 //
                 // methods
                 //______________________________________________________________
-                void operator()(const components       &,
-                                const readable<double> &);
+                void settle(const components       &,
+                            const readable<double> &);
                 YACK_PROTO_OSTREAM(chart);
                 
                 //______________________________________________________________

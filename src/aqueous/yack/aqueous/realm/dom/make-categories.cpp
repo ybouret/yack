@@ -104,7 +104,6 @@ namespace yack
                 }
             }
 
-            //YACK_XMLOG(xml,"alpha=" << alpha);
 
             const size_t nroam = eq_roam->size;
             for(const eq_node *en=head;en;en=en->next)
@@ -119,36 +118,53 @@ namespace yack
             if(eq_roam->size>nroam)
                 goto UPDATE_ALPHA;
 
+            //------------------------------------------------------------------
+            //
             // dispatching all equilibria
-            for(const eq_node *en=head;en;en=en->next)
+            //
+            //------------------------------------------------------------------
             {
-                const equilibrium &eq = ***en;
-                if(eq_roam.search(&eq))
+                size_t idef = 1;
+                size_t ispl = 1;
+                size_t icmb = 1;
+                size_t ioth = 1;
+                for(const eq_node *en=head;en;en=en->next)
                 {
-                    switch(category_of(eq))
+                    const equilibrium &eq = ***en;
+                    if(eq_roam.search(&eq))
                     {
-                        case NONE:
-                        case BOTH:
-                            coerce(roaming) << eq;
-                            break;
-
-                        case REAC:
-                            coerce(splitting) << eq;
-                            break;
-
-                        case PROD:
-                            coerce(combining) << eq;
-                            break;
+                        switch(category_of(eq))
+                        {
+                            case NONE:
+                            case BOTH:
+                                coerce(roaming) << eq;
+                                coerce(eq.indx[cat_level]) = ioth++;
+                                break;
+                                
+                            case REAC:
+                                coerce(splitting) << eq;
+                                coerce(eq.indx[cat_level]) = ispl++;
+                                break;
+                                
+                            case PROD:
+                                coerce(combining) << eq;
+                                coerce(eq.indx[cat_level]) = icmb++;
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        coerce(defined) << eq;
+                        coerce(eq.indx[cat_level]) = idef++;
                     }
                 }
-                else
-                {
-                    coerce(defined) << eq;
-                }
-                
             }
 
+            //------------------------------------------------------------------
+            //
             // dispatching all species
+            //
+            //------------------------------------------------------------------
             for(const sp_node *sn=live.head;sn;sn=sn->next)
             {
                 const species &sp = ***sn;

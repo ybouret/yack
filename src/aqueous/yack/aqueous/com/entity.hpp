@@ -15,8 +15,9 @@ namespace yack
         //! index level
         enum index_level
         {
-            top_level = 0, //!< global/realm
-            sub_level = 1  //!< local/domain
+            top_level = 0,  //!< global/realm
+            sub_level = 1,  //!< local/domain
+            cat_level = 2   //!< for category
         };
 
         //______________________________________________________________________
@@ -43,7 +44,7 @@ namespace yack
             indx()
             {
                 assert(idx>0);
-                coerce(indx[0]) = coerce(indx[1])  = idx;
+                coerce(indx[0]) = coerce(indx[1])  = coerce(indx[2]) = idx;
             }
 
             //__________________________________________________________________
@@ -57,7 +58,7 @@ namespace yack
             // members
             //__________________________________________________________________
             const string name;      //!< unique name
-            const size_t indx[2];   //!< 0:global 1:local
+            const size_t indx[3];   //!< 0:global 1:local
 
 
         private:

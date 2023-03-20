@@ -37,7 +37,7 @@ namespace yack
             //! display with padding
             std::ostream        &display(std::ostream &, const size_t length = 0);
 
-
+            
 
             //__________________________________________________________________
             //

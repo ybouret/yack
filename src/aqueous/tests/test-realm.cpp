@@ -40,15 +40,18 @@ YACK_UTEST(realm)
     
 
     custodian        keeper(M);
-    keeper.process(C,cs);
-    lib(std::cerr << "C1=",C) << std::endl;
+    if(false)
+    {
+        keeper.process(C,cs);
+        lib(std::cerr << "C1=",C) << std::endl;
 
-    const size_t   N = cs.eqs->size;
-    collector collect(N);
+    }
 
+
+    collector collect(cs.eqs->size);
     if(cs.head)
     {
-        
+        collect.probe(cs.head->defined,C);
     }
 
 

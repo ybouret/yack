@@ -18,8 +18,8 @@ namespace yack
             {
             }
 
-            void chart:: operator()(const components       &E,
-                                    const readable<double> &C)
+            void chart:: settle(const components       &E,
+                                const readable<double> &C)
             {
                 reac.detect(E.reac,C);
                 prod.detect(E.prod,C);
@@ -27,7 +27,7 @@ namespace yack
 
             std::ostream & operator<<(std::ostream &os, const chart &self)
             {
-                os << "reac: " << self.reac << " | prod: " << self.prod;
+                os <<   self.reac << " <=> " << self.prod;
                 return os;
             }
 
