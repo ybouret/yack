@@ -48,6 +48,7 @@ namespace yack
             YACK_PROTO_OSTREAM(species); //!< display [name]
 
 
+            //! output GraphViz code according to status and group
             void viz(ios::ostream &fp,
                      const bool    is_reg,
                      const size_t  igrp) const;

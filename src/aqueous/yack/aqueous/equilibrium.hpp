@@ -43,7 +43,7 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const size_t rank;
+            const size_t rank; //!< 1=primary, otherwise replica of rank primaries
 
             //__________________________________________________________________
             //

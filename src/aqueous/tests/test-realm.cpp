@@ -30,7 +30,6 @@ YACK_UTEST(realm)
 
     cs.graphviz("cs");
 
-    return 0;
 
     const size_t   M = lib->size;
     vector<double> C(M,0);
@@ -52,7 +51,7 @@ YACK_UTEST(realm)
     if(cs.head)
     {
         collector collect(cs.eqs->size);
-        for(size_t iter=0;iter<=2;++iter)
+        for(size_t iter=0;iter<=1;++iter)
         {
             lib.conc(C,ran);
             for(size_t i=M;i>0;--i) if( ran.choice() ) C[i] = -C[i];

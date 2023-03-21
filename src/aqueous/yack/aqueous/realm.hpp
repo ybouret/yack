@@ -24,11 +24,18 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit realm(const library          &,
-                           const equilibria       &,
-                           const readable<double> &); //!< setup
-            virtual ~realm() noexcept;          //!< cleanup
+            explicit realm(const library          &user_lib,
+                           const equilibria       &user_eqs,
+                           const readable<double> &user_K); //!< setup
+            virtual ~realm() noexcept;                      //!< cleanup
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
+            //! output multiple GraphViz
+            void graphviz(const string &rootname) const;
 
           
 
@@ -41,7 +48,6 @@ namespace yack
             const cxx_array<bool>   reg; //!< regular species
             const cxx_array<size_t> grp; //!< group index for species
             
-            void graphviz(const string &rootname) const;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(realm);

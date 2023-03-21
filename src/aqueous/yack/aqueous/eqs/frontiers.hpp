@@ -29,7 +29,7 @@ namespace yack
 
             //__________________________________________________________________
             //
-            // C++
+            // methods
             //__________________________________________________________________
 
             //! erase everything
@@ -45,6 +45,7 @@ namespace yack
                                const readable<double> &C,
                                const readable<bool>   &R);
 
+            //! display
             YACK_PROTO_OSTREAM(frontiers);
 
             //__________________________________________________________________

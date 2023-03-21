@@ -40,8 +40,7 @@ namespace yack
                     unbal << eq;
                 }
             }
-            YACK_XMLOG(xml, "unbalanced = " << unbal);
-
+            
         }
 
     }

@@ -16,15 +16,19 @@ namespace yack
 {
     namespace aqueous
     {
-        class library;
+        typedef cxx_array<eq_list> eq_slots_; //!< base class for eq_slots
 
-        typedef cxx_array<eq_list> eq_slots_;
-        
+        //______________________________________________________________________
+        //
+        //
+        //! slots to put equilibria by rank
+        //
+        //______________________________________________________________________
         class eq_slots : public object, public eq_slots_
         {
         public:
-            explicit eq_slots(const size_t n) : object(), eq_slots_(n) {}
-            virtual ~eq_slots() noexcept {}
+            explicit eq_slots(const size_t); //!< setup for 1..rank
+            virtual ~eq_slots() noexcept; //!< cleanup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(eq_slots);
@@ -75,6 +79,7 @@ namespace yack
             bool       reg_in(const addrbook    &,
                               const equilibrium &) const noexcept;
 
+            //! output GraphViz code for a given rank
             void viz(ios::ostream &, const size_t rank) const;
 
             //__________________________________________________________________
@@ -103,7 +108,7 @@ namespace yack
             domain                  *next;      //!< for domains
             domain                  *prev;      //!< for domains
             const int                iviz;      //!< graphviz index
-            const auto_ptr<eq_slots> slots;
+            const auto_ptr<eq_slots> slots;     //!< slots, post-allocated
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(domain);

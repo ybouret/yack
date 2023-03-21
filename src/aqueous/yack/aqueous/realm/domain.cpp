@@ -5,6 +5,18 @@ namespace yack
 {
     namespace aqueous
     {
+        eq_slots:: ~eq_slots() noexcept {}
+
+        eq_slots:: eq_slots(const size_t n) : object(), eq_slots_(n) {}
+    }
+
+}
+
+namespace yack
+{
+    namespace aqueous
+    {
+
         domain:: ~domain() noexcept
         {
         }
