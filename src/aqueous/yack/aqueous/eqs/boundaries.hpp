@@ -25,7 +25,7 @@ namespace yack
         //______________________________________________________________________
         //
         //
-        //! boundaries for invalid actors
+        //! boundaries for negative concentrations
         //
         //______________________________________________________________________
         class boundaries : public zlimits 
@@ -50,6 +50,12 @@ namespace yack
             void     insert(const double   xi,
                             const species &sp);
 
+            //! find correction subject to limitiation for size>0
+            /**
+             \param correction output
+             \param limitation limiting reac for prod, prod for reac
+             \return true if the correction rehabilitates
+             */
             bool     find(zlimit       &correction,
                           const zlimit &limitation) const;
 

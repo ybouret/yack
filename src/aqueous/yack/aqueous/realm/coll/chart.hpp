@@ -23,12 +23,14 @@ namespace yack
             class chart
             {
             public:
+
+                //! out of range type
                 enum oor_type
                 {
-                    oor_none,
-                    oor_reac,
-                    oor_prod,
-                    oor_both
+                    oor_none, //!< no oor
+                    oor_reac, //!< reactants are oor
+                    oor_prod, //!< products are oor
+                    oor_both  //!< both are oor
                 };
 
 
@@ -54,7 +56,19 @@ namespace yack
                                 const readable<double> &C,
                                 const readable<bool>   &R);
 
+
+                //! adjust invalid products with limiting reactant
+                /**
+                 - called on oor_prod
+                 - return true if products are positive again
+                 */
                 bool     adjust_prod();
+
+                //! adjust invalid reactants with limiting products
+                /**
+                 - called on oor_reac
+                 - return true if products are positive again
+                 */
                 bool     adjust_reac();
 
                 //! display 
@@ -71,6 +85,7 @@ namespace yack
                 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(chart);
+
             };
         }
     }
