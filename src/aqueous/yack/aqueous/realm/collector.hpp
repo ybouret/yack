@@ -43,7 +43,7 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit collector(const size_t n); //!<  setup
+            explicit collector(const size_t n, const size_t m); //!<  setup
             virtual ~collector() noexcept;      //!< cleanup
 
             //__________________________________________________________________
@@ -71,7 +71,9 @@ namespace yack
             // members
             //__________________________________________________________________
             solo_repo<const equilibrium> unbal; //!< list of unbalanced equilibria
-
+            matrix<double>               Cbal;  //!< store balanced concentrations
+            cxx_array<bool>              good;
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(collector);
             

@@ -23,6 +23,15 @@ namespace yack
             class chart
             {
             public:
+                enum oor_type
+                {
+                    oor_none,
+                    oor_reac,
+                    oor_prod,
+                    oor_both
+                };
+
+
                 //______________________________________________________________
                 //
                 // C++
@@ -41,11 +50,14 @@ namespace yack
                  \param C global concentrations
                  \param R global regular flags
                  */
-                bool settle(const components       &E,
-                            const readable<double> &C,
-                            const readable<bool>   &R);
+                oor_type settle(const components       &E,
+                                const readable<double> &C,
+                                const readable<bool>   &R);
 
-                //! display result
+                bool     adjust_prod();
+                bool     adjust_reac();
+
+                //! display 
                 YACK_PROTO_OSTREAM(chart);
 
                 
@@ -55,6 +67,8 @@ namespace yack
                 //______________________________________________________________
                 frontiers reac; //!< frontiers for reactant
                 frontiers prod; //!< frontiers for products
+                zlimit    corr; //!< correction if possible
+                
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(chart);
             };

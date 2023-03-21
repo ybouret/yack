@@ -33,17 +33,18 @@ namespace yack
             //__________________________________________________________________
 
             //! erase everything
-            void        reopen() noexcept;
+            void        initialize() noexcept;
 
             //! classify all frontiers
             /**
              \param A actors
              \param C concentrations
              \param R global regular flags
+             \return true if no out of range
              */
-            void        detect(const actors           &A,
-                               const readable<double> &C,
-                               const readable<bool>   &R);
+            bool        honored_by(const actors           &A,
+                                   const readable<double> &C,
+                                   const readable<bool>   &R);
 
             //! display
             YACK_PROTO_OSTREAM(frontiers);

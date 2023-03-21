@@ -50,8 +50,8 @@ YACK_UTEST(realm)
 
     if(cs.head)
     {
-        collector collect(cs.eqs->size);
-        for(size_t iter=0;iter<=1;++iter)
+        collector collect(cs.eqs->size,M);
+        for(size_t iter=0;iter<=0;++iter)
         {
             lib.conc(C,ran);
             for(size_t i=M;i>0;--i) if( ran.choice() ) C[i] = -C[i];

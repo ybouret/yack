@@ -50,14 +50,17 @@ namespace yack
             void     insert(const double   xi,
                             const species &sp);
 
-            //! check for debuggin
-            bool check() const noexcept;
+            bool     find(zlimit       &correction,
+                          const zlimit &limitation) const;
+
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(boundaries);
             const sp_proxy spore; //!< used for each zlimit
             void insert1(const double xi, const species &sp);
-            
+            bool check() const noexcept;
+            bool check_valid() const noexcept;
         };
 
     }

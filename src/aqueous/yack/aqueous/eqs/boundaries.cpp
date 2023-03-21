@@ -127,5 +127,31 @@ namespace yack
             assert(check());
         }
 
+        bool boundaries:: check_valid() const noexcept
+        {
+            if(size<=0)  { std::cerr << "empty boudaries" << std::endl; return false; }
+            if(!check()) return false;
+            for(const zl_node *node=head;node;node=node->next)
+            {
+                if( (**node).extent >=0 )
+                {
+                    std::cerr << "extent>=0 in boundaries" << std::endl;;
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
+        bool boundaries:: find(zlimit       &correction,
+                               const zlimit &limitation) const
+        {
+            assert(check_valid());
+            correction.reset();
+            
+            return false;
+        }
+
+
     }
 }

@@ -18,17 +18,17 @@ namespace yack
 
         }
 
-        void frontiers:: reopen() noexcept
+        void frontiers:: initialize() noexcept
         {
             lim.reset();
             oor.clear();
         }
 
-        void frontiers:: detect(const actors           &A,
-                                const readable<double> &C,
-                                const readable<bool>   &R)
+        bool frontiers:: honored_by(const actors           &A,
+                                    const readable<double> &C,
+                                    const readable<bool>   &R)
         {
-            reopen();
+            initialize();
             for(const actor *a=A.head;a;a=a->next)
             {
                 const species &sp = **a;
@@ -42,32 +42,23 @@ namespace yack
                 {
                     oor.insert(c/a->nu,sp);
                 }
-
             }
+            return oor.size<=0;
         }
 
         std::ostream & operator<<(std::ostream &os, const frontiers &self)
         {
 
-            static const char none [] = "none";
-            os << "lim: ";
             if(self.lim.size)
             {
-                os << self.lim;
+                os << "[lim: " << self.lim << "]";
             }
-            else
-            {
-                os << none;
-            }
-            os << " | oor: ";
+
             if(self.oor.size)
             {
-                os << self.oor;
+                os << "[oor: " << self.oor << "]";
             }
-            else
-            {
-                os << none;
-            }
+
             return os;
         }
 
