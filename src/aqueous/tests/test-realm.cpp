@@ -58,7 +58,6 @@ YACK_UTEST(realm)
 
             lib(std::cerr << "C0=",C) << std::endl;
             collect.probe(cs,cs.eqs,cs.head->defined,C,cs.reg);
-
         }
     }
 
