@@ -9,11 +9,13 @@ namespace yack
         {
         }
 
-        domain:: domain(const equilibrium    &first,
-                        const readable<bool> &flags)   :
-        large_object(),
+        domain:: domain(const equilibrium      &first,
+                        const readable<bool>   &flags,
+                        const readable<size_t> &grpid)   :
+        spot_object(),
         eq_list(),
         reg(flags),
+        grp(grpid),
         N(0),
         M(0),
         L(0),
@@ -33,7 +35,8 @@ namespace yack
         NuT(),
         next(0),
         prev(0),
-        iviz(0)
+        iviz(0),
+        slots(NULL)
         {
             (*this) << first;
         }
@@ -104,15 +107,49 @@ namespace yack
             }
         }
 
-
-        void domain:: viz(ios::ostream &fp) const
+        static inline
+        void collect_species(addrbook          &spdb,
+                             const eq_node     *node,
+                             const size_t       rank)
         {
+            for(;node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                if(rank != eq.rank) continue;
+                eq.report_to(spdb);
+            }
+        }
+
+
+
+        void domain:: viz(ios::ostream &fp, const size_t rank) const
+        {
+            assert(slots.is_valid());
+            if(slots->size()<rank)        return;
+            if( (*slots)[rank].size <= 0) return;
+
+
+
             fp("subgraph cluster_%d{\n",iviz);
-            
-            eq_viz(fp,combining.head,1,",style=\"bold,dashed\",shape=trapezium");
-            eq_viz(fp,splitting.head,1,",style=\"bold,dashed\",shape=invtrapezium");
-            eq_viz(fp,roaming.head,1,",style=\"bold,dashed\",shape=box");
-            eq_viz(fp,defined.head,1,",style=bold,shape=box");
+
+            {
+                addrbook db;
+                collect_species(db, combining.head, rank);
+                collect_species(db, splitting.head, rank);
+                collect_species(db, roaming.head,   rank);
+                collect_species(db, defined.head,   rank);
+                for(addrbook::const_iterator it=db.begin();it!=db.end();++it)
+                {
+                    const species &s = *static_cast<const species *>(*it);
+                    const size_t   j = s.indx[top_level];
+                    s.viz(fp, reg[j], grp[j]);
+                }
+            }
+
+            eq_viz(fp,combining.head, rank, ",style=\"bold,dashed\",shape=trapezium");
+            eq_viz(fp,splitting.head, rank, ",style=\"bold,dashed\",shape=invtrapezium");
+            eq_viz(fp,roaming.head,   rank, ",style=\"bold,dashed\",shape=box");
+            eq_viz(fp,defined.head,   rank, ",style=bold,shape=box");
 
 
             fp << "}\n";

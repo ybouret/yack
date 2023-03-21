@@ -10,7 +10,7 @@ namespace yack
     //__________________________________________________________________________
     //
     //
-    //! base class for solely power of two object
+    //! base class for Solely Power of Two-sized Objects
     //
     //__________________________________________________________________________
     class spot_object

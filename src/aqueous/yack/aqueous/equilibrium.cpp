@@ -19,6 +19,7 @@ namespace yack
         equilibrium:: equilibrium(const equilibrium &other) :
         components(other),
         entity(other),
+        ios::vizible(),
         rank(other.rank)
         {
 

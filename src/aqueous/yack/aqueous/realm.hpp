@@ -41,7 +41,7 @@ namespace yack
             const cxx_array<bool>   reg; //!< regular species
             const cxx_array<size_t> grp; //!< group index for species
             
-            void graphviz(const string &filename) const;
+            void graphviz(const string &rootname) const;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(realm);

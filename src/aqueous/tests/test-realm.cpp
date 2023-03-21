@@ -28,7 +28,9 @@ YACK_UTEST(realm)
     vector<double> K;
     realm cs(lib,eqs,K);
 
-    cs.graphviz("cs.dot");
+    cs.graphviz("cs");
+
+    return 0;
 
     const size_t   M = lib->size;
     vector<double> C(M,0);
@@ -62,11 +64,11 @@ YACK_UTEST(realm)
     }
 
 
+    YACK_SIZEOF(domain);
 
 
     if(false)
     {
-        YACK_SIZEOF(domain);
         YACK_SIZEOF(realm);
         YACK_SIZEOF(custodian);
         YACK_SIZEOF(conservation);

@@ -36,7 +36,7 @@ namespace yack
                     //----------------------------------------------------------
                     // create new domain
                     //----------------------------------------------------------
-                    push_back( new domain(eq,reg) );
+                    push_back( new domain(eq,reg,grp) );
                     YACK_XMLOG(xml,"==> " << (*tail));
                 }
                 else

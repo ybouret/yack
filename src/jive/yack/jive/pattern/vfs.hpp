@@ -15,7 +15,7 @@ namespace yack {
         //______________________________________________________________________
         //
         //
-        //! matching in VFS
+        //! matching expression in VFS
         //
         //______________________________________________________________________
         class vfsQuery : public matching
@@ -42,9 +42,18 @@ namespace yack {
             //__________________________________________________________________
 
             //! callback for vfs query
+            /**
+             \param base_name
+             \return true if matching.exactly(base_name)
+             */
             bool operator()(const char *base_name);
 
             //! query matching vfs base names from path
+            /**
+             \param el   list of entries to fill
+             \param fs   file system to use
+             \param path path to scan
+             */
             template <typename PATH>
             void operator()(vfs::entries &el, vfs &fs, PATH &path)
             {

@@ -92,10 +92,7 @@ namespace yack
                 os << '}';
                 return os;
             }
-
-            void viz(ios::ostream           &fp,
-                     const readable<bool>   &reg,
-                     const readable<size_t> &grp) const;
+            
 
 
         private:

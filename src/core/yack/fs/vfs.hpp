@@ -194,6 +194,11 @@ namespace yack
         //______________________________________________________________________
 
         //! store entries with matching paths
+        /**
+         \param elist list of entries to fill
+         \param path  path to scan
+         \param proc  return true if base_name is to be kept
+         */
         template <typename PATH, typename PROC> inline
         void query(entries &elist, PATH &path, PROC &proc)
         {

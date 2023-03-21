@@ -7,6 +7,7 @@
 #include "yack/raven/qselect.hpp"
 #include "yack/math/iota.hpp"
 #include "yack/data/dinky/solo-repo.hpp"
+#include <iomanip>
 
 namespace yack
 {
@@ -366,6 +367,7 @@ namespace yack
                 throw imported::exception(clid,"invalid topology compression");
             YACK_XMLOG(xml,"Mu   = " << Mu);
 
+            size_t nmax = 1;
             //------------------------------------------------------------------
             //
             // use RAVEn
@@ -399,10 +401,13 @@ namespace yack
                 //--------------------------------------------------------------
                 // create and register mixed_equilibrium
                 //--------------------------------------------------------------
-                equilibrium  &meq = eqs( new mixed_equilibrium(uid,idx,sub,eks,*this,w) );
+                mixed_equilibrium *pEq = new mixed_equilibrium(uid,idx,sub,eks,*this,w);
+                equilibrium       &meq = eqs( pEq );
                 (*this) << meq;
                 assert( meq.indx[0] == eqs->size );
                 assert( meq.indx[1] == size );
+
+                nmax = max_of(nmax,pEq->rank);
 
                 //--------------------------------------------------------------
                 // fill in species with stoich
@@ -432,6 +437,19 @@ namespace yack
 
             coerce(L) = size;
 
+            //------------------------------------------------------------------
+            //
+            // register all in slots
+            //
+            //------------------------------------------------------------------
+            auto_ptr<eq_slots> &pSlots = coerce(slots); pSlots = new eq_slots(nmax);
+            eq_slots           &target = *pSlots; assert(nmax==target.size());
+            for(const eq_node *en=head;en;en=en->next)
+            {
+                const equilibrium &eq = ***en;
+                target[eq.rank] << eq;
+            }
+
             if(species::verbose)
             {
                 *xml << "-------- original --------" << std::endl;
@@ -450,8 +468,14 @@ namespace yack
                     const components  &cc = eq;
                     eqs.pad(*xml<<eq,eq) << " : " << cc << " | " << cfg->missed << std::endl;
                 }
+
+                for(size_t i=1;i<=slots->size();++i)
+                {
+                    *xml        << "#rank    = " << std::setw(3) << i << " : " << (*slots)[i].size << std::endl;
+                }
             }
-            YACK_XMLOG(xml,"#config=" << conf.size << "+" << N << " => " << L);
+
+            YACK_XMLOG(xml,"#config  = " << conf.size << "+" << N << " => " << L);
 
 
 
