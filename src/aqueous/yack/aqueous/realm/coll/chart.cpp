@@ -62,15 +62,9 @@ namespace yack
 
             bool chart:: adjust_reac(const xmlog &xml)
             {
-                if(reac.oor.lookup(xml,corr,prod.lim))
-                {
-                    corr.extent = -corr.extent;
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                const bool flag = reac.oor.lookup(xml,corr,prod.lim);
+                corr.extent = -corr.extent;
+                return flag;
             }
 
 

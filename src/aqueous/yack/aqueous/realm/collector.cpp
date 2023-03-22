@@ -36,6 +36,7 @@ namespace yack
                 const size_t     j  = sp.indx[top_level];
                 Cb[j] += xi * cc.nu;
             }
+
             for(const sp_node *zn=zl.head;zn;zn=zn->next)
             {
                 Cb[ (***zn).indx[top_level] ] = 0;
@@ -86,7 +87,9 @@ namespace yack
                 
                 assert(chart::oor_prod == oor || chart::oor_reac == oor );
                 unbal << eq;
+                YACK_XMLOG(xml, "correcting with " << ch.corr);
                 compute_balanced(Cbal[ei],eq,C,ch.corr);
+                eq.display_compact(std::cerr,C)        << std::endl;
                 eq.display_compact(std::cerr,Cbal[ei]) << std::endl;
             }
 

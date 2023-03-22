@@ -124,10 +124,32 @@ namespace yack
             if(probe!=upper)
             {
 
+                const zlimit &here = **probe;
+                switch( __sign::of(xi,here.extent) )
+                {
+                    case negative:
+                        YACK_XMLOG(xml, "failure but partial :  " << **lower << " < " << limitation << " < " << here);
+                        correction = **lower;
+                        return false;
+
+                    case __zero__:
+                        correction = limitation;
+                        correction.merge_back_copy(here);
+                        YACK_XMLOG(xml, "failure by matching : " << correction);
+                        return false;
+
+                    case positive:
+                        break;
+                }
+
                 lower = probe;
                 goto PROBE;
             }
-            std::cerr << "not implemented" << std::endl;
+            assert(lower->next==probe);
+            assert(upper      ==probe);
+
+            correction = **lower;
+            YACK_XMLOG(xml, "failure but partial :  " << (**lower) << " < " << correction << " < " << (**upper) );
 
 
 

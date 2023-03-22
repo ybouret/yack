@@ -57,10 +57,10 @@ namespace yack
             //! settle all frontiers for each defined
             /**
              \param xml for output
-             \param fmt for output
+             \param fmt equilibria for output
              \param eqs list of defined equilibria
-             \param C global concentrations
-             \param R global regular flags
+             \param C   global concentrations
+             \param R   global regular flags
              */
             void probe(const xmlog            &xml,
                        const gathering        &fmt,
@@ -68,6 +68,7 @@ namespace yack
                        const readable<double> &C,
                        const readable<bool>   &R);
 
+            
             void probe(const realm       &chem,
                        writable <double> &conc);
 

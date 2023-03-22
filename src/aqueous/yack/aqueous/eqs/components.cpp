@@ -136,6 +136,17 @@ namespace yack
             }
         }
 
+        void components:: mov_(writable<double> &C, const double xi) const noexcept
+        {
+            for(const cnode *node=(*this)->head;node;node=node->next)
+            {
+                const component &cc = ***node;
+                const species   &sp = *cc;
+                const size_t     i  = sp.indx[0];
+                C[i] += (cc.nu*xi);
+            }
+        }
+
 
         static inline double expand_grad(const actor            *a,
                                          const readable<double> &C,

@@ -34,8 +34,10 @@ namespace yack
             // methods
             //__________________________________________________________________
 
-            //! output multiple GraphViz
+            //! output multiple GraphViz layers
             void   graphviz(const string &rootname) const;
+
+            //! return largest domain size
             size_t largest_domain_size() const noexcept;
           
 

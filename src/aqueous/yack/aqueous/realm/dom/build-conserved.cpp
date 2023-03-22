@@ -113,14 +113,15 @@ namespace yack
             public:
                 const size_t dim;
                 uarr         arr;
+                const xmlog &xml;
 
-                inline  conserving(const size_t d) : dim(d), arr(dim) {}
+                inline  conserving(const size_t d,
+                                   const xmlog &x) : dim(d), arr(dim), xml(x) {}
                 inline ~conserving() noexcept {}
 
                 inline void operator()(const raven::qvector &cf)
                 {
                     assert(dim==cf.size());
-                    //std::cerr << cf << std::endl;
                     size_t         num = 0;
                     arr.ld(0);
 
@@ -145,8 +146,11 @@ namespace yack
                         if( (*v) == arr ) return;
                     }
 
-                    //std::cerr << "arr=" << arr << std::endl;
                     push_back( new uvec(arr) );
+                    if(xml.verbose)
+                    {
+                        (xml() << '.').flush();
+                    }
                 }
 
                 inline void sort()
@@ -265,25 +269,25 @@ namespace yack
             const size_t q = M-p;
             matrix<int>  Q(M,M);
             if(!math::ortho_family::build(Q,P,true)) throw imported::exception(clid,"couldn't compute _|_");
-            //YACK_XMLOG(xml, "Q    = " << Q); assert( q == alga::rank(Q) );
 
             //------------------------------------------------------------------
             // compress ortho-space
             //------------------------------------------------------------------
             matrix<int> Q0;
             if( compress_ortho(Q0,Q) != q ) throw imported::exception(clid,"invalid ortho-compression");
-            //YACK_XMLOG(xml, "Q0   = " << Q0);
 
             //------------------------------------------------------------------
             //
             // computing conserved vectors by RAVEn
             //
             //------------------------------------------------------------------
-            conserving      cv(M);
+            conserving      cv(M,xml);
+            if(xml.verbose) (*xml << "RAVEn [").flush();
             {
                 raven::qbranch b;
                 b.batch(Q0,q,cv);
             }
+            if(xml.verbose) xml() << "]" << std::endl;
             cv.sort();
 
             //------------------------------------------------------------------

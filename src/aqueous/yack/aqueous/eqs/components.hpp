@@ -71,8 +71,11 @@ namespace yack
                                const double            K,
                                cameo::mul<double>     &xmul) const;
 
-            //! move C
+            //! move C with hard cut
             void move(writable<double> &C, const double xi) const noexcept;
+
+            //! move C
+            void mov_(writable<double> &C, const double xi) const noexcept;
 
             //! gradient
             void grad(writable<double>       &psi,

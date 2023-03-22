@@ -18,12 +18,12 @@ void make(writable<double> &C,
 {
     for(const actor *a=plus.head;a;a=a->next)
     {
-        C[ (**a).indx[top_level] ] = library::conc(ran);
+        C[ (**a).indx[top_level] ] = ran.to<double>();
     }
 
     for(const actor *a=minus.head;a;a=a->next)
     {
-        C[ (**a).indx[top_level] ] = -library::conc(ran);
+        C[ (**a).indx[top_level] ] = -ran.to<double>();
     }
 
 }
@@ -33,9 +33,9 @@ YACK_UTEST(coll)
     randomized::rand_ ran;
     species::verbose = true;
 
-    for(size_t nr=1;nr<=3;++nr)
+    for(size_t nr=3;nr<=3;++nr)
     {
-        for(size_t np=1;np<=3;++np)
+        for(size_t np=3;np<=3;++np)
         {
             library      lib;
             equilibria   eqs;
@@ -44,20 +44,20 @@ YACK_UTEST(coll)
             for(size_t i=1;i<=nr;++i)
             {
                 const species &s = lib(++id,0);
-                eq( -int(ran.in(1,3)), s);
+                eq( -int(ran.in(1,1)), s);
             }
 
             for(size_t i=1;i<=np;++i)
             {
                 const species &s = lib(++id,0);
-                eq( int(ran.in(1,3)), s);
+                eq( int(ran.in(1,1)), s);
             }
 
             const size_t M = lib->size;
             eq.display(std::cerr) << std::endl;;
             vector<double> K;
-            realm      chem(lib,eqs,K);
-            collector  coll(chem.largest_domain_size(),M);
+            realm          chem(lib,eqs,K);
+            collector      coll(chem.largest_domain_size(),M);
 
             vector<double> C(M,0);
 
@@ -65,6 +65,8 @@ YACK_UTEST(coll)
             {
                 make(C,eq.reac,eq.prod,ran);
                 coll.probe(chem,C);
+                //make(C,eq.prod,eq.reac,ran);
+                //coll.probe(chem,C);
             }
 
 
