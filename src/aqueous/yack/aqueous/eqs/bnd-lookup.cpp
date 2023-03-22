@@ -40,6 +40,12 @@ namespace yack
 
 
             const double xi = limitation.extent;
+
+            //------------------------------------------------------------------
+            //
+            // compare with lowest boundary
+            //
+            //------------------------------------------------------------------
             const zl_node *lower = head; assert(lower);
             {
                 const zlimit &lo = **lower;
@@ -58,20 +64,20 @@ namespace yack
                         if(1==size)
                         {
                             // success if only one boundary
-                            YACK_XMLOG(xml, "success (matching unique): " << correction);
+                            YACK_XMLOG(xml, "success (by matching unique): " << correction);
                             return true;
                         }
                         else
                         {
                             // failure if remaining boudnaries
-                            YACK_XMLOG(xml, "failure (matching first): " << correction);
+                            YACK_XMLOG(xml, "failure (but equal to lower): " << correction);
                             return false;
                         }
 
                     case positive:
                         if(1==size)
                         {
-                            YACK_XMLOG(xml, "success (more than first): " << correction);
+                            YACK_XMLOG(xml, "success (greater than unique): " << correction);
                             correction = lo;
                             return true;
                         }
@@ -79,8 +85,38 @@ namespace yack
                 }
             }
 
+            //------------------------------------------------------------------
+            //
+            // compare with highest boundary
+            //
+            //------------------------------------------------------------------
             assert(size>=2);
+            const zl_node *upper = tail; assert(upper!=lower);
+            {
+                const zlimit &up = **upper;
+                switch( __sign::of(xi,up.extent) )
+                {
+                    case negative:
+                        // need to look up
+                        break;
+
+                    case __zero__:
+                        // special win case
+                        correction = limitation;
+                        correction.merge_back_copy(up);
+                        YACK_XMLOG(xml, "success (by matching upper): " << correction);
+                        return true;
+
+                    case positive:
+                        // best case scenario
+                        correction = up;
+                        YACK_XMLOG(xml, "success (greater than upper): " << correction);
+                        return true;
+                }
+            }
+
             std::cerr << "not implemented" << std::endl;
+
 
             
             return false;
