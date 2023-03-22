@@ -9,6 +9,8 @@
 
 namespace yack
 {
+    class xmlog;
+    
     namespace aqueous
     {
         //______________________________________________________________________
@@ -52,11 +54,13 @@ namespace yack
 
             //! find correction subject to limitiation for size>0
             /**
-             \param correction output
+             \param xml        for output
+             \param correction result
              \param limitation limiting reac for prod, prod for reac
              \return true if the correction rehabilitates
              */
-            bool     lookup(zlimit       &correction,
+            bool     lookup(const xmlog  &xml,
+                            zlimit       &correction,
                             const zlimit &limitation) const;
 
 

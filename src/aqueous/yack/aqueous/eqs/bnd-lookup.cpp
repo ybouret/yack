@@ -1,5 +1,6 @@
 
 #include "yack/aqueous/eqs/boundaries.hpp"
+#include "yack/ios/xmlog.hpp"
 
 namespace yack
 {
@@ -21,7 +22,8 @@ namespace yack
         }
 
 
-        bool boundaries:: lookup(zlimit       &correction,
+        bool boundaries:: lookup(const xmlog  &xml,
+                                 zlimit       &correction,
                                  const zlimit &limitation) const
         {
             //------------------------------------------------------------------
@@ -33,8 +35,9 @@ namespace yack
             assert(limitation.extent>=0);
             correction.reset();
 
-            std::cerr << "boundaries: " << (*this)    << std::endl;
-            std::cerr << "limitation: " << limitation << std::endl;
+            YACK_XMLOG(xml, "look up " << limitation << " in " << *this);
+
+
 
             const double xi = limitation.extent;
             const zl_node *lower = head; assert(lower);
@@ -45,17 +48,30 @@ namespace yack
                     case negative:
                         // xi is too small, best effort
                         correction = limitation;
+                        YACK_XMLOG(xml, "failure (too small) : best effort is " << correction);
                         return false;
 
                     case __zero__:
                         // xi can nullify lower boundary
                         correction = limitation;
                         correction.merge_back_copy(lo);
-                        return 1==size; // success if only one boundary
+                        if(1==size)
+                        {
+                            // success if only one boundary
+                            YACK_XMLOG(xml, "success (matching unique): " << correction);
+                            return true;
+                        }
+                        else
+                        {
+                            // failure if remaining boudnaries
+                            YACK_XMLOG(xml, "failure (matching first): " << correction);
+                            return false;
+                        }
 
                     case positive:
                         if(1==size)
                         {
+                            YACK_XMLOG(xml, "success (more than first): " << correction);
                             correction = lo;
                             return true;
                         }
@@ -64,7 +80,7 @@ namespace yack
             }
 
             assert(size>=2);
-
+            std::cerr << "not implemented" << std::endl;
 
             
             return false;

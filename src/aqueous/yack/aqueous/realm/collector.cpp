@@ -74,12 +74,12 @@ namespace yack
 
                     case chart::oor_prod:
                         if(xml.verbose)  fmt.pad(*xml << "prod(s)<0 : " << eq,eq) << " : "  << ch << std::endl;
-                        good[ei] = ch.adjust_prod();
+                        good[ei] = ch.adjust_prod(xml);
                         break;
 
                     case chart::oor_reac:
                         if(xml.verbose)  fmt.pad(*xml << "reac(s)<0 : " << eq,eq) << " : "  << ch << std::endl;
-                        good[ei] = ch.adjust_reac();
+                        good[ei] = ch.adjust_reac(xml);
                         break;
 
                 }
@@ -87,6 +87,7 @@ namespace yack
                 assert(chart::oor_prod == oor || chart::oor_reac == oor );
                 unbal << eq;
                 compute_balanced(Cbal[ei],eq,C,ch.corr);
+                eq.display_compact(std::cerr,Cbal[ei]) << std::endl;
             }
 
         }

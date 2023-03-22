@@ -62,14 +62,14 @@ namespace yack
                  - called on oor_prod
                  - return true if products are positive again
                  */
-                bool     adjust_prod();
+                bool     adjust_prod(const xmlog &);
 
                 //! adjust invalid reactants with limiting products
                 /**
                  - called on oor_reac
                  - return true if products are positive again
                  */
-                bool     adjust_reac();
+                bool     adjust_reac(const xmlog &);
 
                 //! display 
                 YACK_PROTO_OSTREAM(chart);

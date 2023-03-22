@@ -111,6 +111,20 @@ namespace yack
                 }
             }
 
+            //! display values of top-level array
+            template <typename ARR> inline
+            std::ostream & display_compact(std::ostream &os, ARR &arr) const
+            {
+                os << '{';
+                for(const cnode *node=(*this)->head;node;node=node->next)
+                {
+                    const component &c = ***node;
+                    const species   &s = *c;
+                    os << ' ' << s << '=' << arr[ s.indx[top_level] ];
+                }
+                os << ' ' << '}';
+                return os;
+            }
 
             //__________________________________________________________________
             //

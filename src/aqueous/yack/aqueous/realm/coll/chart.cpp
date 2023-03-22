@@ -55,14 +55,14 @@ namespace yack
 
             }
 
-            bool chart:: adjust_prod()
+            bool chart:: adjust_prod(const xmlog &xml)
             {
-                return prod.oor.lookup(corr,reac.lim);
+                return prod.oor.lookup(xml,corr,reac.lim);
             }
 
-            bool chart:: adjust_reac()
+            bool chart:: adjust_reac(const xmlog &xml)
             {
-                if(reac.oor.lookup(corr,prod.lim))
+                if(reac.oor.lookup(xml,corr,prod.lim))
                 {
                     corr.extent = -corr.extent;
                     return true;
