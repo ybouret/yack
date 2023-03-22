@@ -143,7 +143,7 @@ namespace yack
         }
 
 
-        bool boundaries:: find(zlimit       &correction,
+        bool boundaries:: lookup(zlimit       &correction,
                                const zlimit &limitation) const
         {
             // starting with a non empty list of negative boundaries

@@ -57,12 +57,12 @@ namespace yack
 
             bool chart:: adjust_prod()
             {
-                return prod.oor.find(corr,reac.lim);
+                return prod.oor.lookup(corr,reac.lim);
             }
 
             bool chart:: adjust_reac()
             {
-                if(reac.oor.find(corr,prod.lim))
+                if(reac.oor.lookup(corr,prod.lim))
                 {
                     corr.extent = -corr.extent;
                     return true;

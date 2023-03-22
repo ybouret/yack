@@ -56,8 +56,8 @@ namespace yack
              \param limitation limiting reac for prod, prod for reac
              \return true if the correction rehabilitates
              */
-            bool     find(zlimit       &correction,
-                          const zlimit &limitation) const;
+            bool     lookup(zlimit       &correction,
+                            const zlimit &limitation) const;
 
 
 
