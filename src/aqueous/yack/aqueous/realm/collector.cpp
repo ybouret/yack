@@ -53,9 +53,19 @@ namespace yack
             YACK_XMLSUB(xml,"collector::probe");
             YACK_XMLOG(xml, "detecting unbalanced");
 
+            //------------------------------------------------------------------
+            //
+            // initializing
+            //
+            //------------------------------------------------------------------
             unbal.clear();
             good.ld(false);
 
+            //------------------------------------------------------------------
+            //
+            // loop over given equilibria
+            //
+            //------------------------------------------------------------------
             collector_ &self = *this;
             for(const eq_node *en = eqs.head; en; en=en->next)
             {
@@ -92,6 +102,8 @@ namespace yack
                 eq.display_compact(std::cerr,C)        << std::endl;
                 eq.display_compact(std::cerr,Cbal[ei]) << std::endl;
             }
+
+            std::cerr << "unbal = " << unbal << std::endl;
 
         }
 

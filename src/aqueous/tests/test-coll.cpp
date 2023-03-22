@@ -33,24 +33,25 @@ YACK_UTEST(coll)
     randomized::rand_ ran;
     species::verbose = true;
 
-    for(size_t nr=3;nr<=3;++nr)
+    for(size_t nr=1;nr<=3;++nr)
     {
-        for(size_t np=3;np<=3;++np)
+        for(size_t np=1;np<=3;++np)
         {
             library      lib;
             equilibria   eqs;
             equilibrium &eq = eqs( new const_equilibrium("eq",0.1,1) );
             char         id = 'a'-1;
+
             for(size_t i=1;i<=nr;++i)
             {
                 const species &s = lib(++id,0);
-                eq( -int(ran.in(1,1)), s);
+                eq( -int(ran.in(1,3)), s);
             }
 
             for(size_t i=1;i<=np;++i)
             {
                 const species &s = lib(++id,0);
-                eq( int(ran.in(1,1)), s);
+                eq( int(ran.in(1,3)), s);
             }
 
             const size_t M = lib->size;
@@ -61,12 +62,12 @@ YACK_UTEST(coll)
 
             vector<double> C(M,0);
 
-            for(size_t iter=1;iter<=1;++iter)
+            for(size_t iter=1;iter<=10;++iter)
             {
                 make(C,eq.reac,eq.prod,ran);
                 coll.probe(chem,C);
-                //make(C,eq.prod,eq.reac,ran);
-                //coll.probe(chem,C);
+                make(C,eq.prod,eq.reac,ran);
+                coll.probe(chem,C);
             }
 
 

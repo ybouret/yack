@@ -37,125 +37,125 @@ namespace yack
 
             YACK_XMLOG(xml, "look up " << limitation << " in " << *this);
 
+            //------------------------------------------------------------------
+            //
+            // check upper value
+            //
+            //------------------------------------------------------------------
+            const double          xi    = limitation.extent;   // available
+            const zl_node * const upper = tail; assert(tail);  // upper value
+            {
+                const zlimit &up = **upper;
+                switch( __sign::of(xi,up.extent) )
+                {
+                    case positive:
+                        // enough extent for all, stop at upper value
+                        correction = up;
+                        YACK_XMLOG(xml, yack_success << " complete [gt] solving : " << correction);
+                        return true;
 
+                    case __zero__:
+                        // enough extent for all, stop at same upper value/limitation
+                        correction = limitation;
+                        correction.merge_back_copy(up);
+                        YACK_XMLOG(xml, yack_success << " complete [eq] solving : " << correction);
+                        return true;
 
-            const double xi = limitation.extent;
+                    case negative:
+                        if(1==size)
+                        {
+                            // not enough for the single boundary
+                            correction = limitation;
+                            YACK_XMLOG(xml, yack_failure << " [lt] single boundary, use : " << correction);
+                            return false;
+                        }
+                        else
+                        {
+                            // go on with algo
+                            break;
+                        }
+
+                }
+            }
+
+            assert(size>=2);
 
             //------------------------------------------------------------------
             //
-            // compare with lowest boundary
+            // check lower value
             //
             //------------------------------------------------------------------
-            const zl_node *lower = head; assert(lower);
+            const zl_node *lower = head; assert(lower!=upper);
             {
                 const zlimit &lo = **lower;
                 switch( __sign::of(xi,lo.extent) )
                 {
                     case negative:
-                        // xi is too small, best effort
+                        // smallest than the lowest boundary => best effort
                         correction = limitation;
-                        YACK_XMLOG(xml, "failure (too small) : best effort is " << correction);
+                        YACK_XMLOG(xml, yack_failure << " [lt] multiple boundaries, use: " << correction);
                         return false;
 
                     case __zero__:
-                        // xi can nullify lower boundary
+                        // equal to the lowest boundary => best effort
                         correction = limitation;
                         correction.merge_back_copy(lo);
-                        if(1==size)
-                        {
-                            // success if only one boundary
-                            YACK_XMLOG(xml, "success (by matching unique): " << correction);
-                            return true;
-                        }
-                        else
-                        {
-                            // failure if remaining boudnaries
-                            YACK_XMLOG(xml, "failure (but equal to lower): " << correction);
-                            return false;
-                        }
+                        YACK_XMLOG(xml, yack_failure << " too small [eq] : " << correction);
+                        return false;
 
                     case positive:
-                        if(1==size)
-                        {
-                            correction = lo;
-                            YACK_XMLOG(xml, "success (greater than unique): " << correction);
-                            return true;
-                        }
+                        // generic case
                         break;
+
                 }
             }
 
             //------------------------------------------------------------------
             //
-            // compare with highest boundary
+            // bracket xi
             //
             //------------------------------------------------------------------
-            assert(size>=2);
-            const zl_node * const upper = tail; assert(upper!=lower);
-            {
-                const zlimit &up = **upper;
-                switch( __sign::of(xi,up.extent) )
-                {
-                    case negative:
-                        // need to look up
-                        break;
-
-                    case __zero__:
-                        // special win case
-                        correction = limitation;
-                        correction.merge_back_copy(up);
-                        YACK_XMLOG(xml, "success (by matching upper): " << correction);
-                        return true;
-
-                    case positive:
-                        // best case scenario
-                        correction = up;
-                        YACK_XMLOG(xml, "success (greater than upper): " << correction);
-                        return true;
-                }
-            }
-
-            assert(lower);
-            assert(upper);
-            assert(lower!=upper);
 
         PROBE:
             const zl_node * const probe = lower->next;
-            if(probe!=upper)
+            while(probe!=upper)
             {
-
-                const zlimit &here = **probe;
-                switch( __sign::of(xi,here.extent) )
+                const zlimit &next = **probe;
+                switch( __sign::of(xi,next.extent) )
                 {
                     case negative:
-                        YACK_XMLOG(xml, "failure but partial :  " << **lower << " < " << limitation << " < " << here);
-                        correction = **lower;
-                        return false;
+                        // ok, bracketed, will use lower
+                        goto DONE;
 
                     case __zero__:
+                        // special numeric case
                         correction = limitation;
-                        correction.merge_back_copy(here);
-                        YACK_XMLOG(xml, "failure by matching : " << correction);
+                        correction.merge_back_copy(next);
+                        YACK_XMLOG(xml, yack_failure << " generic :" << **lower << " < " << correction);
                         return false;
 
                     case positive:
+                        // need to go on
                         break;
                 }
 
                 lower = probe;
                 goto PROBE;
             }
-            assert(lower->next==probe);
-            assert(upper      ==probe);
+        DONE:
+            assert(lower);
+            assert(upper!=lower);
+            assert( (**lower).extent < xi);
+            assert( lower->next );
+            assert( xi < (**(lower->next)).extent );
 
             correction = **lower;
-            YACK_XMLOG(xml, "failure but partial :  " << (**lower) << " < " << correction << " < " << (**upper) );
+            YACK_XMLOG(xml, yack_failure << " generic : " << correction);
 
-
-
-            
             return false;
+            
         }
+
 
 
     }
