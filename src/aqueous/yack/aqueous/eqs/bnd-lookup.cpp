@@ -77,8 +77,8 @@ namespace yack
                     case positive:
                         if(1==size)
                         {
-                            YACK_XMLOG(xml, "success (greater than unique): " << correction);
                             correction = lo;
+                            YACK_XMLOG(xml, "success (greater than unique): " << correction);
                             return true;
                         }
                         break;
@@ -91,7 +91,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             assert(size>=2);
-            const zl_node *upper = tail; assert(upper!=lower);
+            const zl_node * const upper = tail; assert(upper!=lower);
             {
                 const zlimit &up = **upper;
                 switch( __sign::of(xi,up.extent) )
@@ -115,7 +115,20 @@ namespace yack
                 }
             }
 
+            assert(lower);
+            assert(upper);
+            assert(lower!=upper);
+
+        PROBE:
+            const zl_node * const probe = lower->next;
+            if(probe!=upper)
+            {
+
+                lower = probe;
+                goto PROBE;
+            }
             std::cerr << "not implemented" << std::endl;
+
 
 
             
