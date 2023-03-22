@@ -14,6 +14,9 @@ namespace yack
 {
     namespace aqueous
     {
+
+        class realm;
+
         //______________________________________________________________________
         //
         //
@@ -64,6 +67,9 @@ namespace yack
                        const eq_list          &eqs,
                        const readable<double> &C,
                        const readable<bool>   &R);
+
+            void probe(const realm       &chem,
+                       writable <double> &conc);
 
 
             //__________________________________________________________________

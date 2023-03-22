@@ -12,6 +12,7 @@ add_test(weasel test-aqueous weasel)
 add_test(eqs    test-aqueous eqs)
 add_test(lim    test-aqueous lim)
 add_test(am     test-aqueous am)
+add_test(coll   test-aqueous coll)
 add_test(realm  test-aqueous realm)
 
 

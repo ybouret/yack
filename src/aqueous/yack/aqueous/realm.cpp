@@ -51,6 +51,18 @@ namespace yack
             lib(std::cerr << "reg=",reg) << std::endl;
 
         }
+
+        size_t realm:: largest_domain_size() const noexcept
+        {
+            size_t res = 0;
+            for(const domain *dom=head;dom;dom=dom->next)
+            {
+                res = max_of(res,dom->size);
+            }
+            return res;
+        }
+
+
         
     }
     
@@ -79,7 +91,22 @@ namespace yack
     }
 }
 
+#include "yack/aqueous/realm/collector.hpp"
 
+namespace yack
+{
+    namespace aqueous
+    {
 
+        void collector::  probe(const realm      &chem,
+                                writable<double> &conc)
+        {
+            for(const domain *dom=chem.head;dom;dom=dom->next)
+            {
+                probe(chem,chem.eqs,dom->defined,conc,chem.reg);
+            }
+        }
+    }
+}
 
 

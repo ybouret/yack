@@ -48,18 +48,18 @@ YACK_UTEST(realm)
         lib(std::cerr << "C1=",C) << std::endl;
     }
 
-    if(cs.head)
-    {
-        collector collect(cs.eqs->size,M);
-        for(size_t iter=0;iter<=0;++iter)
-        {
-            lib.conc(C,ran);
-            for(size_t i=M;i>0;--i) if( ran.choice() ) C[i] = -C[i];
+    collector collect(cs.largest_domain_size(),M);
 
-            lib(std::cerr << "C0=",C) << std::endl;
-            collect.probe(cs,cs.eqs,cs.head->defined,C,cs.reg);
-        }
+
+    for(size_t iter=0;iter<=0;++iter)
+    {
+        lib.conc(C,ran);
+        for(size_t i=M;i>0;--i) if( ran.choice() ) C[i] = -C[i];
+
+        lib(std::cerr << "C0=",C) << std::endl;
+        collect.probe(cs,C);
     }
+
 
 
     YACK_SIZEOF(domain);

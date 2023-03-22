@@ -35,8 +35,8 @@ namespace yack
             //__________________________________________________________________
 
             //! output multiple GraphViz
-            void graphviz(const string &rootname) const;
-
+            void   graphviz(const string &rootname) const;
+            size_t largest_domain_size() const noexcept;
           
 
             //__________________________________________________________________
@@ -44,7 +44,7 @@ namespace yack
             // members
             //__________________________________________________________________
             const library          &lib; //!< persistent library
-            equilibria              eqs; //!< original persistent equilibrium
+            equilibria              eqs; //!< original+manifold
             const cxx_array<bool>   reg; //!< regular species
             const cxx_array<size_t> grp; //!< group index for species
             
