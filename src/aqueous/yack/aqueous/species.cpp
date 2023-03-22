@@ -20,14 +20,14 @@ namespace yack
         }
 
         void species:: viz(ios::ostream &fp,
-                           const bool    is_reg,
+                           const bool    ireg,
                            const size_t  igrp) const
         {
             // use pastel19, 9=>no group=igrp=0
             logo(fp) << '[';
             add_label(fp,name) << ",shape=egg";
 
-            if(is_reg)
+            if(ireg)
             {
                 fp << ",style=\"bold,filled\"";
             }

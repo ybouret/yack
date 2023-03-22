@@ -25,18 +25,23 @@ namespace yack
             //__________________________________________________________________
             explicit zlimit(const sp_proxy &) noexcept; //!< setup
             virtual ~zlimit()                 noexcept; //!< cleanup
-            
+            zlimit(const zlimit &other);                //!< copy
+            zlimit & operator=(const zlimit &);         //!< assign
+
             //! setup with first species/extent
             explicit zlimit(const sp_proxy &pp,
                             const double    xi,
                             const species  &sp);
 
+
+
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            void     reset() noexcept;  //!< extent=0 and clear()
-            YACK_PROTO_OSTREAM(zlimit); //!< display
+            void     reset()         noexcept;  //!< extent=0 and clear()
+            void     trade(zlimit &) noexcept;  //!< no-throw exchange
+            YACK_PROTO_OSTREAM(zlimit);         //!< display
 
             //__________________________________________________________________
             //
@@ -44,11 +49,9 @@ namespace yack
             //__________________________________________________________________
             double extent; //!<  extent zeroing species
 
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(zlimit);
         };
 
-    
+
 
 
 

@@ -73,7 +73,13 @@ namespace yack
     {
         return x+x;
     }
-    
+
+
+    //! x = -x
+    template <typename T> inline
+    void opposite(T &x) noexcept {
+        x = -x;
+    }
     
 }
 

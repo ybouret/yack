@@ -143,13 +143,28 @@ namespace yack
         {
             this->insert_before(mine, cache->create(u) );
         }
-        
+
         //! merge back copy
-        inline dinky_root & operator+=(const dinky_root &source)
+        inline void merge_back_copy(const dinky_root &source)
         {
             list_of<NODE> target;
             replicate(target,source);
             this->merge_back(target);
+        }
+
+        //! merge front copy
+        inline void merge_front_copy(const dinky_root &source)
+        {
+            list_of<NODE> target;
+            replicate(target,source);
+            this->merge_front(target);
+        }
+
+
+        //! syntax helper
+        inline dinky_root & operator+=(const dinky_root &source)
+        {
+            merge_back_copy(source);
             return *this;
         }
         

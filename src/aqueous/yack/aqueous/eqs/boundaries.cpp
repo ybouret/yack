@@ -146,9 +146,53 @@ namespace yack
         bool boundaries:: find(zlimit       &correction,
                                const zlimit &limitation) const
         {
+            // starting with a non empty list of negative boundaries
             assert(check_valid());
+            assert(limitation.extent>=0);
             correction.reset();
-            
+
+            std::cerr << "boundaries: " << (*this)    << std::endl;
+            std::cerr << "limitation: " << limitation << std::endl;
+
+            // locating xi
+            const double xi = -limitation.extent;
+
+            // testing upper bound
+            const zl_node *upper = tail;
+            {
+                const zlimit &up = **upper;
+                switch( __sign::of(up.extent,xi) )
+                {
+
+                    case positive: assert(xi>up.extent);
+                        // couldn't correct any, best effort is limitation
+                        correction = limitation;
+                        return false;
+
+                    case __zero__:
+                        // matching upper bound
+                        correction = limitation;
+                        correction.merge_back_copy(up);
+                        return (1 == size); // done if only one!
+
+                    case negative:
+                        if(1==size)
+                        {
+                            correction = up; assert(correction.extent<0);
+                            opposite(correction.extent);
+                            return true;
+                        }
+                        break;
+
+                }
+            }
+
+
+
+
+
+
+
             return false;
         }
 
