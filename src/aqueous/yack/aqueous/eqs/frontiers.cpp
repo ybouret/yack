@@ -40,7 +40,7 @@ namespace yack
                 }
                 else
                 {
-                    oor.insert(c/a->nu,sp);
+                    oor.insert((-c)/a->nu,sp);
                 }
             }
             return oor.size<=0;

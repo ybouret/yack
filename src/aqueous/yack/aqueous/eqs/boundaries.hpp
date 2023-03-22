@@ -46,8 +46,8 @@ namespace yack
             // methods
             //__________________________________________________________________
 
-            //! insert with xi<0
-            void     insert(const double   xi,
+            //! insert with xi>0, comming from a negative concentration
+            void     insert(double         xi,
                             const species &sp);
 
             //! find correction subject to limitiation for size>0
