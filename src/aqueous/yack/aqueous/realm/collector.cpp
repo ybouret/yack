@@ -15,7 +15,9 @@ namespace yack
         collector:: collector(const size_t n, const size_t m) :
         collecting::caches(),
         collector_(n,*this),
-        unbal(),
+        balanced(eqp),
+        weakened(eqp),
+        singular(eqp),
         Cbal(n,m),
         good(n,false)
         {
@@ -44,6 +46,15 @@ namespace yack
 
         }
 
+        void collector:: initialize() noexcept
+        {
+            balanced.clear();
+            weakened.clear();
+            singular.clear();
+            good.ld(false);
+        }
+
+
         void collector:: probe(const xmlog            &xml,
                                const gathering        &fmt,
                                const eq_list          &eqs,
@@ -58,9 +69,46 @@ namespace yack
             // initializing
             //
             //------------------------------------------------------------------
-            unbal.clear();
-            good.ld(false);
+            initialize();
 
+            //------------------------------------------------------------------
+            //
+            // first loop: classify
+            //
+            //------------------------------------------------------------------
+            collector_ &self = *this;
+            for(const eq_node *en = eqs.head; en; en=en->next)
+            {
+                const equilibrium    &eq  = ***en;
+                const size_t          ei  = eq.indx[cat_level];
+                chart                &ch  = self[ei];
+                const chart::oor_type oor = ch.settle(eq,C,R);
+                switch(oor)
+                {
+                    case chart::oor_none:
+                        if(xml.verbose)  fmt.pad(*xml << "balanced  : " << eq,eq) << std::endl;
+                        continue;
+
+                    case chart::oor_both:
+                        if(xml.verbose)  fmt.pad(*xml << "blocked   : " << eq,eq) << " : "  << ch << std::endl;
+                        continue;
+
+                    case chart::oor_prod:
+                        if(xml.verbose)  fmt.pad(*xml << "prod(s)<0 : " << eq,eq) << " : "  << ch << std::endl;
+                        //good[ei] = ch.adjust_prod(xml);
+                        break;
+
+                    case chart::oor_reac:
+                        if(xml.verbose)  fmt.pad(*xml << "reac(s)<0 : " << eq,eq) << " : "  << ch << std::endl;
+                        //good[ei] = ch.adjust_reac(xml);
+                        break;
+                }
+
+            }
+
+
+
+#if 0
             //------------------------------------------------------------------
             //
             // loop over given equilibria
@@ -104,7 +152,8 @@ namespace yack
             }
 
             std::cerr << "unbal = " << unbal << std::endl;
-
+#endif
+            
         }
 
     }

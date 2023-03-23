@@ -35,6 +35,7 @@ YACK_UTEST(realm)
     vector<double> C(M,0);
 
 
+    
     lib.conc(C,ran);
     for(size_t i=M;i>0;--i) if( ran.choice() ) C[i] = -C[i];
 

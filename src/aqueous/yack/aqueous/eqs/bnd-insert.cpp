@@ -80,8 +80,8 @@ namespace yack
                 switch( __sign::of(xi,zcurr.extent) )
                 {
                     case negative: goto LOCATED;                         // between lower and probe
-                    case __zero__: zcurr << sp; assert(check()); return; // eq probe
-                    case positive: break;
+                    case __zero__: zcurr << sp; assert(check()); return; // equal to probe
+                    case positive: break;                                // check next interal
                 }
 
                 lower=probe;
@@ -94,7 +94,6 @@ namespace yack
         LOCATED:
             assert( (**lower).extent < xi );
             assert( xi < (**probe).extent );
-            //std::cerr << "located " << xi << " between " << (**lower).extent << " and " << (**probe).extent << std::endl;
 
             (void) insert_after(lower,cache->create(spore,xi,sp));
             assert(check());

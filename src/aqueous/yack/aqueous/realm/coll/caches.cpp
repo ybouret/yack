@@ -14,7 +14,8 @@ namespace yack
 
             caches:: caches() :
             zlp( new zl_zpool() ),
-            spp( new sp_zpool() )
+            spp( new sp_zpool() ),
+            eqp( new eq_zpool() )
             {
             }
 

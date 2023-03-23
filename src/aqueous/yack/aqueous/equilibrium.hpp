@@ -106,10 +106,11 @@ namespace yack
             virtual double getK(double) noexcept;
         };
 
-        typedef core_repo<const equilibrium>  eq_list; //!< simple list
-        typedef coop_repo<const equilibrium>  eq_repo; //!< list with cache
-        typedef eq_list::node_type            eq_node; //!< common node
-        
+        typedef core_repo<const equilibrium>  eq_list;  //!< simple list
+        typedef coop_repo<const equilibrium>  eq_repo;  //!< list with cache
+        typedef eq_list::node_type            eq_node;  //!< common node
+        typedef eq_repo::proxy_type           eq_proxy; //!< alias
+        typedef eq_repo::zpool_type           eq_zpool; //!< alias
 
     }
 

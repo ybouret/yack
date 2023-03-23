@@ -77,13 +77,17 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            solo_repo<const equilibrium> unbal; //!< list of unbalanced equilibria
+            eq_repo                      balanced; //!< fully balanced
+            eq_repo                      weakened; //!< one side  is  bad
+            eq_repo                      singular; //!< two sides are bad
             matrix<double>               Cbal;  //!< store balanced     concentrations
             cxx_array<bool>              good;  //!< status of balanced concentrations
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(collector);
-            
+
+            void initialize() noexcept;
+
         };
 
     }
