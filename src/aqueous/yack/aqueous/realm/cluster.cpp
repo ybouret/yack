@@ -80,16 +80,16 @@ namespace yack
             return 0;
         }
 
-
-        bool cluster:: holds_all(const eq_repo &eqs) const noexcept
+        bool cluster:: is_subset_of(const eq_repo &eqs) const noexcept
         {
-            for(const eq_node *node=eqs.head;node;node=node->next)
+            for(const eq_node *node=head;node;node=node->next)
             {
-                if( ! contains( ***node) ) return false;
+                if( !eqs.contains( ***node) ) return false;
             }
             return true;
         }
 
+        
 
 
     }

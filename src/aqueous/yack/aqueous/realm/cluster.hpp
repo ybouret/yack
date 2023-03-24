@@ -44,8 +44,9 @@ namespace yack
             //! compare: by size then lexicographic
             static int compare(const cluster *, const cluster *) noexcept;
 
-            //! check if ALL eqs are inside
-            bool       holds_all(const eq_repo &eqs) const noexcept;
+            //! check if this is a subset of a list of equilibria
+            bool       is_subset_of(const eq_repo &eqs) const noexcept;
+            
 
             //__________________________________________________________________
             //

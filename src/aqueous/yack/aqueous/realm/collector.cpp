@@ -198,20 +198,36 @@ namespace yack
             YACK_XMLOG(xml, "weakened : " << weakened);
             YACK_XMLOG(xml, "singular : " << singular);
 
-            if(xml.verbose)
+            if(solvable.size)
             {
-                if(solvable.size)
+                YACK_XMLOG(xml, "-------- solvable -------- #" << solvable.size);
+                if(xml.verbose) display_gains(xml,Gain,fmt,solvable.head);
+                for(const cluster *cls=retaking.head;cls;cls=cls->next)
                 {
-                    *xml << " -------- solvable -------- " << std::endl;
-                    display_gains(xml,Gain,fmt,solvable.head);
-                }
-
-                if(weakened.size)
-                {
-                    *xml << " -------- weakened -------- " << std::endl;
-                    display_gains(xml,Gain,fmt,weakened.head);
+                    if(cls->is_subset_of(solvable))
+                    {
+                        std::cerr << "--> should try " << *cls << std::endl;
+                    }
                 }
             }
+
+
+            if(weakened.size)
+            {
+                YACK_XMLOG(xml, "-------- weakened -------- #" << weakened.size);
+                if(xml.verbose) display_gains(xml,Gain,fmt,weakened.head);
+                for(const cluster *cls=retaking.head;cls;cls=cls->next)
+                {
+                    if(cls->is_subset_of(weakened))
+                    {
+                        std::cerr << "--> should try " << *cls << std::endl;
+                    }
+                }
+            }
+
+
+
+
 
         }
 
