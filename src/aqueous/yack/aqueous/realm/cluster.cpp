@@ -10,6 +10,7 @@ namespace yack
 
         cluster:: cluster(const equilibrium &first) :
         eq_list(),
+        spec(),
         next(0),
         prev(0)
         {
@@ -18,6 +19,7 @@ namespace yack
 
         cluster:: cluster(const cluster &other, const equilibrium &extra) :
         eq_list(other),
+        spec(other.spec),
         next(0),
         prev(0)
         {

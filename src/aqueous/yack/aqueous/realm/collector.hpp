@@ -96,7 +96,13 @@ namespace yack
                         const readable<bool>   &R,
                         const partition        &retaking);
 
-            void displace(writable<double> &C,
+            double         combined(const cluster &);
+            const cluster &find_opt(const partition        &part,
+                                    const eq_repo          &zeqs,
+                                    const xmlog            &xml);
+            
+
+            void   displace(writable<double> &C,
                           const cluster    &W);
 
         };

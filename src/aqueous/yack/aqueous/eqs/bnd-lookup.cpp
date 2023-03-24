@@ -40,7 +40,12 @@ namespace yack
             static const char sep[] = " : ";
 
             YACK_XMLOG(xml, pfx << "look up : " << limitation << " in " << *this);
-
+            if(fabs(limitation.extent)<=0)
+            {
+                YACK_XMLOG(xml, pfx << yack_failure << sep << correction << ", vanished species");
+                return false;
+            }
+            
             //------------------------------------------------------------------
             //
             // check upper value
