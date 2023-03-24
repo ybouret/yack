@@ -19,17 +19,25 @@ namespace yack
         solvable(eqp),
         weakened(eqp),
         singular(eqp),
-        Cbal(n,m)
+        Gain(n,0),
+        Cbal(n,m),
+        xadd()
         {
         }
 
         static inline
-        void compute_balanced(writable<double>       &Cb,
+        double compute_balanced(cameo::add<double>    &xadd,
+                              writable<double>       &Cb,
                               const components       &eq,
                               const readable<double> &C0,
+                              const readable<bool>   &R,
                               const zlimit           &zl) noexcept
         {
+
+            // load all phase space
             math::iota::load(Cb,C0);
+
+            // apply extent
             const double xi = zl.extent;
             for(const cnode *node=eq->head;node;node=node->next)
             {
@@ -43,6 +51,25 @@ namespace yack
             {
                 Cb[ (***zn).indx[top_level] ] = 0;
             }
+
+            xadd.free();
+            for(const cnode *node=eq->head;node;node=node->next)
+            {
+                const component &cc = ***node;
+                const species   &sp = *cc;
+                const size_t     j  = sp.indx[top_level]; if( !R[j] ) continue;
+                const double     c0 = C0[j];
+                if(c0<0)
+                {
+                    xadd.push( -c0 );
+                    xadd.push( min_of(Cb[j],0.0) );
+                }
+                else
+                {
+                    assert(Cb[j]>=0);
+                }
+            }
+            return xadd.sum();
 
         }
 
@@ -121,12 +148,13 @@ namespace yack
                 }
 
                 assert(chart::oor_prod == oor || chart::oor_reac == oor );
-                compute_balanced(Cbal[ei],eq,C,ch.corr);
+                const double gain = Gain[ei] = compute_balanced(xadd,Cbal[ei],eq,C,R,ch.corr);
                 if(xml.verbose)
                 {
                     *xml <<" |_extent : " << ch.corr << std::endl;
                     eq.display_compact(*xml <<" |_origin : ",C)        << std::endl;
                     eq.display_compact(*xml <<" |_target : ",Cbal[ei]) << std::endl;
+                    *xml <<" |_gain   : " << gain << std::endl;
                 }
             }
 

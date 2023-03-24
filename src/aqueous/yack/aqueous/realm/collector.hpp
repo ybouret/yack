@@ -54,6 +54,30 @@ namespace yack
             // methods
             //__________________________________________________________________
 
+
+
+            //! settle all frontiers for each defined
+            void probe(const realm       &chem,
+                       writable <double> &conc);
+
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            eq_repo                      balanced; //!< fully balanced
+            eq_repo                      solvable; //!< one side is bad but self-consisten
+            eq_repo                      weakened; //!< one side  is  bad
+            eq_repo                      singular; //!< two sides are bad
+            cxx_array<double>            Gain;     //!< store gains
+            matrix<double>               Cbal;     //!< store balanced concentrations
+            cameo::add<double>           xadd;     //!< perform gain computation
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(collector);
+
+            void initialize() noexcept;
+
             //! settle all frontiers for each defined
             /**
              \param xml for output
@@ -67,27 +91,6 @@ namespace yack
                        const eq_list          &eqs,
                        const readable<double> &C,
                        const readable<bool>   &R);
-
-            
-            void probe(const realm       &chem,
-                       writable <double> &conc);
-
-
-            //__________________________________________________________________
-            //
-            // members
-            //__________________________________________________________________
-            eq_repo                      balanced; //!< fully balanced
-            eq_repo                      solvable; //!< one side is bad but self-consisten
-            eq_repo                      weakened; //!< one side  is  bad
-            eq_repo                      singular; //!< two sides are bad
-            matrix<double>               Cbal;  //!< store balanced     concentrations
-            
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(collector);
-
-            void initialize() noexcept;
-
         };
 
     }
