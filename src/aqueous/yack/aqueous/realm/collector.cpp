@@ -120,7 +120,8 @@ namespace yack
                                const gathering        &fmt,
                                const eq_list          &eqs,
                                const readable<double> &C,
-                               const readable<bool>   &R)
+                               const readable<bool>   &R,
+                               const partition        &retaking)
         {
             YACK_XMLSUB(xml,"collector::probe");
             YACK_XMLOG(xml, "detecting unbalanced");

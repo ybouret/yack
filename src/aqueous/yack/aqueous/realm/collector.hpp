@@ -81,17 +81,19 @@ namespace yack
 
             //! settle all frontiers for each defined
             /**
-             \param xml for output
-             \param fmt equilibria for output
-             \param eqs list of defined equilibria
-             \param C   global concentrations
-             \param R   global regular flags
+             \param xml       for output
+             \param fmt       equilibria for output
+             \param eqs       list of defined equilibria
+             \param C         global concentrations
+             \param R         global regular flags
+             \param retaking partition of independent equilibria
              */
             void probe(const xmlog            &xml,
                        const gathering        &fmt,
                        const eq_list          &eqs,
                        const readable<double> &C,
-                       const readable<bool>   &R);
+                       const readable<bool>   &R,
+                       const partition        &retaking);
         };
 
     }

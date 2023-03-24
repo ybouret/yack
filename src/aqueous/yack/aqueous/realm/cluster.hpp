@@ -44,6 +44,9 @@ namespace yack
             //! compare: by size then lexicographic
             static int compare(const cluster *, const cluster *) noexcept;
 
+            //! check if ALL eqs are inside
+            bool       holds_all(const eq_repo &eqs) const noexcept;
+
             //__________________________________________________________________
             //
             // members

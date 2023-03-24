@@ -103,7 +103,7 @@ namespace yack
         {
             for(const domain *dom=chem.head;dom;dom=dom->next)
             {
-                probe(chem,chem.eqs,dom->defined,conc,chem.reg);
+                probe(chem,chem.eqs,dom->defined,conc,chem.reg,dom->retaking);
             }
         }
     }

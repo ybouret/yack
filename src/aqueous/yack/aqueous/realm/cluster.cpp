@@ -81,5 +81,16 @@ namespace yack
         }
 
 
+        bool cluster:: holds_all(const eq_repo &eqs) const noexcept
+        {
+            for(const eq_node *node=eqs.head;node;node=node->next)
+            {
+                if( ! contains( ***node) ) return false;
+            }
+            return true;
+        }
+
+
+
     }
 }
