@@ -27,72 +27,6 @@ namespace yack
         {
         }
 
-        static inline
-        double compute_balanced(cameo::add<double>    &xadd,
-                                writable<double>       &Cb,
-                                const components       &eq,
-                                const readable<double> &C0,
-                                const readable<bool>   &R,
-                                const zlimit           &zl) noexcept
-        {
-
-            //------------------------------------------------------------------
-            //
-            // load all phase space
-            //
-            //------------------------------------------------------------------
-            math::iota::load(Cb,C0);
-
-            //------------------------------------------------------------------
-            //
-            // apply extent
-            //
-            //------------------------------------------------------------------
-            const double xi = zl.extent;
-            for(const cnode *node=eq->head;node;node=node->next)
-            {
-                const component &cc = ***node;
-                const species   &sp = *cc;
-                const size_t     j  = sp.indx[top_level];
-                Cb[j] += xi * cc.nu;
-            }
-
-            //------------------------------------------------------------------
-            //
-            // use vanishing
-            //
-            //------------------------------------------------------------------
-            for(const sp_node *zn=zl.head;zn;zn=zn->next)
-            {
-                Cb[ (***zn).indx[top_level] ] = 0;
-            }
-
-            //------------------------------------------------------------------
-            //
-            // deduce gain
-            //
-            //------------------------------------------------------------------
-            xadd.free();
-            for(const cnode *node=eq->head;node;node=node->next)
-            {
-                const component &cc = ***node;
-                const species   &sp = *cc;
-                const size_t     j  = sp.indx[top_level]; if( !R[j] ) continue;
-                const double     c0 = C0[j];
-                if(c0<0)
-                {
-                    xadd.push( -c0 );
-                    xadd.push( min_of(Cb[j],0.0) );
-                }
-                else
-                {
-                    assert(Cb[j]>=0);
-                }
-            }
-            return xadd.sum();
-
-        }
-
         void collector:: initialize() noexcept
         {
             balanced.clear();
@@ -102,14 +36,84 @@ namespace yack
             gain.ld(-1);
         }
 
+
         namespace
         {
+            static inline
+            double compute_balanced(cameo::add<double>    &xadd,
+                                    writable<double>       &Cb,
+                                    const components       &eq,
+                                    const readable<double> &C0,
+                                    const readable<bool>   &R,
+                                    const zlimit           &zl) noexcept
+            {
+
+                //--------------------------------------------------------------
+                //
+                // load all phase space
+                //
+                //--------------------------------------------------------------
+                math::iota::load(Cb,C0);
+
+                //--------------------------------------------------------------
+                //
+                // apply extent
+                //
+                //--------------------------------------------------------------
+                const double xi = zl.extent;
+                for(const cnode *node=eq->head;node;node=node->next)
+                {
+                    const component &cc = ***node;
+                    const species   &sp = *cc;
+                    const size_t     j  = sp.indx[top_level];
+                    Cb[j] += xi * cc.nu;
+                }
+
+                //--------------------------------------------------------------
+                //
+                // use vanishing
+                //
+                //--------------------------------------------------------------
+                for(const sp_node *zn=zl.head;zn;zn=zn->next)
+                {
+                    Cb[ (***zn).indx[top_level] ] = 0;
+                }
+
+                //--------------------------------------------------------------
+                //
+                // deduce gain
+                //
+                //--------------------------------------------------------------
+                xadd.free();
+                for(const cnode *node=eq->head;node;node=node->next)
+                {
+                    const component &cc = ***node;
+                    const species   &sp = *cc;
+                    const size_t     j  = sp.indx[top_level]; if( !R[j] ) continue;
+                    const double     c0 = C0[j];
+                    if(c0<0)
+                    {
+                        xadd.push( -c0 );
+                        xadd.push( min_of(Cb[j],0.0) );
+                    }
+                    else
+                    {
+                        assert(Cb[j]>=0);
+                    }
+                }
+                return xadd.sum();
+
+            }
+
+
+
             static inline void display_gains(const xmlog            &xml,
                                              const readable<double> &Gain,
                                              const gathering        &fmt,
                                              const eq_node          *en)
             {
 
+                YACK_XMLSUB(xml, "gain_per_equilibrium");
                 for(;en;en=en->next)
                 {
                     const equilibrium &eq = ***en;
@@ -142,6 +146,8 @@ namespace yack
                                      cameo::add<double>     &xadd,
                                      const xmlog            &xml )
             {
+                YACK_XMLSUB(xml, "gain_for_each_subset");
+
                 assert(part.size>0);
                 assert(zeqs.size>0);
                 const cluster *win = part.head;
@@ -174,11 +180,11 @@ namespace yack
                     }
                 }
 
-                YACK_XMLOG(xml, "(*) " << std::setw(15) << opt << " @" << *win);
+                YACK_XMLOG(xml, "--> " << std::setw(15) << opt << " @" << *win);
                 return win;
             }
         }
-        
+
 
         void collector:: probe(const xmlog            &xml,
                                const gathering        &fmt,
@@ -286,7 +292,7 @@ namespace yack
         }
 
     }
-
+    
 }
 
 
