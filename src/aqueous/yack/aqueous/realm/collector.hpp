@@ -69,7 +69,7 @@ namespace yack
             eq_repo                      solvable; //!< one side is bad but self-consisten
             eq_repo                      weakened; //!< one side  is  bad
             eq_repo                      singular; //!< two sides are bad
-            cxx_array<double>            Gain;     //!< store gains
+            cxx_array<double>            gain;     //!< store gains
             matrix<double>               Cbal;     //!< store balanced concentrations
             cameo::add<double>           xadd;     //!< perform gain computation
 
