@@ -34,10 +34,18 @@ namespace yack
                               const zlimit           &zl) noexcept
         {
 
+            //------------------------------------------------------------------
+            //
             // load all phase space
+            //
+            //------------------------------------------------------------------
             math::iota::load(Cb,C0);
 
+            //------------------------------------------------------------------
+            //
             // apply extent
+            //
+            //------------------------------------------------------------------
             const double xi = zl.extent;
             for(const cnode *node=eq->head;node;node=node->next)
             {
@@ -47,11 +55,21 @@ namespace yack
                 Cb[j] += xi * cc.nu;
             }
 
+            //------------------------------------------------------------------
+            //
+            // use vanishing
+            //
+            //------------------------------------------------------------------
             for(const sp_node *zn=zl.head;zn;zn=zn->next)
             {
                 Cb[ (***zn).indx[top_level] ] = 0;
             }
 
+            //------------------------------------------------------------------
+            //
+            // deduce gain
+            //
+            //------------------------------------------------------------------
             xadd.free();
             for(const cnode *node=eq->head;node;node=node->next)
             {
@@ -80,6 +98,22 @@ namespace yack
             weakened.clear();
             singular.clear();
         }
+
+        static inline void display_gains(const xmlog            &xml,
+                                         const readable<double> &Gain,
+                                         const gathering        &fmt,
+                                         const eq_node          *en)
+        {
+
+            for(;en;en=en->next)
+            {
+                const equilibrium &eq = ***en;
+                const size_t       ei = eq.indx[cat_level];
+                fmt.pad(*xml << eq, eq) << " : " << Gain[ei] << std::endl;
+            }
+
+        }
+
 
 
         void collector:: probe(const xmlog            &xml,
@@ -163,6 +197,20 @@ namespace yack
             YACK_XMLOG(xml, "weakened : " << weakened);
             YACK_XMLOG(xml, "singular : " << singular);
 
+            if(xml.verbose)
+            {
+                if(solvable.size)
+                {
+                    *xml << " -------- solvable -------- " << std::endl;
+                    display_gains(xml,Gain,fmt,solvable.head);
+                }
+
+                if(weakened.size)
+                {
+                    *xml << " -------- weakened -------- " << std::endl;
+                    display_gains(xml,Gain,fmt,weakened.head);
+                }
+            }
 
         }
 
