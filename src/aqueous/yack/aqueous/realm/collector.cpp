@@ -102,80 +102,83 @@ namespace yack
             gain.ld(-1);
         }
 
-        static inline void display_gains(const xmlog            &xml,
-                                         const readable<double> &Gain,
-                                         const gathering        &fmt,
-                                         const eq_node          *en)
+        namespace
         {
-
-            for(;en;en=en->next)
+            static inline void display_gains(const xmlog            &xml,
+                                             const readable<double> &Gain,
+                                             const gathering        &fmt,
+                                             const eq_node          *en)
             {
-                const equilibrium &eq = ***en;
-                const size_t       ei = eq.indx[cat_level];
-                fmt.pad(*xml << eq, eq) << " : " << Gain[ei] << std::endl;
-            }
 
-        }
-
-        static inline
-        double  gain_of(const cluster          &clan,
-                        const readable<double> &gain,
-                        cameo::add<double>     &xadd)
-        {
-            xadd.free();
-            for(const eq_node *en = clan.head; en; en=en->next)
-            {
-                const equilibrium &eq = ***en;
-                const size_t       ei = eq.indx[cat_level];
-                const double       g  = gain[ei];assert(g>=0);
-                xadd.push(g);
-            }
-            return xadd.sum();
-        }
-
-        static inline
-        const cluster *find_best(const partition        &part,
-                                 const eq_repo          &zeqs,
-                                 const readable<double> &gain,
-                                 cameo::add<double>     &xadd,
-                                 const xmlog            &xml )
-        {
-            assert(part.size>0);
-            assert(zeqs.size>0);
-            const cluster *win = part.head;
-            double         opt = 0;
-
-        FIRST_WINNER:
-            if( !win->is_subset_of(zeqs) )
-            {
-                win = win->next;
-                if(!win) throw imported::exception("aqueous::collector","no initial subset: corrupted code");
-                goto FIRST_WINNER;
-            }
-            assert(NULL!=win);
-            opt = gain_of(*win,gain,xadd);
-
-            YACK_XMLOG(xml, "(+) " << std::setw(15) << opt << " @" << *win);
-            for(const cluster *cls=win->next;cls;cls=cls->next)
-            {
-                if(!cls->is_subset_of(zeqs)) continue;
-                const double tmp = gain_of(*cls,gain,xadd);
-                if(tmp>opt)
+                for(;en;en=en->next)
                 {
-                    opt = tmp;
-                    win = cls;
-                    YACK_XMLOG(xml, "(+) " << std::setw(15) << opt << " @" << *win);
+                    const equilibrium &eq = ***en;
+                    const size_t       ei = eq.indx[cat_level];
+                    fmt.pad(*xml << eq, eq) << " : " << Gain[ei] << std::endl;
                 }
-                else
-                {
-                    YACK_XMLOG(xml, "(-) " << std::setw(15) << tmp << " @" << *cls);
-                }
+
             }
 
-            YACK_XMLOG(xml, "(*) " << std::setw(15) << opt << " @" << *win);
-            return win;
-        }
+            static inline
+            double  gain_of(const cluster          &clan,
+                            const readable<double> &gain,
+                            cameo::add<double>     &xadd)
+            {
+                xadd.free();
+                for(const eq_node *en = clan.head; en; en=en->next)
+                {
+                    const equilibrium &eq = ***en;
+                    const size_t       ei = eq.indx[cat_level];
+                    const double       g  = gain[ei];assert(g>=0);
+                    xadd.push(g);
+                }
+                return xadd.sum();
+            }
 
+            static inline
+            const cluster *find_best(const partition        &part,
+                                     const eq_repo          &zeqs,
+                                     const readable<double> &gain,
+                                     cameo::add<double>     &xadd,
+                                     const xmlog            &xml )
+            {
+                assert(part.size>0);
+                assert(zeqs.size>0);
+                const cluster *win = part.head;
+                double         opt = 0;
+
+            FIRST_WINNER:
+                if( !win->is_subset_of(zeqs) )
+                {
+                    win = win->next;
+                    if(!win) throw imported::exception("aqueous::collector","no initial subset: corrupted code");
+                    goto FIRST_WINNER;
+                }
+                assert(NULL!=win);
+                opt = gain_of(*win,gain,xadd);
+
+                YACK_XMLOG(xml, "(+) " << std::setw(15) << opt << " @" << *win);
+                for(const cluster *cls=win->next;cls;cls=cls->next)
+                {
+                    if(!cls->is_subset_of(zeqs)) continue;
+                    const double tmp = gain_of(*cls,gain,xadd);
+                    if(tmp>opt)
+                    {
+                        opt = tmp;
+                        win = cls;
+                        YACK_XMLOG(xml, "(+) " << std::setw(15) << opt << " @" << *win);
+                    }
+                    else
+                    {
+                        YACK_XMLOG(xml, "(-) " << std::setw(15) << tmp << " @" << *cls);
+                    }
+                }
+
+                YACK_XMLOG(xml, "(*) " << std::setw(15) << opt << " @" << *win);
+                return win;
+            }
+        }
+        
 
         void collector:: probe(const xmlog            &xml,
                                const gathering        &fmt,
