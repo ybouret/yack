@@ -13,6 +13,7 @@ namespace yack
 {
     namespace aqueous
     {
+
         //______________________________________________________________________
         //
         //
@@ -53,6 +54,7 @@ namespace yack
                      const bool    is_reg,
                      const size_t  igrp) const;
 
+
             //__________________________________________________________________
             //
             // members
@@ -75,6 +77,8 @@ namespace yack
         typedef sp_repo::node_type       sp_node;   //!< same for list/repo
         typedef sp_repo::zpool_type      sp_zpool;  //!< alias
         typedef sp_repo::proxy_type      sp_proxy;  //!< alias
+        void sort_top_level(sp_list &);
+
 
     }
 

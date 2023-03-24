@@ -5,6 +5,8 @@
 
 namespace yack
 {
+    using namespace math;
+
     namespace aqueous
     {
 
@@ -22,6 +24,7 @@ namespace yack
         weakened(eqp),
         singular(eqp),
         gain(n,0),
+        Cend(m,0),
         Cbal(n,m),
         xadd()
         {
@@ -140,7 +143,7 @@ namespace yack
             }
 
             static inline
-            const cluster *find_best(const partition        &part,
+            const cluster &find_best(const partition        &part,
                                      const eq_repo          &zeqs,
                                      const readable<double> &gain,
                                      cameo::add<double>     &xadd,
@@ -181,26 +184,28 @@ namespace yack
                 }
 
                 YACK_XMLOG(xml, "--> " << std::setw(15) << opt << " @" << *win);
-                return win;
+                return *win;
             }
+
+
         }
 
 
-        void collector:: probe(const xmlog            &xml,
-                               const gathering        &fmt,
-                               const eq_list          &eqs,
-                               const readable<double> &C,
-                               const readable<bool>   &R,
-                               const partition        &retaking)
+        void collector:: adjust(const xmlog            &xml,
+                                const gathering        &fmt,
+                                const eq_list          &eqs,
+                                writable<double>       &C,
+                                const readable<bool>   &R,
+                                const partition        &retaking)
         {
-            YACK_XMLSUB(xml,"collector::probe");
-            YACK_XMLOG(xml, "detecting unbalanced");
+            YACK_XMLSUB(xml,"collector::adjust");
 
             //------------------------------------------------------------------
             //
             // initializing
             //
             //------------------------------------------------------------------
+        LOOP:
             initialize();
 
             //------------------------------------------------------------------
@@ -273,7 +278,8 @@ namespace yack
             {
                 YACK_XMLOG(xml, "-------- solvable -------- #" << solvable.size);
                 if(xml.verbose) display_gains(xml,gain,fmt,solvable.head);
-                const cluster *win = find_best(retaking, solvable, gain, xadd, xml);
+                displace(C,find_best(retaking, solvable, gain, xadd, xml));
+                goto LOOP;
             }
 
 
@@ -281,12 +287,42 @@ namespace yack
             {
                 YACK_XMLOG(xml, "-------- weakened -------- #" << weakened.size);
                 if(xml.verbose) display_gains(xml,gain,fmt,weakened.head);
-                const cluster *win = find_best(retaking, weakened, gain, xadd, xml);
-
+                displace(C,find_best(retaking, weakened, gain, xadd, xml));
+                goto LOOP;
             }
 
 
+            exit(0);
 
+        }
+
+        void collector:: displace(writable<double> &C,
+                                  const cluster    &W)
+        {
+            if(1==W.size)
+            {
+            }
+
+
+            for(const sp_node *sn=W.spec.head;sn;sn=sn->next)
+            {
+                const species &s = ***sn;
+                const size_t   j = s.indx[top_level];
+                const double   c = C[j];
+                xadd.free();
+                xadd.push(c);
+                for(const eq_node *en=W.head;en;en=en->next)
+                {
+                    const equilibrium      &E  = ***en;
+                    const size_t            i  = E.indx[cat_level];
+                    //const readable<double> &Cb = Cbal[i];
+                    xadd.push(-c);
+                    xadd.push(Cbal[i][j]);
+                }
+                C[j] = xadd.sum();
+            }
+
+            std::cerr << "C=" << C << std::endl;
 
 
         }

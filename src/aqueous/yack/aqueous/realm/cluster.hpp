@@ -46,14 +46,17 @@ namespace yack
 
             //! check if this is a subset of a list of equilibria
             bool       is_subset_of(const eq_repo &eqs) const noexcept;
-            
+
+            //! gather list of species
+            void       compile();
 
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
-            cluster *next; //!< for partition
-            cluster *prev; //!< for partition
+            const sp_list spec; //!< all species
+            cluster      *next; //!< for partition
+            cluster      *prev; //!< for partition
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(cluster);

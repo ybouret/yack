@@ -90,6 +90,23 @@ namespace yack
         }
 
         
+        void cluster:: compile()
+        {
+            // gather species
+            addrbook db;
+            for(const eq_node *node=head;node;node=node->next)
+                (***node).report_to(db);
+
+            // record them
+            sp_list &mine = coerce(spec);
+            mine.clear();
+            for(addrbook::const_iterator it=db.begin();it!=db.end();++it)
+                mine << *static_cast<const species *>(*it);
+
+            // order them
+            sort_top_level(mine);
+            
+        }
 
 
     }

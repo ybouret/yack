@@ -7,7 +7,21 @@ namespace yack
     namespace aqueous
     {
         bool species::verbose = false;
-        
+
+        static inline int compare_sp_nodes(const sp_node *lhs,
+                                           const sp_node *rhs) noexcept
+        {
+            const species &L = ***lhs;
+            const species &R = ***rhs;
+            return comparison::increasing(L.indx[0],R.indx[0]);
+        }
+
+
+        void  sort_top_level(sp_list &mine)
+        {
+            merge_list_of<sp_node>::sort(mine,compare_sp_nodes);
+        }
+
         species:: ~species() noexcept
         {
         }

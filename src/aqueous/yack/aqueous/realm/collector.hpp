@@ -70,6 +70,7 @@ namespace yack
             eq_repo                      weakened; //!< one side  is  bad
             eq_repo                      singular; //!< two sides are bad
             cxx_array<double>            gain;     //!< store gains
+            cxx_array<double>            Cend;     //!< combination
             matrix<double>               Cbal;     //!< store balanced concentrations
             cameo::add<double>           xadd;     //!< perform gain computation
 
@@ -79,7 +80,7 @@ namespace yack
             //! cleanup
             void initialize() noexcept;
 
-            //! settle all frontiers for each defined
+            //! adjust according defined equilibrium
             /**
              \param xml       for output
              \param fmt       equilibria for output
@@ -88,12 +89,16 @@ namespace yack
              \param R         global regular flags
              \param retaking partition of independent equilibria
              */
-            void probe(const xmlog            &xml,
-                       const gathering        &fmt,
-                       const eq_list          &eqs,
-                       const readable<double> &C,
-                       const readable<bool>   &R,
-                       const partition        &retaking);
+            void adjust(const xmlog            &xml,
+                        const gathering        &fmt,
+                        const eq_list          &eqs,
+                        writable<double>      &C,
+                        const readable<bool>   &R,
+                        const partition        &retaking);
+
+            void displace(writable<double> &C,
+                          const cluster    &W);
+
         };
 
     }

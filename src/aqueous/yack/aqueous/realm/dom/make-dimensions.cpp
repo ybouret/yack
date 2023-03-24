@@ -6,14 +6,8 @@ namespace yack
 {
     namespace aqueous
     {
-        static inline int compare_sp_nodes(const sp_node *lhs,
-                                           const sp_node *rhs) noexcept
-        {
-            const species &L = ***lhs;
-            const species &R = ***rhs;
-            return comparison::increasing(L.indx[0],R.indx[0]);
-        }
-        
+       
+
         void domain:: make_dimensions(const xmlog &xml)
         {
             YACK_XMLSUB(xml,"make_dimensions");
@@ -47,8 +41,8 @@ namespace yack
             //------------------------------------------------------------------
             // sort live
             //------------------------------------------------------------------
-            merge_list_of<sp_node>::sort(mine,compare_sp_nodes);
-            
+            sort_top_level(mine);
+
             //------------------------------------------------------------------
             // setup species local indices
             //------------------------------------------------------------------

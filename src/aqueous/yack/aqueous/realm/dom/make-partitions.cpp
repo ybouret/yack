@@ -36,27 +36,20 @@ namespace yack
             }
 
             //------------------------------------------------------------------
-            // orderiong
+            // ordering
             //------------------------------------------------------------------
             merge_list_of<cluster>::sort(part,cluster::compare);
 
+            //------------------------------------------------------------------
+            // compiling
+            //------------------------------------------------------------------
+            for(cluster *cls=part.head;cls;cls=cls->next)
+            {
+                cls->compile();
+            }
+
         }
 
-#if 0
-        static inline
-        bool found_common_regular_in(const addrbook       &db,
-                                     const equilibrium    &eq,
-                                     const readable<bool> &reg) noexcept
-        {
-            for(const cnode *cn=eq->head;cn;cn=cn->next)
-            {
-                const species &sp = ****cn;
-                if( !reg[ sp.indx[top_level]] ) continue;
-                if(db.search(&sp)) return true;
-            }
-            return false;
-        }
-#endif
 
         void domain::make_partitions(const xmlog &xml)
         {

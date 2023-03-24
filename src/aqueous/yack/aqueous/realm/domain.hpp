@@ -82,6 +82,7 @@ namespace yack
             //! output GraphViz code for a given rank
             void viz(ios::ostream &, const size_t rank) const;
 
+
             //__________________________________________________________________
             //
             // members
