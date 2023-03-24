@@ -29,13 +29,17 @@ namespace yack
             //------------------------------------------------------------------
             //
             // starting with a non empty list of positive boundaries
+            // and a positive or null limitation
             //
             //------------------------------------------------------------------
             assert(check_valid());
             assert(limitation.extent>=0);
             correction.reset();
 
-            YACK_XMLOG(xml, "look up " << limitation << " in " << *this);
+            static const char pfx[] = "|_";
+            static const char sep[] = " : ";
+
+            YACK_XMLOG(xml, pfx << "look up : " << limitation << " in " << *this);
 
             //------------------------------------------------------------------
             //
@@ -51,14 +55,14 @@ namespace yack
                     case positive:
                         // enough extent for all, stop at upper value
                         correction = up;
-                        YACK_XMLOG(xml, yack_success << " complete [gt] solving : " << correction);
+                        YACK_XMLOG(xml, pfx << yack_success << sep << correction << ", complete solving");
                         return true;
 
                     case __zero__:
                         // enough extent for all, stop at same upper value/limitation
                         correction = limitation;
                         correction.merge_back_copy(up);
-                        YACK_XMLOG(xml, yack_success << " complete [eq] solving : " << correction);
+                        YACK_XMLOG(xml, pfx << yack_success << sep << correction << ", complete solving (ex-aequo)");
                         return true;
 
                     case negative:
@@ -66,7 +70,7 @@ namespace yack
                         {
                             // not enough for the single boundary
                             correction = limitation;
-                            YACK_XMLOG(xml, yack_failure << " [lt] single boundary, use : " << correction);
+                            YACK_XMLOG(xml, pfx << yack_failure << sep << correction << ", too small for single boundary");
                             return false;
                         }
                         else
@@ -93,14 +97,14 @@ namespace yack
                     case negative:
                         // smallest than the lowest boundary => best effort
                         correction = limitation;
-                        YACK_XMLOG(xml, yack_failure << " [lt] multiple boundaries, use: " << correction);
+                        YACK_XMLOG(xml, pfx << yack_failure << sep << correction << ", too small for multiple boundaries");
                         return false;
 
                     case __zero__:
                         // equal to the lowest boundary => best effort
                         correction = limitation;
                         correction.merge_back_copy(lo);
-                        YACK_XMLOG(xml, yack_failure << " too small [eq] : " << correction);
+                        YACK_XMLOG(xml, pfx << yack_failure << sep << correction << ", too small but matching first of multiple boundaries");
                         return false;
 
                     case positive:
@@ -131,7 +135,7 @@ namespace yack
                         // special numeric case
                         correction = limitation;
                         correction.merge_back_copy(next);
-                        YACK_XMLOG(xml, yack_failure << " generic :" << **lower << " < " << correction);
+                        YACK_XMLOG(xml, pfx << yack_failure << sep << correction << ", too small but matching one of multiple boundaries");
                         return false;
 
                     case positive:
@@ -150,7 +154,7 @@ namespace yack
             assert( xi < (**(lower->next)).extent );
 
             correction = **lower;
-            YACK_XMLOG(xml, yack_failure << " generic : " << correction);
+            YACK_XMLOG(xml, pfx << yack_failure << sep << correction << ", too small (default case)");
 
             return false;
             

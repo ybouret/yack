@@ -121,10 +121,13 @@ namespace yack
                 }
 
                 assert(chart::oor_prod == oor || chart::oor_reac == oor );
-                YACK_XMLOG(xml, "correcting with " << ch.corr);
                 compute_balanced(Cbal[ei],eq,C,ch.corr);
-                eq.display_compact(std::cerr,C)        << std::endl;
-                eq.display_compact(std::cerr,Cbal[ei]) << std::endl;
+                if(xml.verbose)
+                {
+                    *xml <<" |_extent : " << ch.corr << std::endl;
+                    eq.display_compact(*xml <<" |_origin : ",C)        << std::endl;
+                    eq.display_compact(*xml <<" |_target : ",Cbal[ei]) << std::endl;
+                }
             }
 
             YACK_XMLOG(xml, "balanced : " << balanced);
@@ -133,55 +136,6 @@ namespace yack
             YACK_XMLOG(xml, "singular : " << singular);
 
 
-
-
-
-#if 0
-            //------------------------------------------------------------------
-            //
-            // loop over given equilibria
-            //
-            //------------------------------------------------------------------
-            collector_ &self = *this;
-            for(const eq_node *en = eqs.head; en; en=en->next)
-            {
-                const equilibrium    &eq  = ***en;
-                const size_t          ei  = eq.indx[cat_level];
-                chart                &ch  = self[ei];
-                const chart::oor_type oor = ch.settle(eq,C,R);
-                switch(oor)
-                {
-                    case chart::oor_none:
-                        if(xml.verbose)  fmt.pad(*xml << "balanced  : " << eq,eq) << std::endl;
-                        continue;
-
-                    case chart::oor_both:
-                        if(xml.verbose)  fmt.pad(*xml << "blocked   : " << eq,eq) << " : "  << ch << std::endl;
-                        continue;
-
-                    case chart::oor_prod:
-                        if(xml.verbose)  fmt.pad(*xml << "prod(s)<0 : " << eq,eq) << " : "  << ch << std::endl;
-                        good[ei] = ch.adjust_prod(xml);
-                        break;
-
-                    case chart::oor_reac:
-                        if(xml.verbose)  fmt.pad(*xml << "reac(s)<0 : " << eq,eq) << " : "  << ch << std::endl;
-                        good[ei] = ch.adjust_reac(xml);
-                        break;
-
-                }
-                
-                assert(chart::oor_prod == oor || chart::oor_reac == oor );
-                unbal << eq;
-                YACK_XMLOG(xml, "correcting with " << ch.corr);
-                compute_balanced(Cbal[ei],eq,C,ch.corr);
-                eq.display_compact(std::cerr,C)        << std::endl;
-                eq.display_compact(std::cerr,Cbal[ei]) << std::endl;
-            }
-
-            std::cerr << "unbal = " << unbal << std::endl;
-#endif
-            
         }
 
     }
