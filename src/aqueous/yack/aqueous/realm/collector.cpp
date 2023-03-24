@@ -16,10 +16,10 @@ namespace yack
         collecting::caches(),
         collector_(n,*this),
         balanced(eqp),
+        solvable(eqp),
         weakened(eqp),
         singular(eqp),
-        Cbal(n,m),
-        good(n,false)
+        Cbal(n,m)
         {
         }
 
@@ -49,9 +49,9 @@ namespace yack
         void collector:: initialize() noexcept
         {
             balanced.clear();
+            solvable.clear();
             weakened.clear();
             singular.clear();
-            good.ld(false);
         }
 
 
@@ -87,24 +87,52 @@ namespace yack
                 {
                     case chart::oor_none:
                         if(xml.verbose)  fmt.pad(*xml << "balanced  : " << eq,eq) << std::endl;
+                        balanced << eq;
                         continue;
 
                     case chart::oor_both:
                         if(xml.verbose)  fmt.pad(*xml << "blocked   : " << eq,eq) << " : "  << ch << std::endl;
+                        singular << eq;
                         continue;
 
                     case chart::oor_prod:
                         if(xml.verbose)  fmt.pad(*xml << "prod(s)<0 : " << eq,eq) << " : "  << ch << std::endl;
-                        //good[ei] = ch.adjust_prod(xml);
+                        if(ch.adjust_prod(xml))
+                        {
+                            solvable << eq;
+                        }
+                        else
+                        {
+                            weakened << eq;
+                        }
                         break;
 
                     case chart::oor_reac:
                         if(xml.verbose)  fmt.pad(*xml << "reac(s)<0 : " << eq,eq) << " : "  << ch << std::endl;
-                        //good[ei] = ch.adjust_reac(xml);
+                        if(ch.adjust_reac(xml))
+                        {
+                            solvable << eq;
+                        }
+                        else
+                        {
+                            weakened << eq;
+                        }
                         break;
                 }
 
+                assert(chart::oor_prod == oor || chart::oor_reac == oor );
+                YACK_XMLOG(xml, "correcting with " << ch.corr);
+                compute_balanced(Cbal[ei],eq,C,ch.corr);
+                eq.display_compact(std::cerr,C)        << std::endl;
+                eq.display_compact(std::cerr,Cbal[ei]) << std::endl;
             }
+
+            YACK_XMLOG(xml, "balanced : " << balanced);
+            YACK_XMLOG(xml, "solvable : " << solvable);
+            YACK_XMLOG(xml, "weakened : " << weakened);
+            YACK_XMLOG(xml, "singular : " << singular);
+
+
 
 
 

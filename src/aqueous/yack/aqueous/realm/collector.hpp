@@ -78,10 +78,10 @@ namespace yack
             // members
             //__________________________________________________________________
             eq_repo                      balanced; //!< fully balanced
+            eq_repo                      solvable; //!< one side is bad but self-consisten
             eq_repo                      weakened; //!< one side  is  bad
             eq_repo                      singular; //!< two sides are bad
             matrix<double>               Cbal;  //!< store balanced     concentrations
-            cxx_array<bool>              good;  //!< status of balanced concentrations
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(collector);
