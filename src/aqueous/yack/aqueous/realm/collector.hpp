@@ -55,7 +55,6 @@ namespace yack
             //__________________________________________________________________
 
 
-
             //! settle all frontiers for each defined
             void balance(const realm       &chem,
                          writable <double> &conc);
@@ -69,6 +68,7 @@ namespace yack
             eq_repo                      solvable; //!< one side is bad but self-consisten
             eq_repo                      weakened; //!< one side  is  bad
             eq_repo                      singular; //!< two sides are bad
+            boundaries                   solo;     //!< for splitting/combining
             cxx_array<double>            gain;     //!< store gains
             cxx_array<double>            Cend;     //!< combination
             matrix<double>               Cbal;     //!< store balanced concentrations
@@ -103,8 +103,9 @@ namespace yack
                                     const xmlog            &xml);
             
 
-            void   displace(writable<double> &C,
-                            const cluster    &W);
+            void   displace(writable<double> &C, const cluster    &W);
+            bool   needed_some_fixing(const actors &A, writable<double> &C);
+
 
         };
 

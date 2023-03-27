@@ -141,12 +141,12 @@ namespace yack
                                 coerce(eq.indx[cat_level]) = ioth++;
                                 break;
                                 
-                            case REAC:
+                            case PROD:
                                 coerce(splitting) << eq;
                                 coerce(eq.indx[cat_level]) = ispl++;
                                 break;
                                 
-                            case PROD:
+                            case REAC:
                                 coerce(combining) << eq;
                                 coerce(eq.indx[cat_level]) = icmb++;
                                 break;

@@ -43,6 +43,9 @@ namespace yack
             void     trade(zlimit &) noexcept;  //!< no-throw exchange
             YACK_PROTO_OSTREAM(zlimit);         //!< display
 
+            //! nullify all register top_level species
+            void     nullify(writable<double> &C) const noexcept;
+
             //__________________________________________________________________
             //
             // members

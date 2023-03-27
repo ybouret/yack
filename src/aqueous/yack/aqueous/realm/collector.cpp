@@ -23,6 +23,7 @@ namespace yack
         solvable(eqp),
         weakened(eqp),
         singular(eqp),
+        solo(zlp,spp),
         gain(n,0),
         Cend(m,0),
         Cbal(n,m),
@@ -77,10 +78,7 @@ namespace yack
                 // use vanishing
                 //
                 //--------------------------------------------------------------
-                for(const sp_node *zn=zl.head;zn;zn=zn->next)
-                {
-                    Cb[ (***zn).indx[top_level] ] = 0;
-                }
+                zl.nullify(Cb);
 
                 //--------------------------------------------------------------
                 //
@@ -324,7 +322,7 @@ namespace yack
             if(singular.size)
             {
                 YACK_XMLOG(xml, "-------- singular -------- #" << singular.size);
-                exit(0);
+                //exit(0);
             }
 
             //------------------------------------------------------------------
@@ -332,7 +330,40 @@ namespace yack
             //  and adjust splitting/combining
             //
             //------------------------------------------------------------------
-            
+            if(dom.splitting.size)
+            {
+                YACK_XMLOG(xml, "-------- splitting ------- #" << dom.splitting.size);
+
+                for(const eq_node *en=dom.splitting.head;en;en=en->next)
+                {
+                    const equilibrium     &eq  = ***en;
+                    assert(eq.reac.size<=0);
+                    assert(eq.prod.size>0);
+                    if(needed_some_fixing(eq.prod,C))
+                    {
+                        if(xml.verbose) eq.display_compact( dom.eqfmt.pad(*xml << eq,eq) << " : ",C) << std::endl;
+                    }
+                }
+            }
+
+            if(dom.combining.size)
+            {
+                YACK_XMLOG(xml, "-------- combining ------- #" << dom.combining.size);
+                for(const eq_node *en=dom.combining.head;en;en=en->next)
+                {
+                    const equilibrium     &eq  = ***en;
+                    assert(eq.reac.size>0);
+                    assert(eq.prod.size<=0);
+                    if(needed_some_fixing(eq.reac,C))
+                    {
+                        if(xml.verbose) eq.display_compact( dom.eqfmt.pad(*xml << eq,eq) << " : ",C) << std::endl;
+                    }
+                }
+            }
+
+
+            exit(0);
+
             return;
 
         }
@@ -362,10 +393,44 @@ namespace yack
                 C[j] = xadd.sum();
             }
 
-            std::cerr << "C=" << C << std::endl;
+            //std::cerr << "C=" << C << std::endl;
+
+        }
+
+        bool   collector:: needed_some_fixing(const actors &A, writable<double> &C)
+        {
+            assert(A.size>0);
+            solo.clear();
+            for(const actor *a=A.head;a;a=a->next)
+            {
+                const species &s = **a;
+                const double   c = C[s.indx[top_level]];
+                if(c<0)
+                {
+                    solo.insert( (-c)/a->nu, s);
+                }
+            }
+            //std::cerr << "solo: " << solo << std::endl;
+            if(solo.size>0)
+            {
+                const zlimit &zl = **(solo.tail);
+                const double  xi = zl.extent;
+                for(const actor *a=A.head;a;a=a->next)
+                {
+                    const species &s = **a;
+                    C[ s.indx[top_level] ] += (a->nu * xi);
+                }
+                zl.nullify(C);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
 
 
         }
+
 
     }
     

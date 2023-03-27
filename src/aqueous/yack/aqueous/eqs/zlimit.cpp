@@ -59,6 +59,15 @@ namespace yack
             os << repo << " @" << self.extent;
             return os;
         }
-    }
+
+        void zlimit:: nullify(writable<double> &C) const noexcept
+        {
+            for(const sp_node *zn=head;zn;zn=zn->next)
+            {
+                C[ (***zn).indx[top_level] ] = 0;
+            }
+        }
+
+     }
 
 }

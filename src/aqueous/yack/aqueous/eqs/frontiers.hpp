@@ -35,7 +35,7 @@ namespace yack
             //! erase everything
             void        initialize() noexcept;
 
-            //! classify all frontiers
+            //! classify all actors w.r.t their concentration and regularity
             /**
              \param A actors
              \param C concentrations
@@ -45,6 +45,7 @@ namespace yack
             bool        honored_by(const actors           &A,
                                    const readable<double> &C,
                                    const readable<bool>   &R);
+
 
             //! display
             YACK_PROTO_OSTREAM(frontiers);
