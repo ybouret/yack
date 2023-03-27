@@ -85,16 +85,15 @@ namespace yack
             }
         }
 
-        void custodian:: process(writable<double> &C,
-                                 const realm      &cs)
+        void custodian:: process(const realm      &chem,
+                                 writable<double> &conc)
         {
-            const xmlog &xml = cs;
+            const xmlog &xml = chem;
             YACK_XMLSUB(xml,"custodian::process");
             prepare();
-            for(const domain *dom = cs.head;dom;dom=dom->next)
-            {
-                process(xml,C,*dom);
-            }
+            for(const domain *dom = chem.head;dom;dom=dom->next)
+                process(xml,conc,*dom);
+            
         }
     }
 }
@@ -107,13 +106,12 @@ namespace yack
     {
 
         void collector::  balance(const realm      &chem,
-                                  writable<double> &conc,
-                                  custodian        &cust)
+                                  writable<double> &conc)
         {
-            cust.prepare();
+            ld(0);
             for(const domain *dom=chem.head;dom;dom=dom->next)
             {
-                balance(chem,*dom,cust,conc);
+                balance(chem,*dom,conc);
             }
         }
     }

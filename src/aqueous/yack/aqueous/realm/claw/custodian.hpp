@@ -50,8 +50,17 @@ namespace yack
 
             
             //! process all the groups of laws for each domain of the realm
-            void process(writable<double> &C,
-                         const realm      &cs);
+            void process(const realm      &chem,
+                         writable<double> &conc);
+
+
+
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(custodian);
+            broken_list                   broken;
+            excess_list                   excess;
+            cameo::add<double>            xadd;
 
             //! process the different grouop of laws in a domain
             void process(const xmlog      &xml,
@@ -62,14 +71,6 @@ namespace yack
             void process(const xmlog      &xml,
                          writable<double> &C,
                          const conserved  &laws);
-
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(custodian);
-            broken_list                   broken;
-            excess_list                   excess;
-            cameo::add<double>            xadd;
-
-
         };
     }
 

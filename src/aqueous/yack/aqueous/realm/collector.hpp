@@ -16,15 +16,14 @@ namespace yack
     {
 
         class realm;
-        class custodian;
-
+        
         //______________________________________________________________________
         //
         //
         //! base class for collector
         //
         //______________________________________________________________________
-        typedef cxx_array<collecting::chart,memory::dyadic> collector_;
+        typedef cxx_array<collecting::chart,memory::dyadic> charts_type;
 
         //______________________________________________________________________
         //
@@ -32,9 +31,7 @@ namespace yack
         //! collector for invalid concentrations
         //
         //______________________________________________________________________
-        class collector :
-        public collecting::caches,
-        public collector_
+        class collector :  public cxx_array<double>, public collecting::caches
         {
         public:
             //__________________________________________________________________
@@ -58,22 +55,21 @@ namespace yack
 
             //! settle all frontiers for each defined
             void balance(const realm       &chem,
-                         writable <double> &conc,
-                         custodian         &cust);
+                         writable <double> &conc);
 
 
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
+            charts_type                  charts;   //!< all charts
             eq_repo                      balanced; //!< fully balanced
             eq_repo                      solvable; //!< one side is bad but self-consisten
             eq_repo                      weakened; //!< one side  is  bad
             eq_repo                      singular; //!< two sides are bad
             boundaries                   solo;     //!< for splitting/combining
-            cxx_array<double>            gain;     //!< store gains
-            cxx_array<double>            Cend;     //!< combination
-            matrix<double>               Cbal;     //!< store balanced concentrations
+            cxx_array<double>            gain;     //!< store gains per equilibrium
+            matrix<double>               Cbal;     //!< [NxM]store balanced concentrations
             cameo::add<double>           xadd;     //!< perform gain computation
 
         private:
@@ -83,30 +79,27 @@ namespace yack
             void initialize() noexcept;
 
             //! adjust according defined equilibrium
-            /**
-             \param xml       for output
-             \param fmt       equilibria for output
-             \param eqs       list of defined equilibria
-             \param C         global concentrations
-             \param R         global regular flags
-             \param retaking partition of independent equilibria
-             */
             void balance(const xmlog            &xml,
                          const domain           &dom,
-                         custodian              &cst,
                          writable<double>       &C);
 
 
 
             //! return true is shift_status != blocked
             bool           dispatch(const equilibrium &, const shift_status);
+
+            //! get gain of combined solutions
             double         combined(const cluster &);
+
+            //! find cluster with best gain
             const cluster &find_opt(const partition        &part,
                                     const eq_repo          &zeqs,
                                     const xmlog            &xml);
             
-
+            //! compute new concentration from winning clusster
             void   displace(writable<double> &C, const cluster    &W);
+
+            //! check if some fixing was needed for roaming species
             bool   needed_some_fixing(const actors &A, writable<double> &C);
 
 

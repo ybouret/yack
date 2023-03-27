@@ -28,9 +28,6 @@ YACK_UTEST(realm)
     vector<double> K;
     realm chem(lib,eqs,K);
 
-    //cs.graphviz("cs");
-
-
     const size_t   M = lib->size;
     vector<double> C(M,0);
     
@@ -45,8 +42,10 @@ YACK_UTEST(realm)
         lib.conc(C,ran);
         for(size_t i=M;i>0;--i) if( ran.choice() ) C[i] = -C[i];
         lib(std::cerr << "C0=",C) << std::endl;
-        coll.balance(chem,C,keep);
-        lib(std::cerr << "dC=",keep) << std::endl;
+        keep.process(chem,C);
+        coll.balance(chem,C);
+        lib(std::cerr << "injected=",keep)   << std::endl;
+        lib(std::cerr << "suppressed=",coll) << std::endl;
     }
 
 

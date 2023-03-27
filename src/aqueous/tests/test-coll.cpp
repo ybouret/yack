@@ -59,51 +59,23 @@ YACK_UTEST(coll)
             vector<double> K;
             realm          chem(lib,eqs,K);
             collector      coll(chem.largest_domain_size(),M);
-            custodian      cust(M);
             vector<double> C(M,0);
+            custodian      cust(M);
 
             for(size_t iter=1;iter<=10;++iter)
             {
                 make(C,eq.reac,eq.prod,ran);
-                coll.balance(chem,C,cust);
+                cust.process(chem,C);
+                coll.balance(chem,C);
+
                 make(C,eq.prod,eq.reac,ran);
-                coll.balance(chem,C,cust);
+                cust.process(chem,C);
+                coll.balance(chem,C);
             }
-
-
-
-
-
-
-
 
         }
     }
 
-#if 0
-    library            lib;
-    lua_equilibria     eqs;
-    weasel::designer  &wd = weasel::designer::instance();
-
-
-
-    for(int i=1;i<argc;++i)
-    {
-        wd(lib,eqs,jive::module::open_data(argv[i]));
-    }
-
-    std::cerr << "lib=" << std::endl << lib << std::endl;
-    std::cerr << "eqs=" << std::endl << eqs << std::endl;
-
-    vector<double> K;
-    realm cs(lib,eqs,K);
-
-    //cs.graphviz("cs");
-
-
-    const size_t   M = lib->size;
-    vector<double> C(M,0);
-#endif
 
 }
 YACK_UDONE()
