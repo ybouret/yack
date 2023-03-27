@@ -23,9 +23,15 @@ YACK_UTEST(data_key_mapper)
     {
         key_mapper<int> K;
         K(1,2);
-        K(3,2);
-
+        K(3,4);
+        std::cerr << K << std::endl;
     }
+
+    YACK_SIZEOF(key_mapper<int>);
+    YACK_SIZEOF(key_mapper<char>);
+    YACK_SIZEOF(key_mapper<uint64_t>);
+
+
 }
 YACK_UDONE()
 
