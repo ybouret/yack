@@ -138,6 +138,8 @@ namespace yack
         //______________________________________________________________________
         YACK_DECL_ARGS(T,type);       //!< aliases
         typedef key_map<T> dict_type; //!< aliases
+
+        //! alias to help
         typedef typename dict_type::const_iterator const_iterator;
 
         //______________________________________________________________________
