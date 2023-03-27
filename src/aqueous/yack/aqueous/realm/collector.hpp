@@ -90,12 +90,10 @@ namespace yack
              \param retaking partition of independent equilibria
              */
             void adjust(const xmlog            &xml,
-                        const sp_list          &live,
-                        const gathering        &fmt,
-                        const eq_list          &eqs,
-                        writable<double>      &C,
-                        const readable<bool>   &R,
-                        const partition        &retaking);
+                        const domain           &dom,
+                        writable<double>       &C);
+
+
 
             //! return true is shift_status != blocked
             bool           dispatch(const equilibrium &, const shift_status);

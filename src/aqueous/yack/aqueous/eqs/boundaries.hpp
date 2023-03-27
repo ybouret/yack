@@ -24,11 +24,17 @@ namespace yack
         typedef zlimits::proxy_type     zl_proxy; //!< alias
         typedef zlimits::zpool_type     zl_zpool; //!< alis
 
+        //______________________________________________________________________
+        //
+        //
+        //! shift possibilities to balance concentration
+        //
+        //______________________________________________________________________
         enum shift_status
         {
-            shift_success,
-            shift_partial,
-            shift_blocked
+            shift_success, //!< full success
+            shift_partial, //!< only partial regain
+            shift_blocked  //!< no possibility
         };
 
         //______________________________________________________________________

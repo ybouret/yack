@@ -77,7 +77,7 @@ namespace yack
         typedef sp_repo::node_type       sp_node;   //!< same for list/repo
         typedef sp_repo::zpool_type      sp_zpool;  //!< alias
         typedef sp_repo::proxy_type      sp_proxy;  //!< alias
-        void sort_top_level(sp_list &);
+        void sort_top_level(sp_list &);             //!< sort by top_level index
 
 
     }

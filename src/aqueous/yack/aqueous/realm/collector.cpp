@@ -200,14 +200,11 @@ namespace yack
 
 
         void collector:: adjust(const xmlog            &xml,
-                                const sp_list          &live,
-                                const gathering        &fmt,
-                                const eq_list          &eqs,
-                                writable<double>       &C,
-                                const readable<bool>   &R,
-                                const partition        &retaking)
+                                const domain           &dom,
+                                writable<double>       &C)
         {
             YACK_XMLSUB(xml,"collector::adjust");
+
 
             unsigned count = 0;
         LOOP:
@@ -217,24 +214,24 @@ namespace yack
                 *xml << "/----------------" << std::endl;
                 *xml << "| #loop = " << std::setw(4) << count << std::endl;
                 *xml << "\\----------------" << std::endl;
-                for(const sp_node *sn=live.head;sn;sn=sn->next)
+                for(const sp_node *sn=dom.live.head;sn;sn=sn->next)
                 {
                     const species &sp = ***sn;
                     const double   c  = C[sp.indx[top_level]];
-                    *xml << ' ' << sp << '=' << c << std::endl;
+                    dom.spfmt.pad(*xml << sp, sp) << " = " << std::setw(15) << c << std::endl;
                 }
             }
             initialize();
             
             collector_ &self = *this;
-            for(const eq_node *en = eqs.head; en; en=en->next)
+            for(const eq_node *en = dom.defined.head; en; en=en->next)
             {
                 const equilibrium    &eq  = ***en;
                 const size_t          ei  = eq.indx[cat_level];
                 chart                &ch  = self[ei];
 
                 // get status according to STRICT NEGATIVITY
-                const chart::oor_type oor = ch.settle(eq,C,R);
+                const chart::oor_type oor = ch.settle(eq,C,dom.reg);
 
                 switch(oor)
                 {
@@ -243,17 +240,17 @@ namespace yack
                         continue;
 
                     case chart::oor_both:
-                        if(xml.verbose)  fmt.pad(*xml << "blocked   : " << eq,eq) << " : "  << ch << std::endl;
+                        if(xml.verbose)  dom.eqfmt.pad(*xml << "blocked   : " << eq,eq) << " : "  << ch << std::endl;
                         singular << eq;
                         continue;
 
                     case chart::oor_prod:
-                        if(xml.verbose)  fmt.pad(*xml << "prod(s)<0 : " << eq,eq) << " : "  << ch << std::endl;
+                        if(xml.verbose)  dom.eqfmt.pad(*xml << "prod(s)<0 : " << eq,eq) << " : "  << ch << std::endl;
                         if(!dispatch(eq,ch.adjust_prod(xml))) continue;
                         break;
 
                     case chart::oor_reac:
-                        if(xml.verbose)  fmt.pad(*xml << "reac(s)<0 : " << eq,eq) << " : "  << ch << std::endl;
+                        if(xml.verbose)  dom.eqfmt.pad(*xml << "reac(s)<0 : " << eq,eq) << " : "  << ch << std::endl;
                         if(!dispatch(eq,ch.adjust_reac(xml))) continue;
                         break;
 
@@ -262,7 +259,7 @@ namespace yack
                 // create a more balanced phase space
                 assert(chart::oor_prod == oor || chart::oor_reac == oor );
                 assert(solvable.contains(eq) || weakened.contains(eq) );
-                gain[ei] = compute_balanced(xadd,Cbal[ei],eq,C,R,ch.corr);
+                gain[ei] = compute_balanced(xadd,Cbal[ei],eq,C,dom.reg,ch.corr);
 
                 // verbosity
                 if(xml.verbose)
@@ -275,7 +272,7 @@ namespace yack
 
             }
 
-            assert(balanced.size+solvable.size+weakened.size+singular.size==eqs.size);
+            assert(balanced.size+solvable.size+weakened.size+singular.size==dom.defined.size);
             YACK_XMLOG(xml, "balanced : " << balanced);
             YACK_XMLOG(xml, "solvable : " << solvable);
             YACK_XMLOG(xml, "weakened : " << weakened);
@@ -290,8 +287,8 @@ namespace yack
             if(solvable.size)
             {
                 YACK_XMLOG(xml, "-------- solvable -------- #" << solvable.size);
-                if(xml.verbose) display_gains(xml,gain,fmt,solvable.head);
-                displace(C,find_opt(retaking, solvable, xml));
+                if(xml.verbose) display_gains(xml,gain,dom.eqfmt,solvable.head);
+                displace(C,find_opt(dom.retaking, solvable, xml));
                 goto LOOP;
             }
 
@@ -303,8 +300,8 @@ namespace yack
             if(weakened.size)
             {
                 YACK_XMLOG(xml, "-------- weakened -------- #" << weakened.size);
-                if(xml.verbose) display_gains(xml,gain,fmt,weakened.head);
-                displace(C,find_opt(retaking, weakened, xml));
+                if(xml.verbose) display_gains(xml,gain,dom.eqfmt,weakened.head);
+                displace(C,find_opt(dom.retaking, weakened, xml));
                 goto LOOP;
             }
 
@@ -315,117 +312,6 @@ namespace yack
             }
 
             return;
-
-
-#if 0
-            //------------------------------------------------------------------
-            //
-            // initializing
-            //
-            //------------------------------------------------------------------
-        LOOP:
-            initialize();
-
-            //------------------------------------------------------------------
-            //
-            // classify
-            //
-            //------------------------------------------------------------------
-            collector_ &self = *this;
-            for(const eq_node *en = eqs.head; en; en=en->next)
-            {
-                const equilibrium    &eq  = ***en;
-                const size_t          ei  = eq.indx[cat_level];
-                chart                &ch  = self[ei];
-
-                // get status
-                const chart::oor_type oor = ch.settle(eq,C,R);
-                switch(oor)
-                {
-                    case chart::oor_none:
-                        //if(xml.verbose)  fmt.pad(*xml << "balanced  : " << eq,eq) << std::endl;
-                        balanced << eq;
-                        continue;
-
-                    case chart::oor_both:
-                        if(xml.verbose)  fmt.pad(*xml << "blocked   : " << eq,eq) << " : "  << ch << std::endl;
-                        singular << eq;
-                        continue;
-
-                    case chart::oor_prod:
-                        if(xml.verbose)  fmt.pad(*xml << "prod(s)<0 : " << eq,eq) << " : "  << ch << std::endl;
-                        if(ch.adjust_prod(xml))
-                        {
-                            solvable << eq;
-                        }
-                        else
-                        {
-                            weakened << eq;
-                        }
-                        break;
-
-                    case chart::oor_reac:
-                        if(xml.verbose)  fmt.pad(*xml << "reac(s)<0 : " << eq,eq) << " : "  << ch << std::endl;
-                        if(ch.adjust_reac(xml))
-                        {
-                            solvable << eq;
-                        }
-                        else
-                        {
-                            weakened << eq;
-                        }
-                        break;
-                }
-
-                // create a more balanced phase space
-                assert(chart::oor_prod == oor || chart::oor_reac == oor );
-                assert(solvable.contains(eq) || weakened.contains(eq) );
-                gain[ei] = compute_balanced(xadd,Cbal[ei],eq,C,R,ch.corr);
-
-                // verbosity
-                if(xml.verbose)
-                {
-                    *xml <<" |_extent : " << ch.corr << std::endl;
-                    eq.display_compact(*xml <<" |_origin : ",C)        << std::endl;
-                    eq.display_compact(*xml <<" |_target : ",Cbal[ei]) << std::endl;
-                    *xml <<" |_gain   : " << gain[ei] << std::endl;
-                }
-            }
-
-            YACK_XMLOG(xml, "balanced : " << balanced);
-            YACK_XMLOG(xml, "solvable : " << solvable);
-            YACK_XMLOG(xml, "weakened : " << weakened);
-            YACK_XMLOG(xml, "singular : " << singular);
-
-            //------------------------------------------------------------------
-            //
-            // check solvable
-            //
-            //------------------------------------------------------------------
-            if(solvable.size)
-            {
-                YACK_XMLOG(xml, "-------- solvable -------- #" << solvable.size);
-                if(xml.verbose) display_gains(xml,gain,fmt,solvable.head);
-                displace(C,find_opt(retaking, solvable, xml));
-                goto LOOP;
-            }
-
-            //------------------------------------------------------------------
-            //
-            //  check weakened
-            //
-            //------------------------------------------------------------------
-            if(weakened.size)
-            {
-                YACK_XMLOG(xml, "-------- weakened -------- #" << weakened.size);
-                if(xml.verbose) display_gains(xml,gain,fmt,weakened.head);
-                displace(C,find_opt(retaking, weakened, xml));
-                goto LOOP;
-            }
-
-
-            exit(0);
-#endif
 
         }
 

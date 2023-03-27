@@ -103,7 +103,8 @@ namespace yack
         {
             for(const domain *dom=chem.head;dom;dom=dom->next)
             {
-                adjust(chem,dom->live,chem.eqs,dom->defined,conc,chem.reg,dom->retaking);
+                //adjust(chem,dom->live,chem.eqs,dom->defined,conc,chem.reg,dom->retaking);
+                adjust(chem,*dom,conc);
             }
         }
     }
