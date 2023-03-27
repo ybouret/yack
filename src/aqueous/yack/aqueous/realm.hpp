@@ -39,7 +39,16 @@ namespace yack
 
             //! return largest domain size
             size_t largest_domain_size() const noexcept;
-          
+            //! conc += NuT * xi
+            void add(writable<double>       &conc,
+                     const readable<double> &xi,
+                     cameo::add<double>     &xadd)
+            {
+                for(const domain *dom = head;dom; dom=dom->next)
+                {
+                    dom->add(conc,xi,xadd);
+                }
+            }
 
             //__________________________________________________________________
             //
@@ -49,7 +58,8 @@ namespace yack
             equilibria              eqs; //!< original+manifold
             const cxx_array<bool>   reg; //!< regular species
             const cxx_array<size_t> grp; //!< group index for species
-            
+
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(realm);

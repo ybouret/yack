@@ -58,6 +58,10 @@ namespace yack
                          writable <double> &conc);
 
 
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(collector);
+
             //__________________________________________________________________
             //
             // members
@@ -73,8 +77,6 @@ namespace yack
             cameo::add<double>           xadd;     //!< perform gain computation
 
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(collector);
-
             //! cleanup
             void initialize() noexcept;
 
