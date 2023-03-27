@@ -197,7 +197,7 @@ namespace yack
         }
 
 
-        void collector:: balance(const xmlog            &xml,
+        bool collector:: balance(const xmlog            &xml,
                                  const domain           &dom,
                                  writable<double>       &C)
         {
@@ -322,9 +322,11 @@ namespace yack
                 goto LOOP;
             }
 
+            bool result = true;
             if(singular.size)
             {
                 YACK_XMLOG(xml, "-------- singular -------- #" << singular.size);
+                result = false;
             }
 
             //------------------------------------------------------------------
@@ -377,10 +379,10 @@ namespace yack
                     dom.spfmt.pad(*xml << sp, sp) << " = " << std::setw(15) << c << std::endl;
                 }
             }
-            
 
 
-            return;
+
+            return result;
 
         }
 

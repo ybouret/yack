@@ -40,17 +40,22 @@ YACK_UTEST(realm)
     collector coll(cs.largest_domain_size(),M);
 
 
-    for(size_t iter=0;iter<=0;++iter)
+    for(size_t iter=0;iter<=100;++iter)
     {
         lib.conc(C,ran);
         for(size_t i=M;i>0;--i) if( ran.choice() ) C[i] = -C[i];
         lib(std::cerr << "C0=",C) << std::endl;
-        keep.process(C,cs);
-        lib(std::cerr << "C1=",C) << std::endl;
-        coll.balance(cs,C);
-        lib(std::cerr << "C2=",C) << std::endl;
-        keep.process(C,cs);
-        lib(std::cerr << "C3=",C) << std::endl;
+        size_t count = 0;
+        while(true)
+        {
+            ++count;
+            keep.process(C,cs);
+            lib(std::cerr << "C1=",C) << std::endl;
+            const bool balanced = coll.balance(cs,C);
+            lib(std::cerr << "C2=",C) << std::endl;
+            if(balanced) break;
+        }
+        if(count>1) exit(0);
     }
 
 

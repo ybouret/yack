@@ -98,11 +98,15 @@ namespace yack
     namespace aqueous
     {
 
-        void collector::  balance(const realm      &chem,
+        bool collector::  balance(const realm      &chem,
                                 writable<double> &conc)
         {
+            bool res = true;
             for(const domain *dom=chem.head;dom;dom=dom->next)
-                balance(chem,*dom,conc);
+            {
+                if(!balance(chem,*dom,conc)) res = false;
+            }
+            return res;
         }
     }
 }
