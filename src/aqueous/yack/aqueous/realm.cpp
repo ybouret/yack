@@ -74,7 +74,7 @@ namespace yack
 {
     namespace aqueous
     {
-        void custodian:: process( writable<double> &C,
+        void custodian:: process(writable<double> &C,
                                  const realm      &cs)
         {
             const xmlog &xml = cs;
