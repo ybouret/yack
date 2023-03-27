@@ -325,7 +325,6 @@ namespace yack
             if(singular.size)
             {
                 YACK_XMLOG(xml, "-------- singular -------- #" << singular.size);
-                //exit(0);
             }
 
             //------------------------------------------------------------------
@@ -378,9 +377,8 @@ namespace yack
                     dom.spfmt.pad(*xml << sp, sp) << " = " << std::setw(15) << c << std::endl;
                 }
             }
+            
 
-
-            exit(0);
 
             return;
 
