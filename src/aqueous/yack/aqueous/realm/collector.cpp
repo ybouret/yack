@@ -199,14 +199,19 @@ namespace yack
         }
 
 
-        void collector:: adjust(const xmlog            &xml,
-                                const domain           &dom,
-                                writable<double>       &C)
+        void collector:: balance(const xmlog            &xml,
+                                 const domain           &dom,
+                                 writable<double>       &C)
         {
-            YACK_XMLSUB(xml,"collector::adjust");
+            YACK_XMLSUB(xml,"collector::balance");
 
 
             unsigned count = 0;
+            //------------------------------------------------------------------
+            //
+            // start loop
+            //
+            //------------------------------------------------------------------
         LOOP:
             ++count;
             if(xml.verbose)
@@ -221,8 +226,13 @@ namespace yack
                     dom.spfmt.pad(*xml << sp, sp) << " = " << std::setw(15) << c << std::endl;
                 }
             }
+
+            //------------------------------------------------------------------
+            //
+            // sorting out equilibria
+            //
+            //------------------------------------------------------------------
             initialize();
-            
             collector_ &self = *this;
             for(const eq_node *en = dom.defined.head; en; en=en->next)
             {
@@ -230,9 +240,12 @@ namespace yack
                 const size_t          ei  = eq.indx[cat_level];
                 chart                &ch  = self[ei];
 
+                //--------------------------------------------------------------
+                //
                 // get status according to STRICT NEGATIVITY
+                //
+                //--------------------------------------------------------------
                 const chart::oor_type oor = ch.settle(eq,C,dom.reg);
-
                 switch(oor)
                 {
                     case chart::oor_none:
@@ -255,13 +268,16 @@ namespace yack
                         break;
 
                 }
-
-                // create a more balanced phase space
                 assert(chart::oor_prod == oor || chart::oor_reac == oor );
                 assert(solvable.contains(eq) || weakened.contains(eq) );
+
+                //--------------------------------------------------------------
+                //
+                // create a more balanced phase space
+                //
+                //--------------------------------------------------------------
                 gain[ei] = compute_balanced(xadd,Cbal[ei],eq,C,dom.reg,ch.corr);
 
-                // verbosity
                 if(xml.verbose)
                 {
                     *xml <<" |_extent : " << ch.corr << std::endl;
@@ -311,6 +327,12 @@ namespace yack
                 exit(0);
             }
 
+            //------------------------------------------------------------------
+            //
+            //  and adjust splitting/combining
+            //
+            //------------------------------------------------------------------
+            
             return;
 
         }

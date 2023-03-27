@@ -57,8 +57,8 @@ namespace yack
 
 
             //! settle all frontiers for each defined
-            void probe(const realm       &chem,
-                       writable <double> &conc);
+            void balance(const realm       &chem,
+                         writable <double> &conc);
 
 
             //__________________________________________________________________
@@ -89,9 +89,9 @@ namespace yack
              \param R         global regular flags
              \param retaking partition of independent equilibria
              */
-            void adjust(const xmlog            &xml,
-                        const domain           &dom,
-                        writable<double>       &C);
+            void balance(const xmlog            &xml,
+                         const domain           &dom,
+                         writable<double>       &C);
 
 
 
@@ -104,7 +104,7 @@ namespace yack
             
 
             void   displace(writable<double> &C,
-                          const cluster    &W);
+                            const cluster    &W);
 
         };
 

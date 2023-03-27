@@ -65,9 +65,9 @@ YACK_UTEST(coll)
             for(size_t iter=1;iter<=10;++iter)
             {
                 make(C,eq.reac,eq.prod,ran);
-                coll.probe(chem,C);
+                coll.balance(chem,C);
                 make(C,eq.prod,eq.reac,ran);
-                coll.probe(chem,C);
+                coll.balance(chem,C);
             }
 
 

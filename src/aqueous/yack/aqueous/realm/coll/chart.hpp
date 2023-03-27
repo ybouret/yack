@@ -23,6 +23,10 @@ namespace yack
             class chart
             {
             public:
+                //______________________________________________________________
+                //
+                // types and definitions
+                //______________________________________________________________
 
                 //! out of range type
                 enum oor_type

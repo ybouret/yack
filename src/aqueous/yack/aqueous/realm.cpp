@@ -98,14 +98,11 @@ namespace yack
     namespace aqueous
     {
 
-        void collector::  probe(const realm      &chem,
+        void collector::  balance(const realm      &chem,
                                 writable<double> &conc)
         {
             for(const domain *dom=chem.head;dom;dom=dom->next)
-            {
-                //adjust(chem,dom->live,chem.eqs,dom->defined,conc,chem.reg,dom->retaking);
-                adjust(chem,*dom,conc);
-            }
+                balance(chem,*dom,conc);
         }
     }
 }
