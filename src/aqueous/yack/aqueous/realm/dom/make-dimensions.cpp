@@ -24,7 +24,8 @@ namespace yack
                     if(eq->size<=0) throw imported::exception(clid,"<%s> is empty!!", eq.name());
                     eq.report_to(db);
                     coerce(eq.indx[1]) = ++ei;
-                }
+                    coerce(eqfmt).update(eq);
+                };
                 coerce(N)=ei;
             }
 
@@ -51,7 +52,8 @@ namespace yack
                 for(sp_node *sn=mine.head;sn;sn=sn->next)
                 {
                     const species &sp = ***sn;
-                    coerce(sp.indx[1]) = ++sj;
+                    coerce(sp.indx[sub_level]) = ++sj;
+                    coerce(spfmt).update(sp);
                 }
                 coerce(M)=sj;
             }

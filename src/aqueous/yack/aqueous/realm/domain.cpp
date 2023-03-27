@@ -48,7 +48,9 @@ namespace yack
         next(0),
         prev(0),
         iviz(0),
-        slots(NULL)
+        slots(NULL),
+        eqfmt(),
+        spfmt()
         {
             (*this) << first;
         }

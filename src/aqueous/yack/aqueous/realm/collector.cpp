@@ -217,13 +217,12 @@ namespace yack
                 *xml << "/----------------" << std::endl;
                 *xml << "| #loop = " << std::setw(4) << count << std::endl;
                 *xml << "\\----------------" << std::endl;
-                *xml << '{';
                 for(const sp_node *sn=live.head;sn;sn=sn->next)
                 {
                     const species &sp = ***sn;
-                    xml() << ' ' << sp << '=' << C[sp.indx[top_level]];
+                    const double   c  = C[sp.indx[top_level]];
+                    *xml << ' ' << sp << '=' << c << std::endl;
                 }
-                xml() << ' ' << '}' << std::endl;
             }
             initialize();
             

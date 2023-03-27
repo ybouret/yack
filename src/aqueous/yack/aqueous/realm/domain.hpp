@@ -110,7 +110,9 @@ namespace yack
             domain                  *prev;      //!< for domains
             const int                iviz;      //!< graphviz index
             const auto_ptr<eq_slots> slots;     //!< slots, post-allocated
-
+            const gathering          eqfmt;     //!< local format for equilibria
+            const gathering          spfmt;     //!< local format for species
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(domain);
 
