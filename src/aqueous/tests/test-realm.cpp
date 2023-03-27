@@ -49,6 +49,8 @@ YACK_UTEST(realm)
         lib(std::cerr << "C1=",C) << std::endl;
         coll.balance(cs,C);
         lib(std::cerr << "C2=",C) << std::endl;
+        keep.process(C,cs);
+        lib(std::cerr << "C3=",C) << std::endl;
     }
 
 
