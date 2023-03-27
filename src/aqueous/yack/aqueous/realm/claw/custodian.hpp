@@ -15,7 +15,8 @@ namespace yack
     namespace aqueous
     {
         class realm;
-
+        class domain;
+        
         //______________________________________________________________________
         //
         //
@@ -38,7 +39,7 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit custodian(const size_t M); //!< setup for a given phase space
+            explicit custodian(const size_t m); //!< setup for a given phase space
             virtual ~custodian() noexcept;      //!< cleanup
 
             //__________________________________________________________________
@@ -52,7 +53,15 @@ namespace yack
             void process(writable<double> &C,
                          const realm      &cs);
 
+            //! process the different grouop of laws in a domain
+            void process(const xmlog      &xml,
+                         writable<double> &C,
+                         const domain      &dom);
 
+            //! process a group of laws by minimal displacement
+            void process(const xmlog      &xml,
+                         writable<double> &C,
+                         const conserved  &laws);
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(custodian);
@@ -60,10 +69,7 @@ namespace yack
             excess_list                   excess;
             cameo::add<double>            xadd;
 
-            //! process a groupe of laws by minimal displacement
-            void process(const xmlog      &xml,
-                         writable<double> &C,
-                         const conserved  &laws);
+
         };
     }
 

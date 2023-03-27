@@ -1,4 +1,5 @@
 #include "yack/aqueous/realm/collector.hpp"
+#include "yack/aqueous/realm/claw/custodian.hpp"
 #include "yack/math/iota.hpp"
 #include "yack/system/imported.hpp"
 #include <iomanip>
@@ -197,14 +198,17 @@ namespace yack
         }
 
 
-        bool collector:: balance(const xmlog            &xml,
+        void collector:: balance(const xmlog            &xml,
                                  const domain           &dom,
+                                 custodian              &cst,
                                  writable<double>       &C)
         {
             YACK_XMLSUB(xml,"collector::balance");
 
 
             unsigned count   = 0;
+            cst.process(xml,C,dom);
+
             //------------------------------------------------------------------
             //
             // start loop
@@ -288,10 +292,14 @@ namespace yack
             }
 
             assert(balanced.size+solvable.size+weakened.size+singular.size==dom.defined.size);
-            YACK_XMLOG(xml, "balanced : " << balanced);
-            YACK_XMLOG(xml, "solvable : " << solvable);
-            YACK_XMLOG(xml, "weakened : " << weakened);
-            YACK_XMLOG(xml, "singular : " << singular);
+            if(xml.verbose)
+            {
+                if(balanced.size) *xml << "|_balanced=" << balanced << std::endl;
+                if(solvable.size) *xml << "|_solvable=" << solvable << std::endl;
+                if(weakened.size) *xml << "|_weakened=" << weakened << std::endl;
+                if(singular.size) *xml << "|_singular=" << singular << std::endl;
+            }
+
 
 
             //------------------------------------------------------------------
@@ -320,13 +328,6 @@ namespace yack
                 displace(C,find_opt(dom.retaking, weakened, xml));
                 changed = true;
                 goto LOOP;
-            }
-
-            bool result = true;
-            if(singular.size)
-            {
-                YACK_XMLOG(xml, "-------- singular -------- #" << singular.size);
-                result = false;
             }
 
             //------------------------------------------------------------------
@@ -367,6 +368,17 @@ namespace yack
                 }
             }
 
+
+            if(singular.size)
+            {
+                YACK_XMLOG(xml, "-------- singular -------- #" << singular.size);
+                exit(0);
+                cst.process(xml,C,dom);
+                goto LOOP;
+            }
+
+
+
             if(changed&&xml.verbose)
             {
                 *xml << "/----------------\\" << std::endl;
@@ -382,7 +394,6 @@ namespace yack
 
 
 
-            return result;
 
         }
 

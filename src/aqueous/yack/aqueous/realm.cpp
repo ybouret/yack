@@ -74,6 +74,17 @@ namespace yack
 {
     namespace aqueous
     {
+
+        void custodian:: process(const xmlog &xml,
+                                 writable<double>  &C,
+                                 const domain      &dom)
+        {
+            for(const conserved *cns=dom.pack.head;cns;cns=cns->next)
+            {
+                process(xml,C,*cns);
+            }
+        }
+
         void custodian:: process(writable<double> &C,
                                  const realm      &cs)
         {
@@ -82,10 +93,7 @@ namespace yack
             prepare();
             for(const domain *dom = cs.head;dom;dom=dom->next)
             {
-                for(const conserved *cns=dom->pack.head;cns;cns=cns->next)
-                {
-                    process(xml,C,*cns);
-                }
+                process(xml,C,*dom);
             }
         }
     }
@@ -98,15 +106,15 @@ namespace yack
     namespace aqueous
     {
 
-        bool collector::  balance(const realm      &chem,
-                                writable<double> &conc)
+        void collector::  balance(const realm      &chem,
+                                  writable<double> &conc,
+                                  custodian        &cust)
         {
-            bool res = true;
+            cust.prepare();
             for(const domain *dom=chem.head;dom;dom=dom->next)
             {
-                if(!balance(chem,*dom,conc)) res = false;
+                balance(chem,*dom,cust,conc);
             }
-            return res;
         }
     }
 }

@@ -16,7 +16,8 @@ namespace yack
     {
 
         class realm;
-        
+        class custodian;
+
         //______________________________________________________________________
         //
         //
@@ -47,7 +48,7 @@ namespace yack
             // C++
             //__________________________________________________________________
             explicit collector(const size_t n, const size_t m); //!<  setup
-            virtual ~collector() noexcept;      //!< cleanup
+            virtual ~collector() noexcept;                      //!< cleanup
 
             //__________________________________________________________________
             //
@@ -56,8 +57,9 @@ namespace yack
 
 
             //! settle all frontiers for each defined
-            bool balance(const realm       &chem,
-                         writable <double> &conc);
+            void balance(const realm       &chem,
+                         writable <double> &conc,
+                         custodian         &cust);
 
 
             //__________________________________________________________________
@@ -89,8 +91,9 @@ namespace yack
              \param R         global regular flags
              \param retaking partition of independent equilibria
              */
-            bool balance(const xmlog            &xml,
+            void balance(const xmlog            &xml,
                          const domain           &dom,
+                         custodian              &cst,
                          writable<double>       &C);
 
 

@@ -59,15 +59,15 @@ YACK_UTEST(coll)
             vector<double> K;
             realm          chem(lib,eqs,K);
             collector      coll(chem.largest_domain_size(),M);
-
+            custodian      cust(M);
             vector<double> C(M,0);
 
             for(size_t iter=1;iter<=10;++iter)
             {
                 make(C,eq.reac,eq.prod,ran);
-                coll.balance(chem,C);
+                coll.balance(chem,C,cust);
                 make(C,eq.prod,eq.reac,ran);
-                coll.balance(chem,C);
+                coll.balance(chem,C,cust);
             }
 
 

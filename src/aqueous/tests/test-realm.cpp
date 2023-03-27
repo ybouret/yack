@@ -26,7 +26,7 @@ YACK_UTEST(realm)
     std::cerr << "eqs=" << std::endl << eqs << std::endl;
 
     vector<double> K;
-    realm cs(lib,eqs,K);
+    realm chem(lib,eqs,K);
 
     //cs.graphviz("cs");
 
@@ -37,7 +37,7 @@ YACK_UTEST(realm)
 
 
     custodian keep(M);
-    collector coll(cs.largest_domain_size(),M);
+    collector coll(chem.largest_domain_size(),M);
 
 
     for(size_t iter=0;iter<=100;++iter)
@@ -45,17 +45,8 @@ YACK_UTEST(realm)
         lib.conc(C,ran);
         for(size_t i=M;i>0;--i) if( ran.choice() ) C[i] = -C[i];
         lib(std::cerr << "C0=",C) << std::endl;
-        size_t count = 0;
-        while(true)
-        {
-            ++count;
-            keep.process(C,cs);
-            lib(std::cerr << "C1=",C) << std::endl;
-            const bool balanced = coll.balance(cs,C);
-            lib(std::cerr << "C2=",C) << std::endl;
-            if(balanced) break;
-        }
-        if(count>1) exit(0);
+        coll.balance(chem,C,keep);
+        lib(std::cerr << "dC=",keep) << std::endl;
     }
 
 
