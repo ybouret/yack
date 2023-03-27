@@ -200,6 +200,7 @@ namespace yack
 
 
         void collector:: adjust(const xmlog            &xml,
+                                const sp_list          &live,
                                 const gathering        &fmt,
                                 const eq_list          &eqs,
                                 writable<double>       &C,
@@ -216,6 +217,13 @@ namespace yack
                 *xml << "/----------------" << std::endl;
                 *xml << "| #loop = " << std::setw(4) << count << std::endl;
                 *xml << "\\----------------" << std::endl;
+                *xml << '{';
+                for(const sp_node *sn=live.head;sn;sn=sn->next)
+                {
+                    const species &sp = ***sn;
+                    xml() << ' ' << sp << '=' << C[sp.indx[top_level]];
+                }
+                xml() << ' ' << '}' << std::endl;
             }
             initialize();
             

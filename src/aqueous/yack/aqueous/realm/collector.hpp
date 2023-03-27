@@ -16,7 +16,7 @@ namespace yack
     {
 
         class realm;
-
+        
         //______________________________________________________________________
         //
         //
@@ -90,6 +90,7 @@ namespace yack
              \param retaking partition of independent equilibria
              */
             void adjust(const xmlog            &xml,
+                        const sp_list          &live,
                         const gathering        &fmt,
                         const eq_list          &eqs,
                         writable<double>      &C,
