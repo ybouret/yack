@@ -187,6 +187,18 @@ namespace yack
         }
 
 
+        bool collector:: dispatch(const equilibrium &eq, const shift_status st)
+        {
+            switch(st)
+            {
+                case shift_success: solvable << eq; return true;
+                case shift_partial: weakened << eq; return true;
+                case shift_blocked: singular << eq; break;
+            }
+            return false;
+        }
+
+
         void collector:: adjust(const xmlog            &xml,
                                 const gathering        &fmt,
                                 const eq_list          &eqs,
@@ -196,6 +208,109 @@ namespace yack
         {
             YACK_XMLSUB(xml,"collector::adjust");
 
+            unsigned count = 0;
+        LOOP:
+            ++count;
+            if(xml.verbose)
+            {
+                *xml << "/----------------" << std::endl;
+                *xml << "| #loop = " << std::setw(4) << count << std::endl;
+                *xml << "\\----------------" << std::endl;
+            }
+            initialize();
+            
+            collector_ &self = *this;
+            for(const eq_node *en = eqs.head; en; en=en->next)
+            {
+                const equilibrium    &eq  = ***en;
+                const size_t          ei  = eq.indx[cat_level];
+                chart                &ch  = self[ei];
+
+                // get status according to STRICT NEGATIVITY
+                const chart::oor_type oor = ch.settle(eq,C,R);
+
+                switch(oor)
+                {
+                    case chart::oor_none:
+                        balanced << eq;
+                        continue;
+
+                    case chart::oor_both:
+                        if(xml.verbose)  fmt.pad(*xml << "blocked   : " << eq,eq) << " : "  << ch << std::endl;
+                        singular << eq;
+                        continue;
+
+                    case chart::oor_prod:
+                        if(xml.verbose)  fmt.pad(*xml << "prod(s)<0 : " << eq,eq) << " : "  << ch << std::endl;
+                        if(!dispatch(eq,ch.adjust_prod(xml))) continue;
+                        break;
+
+                    case chart::oor_reac:
+                        if(xml.verbose)  fmt.pad(*xml << "reac(s)<0 : " << eq,eq) << " : "  << ch << std::endl;
+                        if(!dispatch(eq,ch.adjust_reac(xml))) continue;
+                        break;
+
+                }
+
+                // create a more balanced phase space
+                assert(chart::oor_prod == oor || chart::oor_reac == oor );
+                assert(solvable.contains(eq) || weakened.contains(eq) );
+                gain[ei] = compute_balanced(xadd,Cbal[ei],eq,C,R,ch.corr);
+
+                // verbosity
+                if(xml.verbose)
+                {
+                    *xml <<" |_extent : " << ch.corr << std::endl;
+                    eq.display_compact(*xml <<" |_origin : ",C)        << std::endl;
+                    eq.display_compact(*xml <<" |_target : ",Cbal[ei]) << std::endl;
+                    *xml <<" |_gain   : " << gain[ei] << std::endl;
+                }
+
+            }
+
+            assert(balanced.size+solvable.size+weakened.size+singular.size==eqs.size);
+            YACK_XMLOG(xml, "balanced : " << balanced);
+            YACK_XMLOG(xml, "solvable : " << solvable);
+            YACK_XMLOG(xml, "weakened : " << weakened);
+            YACK_XMLOG(xml, "singular : " << singular);
+
+
+            //------------------------------------------------------------------
+            //
+            // check solvable
+            //
+            //------------------------------------------------------------------
+            if(solvable.size)
+            {
+                YACK_XMLOG(xml, "-------- solvable -------- #" << solvable.size);
+                if(xml.verbose) display_gains(xml,gain,fmt,solvable.head);
+                displace(C,find_opt(retaking, solvable, xml));
+                goto LOOP;
+            }
+
+            //------------------------------------------------------------------
+            //
+            //  check weakened
+            //
+            //------------------------------------------------------------------
+            if(weakened.size)
+            {
+                YACK_XMLOG(xml, "-------- weakened -------- #" << weakened.size);
+                if(xml.verbose) display_gains(xml,gain,fmt,weakened.head);
+                displace(C,find_opt(retaking, weakened, xml));
+                goto LOOP;
+            }
+
+            if(singular.size)
+            {
+                YACK_XMLOG(xml, "-------- singular -------- #" << singular.size);
+                exit(0);
+            }
+
+            return;
+
+
+#if 0
             //------------------------------------------------------------------
             //
             // initializing
@@ -303,6 +418,7 @@ namespace yack
 
 
             exit(0);
+#endif
 
         }
 

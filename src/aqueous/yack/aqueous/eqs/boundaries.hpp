@@ -24,6 +24,13 @@ namespace yack
         typedef zlimits::proxy_type     zl_proxy; //!< alias
         typedef zlimits::zpool_type     zl_zpool; //!< alis
 
+        enum shift_status
+        {
+            shift_success,
+            shift_partial,
+            shift_blocked
+        };
+
         //______________________________________________________________________
         //
         //
@@ -52,16 +59,16 @@ namespace yack
             void     insert(double         xi,
                             const species &sp);
 
-            //! find correction subject to limitiation for size>0
+            //! find correction subject to limitiation for this->size>0
             /**
              \param xml        for output
              \param correction result
              \param limitation limiting reac for prod, prod for reac
              \return true if the correction rehabilitates
              */
-            bool     lookup(const xmlog  &xml,
-                            zlimit       &correction,
-                            const zlimit &limitation) const;
+            shift_status     try_shift(const xmlog  &xml,
+                                       zlimit       &correction,
+                                       const zlimit &limitation) const;
 
 
 

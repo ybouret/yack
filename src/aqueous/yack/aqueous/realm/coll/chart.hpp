@@ -59,17 +59,17 @@ namespace yack
 
                 //! adjust invalid products with limiting reactant
                 /**
-                 - called on oor_prod
-                 - return true if products are positive again
+                 - called on oor.prod with limiting reac
+                 - return status
                  */
-                bool     adjust_prod(const xmlog &);
+                shift_status adjust_prod(const xmlog &);
 
                 //! adjust invalid reactants with limiting products
                 /**
-                 - called on oor_reac
-                 - return true if products are positive again
+                 - called on oor.reac with limiting prod
+                 - return status, changed sign of corrr
                  */
-                bool     adjust_reac(const xmlog &);
+                shift_status adjust_reac(const xmlog &);
 
                 //! display 
                 YACK_PROTO_OSTREAM(chart);

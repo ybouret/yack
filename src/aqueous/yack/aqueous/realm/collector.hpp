@@ -96,6 +96,8 @@ namespace yack
                         const readable<bool>   &R,
                         const partition        &retaking);
 
+            //! return true is shift_status != blocked
+            bool           dispatch(const equilibrium &, const shift_status);
             double         combined(const cluster &);
             const cluster &find_opt(const partition        &part,
                                     const eq_repo          &zeqs,

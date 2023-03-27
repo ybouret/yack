@@ -55,22 +55,25 @@ namespace yack
 
             }
 
-            bool chart:: adjust_prod(const xmlog &xml)
+            shift_status chart:: adjust_prod(const xmlog &xml)
             {
-                return prod.oor.lookup(xml,corr,reac.lim);
+                return prod.oor.try_shift(xml,corr,reac.lim);
             }
 
-            bool chart:: adjust_reac(const xmlog &xml)
+            shift_status chart:: adjust_reac(const xmlog &xml)
             {
-                if( reac.oor.lookup(xml,corr,prod.lim) )
+                const shift_status res = reac.oor.try_shift(xml,corr,prod.lim);
+
+                switch(res)
                 {
-                    corr.extent = -corr.extent;
-                    return true;
+                    case shift_blocked: return shift_blocked;
+                    case shift_partial:
+                    case shift_success:
+                        corr.extent = -corr.extent;
+                        return res;
                 }
-                else
-                {
-                    return false;
-                }
+                return res;
+                
             }
 
 

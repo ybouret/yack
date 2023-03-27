@@ -22,9 +22,9 @@ namespace yack
         }
 
 
-        bool boundaries:: lookup(const xmlog  &xml,
-                                 zlimit       &correction,
-                                 const zlimit &limitation) const
+        shift_status boundaries:: try_shift(const xmlog  &xml,
+                                            zlimit       &correction,
+                                            const zlimit &limitation) const
         {
             //------------------------------------------------------------------
             //
@@ -40,10 +40,10 @@ namespace yack
             static const char sep[] = " : ";
 
             YACK_XMLOG(xml, pfx << "look up : " << limitation << " in " << *this);
-            if(fabs(limitation.extent)<=0)
+            if(limitation.size<=0 || fabs(limitation.extent)<=0)
             {
-                YACK_XMLOG(xml, pfx << yack_failure << sep << correction << ", vanished species");
-                return false;
+                YACK_XMLOG(xml, pfx << yack_failure << sep << correction << ", no available shift");
+                return shift_blocked;
             }
             
             //------------------------------------------------------------------
@@ -61,14 +61,14 @@ namespace yack
                         // enough extent for all, stop at upper value
                         correction = up;
                         YACK_XMLOG(xml, pfx << yack_success << sep << correction << ", complete solving");
-                        return true;
+                        return shift_success;
 
                     case __zero__:
-                        // enough extent for all, stop at same upper value/limitation
+                        // enough extent for all, stop at ex-aequo upper value/limitation
                         correction = limitation;
                         correction.merge_back_copy(up);
                         YACK_XMLOG(xml, pfx << yack_success << sep << correction << ", complete solving (ex-aequo)");
-                        return true;
+                        return shift_success;
 
                     case negative:
                         if(1==size)
@@ -76,7 +76,7 @@ namespace yack
                             // not enough for the single boundary
                             correction = limitation;
                             YACK_XMLOG(xml, pfx << yack_failure << sep << correction << ", too small for single boundary");
-                            return false;
+                            return shift_partial;
                         }
                         else
                         {
@@ -103,14 +103,14 @@ namespace yack
                         // smallest than the lowest boundary => best effort
                         correction = limitation;
                         YACK_XMLOG(xml, pfx << yack_failure << sep << correction << ", too small for multiple boundaries");
-                        return false;
+                        return shift_partial;
 
                     case __zero__:
                         // equal to the lowest boundary => best effort
                         correction = limitation;
                         correction.merge_back_copy(lo);
                         YACK_XMLOG(xml, pfx << yack_failure << sep << correction << ", too small but matching first of multiple boundaries");
-                        return false;
+                        return shift_partial;
 
                     case positive:
                         // generic case
@@ -141,7 +141,7 @@ namespace yack
                         correction = limitation;
                         correction.merge_back_copy(next);
                         YACK_XMLOG(xml, pfx << yack_failure << sep << correction << ", too small but matching one of multiple boundaries");
-                        return false;
+                        return shift_partial;
 
                     case positive:
                         // need to go on
@@ -161,7 +161,7 @@ namespace yack
             correction = **lower;
             YACK_XMLOG(xml, pfx << yack_failure << sep << correction << ", too small (default case)");
 
-            return false;
+            return shift_partial;
             
         }
 
