@@ -204,13 +204,14 @@ namespace yack
             YACK_XMLSUB(xml,"collector::balance");
 
 
-            unsigned count = 0;
+            unsigned count   = 0;
             //------------------------------------------------------------------
             //
             // start loop
             //
             //------------------------------------------------------------------
         LOOP:
+            bool     changed = false;
             ++count;
             if(xml.verbose)
             {
@@ -303,6 +304,7 @@ namespace yack
                 YACK_XMLOG(xml, "-------- solvable -------- #" << solvable.size);
                 if(xml.verbose) display_gains(xml,gain,dom.eqfmt,solvable.head);
                 displace(C,find_opt(dom.retaking, solvable, xml));
+                changed = true;
                 goto LOOP;
             }
 
@@ -316,6 +318,7 @@ namespace yack
                 YACK_XMLOG(xml, "-------- weakened -------- #" << weakened.size);
                 if(xml.verbose) display_gains(xml,gain,dom.eqfmt,weakened.head);
                 displace(C,find_opt(dom.retaking, weakened, xml));
+                changed = true;
                 goto LOOP;
             }
 
@@ -341,6 +344,7 @@ namespace yack
                     assert(eq.prod.size>0);
                     if(needed_some_fixing(eq.prod,C))
                     {
+                        changed=true;
                         if(xml.verbose) eq.display_compact( dom.eqfmt.pad(*xml << eq,eq) << " : ",C) << std::endl;
                     }
                 }
@@ -356,8 +360,22 @@ namespace yack
                     assert(eq.prod.size<=0);
                     if(needed_some_fixing(eq.reac,C))
                     {
+                        changed=true;
                         if(xml.verbose) eq.display_compact( dom.eqfmt.pad(*xml << eq,eq) << " : ",C) << std::endl;
                     }
+                }
+            }
+
+            if(changed&&xml.verbose)
+            {
+                *xml << "/----------------\\" << std::endl;
+                *xml << "|    balanced    |" << std::endl;
+                *xml << "\\----------------/" << std::endl;
+                for(const sp_node *sn=dom.live.head;sn;sn=sn->next)
+                {
+                    const species &sp = ***sn;
+                    const double   c  = C[sp.indx[top_level]];
+                    dom.spfmt.pad(*xml << sp, sp) << " = " << std::setw(15) << c << std::endl;
                 }
             }
 
