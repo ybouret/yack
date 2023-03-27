@@ -65,7 +65,7 @@ namespace yack
         // methods
         //______________________________________________________________________
         const_iterator begin() const noexcept { return (**this).head; } //!< forward iterator begin
-        const_iterator end()   const noexcept { return NULL; }          //!< forward itetator end
+        const_iterator end()   const noexcept { return NULL; }          //!< forward iterator end
 
         //! display content
         inline friend std::ostream & operator<<(std::ostream &os, const lexicon &self)

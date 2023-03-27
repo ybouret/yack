@@ -93,6 +93,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(data_pipes);
     YACK_UTEST(data_addrbook);
     YACK_UTEST(data_lexicon);
+    YACK_UTEST(data_key_mapper);
     YACK_UTEST(data_doubly);
     YACK_UTEST(data_groove);
     YACK_UTEST(data_sorted_list);

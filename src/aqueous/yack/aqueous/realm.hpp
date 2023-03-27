@@ -58,7 +58,7 @@ namespace yack
             equilibria              eqs; //!< original+manifold
             const cxx_array<bool>   reg; //!< regular species
             const cxx_array<size_t> grp; //!< group index for species
-
+            const matrix<int>       Nu;
 
 
         private:

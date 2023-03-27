@@ -91,7 +91,7 @@ namespace yack
             data_knot    *next; //!< for list/pool
             data_knot    *prev; //!< for list
             NODE         *node; //!< node within structure
-
+            
         private:
             mutable_type  *data;
             void          *impl[ YACK_WORDS_FOR(T) ];
