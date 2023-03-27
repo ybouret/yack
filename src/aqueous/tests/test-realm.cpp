@@ -33,32 +33,22 @@ YACK_UTEST(realm)
 
     const size_t   M = lib->size;
     vector<double> C(M,0);
-
-
-    
-    lib.conc(C,ran);
-    for(size_t i=M;i>0;--i) if( ran.choice() ) C[i] = -C[i];
-
-    lib(std::cerr << "C0=",C) << std::endl;
     
 
-    custodian        keeper(M);
-    if(false)
-    {
-        keeper.process(C,cs);
-        lib(std::cerr << "C1=",C) << std::endl;
-    }
 
-    collector collect(cs.largest_domain_size(),M);
+    custodian keep(M);
+    collector coll(cs.largest_domain_size(),M);
 
 
     for(size_t iter=0;iter<=0;++iter)
     {
         lib.conc(C,ran);
         for(size_t i=M;i>0;--i) if( ran.choice() ) C[i] = -C[i];
-
         lib(std::cerr << "C0=",C) << std::endl;
-        collect.balance(cs,C);
+        keep.process(C,cs);
+        lib(std::cerr << "C1=",C) << std::endl;
+        coll.balance(cs,C);
+        lib(std::cerr << "C2=",C) << std::endl;
     }
 
 
