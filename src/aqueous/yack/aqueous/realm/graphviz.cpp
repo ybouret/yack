@@ -6,7 +6,7 @@ namespace yack
 {
     namespace aqueous
     {
-        void realm:: graphviz(const string &rootname) const
+        void realm:: graphviz(const string &rootname, const size_t depth) const
         {
             {
                 const string   expr = rootname + "[:digit:]*\\.(dot|png)";
@@ -22,7 +22,8 @@ namespace yack
                 assert(dom->slots.is_valid());
                 nmax = max_of(nmax,dom->slots->size());
             }
-
+            if(depth>0) nmax = min_of(nmax,depth);
+            
             for(size_t i=1;i<=nmax;++i)
             {
                 const string filename = rootname + vformat("%u.dot", unsigned(i));

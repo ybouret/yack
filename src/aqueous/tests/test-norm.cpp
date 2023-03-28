@@ -28,6 +28,8 @@ YACK_UTEST(norm)
     realm      chem(lib,eqs,K);
     normalizer norm(chem);
 
+    chem.graphviz("cs",1);
+
     const size_t M = lib->size;
     const size_t N = eqs->size;
     vector<double>     C0(M,0), C1(M,0);
