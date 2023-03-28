@@ -188,6 +188,7 @@ namespace yack
         //! setup
         inline explicit key_mapper() noexcept :
         kernel::key_mapper(),
+        size(0),
         forward(),
         reverse()
         {}
@@ -198,6 +199,7 @@ namespace yack
         //! copy
         inline key_mapper(const key_mapper &other) :
         kernel::key_mapper(),
+        size(other.size),
         forward(other.forward),
         reverse(other.reverse)
         {
@@ -215,6 +217,7 @@ namespace yack
             try
             { if( !coerce(reverse).insert(target,source)) raise_multiple_target(); }
             catch(...)  { (void) coerce(forward).remove(source); throw; }
+            ++coerce(size);
         }
 
         //! display equivalences
@@ -224,7 +227,7 @@ namespace yack
             fwd_iterator fwd = self.forward.begin();
             rev_iterator rev = self.reverse.begin();
             os << "{";
-            for(size_t i=self.forward->size;i>0;--i,++fwd,++rev)
+            for(size_t i=self.size;i>0;--i,++fwd,++rev)
             {
                 os << ' '  << *rev << ':' << *fwd;
             }
@@ -232,10 +235,23 @@ namespace yack
             return os;
         }
 
+        template <typename ARR, typename BRR> inline
+        void send(ARR &target, BRR &source) const
+        {
+            fwd_iterator fwd = forward.begin();
+            rev_iterator rev = reverse.begin();
+            for(size_t i=size;i>0;--i,++fwd,++rev)
+            {
+                target[ *fwd ] = source[ *rev ];
+            }
+        }
+
+
         //______________________________________________________________________
         //
         // members
         //______________________________________________________________________
+        const size_t        size;    //!< current common size
         const fwd_dict_type forward; //!< source => target
         const rev_dict_type reverse; //!< target => source
 

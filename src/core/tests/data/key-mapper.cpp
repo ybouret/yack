@@ -1,6 +1,7 @@
 #include "yack/associative/key-mapper.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/string.hpp"
+#include "yack/sequence/vector.hpp"
 
 using namespace yack;
 
@@ -33,12 +34,26 @@ YACK_UTEST(data_key_mapper)
         YACK_CHECK( K.reverse[2] == 1 );
         YACK_CHECK( K.reverse[4] == 3 );
         YACK_CHECK( K.reverse[7] == 6 );
-
     }
 
     std::cerr << "sizes: " << std::endl;
     std::cerr << sizeof( key_mapper<int,int> ) << std::endl;
     std::cerr << sizeof( key_mapper<char,char> ) << std::endl;
+
+    {
+        key_mapper<size_t,size_t> imap;
+        imap(2,3);
+        imap(4,1);
+        imap(6,2);
+        std::cerr << imap << std::endl;
+
+        vector<double> gvec(6,0);
+        vector<double> lvec(3,0);
+        for(size_t i=6;i>0;--i) gvec[i] = i;
+
+        imap.send(lvec,gvec);
+        std::cerr << "gvec=" << gvec << " => " << lvec << std::endl;
+    }
 
 
 }
