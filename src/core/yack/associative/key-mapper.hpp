@@ -13,13 +13,17 @@ namespace yack
 
     namespace kernel
     {
+        //______________________________________________________________________
+        //
+        //! base class for key_map, to raise errors
+        //______________________________________________________________________
         class key_map
         {
         public:
-            virtual ~key_map() noexcept;
+            virtual ~key_map() noexcept;        //!< cleanup
         protected:
-            explicit key_map() noexcept;
-            void     raise_missing_key() const;
+            explicit key_map() noexcept;        //!< setup
+            void     raise_missing_key() const; //!< throw
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(key_map);
@@ -167,14 +171,14 @@ namespace yack
         //
         // definitions
         //______________________________________________________________________
-        YACK_DECL_ARGS(T,t);
-        YACK_DECL_ARGS(U,u);
-        typedef key_map<T,U> fwd_dict_type; //!< aliases
-        typedef key_map<U,T> rev_dict_type; //!< aliases
+        YACK_DECL_ARGS(T,t);                //!< aliases
+        YACK_DECL_ARGS(U,u);                //!< aliases
+        typedef key_map<T,U> fwd_dict_type; //!< alias
+        typedef key_map<U,T> rev_dict_type; //!< alias
 
-        //! alias to help
-        typedef typename fwd_dict_type::const_iterator fwd_iterator;
-        typedef typename rev_dict_type::const_iterator rev_iterator;
+
+        typedef typename fwd_dict_type::const_iterator fwd_iterator; //!< alias
+        typedef typename rev_dict_type::const_iterator rev_iterator; //!< alias
 
         //______________________________________________________________________
         //
@@ -190,6 +194,14 @@ namespace yack
 
         //! cleanup
         inline virtual ~key_mapper() noexcept {}
+
+        //! copy
+        inline key_mapper(const key_mapper &other) :
+        kernel::key_mapper(),
+        forward(other.forward),
+        reverse(other.reverse)
+        {
+        }
 
         //______________________________________________________________________
         //
@@ -228,7 +240,7 @@ namespace yack
         const rev_dict_type reverse; //!< target => source
 
     private:
-        YACK_DISABLE_COPY_AND_ASSIGN(key_mapper);
+        YACK_DISABLE_ASSIGN(key_mapper);
     };
 
 }

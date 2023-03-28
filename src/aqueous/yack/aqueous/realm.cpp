@@ -22,7 +22,7 @@ namespace yack
             const xmlog &xml = *this;
             //------------------------------------------------------------------
             //
-            // make partition of independents equilibria
+            // make domains of independents equilibria
             //
             //------------------------------------------------------------------
             build_domains(xml);

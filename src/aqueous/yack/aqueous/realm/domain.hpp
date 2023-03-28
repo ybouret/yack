@@ -11,6 +11,7 @@
 #include "yack/container/matrix.hpp"
 #include "yack/sequence/cxx-array.hpp"
 #include "yack/ios/xmlog.hpp"
+#include "yack/associative/key-mapper.hpp"
 
 namespace yack
 {
@@ -34,6 +35,7 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(eq_slots);
         };
 
+        typedef key_mapper<size_t,size_t> index_map;
 
         //______________________________________________________________________
         //
@@ -130,6 +132,8 @@ namespace yack
             const sp_list            bounded;   //!< bounded species
             const matrix<int>        Nu;        //!< [NxM] topology
             const matrix<int>        NuT;       //!< [MxN] Nu'
+            const index_map          eqmap;     //!< global/local
+            const index_map          spmap;     //!< global/local
             domain                  *next;      //!< for domains
             domain                  *prev;      //!< for domains
             const int                iviz;      //!< graphviz index
@@ -158,6 +162,7 @@ namespace yack
                                  const readable<double> &eks);
 
             void make_categories(const xmlog &); //!< categorize equilibria
+            void make_index_maps(const xmlog &); //!< make mapping
             void build_conserved(const xmlog &); //!< build conservation
             void make_partitions(const xmlog &); //!< partition
         };

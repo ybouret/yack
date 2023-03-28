@@ -20,6 +20,8 @@ namespace yack
             make_dimensions(xml);
             create_topology(xml);
             create_manifold(xml,eqs,eks);
+            make_index_maps(xml);
+            
             make_categories(xml);
             build_conserved(xml);
             make_partitions(xml);
