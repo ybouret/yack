@@ -62,11 +62,13 @@ namespace yack
 
             //! compute mass action
             double mass_action(const readable<double> &C,
+                               const index_level       I,
                                const double            K,
                                cameo::mul<double>     &xmul) const;
 
             //! compute mass action with extent
             double mass_action(const readable<double> &C,
+                               const index_level       I,
                                const double            xi,
                                const double            K,
                                cameo::mul<double>     &xmul) const;
@@ -80,11 +82,13 @@ namespace yack
             //! gradient
             void grad(writable<double>       &psi,
                       const readable<double> &C,
+                      const index_level       I,
                       const double            K,
                       cameo::mul<double>     &xmul) const;
 
             //! compute slope at given concentraion
             double slope(const readable<double> &C,
+                         const index_level       I,
                          const double            K,
                          cameo::mul<double>     &xmul,
                          cameo::add<double>     &xadd) const;

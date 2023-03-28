@@ -75,11 +75,11 @@ void perform(const double      K,
     for(size_t iter=0;iter<8;++iter)
     {
         lib.conc(C0,ran);
-        const aftermath am = aftermath::solve(eq,K,C0,Cs,xlim,xmul,xadd);
+        const aftermath am = aftermath::solve(eq,K,C0,Cs,top_level,xlim,xmul,xadd);
         const double    Q  = eq.quotient(Cs,K,xmul);
         ios::ocstream::echo(AM, "%u %.15g\n",++AI,Q);
         iota::save(C0,Cs);
-        const aftermath am2 = aftermath::solve(eq,K,C0,Cs,xlim,xmul,xadd);
+        const aftermath am2 = aftermath::solve(eq,K,C0,Cs,top_level,xlim,xmul,xadd);
         YACK_ASSERT(fabs(am2.value)<=0);
     }
 }
@@ -179,20 +179,20 @@ YACK_UTEST(am)
         const double   K  = eq.K(0);
         eq.fill(nu,0);
         std::cerr << "nu=" << nu << std::endl;
-        std::cerr << "ma=" << eq.mass_action(C0,K,xmul) << std::endl;
-        const aftermath am = aftermath::solve(eq,K,C0, Cs,xlim,xmul,xadd);
+        std::cerr << "ma=" << eq.mass_action(C0,top_level,K,xmul) << std::endl;
+        const aftermath am = aftermath::solve(eq,K,C0, Cs,top_level,xlim,xmul,xadd);
         std::cerr << "am=" << am << std::endl;
         lib(std::cerr << "Cs=",Cs) << std::endl;
-        std::cerr << "ma=" << eq.mass_action(Cs,K,xmul) << std::endl;
+        std::cerr << "ma=" << eq.mass_action(Cs,top_level,K,xmul) << std::endl;
         if(am.state == is_running)
         {
-            eq.grad(psi,Cs,K,xmul);
+            eq.grad(psi,Cs,top_level,K,xmul);
             lib(std::cerr << "psi=",psi,"d_") << std::endl;
             const double sigma = xadd.dot(nu,psi);
-            std::cerr << "sigma=" << sigma << " / " << eq.slope(Cs,K,xmul,xadd) << std::endl;
+            std::cerr << "sigma=" << sigma << " / " << eq.slope(Cs,top_level,K,xmul,xadd) << std::endl;
 
             iota::save(C0,Cs);
-            const aftermath am2 = aftermath::solve(eq,K,C0,Cs,xlim,xmul,xadd);
+            const aftermath am2 = aftermath::solve(eq,K,C0,Cs,top_level,xlim,xmul,xadd);
             std::cerr << "am2 = " << am2 << std::endl;
         }
     }

@@ -61,7 +61,8 @@ namespace yack
 
 
         bool xlimit::search(const actors           &A,
-                            const readable<double> &C)
+                            const readable<double> &C,
+                            const index_level       I)
         {
 
             reset();
@@ -69,7 +70,7 @@ namespace yack
             for(const actor *a=A.head;a;a=a->next)
             {
                 const species &s = **a;
-                const double   c = C[s.indx[0]];
+                const double   c = C[s.indx[I]];
                 if(c>=0)
                     insert(c/a->nu,s);
             }
@@ -78,64 +79,7 @@ namespace yack
         }
 
 
-#if 0
-        bool xlimit:: get_extent(const actors           &A,
-                                 const readable<double> &C)
-        {
-            // initialize
-            reset();
 
-            // find first positive extent
-            const actor *a = A.head;
-            for(;a;a=a->next)
-            {
-                const species &s = **a;
-                const double   c = C[s.indx[0]];
-                if(c>=0)
-                {
-                    extent = c/a->nu;
-                    (*this) << s;
-                    a=a->next;
-                    break;
-                }
-            }
-
-            // find LEQ extent
-            for(;a;a=a->next)
-            {
-                const species &s = **a;
-                const double   c = C[s.indx[0]];
-                if(c>=0)
-                {
-                    const double x = c/a->nu;
-                    switch( __sign::of(x,extent) )
-                    {
-
-                        case negative: assert(x<extent); // new winner
-                            extent = x; clear(); (*this) << s;
-                            break;
-
-                        case __zero__:
-                            (*this) << s; // ex-aequp
-                            break;
-
-                        case positive:   // do nothing
-                            break;
-                    }
-                }
-            }
-
-            if(size>0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-
-        }
-#endif
         
     }
 

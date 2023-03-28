@@ -48,6 +48,7 @@ namespace yack
 
             //! append terms to xmul
             void mass_action(const readable<double> &C,
+                             const index_level       I,
                              cameo::mul<double>     &xmul) const;
 
             //! append terms to xmul, using C+nu*xi
@@ -55,6 +56,7 @@ namespace yack
              \warning take care of sign of xi!
              */
             void mass_action(const readable<double> &C,
+                             const index_level       I,
                              const double            xi,
                              cameo::mul<double>     &xmul) const;
 

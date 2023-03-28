@@ -91,22 +91,24 @@ namespace yack
 
 
         double components:: mass_action(const readable<double> &C,
+                                        const index_level       I,
                                         const double            K,
                                         cameo::mul<double>     &xmul) const
         {
             assert(K>0);
             xmul.free();
             xmul.push(K);
-            reac.mass_action(C,xmul);
+            reac.mass_action(C,I,xmul);
             const double lhs = xmul.product();
 
             assert(0==xmul.size());
             xmul.push(1);
-            prod.mass_action(C,xmul);
+            prod.mass_action(C,I,xmul);
             return lhs - xmul.product();
         }
 
         double components:: mass_action(const readable<double> &C,
+                                        const index_level       I,
                                         const double            K,
                                         const double            xi,
                                         cameo::mul<double>     &xmul) const
@@ -114,12 +116,12 @@ namespace yack
             assert(K>0);
             xmul.free();
             xmul.push(K); assert(1==xmul.size());
-            reac.mass_action(C,-xi,xmul);
+            reac.mass_action(C,I,-xi,xmul);
             const double lhs = xmul.product();
 
             assert(0==xmul.size());
             xmul.push(1); assert(1==xmul.size());
-            prod.mass_action(C,xi,xmul);
+            prod.mass_action(C,I,xi,xmul);
             const double rhs = xmul.product();
             return lhs - rhs;
         }
@@ -150,24 +152,27 @@ namespace yack
 
         static inline double expand_grad(const actor            *a,
                                          const readable<double> &C,
+                                         const index_level       I,
                                          cameo::mul<double>     &xmul)
         {
-            for(const actor *b=a->prev;b;b=b->prev)  b->mass_action(C,xmul);
-            for(const actor *b=a->next;b;b=b->next)  b->mass_action(C,xmul);
+            for(const actor *b=a->prev;b;b=b->prev)  b->mass_action(C,I,xmul);
+            for(const actor *b=a->next;b;b=b->next)  b->mass_action(C,I,xmul);
             return xmul.product();
         }
 
         static inline void   update_grad(writable<double>       &psi,
-                                const actor            *a,
-                                const readable<double> &C,
-                                cameo::mul<double>     &xmul)
+                                         const actor            *a,
+                                         const readable<double> &C,
+                                         const index_level       I,
+                                         cameo::mul<double>     &xmul)
         {
-            const size_t i = a->grad_action(C,xmul);
-            psi[i] = expand_grad(a,C,xmul);
+            const size_t i = a->grad_action(C,I,xmul);
+            psi[i] = expand_grad(a,C,I,xmul);
         }
 
         void components:: grad(writable<double>       &psi,
                                const readable<double> &C,
+                               const index_level       I,
                                const double            K,
                                cameo::mul<double>     &xmul) const
         {
@@ -176,18 +181,19 @@ namespace yack
             for(const actor *a=reac.head;a;a=a->next)
             {
                 xmul = K;
-                update_grad(psi,a,C,xmul);
+                update_grad(psi,a,C,I,xmul);
             }
 
             for(const actor *a=prod.head;a;a=a->next)
             {
                 xmul = -1;
-                update_grad(psi,a,C,xmul);
+                update_grad(psi,a,C,I,xmul);
             }
 
         }
 
         double components:: slope(const readable<double> &C,
+                                  const index_level       I,
                                   const double            K,
                                   cameo::mul<double>     &xmul,
                                   cameo::add<double>     &xadd) const
@@ -196,15 +202,15 @@ namespace yack
             for(const actor *a=reac.head;a;a=a->next)
             {
                 xmul = K;
-                (void) a->grad_action(C,xmul);
-                xadd.push( (a->nu*expand_grad(a,C,xmul)) );
+                (void) a->grad_action(C,I,xmul);
+                xadd.push( (a->nu*expand_grad(a,C,I,xmul)) );
             }
 
             for(const actor *a=prod.head;a;a=a->next)
             {
                 xmul = 1;
-                (void) a->grad_action(C,xmul);
-                xadd.push( (a->nu*expand_grad(a,C,xmul)) );
+                (void) a->grad_action(C,I,xmul);
+                xadd.push( (a->nu*expand_grad(a,C,I,xmul)) );
             }
 
             return -xadd.sum();

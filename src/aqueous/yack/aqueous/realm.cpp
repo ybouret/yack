@@ -71,7 +71,19 @@ namespace yack
             return res;
         }
 
+        void realm:: computeK(writable<double> &K, const double t)
+        {
+            assert(K.size()>=eqs->size);
 
+            for( enode *en=eqs->head;en;en=en->next)
+            {
+                equilibrium &eq = ***en;
+                K[ eq.indx[top_level] ] = eq.K(t);
+            }
+
+            
+
+        }
         
     }
     

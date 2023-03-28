@@ -35,9 +35,11 @@ namespace yack
             /**
              \param A actors
              \param C global concentrations
+             \param I index level to read C
              */
             bool search(const actors           &A,
-                        const readable<double> &C);  
+                        const readable<double> &C,
+                        const index_level       I);
 
             //! insert new value
             /**

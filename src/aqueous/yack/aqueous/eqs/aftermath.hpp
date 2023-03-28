@@ -52,6 +52,7 @@ namespace yack
                                    const double            K,
                                    const readable<double> &C0,
                                    writable<double>       &Cs,
+                                   const index_level       il,
                                    xlimits                &xlim,
                                    cameo::mul<double>     &xmul,
                                    cameo::add<double>     &xadd);

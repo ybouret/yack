@@ -66,31 +66,34 @@ namespace yack
         void make_no_prod(const equilibrium      &E,
                           const double            K,
                           const readable<double> &C,
+                          const index_level       I,
                           triplet<double>        &x,
                           triplet<double>        &f,
                           const xlimits          &xlim,
                           cameo::mul<double>     &xmul)
         {
             const double xx = xlim.prod.extent;
-            x.a = -xx; xmul = K; E.reac.mass_action(C,xx,xmul); f.a =  xmul.product();
+            x.a = -xx; xmul = K; E.reac.mass_action(C,I,xx,xmul); f.a =  xmul.product();
         }
 
 
         static inline
         void make_no_reac(const equilibrium      &E,
                           const readable<double> &C,
+                          const index_level       I,
                           triplet<double>        &x,
                           triplet<double>        &f,
                           const xlimits          &xlim,
                           cameo::mul<double>     &xmul)
         {
-            xmul = 1; E.prod.mass_action(C,x.c = xlim.reac.extent,xmul); f.c = -xmul.product();
+            xmul = 1; E.prod.mass_action(C,I,x.c = xlim.reac.extent,xmul); f.c = -xmul.product();
         }
 
         static inline
         double am_for(const components       &E,
                       const readable<double> &C0,
                       const readable<double> &Cs,
+                      const index_level       il,
                       cameo::add<double>     &xadd)
         {
             const size_t size = E->size; assert(size>0);
@@ -98,7 +101,7 @@ namespace yack
             for(const cnode *node = E->head; node; node=node->next)
             {
                 const component &cc = ***node;
-                const size_t     i  = (*cc).indx[0];
+                const size_t     i  = (*cc).indx[il];
                 xadd.push( (Cs[i]-C0[i]) / cc.nu );
             }
             assert(size==xadd.size());
@@ -110,6 +113,7 @@ namespace yack
                                     const double            K,
                                     const readable<double> &C0,
                                     writable<double>       &Cs,
+                                    const index_level       il,
                                     xlimits                &xlim,
                                     cameo::mul<double>     &xmul,
                                     cameo::add<double>     &xadd)
@@ -126,7 +130,7 @@ namespace yack
         CYCLE:
             triplet<double>  x = { 0 ,0, 0};
             triplet<double>  f = { 0, 0, 0};
-            const limitation l = xlim(E,Cs);
+            const limitation l = xlim(E,Cs,il);
 
             switch(l)
             {
@@ -145,11 +149,11 @@ namespace yack
                     //----------------------------------------------------------
                 case limited_by_both: assert(xlim.reac.size>0); assert(xlim.prod.size>0);
                     if(xlim.flag == is_blocked) return aftermath();
-                    switch( __sign::of(f.b=E.mass_action(Cs,K,xmul)) )
+                    switch( __sign::of(f.b=E.mass_action(Cs,il,K,xmul)) )
                     {
-                        case __zero__: return aftermath( am_for(E,C0,Cs,xadd) );                                   // early return
-                        case positive: f.a = f.b; make_no_reac(E, Cs, x, f, xlim, xmul);    assert(f.c<0);  break; // in [0:x.c>0]
-                        case negative: f.c = f.b; make_no_prod(E, K, Cs, x, f, xlim, xmul); assert(f.a>0);  break; // in [x.a<0:0]
+                        case __zero__: return aftermath( am_for(E,C0,Cs,il,xadd) );                             // early return
+                        case positive: f.a = f.b; make_no_reac(E,Cs,il,x,f,xlim,xmul);   assert(f.c<0);  break; // in [0:x.c>0]
+                        case negative: f.c = f.b; make_no_prod(E,K,Cs,il,x,f,xlim,xmul); assert(f.a>0);  break; // in [x.a<0:0]
                     }
                     break;
 
@@ -159,16 +163,16 @@ namespace yack
                     //
                     //----------------------------------------------------------
                 case limited_by_reac: assert(xlim.reac.size>0); assert(xlim.prod.size==0);
-                    switch( __sign::of(f.b=E.mass_action(Cs,K,xmul)) )
+                    switch( __sign::of(f.b=E.mass_action(Cs,il,K,xmul)) )
                     {
-                        case __zero__: return aftermath( am_for(E,C0,Cs,xadd) );        // early return
+                        case __zero__: return aftermath( am_for(E,C0,Cs,il,xadd) );    // early return
                         case positive: f.a = f.b; x.c=xlim.reac.extent; f.c=-1; break; // in [0:x.c>0]
                         case negative:
                             f.c = f.b;
                             assert(E.d_nu<0);
                             assert(E.idnu<0);
                             x.a  = -pow(K,E.idnu);
-                            while( (f.a = E.mass_action(Cs,K,x.a,xmul) ) <= 0)
+                            while( (f.a = E.mass_action(Cs,il,K,x.a,xmul) ) <= 0)
                                 x.a += x.a;
                             break;
                     }
@@ -181,15 +185,15 @@ namespace yack
                     //
                     //----------------------------------------------------------
                 case limited_by_prod: assert(xlim.reac.size==0); assert(xlim.prod.size>0);
-                    switch( __sign::of(f.b=E.mass_action(Cs,K,xmul)) )
+                    switch( __sign::of(f.b=E.mass_action(Cs,il,K,xmul)) )
                     {
-                        case __zero__: return aftermath( am_for(E,C0,Cs,xadd) );                                  // early return
-                        case negative: f.c = f.b; make_no_prod(E, K, Cs, x, f, xlim, xmul); assert(f.a>0); break; // in [x.a<0:0]
+                        case __zero__: return aftermath( am_for(E,C0,Cs,il,xadd) );                               // early return
+                        case negative: f.c = f.b; make_no_prod(E,K,Cs,il,x,f,xlim,xmul); assert(f.a>0); break; // in [x.a<0:0]
                         case positive: f.a = f.b;
                             assert(E.d_nu>0);
                             assert(E.idnu>0);
                             x.c  = pow(K,E.idnu);
-                            while( (f.c = E.mass_action(Cs,K,x.c,xmul) ) >= 0)
+                            while( (f.c = E.mass_action(Cs,il,K,x.c,xmul) ) >= 0)
                                 x.c += x.c;
                             assert(x.c>0);
                             assert(f.c<0);
@@ -205,10 +209,10 @@ namespace yack
         BISECT:
             assert(f.a>0);
             assert(f.c<0);
-            f.b = E.mass_action(Cs,K,x.b=clamp(x.a,0.5*(x.a+x.c),x.c),xmul);
+            f.b = E.mass_action(Cs,il,K,x.b=clamp(x.a,0.5*(x.a+x.c),x.c),xmul);
             switch( __sign::of(f.b) )
             {
-                case __zero__:  E.move(Cs,x.b); return aftermath( am_for(E,C0,Cs,xadd) ); // early return
+                case __zero__:  E.move(Cs,x.b); return aftermath( am_for(E,C0,Cs,il,xadd) ); // early return
                 case positive:  f.a = f.b; x.a = x.b; break;
                 case negative:  f.c = f.b; x.c = x.b; break;
             }
@@ -236,7 +240,7 @@ namespace yack
             if(!converged) goto CYCLE;
 
             // converged with numerical error
-            return aftermath( am_for(E,C0,Cs,xadd), E.mass_action(Cs,K,xmul) );
+            return aftermath( am_for(E,C0,Cs,il,xadd), E.mass_action(Cs,il,K,xmul) );
         }
 
     }

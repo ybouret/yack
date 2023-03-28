@@ -61,15 +61,17 @@ namespace yack
         }
 
         void actor:: mass_action(const readable<double> &C,
+                                 const index_level       I,
                                  cameo::mul<double>     &xmul) const
         {
-            xmul.push( C[sp.indx[0]], nu);
+            xmul.push( C[sp.indx[I]], nu);
         }
 
         size_t  actor:: grad_action(const readable<double> &C,
+                                    const index_level       I,
                                     cameo::mul<double>     &xmul) const
         {
-            const size_t i = sp.indx[0];
+            const size_t i = sp.indx[I];
 
             if(nm>0)
             {

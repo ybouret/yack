@@ -40,10 +40,12 @@ namespace yack
 
             //! load xmul with mass action
             void   mass_action(const readable<double> &C,
+                               const index_level       I,
                                cameo::mul<double>     &xmul) const;
 
             //! load xmul with grad action, return species index
             size_t  grad_action(const readable<double> &C,
+                                const index_level       I,
                                 cameo::mul<double>     &xmul) const;
             //__________________________________________________________________
             //

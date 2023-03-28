@@ -51,14 +51,16 @@ namespace yack
 
 
         void actors:: mass_action(const readable<double> &C,
+                                  const index_level       I,
                                   cameo::mul<double>     &xmul) const
         {
             for(const actor *a=head;a;a=a->next)
-                a->mass_action(C,xmul);
+                a->mass_action(C,I,xmul);
         }
 
 
         void actors:: mass_action(const readable<double> &C,
+                                  const index_level       I,
                                   const double            xi,
                                   cameo::mul<double>     &xmul) const
         {
@@ -66,7 +68,7 @@ namespace yack
             {
                 const species &sp = **a;
                 const double   nu = a->nu;
-                const double   c  = max_of<double>(C[sp.indx[0]]+(nu*xi),0.0);
+                const double   c  = max_of<double>(C[sp.indx[I]]+(nu*xi),0.0);
                 xmul.push(c,nu);
             }
         }

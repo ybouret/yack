@@ -87,8 +87,13 @@ namespace yack
             //! output GraphViz code for a given rank
             void viz(ios::ostream &, const size_t rank) const;
 
+            //__________________________________________________________________
+            //
+            // operations
+            //__________________________________________________________________
+            void shrink(writable<double>       &Corg,
+                        const readable<double> &C0) const;
 
-            
             //__________________________________________________________________
             //
             // members
