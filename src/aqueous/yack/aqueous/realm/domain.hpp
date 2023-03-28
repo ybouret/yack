@@ -35,6 +35,10 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(eq_slots);
         };
 
+        //______________________________________________________________________
+        //
+        //! alias to map indices from realm to domains
+        //______________________________________________________________________
         typedef key_mapper<size_t,size_t> index_map;
 
         //______________________________________________________________________

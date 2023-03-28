@@ -3,17 +3,7 @@
 
 namespace yack
 {
-
-    namespace kernel
-    {
-        key_map::  key_map() noexcept {}
-        key_map:: ~key_map() noexcept {}
-        void key_map:: raise_missing_key() const
-        {
-            throw imported::exception("key_map","missing key");
-        }
-    }
-
+    
     namespace kernel
     {
         key_mapper:: ~key_mapper() noexcept {}
