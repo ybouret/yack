@@ -11,14 +11,28 @@
 namespace yack
 {
 
+    namespace kernel
+    {
+        class key_map
+        {
+        public:
+            virtual ~key_map() noexcept;
+        protected:
+            explicit key_map() noexcept;
+            void     raise_missing_key() const;
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(key_map);
+        };
+    }
     //__________________________________________________________________________
     //
     //
     //! key map to encode integral mapping in compact trees
     //
     //__________________________________________________________________________
-    template <typename T>
-    class key_map : public kernel::suffix_tree<T,uint8_t>
+    template <typename KEY, typename T>
+    class key_map : public kernel::suffix_tree<T,uint8_t>, public kernel::key_map
     {
     public:
         //______________________________________________________________________
@@ -26,12 +40,12 @@ namespace yack
         // definitions
         //______________________________________________________________________
         typedef kernel::suffix_tree<T,uint8_t> self_type;  //!< alias
-        typedef be_key<T>                      bkey_type;  //!< alias
+        typedef be_key<KEY>                    bkey_type;  //!< alias
         typedef typename self_type::knot_type  knot_type;  //!< alias
         typedef typename self_type::type       type;       //!< alias
         typedef typename self_type::const_type const_type; //!< alias
         typedef typename self_type::param_type param_type; //!< alias
-
+        YACK_DECL_ARGS(KEY,key_type);                      //!< aliases
         
         //! alias, const only
         typedef iterating::linked<const_type,const knot_type,iterating::forward> const_iterator;
@@ -40,9 +54,19 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline explicit key_map() noexcept : self_type() {}        //!< setup empty
-        inline virtual ~key_map() noexcept {}                      //!< cleanup
-        inline key_map(const key_map &other) : self_type(other) {} //!< copy
+        //! setup empty
+        inline explicit key_map() noexcept :
+        self_type(), kernel::key_map()
+        {}
+
+        //! cleanup
+        inline virtual ~key_map() noexcept {}
+
+        //! copy
+        inline key_map(const key_map &other) :
+        self_type(other),
+        kernel::key_map()
+        {}
 
         //______________________________________________________________________
         //
@@ -50,24 +74,31 @@ namespace yack
         //______________________________________________________________________
 
         //! use big-endian key to have a compact interal tree
-        inline bool insert(param_type k, param_type v)
+        inline bool insert(param_key_type k, param_type v)
         {
             const bkey_type key(k);
             return self_type::insert(v,key.begin(),key.measure());
         }
 
         //! search existing value
-        inline const_type *search(param_type k)
+        inline const_type *search(param_key_type k) const noexcept
         {
             const bkey_type key(k);
             return self_type::search(key.begin(),key.measure());
         }
 
         //! remove value
-        inline bool remove(param_type k) noexcept
+        inline bool remove(param_key_type k) noexcept
         {
             const bkey_type key(k);
             return self_type::remove(key.begin(),key.measure());
+        }
+
+        //! access
+        const_type & operator[](const_key_type k) const {
+            const_type *p = search(k);
+            if(!p) raise_missing_key();
+            return *p;
         }
 
         //! display content
@@ -128,7 +159,7 @@ namespace yack
     //! forward/reverse bijective key mapping
     //
     //__________________________________________________________________________
-    template <typename T>
+    template <typename T, typename U>
     class key_mapper : public kernel::key_mapper
     {
     public:
@@ -136,11 +167,14 @@ namespace yack
         //
         // definitions
         //______________________________________________________________________
-        YACK_DECL_ARGS(T,type);       //!< aliases
-        typedef key_map<T> dict_type; //!< aliases
+        YACK_DECL_ARGS(T,t);
+        YACK_DECL_ARGS(U,u);
+        typedef key_map<T,U> fwd_dict_type; //!< aliases
+        typedef key_map<U,T> rev_dict_type; //!< aliases
 
         //! alias to help
-        typedef typename dict_type::const_iterator const_iterator;
+        typedef typename fwd_dict_type::const_iterator fwd_iterator;
+        typedef typename rev_dict_type::const_iterator rev_iterator;
 
         //______________________________________________________________________
         //
@@ -163,8 +197,8 @@ namespace yack
         //______________________________________________________________________
 
         //! associate source <=> target
-        inline void operator()(param_type source,
-                               param_type target) {
+        inline void operator()(param_t source,
+                               param_u target) {
             { if( !coerce(forward).insert(source,target)) raise_multiple_source(); }
             try
             { if( !coerce(reverse).insert(target,source)) raise_multiple_target(); }
@@ -175,12 +209,12 @@ namespace yack
         inline friend std::ostream & operator<<(std::ostream &os, const key_mapper &self)
         {
             assert(self.forward->size==self.reverse->size);
-            const_iterator fwd = self.forward.begin();
-            const_iterator rev = self.reverse.begin();
+            fwd_iterator fwd = self.forward.begin();
+            rev_iterator rev = self.reverse.begin();
             os << "{";
             for(size_t i=self.forward->size;i>0;--i,++fwd,++rev)
             {
-                os << ' '  << *fwd << ':' << *rev;
+                os << ' '  << *rev << ':' << *fwd;
             }
             os << " }";
             return os;
@@ -190,8 +224,8 @@ namespace yack
         //
         // members
         //______________________________________________________________________
-        const dict_type forward; //!< source => target
-        const dict_type reverse; //!< target => source
+        const fwd_dict_type forward; //!< source => target
+        const rev_dict_type reverse; //!< target => source
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(key_mapper);
