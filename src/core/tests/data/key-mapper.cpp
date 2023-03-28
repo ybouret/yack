@@ -53,6 +53,10 @@ YACK_UTEST(data_key_mapper)
 
         imap.send(lvec,gvec);
         std::cerr << "gvec=" << gvec << " => " << lvec << std::endl;
+        for(int i=3;i>0;--i)  lvec[i] = -i;
+        imap.recv(gvec,lvec);
+        std::cerr << "lvec=" << lvec << " => " << gvec << std::endl;
+
     }
 
 

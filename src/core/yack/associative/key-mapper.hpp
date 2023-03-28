@@ -235,6 +235,7 @@ namespace yack
             return os;
         }
 
+        //! send global source to local target
         template <typename ARR, typename BRR> inline
         void send(ARR &target, BRR &source) const
         {
@@ -246,6 +247,17 @@ namespace yack
             }
         }
 
+        //! recv global target from local source
+        template <typename ARR, typename BRR> inline
+        void recv(ARR &target, BRR &source) const
+        {
+            fwd_iterator fwd = forward.begin();
+            rev_iterator rev = reverse.begin();
+            for(size_t i=size;i>0;--i,++fwd,++rev)
+            {
+                target[ *rev ] = source[ *fwd ];
+            }
+        }
 
         //______________________________________________________________________
         //
