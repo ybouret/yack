@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_ASSOCIATIVE_KEY_MAPPER_INCLUDED
@@ -10,7 +9,7 @@
 namespace yack
 {
 
-    
+
     namespace kernel
     {
         //______________________________________________________________________
