@@ -2,11 +2,15 @@
 #include "yack/utest/run.hpp"
 #include "yack/string.hpp"
 #include "yack/sequence/vector.hpp"
+#include "yack/container/matrix.hpp"
+#include "../main.hpp"
 
 using namespace yack;
 
 YACK_UTEST(data_key_mapper)
 {
+    randomized::rand_ ran;
+
     {
         key_map<int,string> km;
 
@@ -20,6 +24,12 @@ YACK_UTEST(data_key_mapper)
         {
             std::cerr << *it << std::endl;
         }
+
+        std::cerr << "sizes: " << std::endl;
+        std::cerr << sizeof( key_map<int,string>) << std::endl;
+        std::cerr << sizeof( key_map<int,size_t>) << std::endl;
+
+
     }
 
     {
@@ -56,6 +66,36 @@ YACK_UTEST(data_key_mapper)
         for(int i=3;i>0;--i)  lvec[i] = -i;
         imap.recv(gvec,lvec);
         std::cerr << "lvec=" << lvec << " => " << gvec << std::endl;
+    }
+
+    {
+        typedef tab_mapper<size_t> tmap;
+        typedef tmap::kmap         kmap;
+        kmap rows;
+        kmap cols;
+        tmap dual(rows,cols);
+
+        matrix<int> G(5,7);
+        matrix<int> L(2,3);
+        bring::fill(G,ran);
+        std::cerr << "G=" << G << std::endl;
+
+        rows(3,2);
+        rows(5,1);
+
+        cols(2,1);
+        cols(3,2);
+        cols(4,3);
+
+        std::cerr << "rows=" << rows << std::endl;
+        std::cerr << "cols=" << cols << std::endl;
+
+
+        dual.send(L,G);
+        std::cerr << "L=" << L << std::endl;
+        G.ld(0);
+        dual.recv(G,L);
+        std::cerr << "G2=" << G << std::endl;
 
     }
 

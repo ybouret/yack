@@ -8,6 +8,7 @@
 #include "yack/data/suffix/tree.hpp"
 #include "yack/container/iterator/linked.hpp"
 #include "yack/associative/be-key.hpp"
+
 namespace yack
 {
 
@@ -36,7 +37,7 @@ namespace yack
     //
     //__________________________________________________________________________
     template <typename KEY, typename T>
-    class key_map : public kernel::suffix_tree<T,uint8_t>, public kernel::key_map
+    class key_map : public kernel::key_map, public kernel::suffix_tree<T,uint8_t>
     {
     public:
         //______________________________________________________________________
@@ -60,7 +61,7 @@ namespace yack
         //______________________________________________________________________
         //! setup empty
         inline explicit key_map() noexcept :
-        self_type(), kernel::key_map()
+        kernel::key_map(), self_type()
         {}
 
         //! cleanup
@@ -68,8 +69,8 @@ namespace yack
 
         //! copy
         inline key_map(const key_map &other) :
-        self_type(other),
-        kernel::key_map()
+        kernel::key_map(),
+        self_type(other)
         {}
 
         //______________________________________________________________________
