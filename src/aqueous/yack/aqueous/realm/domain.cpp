@@ -45,6 +45,8 @@ namespace yack
         bounded(),
         Nu(),
         NuT(),
+        eqmap(),
+        spmap(),
         next(0),
         prev(0),
         iviz(0),

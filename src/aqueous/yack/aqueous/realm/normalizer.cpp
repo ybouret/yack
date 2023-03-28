@@ -12,8 +12,7 @@ namespace yack
 
         normalizer:: normalizer(const realm &chem) :
         guard( chem.lib->size ),
-        slide( chem.largest_domain_size(), chem.lib->size ),
-        xadd()
+        slide( chem.largest_domain_size(), chem.lib->size )
         {
         }
         

@@ -12,6 +12,12 @@ namespace yack
     namespace aqueous
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! normalizer for a given concentration
+        //
+        //______________________________________________________________________
         class normalizer : public spot_object
         {
         public:
@@ -19,10 +25,9 @@ namespace yack
             explicit normalizer(const realm &); //!< setup using realm's metrics
             virtual ~normalizer() noexcept;
 
-            const custodian    guard; //!< guard laws
-            const collector    slide; //!< slide equilibria
-            cameo::add<double> xadd;  //!< for ops
-
+            const custodian    guard; //!< guard laws,       content = last injected
+            const collector    slide; //!< slide equilibria, content = last error
+            
             void operator()(const realm &, writable<double> &C);
             
 

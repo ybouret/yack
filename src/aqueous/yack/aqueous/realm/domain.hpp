@@ -56,7 +56,6 @@ namespace yack
             //__________________________________________________________________
             static const char * const clid; //!< "domain"
 
-
             //__________________________________________________________________
             //
             // C++
@@ -88,31 +87,8 @@ namespace yack
             //! output GraphViz code for a given rank
             void viz(ios::ostream &, const size_t rank) const;
 
-            //! conc += NuT * xi
-            void add(writable<double>       &conc,
-                     const readable<double> &xi,
-                     cameo::add<double>     &xadd) const
-            {
-                std::cerr << "domain: xi=" << xi << ", NuT=" << NuT << std::endl;
-                size_t J=1;
-                for(const sp_node *sn=live.head;sn;sn=sn->next,J++)
-                {
-                    const species       &s = ***sn;
-                    const size_t         j = s.indx[top_level];
-                    const readable<int> &f = NuT[J];
-                    size_t               I = 1;
-                    xadd.free();
-                    for(const eq_node *en=head;en!=last;en=en->next,I++)
-                    {
-                        const equilibrium &eq = ***en;
-                        const size_t       i  = eq.indx[top_level];
-                        xadd.push(f[I] * xi[i]);
-                    }
-                    conc[j] += xadd.sum();
-                }
-            }
-            
 
+            
             //__________________________________________________________________
             //
             // members

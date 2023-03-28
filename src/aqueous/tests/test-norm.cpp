@@ -1,10 +1,12 @@
 #include "yack/aqueous/weasel/designer.hpp"
 #include "yack/aqueous/realm/normalizer.hpp"
 #include "yack/aqueous/realm.hpp"
+#include "yack/math/iota.hpp"
 #include "yack/utest/run.hpp"
 
 using namespace yack;
 using namespace aqueous;
+using namespace math;
 
 YACK_UTEST(norm)
 {
@@ -23,16 +25,25 @@ YACK_UTEST(norm)
     std::cerr << "eqs=" << std::endl << eqs << std::endl;
 
     vector<double> K;
-    realm chem(lib,eqs,K);
+    realm      chem(lib,eqs,K);
+    normalizer norm(chem);
 
     const size_t M = lib->size;
     const size_t N = eqs->size;
-    vector<double> C(M,0);
-    vector<double> xi(N,0);
+    vector<double>     C0(M,0), C1(M,0);
+    vector<double>     xi(N,0);
     cameo::add<double> xadd;
-    for(size_t i=N;i>0;--i) xi[i]= ran.symm<double>();
 
-    chem.add(C,xi,xadd);
+    for(size_t i=N;i>0;--i) xi[i]= library::conc(ran);
+    std::cerr << "xi=" << xi << std::endl;
+
+    iota::mul(C0,chem.NuT,xi,xadd);
+    iota::load(C1,C0);
+
+    norm(chem,C1);
+    lib(std::cerr << "C0=",C0) << std::endl;
+    lib(std::cerr << "C1=",C1) << std::endl;
+
     
 
 

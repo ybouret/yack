@@ -17,7 +17,9 @@ namespace yack
         lib(lib_),
         eqs(eqs_),
         reg(lib->size,true),
-        grp(lib->size,0)
+        grp(lib->size,0),
+        Nu(eqs->size,eqs->size>0?lib->size:0),
+        NuT(Nu.cols,Nu.rows)
         {
             const xmlog &xml = *this;
             //------------------------------------------------------------------
@@ -26,6 +28,13 @@ namespace yack
             //
             //------------------------------------------------------------------
             build_domains(xml);
+            for(const enode *en=eqs->head;en;en=en->next)
+            {
+                const equilibrium &eq = ***en;
+                const size_t       ei = eq.indx[top_level];
+                eq.fill(coerce(Nu[ei]),top_level);
+            }
+            coerce(NuT).assign(Nu,transposed);
 
             //------------------------------------------------------------------
             //
