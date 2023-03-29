@@ -11,7 +11,7 @@ namespace yack
     namespace chemical
     {
 
-        class reactor
+        class reactor : public spot_object
         {
         public:
             explicit reactor(const domain &);
@@ -29,7 +29,10 @@ namespace yack
             cxx_array<bool>    running; //!< [L]
             cxx_array<double>  Xi;      //!< [L] compact Xi
             matrix<double>     Cs;      //!< [LxM]
-            
+
+            reactor *next;
+            reactor *prev;
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(reactor);
         };

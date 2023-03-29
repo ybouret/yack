@@ -15,6 +15,4 @@ add_test(am     test-chem am)
 add_test(coll   test-chem coll)
 add_test(norm   test-chem norm)
 add_test(realm  test-chem realm)
-
-
-
+add_test(reactor test-chem reactor)

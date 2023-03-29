@@ -12,6 +12,7 @@ namespace yack
         }
 
         reactor:: reactor(const domain &_) :
+        spot_object(),
         dom(_),
         xlim(),
         xadd(),
@@ -20,7 +21,9 @@ namespace yack
         blocked(dom.N),
         running(dom.N),
         Xi(dom.L),
-        Cs(dom.L,dom.M)
+        Cs(dom.L,dom.M),
+        next(0),
+        prev(0)
         {
         }
 

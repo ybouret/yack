@@ -10,6 +10,7 @@ YACK_UTEST_DECL(16)
     YACK_UTEST(coll);
     YACK_UTEST(norm);
     YACK_UTEST(realm);
+    YACK_UTEST(reactor);
 }
 YACK_UTEST_EXEC()
 
