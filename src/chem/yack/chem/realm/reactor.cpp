@@ -18,8 +18,8 @@ namespace yack
         xadd(),
         xmul(),
         Corg(dom.M),
-        blocked(dom.N),
-        running(dom.N),
+        blocked(dom.L),
+        running(dom.L),
         Xi(dom.L),
         Cs(dom.L,dom.M),
         next(0),
@@ -44,20 +44,39 @@ namespace yack
 
 
             // determining all aftermaths
+            size_t active = 0;
             for(const eq_node *en=dom.head;en;en=en->next)
             {
                 const equilibrium &  eq = ***en;
                 const size_t         gi = eq.indx[top_level];
-                const size_t         li = eq.indx[sub_level];
-                writable<double>   & Ci = Cs[li];
+                const size_t         i  = eq.indx[sub_level];
+                writable<double>   & Ci = Cs[i];
                 const double         Ki = K[gi];
                 const aftermath      am = aftermath::solve(sub_level,eq,Ki,Corg,Ci,xlim,xmul,xadd);
+
+                switch( am.state )
+                {
+                    case is_blocked:
+                        blocked[i] = true;
+                        running[i] = false;
+                        Xi[i]      = 0;
+                        break;
+
+                    case is_running:
+                        ++active;
+                        blocked[i] = false;
+                        running[i] = true;
+                        Xi[i]      = am.value;
+                        break;
+                }
 
                 if(xml.verbose)
                 {
                     dom.eqfmt.pad( *xml << eq, eq) << ": " << am << std::endl;
                 }
             }
+
+            YACK_XMLOG(xml,"#active = " << active);
 
         }
 
