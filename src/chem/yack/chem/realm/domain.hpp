@@ -90,26 +90,52 @@ namespace yack
             //
             // operations
             //__________________________________________________________________
+
+            //! shrink Ctop_level into Csub_level
             void shrink(writable<double>       &Csub,
                         const readable<double> &Ctop) const;
+
+            //! expand Csub_level into Ctop_level
             void expand(writable<double>       &Ctop,
                         const readable<double> &Csub) const;
 
-            //! sub-level display
+            //! display
             template <typename DATA> inline
-            std::ostream & spdisp(std::ostream    &os,
-                                  DATA            &data) const
+            std::ostream & spdisp(std::ostream      &os,
+                                  const index_level &ilvl,
+                                  DATA              &data) const
             {
-                os << '{';
+                os << '{' << std::endl;
                 for(const sp_node *node=live.head;node;node=node->next)
                 {
                     const species &s = ***node;
-                    const size_t   j = s.indx[sub_level];
+                    const size_t   j = s.indx[ilvl];
                     spfmt.pad(os << ' ' << s,s) << " = " << data[j] << std::endl;
                 }
                 os << '}';
                 return os;
             }
+
+            //! display
+            template <typename DATA> inline
+            std::ostream & eqdisp(std::ostream      & os,
+                                  const index_level & ilvl,
+                                  DATA              & data,
+                                  const bool          full = true) const
+            {
+
+                const eq_node *stop = full ? NULL : last;
+                os << '{' << std::endl;
+                for(const eq_node *node=head;stop!=node;node=node->next)
+                {
+                    const equilibrium &eq = ***node;
+                    const size_t       ei = eq.indx[ilvl];
+                    eqfmt.pad(os << ' ' << eq,eq) << " = " << data[ei] << std::endl;
+                }
+                os << '}';
+                return os;
+            }
+
 
             //__________________________________________________________________
             //

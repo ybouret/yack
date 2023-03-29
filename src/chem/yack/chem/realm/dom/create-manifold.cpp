@@ -421,6 +421,7 @@ namespace yack
                         meq(nu,sp);
                     }
                     if(!meq.is_neutral()) throw imported::exception(domain::clid,"<%s> is not neutal!!",meq.name());
+                    coerce(eqfmt).update(meq);
                 }
             }
 

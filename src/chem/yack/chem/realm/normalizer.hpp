@@ -21,15 +21,30 @@ namespace yack
         class normalizer : public spot_object
         {
         public:
-
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
             explicit normalizer(const realm &); //!< setup using realm's metrics
-            virtual ~normalizer() noexcept;
+            virtual ~normalizer() noexcept;     //!< cleanup
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
+            //! apply conservations laws and collect remaining concentrations
+            void operator()(const realm &, writable<double> &C);
+
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
             const custodian    guard; //!< guard laws,       content = last injected
             const collector    slide; //!< slide equilibria, content = last error
             
-            void operator()(const realm &, writable<double> &C);
-            
+
 
 
 

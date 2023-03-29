@@ -11,13 +11,37 @@ namespace yack
     namespace chemical
     {
 
+        //______________________________________________________________________
+        //
+        //! base class for engine
+        //______________________________________________________________________
         typedef cxx_list_of<reactor> engine_;
-        
+
+        //______________________________________________________________________
+        //
+        //
+        //! engine : holding one reactor per domain
+        //
+        //______________________________________________________________________
         class engine : public engine_
         {
         public:
-            virtual ~engine() noexcept;
-            explicit engine(const realm &);
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~engine() noexcept;     //!< cleanup
+            explicit engine(const realm &); //!< creator reactor(s)
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
+            //! solve top level C and K
+            void operator()(const xmlog            &xml,
+                            writable<double>       &C,
+                            const readable<double> &K);
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(engine);

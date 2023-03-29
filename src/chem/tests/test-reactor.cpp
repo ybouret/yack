@@ -27,6 +27,8 @@ YACK_UTEST(reactor)
 
     vector<double> K;
     realm          chem(lib,eqs,K);
+
+    
     normalizer     norm(chem);
     engine         eng(chem);
 
@@ -49,7 +51,10 @@ YACK_UTEST(reactor)
     lib(std::cerr << "C1=",C1) << std::endl;
 
 
+    chem.prepareK(K);
+    chem.computeK(K,0.0);
 
+    eng(chem,C1,K);
 
 
 }

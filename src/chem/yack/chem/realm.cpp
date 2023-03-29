@@ -71,6 +71,13 @@ namespace yack
             return res;
         }
 
+
+        void   realm:: prepareK(sequence<double> &K) const
+        {
+            K.make(eqs->size,0);
+        }
+
+
         void realm:: computeK(writable<double> &K, const double t)
         {
             assert(K.size()>=eqs->size);
@@ -80,9 +87,6 @@ namespace yack
                 equilibrium &eq = ***en;
                 K[ eq.indx[top_level] ] = eq.K(t);
             }
-
-            
-
         }
         
     }

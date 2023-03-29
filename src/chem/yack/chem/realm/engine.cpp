@@ -18,6 +18,16 @@ namespace yack
             }
         }
 
+        void engine:: operator()(const xmlog            &xml,
+                                 writable<double>       &C0,
+                                 const readable<double> &K)
+        {
+            YACK_XMLSUB(xml,"engine");
+            for(reactor *reac=head;reac;reac=reac->next)
+            {
+                reac->solve(xml,C0,K);
+            }
+        }
     }
 
 }

@@ -881,7 +881,7 @@ INPUT                  = src/core/yack \
                          src/json/yack \
                          src/lua++/yack \
                          src/net/yack \
-			 src/aqueous/yack \
+			 src/chem/yack \
                          src/gfx/yack \
                          src/mpi++/yack
 

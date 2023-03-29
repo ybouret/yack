@@ -11,27 +11,48 @@ namespace yack
     namespace chemical
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! reactor to find solution of a valid set of concentratipons
+        //
+        //______________________________________________________________________
         class reactor : public spot_object
         {
         public:
-            explicit reactor(const domain &);
-            virtual ~reactor() noexcept;
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit reactor(const domain &); //!< setup
+            virtual ~reactor() noexcept;      //!< cleanup
 
-            void operator()(writable<double>      &C0,
-                            const readable<double> &K);
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
 
+            //! from global C/K
+            void solve(const xmlog            &xml,
+                       writable<double>       &C,
+                       const readable<double> &K);
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
             const domain      &dom;     //!< persitent domain
-            xlimits            xlim;
-            cameo::add<double> xadd;
-            cameo::mul<double> xmul;
+            xlimits            xlim;    //!< to find limits
+            cameo::add<double> xadd;    //!< for internal evaluations
+            cameo::mul<double> xmul;    //!< for internal evaliations
             cxx_array<double>  Corg;    //!< [M] compact concentration
             cxx_array<bool>    blocked; //!< [L]
             cxx_array<bool>    running; //!< [L]
             cxx_array<double>  Xi;      //!< [L] compact Xi
             matrix<double>     Cs;      //!< [LxM]
 
-            reactor *next;
-            reactor *prev;
+            reactor *next; //!< for list
+            reactor *prev; //!< for list
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(reactor);

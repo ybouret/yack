@@ -41,6 +41,10 @@ namespace yack
             //! return largest domain size
             size_t largest_domain_size() const noexcept;
 
+            //! make sequence size the number of total equilibria
+            void   prepareK(sequence<double> &K) const;
+
+            //! store all constants
             void   computeK(writable<double> &K, const double t); //!< K is allocated post creation
 
             //__________________________________________________________________
