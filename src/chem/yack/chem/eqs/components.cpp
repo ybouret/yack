@@ -127,24 +127,26 @@ namespace yack
         }
 
 
-        void components:: move(writable<double> &C, const double xi) const noexcept
+        void components:: move(const index_level I, writable<double> &C, const double xi) const noexcept
         {
             for(const cnode *node=(*this)->head;node;node=node->next)
             {
                 const component &cc = ***node;
                 const species   &sp = *cc;
-                const size_t     i  = sp.indx[0];
+                const size_t     i  = sp.indx[I];
                 C[i] = max_of( C[i]+(cc.nu*xi), 0.0);
             }
         }
 
-        void components:: mov_(writable<double> &C, const double xi) const noexcept
+        void components:: mov_(const index_level I,
+                               writable<double> &C,
+                               const double      xi) const noexcept
         {
             for(const cnode *node=(*this)->head;node;node=node->next)
             {
                 const component &cc = ***node;
                 const species   &sp = *cc;
-                const size_t     i  = sp.indx[0];
+                const size_t     i  = sp.indx[I];
                 C[i] += (cc.nu*xi);
             }
         }

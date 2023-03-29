@@ -121,7 +121,6 @@ namespace yack
 
             iota::load(Cs,C0);
 
-
             //------------------------------------------------------------------
             //
             // initializing limit and local triplets
@@ -212,7 +211,7 @@ namespace yack
             f.b = E.mass_action(I,Cs,K,x.b=clamp(x.a,0.5*(x.a+x.c),x.c),xmul);
             switch( __sign::of(f.b) )
             {
-                case __zero__:  E.move(Cs,x.b); return aftermath( am_for(E,C0,Cs,I,xadd) ); // early return
+                case __zero__:  E.move(I,Cs,x.b); return aftermath( am_for(E,C0,Cs,I,xadd) ); // early return
                 case positive:  f.a = f.b; x.a = x.b; break;
                 case negative:  f.c = f.b; x.c = x.b; break;
             }
@@ -228,7 +227,7 @@ namespace yack
             for(const cnode *node=E->head;node;node=node->next)
             {
                 const component &cm = ***node;                 // compnent
-                const size_t     ii = (*cm).indx[0];           // index species
+                const size_t     ii = (*cm).indx[I];           // index species
                 const double     c0 = Cs[ii];                  // starting point
                 const double     c1 = (Cs[ii] += cm.nu * x.b); // final point
                 if(fabs(c0-c1)>0)

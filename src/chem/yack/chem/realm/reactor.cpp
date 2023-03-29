@@ -51,7 +51,8 @@ namespace yack
                 const size_t         li = eq.indx[sub_level];
                 std::cerr << eq << " top_level: " << gi << ", sub_level: " << li << std::endl;
                 writable<double>   & Ci = Cs[li];
-                const aftermath      am = aftermath::solve(sub_level,eq, K[gi], Corg, Ci,xlim, xmul, xadd);
+                const double         Ki = K[gi];
+                const aftermath      am = aftermath::solve(sub_level,eq,Ki,Corg,Ci,xlim,xmul,xadd);
             }
 
         }
