@@ -39,13 +39,13 @@ namespace yack
             string to_string_extra()             const; //!< stringify as extra actor
 
             //! load xmul with mass action
-            void   mass_action(const readable<double> &C,
-                               const index_level       I,
+            void   mass_action(const index_level       I,
+                               const readable<double> &C,
                                cameo::mul<double>     &xmul) const;
 
             //! load xmul with grad action, return species index
-            size_t  grad_action(const readable<double> &C,
-                                const index_level       I,
+            size_t  grad_action(const index_level       I,
+                                const readable<double> &C,
                                 cameo::mul<double>     &xmul) const;
             //__________________________________________________________________
             //

@@ -155,8 +155,8 @@ namespace yack
                                          const index_level       I,
                                          cameo::mul<double>     &xmul)
         {
-            for(const actor *b=a->prev;b;b=b->prev)  b->mass_action(C,I,xmul);
-            for(const actor *b=a->next;b;b=b->next)  b->mass_action(C,I,xmul);
+            for(const actor *b=a->prev;b;b=b->prev)  b->mass_action(I,C,xmul);
+            for(const actor *b=a->next;b;b=b->next)  b->mass_action(I,C,xmul);
             return xmul.product();
         }
 
@@ -166,7 +166,7 @@ namespace yack
                                          const index_level       I,
                                          cameo::mul<double>     &xmul)
         {
-            const size_t i = a->grad_action(C,I,xmul);
+            const size_t i = a->grad_action(I,C,xmul);
             psi[i] = expand_grad(a,C,I,xmul);
         }
 
@@ -202,14 +202,14 @@ namespace yack
             for(const actor *a=reac.head;a;a=a->next)
             {
                 xmul = K;
-                (void) a->grad_action(C,I,xmul);
+                (void) a->grad_action(I,C,xmul);
                 xadd.push( (a->nu*expand_grad(a,C,I,xmul)) );
             }
 
             for(const actor *a=prod.head;a;a=a->next)
             {
                 xmul = 1;
-                (void) a->grad_action(C,I,xmul);
+                (void) a->grad_action(I,C,xmul);
                 xadd.push( (a->nu*expand_grad(a,C,I,xmul)) );
             }
 

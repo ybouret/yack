@@ -60,15 +60,15 @@ namespace yack
             return nu>1 ? vformat("+%u[%s]",nu,sp.name()) : vformat("+[%s]",sp.name());
         }
 
-        void actor:: mass_action(const readable<double> &C,
-                                 const index_level       I,
+        void actor:: mass_action(const index_level       I,
+                                 const readable<double> &C,
                                  cameo::mul<double>     &xmul) const
         {
             xmul.push( C[sp.indx[I]], nu);
         }
 
-        size_t  actor:: grad_action(const readable<double> &C,
-                                    const index_level       I,
+        size_t  actor:: grad_action(const index_level       I,
+                                    const readable<double> &C,
                                     cameo::mul<double>     &xmul) const
         {
             const size_t i = sp.indx[I];

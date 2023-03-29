@@ -55,7 +55,7 @@ namespace yack
                                   cameo::mul<double>     &xmul) const
         {
             for(const actor *a=head;a;a=a->next)
-                a->mass_action(C,I,xmul);
+                a->mass_action(I,C,xmul);
         }
 
 
