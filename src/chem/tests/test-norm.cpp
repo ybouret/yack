@@ -25,8 +25,8 @@ YACK_UTEST(norm)
     std::cerr << "eqs=" << std::endl << eqs << std::endl;
 
     vector<double> K;
-    realm      chem(lib,eqs,K);
-    normalizer norm(chem);
+    realm          chem(lib,eqs,K);
+    normalizer     norm(chem);
 
     chem.graphviz("cs",1);
 
