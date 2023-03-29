@@ -48,11 +48,11 @@ namespace yack
             YACK_PROTO_OSTREAM(aftermath);
 
             //! solving algorithm
-            static aftermath solve(const equilibrium      &E,
+            static aftermath solve(const index_level       I,
+                                   const equilibrium      &E,
                                    const double            K,
                                    const readable<double> &C0,
                                    writable<double>       &Cs,
-                                   const index_level       il,
                                    xlimits                &xlim,
                                    cameo::mul<double>     &xmul,
                                    cameo::add<double>     &xadd);

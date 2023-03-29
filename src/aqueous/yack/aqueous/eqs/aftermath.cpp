@@ -109,11 +109,11 @@ namespace yack
         }
 
 
-        aftermath aftermath:: solve(const equilibrium      &E,
+        aftermath aftermath:: solve(const index_level       I,
+                                    const equilibrium      &E,
                                     const double            K,
                                     const readable<double> &C0,
                                     writable<double>       &Cs,
-                                    const index_level       I,
                                     xlimits                &xlim,
                                     cameo::mul<double>     &xmul,
                                     cameo::add<double>     &xadd)

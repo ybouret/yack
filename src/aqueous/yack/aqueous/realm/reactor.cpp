@@ -34,7 +34,7 @@ namespace yack
                 const size_t         gi = eq.indx[top_level];
                 const size_t         li = eq.indx[sub_level];
                 writable<double>   & Ci = Cs[li];
-                const aftermath      am = aftermath::solve(eq, K[gi], Corg, Ci, sub_level, xlim, xmul, xadd);
+                const aftermath      am = aftermath::solve(sub_level,eq, K[gi], Corg, Ci,xlim, xmul, xadd);
             }
 
         }

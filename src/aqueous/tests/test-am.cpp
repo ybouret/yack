@@ -75,11 +75,11 @@ void perform(const double      K,
     for(size_t iter=0;iter<8;++iter)
     {
         lib.conc(C0,ran);
-        const aftermath am = aftermath::solve(eq,K,C0,Cs,top_level,xlim,xmul,xadd);
+        const aftermath am = aftermath::solve(top_level,eq,K,C0,Cs,xlim,xmul,xadd);
         const double    Q  = eq.quotient(top_level,Cs,K,xmul);
         ios::ocstream::echo(AM, "%u %.15g\n",++AI,Q);
         iota::save(C0,Cs);
-        const aftermath am2 = aftermath::solve(eq,K,C0,Cs,top_level,xlim,xmul,xadd);
+        const aftermath am2 = aftermath::solve(top_level,eq,K,C0,Cs,xlim,xmul,xadd);
         YACK_ASSERT(fabs(am2.value)<=0);
     }
 }
@@ -180,7 +180,7 @@ YACK_UTEST(am)
         eq.fill(top_level,nu);
         std::cerr << "nu=" << nu << std::endl;
         std::cerr << "ma=" << eq.mass_action(top_level,C0,K,xmul) << std::endl;
-        const aftermath am = aftermath::solve(eq,K,C0, Cs,top_level,xlim,xmul,xadd);
+        const aftermath am = aftermath::solve(top_level,eq,K,C0,Cs,xlim,xmul,xadd);
         std::cerr << "am=" << am << std::endl;
         lib(std::cerr << "Cs=",Cs) << std::endl;
         std::cerr << "ma=" << eq.mass_action(top_level,Cs,K,xmul) << std::endl;
@@ -192,7 +192,7 @@ YACK_UTEST(am)
             std::cerr << "sigma=" << sigma << " / " << eq.slope(top_level,Cs,K,xmul,xadd) << std::endl;
 
             iota::save(C0,Cs);
-            const aftermath am2 = aftermath::solve(eq,K,C0,Cs,top_level,xlim,xmul,xadd);
+            const aftermath am2 = aftermath::solve(top_level,eq,K,C0,Cs,xlim,xmul,xadd);
             std::cerr << "am2 = " << am2 << std::endl;
         }
     }
