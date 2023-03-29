@@ -73,7 +73,7 @@ namespace yack
                           cameo::mul<double>     &xmul)
         {
             const double xx = xlim.prod.extent;
-            x.a = -xx; xmul = K; E.reac.mass_action(C,I,xx,xmul); f.a =  xmul.product();
+            x.a = -xx; xmul = K; E.reac.mass_action(I,C,xx,xmul); f.a =  xmul.product();
         }
 
 
@@ -86,7 +86,7 @@ namespace yack
                           const xlimits          &xlim,
                           cameo::mul<double>     &xmul)
         {
-            xmul = 1; E.prod.mass_action(C,I,x.c = xlim.reac.extent,xmul); f.c = -xmul.product();
+            xmul = 1; E.prod.mass_action(I,C,x.c = xlim.reac.extent,xmul); f.c = -xmul.product();
         }
 
         static inline

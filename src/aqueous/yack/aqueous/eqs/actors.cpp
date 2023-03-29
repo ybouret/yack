@@ -50,8 +50,8 @@ namespace yack
         }
 
 
-        void actors:: mass_action(const readable<double> &C,
-                                  const index_level       I,
+        void actors:: mass_action( const index_level      I,
+                                  const readable<double> &C,
                                   cameo::mul<double>     &xmul) const
         {
             for(const actor *a=head;a;a=a->next)
@@ -59,8 +59,8 @@ namespace yack
         }
 
 
-        void actors:: mass_action(const readable<double> &C,
-                                  const index_level       I,
+        void actors:: mass_action(const index_level       I,
+                                  const readable<double> &C,
                                   const double            xi,
                                   cameo::mul<double>     &xmul) const
         {

@@ -98,12 +98,12 @@ namespace yack
             assert(K>0);
             xmul.free();
             xmul.push(K);
-            reac.mass_action(C,I,xmul);
+            reac.mass_action(I,C,xmul);
             const double lhs = xmul.product();
 
             assert(0==xmul.size());
             xmul.push(1);
-            prod.mass_action(C,I,xmul);
+            prod.mass_action(I,C,xmul);
             return lhs - xmul.product();
         }
 
@@ -116,12 +116,12 @@ namespace yack
             assert(K>0);
             xmul.free();
             xmul.push(K); assert(1==xmul.size());
-            reac.mass_action(C,I,-xi,xmul);
+            reac.mass_action(I,C,-xi,xmul);
             const double lhs = xmul.product();
 
             assert(0==xmul.size());
             xmul.push(1); assert(1==xmul.size());
-            prod.mass_action(C,I,xi,xmul);
+            prod.mass_action(I,C,xi,xmul);
             const double rhs = xmul.product();
             return lhs - rhs;
         }

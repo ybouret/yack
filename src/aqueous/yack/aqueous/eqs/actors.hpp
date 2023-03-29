@@ -47,16 +47,16 @@ namespace yack
             string to_string() const;   //!< stringify
 
             //! append terms to xmul
-            void mass_action(const readable<double> &C,
-                             const index_level       I,
+            void mass_action(const index_level       I,
+                             const readable<double> &C,
                              cameo::mul<double>     &xmul) const;
 
             //! append terms to xmul, using C+nu*xi
             /**
              \warning take care of sign of xi!
              */
-            void mass_action(const readable<double> &C,
-                             const index_level       I,
+            void mass_action(const index_level       I,
+                             const readable<double> &C,
                              const double            xi,
                              cameo::mul<double>     &xmul) const;
 
