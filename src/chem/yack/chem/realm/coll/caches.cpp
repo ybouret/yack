@@ -1,8 +1,8 @@
-#include "yack/aqueous/realm/coll/caches.hpp"
+#include "yack/chem/realm/coll/caches.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
 
         namespace collecting

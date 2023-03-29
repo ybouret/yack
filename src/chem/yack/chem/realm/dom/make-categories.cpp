@@ -1,61 +1,63 @@
 
-#include "yack/aqueous/realm/domain.hpp"
+#include "yack/chem/realm/domain.hpp"
 #include "yack/system/imported.hpp"
-//#include "yack/apex/alga.hpp"
 
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
 
-        static const unsigned NONE = 0x00;
-        static const unsigned REAC = 0x01;
-        static const unsigned PROD = 0x02;
-        static const unsigned BOTH = REAC | PROD;
-
-        static inline unsigned category_of(const readable<int> &nu) noexcept
+        namespace
         {
-            unsigned flag = NONE;
-            for(size_t j=nu.size();j>0;--j)
+            static const unsigned NONE = 0x00;
+            static const unsigned REAC = 0x01;
+            static const unsigned PROD = 0x02;
+            static const unsigned BOTH = REAC | PROD;
+
+            static inline unsigned category_of(const readable<int> &nu) noexcept
             {
-                switch( __sign::of(nu[j]) )
+                unsigned flag = NONE;
+                for(size_t j=nu.size();j>0;--j)
                 {
-                    case __zero__: continue;
-                    case positive: flag |= PROD; break;
-                    case negative: flag |= REAC; break;
+                    switch( __sign::of(nu[j]) )
+                    {
+                        case __zero__: continue;
+                        case positive: flag |= PROD; break;
+                        case negative: flag |= REAC; break;
+                    }
                 }
+                return flag;
             }
-            return flag;
-        }
 
-        static inline unsigned category_of(const equilibrium &eq) noexcept
-        {
-            unsigned flag = NONE;
-            if(eq.reac.size>0) flag |= REAC;
-            if(eq.prod.size>0) flag |= PROD;
-            return flag;
-        }
-
-        static inline
-        bool is_roaming(const readable<int> &nu) noexcept
-        {
-
-            const unsigned flag = category_of(nu);
-            switch(flag)
+            static inline unsigned category_of(const equilibrium &eq) noexcept
             {
-                case REAC:
-                case PROD:
-                case NONE:
-                    return true;
-
-                case BOTH:
-                    break;
+                unsigned flag = NONE;
+                if(eq.reac.size>0) flag |= REAC;
+                if(eq.prod.size>0) flag |= PROD;
+                return flag;
             }
-            assert(BOTH==flag);
-            return false;
-        }
 
+            static inline
+            bool is_roaming(const readable<int> &nu) noexcept
+            {
+
+                const unsigned flag = category_of(nu);
+                switch(flag)
+                {
+                    case REAC:
+                    case PROD:
+                    case NONE:
+                        return true;
+
+                    case BOTH:
+                        break;
+                }
+                assert(BOTH==flag);
+                return false;
+            }
+        }
+        
 
 
         void domain:: make_categories(const xmlog &xml)

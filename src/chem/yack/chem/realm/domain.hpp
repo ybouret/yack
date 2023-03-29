@@ -1,21 +1,20 @@
-
 //! \file
 
-#ifndef YACK_AQUEOUS_DOMAIN_INCLUDED
-#define YACK_AQUEOUS_DOMAIN_INCLUDED 1
+#ifndef YACK_CHEMICAL_DOMAIN_INCLUDED
+#define YACK_CHEMICAL_DOMAIN_INCLUDED 1
 
 #include "yack/spot-object.hpp"
-#include "yack/aqueous/equilibria.hpp"
-#include "yack/aqueous/realm/claw/preserved.hpp"
-#include "yack/aqueous/realm/cluster.hpp"
+#include "yack/chem/equilibria.hpp"
+#include "yack/chem/realm/claw/preserved.hpp"
+#include "yack/chem/realm/cluster.hpp"
 #include "yack/container/matrix.hpp"
 #include "yack/sequence/cxx-array.hpp"
-#include "yack/ios/xmlog.hpp"
 #include "yack/associative/key-mapper.hpp"
+#include "yack/ios/xmlog.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         typedef cxx_array<eq_list> eq_slots_; //!< base class for eq_slots
 

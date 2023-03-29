@@ -1,17 +1,17 @@
 
 //! \file
 
-#ifndef YACK_AQUEOUSE_WEASEL_DESIGNER_INCLUDED
-#define YACK_AQUEOUSE_WEASEL_DESIGNER_INCLUDED 1
+#ifndef YACK_CHEMICAL_WEASEL_DESIGNER_INCLUDED
+#define YACK_CHEMICAL_WEASEL_DESIGNER_INCLUDED 1
 
-#include "yack/aqueous/library.hpp"
-#include "yack/aqueous/lua/equilibria.hpp"
+#include "yack/chem/library.hpp"
+#include "yack/chem/lua/equilibria.hpp"
 #include "yack/jive/module.hpp"
 #include "yack/singleton.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
 
         namespace weasel

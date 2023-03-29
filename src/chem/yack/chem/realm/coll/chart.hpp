@@ -1,16 +1,16 @@
 
 //! \file
 
-#ifndef YACK_AQUEOUS_COLL_CHART_INCLUDED
-#define YACK_AQUEOUS_COLL_CHART_INCLUDED 1
+#ifndef YACK_CHEMICAL_COLL_CHART_INCLUDED
+#define YACK_CHEMICAL_COLL_CHART_INCLUDED 1
 
-#include "yack/aqueous/eqs/frontiers.hpp"
-#include "yack/aqueous/realm/coll/caches.hpp"
-#include "yack/aqueous/eqs/components.hpp"
+#include "yack/chem/eqs/frontiers.hpp"
+#include "yack/chem/realm/coll/caches.hpp"
+#include "yack/chem/eqs/components.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         namespace collecting
         {

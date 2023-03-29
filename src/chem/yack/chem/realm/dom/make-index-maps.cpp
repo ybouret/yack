@@ -1,8 +1,8 @@
-#include "yack/aqueous/realm/domain.hpp"
+#include "yack/chem/realm/domain.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
 
         void domain:: make_index_maps(const xmlog      &xml)

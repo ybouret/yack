@@ -1,17 +1,17 @@
 
 //! \file
 
-#ifndef YACK_AQUEOUS_BOUNDARIES_INCLUDED
-#define YACK_AQUEOUS_BOUNDARIES_INCLUDED 1
+#ifndef YACK_CHEMICAL_BOUNDARIES_INCLUDED
+#define YACK_CHEMICAL_BOUNDARIES_INCLUDED 1
 
-#include "yack/aqueous/eqs/zlimit.hpp"
+#include "yack/chem/eqs/zlimit.hpp"
 #include "yack/data/dinky/coop-list.hpp"
 
 namespace yack
 {
     class xmlog;
     
-    namespace aqueous
+    namespace chemical
     {
         //______________________________________________________________________
         //

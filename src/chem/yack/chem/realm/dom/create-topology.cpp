@@ -1,15 +1,13 @@
-#include "yack/aqueous/realm/domain.hpp"
+#include "yack/chem/realm/domain.hpp"
 #include "yack/system/imported.hpp"
 #include "yack/apex/alga.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
 
-       
-
-
+        
         void domain:: create_topology(const xmlog &xml)
         {
           

@@ -1,10 +1,11 @@
-#include "yack/aqueous/realm/collector.hpp"
+#include "yack/chem/realm/collector.hpp"
 
 namespace yack
 {
 
-    namespace aqueous
+    namespace chemical
     {
+        
         bool   collector:: needed_some_fixing(const actors &A, writable<double> &C)
         {
             assert(A.size>0);

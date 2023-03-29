@@ -1,5 +1,5 @@
 
-#include "yack/aqueous/realm/domain.hpp"
+#include "yack/chem/realm/domain.hpp"
 #include "yack/system/imported.hpp"
 #include "yack/apex/alga.hpp"
 #include "yack/math/algebra/ortho-family.hpp"
@@ -10,9 +10,11 @@
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
 
+#if 0
+        static inline
         void build_Q0(matrix<int>       &Q0,
                       const matrix<int> &Q)
         {
@@ -40,7 +42,8 @@ namespace yack
 
             }
         }
-
+#endif
+        
         namespace
         {
 

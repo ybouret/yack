@@ -1,15 +1,15 @@
 //! \file
 
-#ifndef YACK_AQUEOUS_REALM_INCLUDED
-#define YACK_AQUEOUS_REALM_INCLUDED 1
+#ifndef YACK_CHEMICAL_REALM_INCLUDED
+#define YACK_CHEMICAL_REALM_INCLUDED 1
 
-#include "yack/aqueous/realm/domain.hpp"
-#include "yack/aqueous/library.hpp"
+#include "yack/chem/realm/domain.hpp"
+#include "yack/chem/library.hpp"
 #include "yack/sequence/cxx-array.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         //______________________________________________________________________
         //

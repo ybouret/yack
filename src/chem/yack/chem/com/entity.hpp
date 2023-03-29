@@ -1,7 +1,7 @@
 //! \file
 
-#ifndef YACK_AQUEOUS_ENTITY_INCLUDED
-#define YACK_AQUEOUS_ENTITY_INCLUDED 1
+#ifndef YACK_CHEMICAL_ENTITY_INCLUDED
+#define YACK_CHEMICAL_ENTITY_INCLUDED 1
 
 #include "yack/string.hpp"
 #include "yack/large-object.hpp"
@@ -9,7 +9,7 @@
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
 
         //! index level

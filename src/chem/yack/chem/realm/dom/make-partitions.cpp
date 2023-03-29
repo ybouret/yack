@@ -1,9 +1,9 @@
-#include "yack/aqueous/realm/domain.hpp"
+#include "yack/chem/realm/domain.hpp"
 #include "yack/system/imported.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         static inline
         void create_partition(partition          &part,

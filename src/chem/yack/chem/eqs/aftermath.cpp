@@ -1,10 +1,10 @@
 
-#include "yack/aqueous/eqs/aftermath.hpp"
+#include "yack/chem/eqs/aftermath.hpp"
 #include <iomanip>
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         aftermath:: aftermath() noexcept :
         state(is_blocked),
@@ -60,7 +60,7 @@ namespace yack
 {
     using namespace math;
 
-    namespace aqueous
+    namespace chemical
     {
         static inline
         void make_no_prod(const equilibrium      &E,

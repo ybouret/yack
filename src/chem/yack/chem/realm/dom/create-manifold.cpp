@@ -1,6 +1,6 @@
 
-#include "yack/aqueous/realm/domain.hpp"
-#include "yack/aqueous/library.hpp"
+#include "yack/chem/realm/domain.hpp"
+#include "yack/chem/library.hpp"
 #include "yack/system/imported.hpp"
 #include "yack/apex/alga.hpp"
 #include "yack/raven/qbranch.hpp"
@@ -13,7 +13,7 @@ namespace yack
 {
     using namespace math;
 
-    namespace aqueous
+    namespace chemical
     {
 
         namespace

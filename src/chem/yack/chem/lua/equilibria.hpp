@@ -1,15 +1,15 @@
 
 //! \file
 
-#ifndef YACK_AQUEOUS_LUA_EQUILIBRIA_INCLUDED
-#define YACK_AQUEOUS_LUA_EQUILIBRIA_INCLUDED 1
+#ifndef YACK_CHEMICAL_LUA_EQUILIBRIA_INCLUDED
+#define YACK_CHEMICAL_LUA_EQUILIBRIA_INCLUDED 1
 
-#include "yack/aqueous/equilibria.hpp"
+#include "yack/chem/equilibria.hpp"
 #include "yack/lua++/state.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         //______________________________________________________________________
         //

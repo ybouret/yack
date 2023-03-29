@@ -1,15 +1,15 @@
 //! \file
 
-#ifndef YACK_AQUEOUS_REALM_NORMALIZER_INCLUDED
-#define YACK_AQUEOUS_REALM_NORMALIZER_INCLUDED 1
+#ifndef YACK_CHEMICAL_REALM_NORMALIZER_INCLUDED
+#define YACK_CHEMICAL_REALM_NORMALIZER_INCLUDED 1
 
-#include "yack/aqueous/realm/claw/custodian.hpp"
-#include "yack/aqueous/realm/collector.hpp"
-#include "yack/aqueous/realm.hpp"
+#include "yack/chem/realm/claw/custodian.hpp"
+#include "yack/chem/realm/collector.hpp"
+#include "yack/chem/realm.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
 
         //______________________________________________________________________

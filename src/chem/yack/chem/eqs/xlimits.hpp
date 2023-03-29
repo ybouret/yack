@@ -1,15 +1,15 @@
 
 //! \file
 
-#ifndef YACK_AQUEOUS_XLIMITS_INCLUDED
-#define YACK_AQUEOUS_XLIMITS_INCLUDED 1
+#ifndef YACK_CHEMICAL_XLIMITS_INCLUDED
+#define YACK_CHEMICAL_XLIMITS_INCLUDED 1
 
-#include "yack/aqueous/eqs/xlimit.hpp"
-#include "yack/aqueous/eqs/components.hpp"
+#include "yack/chem/eqs/xlimit.hpp"
+#include "yack/chem/eqs/components.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         //______________________________________________________________________
         //

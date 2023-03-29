@@ -1,11 +1,11 @@
-#include "yack/aqueous/realm/collector.hpp"
+#include "yack/chem/realm/collector.hpp"
 #include "yack/system/imported.hpp"
 #include <iomanip>
 
 namespace yack
 {
 
-    namespace aqueous
+    namespace chemical
     {
         double collector:: combined(const cluster &clan)
         {

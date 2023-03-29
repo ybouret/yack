@@ -1,9 +1,8 @@
-
-#include "yack/aqueous/eqs/xlimit.hpp"
+#include "yack/chem/eqs/xlimit.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
 
         xlimit:: ~xlimit() noexcept

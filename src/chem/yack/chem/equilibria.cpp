@@ -1,11 +1,11 @@
 
-#include "yack/aqueous/equilibria.hpp"
+#include "yack/chem/equilibria.hpp"
 #include "yack/system/exception.hpp"
 #include "yack/data/dinky/core-list.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         equilibria:: equilibria() noexcept : gathering(), edb()
         {

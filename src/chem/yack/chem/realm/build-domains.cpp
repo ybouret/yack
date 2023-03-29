@@ -1,9 +1,9 @@
-#include "yack/aqueous/realm.hpp"
+#include "yack/chem/realm.hpp"
 #include "yack/data/list/sort.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         void realm:: build_domains(const xmlog &xml)
         {

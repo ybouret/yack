@@ -1,9 +1,9 @@
 
-#include "yack/aqueous/eqs/xlimits.hpp"
+#include "yack/chem/eqs/xlimits.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
 
         const char * xlimits:: limit_text(const limitation l) noexcept

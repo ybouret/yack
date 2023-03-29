@@ -1,5 +1,5 @@
 
-#include "yack/aqueous/realm/collector.hpp"
+#include "yack/chem/realm/collector.hpp"
 #include "yack/math/iota.hpp"
 #include "yack/system/imported.hpp"
 #include <iomanip>
@@ -8,7 +8,7 @@ namespace yack
 {
     using namespace math;
 
-    namespace aqueous
+    namespace chemical
     {
         namespace
         {

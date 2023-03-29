@@ -1,13 +1,13 @@
 //! \file
 
-#ifndef YACK_AQUEOUSE_WEASEL_PARSER_INCLUDED
-#define YACK_AQUEOUSE_WEASEL_PARSER_INCLUDED 1
+#ifndef YACK_CHEMICAL_WEASEL_PARSER_INCLUDED
+#define YACK_CHEMICAL_WEASEL_PARSER_INCLUDED 1
 
 #include "yack/jive/parser.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         namespace weasel
         {

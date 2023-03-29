@@ -1,14 +1,14 @@
 
 //! \file
 
-#ifndef YACK_AQUEOUSE_WEASEL_TYPES_INCLUDED
-#define YACK_AQUEOUSE_WEASEL_TYPES_INCLUDED 1
+#ifndef YACK_CHEMICAL_WEASEL_TYPES_INCLUDED
+#define YACK_CHEMICAL_WEASEL_TYPES_INCLUDED 1
 
 #include "yack/jive/syntax/xnode.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         namespace weasel
         {

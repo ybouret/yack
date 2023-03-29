@@ -1,12 +1,12 @@
-#include "yack/aqueous/realm/domain.hpp"
+#include "yack/chem/realm/domain.hpp"
 #include "yack/system/imported.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
 
-        const char * const domain::clid = "aqueous::domain";
+        const char * const domain::clid = "chemical::domain";
 
         void domain:: create(const xmlog            &xml,
                              equilibria             &eqs,

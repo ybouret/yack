@@ -1,10 +1,10 @@
-#include "yack/aqueous/realm.hpp"
+#include "yack/chem/realm.hpp"
 #include "yack/jive/pattern/vfs.hpp"
 #include "yack/fs/local/fs.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         void realm:: graphviz(const string &rootname, const size_t depth) const
         {

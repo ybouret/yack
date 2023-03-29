@@ -1,8 +1,8 @@
-#include "yack/aqueous/com/gathering.hpp"
+#include "yack/chem/com/gathering.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         gathering:: ~gathering() noexcept
         {

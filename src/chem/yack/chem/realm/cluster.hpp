@@ -1,15 +1,14 @@
-
 //! \file
 
-#ifndef YACK_AQUEOUS_CLUSTER_INCLUDED
-#define YACK_AQUEOUS_CLUSTER_INCLUDED 1
+#ifndef YACK_CHEMICAL_CLUSTER_INCLUDED
+#define YACK_CHEMICAL_CLUSTER_INCLUDED 1
 
-#include "yack/aqueous/equilibrium.hpp"
+#include "yack/chem/equilibrium.hpp"
 #include "yack/container/matrix.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
 
         //______________________________________________________________________

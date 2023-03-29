@@ -1,9 +1,8 @@
-
-#include "yack/aqueous/eqs/frontiers.hpp"
+#include "yack/chem/eqs/frontiers.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
 
         frontiers:: ~frontiers() noexcept

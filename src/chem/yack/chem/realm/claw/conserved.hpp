@@ -1,13 +1,13 @@
 //! \file
 
-#ifndef YACK_AQUEOUS_CONSERVED_INCLUDED
-#define YACK_AQUEOUS_CONSERVED_INCLUDED 1
+#ifndef YACK_CHEMICAL_CONSERVED_INCLUDED
+#define YACK_CHEMICAL_CONSERVED_INCLUDED 1
 
-#include "yack/aqueous/realm/conservation.hpp"
+#include "yack/chem/realm/conservation.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         //______________________________________________________________________
         //

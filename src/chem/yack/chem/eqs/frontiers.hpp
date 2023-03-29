@@ -1,15 +1,15 @@
 
 //! \file
 
-#ifndef YACK_AQUEOUS_FRONTIERS_INCLUDED
-#define YACK_AQUEOUS_FRONTIERS_INCLUDED 1
+#ifndef YACK_CHEMICAL_FRONTIERS_INCLUDED
+#define YACK_CHEMICAL_FRONTIERS_INCLUDED 1
 
-#include "yack/aqueous/eqs/boundaries.hpp"
-#include "yack/aqueous/eqs/xlimit.hpp"
+#include "yack/chem/eqs/boundaries.hpp"
+#include "yack/chem/eqs/xlimit.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         //______________________________________________________________________
         //

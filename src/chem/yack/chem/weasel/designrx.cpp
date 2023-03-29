@@ -1,6 +1,6 @@
 
-#include "yack/aqueous/weasel/designer.hpp"
-#include "yack/aqueous/weasel/linker.hpp"
+#include "yack/chem/weasel/designer.hpp"
+#include "yack/chem/weasel/linker.hpp"
 #include "yack/jive/pattern/matching.hpp"
 #include "yack/string/tokenizer.hpp"
 #include "yack/system/imported.hpp"
@@ -8,7 +8,7 @@
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
 
         namespace weasel

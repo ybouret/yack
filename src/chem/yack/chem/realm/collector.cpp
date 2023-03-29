@@ -1,9 +1,9 @@
-#include "yack/aqueous/realm/collector.hpp"
+#include "yack/chem/realm/collector.hpp"
 
 namespace yack
 {
 
-    namespace aqueous
+    namespace chemical
     {
         
         collector:: ~collector() noexcept

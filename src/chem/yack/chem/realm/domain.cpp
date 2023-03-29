@@ -1,9 +1,9 @@
 
-#include "yack/aqueous/realm/domain.hpp"
+#include "yack/chem/realm/domain.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         eq_slots:: ~eq_slots() noexcept {}
 
@@ -14,7 +14,7 @@ namespace yack
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
 
         domain:: ~domain() noexcept

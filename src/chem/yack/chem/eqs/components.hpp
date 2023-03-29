@@ -1,18 +1,19 @@
 
 //! \file
 
-#ifndef YACK_AQUEOUS_COMPONENTS_INCLUDED
-#define YACK_AQUEOUS_COMPONENTS_INCLUDED 1
+#ifndef YACK_CHEMICAL_COMPONENTS_INCLUDED
+#define YACK_CHEMICAL_COMPONENTS_INCLUDED 1
 
-#include "yack/aqueous/eqs/component.hpp"
+#include "yack/chem/eqs/component.hpp"
 #include "yack/associative/suffix/set.hpp"
 #include "yack/data/dinky/coop-repo.hpp"
-#include "yack/cameo/add.hpp"
 #include "yack/associative/addrbook.hpp"
+#include "yack/cameo/add.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    
+    namespace chemical
     {
         //______________________________________________________________________
         //

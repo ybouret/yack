@@ -1,9 +1,8 @@
-
-#include "yack/aqueous/realm/claw/conserved.hpp"
+#include "yack/chem/realm/claw/conserved.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         conserved:: ~conserved() noexcept
         {

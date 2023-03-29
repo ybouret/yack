@@ -1,10 +1,10 @@
-#include "yack/aqueous/library.hpp"
+#include "yack/chem/library.hpp"
 #include "yack/system/imported.hpp"
 #include <iomanip>
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         const char * const library:: clid = "aqueous::library";
         

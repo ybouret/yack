@@ -1,9 +1,9 @@
-#include "yack/aqueous/com/entity.hpp"
+#include "yack/chem/com/entity.hpp"
 #include <cstring>
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
 
         entity:: ~entity() noexcept

@@ -1,9 +1,9 @@
 
-#include "yack/aqueous/realm/coll/chart.hpp"
+#include "yack/chem/realm/coll/chart.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         namespace collecting
         {

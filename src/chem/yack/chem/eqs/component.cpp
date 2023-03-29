@@ -1,9 +1,9 @@
 
-#include "yack/aqueous/eqs/component.hpp"
+#include "yack/chem/eqs/component.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         component:: ~component() noexcept {}
 

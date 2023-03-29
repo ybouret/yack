@@ -1,10 +1,10 @@
 
-#include "yack/aqueous/realm/reactor.hpp"
-#include "yack/aqueous/eqs/aftermath.hpp"
+#include "yack/chem/realm/reactor.hpp"
+#include "yack/chem/eqs/aftermath.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
 
         reactor:: ~reactor() noexcept

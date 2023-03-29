@@ -1,15 +1,15 @@
 //! \file
 
-#ifndef YACK_AQUEOUS_AFTERMATH_INCLUDED
-#define YACK_AQUEOUS_AFTERMATH_INCLUDED 1
+#ifndef YACK_CHEMICAL_AFTERMATH_INCLUDED
+#define YACK_CHEMICAL_AFTERMATH_INCLUDED 1
 
-#include "yack/aqueous/eqs/xlimits.hpp"
-#include "yack/aqueous/equilibrium.hpp"
+#include "yack/chem/eqs/xlimits.hpp"
+#include "yack/chem/equilibrium.hpp"
 #include "yack/cameo/add.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
 
         //______________________________________________________________________

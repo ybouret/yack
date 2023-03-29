@@ -1,17 +1,14 @@
-
-
-
 //! \file
 
-#ifndef YACK_AQUEOUS_REACTOR_INCLUDED
-#define YACK_AQUEOUS_REACTOR_INCLUDED 1
+#ifndef YACK_CHEMICAL_REACTOR_INCLUDED
+#define YACK_CHEMICAL_REACTOR_INCLUDED 1
 
-#include "yack/aqueous/realm/domain.hpp"
-#include "yack/aqueous/eqs/xlimits.hpp"
+#include "yack/chem/realm/domain.hpp"
+#include "yack/chem/eqs/xlimits.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
 
         class reactor

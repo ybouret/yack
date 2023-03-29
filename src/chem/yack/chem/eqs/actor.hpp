@@ -1,14 +1,14 @@
 //! \file
 
-#ifndef YACK_AQUEOUS_ACTOR_INCLUDED
-#define YACK_AQUEOUS_ACTOR_INCLUDED 1
+#ifndef YACK_CHEMICAL_ACTOR_INCLUDED
+#define YACK_CHEMICAL_ACTOR_INCLUDED 1
 
-#include "yack/aqueous/species.hpp"
+#include "yack/chem/species.hpp"
 #include "yack/cameo/mul.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         //______________________________________________________________________
         //

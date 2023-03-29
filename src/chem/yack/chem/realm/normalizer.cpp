@@ -1,9 +1,9 @@
 
-#include "yack/aqueous/realm/normalizer.hpp"
+#include "yack/chem/realm/normalizer.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
 
         normalizer:: ~normalizer() noexcept

@@ -1,10 +1,10 @@
-#include "yack/aqueous/realm/collector.hpp"
+#include "yack/chem/realm/collector.hpp"
 #include <iomanip>
 
 namespace yack
 {
 
-    namespace aqueous
+    namespace chemical
     {
         void collector:: displace(writable<double> &C,
                                   const cluster    &W)

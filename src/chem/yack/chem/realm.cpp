@@ -1,9 +1,9 @@
 
-#include "yack/aqueous/realm.hpp"
+#include "yack/chem/realm.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         realm:: ~realm() noexcept
         {
@@ -89,11 +89,11 @@ namespace yack
     
 }
 
-#include "yack/aqueous/realm/claw/custodian.hpp"
+#include "yack/chem/realm/claw/custodian.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
 
         void custodian:: process(const xmlog &xml,
@@ -119,11 +119,11 @@ namespace yack
     }
 }
 
-#include "yack/aqueous/realm/collector.hpp"
+#include "yack/chem/realm/collector.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
 
         void collector::  balance(const realm      &chem,

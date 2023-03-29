@@ -1,9 +1,8 @@
-
-#include "yack/aqueous/lua/equilibria.hpp"
+#include "yack/chem/lua/equilibria.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
 
         lua_equilibria:: ~lua_equilibria() noexcept

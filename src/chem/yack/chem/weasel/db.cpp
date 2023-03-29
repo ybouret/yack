@@ -1,9 +1,9 @@
 
-#include "yack/aqueous/weasel/designer.hpp"
+#include "yack/chem/weasel/designer.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
 
         namespace weasel

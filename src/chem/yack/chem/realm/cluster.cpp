@@ -1,11 +1,11 @@
-
-#include "yack/aqueous/realm/cluster.hpp"
+#include "yack/chem/realm/cluster.hpp"
 
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
+
         cluster:: ~cluster() noexcept {}
 
         cluster:: cluster(const equilibrium &first) :

@@ -1,13 +1,13 @@
 //! \file
 
-#ifndef YACK_AQUEOUS_GATHERING_INCLUDED
-#define YACK_AQUEOUS_GATHERING_INCLUDED 1
+#ifndef YACK_CHEMICAL_GATHERING_INCLUDED
+#define YACK_CHEMICAL_GATHERING_INCLUDED 1
 
-#include "yack/aqueous/com/entity.hpp"
+#include "yack/chem/com/entity.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         //______________________________________________________________________
         //

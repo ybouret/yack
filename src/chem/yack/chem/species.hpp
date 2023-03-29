@@ -1,9 +1,9 @@
 //! \file
 
-#ifndef YACK_AQUEOUS_SPECIES_INCLUDED
-#define YACK_AQUEOUS_SPECIES_INCLUDED 1
+#ifndef YACK_CHEMICAL_SPECIES_INCLUDED
+#define YACK_CHEMICAL_SPECIES_INCLUDED 1
 
-#include "yack/aqueous/com/entity.hpp"
+#include "yack/chem/com/entity.hpp"
 #include "yack/data/dinky/coop-repo.hpp"
 #include "yack/data/dinky/core-repo.hpp"
 #include "yack/ptr/ark.hpp"
@@ -11,7 +11,7 @@
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
 
         //______________________________________________________________________

@@ -1,10 +1,10 @@
 
-#include "yack/aqueous/species.hpp"
+#include "yack/chem/species.hpp"
 #include "yack/ios/ostream.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         bool species::verbose = false;
 

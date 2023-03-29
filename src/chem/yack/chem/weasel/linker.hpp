@@ -5,18 +5,20 @@
 #define YACK_AQUEOUSE_WEASEL_LINKER_INCLUDED 1
 
 #include "yack/jive/syntax/translator.hpp"
-#include "yack/aqueous/weasel/types.hpp"
+
+#include "yack/chem/weasel/types.hpp"
+#include "yack/chem/library.hpp"
+#include "yack/chem/lua/equilibria.hpp"
+
 #include "yack/sequence/list.hpp"
 #include "yack/hashing/perfect.hpp"
 #include "yack/apex/natural.hpp"
-#include "yack/aqueous/library.hpp"
-#include "yack/aqueous/lua/equilibria.hpp"
 #include "yack/data/dinky/solo-list.hpp"
 #include "yack/data/dinky/solo-repo.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         
         namespace weasel

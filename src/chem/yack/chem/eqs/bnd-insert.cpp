@@ -1,8 +1,8 @@
-#include "yack/aqueous/eqs/boundaries.hpp"
+#include "yack/chem/eqs/boundaries.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         void boundaries:: insert1(const double xi, const species &sp)
         {

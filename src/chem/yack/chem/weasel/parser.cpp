@@ -1,5 +1,5 @@
 
-#include "yack/aqueous/weasel/parser.hpp"
+#include "yack/chem/weasel/parser.hpp"
 #include "yack/jive/lexical/plugin/single-line-comment.hpp"
 #include "yack/jive/lexical/plugin/multi-lines-comment.hpp"
 #include "yack/jive/lexical/plugin/rstring.hpp"
@@ -7,7 +7,7 @@
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         namespace weasel
         {

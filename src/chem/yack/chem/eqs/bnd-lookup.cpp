@@ -1,10 +1,10 @@
 
-#include "yack/aqueous/eqs/boundaries.hpp"
+#include "yack/chem/eqs/boundaries.hpp"
 #include "yack/ios/xmlog.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         bool boundaries:: check_valid() const noexcept
         {

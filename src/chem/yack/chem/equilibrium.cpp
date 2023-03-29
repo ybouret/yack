@@ -1,10 +1,10 @@
-#include "yack/aqueous/equilibrium.hpp"
+#include "yack/chem/equilibrium.hpp"
 #include "yack/system/imported.hpp"
 #include <iomanip>
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
 
         equilibrium:: ~equilibrium() noexcept {}
@@ -86,7 +86,7 @@ namespace yack
 
     }
 
-    namespace aqueous
+    namespace chemical
     {
         const_equilibrium:: ~const_equilibrium() noexcept {}
         

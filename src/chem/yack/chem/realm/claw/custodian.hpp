@@ -1,10 +1,10 @@
 
 //! \file
 
-#ifndef YACK_AQUEOUS_CUSTODIAN_INCLUDED
-#define YACK_AQUEOUS_CUSTODIAN_INCLUDED 1
+#ifndef YACK_CHEMICAL_CUSTODIAN_INCLUDED
+#define YACK_CHEMICAL_CUSTODIAN_INCLUDED 1
 
-#include "yack/aqueous/realm/claw/conserved.hpp"
+#include "yack/chem/realm/claw/conserved.hpp"
 #include "yack/data/dinky/solo-list.hpp"
 #include "yack/data/dinky/solo-repo.hpp"
 #include "yack/sequence/cxx-array.hpp"
@@ -12,7 +12,7 @@
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         class realm;
         class domain;

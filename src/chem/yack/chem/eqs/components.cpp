@@ -1,12 +1,12 @@
 
-#include "yack/aqueous/eqs/components.hpp"
+#include "yack/chem/eqs/components.hpp"
 #include "yack/system/imported.hpp"
 #include "yack/type/abs.hpp"
 #include "yack/arith/gcd.h"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         components:: ~components() noexcept
         {

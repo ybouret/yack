@@ -1,11 +1,11 @@
 
-#include "yack/aqueous/weasel/linker.hpp"
+#include "yack/chem/weasel/linker.hpp"
 #include "yack/system/imported.hpp"
 #include "yack/lua++/function.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         namespace weasel
         {

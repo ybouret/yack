@@ -1,14 +1,14 @@
 //! \file
 
-#ifndef YACK_AQUEOUS_EQUILIBRIA_INCLUDED
-#define YACK_AQUEOUS_EQUILIBRIA_INCLUDED 1
+#ifndef YACK_CHEMICAL_EQUILIBRIA_INCLUDED
+#define YACK_CHEMICAL_EQUILIBRIA_INCLUDED 1
 
-#include "yack/aqueous/equilibrium.hpp"
-#include "yack/aqueous/com/gathering.hpp"
+#include "yack/chem/equilibrium.hpp"
+#include "yack/chem/com/gathering.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         //______________________________________________________________________
         //

@@ -1,8 +1,8 @@
-#include "yack/aqueous/eqs/actors.hpp"
+#include "yack/chem/eqs/actors.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
         actors:: ~actors() noexcept
         {

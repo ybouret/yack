@@ -1,18 +1,18 @@
 
 //! \file
 
-#ifndef YACK_AQUEOUS_COLLECTOR_INCLUDED
-#define YACK_AQUEOUS_COLLECTOR_INCLUDED 1
+#ifndef YACK_CHEMICAL_COLLECTOR_INCLUDED
+#define YACK_CHEMICAL_COLLECTOR_INCLUDED 1
 
-#include "yack/aqueous/realm/domain.hpp"
-#include "yack/aqueous/realm/coll/chart.hpp"
+#include "yack/chem/realm/domain.hpp"
+#include "yack/chem/realm/coll/chart.hpp"
 #include "yack/sequence/cxx-array.hpp"
 #include "yack/data/dinky/solo-repo.hpp"
 
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
 
         class realm;

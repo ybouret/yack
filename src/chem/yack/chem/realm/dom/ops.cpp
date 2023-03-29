@@ -1,10 +1,8 @@
-
-#include "yack/aqueous/realm/domain.hpp"
-#include "yack/system/imported.hpp"
+#include "yack/chem/realm/domain.hpp"
 
 namespace yack
 {
-    namespace aqueous
+    namespace chemical
     {
 
         void domain:: shrink(writable<double>       &Csub,
