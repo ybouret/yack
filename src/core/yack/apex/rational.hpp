@@ -36,7 +36,7 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~rational() noexcept;                    //!< cleanup
+            virtual ~rational() noexcept;                   //!< cleanup
             rational();                                     //!< 0/1
             rational(const rational &);                     //!< copy
             rational(const int_type);                       //!< num/1
@@ -45,7 +45,8 @@ namespace yack
             rational(const natural &);                      //!< num/1
             rational&operator=(const rational &);           //!< assign by copy/xch
             rational(randomized::bits &,const size_t bits); //!< random
-
+            rational & operator=(const int_type);           //!< num/1
+            
 
             //! inline binary constructors
 #define     YACK_APQ_CTOR(NTYPE,DTYPE) \

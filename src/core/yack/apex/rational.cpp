@@ -78,6 +78,13 @@ namespace yack
         }
 
 
+        rational & rational:: operator=(const int_type i)
+        {
+            rational tmp(i);
+            xch(tmp);
+            return *this;
+        }
+
 
         void rational:: zcheck() const
         {
