@@ -7,10 +7,16 @@ namespace yack
     namespace aqueous
     {
 
-        void domain:: shrink(writable<double>       &Corg,
-                             const readable<double> &C0) const
+        void domain:: shrink(writable<double>       &Csub,
+                             const readable<double> &Ctop) const
         {
-            spmap.send(Corg,C0);
+            spmap.send(Csub,Ctop);
+        }
+
+        void domain:: expand(writable<double>       &Ctop,
+                             const readable<double> &Csub) const
+        {
+            spmap.recv(Ctop,Csub);
         }
     }
 

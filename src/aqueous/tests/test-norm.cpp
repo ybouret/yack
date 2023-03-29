@@ -45,7 +45,7 @@ YACK_UTEST(norm)
     norm(chem,C1);
     lib(std::cerr << "C0=",C0) << std::endl;
     lib(std::cerr << "C1=",C1) << std::endl;
-
+    
     
 
 

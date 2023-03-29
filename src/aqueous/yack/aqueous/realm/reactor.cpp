@@ -13,6 +13,9 @@ namespace yack
 
         reactor:: reactor(const domain &_) :
         dom(_),
+        xlim(),
+        xadd(),
+        xmul(),
         Corg(dom.M),
         blocked(dom.N),
         running(dom.N),
@@ -24,9 +27,12 @@ namespace yack
         void reactor:: operator()(writable<double> &C0, const readable<double> &K)
         {
 
-            // load Corg
+            // load Corg into sub_level description
+
             dom.shrink(Corg,C0);
 
+            dom.spdisp(std::cerr,Corg) << std::endl;
+            
             //
             for(const eq_node *en=dom.head;en;en=en->next)
             {

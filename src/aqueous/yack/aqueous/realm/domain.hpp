@@ -91,8 +91,26 @@ namespace yack
             //
             // operations
             //__________________________________________________________________
-            void shrink(writable<double>       &Corg,
-                        const readable<double> &C0) const;
+            void shrink(writable<double>       &Csub,
+                        const readable<double> &Ctop) const;
+            void expand(writable<double>       &Ctop,
+                        const readable<double> &Csub) const;
+
+            //! sub-level display
+            template <typename DATA> inline
+            std::ostream & spdisp(std::ostream    &os,
+                                  DATA            &data) const
+            {
+                os << '{';
+                for(const sp_node *node=live.head;node;node=node->next)
+                {
+                    const species &s = ***node;
+                    const size_t   j = s.indx[sub_level];
+                    spfmt.pad(os << ' ' << s,s) << " = " << data[j] << std::endl;
+                }
+                os << '}';
+                return os;
+            }
 
             //__________________________________________________________________
             //
