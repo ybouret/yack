@@ -1,14 +1,14 @@
 
-#include "yack/aqueous/weasel/parser.hpp"
-#include "yack/aqueous/weasel/linker.hpp"
-#include "yack/aqueous/weasel/types.hpp"
-#include "yack/aqueous/weasel/designer.hpp"
+#include "yack/chem/weasel/parser.hpp"
+#include "yack/chem/weasel/linker.hpp"
+#include "yack/chem/weasel/types.hpp"
+#include "yack/chem/weasel/designer.hpp"
 
 #include "yack/utest/run.hpp"
 #include "yack/ios/icstream.hpp"
 
 using namespace yack;
-using namespace aqueous;
+using namespace chemical;
 
 YACK_UTEST(weasel)
 {

@@ -1,8 +1,9 @@
-#include "yack/aqueous/library.hpp"
+#include "yack/chem/library.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/system/rtti.hpp"
+
 using namespace yack;
-using namespace aqueous;
+using namespace chemical;
 
 YACK_UTEST(lib)
 {

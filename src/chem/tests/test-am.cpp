@@ -1,6 +1,6 @@
 
-#include "yack/aqueous/weasel/designer.hpp"
-#include "yack/aqueous/eqs/aftermath.hpp"
+#include "yack/chem/weasel/designer.hpp"
+#include "yack/chem/eqs/aftermath.hpp"
 
 #include "yack/utest/run.hpp"
 #include "yack/ios/icstream.hpp"
@@ -9,7 +9,7 @@
 #include "yack/counting/part.hpp"
 
 using namespace yack;
-using namespace aqueous;
+using namespace chemical;
 using namespace math;
 
 

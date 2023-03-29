@@ -1,11 +1,11 @@
-#include "yack/aqueous/weasel/designer.hpp"
-#include "yack/aqueous/realm/normalizer.hpp"
-#include "yack/aqueous/realm.hpp"
+#include "yack/chem/weasel/designer.hpp"
+#include "yack/chem/realm/normalizer.hpp"
+#include "yack/chem/realm.hpp"
 #include "yack/math/iota.hpp"
 #include "yack/utest/run.hpp"
 
 using namespace yack;
-using namespace aqueous;
+using namespace chemical;
 using namespace math;
 
 YACK_UTEST(norm)

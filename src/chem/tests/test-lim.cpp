@@ -1,11 +1,11 @@
-#include "yack/aqueous/weasel/designer.hpp"
-#include "yack/aqueous/eqs/xlimits.hpp"
+#include "yack/chem/weasel/designer.hpp"
+#include "yack/chem/eqs/xlimits.hpp"
 
 #include "yack/utest/run.hpp"
 #include "yack/ios/icstream.hpp"
 
 using namespace yack;
-using namespace aqueous;
+using namespace chemical;
 
 YACK_UTEST(lim)
 {

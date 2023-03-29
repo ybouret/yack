@@ -1,10 +1,10 @@
 
-#include "yack/aqueous/lua/equilibria.hpp"
-#include "yack/aqueous/library.hpp"
+#include "yack/chem/lua/equilibria.hpp"
+#include "yack/chem/library.hpp"
 #include "yack/utest/run.hpp"
 
 using namespace yack;
-using namespace aqueous;
+using namespace chemical;
 
 YACK_UTEST(eqs)
 {

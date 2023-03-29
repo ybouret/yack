@@ -1,13 +1,13 @@
 
-#include "yack/aqueous/weasel/designer.hpp"
-#include "yack/aqueous/realm.hpp"
-#include "yack/aqueous/realm/claw/custodian.hpp"
-#include "yack/aqueous/realm/collector.hpp"
+#include "yack/chem/weasel/designer.hpp"
+#include "yack/chem/realm.hpp"
+#include "yack/chem/realm/claw/custodian.hpp"
+#include "yack/chem/realm/collector.hpp"
 
 #include "yack/utest/run.hpp"
 
 using namespace yack;
-using namespace aqueous;
+using namespace chemical;
 
 YACK_UTEST(realm)
 {
