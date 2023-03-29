@@ -49,10 +49,14 @@ namespace yack
                 const equilibrium &  eq = ***en;
                 const size_t         gi = eq.indx[top_level];
                 const size_t         li = eq.indx[sub_level];
-                std::cerr << eq << " top_level: " << gi << ", sub_level: " << li << std::endl;
                 writable<double>   & Ci = Cs[li];
                 const double         Ki = K[gi];
                 const aftermath      am = aftermath::solve(sub_level,eq,Ki,Corg,Ci,xlim,xmul,xadd);
+
+                if(xml.verbose)
+                {
+                    dom.eqfmt.pad( *xml << eq, eq) << ": " << am << std::endl;
+                }
             }
 
         }
