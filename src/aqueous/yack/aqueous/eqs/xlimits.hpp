@@ -65,9 +65,9 @@ namespace yack
 
 
             //! find extents and deduce flag
-            limitation          operator()(const components       &,
-                                           const readable<double> &,
-                                           const index_level);
+            limitation          operator()(const index_level       I,
+                                           const components       &E,
+                                           const readable<double> &C);
             
             YACK_PROTO_OSTREAM(xlimits); //!< display
             

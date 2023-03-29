@@ -41,15 +41,15 @@ namespace yack
         {
         }
 
-        limitation xlimits:: operator()(const components       &eq,
-                                        const readable<double> &C0,
-                                        const index_level       il)
+        limitation xlimits:: operator()(const index_level       I,
+                                        const components       &E,
+                                        const readable<double> &C)
         {
             flag = is_running;
-            if( reac.search(eq.reac,C0,il))
+            if( reac.search(I,E.reac,C))
             {
                 // limited by reac
-                if(prod.search(eq.prod,C0,il))
+                if(prod.search(I,E.prod,C))
                 {
                     // and limited by prod
                     if( fabs(prod.extent) <=0 && fabs(reac.extent) <=0 ) flag = is_blocked;
@@ -64,7 +64,7 @@ namespace yack
             else
             {
                 // not limited by reac => are_running
-                if(prod.search(eq.prod,C0,il))
+                if(prod.search(I,E.prod,C))
                 {
                     // but limited by prod
                     return (type=limited_by_prod);

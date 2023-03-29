@@ -130,7 +130,7 @@ namespace yack
         CYCLE:
             triplet<double>  x = { 0 ,0, 0};
             triplet<double>  f = { 0, 0, 0};
-            const limitation l = xlim(E,Cs,I);
+            const limitation l = xlim(I,E,Cs);
 
             switch(l)
             {

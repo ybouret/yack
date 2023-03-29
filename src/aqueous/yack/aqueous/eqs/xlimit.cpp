@@ -60,9 +60,9 @@ namespace yack
         }
 
 
-        bool xlimit::search(const actors           &A,
-                            const readable<double> &C,
-                            const index_level       I)
+        bool xlimit::search(const index_level       I,
+                            const actors           &A,
+                            const readable<double> &C)
         {
 
             reset();
