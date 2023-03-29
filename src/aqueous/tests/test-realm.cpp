@@ -48,21 +48,8 @@ YACK_UTEST(realm)
         lib(std::cerr << "suppressed=",coll) << std::endl;
     }
 
+    
 
-
-    YACK_SIZEOF(domain);
-
-
-    if(false)
-    {
-        YACK_SIZEOF(realm);
-        YACK_SIZEOF(custodian);
-        YACK_SIZEOF(conservation);
-        YACK_SIZEOF(conserved);
-        YACK_SIZEOF(preserved);
-        YACK_SIZEOF(sp_list);
-        YACK_SIZEOF(eq_list);
-    }
 
 }
 YACK_UDONE()
