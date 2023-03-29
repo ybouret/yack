@@ -247,7 +247,7 @@ namespace yack
                 size_t i = 1;
                 for(const eq_node *en=hub.head;en;en=en->next,++i)
                 {
-                    (***en).fill(P[i],sub_level);
+                    (***en).fill(sub_level,P[i]);
                 }
             }
 

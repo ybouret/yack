@@ -76,7 +76,7 @@ void perform(const double      K,
     {
         lib.conc(C0,ran);
         const aftermath am = aftermath::solve(eq,K,C0,Cs,top_level,xlim,xmul,xadd);
-        const double    Q  = eq.quotient(Cs,K,xmul);
+        const double    Q  = eq.quotient(top_level,Cs,K,xmul);
         ios::ocstream::echo(AM, "%u %.15g\n",++AI,Q);
         iota::save(C0,Cs);
         const aftermath am2 = aftermath::solve(eq,K,C0,Cs,top_level,xlim,xmul,xadd);
@@ -177,19 +177,19 @@ YACK_UTEST(am)
     {
         equilibrium   &eq = ***en;
         const double   K  = eq.K(0);
-        eq.fill(nu,0);
+        eq.fill(top_level,nu);
         std::cerr << "nu=" << nu << std::endl;
-        std::cerr << "ma=" << eq.mass_action(C0,top_level,K,xmul) << std::endl;
+        std::cerr << "ma=" << eq.mass_action(top_level,C0,K,xmul) << std::endl;
         const aftermath am = aftermath::solve(eq,K,C0, Cs,top_level,xlim,xmul,xadd);
         std::cerr << "am=" << am << std::endl;
         lib(std::cerr << "Cs=",Cs) << std::endl;
-        std::cerr << "ma=" << eq.mass_action(Cs,top_level,K,xmul) << std::endl;
+        std::cerr << "ma=" << eq.mass_action(top_level,Cs,K,xmul) << std::endl;
         if(am.state == is_running)
         {
-            eq.grad(psi,Cs,top_level,K,xmul);
+            eq.grad(top_level,psi,Cs,K,xmul);
             lib(std::cerr << "psi=",psi,"d_") << std::endl;
             const double sigma = xadd.dot(nu,psi);
-            std::cerr << "sigma=" << sigma << " / " << eq.slope(Cs,top_level,K,xmul,xadd) << std::endl;
+            std::cerr << "sigma=" << sigma << " / " << eq.slope(top_level,Cs,K,xmul,xadd) << std::endl;
 
             iota::save(C0,Cs);
             const aftermath am2 = aftermath::solve(eq,K,C0,Cs,top_level,xlim,xmul,xadd);

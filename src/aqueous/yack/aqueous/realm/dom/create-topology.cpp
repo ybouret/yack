@@ -27,7 +27,7 @@ namespace yack
                     const equilibrium &eq = ***en;
                     const size_t       ei = eq.indx[1];
                     writable<int>     &nu = Nu_[ei];
-                    eq.fill(nu,1);
+                    eq.fill(sub_level,nu);
                 }
             }
 

@@ -34,7 +34,7 @@ YACK_UTEST(lim)
     {
         equilibrium   &eq = ***en;
         const double   K  = eq.K(0);
-        std::cerr << "ma=" << eq.mass_action(C0,top_level,K,xmul) << std::endl;
+        std::cerr << "ma=" << eq.mass_action(top_level,C0,K,xmul) << std::endl;
         (void) xlim(eq,C0,top_level);
         std::cerr << eq.name << " " << xlim << std::endl;
         

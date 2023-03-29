@@ -61,17 +61,17 @@ namespace yack
             YACK_PROTO_OSTREAM(components);                               //!< display
 
             //! compute mass action
-            double mass_action(const readable<double> &C,
-                               const index_level       I,
+            double mass_action(const index_level       I,
+                               const readable<double> &C,
                                const double            K,
                                cameo::mul<double>     &xmul) const;
 
             //! compute mass action with extent
-            double mass_action(const readable<double> &C,
-                               const index_level       I,
-                               const double            xi,
-                               const double            K,
-                               cameo::mul<double>     &xmul) const;
+            double mass_action(const index_level        I,
+                               const readable<double>  &C,
+                               const double             xi,
+                               const double             K,
+                               cameo::mul<double>      &xmul) const;
 
             //! move C with hard cut
             void move(writable<double> &C, const double xi) const noexcept;
@@ -80,21 +80,22 @@ namespace yack
             void mov_(writable<double> &C, const double xi) const noexcept;
 
             //! gradient
-            void grad(writable<double>       &psi,
+            void grad( const index_level       I,
+                      writable<double>       &psi,
                       const readable<double> &C,
-                      const index_level       I,
                       const double            K,
                       cameo::mul<double>     &xmul) const;
 
             //! compute slope at given concentraion
-            double slope(const readable<double> &C,
-                         const index_level       I,
+            double slope( const index_level       I,
+                         const readable<double> &C,
                          const double            K,
                          cameo::mul<double>     &xmul,
                          cameo::add<double>     &xadd) const;
 
             //! evaluate quotient
-            double quotient(const readable<double> &C,
+            double quotient(const index_level       I,
+                            const readable<double> &C,
                             const double            K,
                             cameo::mul<double>     &xmul) const;
 
@@ -107,7 +108,7 @@ namespace yack
             
             //! transfer coefficients
             template <typename ARR> inline
-            void fill( ARR &nu, const unsigned level) const
+            void fill( const unsigned level, ARR &nu) const
             {
                 nu.ld(0);
                 for(const cnode *node=(*this)->head;node;node=node->next)

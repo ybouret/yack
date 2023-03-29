@@ -32,7 +32,7 @@ namespace yack
             {
                 const equilibrium &eq = ***en;
                 const size_t       ei = eq.indx[top_level];
-                eq.fill(coerce(Nu[ei]),top_level);
+                eq.fill(top_level,coerce(Nu[ei]));
             }
             coerce(NuT).assign(Nu,transposed);
 

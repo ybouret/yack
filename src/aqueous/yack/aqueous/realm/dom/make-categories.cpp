@@ -76,7 +76,7 @@ namespace yack
                 {
                     const equilibrium &eq = ***en;assert(count==eq.indx[sub_level]);
                     writable<int>     &nu = alpha[count];
-                    eq.fill(nu,1);
+                    eq.fill(sub_level,nu);
                     if(is_roaming(nu))
                     {
                         eq_roam.ensure(&eq);

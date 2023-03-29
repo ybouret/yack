@@ -90,8 +90,8 @@ namespace yack
         }
 
 
-        double components:: mass_action(const readable<double> &C,
-                                        const index_level       I,
+        double components:: mass_action(const index_level       I,
+                                        const readable<double> &C,
                                         const double            K,
                                         cameo::mul<double>     &xmul) const
         {
@@ -107,8 +107,8 @@ namespace yack
             return lhs - xmul.product();
         }
 
-        double components:: mass_action(const readable<double> &C,
-                                        const index_level       I,
+        double components:: mass_action(const index_level       I,
+                                        const readable<double> &C,
                                         const double            K,
                                         const double            xi,
                                         cameo::mul<double>     &xmul) const
@@ -170,9 +170,9 @@ namespace yack
             psi[i] = expand_grad(a,C,I,xmul);
         }
 
-        void components:: grad(writable<double>       &psi,
+        void components:: grad(const index_level       I,
+                               writable<double>       &psi,
                                const readable<double> &C,
-                               const index_level       I,
                                const double            K,
                                cameo::mul<double>     &xmul) const
         {
@@ -192,8 +192,8 @@ namespace yack
 
         }
 
-        double components:: slope(const readable<double> &C,
-                                  const index_level       I,
+        double components:: slope( const index_level      I,
+                                  const readable<double> &C,
                                   const double            K,
                                   cameo::mul<double>     &xmul,
                                   cameo::add<double>     &xadd) const
@@ -216,7 +216,8 @@ namespace yack
             return -xadd.sum();
         }
 
-        double components:: quotient(const readable<double> &C,
+        double components:: quotient(const index_level       I,
+                                     const readable<double> &C,
                                      const double            K,
                                      cameo::mul<double>     &xmul) const
         {
@@ -226,7 +227,7 @@ namespace yack
             {
                 const component &cc = ***node;
                 const species   &sp = *cc;
-                const size_t     ii = sp.indx[0];
+                const size_t     ii = sp.indx[I];
                 const double     c  = C[ii];
                 if(c<=0) return 0;
                 xmul.ipower(c,cc.nu);
