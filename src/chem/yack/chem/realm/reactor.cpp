@@ -3,6 +3,7 @@
 #include "yack/chem/eqs/aftermath.hpp"
 #include <iomanip>
 #include "yack/math/iota.hpp"
+#include "yack/apex/alga.hpp"
 
 namespace yack
 {
@@ -29,6 +30,7 @@ namespace yack
         Cs(dom.L,dom.M),
         eqpxy( new eq_zpool() ),
         active(eqpxy),
+        subset(eqpxy),
         next(0),
         prev(0)
         {
@@ -121,6 +123,7 @@ namespace yack
 
             merge_list_of<eq_node>::sort(active,cmp);
 
+
             if(xml.verbose)
             {
                 for(const eq_node *node=active.head;node;node=node->next)
@@ -130,6 +133,60 @@ namespace yack
                     dom.eqfmt.pad( *xml << eq, eq) << ": " << std::setw(15) << Xi[ei] << " " << dom.topo[ei] << std::endl;
                 }
             }
+
+            const size_t rmax = min_of(active.size,dom.N);
+
+            matrix<apq> Q(dom.N,dom.M);
+            subset.clear();
+            {
+                const eq_node *curr = active.head;
+                std::cerr << "init with " << ***curr << std::endl;
+                subset << ***curr;
+                for(curr=curr->next;curr;curr=curr->next)
+                {
+                    subset << ***curr;
+
+                    size_t irow=1;
+                    Q.ld(0);
+                    for(const eq_node *node=subset.head;node;node=node->next,++irow)
+                    {
+                        writable<apq>       &target = Q[irow];
+                        const readable<int> &source = dom.topo[ (***node).indx[sub_level] ];
+                        for(size_t j=dom.M;j>0;--j) target[j] = source[j];
+                    }
+
+                    if( alga::rank_of(Q) != subset.size )
+                    {
+                        std::cerr << "discard   " << ***curr << std::endl;
+                        subset.cut_tail();
+                        continue;
+                    }
+                    else
+                    {
+                        std::cerr << "grow with " << ***curr << std::endl;
+                        if(subset.size>=rmax) break;
+                    }
+                }
+            }
+            std::cerr << "subset.size=" << subset.size << std::endl;
+
+            matrix<int> localNu(subset.size,dom.M);
+            {
+                size_t irow = 1;
+                for(const eq_node *node=subset.head;node;node=node->next, ++irow)
+                {
+                    const equilibrium &eq = ***node;
+                    const size_t       ei = eq.indx[sub_level];
+                    iota::load(localNu[irow],dom.topo[ei]);
+                }
+
+            }
+            std::cerr << "localNu=" << localNu << std::endl;
+
+
+
+
+
 
 
         }

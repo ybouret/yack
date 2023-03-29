@@ -53,6 +53,7 @@ namespace yack
             matrix<double>     Cs;      //!< [LxM]
             eq_proxy           eqpxy;
             eq_repo            active;
+            eq_repo            subset;
             
             reactor *next; //!< for list
             reactor *prev; //!< for list
