@@ -92,7 +92,7 @@ namespace yack
                       cameo::mul<double>     &xmul) const;
 
             //! compute slope at given concentraion
-            double slope( const index_level       I,
+            double slope(const index_level       I,
                          const readable<double> &C,
                          const double            K,
                          cameo::mul<double>     &xmul,

@@ -160,6 +160,7 @@ namespace yack
             const sp_list            bounded;   //!< bounded species
             const matrix<int>        Nu;        //!< [NxM] topology
             const matrix<int>        NuT;       //!< [MxN] Nu'
+            const matrix<int>        topo;      //!< [LxM] full topology
             const index_map          eqmap;     //!< global/local
             const index_map          spmap;     //!< global/local
             domain                  *next;      //!< for domains

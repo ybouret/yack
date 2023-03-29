@@ -44,8 +44,8 @@ YACK_UTEST(realm)
         lib(std::cerr << "C0=",C) << std::endl;
         keep.process(chem,C);
         coll.balance(chem,C);
-        lib(std::cerr << "injected=",keep)   << std::endl;
-        lib(std::cerr << "suppressed=",coll) << std::endl;
+        lib(std::cerr << "injected   = ", keep) << std::endl;
+        lib(std::cerr << "suppressed = ", coll) << std::endl;
     }
 
     

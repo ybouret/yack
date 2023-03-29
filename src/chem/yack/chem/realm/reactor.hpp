@@ -49,8 +49,11 @@ namespace yack
             cxx_array<bool>    blocked; //!< [L]
             cxx_array<bool>    running; //!< [L]
             cxx_array<double>  Xi;      //!< [L] compact Xi
+            cxx_array<double>  sigma;   //!< [L]
             matrix<double>     Cs;      //!< [LxM]
-
+            eq_proxy           eqpxy;
+            eq_repo            active;
+            
             reactor *next; //!< for list
             reactor *prev; //!< for list
 

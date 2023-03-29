@@ -35,26 +35,22 @@ YACK_UTEST(reactor)
     chem.graphviz("cs",1);
 
     const size_t M = lib->size;
-    const size_t N = eqs->size;
-    vector<double>     C0(M,0), C1(M,0);
-    vector<double>     xi(N,0);
-    cameo::add<double> xadd;
-
-    for(size_t i=N;i>0;--i) xi[i]= library::conc(ran);
-    std::cerr << "xi=" << xi << std::endl;
-
-    iota::mul(C0,chem.NuT,xi,xadd);
-    iota::load(C1,C0);
-
-    norm(chem,C1);
+    //const size_t N = eqs->size;
+    vector<double>     C0(M,0);
+    lib.conc(C0,ran);
+    for(size_t i=M;i>0;--i)
+    {
+        C0[i] = lib.conc(ran);
+        if(ran.to<double>() >= 0.7) C0[i] = 0;
+    }
     lib(std::cerr << "C0=",C0) << std::endl;
-    lib(std::cerr << "C1=",C1) << std::endl;
 
 
     chem.prepareK(K);
     chem.computeK(K,0.0);
 
-    eng(chem,C1,K);
+    eng(chem,C0,K);
+    lib(std::cerr << "C0=",C0) << std::endl;
 
 
 }

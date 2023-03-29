@@ -42,7 +42,7 @@ namespace yack
 
         std::ostream & operator<<(std::ostream &os, const aftermath &am)
         {
-            os << xlimits::avail_text(am.state) << " @" << std::setw(15) << am.value << " => " << std::setw(15) << am.error;
+            os << xlimits::avail_text(am.state) << " @" << std::setw(15) << am.value << " (=" << std::setw(15) << am.error << ")";
 
             return os;
         }

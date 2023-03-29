@@ -478,8 +478,18 @@ namespace yack
 
             YACK_XMLOG(xml,"#config  = " << conf.size << "+" << N << " => " << L);
 
-
-
+            //------------------------------------------------------------------
+            //
+            // create full topology
+            //
+            //------------------------------------------------------------------
+            matrix<int> &t = coerce(topo);
+            t.make(L,M);
+            for(const eq_node *en=head;en;en=en->next)
+            {
+                const equilibrium &eq = ***en;
+                eq.fill(sub_level,t[eq.indx[sub_level]]);
+            }
         }
 
     }
