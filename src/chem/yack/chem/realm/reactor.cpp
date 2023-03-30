@@ -178,6 +178,7 @@ namespace yack
                     const equilibrium &eq = ***node;
                     const size_t       ei = eq.indx[sub_level];
                     iota::load(localNu[irow],dom.topo[ei]);
+                    xlim(eq,Corg,dom.reg);
                 }
 
             }

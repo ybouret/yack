@@ -77,6 +77,43 @@ namespace yack
             }
         }
 
+        limitation xlimits:: operator()(const components       &E,
+                                        const readable<double> &C,
+                                        const readable<bool>   &R)
+        {
+            flag = is_running;
+            if( reac.search(E.reac,C,R))
+            {
+                // limited by reac
+                if(prod.search(E.prod,C,R))
+                {
+                    // and limited by prod
+                    if( fabs(prod.extent) <=0 && fabs(reac.extent) <=0 ) flag = is_blocked;
+                    return (type=limited_by_both);
+                }
+                else
+                {
+                    // but not limited by prod => are_running
+                    return (type=limited_by_reac);
+                }
+            }
+            else
+            {
+                // not limited by reac => are_running
+                if(prod.search(E.prod,C,R))
+                {
+                    // but limited by prod
+                    return (type=limited_by_prod);
+                }
+                else
+                {
+                    // and not limited by prod
+                    return (type=limited_by_none);
+                }
+            }
+        }
+
+
         std::ostream & operator<<(std::ostream &os, const xlimits &self)
         {
             os << self.avail_text(self.flag) << " limited by " << self.limit_text(self.type) << " : ";

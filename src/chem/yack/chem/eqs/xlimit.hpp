@@ -41,6 +41,11 @@ namespace yack
                         const actors           &A,
                         const readable<double> &C);
 
+            //! search limits within sub_level indices and top_level regularity
+            bool search(const actors           &A,
+                        const readable<double> &C,
+                        const readable<bool>   &R);
+
             //! insert new value
             /**
              \param xi xi>=0

@@ -59,9 +59,9 @@ namespace yack
         }
 
 
-        bool xlimit::search(const index_level       I,
-                            const actors           &A,
-                            const readable<double> &C)
+        bool xlimit:: search(const index_level       I,
+                             const actors           &A,
+                             const readable<double> &C)
         {
 
             reset();
@@ -77,7 +77,21 @@ namespace yack
             return size>0;
         }
 
+        bool xlimit:: search(const actors           &A,
+                             const readable<double> &C,
+                             const readable<bool>   &R)
+        {
+            reset();
+            for(const actor *a=A.head;a;a=a->next)
+            {
+                const species &s = **a; if(!R[s.indx[top_level]]) continue;
+                const double   c = C[s.indx[sub_level]];
+                if(c>=0)
+                    insert(c/a->nu,s);
+            }
+            return size>0;
 
+        }
 
         
     }

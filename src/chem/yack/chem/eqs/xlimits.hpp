@@ -68,6 +68,11 @@ namespace yack
             limitation          operator()(const index_level       I,
                                            const components       &E,
                                            const readable<double> &C);
+
+            //! find extents for sub_level using top_level regularity
+            limitation          operator()(const components       &E,
+                                           const readable<double> &C,
+                                           const readable<bool>   &R);
             
             YACK_PROTO_OSTREAM(xlimits); //!< display
             
