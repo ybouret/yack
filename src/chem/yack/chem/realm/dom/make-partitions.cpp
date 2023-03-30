@@ -61,7 +61,7 @@ namespace yack
             // create full detached matrix
             //------------------------------------------------------------------
             {
-                YACK_XMLSUB(xml, "reactive");
+                YACK_XMLSUB(xml, "reactive_clusters");
                 for(const eq_node *lhs=head;lhs;lhs=lhs->next)
                 {
                     const equilibrium &L = ***lhs;
@@ -97,7 +97,7 @@ namespace yack
             // create retaking partition
             //------------------------------------------------------------------
             {
-                YACK_XMLSUB(xml, "retaking");
+                YACK_XMLSUB(xml, "retaking_clusters");
                 detached.ld(false);
                 addrbook db;
                 for(const eq_node *lhs=defined.head;lhs;lhs=lhs->next)
