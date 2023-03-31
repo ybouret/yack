@@ -121,8 +121,8 @@ namespace yack
 
             }
 
+            // merging by increasing |Xi|
             merge_list_of<eq_node>::sort(active,cmp);
-
 
             if(xml.verbose)
             {
@@ -178,12 +178,13 @@ namespace yack
                     const equilibrium &eq = ***node;
                     const size_t       ei = eq.indx[sub_level];
                     iota::load(localNu[irow],dom.topo[ei]);
-                    xlim(eq,Corg,dom.reg);
+                    const limitation   xl = xlim(eq,Corg,dom.reg);
+                    dom.eqfmt.pad(std::cerr << eq,eq) << " : " << xlim << std::endl;
                 }
 
             }
             std::cerr << "localNu=" << localNu << std::endl;
-
+            
 
 
 
