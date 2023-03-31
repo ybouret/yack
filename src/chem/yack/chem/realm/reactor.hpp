@@ -51,6 +51,7 @@ namespace yack
             cxx_array<double>  Xi;      //!< [L] compact Xi
             cxx_array<double>  sigma;   //!< [L]
             matrix<double>     Cs;      //!< [LxM]
+            cxx_array<xlimits> Xl;      //!< [N]
             eq_proxy           eqpxy;
             eq_repo            active;
             eq_repo            subset;

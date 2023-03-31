@@ -4,6 +4,7 @@
 #include <iomanip>
 #include "yack/math/iota.hpp"
 #include "yack/apex/alga.hpp"
+#include "yack/math/algebra/crout.hpp"
 
 namespace yack
 {
@@ -28,6 +29,7 @@ namespace yack
         Xi(dom.L),
         sigma(dom.L),
         Cs(dom.L,dom.M),
+        Xl(dom.N),
         eqpxy( new eq_zpool() ),
         active(eqpxy),
         subset(eqpxy),
@@ -57,6 +59,7 @@ namespace yack
 
             YACK_XMLSUB(xml, "reactor");
             const eq_node_comparator cmp = { Xi };
+
 
             // load Corg into sub_level description
             dom.shrink(Corg,C0);
@@ -134,9 +137,10 @@ namespace yack
                 }
             }
 
-            const size_t rmax = min_of(active.size,dom.N);
 
-            matrix<apq> Q(dom.N,dom.M);
+            const size_t rmax = min_of(active.size,dom.N);
+            const size_t m    = dom.M;
+            matrix<apq> Q(dom.N,m);
             subset.clear();
             {
                 const eq_node *curr = active.head;
@@ -170,24 +174,56 @@ namespace yack
             }
             std::cerr << "subset.size=" << subset.size << std::endl;
 
-            matrix<int> localNu(subset.size,dom.M);
+            const size_t n = subset.size;
+            math::crout<double> lu(dom.N);
+
+            matrix<int>    localNu(n,m);
+            vector<double> localXi(n,0);
+            matrix<double> localPhi(n,m);
+            vector<double> localSig(n,0);
+            vector<double> xxi(n,0);
+
             {
                 size_t irow = 1;
                 for(const eq_node *node=subset.head;node;node=node->next, ++irow)
                 {
                     const equilibrium &eq = ***node;
                     const size_t       ei = eq.indx[sub_level];
+                    xlimits           &xl = Xl[irow];
+                    localXi[irow]         = Xi[ei];
+                    localSig[irow]        = sigma[ei];
                     iota::load(localNu[irow],dom.topo[ei]);
-                    const limitation   xl = xlim(eq,Corg,dom.reg);
-                    dom.eqfmt.pad(std::cerr << eq,eq) << " : " << xlim << std::endl;
+                    eq.grad(sub_level, localPhi[irow], Corg, K[eq.indx[top_level]], xmul);
+                    xl(eq,Corg,dom.reg);
+                    dom.eqfmt.pad(std::cerr << eq,eq) << " : " << xl << std::endl;
                 }
+            }
+            std::cerr << "localNu  = " << localNu << std::endl;
+            std::cerr << "localXi  = " << localXi << std::endl;
+            std::cerr << "localPhi = " << localPhi << std::endl;
+            std::cerr << "localSig = " << localSig << std::endl;
+
+            matrix<double> Omega(n,n);
+            for(size_t i=n;i>0;--i)
+            {
+                const double           den  = localSig[i];
+                const readable<double> &phi = localPhi[i];
+                writable<double>       &omi = Omega[i];
+                omi[i] = 1.0;
+                for(size_t j=n;j>i;--j)   omi[j] = xadd.dot(phi,localNu[j])/den;
+                for(size_t j=i-1;j>0;--j) omi[j] = xadd.dot(phi,localNu[j])/den;
 
             }
-            std::cerr << "localNu=" << localNu << std::endl;
-            
 
+            std::cerr << "Omega=" << Omega << std::endl;
+            if( !lu.build(Omega,xadd) )
+            {
+                exit(0);
+            }
 
-
+            iota::load(xxi,localXi);
+            lu.solve(Omega,xxi);
+            std::cerr << "xxi=" << xxi << std::endl;
 
 
 
