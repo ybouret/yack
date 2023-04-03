@@ -74,6 +74,15 @@ namespace yack
                                const double             K,
                                cameo::mul<double>      &xmul) const;
 
+            double mass_action(const index_level       I,
+                               const double            u,
+                               const readable<double> &C0,
+                               const readable<double> &C1,
+                               const double           &K,
+                               writable<double>       &Ctmp,
+                               cameo::mul<double>     &xmul) const;
+
+
             //! move C with hard cut
             void move(const index_level I,
                       writable<double> &C,

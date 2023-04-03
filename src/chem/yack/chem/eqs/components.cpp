@@ -126,6 +126,43 @@ namespace yack
             return lhs - rhs;
         }
 
+        double components:: mass_action(const index_level       I,
+                                        const double            u,
+                                        const readable<double> &C0,
+                                        const readable<double> &C1,
+                                        const double           &K,
+                                        writable<double>       &Ctmp,
+                                        cameo::mul<double>     &xmul) const
+        {
+            if(u<=0)
+            {
+                return mass_action(I,C0,K,xmul);
+            }
+            else
+            {
+                if(u>=1)
+                {
+                    return mass_action(I,C1,K,xmul);
+                }
+                else
+                {
+                    const double v = 1.0-u;
+                    for(const cnode *cn=(*this)->head;cn;cn=cn->next)
+                    {
+                        const size_t j    = (****cn).indx[I];
+                        const double c0   = C0[j];
+                        const double c1   = C1[j];
+                        double       cmin = c0;
+                        double       cmax = c1;
+                        if(cmax<cmin) cswap(cmin,cmax);
+                        Ctmp[j] = clamp(cmin,c1*u+c0*v,cmax);
+                    }
+                    return mass_action(I,Ctmp,K,xmul);
+                }
+            }
+        }
+
+
 
         void components:: move(const index_level I, writable<double> &C, const double xi) const noexcept
         {

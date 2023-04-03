@@ -43,6 +43,7 @@ YACK_UTEST(1d)
     vector<double> Cs(M,0);
     vector<double> psi(M,0);
     vector<int>    nu(M,0);
+    vector<double> Ctmp(M,0);
 
     lib.conc(C0,ran);
     //for(size_t i=M;i>0;--i) if( ran.choice() ) C0[i] = 0;
@@ -67,6 +68,23 @@ YACK_UTEST(1d)
         const double  xi0 = am.value;
         const double  sig = eq.slope(top_level,Cs,K,xmul,xadd);
         std::cerr << "sig=" << sig << std::endl;
+
+
+        const string  fn = eq.name + ".dat";
+        ios::ocstream fp(fn);
+        const size_t np = 1000;
+        for(size_t i=0;i<=np;++i)
+        {
+            const double u  = double(i)/np;
+            const double xi = (i*xi0)/np;
+            const double G  = eq.mass_action(top_level, u, C0, Cs, K, Ctmp, xmul);
+            const double g = (xi-xi0) * sig;
+            fp("%.15g %.15g %.15g %.15g\n",xi,G,g,G-g);
+        }
+
+        //std::cerr << "plot '" << fn << "' w l, 0, ";
+        //std::cerr << "(x-(" << xi0 << "))*(" << sig << ")" << std::endl;
+
 
     }
 
