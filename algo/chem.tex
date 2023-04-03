@@ -354,11 +354,27 @@ We want to solve
 \forall i, \;\; \Gamma_i\left(\vec{C} + \sum_j \xi_j \vec{\nu}^t_j\right) =  0
 \end{equation}
 
+The function:
+\begin{equation}
+\left\lbrace
+\begin{array}{rcl}
+	\Gamma_i \left(\vec{C} +  \xi_i \vec{\nu}^t_i\right) & = &
+	 g_i(\xi_i) + 
+	 \left(\xi_i - \xi_i^\star\right) 	\langle \vec{\Psi_i}^\star \vert \vec{\nu}^t_i \rangle\\
+	 g_i(0)            & = & \Gamma_i - \xi_i^\star \langle \vec{\Psi_i}^\star \vert \vec{\nu}^t_i \rangle \;\;\; \text{(sign of $\Gamma_i$)}\\
+	 g_i(\xi_i^\star)  & = & 0\\
+	 g'_i(\xi_i^\star) & = & 0\\
+	 \end{array}
+\right.
+\end{equation}
+
 \begin{equation}
 	\Gamma_i \left(\vec{C} +  \xi_i \vec{\nu}^t_i  + \sum_{j\not=i} \xi_j \vec{\nu}^t_j \right) 
 	\simeq \left(\xi_i - \xi_i^\star\right)
 	\langle \vec{\Psi_i}^\star \vert \vec{\nu}^t_i \rangle + \sum_{j\not=i} \xi_j \langle \vec{\Psi_i}  \vert \vec{\nu}^t_j \rangle
 \end{equation} 	
+
+
 
 \end{document}
 
