@@ -50,6 +50,7 @@ namespace yack
             cxx_array<bool>    running; //!< [L]
             cxx_array<double>  Xi;      //!< [L] compact Xi
             cxx_array<double>  sigma;   //!< [L]
+            cxx_array<double>  start;   //!< [L] mass action
             matrix<double>     Cs;      //!< [LxM]
             cxx_array<xlimits> Xl;      //!< [N]
             eq_proxy           eqpxy;

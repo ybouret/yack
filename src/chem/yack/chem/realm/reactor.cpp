@@ -28,6 +28,7 @@ namespace yack
         running(dom.L),
         Xi(dom.L),
         sigma(dom.L),
+        start(dom.L),
         Cs(dom.L,dom.M),
         Xl(dom.N),
         eqpxy( new eq_zpool() ),
@@ -89,13 +90,15 @@ namespace yack
                         running[i] = false;
                         Xi[i]      = 0;
                         sigma[i]   = 0;
+                        start[i]   = 0;
                         break;
 
                     case is_running:
                         blocked[i] = false;
                         running[i] = true;
                         Xi[i]      = am.value;
-                        sigma[i]   = eq.slope(sub_level,Ci,Ki,xmul,xadd);
+                        sigma[i]   = eq.slope(sub_level,Ci,Ki,xmul,xadd);    assert(sigma[i]<0);
+                        start[i]   = fabs(eq.mass_action(sub_level,Corg,Ki,xmul)/sigma[i]);
                         active << eq;
                         break;
                 }
@@ -104,7 +107,9 @@ namespace yack
                 {
                     dom.eqfmt.pad( *xml << eq, eq) << ": " << am;
                     xml() << ", ma = " << std::setw(15) << eq.mass_action(sub_level,Corg,Ki,xmul);
-                    xml() << ", sigma " << sigma[i] << std::endl;
+                    xml() << ", sigma=" << std::setw(15) << sigma[i];
+                    xml() << ", start=" << std::setw(15) << start[i] << std::endl;
+
                 }
             }
 
@@ -202,6 +207,9 @@ namespace yack
             std::cerr << "localXi  = " << localXi << std::endl;
             std::cerr << "localPhi = " << localPhi << std::endl;
             std::cerr << "localSig = " << localSig << std::endl;
+
+            return;
+
 
             matrix<double> Omega(n,n);
             for(size_t i=n;i>0;--i)
