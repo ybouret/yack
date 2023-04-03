@@ -72,7 +72,7 @@ YACK_UTEST(1d)
 
         const string  fn = eq.name + ".dat";
         ios::ocstream fp(fn);
-        const size_t np = 1000;
+        const size_t np = 100;
         for(size_t i=0;i<=np;++i)
         {
             const double u  = double(i)/np;
