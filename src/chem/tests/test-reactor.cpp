@@ -32,7 +32,7 @@ YACK_UTEST(reactor)
     normalizer     norm(chem);
     engine         eng(chem);
 
-    chem.graphviz("cs",1);
+    //chem.graphviz("cs",1);
 
     const size_t M = lib->size;
     //const size_t N = eqs->size;

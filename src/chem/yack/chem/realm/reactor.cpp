@@ -5,6 +5,7 @@
 #include "yack/math/iota.hpp"
 #include "yack/apex/alga.hpp"
 #include "yack/math/algebra/crout.hpp"
+#include "yack/math/opt/optimize.hpp"
 
 namespace yack
 {
@@ -24,11 +25,14 @@ namespace yack
         xadd(),
         xmul(),
         Corg(dom.M),
+        Cend(dom.M),
+        Ctmp(dom.M),
+        Korg(dom.L),
         blocked(dom.L),
         running(dom.L),
         Xi(dom.L),
         sigma(dom.L),
-        start(dom.L),
+        shift(dom.L),
         Cs(dom.L,dom.M),
         Xl(dom.N),
         eqpxy( new eq_zpool() ),
@@ -37,6 +41,51 @@ namespace yack
         next(0),
         prev(0)
         {
+        }
+
+
+        double reactor:: excess(const readable<double> &C)
+        {
+            xadd.free();
+            for(const eq_node *en=active.head;en;en=en->next)
+            {
+                const equilibrium &eq = ***en;
+                const size_t       ei = eq.indx[sub_level]; assert(running[ei]); assert(sigma[ei]<0);
+                const double       ma = eq.mass_action(sub_level,C,Korg[ei],xmul) - shift[ei];
+                xadd.push( fabs(ma/sigma[ei]) );
+            }
+            return xadd.sum();
+        }
+
+        double reactor:: operator()(const double u)
+        {
+            if(u<=0)
+            {
+                iota::load(Ctmp,Corg);
+                return excess(Corg);
+            }
+            else
+            {
+                if(u>=1)
+                {
+                    iota::load(Ctmp,Cend);
+                    return excess(Cend);
+                }
+                else
+                {
+                    const double v = 1.0 - u;
+                    for(size_t i=Ctmp.size();i>0;--i)
+                    {
+                        const double c_org = Corg[i];
+                        const double c_end = Cend[i];
+                        double       c_max = c_org;
+                        double       c_min = c_end;
+                        if(c_min>c_max) cswap(c_min,c_max);
+                        Ctmp[i] = clamp(c_min, c_org *v + c_end * u, c_max);
+                    }
+                    return excess(Ctmp);
+                }
+            }
         }
 
 
@@ -63,24 +112,25 @@ namespace yack
 
 
             // load Corg into sub_level description
-            dom.shrink(Corg,C0);
+            dom.spmap.send(Corg,C0);
+            dom.eqmap.send(Korg,K);
+
 
             if(xml.verbose)
             {
                 dom.spdisp(*xml << "Corg = ",sub_level,Corg) << std::endl;
-                dom.eqdisp(*xml << "K    = ",top_level,K)    << std::endl;
+                dom.eqdisp(*xml << "Korg = ",sub_level,Korg) << std::endl;
             }
 
-
+        AFTERMATH:
             // determining all aftermaths
             active.clear();
             for(const eq_node *en=dom.head;en;en=en->next)
             {
                 const equilibrium &  eq = ***en;
-                const size_t         gi = eq.indx[top_level];
                 const size_t         i  = eq.indx[sub_level];
                 writable<double>   & Ci = Cs[i];
-                const double         Ki = K[gi];
+                const double         Ki = Korg[i];
                 const aftermath      am = aftermath::solve(sub_level,eq,Ki,Corg,Ci,xlim,xmul,xadd);
 
                 switch( am.state )
@@ -90,7 +140,7 @@ namespace yack
                         running[i] = false;
                         Xi[i]      = 0;
                         sigma[i]   = 0;
-                        start[i]   = 0;
+                        shift[i]   = 0;
                         break;
 
                     case is_running:
@@ -98,7 +148,7 @@ namespace yack
                         running[i] = true;
                         Xi[i]      = am.value;
                         sigma[i]   = eq.slope(sub_level,Ci,Ki,xmul,xadd);    assert(sigma[i]<0);
-                        start[i]   = fabs(eq.mass_action(sub_level,Corg,Ki,xmul)/sigma[i]);
+                        shift[i]   = am.error;
                         active << eq;
                         break;
                 }
@@ -107,27 +157,64 @@ namespace yack
                 {
                     dom.eqfmt.pad( *xml << eq, eq) << ": " << am;
                     xml() << ", ma = " << std::setw(15) << eq.mass_action(sub_level,Corg,Ki,xmul);
-                    xml() << ", sigma=" << std::setw(15) << sigma[i];
-                    xml() << ", start=" << std::setw(15) << start[i] << std::endl;
-
+                    xml() << ", sigma=" << std::setw(15) << sigma[i] << std::endl;
                 }
             }
 
             YACK_XMLOG(xml,"#active = " << active.size << " / " << dom.L << " / rank=" << dom.N);
 
+            // initialize excess
+            const double X0 = excess(Corg);
+            YACK_XMLOG(xml,"excess0 = " << X0);
+
+            if(X0<=0)
+            {
+                goto SUCCESS;
+            }
+
             switch(active.size)
             {
-                case 0: YACK_XMLOG(xml,"all blocked"); return;
+                case 0:
+                    YACK_XMLOG(xml,"all blocked");
+                    goto SUCCESS;
+
                 case 1: {
                     const equilibrium &eq = ***active.head;
                     YACK_XMLOG(xml,"unique " << eq);
-                    iota::save(C0, Cs[eq.indx[sub_level]] );
-                    return;
+                    iota::load(Corg, Cs[eq.indx[sub_level]] );
+                    goto AFTERMATH;
                 }
                 default:
                     break;
 
             }
+
+            assert(active.size>=2);
+
+            // find optimal
+            for(const eq_node *node=active.head;node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                const size_t       ei = eq.indx[sub_level];
+                writable<double>  &Ci = Cs[ei];
+                iota::load(Cend,Ci);
+                triplet<double> u = { 0, -1, 1 };
+                triplet<double> X = { X0, -1, (*this)(u.c) }; // force loading Ctmp
+                std::cerr << "X=" << X << std::endl;
+                optimize::run_for(*this,u,X,optimize::inside);
+                dom.eqfmt.pad( *xml << eq, eq) << ": " << std::setw(15) << X.b << " @" << u.b << std::endl;
+                std::cerr << X.b << " / " << excess(Ctmp) << std::endl;
+            }
+
+
+            exit(0);
+
+        SUCCESS:
+            YACK_XMLOG(xml,yack_success);
+            dom.spmap.recv(C0,Corg);
+            return;
+
+#if 0
 
             // merging by increasing |Xi|
             merge_list_of<eq_node>::sort(active,cmp);
@@ -233,7 +320,7 @@ namespace yack
             lu.solve(Omega,xxi);
             std::cerr << "xxi=" << xxi << std::endl;
 
-
+#endif
 
         }
 

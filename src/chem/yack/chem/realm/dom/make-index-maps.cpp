@@ -11,7 +11,8 @@ namespace yack
 
             {
                 index_map &em = coerce(eqmap);
-                for(const eq_node *en=head;en!=last;en=en->next)
+                //for(const eq_node *en=head;en!=last;en=en->next)
+                for(const eq_node *en=head;en;en=en->next)
                 {
                     const equilibrium &eq = ***en;
                     const size_t       gi = eq.indx[top_level];

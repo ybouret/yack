@@ -37,6 +37,11 @@ namespace yack
                        writable<double>       &C,
                        const readable<double> &K);
 
+            double excess(const readable<double> &C);
+
+            //! excess in Corg * (1-u) + Cend * u
+            double operator()(const double u);
+
             //__________________________________________________________________
             //
             // members
@@ -45,12 +50,15 @@ namespace yack
             xlimits            xlim;    //!< to find limits
             cameo::add<double> xadd;    //!< for internal evaluations
             cameo::mul<double> xmul;    //!< for internal evaliations
-            cxx_array<double>  Corg;    //!< [M] compact concentration
+            cxx_array<double>  Corg;    //!< [M] compact sub_level concentrations
+            cxx_array<double>  Cend;    //!< [M] for computations
+            cxx_array<double>  Ctmp;    //!< [M] for computations
+            cxx_array<double>  Korg;    //!< [L] compact sub_level constants
             cxx_array<bool>    blocked; //!< [L]
             cxx_array<bool>    running; //!< [L]
             cxx_array<double>  Xi;      //!< [L] compact Xi
             cxx_array<double>  sigma;   //!< [L]
-            cxx_array<double>  start;   //!< [L] mass action
+            cxx_array<double>  shift;   //!< [L] numerical mass action error
             matrix<double>     Cs;      //!< [LxM]
             cxx_array<xlimits> Xl;      //!< [N]
             eq_proxy           eqpxy;
