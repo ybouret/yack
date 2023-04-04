@@ -72,10 +72,9 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(reactor);
 
-            void               find_active(const xmlog &xml);
-            const equilibrium &find_global(const xmlog &xml,
-                                           const double X0,
-                                           double      &Xopt);
+            void find_active(const xmlog &xml);
+            bool find_global(const xmlog &xml, const double X0);
+            void move_global(const xmlog &xml);
         };
     }
 
