@@ -89,40 +89,8 @@ namespace yack
         }
 
 
-        struct eq_node_comparator
+        void reactor:: find_active(const xmlog &xml)
         {
-            const readable<double> &Xi;
-
-            inline int operator()(const eq_node *lhs,
-                                  const eq_node *rhs) const noexcept
-            {
-                const size_t l = (***lhs).indx[sub_level];
-                const size_t r = (***rhs).indx[sub_level];
-                return comparison::increasing_abs(Xi[l],Xi[r]);
-            }
-        };
-
-        void reactor:: solve(const xmlog            &xml,
-                             writable<double>       &C0,
-                             const readable<double> &K)
-        {
-
-            YACK_XMLSUB(xml, "reactor");
-            const eq_node_comparator cmp = { Xi };
-
-
-            // load Corg into sub_level description
-            dom.spmap.send(Corg,C0);
-            dom.eqmap.send(Korg,K);
-
-
-            if(xml.verbose)
-            {
-                dom.spdisp(*xml << "Corg = ",sub_level,Corg) << std::endl;
-                dom.eqdisp(*xml << "Korg = ",sub_level,Korg) << std::endl;
-            }
-
-        AFTERMATH:
             // determining all aftermaths
             active.clear();
             for(const eq_node *en=dom.head;en;en=en->next)
@@ -156,11 +124,96 @@ namespace yack
                 if(xml.verbose)
                 {
                     dom.eqfmt.pad( *xml << eq, eq) << ": " << am;
-                    xml() << ", ma = " << std::setw(15) << eq.mass_action(sub_level,Corg,Ki,xmul);
+                    xml() << ", ma= " << std::setw(15) << eq.mass_action(sub_level,Corg,Ki,xmul);
                     xml() << ", sigma=" << std::setw(15) << sigma[i] << std::endl;
                 }
             }
 
+            YACK_XMLOG(xml,"#active = " << active.size << " / " << dom.L << " / rank=" << dom.N);
+        }
+
+
+        const equilibrium & reactor:: find_global(const xmlog &xml, const double X0)
+        {
+            YACK_XMLSUB(xml, "find_global");
+            assert(active.size>=2);
+            const equilibrium  *Eopt = NULL;
+            double              Xopt = -1;
+            subset.clear();
+            for(const eq_node *node=active.head;node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                const size_t       ei = eq.indx[sub_level];
+                writable<double>  &Ci = Cs[ei];
+                iota::load(Cend,Ci);
+                triplet<double> u = { 0, -1, 1 };
+                triplet<double> X = { X0, -1, (*this)(u.c) };  assert(fabs(X.c-excess(Ctmp))<=0);
+                optimize::run_for(*this,u,X,optimize::inside); assert(fabs(X.b-excess(Ctmp))<=0);
+
+                const double X1 = X.b;
+                bool         ok = false;
+                if(NULL==Eopt)
+                {
+                    Eopt = &eq;
+                    Xopt = X1;
+                    ok   = true;
+                }
+                else
+                {
+                    if(X1<Xopt)
+                    {
+                        Eopt = &eq;
+                        Xopt = X1;
+                        ok   = true;
+                    }
+                    else
+                    {
+                        if(X1<X0) subset << eq; // keep for later
+                    }
+                }
+
+                if(xml.verbose) dom.eqfmt.pad( *xml << (ok? "(+) " : "(-) ") << eq, eq) << ": " << std::setw(15) << X.b << std::endl;
+            }
+            assert(Eopt);
+            return *Eopt;
+        }
+
+
+        struct eq_node_comparator
+        {
+            const readable<double> &Xi;
+
+            inline int operator()(const eq_node *lhs,
+                                  const eq_node *rhs) const noexcept
+            {
+                const size_t l = (***lhs).indx[sub_level];
+                const size_t r = (***rhs).indx[sub_level];
+                return comparison::increasing_abs(Xi[l],Xi[r]);
+            }
+        };
+
+        void reactor:: solve(const xmlog            &xml,
+                             writable<double>       &C0,
+                             const readable<double> &K)
+        {
+
+            YACK_XMLSUB(xml, "reactor");
+            const eq_node_comparator cmp = { Xi };
+
+
+            // load Corg into sub_level description
+            dom.spmap.send(Corg,C0);
+            dom.eqmap.send(Korg,K);
+
+
+            if(xml.verbose)
+            {
+                dom.spdisp(*xml << "Corg = ",sub_level,Corg) << std::endl;
+                dom.eqdisp(*xml << "Korg = ",sub_level,Korg) << std::endl;
+            }
+
+        LOOP:
+            find_active(xml);
             YACK_XMLOG(xml,"#active = " << active.size << " / " << dom.L << " / rank=" << dom.N);
 
             // initialize excess
@@ -182,7 +235,7 @@ namespace yack
                     const equilibrium &eq = ***active.head;
                     YACK_XMLOG(xml,"unique " << eq);
                     iota::load(Corg, Cs[eq.indx[sub_level]] );
-                    goto AFTERMATH;
+                    goto LOOP;
                 }
                 default:
                     break;
@@ -192,22 +245,14 @@ namespace yack
             assert(active.size>=2);
 
             // find optimal
-            for(const eq_node *node=active.head;node;node=node->next)
             {
-                const equilibrium &eq = ***node;
-                const size_t       ei = eq.indx[sub_level];
-                writable<double>  &Ci = Cs[ei];
-                iota::load(Cend,Ci);
-                triplet<double> u = { 0, -1, 1 };
-                triplet<double> X = { X0, -1, (*this)(u.c) }; // force loading Ctmp
-                std::cerr << "X=" << X << std::endl;
-                optimize::run_for(*this,u,X,optimize::inside);
-                dom.eqfmt.pad( *xml << eq, eq) << ": " << std::setw(15) << X.b << " @" << u.b << std::endl;
-                std::cerr << X.b << " / " << excess(Ctmp) << std::endl;
+                const equilibrium &Eopt = find_global(xml,X0);
+
+                std::cerr << "Eopt  = " << Eopt << std::endl;
+                std::cerr << "Other = " << subset << std::endl;
+
+                exit(0);
             }
-
-
-            exit(0);
 
         SUCCESS:
             YACK_XMLOG(xml,yack_success);

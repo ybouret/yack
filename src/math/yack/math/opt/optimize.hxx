@@ -405,6 +405,7 @@ namespace yack
                     if(!locate::inside(F,x,f))
                     {
                         YACK_OPTIMIZE(fn << "global");
+                        f.b = F(x.b);
                         return;
                     }
                     assert(x.is_increasing());
