@@ -57,6 +57,21 @@ namespace yack
             return xadd.sum();
         }
 
+        double reactor:: excess(const cluster &cls)
+        {
+            iota::load(Ctmp,Corg);
+            for(const eq_node *en=cls.head;en;en=en->next)
+            {
+                const equilibrium      &eq = ***en;
+                const size_t            ei = eq.indx[sub_level];
+                const readable<double> &Ci = Cs[ei];
+                //std::cerr << " transfer " << eq.to_string() << std::endl;
+                eq.transfer(sub_level,Ctmp,Ci);
+            }
+            return excess(Ctmp);
+        }
+
+
         double reactor:: operator()(const double u)
         {
             if(u<=0)
@@ -132,13 +147,18 @@ namespace yack
             YACK_XMLOG(xml,"#active = " << active.size << " / " << dom.L << " / rank=" << dom.N);
         }
 
+        static inline const char * ok_prefix(const bool flag)   noexcept
+        {
+            return flag ? "(+) " : "(-) ";
+        }
 
-        const equilibrium & reactor:: find_global(const xmlog &xml, const double X0)
+        const equilibrium & reactor:: find_global(const xmlog &xml,
+                                                  const double X0,
+                                                  double      &Xopt)
         {
             YACK_XMLSUB(xml, "find_global");
             assert(active.size>=2);
             const equilibrium  *Eopt = NULL;
-            double              Xopt = -1;
             subset.clear();
             for(const eq_node *node=active.head;node;node=node->next)
             {
@@ -170,7 +190,7 @@ namespace yack
 
                 }
 
-                if(xml.verbose) dom.eqfmt.pad( *xml << (ok? "(+) " : "(-) ") << eq, eq) << ": " << std::setw(15) << X.b << std::endl;
+                if(xml.verbose) dom.eqfmt.pad( *xml << ok_prefix(ok) << eq, eq) << ": " << std::setw(15) << X.b << std::endl;
             }
             assert(Eopt);
             return *Eopt;
@@ -244,18 +264,41 @@ namespace yack
 
             // find optimal
             {
-                const equilibrium &Eopt = find_global(xml,X0);
-                const cluster     *Best = NULL;
-                std::cerr << "Eopt = " << Eopt << std::endl;
-                std::cerr << "Esub = " << subset << std::endl;
-                for(const cluster *cls=dom.reacting.head;cls;cls=cls->next)
+                double             Xopt = -1;
+                const equilibrium &Eopt = find_global(xml,X0,Xopt);
+                iota::load(Cend, Cs[Eopt.indx[sub_level]]);
+                
+                std::cerr << "Eopt=" << Eopt << std::endl;
+                std::cerr << "Esub=" << subset << std::endl;
+                // find solo cluster
                 {
-                    if(!cls->contains(Eopt))       continue;
-                    if(!cls->is_subset_of(subset)) continue;
-                    std::cerr << "found " << *cls << std::endl;
-                    Best = cls;
+                    YACK_XMLSUB(xml, "find_cluster");
+                    const cluster *Best = dom.reacting.head;
+                    for(;Best;Best=Best->next)
+                    {
+                        if( (1==Best->size) && Best->contains(Eopt) )
+                        {
+                            break;
+                        }
+                    }
+                    assert(Best);
+                    YACK_XMLOG(xml, ok_prefix(true) << std::setw(15) << Xopt << " @" << *Best);
+                    for(const cluster *Btmp=Best->next;Btmp;Btmp=Btmp->next)
+                    {
+                        if(!Btmp->contains(Eopt))       continue;
+                        if(!Btmp->is_subset_of(subset)) continue;
+                        const double Xtmp = excess(*Btmp);
+                        const bool   ok   = Xtmp<Xopt;
+                        YACK_XMLOG(xml, ok_prefix(ok) << std::setw(15) << Xtmp << " @" << *Btmp);
+                        if(ok)
+                        {
+                            Best = Btmp;
+                            Xopt = Xtmp;
+                            iota::load(Cend,Ctmp);
+                        }
+                    }
+                    YACK_XMLOG(xml, "(*) " << std::setw(15) << Xopt << " @" << *Best);
                 }
-                std::cerr << " ---> " << *Best << std::endl;
 
                 exit(0);
             }

@@ -38,6 +38,7 @@ namespace yack
                        const readable<double> &K);
 
             double excess(const readable<double> &C);
+            double excess(const cluster &);
 
             //! excess in Corg * (1-u) + Cend * u
             double operator()(const double u);
@@ -72,7 +73,9 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(reactor);
 
             void               find_active(const xmlog &xml);
-            const equilibrium &find_global(const xmlog &xml, const double X0);
+            const equilibrium &find_global(const xmlog &xml,
+                                           const double X0,
+                                           double      &Xopt);
         };
     }
 
