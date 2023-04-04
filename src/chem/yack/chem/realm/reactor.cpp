@@ -106,7 +106,11 @@ namespace yack
 
         void reactor:: find_active(const xmlog &xml)
         {
+            //------------------------------------------------------------------
+            //
             // determining all aftermaths
+            //
+            //------------------------------------------------------------------
             active.clear();
             for(const eq_node *en=dom.head;en;en=en->next)
             {
@@ -118,7 +122,9 @@ namespace yack
 
                 switch( am.state )
                 {
+                        //------------------------------------------------------
                     case is_blocked:
+                        //------------------------------------------------------
                         blocked[i] = true;
                         running[i] = false;
                         Xi[i]      = 0;
@@ -126,7 +132,9 @@ namespace yack
                         shift[i]   = 0;
                         break;
 
+                        //------------------------------------------------------
                     case is_running:
+                        //------------------------------------------------------
                         blocked[i] = false;
                         running[i] = true;
                         Xi[i]      = am.value;
@@ -155,15 +163,27 @@ namespace yack
         bool reactor:: find_global(const xmlog &xml,
                                    const double X0)
         {
-            YACK_XMLSUB(xml, "find_global");
-            assert(active.size>=2);
+            //------------------------------------------------------------------
+            //
+            YACK_XMLSUB(xml, "find_global"); assert(active.size>=2);
+            //
+            //------------------------------------------------------------------
+
             subset.clear();
             for(const eq_node *node=active.head;node;node=node->next)
             {
                 const equilibrium &eq = ***node;
                 const size_t       ei = eq.indx[sub_level];
                 writable<double>  &Ci = Cs[ei];
+
+                //--------------------------------------------------------------
+                // load equilibrium
+                //--------------------------------------------------------------
                 iota::load(Cend,Ci);
+
+                //--------------------------------------------------------------
+                // optimize from Corg to Cend=Ci
+                //--------------------------------------------------------------
                 triplet<double> u = { 0, -1, 1 };
                 triplet<double> X = { X0, -1, (*this)(u.c) };  assert(fabs(X.c-excess(Ctmp))<=0);
                 optimize::run_for(*this,u,X,optimize::inside); assert(fabs(X.b-excess(Ctmp))<=0);
@@ -174,7 +194,7 @@ namespace yack
                 {
                     ok = true;
                     subset << eq;        // register equilibrium
-                    iota::load(Ci,Ctmp); // register phases space
+                    iota::load(Ci,Ctmp); // register phase space
                 }
                 if(xml.verbose) dom.eqfmt.pad( *xml << ok_prefix(ok) << eq, eq) << ": " << std::setw(15) << X.b << std::endl;
             }
@@ -183,9 +203,11 @@ namespace yack
 
         void reactor:: move_global(const xmlog &xml)
         {
-            assert(active.size>=2);
-            assert(subset.size>=1);
-            YACK_XMLSUB(xml, "move_global");
+            //------------------------------------------------------------------
+            //
+            YACK_XMLSUB(xml, "move_global"); assert(active.size>=2); assert(subset.size>=1);
+            //
+            //------------------------------------------------------------------
             const cluster *Bopt = NULL;
             double         Xopt = -1;
             for(const cluster *Btmp=dom.reacting.head;Btmp;Btmp=Btmp->next)
@@ -203,7 +225,12 @@ namespace yack
                 YACK_XMLOG(xml, ok_prefix(ok) << std::setw(15) << Xtmp << " @" << *Btmp);
             }
             YACK_XMLOG(xml, "(*) " << std::setw(15) << Xopt << " @" << *Bopt);
+
+            //------------------------------------------------------------------
+            // replace Corg
+            //------------------------------------------------------------------
             iota::load(Corg,Cend);
+
             assert( fabs(Xopt-excess(*Bopt))<= 0 );
         }
 
