@@ -152,6 +152,7 @@ namespace yack
 
                 const double X1 = X.b;
                 bool         ok = false;
+                if(X1<X0) subset << eq; // keep for later
                 if(NULL==Eopt)
                 {
                     Eopt = &eq;
@@ -166,10 +167,7 @@ namespace yack
                         Xopt = X1;
                         ok   = true;
                     }
-                    else
-                    {
-                        if(X1<X0) subset << eq; // keep for later
-                    }
+
                 }
 
                 if(xml.verbose) dom.eqfmt.pad( *xml << (ok? "(+) " : "(-) ") << eq, eq) << ": " << std::setw(15) << X.b << std::endl;
@@ -198,7 +196,7 @@ namespace yack
         {
 
             YACK_XMLSUB(xml, "reactor");
-            const eq_node_comparator cmp = { Xi };
+            //const eq_node_comparator cmp = { Xi };
 
 
             // load Corg into sub_level description
@@ -247,9 +245,17 @@ namespace yack
             // find optimal
             {
                 const equilibrium &Eopt = find_global(xml,X0);
-
-                std::cerr << "Eopt  = " << Eopt << std::endl;
-                std::cerr << "Other = " << subset << std::endl;
+                const cluster     *Best = NULL;
+                std::cerr << "Eopt = " << Eopt << std::endl;
+                std::cerr << "Esub = " << subset << std::endl;
+                for(const cluster *cls=dom.reacting.head;cls;cls=cls->next)
+                {
+                    if(!cls->contains(Eopt))       continue;
+                    if(!cls->is_subset_of(subset)) continue;
+                    std::cerr << "found " << *cls << std::endl;
+                    Best = cls;
+                }
+                std::cerr << " ---> " << *Best << std::endl;
 
                 exit(0);
             }

@@ -148,6 +148,19 @@ namespace yack
                 return os;
             }
 
+            template <typename TARGET, typename SOURCE> inline
+            void transfer(const index_level I,
+                          TARGET  &target,
+                          SOURCE  &source) const
+            {
+                for(const cnode *node=(*this)->head;node;node=node->next)
+                {
+                    const species   &s = ****node;
+                    const size_t     j = s.indx[I];
+                    target[j] = source[j];
+                }
+            }
+
             //__________________________________________________________________
             //
             // members
