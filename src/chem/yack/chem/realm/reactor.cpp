@@ -160,6 +160,7 @@ namespace yack
             return flag ? "(+) " : "(-) ";
         }
 
+#if 0
         bool reactor:: find_global(const xmlog &xml,
                                    const double X0)
         {
@@ -197,6 +198,35 @@ namespace yack
                     iota::load(Ci,Ctmp); // register phase space
                 }
                 if(xml.verbose) dom.eqfmt.pad( *xml << ok_prefix(ok) << eq, eq) << ": " << std::setw(15) << X.b << " @" << std::setw(15) << u.b << std::endl;
+            }
+            return subset.size>0;
+        }
+#endif
+
+        bool reactor:: find_global(const xmlog &xml,
+                                   const double X0)
+        {
+            //------------------------------------------------------------------
+            //
+            YACK_XMLSUB(xml, "find_global"); assert(active.size>=2);
+            //
+            //------------------------------------------------------------------
+            subset.clear();
+            for(const eq_node *node=active.head;node;node=node->next)
+            {
+                const equilibrium       &eq = ***node;
+                const size_t             ei = eq.indx[sub_level];
+                const readable<double>  &Ci = Cs[ei];
+
+
+                const double X1 = excess(Ci);
+                bool         ok = false;
+                if(X1<X0)
+                {
+                    ok = true;           // for verbosity
+                    subset << eq;        // register equilibrium
+                }
+                if(xml.verbose) dom.eqfmt.pad( *xml << ok_prefix(ok) << eq, eq) << ": " << std::setw(15) << X1 << std::endl;
             }
             return subset.size>0;
         }
@@ -369,6 +399,10 @@ namespace yack
                     }
                     assert(active.size>=2);
                     goto FIND_GLOBAL;
+                }
+                else
+                {
+
                 }
             }
 
