@@ -10,11 +10,12 @@ namespace yack
         }
 
         engine:: engine(const realm &cs) :
-        engine_()
+        engine_(),
+        proxy( new eq_zpool() )
         {
             for(const domain *dom = cs.head; dom; dom=dom->next)
             {
-                push_back( new reactor(*dom) );
+                push_back( new reactor(*dom,proxy) );
             }
         }
 

@@ -95,6 +95,22 @@ namespace yack
             return NULL;
         }
 
+        //! clear all references contained in sub
+        template <typename U, template <typename> class OTHER_ZPOOL>
+        void clear_all_in(const dinky_manifest<U,OTHER_ZPOOL> &sub) noexcept
+        {
+            list_of<node_type> sto;
+            while(this->size)
+            {
+                node_type *node = this->pop_front();
+                if(sub.contains(***node))
+                    this->cache->ingest(node);
+                else
+                    sto.push_back(node);
+            }
+            this->swap_with(sto);
+        }
+
         //! cross-manifest checking content
         template <typename U, template <typename> class OTHER_ZPOOL>
         bool is_subset_of(const dinky_manifest<U,OTHER_ZPOOL> &super) const noexcept

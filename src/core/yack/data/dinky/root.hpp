@@ -145,7 +145,8 @@ namespace yack
         }
 
         //! merge back copy
-        inline void merge_back_copy(const dinky_root &source)
+        template <class OTHER_ZPROXY>
+        inline void merge_back_copy(const dinky_root<NODE,OTHER_ZPROXY> &source)
         {
             list_of<NODE> target;
             replicate(target,source);
@@ -153,7 +154,8 @@ namespace yack
         }
 
         //! merge front copy
-        inline void merge_front_copy(const dinky_root &source)
+        template <class OTHER_ZPROXY>
+        inline void merge_front_copy(const dinky_root<NODE,OTHER_ZPROXY> &source)
         {
             list_of<NODE> target;
             replicate(target,source);

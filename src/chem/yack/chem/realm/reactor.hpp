@@ -24,7 +24,8 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit reactor(const domain &); //!< setup
+            explicit reactor(const domain   &,
+                             const eq_proxy &); //!< setup
             virtual ~reactor() noexcept;      //!< cleanup
 
             //__________________________________________________________________
@@ -62,7 +63,6 @@ namespace yack
             cxx_array<double>  shift;   //!< [L] numerical mass action error
             matrix<double>     Cs;      //!< [LxM]
             cxx_array<xlimits> Xl;      //!< [N]
-            eq_proxy           eqpxy;
             eq_repo            active;
             eq_repo            bundle;
             eq_repo            subset;
@@ -76,6 +76,7 @@ namespace yack
             void   find_active(const xmlog &xml);
             bool   find_global(const xmlog &xml, const double X0);
             void   move_global(const xmlog &xml);
+            void   local_steps(const xmlog &xml, const double X0);
         };
     }
 

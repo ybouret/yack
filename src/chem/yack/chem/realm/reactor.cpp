@@ -19,7 +19,8 @@ namespace yack
         {
         }
 
-        reactor:: reactor(const domain &_) :
+        reactor:: reactor(const domain &_,
+                          const eq_proxy &eqp) :
         spot_object(),
         dom(_),
         xlim(),
@@ -36,10 +37,9 @@ namespace yack
         shift(dom.L),
         Cs(dom.L,dom.M),
         Xl(dom.N),
-        eqpxy( new eq_zpool() ),
-        active(eqpxy),
-        bundle(eqpxy),
-        subset(eqpxy),
+        active(eqp),
+        bundle(eqp),
+        subset(eqp),
         next(0),
         prev(0)
         {
@@ -161,48 +161,9 @@ namespace yack
             return flag ? "(+) " : "(-) ";
         }
 
-#if 0
-        bool reactor:: find_global(const xmlog &xml,
-                                   const double X0)
-        {
-            //------------------------------------------------------------------
-            //
-            YACK_XMLSUB(xml, "find_global"); assert(active.size>=2);
-            //
-            //------------------------------------------------------------------
-            reactor &self = *this;
-            subset.clear();
-            for(const eq_node *node=active.head;node;node=node->next)
-            {
-                const equilibrium &eq = ***node;
-                const size_t       ei = eq.indx[sub_level];
-                writable<double>  &Ci = Cs[ei];
 
-                //--------------------------------------------------------------
-                // load equilibrium steady state into Cend
-                //--------------------------------------------------------------
-                iota::load(Cend,Ci);
 
-                //--------------------------------------------------------------
-                // optimize excess from Corg to Cend=Ci
-                //--------------------------------------------------------------
-                triplet<double> u = {  0, -1, 1 };
-                triplet<double> X = { X0, -1, self(u.c) };  assert(fabs(X.c-excess(Ctmp))<=0);
-                optimize::run_for(self,u,X,optimize::inside); assert(fabs(X.b-excess(Ctmp))<=0);
 
-                const double X1 = X.b;
-                bool         ok = false;
-                if(X1<X0)
-                {
-                    ok = true;           // for verbosity
-                    subset << eq;        // register equilibrium
-                    iota::load(Ci,Ctmp); // register phase space
-                }
-                if(xml.verbose) dom.eqfmt.pad( *xml << ok_prefix(ok) << eq, eq) << ": " << std::setw(15) << X.b << " @" << std::setw(15) << u.b << std::endl;
-            }
-            return subset.size>0;
-        }
-#endif
 
         bool reactor:: find_global(const xmlog &xml,
                                    const double X0)
@@ -212,34 +173,53 @@ namespace yack
             YACK_XMLSUB(xml, "find_global");
             //
             //------------------------------------------------------------------
-
-            subset.clear();
-            for(const eq_node *node=bundle.head;node;node=node->next)
+            YACK_XMLOG(xml, "bundle = " << bundle);
             {
-                const equilibrium       &eq = ***node;
-                const size_t             ei = eq.indx[sub_level]; if(blocked[ei]) continue;;
-                const readable<double>  &Ci = Cs[ei];
-
-
-                const double X1 = excess(Ci);
-                bool         ok = false;
-                if(X1<X0)
+                YACK_XMLSUB(xml, "scanning");
+                subset.clear();
+                for(const eq_node *node=bundle.head;node;node=node->next)
                 {
-                    ok = true;           // for verbosity
-                    subset << eq;        // register equilibrium
+                    const equilibrium & eq = ***node;
+                    const size_t        ei = eq.indx[sub_level]; if(blocked[ei]) continue;
+                    writable<double>  & Ci = Cs[ei];
+
+#if 0
+                    //--------------------------------------------------------------
+                    // load equilibrium steady state into Cend
+                    //--------------------------------------------------------------
+                    iota::load(Cend,Ci);
+
+                    //--------------------------------------------------------------
+                    // optimize excess from Corg to Cend=Ci
+                    //--------------------------------------------------------------
+                    triplet<double> u = {  0, -1, 1 };
+                    triplet<double> X = { X0, -1, self(u.c) };    assert(fabs(X.c-excess(Ctmp))<=0);
+                    optimize::run_for(self,u,X,optimize::inside); assert(fabs(X.b-excess(Ctmp))<=0);
+
+                    const double X1 = X.b;
+#endif
+                    const double X1 = excess(Ci);
+                    bool         ok = false;
+                    if(X1<X0)
+                    {
+                        ok = true;           // for verbosity
+                        subset << eq;        // register equilibrium
+                    }
+                    if(xml.verbose) dom.eqfmt.pad( *xml << ok_prefix(ok) << eq, eq) << ": " << std::setw(15) << X1 << std::endl;
                 }
-                if(xml.verbose) dom.eqfmt.pad( *xml << ok_prefix(ok) << eq, eq) << ": " << std::setw(15) << X1 << std::endl;
             }
-            YACK_XMLOG(xml, "global: " << subset);
+            YACK_XMLOG(xml, "global = " << subset);
             assert( subset.is_subset_of(bundle) );
             return subset.size>0;
         }
 
         void reactor:: move_global(const xmlog &xml)
         {
+
+            YACK_XMLSUB(xml, "move_global");  assert(subset.size>=1);
             //------------------------------------------------------------------
             //
-            YACK_XMLSUB(xml, "move_global");  assert(subset.size>=1);
+            // find best cluster
             //
             //------------------------------------------------------------------
             const cluster *    Bopt = NULL;
@@ -260,13 +240,18 @@ namespace yack
             }
             assert(Bopt || yack_die("corrupted clusters"));
             YACK_XMLOG(xml, "(*) " << std::setw(15) << Xopt << " @" << *Bopt);
+            assert( fabs(Xopt-excess(*Bopt))<= 0 );
 
             //------------------------------------------------------------------
             // replace Corg
             //------------------------------------------------------------------
             iota::load(Corg,Cend);
 
-            assert( fabs(Xopt-excess(*Bopt))<= 0 );
+            //------------------------------------------------------------------
+            // cleanup bundle
+            //------------------------------------------------------------------
+            bundle.clear_all_in(*Bopt);
+
         }
 
 
@@ -283,6 +268,113 @@ namespace yack
             }
         };
 
+        void  reactor:: local_steps(const xmlog &xml, const double X0)
+        {
+
+            //------------------------------------------------------------------
+            //
+            YACK_XMLSUB(xml, "local_steps");
+            //
+            //------------------------------------------------------------------
+            const eq_node_comparator cmp = { Xi };
+
+            YACK_XMLOG(xml,"X0 = " << X0);
+
+            //------------------------------------------------------------------
+            //
+            // building list of increasing |Xi| for active eqs
+            //
+            //------------------------------------------------------------------
+            merge_list_of<eq_node>::sort(active,cmp);
+            if(xml.verbose)
+            {
+                *xml << "increasing |extent|:" << std::endl;
+                for(const eq_node *node=active.head;node;node=node->next)
+                {
+                    const equilibrium &eq = ***node;
+                    const size_t       ei = eq.indx[sub_level];
+                    dom.eqfmt.pad( *xml << eq, eq) << ": " << std::setw(15) << Xi[ei] << " " << dom.topo[ei] << std::endl;
+                }
+            }
+
+            const size_t n = min_of(active.size,dom.N);
+            const size_t m = dom.M;
+            matrix<apq>  Q(n,m);
+            subset.clear();
+            const eq_node *curr = active.head;
+            std::cerr << "init with " << ***curr << std::endl;
+            subset << ***curr;
+            for(curr=curr->next;curr;curr=curr->next)
+            {
+                subset << ***curr;
+
+                size_t irow=1;
+                Q.ld(0);
+                for(const eq_node *node=subset.head;node;node=node->next,++irow)
+                {
+                    writable<apq>       &target = Q[irow];
+                    const readable<int> &source = dom.topo[ (***node).indx[sub_level] ];
+                    for(size_t j=m;j>0;--j) target[j] = source[j];
+                }
+
+                if( alga::rank_of(Q) != subset.size )
+                {
+                    std::cerr << "discard   " << ***curr << std::endl;
+                    subset.cut_tail();
+                    continue;
+                }
+                else
+                {
+                    std::cerr << "grow with " << ***curr << std::endl;
+                    if(subset.size>=n) break;
+                }
+            }
+
+            std::cerr << "subset.size=" << subset.size << std::endl;
+
+
+#if 0
+            {
+                const size_t rmax = min_of(active.size,dom.N);
+                const size_t m    = dom.M;
+                matrix<apq> Q(dom.N,m);
+                subset.clear();
+                {
+                    const eq_node *curr = active.head;
+                    std::cerr << "init with " << ***curr << std::endl;
+                    subset << ***curr;
+                    for(curr=curr->next;curr;curr=curr->next)
+                    {
+                        subset << ***curr;
+
+                        size_t irow=1;
+                        Q.ld(0);
+                        for(const eq_node *node=subset.head;node;node=node->next,++irow)
+                        {
+                            writable<apq>       &target = Q[irow];
+                            const readable<int> &source = dom.topo[ (***node).indx[sub_level] ];
+                            for(size_t j=m;j>0;--j) target[j] = source[j];
+                        }
+
+                        if( alga::rank_of(Q) != subset.size )
+                        {
+                            std::cerr << "discard   " << ***curr << std::endl;
+                            subset.cut_tail();
+                            continue;
+                        }
+                        else
+                        {
+                            std::cerr << "grow with " << ***curr << std::endl;
+                            if(subset.size>=rmax) break;
+                        }
+                    }
+                }
+                std::cerr << "subset.size=" << subset.size << std::endl;
+            }
+#endif
+
+        }
+
         void reactor:: solve(const xmlog            &xml,
                              writable<double>       &C0,
                              const readable<double> &K)
@@ -292,7 +384,6 @@ namespace yack
             YACK_XMLSUB(xml, "reactor");
             //
             //------------------------------------------------------------------
-            const eq_node_comparator cmp = { Xi };
 
 
 
@@ -307,24 +398,21 @@ namespace yack
             }
 
 
-
-
-
-        LOOP:
             //------------------------------------------------------------------
             //
-            // find active from Corg
+            // find active from Corg, initialize bundle with all eqs
             //
             //------------------------------------------------------------------
             bundle.clear();
             find_active(xml);
-            bundle.merge_back_copy(active);
+            bundle.merge_back_copy(dom);
 
             //------------------------------------------------------------------
             //
             // initialize excess
             //
             //------------------------------------------------------------------
+        COMPUTE_EXCESS:
             const double X0 = excess(Corg);
             YACK_XMLOG(xml,"X0 = " << X0);
 
@@ -333,35 +421,17 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // filter according to #active
+            //
             //
             //------------------------------------------------------------------
-            switch(active.size)
-            {
-                case 0: // X0 should be 0...
-                    YACK_XMLOG(xml,"found all blocked");
-                    goto SUCCESS;
-
-                case 1: // update with unique active, and check new excess
-                {
-                    const equilibrium &eq = ***active.head;
-                    YACK_XMLOG(xml,"update with unique " << eq);
-                    iota::load(Corg, Cs[eq.indx[sub_level]] );
-                    goto LOOP;
-                }
-
-                default:
-                    break;
-
-            }
-            assert(active.size >= 2);
             if(find_global(xml,X0))
             {
                 move_global(xml);
+                find_active(xml);
+                goto COMPUTE_EXCESS;
             }
 
-
-
+            local_steps(xml,X0);
 
 
 

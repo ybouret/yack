@@ -43,6 +43,13 @@ namespace yack
                             writable<double>       &C,
                             const readable<double> &K);
 
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            eq_proxy proxy;
+
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(engine);
         };
