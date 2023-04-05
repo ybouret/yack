@@ -95,6 +95,17 @@ namespace yack
             return NULL;
         }
 
+        template <template <typename> class OTHER_ZPOOL>
+        bool is_subset_of(const dinky_manifest<T,OTHER_ZPOOL> &super) const noexcept
+        {
+            for(const node_type *node=this->head;node;node=node->next)
+            {
+                if( !super.contains( ***node) ) return false;
+            }
+            return true;
+        }
+
+
         //! extract tail pointer
         inline T *pull_tail() noexcept
         {

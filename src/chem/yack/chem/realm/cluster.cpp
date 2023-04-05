@@ -82,6 +82,7 @@ namespace yack
             return 0;
         }
 
+#if 0
         bool cluster:: is_subset_of(const eq_repo &eqs) const noexcept
         {
             for(const eq_node *node=head;node;node=node->next)
@@ -90,7 +91,7 @@ namespace yack
             }
             return true;
         }
-
+#endif
         
         void cluster:: compile()
         {

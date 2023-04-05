@@ -231,7 +231,7 @@ namespace yack
                 if(xml.verbose) dom.eqfmt.pad( *xml << ok_prefix(ok) << eq, eq) << ": " << std::setw(15) << X1 << std::endl;
             }
             YACK_XMLOG(xml, "global: " << subset);
-
+            assert( subset.is_subset_of(bundle) );
             return subset.size>0;
         }
 
@@ -242,9 +242,9 @@ namespace yack
             YACK_XMLSUB(xml, "move_global");  assert(subset.size>=1);
             //
             //------------------------------------------------------------------
-            const cluster *Bopt = NULL;
-            double         Xopt = -1;
-            for(const cluster *Btmp=dom.reacting.head;Btmp;Btmp=Btmp->next)
+            const cluster *    Bopt = NULL;
+            double             Xopt = -1;
+            for(const cluster *Btmp = dom.reacting.head;Btmp;Btmp=Btmp->next)
             {
                 if(!Btmp->is_subset_of(subset)) continue;
                 const double Xtmp = excess(*Btmp);
@@ -357,7 +357,7 @@ namespace yack
             assert(active.size >= 2);
             if(find_global(xml,X0))
             {
-
+                move_global(xml);
             }
 
 
