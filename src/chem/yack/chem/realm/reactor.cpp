@@ -175,7 +175,6 @@ namespace yack
             //------------------------------------------------------------------
             YACK_XMLOG(xml, "bundle = " << bundle);
             {
-                YACK_XMLSUB(xml, "scanning");
                 subset.clear();
                 for(const eq_node *node=bundle.head;node;node=node->next)
                 {
@@ -288,21 +287,23 @@ namespace yack
             merge_list_of<eq_node>::sort(active,cmp);
             if(xml.verbose)
             {
-                *xml << "increasing |extent|:" << std::endl;
+                *xml << " (**) increasing |extent|:" << std::endl;
                 for(const eq_node *node=active.head;node;node=node->next)
                 {
                     const equilibrium &eq = ***node;
                     const size_t       ei = eq.indx[sub_level];
-                    dom.eqfmt.pad( *xml << eq, eq) << ": " << std::setw(15) << Xi[ei] << " " << dom.topo[ei] << std::endl;
+                    dom.eqfmt.pad( *xml << "  " << eq, eq) << ": " << std::setw(15) << Xi[ei] << " " << dom.topo[ei] << std::endl;
                 }
             }
 
-            const size_t n = min_of(active.size,dom.N);
-            const size_t m = dom.M;
-            matrix<apq>  Q(n,m);
+            YACK_XMLOG(xml," (**) extracting independent equilibria");
+            const size_t rmax = min_of(active.size,dom.N);
+            const size_t m    = dom.M;
+            matrix<apq>  Q(dom.N,dom.M);
             subset.clear();
             const eq_node *curr = active.head;
-            std::cerr << "init with " << ***curr << std::endl;
+            YACK_XMLOG(xml, "  (+) " << ***curr);
+            //std::cerr << "init with " << ***curr << std::endl;
             subset << ***curr;
             for(curr=curr->next;curr;curr=curr->next)
             {
@@ -319,59 +320,27 @@ namespace yack
 
                 if( alga::rank_of(Q) != subset.size )
                 {
-                    std::cerr << "discard   " << ***curr << std::endl;
+                    YACK_XMLOG(xml, "  (-) " << ***curr);
                     subset.cut_tail();
                     continue;
                 }
                 else
                 {
-                    std::cerr << "grow with " << ***curr << std::endl;
-                    if(subset.size>=n) break;
+                    YACK_XMLOG(xml, "  (+) " << ***curr);
+                    if(subset.size>=rmax) break;
                 }
             }
+            const size_t n = subset.size;
+            YACK_XMLOG(xml," (**) current system rank: " << n << " / " << dom.N);
 
-            std::cerr << "subset.size=" << subset.size << std::endl;
-
-
-#if 0
+            for(const eq_node *node=subset.head;node;node=node->next)
             {
-                const size_t rmax = min_of(active.size,dom.N);
-                const size_t m    = dom.M;
-                matrix<apq> Q(dom.N,m);
-                subset.clear();
-                {
-                    const eq_node *curr = active.head;
-                    std::cerr << "init with " << ***curr << std::endl;
-                    subset << ***curr;
-                    for(curr=curr->next;curr;curr=curr->next)
-                    {
-                        subset << ***curr;
 
-                        size_t irow=1;
-                        Q.ld(0);
-                        for(const eq_node *node=subset.head;node;node=node->next,++irow)
-                        {
-                            writable<apq>       &target = Q[irow];
-                            const readable<int> &source = dom.topo[ (***node).indx[sub_level] ];
-                            for(size_t j=m;j>0;--j) target[j] = source[j];
-                        }
-
-                        if( alga::rank_of(Q) != subset.size )
-                        {
-                            std::cerr << "discard   " << ***curr << std::endl;
-                            subset.cut_tail();
-                            continue;
-                        }
-                        else
-                        {
-                            std::cerr << "grow with " << ***curr << std::endl;
-                            if(subset.size>=rmax) break;
-                        }
-                    }
-                }
-                std::cerr << "subset.size=" << subset.size << std::endl;
+                const equilibrium &eq = ***node;
+                const size_t       ei = eq.indx[sub_level];
+                dom.eqfmt.pad( *xml << "  --> " << eq, eq) << ": " << std::setw(15) << Xi[ei] << " " << dom.topo[ei] << std::endl;
             }
-#endif
+
 
         }
 
@@ -435,7 +404,6 @@ namespace yack
 
 
 
-            exit(0);
 
         SUCCESS:
             YACK_XMLOG(xml,yack_success);

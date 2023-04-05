@@ -38,7 +38,10 @@ namespace yack
                        writable<double>       &C,
                        const readable<double> &K);
 
+            //! excess from active equilibria
             double excess(const readable<double> &C);
+
+            //! excess form a cluster of (disconnected) active equilibria
             double excess(const cluster &);
 
             //! excess in Corg * (1-u) + Cend * u
@@ -62,10 +65,10 @@ namespace yack
             cxx_array<double>  sigma;   //!< [L]
             cxx_array<double>  shift;   //!< [L] numerical mass action error
             matrix<double>     Cs;      //!< [LxM]
-            cxx_array<xlimits> Xl;      //!< [N]
-            eq_repo            active;
-            eq_repo            bundle;
-            eq_repo            subset;
+            cxx_array<xlimits> Xl;      //!< [N] limits
+            eq_repo            active;  //!< list of active equilibria w.r.t Corg
+            eq_repo            bundle;  //!< auxiliary
+            eq_repo            subset;  //!< auxiliary
             
             reactor *next; //!< for list
             reactor *prev; //!< for list

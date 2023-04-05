@@ -47,7 +47,7 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            eq_proxy proxy;
+            eq_proxy proxy; //!< memory for list of equilibria
 
 
         private:
