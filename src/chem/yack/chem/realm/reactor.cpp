@@ -196,7 +196,7 @@ namespace yack
                     subset << eq;        // register equilibrium
                     iota::load(Ci,Ctmp); // register phase space
                 }
-                if(xml.verbose) dom.eqfmt.pad( *xml << ok_prefix(ok) << eq, eq) << ": " << std::setw(15) << X.b << std::endl;
+                if(xml.verbose) dom.eqfmt.pad( *xml << ok_prefix(ok) << eq, eq) << ": " << std::setw(15) << X.b << " @" << std::setw(15) << u.b << std::endl;
             }
             return subset.size>0;
         }
@@ -323,6 +323,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             {
+            FIND_GLOBAL:
                 const bool found_global = find_global(xml,X0);
                 YACK_XMLOG(xml, "found_global = " << yack_boolean(found_global) );
                 if(found_global)
@@ -367,6 +368,7 @@ namespace yack
 
                     }
                     assert(active.size>=2);
+                    goto FIND_GLOBAL;
                 }
             }
 
