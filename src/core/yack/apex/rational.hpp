@@ -46,7 +46,9 @@ namespace yack
             rational&operator=(const rational &);           //!< assign by copy/xch
             rational(randomized::bits &,const size_t bits); //!< random
             rational & operator=(const int_type);           //!< num/1
-            
+            rational & operator=(const integer&);           //!< num/1
+            rational & operator=(const natural&);           //!< num/1
+
 
             //! inline binary constructors
 #define     YACK_APQ_CTOR(NTYPE,DTYPE) \
