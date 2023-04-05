@@ -95,8 +95,9 @@ namespace yack
             return NULL;
         }
 
-        template <template <typename> class OTHER_ZPOOL>
-        bool is_subset_of(const dinky_manifest<T,OTHER_ZPOOL> &super) const noexcept
+        //! cross-manifest checking content
+        template <typename U, template <typename> class OTHER_ZPOOL>
+        bool is_subset_of(const dinky_manifest<U,OTHER_ZPOOL> &super) const noexcept
         {
             for(const node_type *node=this->head;node;node=node->next)
             {

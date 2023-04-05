@@ -74,6 +74,7 @@ namespace yack
                                const double             K,
                                cameo::mul<double>      &xmul) const;
 
+            //! compute mass aaction along C0-C1
             double mass_action(const index_level       I,
                                const double            u,
                                const readable<double> &C0,
@@ -148,6 +149,7 @@ namespace yack
                 return os;
             }
 
+            //! transfer only registered component indices
             template <typename TARGET, typename SOURCE> inline
             void transfer(const index_level I,
                           TARGET  &target,
