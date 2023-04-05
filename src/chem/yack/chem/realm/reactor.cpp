@@ -38,6 +38,7 @@ namespace yack
         Xl(dom.N),
         eqpxy( new eq_zpool() ),
         active(eqpxy),
+        bundle(eqpxy),
         subset(eqpxy),
         next(0),
         prev(0)
@@ -208,14 +209,15 @@ namespace yack
         {
             //------------------------------------------------------------------
             //
-            YACK_XMLSUB(xml, "find_global"); assert(active.size>=2);
+            YACK_XMLSUB(xml, "find_global");
             //
             //------------------------------------------------------------------
+
             subset.clear();
-            for(const eq_node *node=active.head;node;node=node->next)
+            for(const eq_node *node=bundle.head;node;node=node->next)
             {
                 const equilibrium       &eq = ***node;
-                const size_t             ei = eq.indx[sub_level];
+                const size_t             ei = eq.indx[sub_level]; if(blocked[ei]) continue;;
                 const readable<double>  &Ci = Cs[ei];
 
 
@@ -228,6 +230,8 @@ namespace yack
                 }
                 if(xml.verbose) dom.eqfmt.pad( *xml << ok_prefix(ok) << eq, eq) << ": " << std::setw(15) << X1 << std::endl;
             }
+            YACK_XMLOG(xml, "global: " << subset);
+
             return subset.size>0;
         }
 
@@ -235,7 +239,7 @@ namespace yack
         {
             //------------------------------------------------------------------
             //
-            YACK_XMLSUB(xml, "move_global"); assert(active.size>=2); assert(subset.size>=1);
+            YACK_XMLSUB(xml, "move_global");  assert(subset.size>=1);
             //
             //------------------------------------------------------------------
             const cluster *Bopt = NULL;
@@ -303,6 +307,73 @@ namespace yack
             }
 
 
+
+
+
+        LOOP:
+            //------------------------------------------------------------------
+            //
+            // find active from Corg
+            //
+            //------------------------------------------------------------------
+            bundle.clear();
+            find_active(xml);
+            bundle.merge_back_copy(active);
+
+            //------------------------------------------------------------------
+            //
+            // initialize excess
+            //
+            //------------------------------------------------------------------
+            const double X0 = excess(Corg);
+            YACK_XMLOG(xml,"X0 = " << X0);
+
+            if(X0<=0)
+                goto SUCCESS;
+
+            //------------------------------------------------------------------
+            //
+            // filter according to #active
+            //
+            //------------------------------------------------------------------
+            switch(active.size)
+            {
+                case 0: // X0 should be 0...
+                    YACK_XMLOG(xml,"found all blocked");
+                    goto SUCCESS;
+
+                case 1: // update with unique active, and check new excess
+                {
+                    const equilibrium &eq = ***active.head;
+                    YACK_XMLOG(xml,"update with unique " << eq);
+                    iota::load(Corg, Cs[eq.indx[sub_level]] );
+                    goto LOOP;
+                }
+
+                default:
+                    break;
+
+            }
+            assert(active.size >= 2);
+            if(find_global(xml,X0))
+            {
+
+            }
+
+
+
+
+
+
+            exit(0);
+
+        SUCCESS:
+            YACK_XMLOG(xml,yack_success);
+            dom.spmap.recv(C0,Corg);
+            return;
+
+
+#if 0
         LOOP:
             //------------------------------------------------------------------
             //
@@ -425,6 +496,7 @@ namespace yack
             YACK_XMLOG(xml,yack_success);
             dom.spmap.recv(C0,Corg);
             return;
+#endif
 
 #if 0
 

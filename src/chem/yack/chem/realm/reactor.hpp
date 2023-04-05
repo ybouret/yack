@@ -64,6 +64,7 @@ namespace yack
             cxx_array<xlimits> Xl;      //!< [N]
             eq_proxy           eqpxy;
             eq_repo            active;
+            eq_repo            bundle;
             eq_repo            subset;
             
             reactor *next; //!< for list
@@ -72,9 +73,9 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(reactor);
 
-            void find_active(const xmlog &xml);
-            bool find_global(const xmlog &xml, const double X0);
-            void move_global(const xmlog &xml);
+            void   find_active(const xmlog &xml);
+            bool   find_global(const xmlog &xml, const double X0);
+            void   move_global(const xmlog &xml);
         };
     }
 
