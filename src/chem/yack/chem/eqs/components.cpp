@@ -231,6 +231,67 @@ namespace yack
 
         }
 
+        static inline
+        void update_hess(const double            f,
+                         matrix<double>         &H,
+                         const actor            *a,
+                         const readable<double> &C,
+                         const index_level       I,
+                         cameo::mul<double>      &xmul)
+        {
+            const species &A_k = **a;
+            const size_t   k    = A_k.indx[I];
+            if(a->nu>=2)
+            {
+                xmul.free();
+                xmul.push(f);
+                xmul.push(a->nu);
+                xmul.push(a->nm);
+                xmul.push(C[k],a->nd);
+                H[k][k] = expand_grad(a,C,I,xmul);
+            }
+
+            for(const actor *b=a->next;b;b=b->next)
+            {
+                const species &A_l = **b;
+                const size_t   l   = A_l.indx[I];
+                xmul.free();
+                xmul.push(f);
+
+                xmul.push(a->nu);
+                xmul.push(C[k],a->nm);
+
+                xmul.push(b->nu);
+                xmul.push(C[l],b->nm);
+
+                for(const actor *d=a->next;d;d=d->next)
+                {
+                    if(d==b) continue;
+                    xmul.push(C[(**d).indx[I]],d->nu);
+                }
+                H[k][l] = H[l][k] = xmul.product();
+            }
+        }
+
+        void components:: hessian(const index_level       I,
+                                  matrix<double>         &H,
+                                  const readable<double> &C,
+                                  const double            K,
+                                  cameo::mul<double>     &xmul) const
+        {
+            H.ld(0);
+            for(const actor *a=reac.head;a;a=a->next)
+            {
+                update_hess(K,H,a,C,I,xmul);
+            }
+
+            for(const actor *a=prod.head;a;a=a->next)
+            {
+                update_hess(-1,H,a,C,I,xmul);
+            }
+        }
+
+
         double components:: slope(const index_level       I,
                                   const readable<double> &C,
                                   const double            K,

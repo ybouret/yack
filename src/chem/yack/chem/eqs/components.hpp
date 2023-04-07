@@ -9,6 +9,7 @@
 #include "yack/data/dinky/coop-repo.hpp"
 #include "yack/associative/addrbook.hpp"
 #include "yack/cameo/add.hpp"
+#include "yack/container/matrix.hpp"
 
 namespace yack
 {
@@ -100,6 +101,14 @@ namespace yack
                       const readable<double> &C,
                       const double            K,
                       cameo::mul<double>     &xmul) const;
+
+            //! hessian
+            void hessian(const index_level       I,
+                         matrix<double>         &H,
+                         const readable<double> &C,
+                         const double            K,
+                         cameo::mul<double>     &xmul) const;
+
 
             //! compute slope at given concentraion
             double slope(const index_level       I,

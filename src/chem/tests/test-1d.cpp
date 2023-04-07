@@ -44,6 +44,8 @@ YACK_UTEST(1d)
     vector<double> psi(M,0);
     vector<int>    nu(M,0);
     vector<double> Ctmp(M,0);
+    vector<double> grd(M,0);
+    matrix<double> hss(M,M);
 
     lib.conc(C0,ran);
     //for(size_t i=M;i>0;--i) if( ran.choice() ) C0[i] = 0;
@@ -68,6 +70,11 @@ YACK_UTEST(1d)
         const double  xi0 = am.value;
         const double  sig = eq.slope(top_level,Cs,K,xmul,xadd);
         std::cerr << "sig=" << sig << std::endl;
+        eq.grad(top_level,grd,Cs,K,xmul);
+        std::cerr << "grd=" << grd << std::endl;
+        eq.hessian(top_level,hss,Cs,K,xmul);
+        std::cerr << "hss=" << hss << std::endl;
+
 
 
         const string  fn = eq.name + ".dat";
