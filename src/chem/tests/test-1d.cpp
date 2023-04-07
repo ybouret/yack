@@ -78,8 +78,8 @@ YACK_UTEST(1d)
             const double u  = double(i)/np;
             const double xi = (i*xi0)/np;
             const double G  = eq.mass_action(top_level, u, C0, Cs, K, Ctmp, xmul);
-            const double g = (xi-xi0) * sig;
-            fp("%.15g %.15g %.15g %.15g\n",xi,G,g,G-g);
+            const double L = (xi-xi0) * sig;
+            fp("%.15g %.15g %.15g %.15g\n",xi,G,L,G-L);
         }
 
         //std::cerr << "plot '" << fn << "' w l, 0, ";

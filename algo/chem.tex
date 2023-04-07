@@ -354,14 +354,27 @@ We want to solve
 \forall i, \;\; \Gamma_i\left(\vec{C} + \sum_j \xi_j \vec{\nu}^t_j\right) =  0
 \end{equation}
 
-The function:
+We have
+\begin{equation}
+	\Gamma_i\left(\vec{C} + \xi_i^\star \vec{\nu}^t_i\right) =  0
+\end{equation}
+For a given $\vec{C}$, we have a steady-state $\vec{\xi}^\star$.
+ 	
+We want:
+\begin{equation}
+	\Gamma_i\left(\vec{C} + \delta\vec{C} + \xi_i^\star \vec{\nu}^t_i  \right) \simeq
+	\langle \vec{\Psi_i}^\star \vert \delta\vec{C} \rangle + 
+	\dfrac{1}{2} \langle \delta\vec{C} \vert \bm{H}_i^\star \vert \delta\vec{C} \rangle
+\end{equation}
+ 
+  The function:
 \begin{equation}
 \left\lbrace
 \begin{array}{rcl}
 	\Gamma_i \left(\vec{C} +  \xi_i \vec{\nu}^t_i\right) & = &
 	 g_i(\xi_i) + 
 	 \left(\xi_i - \xi_i^\star\right) 	\langle \vec{\Psi_i}^\star \vert \vec{\nu}^t_i \rangle\\
-	 g_i(0)            & = & \Gamma_i - \xi_i^\star \langle \vec{\Psi_i}^\star \vert \vec{\nu}^t_i \rangle \;\;\; \text{(sign of $\Gamma_i$ is sign of $\xi_i^\star$)}\\
+	 g_i(0)            & = & \Gamma_i + \xi_i^\star \langle \vec{\Psi_i}^\star \vert \vec{\nu}^t_i \rangle \\
 	 g_i(\xi_i^\star)  & = & 0\\
 	 g'_i(0)           & = & \underbrace{\langle \vec{\Psi_i} \vert \vec{\nu}^t_i \rangle}_{\Gamma'_i\leq0} - \underbrace{\langle \vec{\Psi_i}^\star \vert \vec{\nu}^t_i \rangle}_{<0} 
 	 = - \langle \delta\vec{\Psi}_i \vert \vec{\nu}^t_i \rangle\\
