@@ -74,6 +74,13 @@ We express the derivative of a product w.r.t. one term:
 	\right.
 \end{equation} 
  
+ \begin{equation}
+	\partial^2_{A_k,A_l}  \left( \prod_{j=1}^{M} [A_j]^{\nu_{j}} \right) 
+ = \nu_k [A_k]^{\nu_k-1} 
+   \nu_l [A_l]^{\nu_l-1}
+ \left( \prod_{j=1,j\not=k,l}^{M} [A_j]^{\nu_{j}} \right)
+\end{equation}
+ 
 
 \subsection{Equilibria}
 Let $\mathcal{E}$ be a set of $N$ independent equilibria $(E_1),\dots,(E_N)$.
@@ -360,11 +367,6 @@ is a concentration.
 \section{Local Solving}
 
 Let us start from $\vec{C}$, and we now every $\xi_i^\star$ for each $\Gamma_i$.
-We want to solve
-\begin{equation}
-\forall i, \;\; \Gamma_i\left(\vec{C} + \sum_j \xi_j \vec{\nu}^t_j\right) =  0
-\end{equation}
-
 We have
 \begin{equation}
 	\Gamma_i\left(\vec{C} + \xi_i^\star \vec{\nu}^t_i\right) =  0
@@ -378,6 +380,7 @@ We want:
 	\dfrac{1}{2} \langle \delta\vec{C} \vert \bm{H}_i^\star \vert \delta\vec{C} \rangle
 \end{equation}
  
+\section{Other} 
   The function:
 \begin{equation}
 \left\lbrace

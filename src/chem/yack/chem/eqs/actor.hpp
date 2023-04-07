@@ -53,7 +53,8 @@ namespace yack
             //__________________________________________________________________
             const unsigned nu; //!< nu>0, stoichiometric coefficient
             const unsigned nm; //!< nu-1, for derivative of mass action
-
+            const unsigned nd; //!< nu-2, for second derivative of mass action
+            
         private:
             const species  &sp;
             YACK_DISABLE_ASSIGN(actor);

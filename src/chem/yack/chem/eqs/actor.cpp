@@ -13,6 +13,7 @@ namespace yack
         object(),
         nu(n),
         nm(nu-1),
+        nd(nm-1),
         sp(s),
         next(0),
         prev(0)
@@ -24,6 +25,7 @@ namespace yack
         object(),
         nu(other.nu),
         nm(other.nm),
+        nd(other.nd),
         sp(other.sp),
         next(0),
         prev(0)
