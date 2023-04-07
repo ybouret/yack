@@ -59,10 +59,21 @@ We express the derivative of a product w.r.t. one term:
 	\nu_k [A_k]^{\nu_k-1} \left( \prod_{j=1,j\not=k}^{M} [A_j]^{\nu_{j}} \right)
 \end{equation}
  
-\begin{equation}
+ \begin{equation}
 	\vec{\Psi}_i = \partial_{\vec{C}} \Gamma_i
 \end{equation}
 
+\subsubsection{Hessian}
+\begin{equation}
+	\partial^2_{A_k,A_k}  \left( \prod_{j=1}^{M} [A_j]^{\nu_{j}} \right) =
+	\left\lbrace
+	\begin{array}{cl}
+	\displaystyle \nu_k(\nu_k-1) [A_k]^{\nu_k-2} \left( \prod_{j=1,j\not=k}^{M} [A_j]^{\nu_{j}} \right) & \text{if $\nu_k>2$}\\
+	0 & \text{if $\nu_k\leq2$}\\
+	\end{array}
+	\right.
+\end{equation} 
+ 
 
 \subsection{Equilibria}
 Let $\mathcal{E}$ be a set of $N$ independent equilibria $(E_1),\dots,(E_N)$.
