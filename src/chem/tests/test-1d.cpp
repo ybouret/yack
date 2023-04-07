@@ -8,11 +8,11 @@
 #include "yack/math/iota.hpp"
 
 #include "yack/counting/part.hpp"
+//#include "yack/cameo/mul.hpp"
 
 using namespace yack;
 using namespace chemical;
 using namespace math;
-
 
 
 YACK_UTEST(1d)
@@ -79,6 +79,9 @@ YACK_UTEST(1d)
         const double crv = iota::dot<double>::of(nu,hnu,xadd)*0.5;
         std::cerr << "hnu=" << hnu << std::endl;
         std::cerr << "crv=" << crv << std::endl;
+        std::cerr << "crv=" << iota::quad(hss,nu) / 2 << std::endl;
+        std::cerr << "crv=" << iota::quad(hss,nu,xadd,xmul) / 2 << std::endl;
+
         std::cerr << "nu=" << nu << std::endl;
 
 

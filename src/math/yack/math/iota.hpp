@@ -5,6 +5,7 @@
 
 #include "yack/container/matrix.hpp"
 #include "yack/cameo/add.hpp"
+#include "yack/cameo/mul.hpp"
 
 namespace yack {
 
@@ -381,6 +382,56 @@ namespace yack {
                         A_i[j] = xadd.sum();
                     }
                 }
+            }
+
+            //------------------------------------------------------------------
+            //! v'*S*v, S is symmetric
+            //------------------------------------------------------------------
+            template <typename T, typename RHS> static inline
+            T quad(const matrix<T> &H, RHS &v)
+            {
+                assert(H.is_square());
+                assert(H.rows<=v.size());
+                T res = 0;
+                const size_t n = H.rows;
+                for(size_t i=n;i>0;--i)
+                {
+                    const readable<T> &Hi = H[i];
+                    const T            vi(v[i]);
+                    res += Hi[i] * squared(vi);
+                    for(size_t j=i-1;j>0;--j)
+                    {
+                        res += twice( Hi[j] * vi * v[j]) ;
+                    }
+                }
+                return res;
+            }
+
+            //------------------------------------------------------------------
+            //! v'*S*v, S is symmetric
+            //------------------------------------------------------------------
+            template <typename T, typename RHS> static inline
+            T quad(const matrix<T> &H,
+                   RHS             &v,
+                   cameo::add<T>  &xadd,
+                   cameo::mul<T>  &xmul)
+            {
+                static const T two(2);
+                assert(H.is_square());
+                assert(H.rows<=v.size());
+                const size_t n = H.rows;
+                xadd.free();
+                for(size_t i=n;i>0;--i)
+                {
+                    const readable<T> &Hi = H[i];
+                    const T            vi(v[i]);
+                    xadd.push( xmul(Hi[i],vi,vi) );
+                    for(size_t j=i-1;j>0;--j)
+                    {
+                        xadd.push( xmul(two, Hi[j], vi, v[j]) );
+                    }
+                }
+                return xadd.sum();
             }
 
 

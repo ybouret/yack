@@ -74,6 +74,7 @@ namespace yack
             //__________________________________________________________________
 			typedef tagged_real<T>    type;      //!< alias
 			typedef sorted_list<type> self_type; //!< alias
+            using self_type::free;
 
             //__________________________________________________________________
             //
@@ -98,6 +99,38 @@ namespace yack
             //__________________________________________________________________
             mul& operator=(const T init);    //!< initialize
 			mul& operator<<(const T args);   //!< append a new multiplicand
+
+            //! useless product of two
+            template <typename U, typename V> inline
+            double operator()(const U &u, const V &v)
+            {
+                free();
+                push(u);
+                push(v);
+                return product();
+            }
+
+            template <typename U, typename V, typename W> inline
+            double operator()(const U &u, const V &v, const W &w)
+            {
+                free();
+                push(u);
+                push(v);
+                push(w);
+                return product();
+            }
+
+            template <typename U, typename V, typename W, typename X> inline
+            double operator()(const U &u, const V &v, const W &w, const X &x)
+            {
+                free();
+                push(u);
+                push(v);
+                push(w);
+                push(x);
+                return product();
+            }
+
 
 
 
