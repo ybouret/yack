@@ -267,7 +267,7 @@ namespace yack
                 for(const actor *d=a->next;d;d=d->next)
                 {
                     if(d==b) continue;
-                    xmul.push(C[(**d).indx[I]],d->nu);
+                    d->mass_action(I,C,xmul);
                 }
                 H[k][l] = H[l][k] = xmul.product();
             }
