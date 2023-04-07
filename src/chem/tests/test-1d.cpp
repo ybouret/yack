@@ -46,6 +46,7 @@ YACK_UTEST(1d)
     vector<double> Ctmp(M,0);
     vector<double> grd(M,0);
     matrix<double> hss(M,M);
+    vector<double> hnu(M,0);
 
     lib.conc(C0,ran);
     //for(size_t i=M;i>0;--i) if( ran.choice() ) C0[i] = 0;
@@ -59,7 +60,6 @@ YACK_UTEST(1d)
         const double   K  = eq.K(0);
 
         eq.fill(top_level,nu);
-        std::cerr << "nu=" << nu << std::endl;
         std::cerr << "ma=" << eq.mass_action(top_level,C0,K,xmul) << std::endl;
         const aftermath am = aftermath::solve(top_level,eq,K,C0,Cs,xlim,xmul,xadd);
         std::cerr << "am=" << am << std::endl;
@@ -75,6 +75,11 @@ YACK_UTEST(1d)
         eq.hessian(top_level,hss,Cs,K,xmul);
         std::cerr << "hss=" << hss << std::endl;
 
+        iota::mul(hnu, hss, nu, xadd);
+        const double crv = iota::dot<double>::of(nu,hnu,xadd)*0.5;
+        std::cerr << "hnu=" << hnu << std::endl;
+        std::cerr << "crv=" << crv << std::endl;
+        std::cerr << "nu=" << nu << std::endl;
 
 
         const string  fn = eq.name + ".dat";
@@ -86,7 +91,8 @@ YACK_UTEST(1d)
             const double xi = (i*xi0)/np;
             const double G  = eq.mass_action(top_level, u, C0, Cs, K, Ctmp, xmul);
             const double L = (xi-xi0) * sig;
-            fp("%.15g %.15g %.15g %.15g\n",xi,G,L,G-L);
+            const double Q = L + (xi-xi0)*(xi-xi0) * crv;
+            fp("%.15g %.15g %.15g %.15g %.15g\n",xi,G,L,Q,G-L);
         }
 
         //std::cerr << "plot '" << fn << "' w l, 0, ";
