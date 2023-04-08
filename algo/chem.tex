@@ -391,6 +391,40 @@ What if we perturb $\vec{C}$ with $\delta\vec{C}$?
 \end{array}
 \end{equation} 
 
+A valid $\delta\vec{C}$ is
+\begin{equation}
+	\delta\vec{C} = \bm{\nu}^t \delta\vec{\xi}
+\end{equation}
+and we look for a $\delta \vec{C}$ that will decrease $|\xi_i^\star+\delta \xi_i^\star|$
+
+\begin{equation}
+|\xi_i^\star+\delta \xi_i^\star| \leq |\xi_i^\star| 
+\Leftrightarrow 
+\left\lbrace
+\begin{array}{rcl}
+\xi_i^\star+\delta \xi_i^\star \geq 0 & \text{and} & \xi_i^\star+\delta \xi_i^\star \leq |\xi_i^\star|\\
+\xi_i^\star+\delta \xi_i^\star \leq 0 & \text{and} & \xi_i^\star+\delta \xi_i^\star \geq -|\xi_i^\star|\\
+\end{array}
+\right.
+\end{equation}
+
+\begin{equation}
+|\xi_i^\star+\delta \xi_i^\star| \leq |\xi_i^\star| 
+\Leftrightarrow 
+\left\lbrace
+\begin{array}{rcl}
+ \delta\xi_i^\star  \geq - \xi_i^\star  & \text{and} & \delta \xi_i^\star \leq |\xi_i^\star| - \xi_i^\star\\
+\delta  \xi_i^\star \leq - \xi_i^\star  & \text{and} & \delta \xi_i^\star \geq -|\xi_i^\star| - \xi_i^\star\\
+\end{array}
+\right.
+\end{equation}
+
+\begin{equation}
+|\xi_i^\star+\delta \xi_i^\star| \leq |\xi_i^\star| 
+\Leftrightarrow 
+\delta \xi_i^\star \in [ -\xi_i^\star - |\xi_i^\star| ; -\xi_i^\star + |\xi_i^\star|  ]
+\end{equation}
+
 \section{Other} 
   The function:
 \begin{equation}
