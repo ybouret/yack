@@ -391,11 +391,8 @@ What if we perturb $\vec{C}$ with $\delta\vec{C}$?
 \end{array}
 \end{equation} 
 
-A valid $\delta\vec{C}$ is
-\begin{equation}
-	\delta\vec{C} = \bm{\nu}^t \delta\vec{\xi}
-\end{equation}
-and we look for a $\delta \vec{C}$ that will decrease $|\xi_i^\star+\delta \xi_i^\star|$
+
+We look for a $\delta \xi_i^\star$ that will decrease $|\xi_i^\star+\delta \xi_i^\star|$
 
 \begin{equation}
 |\xi_i^\star+\delta \xi_i^\star| \leq |\xi_i^\star| 
@@ -424,6 +421,51 @@ and we look for a $\delta \vec{C}$ that will decrease $|\xi_i^\star+\delta \xi_i
 \Leftrightarrow 
 \delta \xi_i^\star \in [ -\xi_i^\star - |\xi_i^\star| ; -\xi_i^\star + |\xi_i^\star|  ]
 \end{equation}
+
+ 
+A valid $\delta\vec{C}$ is
+\begin{equation}
+	\delta\vec{C} = \bm{\nu}^t \delta\vec{\xi}
+\end{equation}
+ 
+ \begin{equation}
+\begin{array}{rcl}
+	0
+		&\simeq &\langle \vec{\Psi_i}^\star \vert \bm{\nu}^t \delta\vec{\xi} \rangle \\
+	&+& \delta\xi_i^\star \langle \vec{\Psi_i}^\star \vert \vec{\nu}^t_i  \rangle\\
+	& + & \frac{1}{2} \langle \delta\vec{\xi} \vert \bm{\nu}\bm{H}_i^\star \bm{\nu}^t \vert \delta\vec{\xi} \rangle \\
+	& + & \frac{1}{2} \langle \vec{\nu}^t_i  \vert \bm{H}_i^\star \vert \vec{\nu}^t_i  \rangle {\delta\xi_i^\star}^2\\
+	& + & \langle \vec{\nu}^t_i  \vert \bm{H}_i^\star \bm{\nu}^t \vert \delta\vec{\xi} \rangle \delta\xi_i^\star\\
+\end{array}
+\end{equation} 
+ 
+\begin{equation}
+\begin{array}{rcl}
+	0
+		&\simeq &\langle \vec{\Omega}_i  \vert \delta\vec{\xi} \rangle \\
+	&+& \delta\xi_i^\star \\
+	& + & \frac{1}{2} \langle \delta\vec{\xi} \vert \bm{\nu}\bm{\bar H}_i^\star \bm{\nu}^t \vert \delta\vec{\xi} \rangle \\
+	& + & \frac{1}{2} \langle \vec{\nu}^t_i  \vert \bm{\bar H}_i^\star \vert \vec{\nu}^t_i  \rangle {\delta\xi_i^\star}^2\\
+	& + & \langle \vec{\nu}^t_i  \vert \bm{\bar H}_i^\star \bm{\nu}^t \vert \delta\vec{\xi} \rangle \delta\xi_i^\star\\
+\end{array}
+\end{equation} 
+
+\begin{equation}
+\vec{0} \simeq 
+\left(
+	\bm{\Omega}
+	+ 
+\begin{bmatrix}
+\delta \xi_1^\star \langle \vec{\nu}^t_1  \vert \bm{\bar H}_1^\star \bm{\nu}^t \vert \\
+\ldots\\
+\ldots\\
+\end{bmatrix}
+\right) \delta\vec{\xi} + \delta\vec{\xi}^\star 
+\end{equation}
+
+\end{document}
+
+
 
 \section{Other} 
   The function:
