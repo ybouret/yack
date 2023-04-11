@@ -335,6 +335,8 @@ namespace yack
 
             matrix<double> Psi(n,m);
             matrix<int>    Nu(n,m);
+            vector<double> sig(n);
+
             {
                 size_t i=1;
                 for(const eq_node *node=subset.head;node;node=node->next,++i)
@@ -343,9 +345,14 @@ namespace yack
                     const equilibrium &eq = ***node;
                     const size_t       ei = eq.indx[sub_level];
                     if(xml.verbose)
-                        dom.eqfmt.pad( *xml << "  --> " << eq, eq) << ": " << std::setw(15) << Xi[ei] << " " << dom.topo[ei] << std::endl;
+                        dom.eqfmt.pad( *xml << "  --> " << eq, eq)
+                        << ": " << std::setw(15) << Xi[ei]
+                        << " " << dom.topo[ei]
+                        << " sigma: " << sigma[ei]
+                        << std::endl;
                     eq.grad(sub_level,Psi[i], Cs[ei], Korg[ei], xmul);
                     iota::load(Nu[i], dom.topo[ei]);
+                    sig[i] = sigma[ei];
                 }
             }
 
