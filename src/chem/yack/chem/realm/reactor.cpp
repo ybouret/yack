@@ -7,6 +7,7 @@
 #include "yack/math/algebra/crout.hpp"
 #include "yack/math/opt/optimize.hpp"
 #include "yack/type/boolean.h"
+#include "yack/math/algebra/svd.hpp"
 
 namespace yack
 {
@@ -303,7 +304,6 @@ namespace yack
             subset.clear();
             const eq_node *curr = active.head;
             YACK_XMLOG(xml, "  (+) " << ***curr);
-            //std::cerr << "init with " << ***curr << std::endl;
             subset << ***curr;
             for(curr=curr->next;curr;curr=curr->next)
             {
@@ -333,14 +333,39 @@ namespace yack
             const size_t n = subset.size;
             YACK_XMLOG(xml," (**) current system rank: " << n << " / " << dom.N);
 
-            for(const eq_node *node=subset.head;node;node=node->next)
+            matrix<double> Psi(n,m);
+            matrix<int>    Nu(n,m);
             {
+                size_t i=1;
+                for(const eq_node *node=subset.head;node;node=node->next,++i)
+                {
 
-                const equilibrium &eq = ***node;
-                const size_t       ei = eq.indx[sub_level];
-                dom.eqfmt.pad( *xml << "  --> " << eq, eq) << ": " << std::setw(15) << Xi[ei] << " " << dom.topo[ei] << std::endl;
+                    const equilibrium &eq = ***node;
+                    const size_t       ei = eq.indx[sub_level];
+                    if(xml.verbose)
+                        dom.eqfmt.pad( *xml << "  --> " << eq, eq) << ": " << std::setw(15) << Xi[ei] << " " << dom.topo[ei] << std::endl;
+                    eq.grad(sub_level,Psi[i], Cs[ei], Korg[ei], xmul);
+                    iota::load(Nu[i], dom.topo[ei]);
+                }
             }
 
+            matrix<double> Omega(n,n);
+            iota::mmul_rtrn(Omega,Psi,Nu,xadd);
+            std::cerr << "Psi   = " << Psi << std::endl;
+            std::cerr << "Nu    = " << Nu << std::endl;
+            std::cerr << "Omega = " << Omega << std::endl;
+
+            matrix<double> U(Omega),V(n,n);
+            vector<double> w(n);
+            svd<double>    SVD;
+            if(!SVD.build(U,w,V))
+            {
+                std::cerr << "couldn't build svd..." << std::endl;
+                exit(0);
+            }
+            std::cerr << "U=" << U << std::endl;
+            std::cerr << "V=" << V << std::endl;
+            std::cerr << "w=" << w << std::endl;
 
         }
 

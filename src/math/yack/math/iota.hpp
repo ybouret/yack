@@ -385,6 +385,48 @@ namespace yack {
             }
 
             //------------------------------------------------------------------
+            //! A = B * C'
+            //------------------------------------------------------------------
+            template <typename T, typename U, typename V> static inline
+            void mmul_rtrn(matrix<T> &A, const matrix<U> &B, const matrix<V> &C)
+            {
+                assert(A.rows==B.rows);
+                assert(A.cols==C.rows);
+                assert(B.cols==C.cols);
+                const size_t nc = A.cols;
+                for(size_t i=A.rows;i>0;--i)
+                {
+                    writable<T>       &A_i = A[i];
+                    const readable<T> &B_i = B[i];
+                    for(size_t j=nc;j>0;--j)
+                    {
+                        A_i[j] = dot<T>::of(B_i,C[j]);
+                    }
+                }
+            }
+
+            //------------------------------------------------------------------
+            //! A = B * C'
+            //------------------------------------------------------------------
+            template <typename T, typename U, typename V> static inline
+            void mmul_rtrn(matrix<T> &A, const matrix<U> &B, const matrix<V> &C, cameo::add<T> &xadd)
+            {
+                assert(A.rows==B.rows);
+                assert(A.cols==C.rows);
+                assert(B.cols==C.cols);
+                const size_t nc = A.cols;
+                for(size_t i=A.rows;i>0;--i)
+                {
+                    writable<T>       &A_i = A[i];
+                    const readable<T> &B_i = B[i];
+                    for(size_t j=nc;j>0;--j)
+                    {
+                        A_i[j] = dot<T>::of(B_i,C[j],xadd);
+                    }
+                }
+            }
+
+            //------------------------------------------------------------------
             //! v'*S*v, S is symmetric
             //------------------------------------------------------------------
             template <typename T, typename RHS> static inline
