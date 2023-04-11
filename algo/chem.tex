@@ -99,9 +99,9 @@ We define the topology matrix:
 \begin{equation}
 	\bm{\nu} = 
 	\begin{bmatrix}
-	\vec{\nu}_1\\
+	\langle \vec{\nu}_1 \vert\\
 	\vdots\\
-	\vec{\nu}_N\\
+	\langle\vec{\nu}_N\vert\\
 	\end{bmatrix}
 	\in \mathbb{M}_{N,M}
 	= \lbrack \nu_{i,j} \rbrack
@@ -112,9 +112,9 @@ We define the Jacobian matrix:
 \begin{equation}
 \bm{\Psi} = \partial_{\vec{C}} \vec{\Gamma} = 
 \begin{bmatrix}
-	\vec{\Psi}_1\\
+	\langle\vec{\Psi}_1\vert\\
 	\vdots\\
-	\vec{\Psi}_N\\
+	\langle\vec{\Psi}_N\vert\\
 	\end{bmatrix}
 	\in \mathbb{M}_{N,M} = 
 	\lbrack \partial_{A_j}\Gamma_i \rbrack
@@ -337,7 +337,7 @@ $$
 \begin{equation}
 \left\lbrace
 \begin{array}{rcl}
-	\vec{C}_i^\star & = & \vec{C} + \xi_i^\star \vec{\bm{\nu}}^t_i\\
+	\vec{C}_i^\star & = & \vec{C} + \xi_i^\star \vec{\bm{\nu}}i\\
 	\Gamma_i(\vec{C}_i^\star) & = & 0 \\
 \end{array}
 \right.
@@ -369,20 +369,49 @@ is a concentration.
 Let us start from $\vec{C}$, and we now every $\xi_i^\star$ for each $\Gamma_i$.
 We have
 \begin{equation}
-	\Gamma_i\left(\vec{C} + \xi_i^\star \vec{\nu}^t_i\right) =  0
+	\Gamma_i\left(\vec{C} + \xi_i^\star \vec{\nu}_i\right) =  0
 \end{equation}
 For a given $\vec{C}$, we have a steady-state $\vec{\xi}^\star$.
 What if we change $\vec{C}$ with $\delta\vec{C}$?
 The single equilibrium can adapt $\delta\xi_i^*$ to keep $\Gamma_i$ to $0$:
 
-$$
-0 = \Gamma_i\left( \vec{C} + \delta\vec{C} + (\xi_i^\star+\delta\xi_i^\star) \vec{\nu}^t_i \right)
-$$
-The net change is:
-$$
-	\delta\vec{C} + \delta\xi_i^\star \vec{\nu}^t_i 
-$$
+\begin{equation}
+0 = \Gamma_i\left( \vec{C} + \delta\vec{C} + (\xi_i^\star+\delta\xi_i^\star) \vec{\nu}_i \right)
+\end{equation}
 
+\begin{equation}
+	\Gamma_i\left( \vec{C} + \xi_i^\star \vec{\nu}_i + \vec{h} \right) \simeq 
+	\langle \vec{\Psi}_i^\star \vert \vec{h} \rangle +
+	\frac{1}{2} \langle \vec{h} \vert \bm{H}_i^\star \vert \vec{h} \rangle
+\end{equation}
+ 
+\begin{equation}
+\begin{array}{rcl}
+0 & \simeq & \Gamma_i\left( \vec{C} + \delta\vec{C} + (\xi_i^\star+\delta\xi_i^\star) \vec{\nu}_i \right)\\
+ & \simeq & \langle \vec{\Psi}_i^\star \vert \bm{\nu}^t \vert \delta\vec{\xi} \rangle 
+ + \delta\xi_i^\star \langle \vec{\Psi}_i^\star \vert \vec{\nu}_i \rangle
+ \\
+ & + & \frac{1}{2} {\delta\xi_i^\star}^2 \langle \vec{\nu}_i \vert \bm{H}_i^\star \vert \vec{\nu}_i \rangle\\
+ & + & \frac{1}{2}  \langle \delta\vec{\xi}   \vert \bm{\nu} \bm{H}_i^\star \bm{\nu}^t \vert  \delta\vec{\xi} \rangle\\
+ & - & \delta\xi_i^\star \langle \vec{\nu}_i \vert \bm{H}_i^\star \vert \delta\vec{\xi} \rangle\\
+\end{array}
+\end{equation} 
+ 
+\begin{equation}
+\begin{array}{rcl}
+ 0 & = & A X^2 - 2 B X + C\\
+ A & = & \langle \vec{\nu}_i \vert \bm{H}_i^\star \vert \vec{\nu}_i \rangle\\
+ B & = & -\langle \vec{\Psi}_i^\star \vert \vec{\nu}_i \rangle + \langle \vec{\nu}_i \vert \bm{H}_i^\star \vert \delta\vec{\xi} \rangle\\
+ C & = & \langle \delta\vec{\xi}   \vert \bm{\nu} \bm{H}_i^\star \bm{\nu}^t \vert  \delta\vec{\xi} \rangle 
+ + 2 \langle \vec{\Psi}_i^\star \vert \bm{\nu}^t \vert \delta\vec{\xi} \rangle \\
+\end{array}
+\end{equation}
+
+\begin{equation}
+	X_\epsilon = \dfrac{\epsilon C}{\sqrt{B^2-AC}+\epsilon B}
+\end{equation}
+
+ 
 \end{document}
 
 \begin{equation}
