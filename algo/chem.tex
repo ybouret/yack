@@ -364,6 +364,25 @@ is a concentration.
  
 \subsection{Local Solving}
 
+For each $\Gamma_i$ we know $\xi_i^\star$ such that:
+\begin{equation}
+\Gamma_i(\vec{C} + \xi_i^\star \vec{\nu}_i) = 0
+\end{equation}
+and we know exactly the function in the direction $\vec{\nu}_i$.
+\begin{equation}
+\Gamma_i(\vec{C} + \xi \vec{\nu}_i) = 0
+\end{equation}
+
+\begin{equation}
+\Gamma_i(\vec{C} + \delta\vec{C}) = 
+\Gamma_i\left(\vec{C} + 
+\left[ \dfrac{\langle\delta\vec{C}\vert\vec{\nu}_i\rangle}{\vec{\nu}_i^2} \vec{\nu}_i \right]
++
+ \left[ \delta\vec{C} - \dfrac{\langle\delta\vec{C}\vert\vec{\nu}_i\rangle}{\vec{\nu}_i^2} \vec{\nu}_i \right]\right)
+\end{equation}
+
+\end{document}
+
 \begin{equation}
 \Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) = 
 \underbrace{\left[ \Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) - (\xi_i - \xi_i^\star)

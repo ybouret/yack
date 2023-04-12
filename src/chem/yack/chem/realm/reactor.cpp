@@ -380,6 +380,25 @@ namespace yack
             std::cerr << "w="  << w << std::endl;
             std::cerr << "xi=" << xi << std::endl;
 
+            matrix<apq> W(n,n);
+            for(size_t i=1;i<=n;++i)
+            {
+                const readable<int> &nu = Nu[i];
+                const unsigned den = iota::mod2<int>::of(nu);
+                std::cerr << "nu[" << i << "] = " << nu << " => " << den << std::endl;
+                for(size_t j=1;j<=n;++j)
+                {
+                    apq q( iota::dot<int>::of(nu,Nu[j]), den);
+                    W[i][j].xch(q);
+                }
+            }
+            std::cerr << "W=" << W << std::endl;
+            matrix<apq> IW(n,n);
+            crout<apq>  LU(n);
+            LU.build(W);
+            LU.inverse(IW,W);
+            std::cerr << "IW=" << IW << std::endl;
+
         }
 
         void reactor:: solve(const xmlog            &xml,
