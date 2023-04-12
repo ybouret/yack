@@ -11,9 +11,6 @@ namespace yack
     namespace apex
     {
 
-
-
-
         //! value = m * 10^p
         template <typename T>
         class xreal
@@ -22,8 +19,8 @@ namespace yack
             static const T   maximum;
             static const T   minimum;
             static T         ten_to(unit_t q) noexcept;
-            const T      m;
-            const unit_t p;
+            const T          m;
+            const unit_t     p;
 
             xreal(const T     r);
             xreal(const xreal &) noexcept;
@@ -50,10 +47,6 @@ namespace yack
             {
                 return lhs *= rhs;
             }
-
-
-
-
 
 
         private:
