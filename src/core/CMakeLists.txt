@@ -302,7 +302,7 @@ install( FILES ${fft_decl} DESTINATION include/yack/fft )
 ## apex operations
 ##
 ########################################################################
-file(GLOB apex_impl yack/apex/*.cpp)
+file(GLOB apex_impl yack/apex/*.cpp yack/apex/*.hxx)
 file(GLOB apex_decl yack/apex/*.hpp)
 set(apex ${apex_impl} ${apex_decl})
 SOURCE_GROUP(apex FILES ${apex})

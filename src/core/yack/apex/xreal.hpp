@@ -15,7 +15,9 @@ namespace yack
         class xreal
         {
         public:
-
+            static const T   maximum;
+            static const T   minimum;
+            static T         ten_to(int q) noexcept;
             const T   m;
             const int p;
 
@@ -25,9 +27,7 @@ namespace yack
             xreal & operator=(const xreal &) noexcept;
 
             friend std::ostream & operator<<(std::ostream &,const xreal &);
-
-        private:
-
+            
         };
     }
 }
