@@ -336,6 +336,8 @@ namespace yack
             matrix<double> Psi(n,m);
             matrix<int>    Nu(n,m);
             vector<double> sig(n);
+            matrix<double> H(m,m);
+            vector<double> xi(n);
 
             {
                 size_t i=1;
@@ -353,6 +355,9 @@ namespace yack
                     eq.grad(sub_level,Psi[i], Cs[ei], Korg[ei], xmul);
                     iota::load(Nu[i], dom.topo[ei]);
                     sig[i] = sigma[ei];
+                    xi[i]  = Xi[ei];
+                    eq.hessian(sub_level,H,Corg,Korg[ei],xmul);
+                    std::cerr << "H=" << H << std::endl;
                 }
             }
 
@@ -370,9 +375,10 @@ namespace yack
                 std::cerr << "couldn't build svd..." << std::endl;
                 exit(0);
             }
-            std::cerr << "U=" << U << std::endl;
-            std::cerr << "V=" << V << std::endl;
-            std::cerr << "w=" << w << std::endl;
+            std::cerr << "U="  << U << std::endl;
+            std::cerr << "V="  << V << std::endl;
+            std::cerr << "w="  << w << std::endl;
+            std::cerr << "xi=" << xi << std::endl;
 
         }
 

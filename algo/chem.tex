@@ -383,21 +383,35 @@ g'_i(0) & = & \langle \vec{\Psi}_i - \vec{\Psi}_i^\star \vert \vec{\nu}_i \rangl
 \end{equation}
 
 \begin{equation}
-	\vec{\chi}_i = \sum_{j\not=i} \xi_j \vec{\nu}_j
+	\vec{\chi}_i = 
+	\begin{bmatrix}
+	\xi_1\\
+	\vdots\\
+	0\\
+	\vdots\\
+	\xi_N\\
+	\end{bmatrix}
 \end{equation}
  
 \begin{equation}
 \Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) \simeq g_i(\xi_i) 
 + (\xi_i - \xi_i^\star) \langle \vec{\Psi}_i^\star \vert \vec{\nu}_i\rangle
-+ \langle \vec{\Psi}_i \vert \vec{\chi}_i \rangle
-+ \frac{1}{2} \langle \vec{\chi}_i \vert \bm{H}_i \vert \vec{\chi}_i \rangle
++ \langle \vec{\Psi}_i \vert \bm{\nu}^t \vert \vec{\chi}_i \rangle
++ \frac{1}{2} \langle \vec{\chi}_i \vert \bm{\nu}\bm{H}_i\bm{\nu}^t \vert \vec{\chi}_i \rangle
 \end{equation}
  
 \begin{equation}
 (1-\alpha_i^2) \Gamma_i   \simeq g_i(\xi_i) 
 + (\xi_i - \xi_i^\star) \langle \vec{\Psi}_i^\star \vert \vec{\nu}_i\rangle
-+ \langle \vec{\Psi}_i \vert \vec{\chi}_i \rangle
-+ \frac{1}{2} \langle \vec{\chi}_i \vert \bm{H}_i \vert \vec{\chi}_i \rangle
++ \langle \vec{\Psi}_i \vert \bm{\nu}^t \vert \vec{\chi}_i \rangle
++ \frac{1}{2} \langle \vec{\chi}_i \vert \bm{\nu}\bm{H}_i\bm{\nu}^t \vert \vec{\chi}_i \rangle
+\end{equation} 
+ 
+\begin{equation}
+\langle \vec{\Omega}_i \vert \vec{\xi} \rangle = \xi_i^\star + \dfrac{1}{\langle \vec{\Psi}_i^\star \vert \vec{\nu}_i\rangle}
+\left[
+ (1-\alpha_i^2) \Gamma_i - g_i(\xi_i) + \frac{1}{2} \langle \vec{\chi}_i \vert \bm{\nu}\bm{H}_i\bm{\nu}^t \vert \vec{\chi}_i \rangle
+\right]
 \end{equation} 
  
 \end{document}
