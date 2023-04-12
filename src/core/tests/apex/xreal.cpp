@@ -1,18 +1,26 @@
 #include "yack/apex/xreal.hpp"
 #include "yack/utest/run.hpp"
+#include "yack/ios/ascii/convert.hpp"
 
 using namespace yack;
 using namespace apex;
 
 YACK_UTEST(apex_xreal)
 {
-    xreal<float> f(4);
-    std::cerr << f << std::endl;
-
-    for(int i=-10;i<=10;++i)
+    xreal<float> prod = 1;
+    for(int i=1;i<argc;++i)
     {
-        std::cerr << "10^" << i << " => " << xreal<double>::ten_to(i) << std::endl;
+        const double       r = ios::ascii::convert::real<double>(argv[i]);
+        const xreal<float> f = r;
+        std::cerr << r << " => " << f << std::endl;
+        prod *= f;
     }
+    std::cerr << "prod=" << prod << std::endl;
+
+    xreal<float> a = 100;
+    xreal<float> b = 0.01;
+    std::cerr << "c=" << a*b << std::endl;
+
 }
 YACK_UDONE()
 

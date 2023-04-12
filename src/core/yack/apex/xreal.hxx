@@ -3,7 +3,7 @@ namespace yack
     namespace apex
     {
         template <>
-        real_t xreal<real_t>:: ten_to(int q) noexcept
+        real_t xreal<real_t>:: ten_to(unit_t q) noexcept
         {
             static const real_t one(1);
             static const real_t ten(10);
@@ -29,26 +29,34 @@ namespace yack
             return one;
         }
 
-        static inline real_t xreal_dcmp(int &p, const real_t r)
+        static inline real_t xreal_dcmp(unit_t &p, const real_t r)
         {
+            static const real_t tenth(0.1);
+            static const real_t ten(10);
+
             assert(r>0);
             if(r<xreal<real_t>::minimum) throw libc::exception(EDOM,"xreal underflow");
             if(r>xreal<real_t>::maximum) throw libc::exception(EDOM,"xreal overflow");
-            p = floor( log10(r) );
-            
-            return r;
+            p = static_cast<unit_t>( floor( log10(r) ) );
+
+            real_t m = r/xreal<real_t>::ten_to(p);
+            while(m>=ten) {
+                ++p;
+                m *= tenth;
+            }
+            return m;
         }
 
         static inline
-        void xreal_make(real_t      &m,
-                        int         &p,
+        void xreal_make(real_t       &m,
+                        unit_t       &p,
                         const real_t r)
         {
             switch(__sign::of(r))
             {
                 case __zero__: return;
-                case positive: m =  xreal_dcmp(p,r); return;
-                case negative: m = -xreal_dcmp(p,r); return;
+                case positive: m =  xreal_dcmp(p,r);  return;
+                case negative: m = -xreal_dcmp(p,-r); return;
             }
         }
 
@@ -60,12 +68,20 @@ namespace yack
             xreal_make( coerce(m), coerce(p), r);
         }
 
+        template <>
+        xreal<real_t>:: xreal(const real_t m_, const unit_t p_) noexcept :
+        m(m_),
+        p(p_)
+        {
+
+        }
 
         template <>
         xreal<real_t>::xreal(const xreal &other) noexcept :
         m(other.m),
         p(other.p)
         {
+
         }
 
 
@@ -82,10 +98,40 @@ namespace yack
             return *this;
         }
 
-        std::ostream & operator<<(std::ostream &os,const xreal<real_t> &x)
+        template <>
+        xreal<real_t> xreal<real_t>:: operator+() const noexcept
         {
-            os << x.m << '[' << x.p << ']';
-            return os;
+            return *this;
+        }
+
+        template <>
+        xreal<real_t> xreal<real_t>:: operator-() const noexcept
+        {
+            switch( __sign::of(m) )
+            {
+                case __zero__: break;
+                case positive:
+                case negative:
+                    return xreal(-m,p);
+            }
+            return *this;
+        }
+
+        template <>
+        xreal<real_t> & xreal<real_t>:: operator*=(const xreal rhs)  
+        {
+            static const real_t tenth(0.1);
+            static const real_t ten(10);
+            real_t mm = m * rhs.m;
+            unit_t pp = p + rhs.p;
+            while( fabs(mm) >= ten)
+            {
+                mm *= tenth;
+                ++pp;
+            }
+            coerce(m) = mm;
+            coerce(p) = pp;
+            return *this;
         }
 
     }

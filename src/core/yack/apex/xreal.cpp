@@ -1,6 +1,5 @@
 
 #include "yack/apex/xreal.hpp"
-#include "yack/signs.hpp"
 #include "yack/system/exception.hpp"
 
 #include <cerrno>
