@@ -86,7 +86,10 @@ namespace yack
                           const xlimits          &xlim,
                           cameo::mul<double>     &xmul)
         {
-            xmul = 1; E.prod.mass_action(I,C,x.c = xlim.reac.extent,xmul); f.c = -xmul.product();
+            xmul = 1; E.prod.mass_action(I,C,x.c = xlim.reac.extent,xmul);
+            std::cerr << "make_no_reac xmul: " << xmul << " => ";
+            f.c = -xmul.product();
+            std::cerr << f.c << std::endl;
         }
 
         static inline
@@ -126,11 +129,12 @@ namespace yack
             // initializing limit and local triplets
             //
             //------------------------------------------------------------------
+            std::cerr << "aftermath: " << E << " : " << E.to_string() << std::endl;
         CYCLE:
-            triplet<double>  x = { 0 ,0, 0};
-            triplet<double>  f = { 0, 0, 0};
+            triplet<double>  x = { 0 ,0, 0 };
+            triplet<double>  f = { 0, 0, 0 };
             const limitation l = xlim(I,E,Cs);
-
+            std::cerr << "\t" << xlim << std::endl;
             switch(l)
             {
                     //----------------------------------------------------------
@@ -164,14 +168,14 @@ namespace yack
                 case limited_by_reac: assert(xlim.reac.size>0); assert(xlim.prod.size==0);
                     switch( __sign::of(f.b=E.mass_action(I,Cs,K,xmul)) )
                     {
-                        case __zero__: return aftermath( am_for(E,C0,Cs,I,xadd) );    // early return
+                        case __zero__: return aftermath( am_for(E,C0,Cs,I,xadd) );     // early return
                         case positive: f.a = f.b; x.c=xlim.reac.extent; f.c=-1; break; // in [0:x.c>0]
                         case negative:
                             f.c = f.b;
                             assert(E.d_nu<0);
                             assert(E.idnu<0);
                             x.a  = -pow(K,E.idnu);
-                            while( (f.a = E.mass_action(I,Cs,K,x.a,xmul) ) <= 0)
+                            while( (f.a = E.mass_action(I,Cs,K,x.a,xmul) ) <= 0 )
                                 x.a += x.a;
                             break;
                     }
@@ -186,7 +190,7 @@ namespace yack
                 case limited_by_prod: assert(xlim.reac.size==0); assert(xlim.prod.size>0);
                     switch( __sign::of(f.b=E.mass_action(I,Cs,K,xmul)) )
                     {
-                        case __zero__: return aftermath( am_for(E,C0,Cs,I,xadd) );                               // early return
+                        case __zero__: return aftermath( am_for(E,C0,Cs,I,xadd) );                            // early return
                         case negative: f.c = f.b; make_no_prod(E,K,Cs,I,x,f,xlim,xmul); assert(f.a>0); break; // in [x.a<0:0]
                         case positive: f.a = f.b;
                             assert(E.d_nu>0);
