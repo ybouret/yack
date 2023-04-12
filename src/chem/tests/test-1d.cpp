@@ -46,7 +46,6 @@ YACK_UTEST(1d)
     vector<double> Ctmp(M,0);
     vector<double> grd(M,0);
     matrix<double> hss(M,M);
-    vector<double> hnu(M,0);
 
     lib.conc(C0,ran);
     //for(size_t i=M;i>0;--i) if( ran.choice() ) C0[i] = 0;
@@ -69,18 +68,19 @@ YACK_UTEST(1d)
 
         const double  xi0 = am.value;
         const double  sig = eq.slope(top_level,Cs,K,xmul,xadd);
-        std::cerr << "sig=" << sig << std::endl;
         eq.grad(top_level,grd,Cs,K,xmul);
         std::cerr << "grd=" << grd << std::endl;
+        std::cerr << "sig=" << sig << std::endl;
+        std::cerr << "slp=" << iota::dot<double>::of(grd,nu,xadd) << std::endl;
         eq.hessian(top_level,hss,Cs,K,xmul);
-        std::cerr << "hss=" << hss << std::endl;
+        std::cerr << "H_1=" << hss << std::endl;
+        const double cr1 =iota::quad(hss,nu,xadd,xmul) / 2;
+        std::cerr << "cr1=" << cr1 << std::endl;
 
-        iota::mul(hnu, hss, nu, xadd);
-        const double crv = iota::dot<double>::of(nu,hnu,xadd)*0.5;
-        std::cerr << "hnu=" << hnu << std::endl;
-        std::cerr << "crv=" << crv << std::endl;
-        std::cerr << "crv=" << iota::quad(hss,nu) / 2 << std::endl;
-        std::cerr << "crv=" << iota::quad(hss,nu,xadd,xmul) / 2 << std::endl;
+        eq.hessian(top_level,hss,C0,K,xmul);
+        std::cerr << "H_0=" << hss << std::endl;
+        const double cr0 =iota::quad(hss,nu,xadd,xmul) / 2;
+        std::cerr << "cr0=" << cr0 << std::endl;
 
         std::cerr << "nu=" << nu << std::endl;
 
@@ -94,7 +94,7 @@ YACK_UTEST(1d)
             const double xi = (i*xi0)/np;
             const double G  = eq.mass_action(top_level, u, C0, Cs, K, Ctmp, xmul);
             const double L = (xi-xi0) * sig;
-            const double Q = L + (xi-xi0)*(xi-xi0) * crv;
+            const double Q = L + (xi-xi0)*(xi-xi0) * cr1;
             fp("%.15g %.15g %.15g %.15g %.15g\n",xi,G,L,Q,G-L);
         }
 
