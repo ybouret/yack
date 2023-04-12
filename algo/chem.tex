@@ -373,13 +373,24 @@ is a concentration.
 
 \begin{equation}
 \left\lbrace
-\begin{array}{rcl}
+\begin{array}{lcl}
 g_i(\xi_i^\star)  & = & 0 \\
 g'_i(\xi_i^\star) & = & 0 \\
 g_i(0) & = & \Gamma_i + \xi_i^\star \langle \vec{\Psi}_i^\star \vert \vec{\nu}_i \rangle \\
 g'_i(0) & = & \langle \vec{\Psi}_i - \vec{\Psi}_i^\star \vert \vec{\nu}_i \rangle\\
 \end{array}
 \right.
+\end{equation}
+
+\begin{equation}
+	\vec{\chi}_i = \sum_{j\not=i} \xi_j \vec{\nu}_j
+\end{equation}
+ 
+\begin{equation}
+\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) \simeq g_i(\xi_i) 
++ (\xi_i - \xi_i^\star) \langle \vec{\Psi}_i^\star \vert \vec{\nu}_i\rangle
++ \langle \vec{\Psi}_i \vert \vec{\chi}_i \rangle
++ \frac{1}{2} \langle \vec{\chi}_i \vert \bm{H}_i \vert \vec{\chi}_i \rangle
 \end{equation}
  
 \end{document}
