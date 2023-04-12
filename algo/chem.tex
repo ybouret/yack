@@ -362,182 +362,27 @@ is a concentration.
  
 \end{itemize}
  
- 
- 
-\section{Local Solving}
-
-Let us start from $\vec{C}$, and we now every $\xi_i^\star$ for each $\Gamma_i$.
-We have
-\begin{equation}
-	\Gamma_i\left(\vec{C} + \xi_i^\star \vec{\nu}_i\right) =  0
-\end{equation}
-For a given $\vec{C}$, we have a steady-state $\vec{\xi}^\star$.
-What if we change $\vec{C}$ with $\delta\vec{C}$?
-The single equilibrium can adapt $\delta\xi_i^*$ to keep $\Gamma_i$ to $0$:
+\subsection{Local Solving}
 
 \begin{equation}
-0 = \Gamma_i\left( \vec{C} + \delta\vec{C} + (\xi_i^\star+\delta\xi_i^\star) \vec{\nu}_i \right)
+\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) = 
+\underbrace{\left[ \Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) - (\xi_i - \xi_i^\star)
+\langle \vec{\Psi}_i^\star \vert \vec{\nu}_i \rangle \right]}_{g_i(\xi_i)}
++  (\xi_i - \xi_i^\star) \langle \vec{\Psi}_i^\star \vert \vec{\nu}_i\rangle
 \end{equation}
 
-\begin{equation}
-	\Gamma_i\left( \vec{C} + \xi_i^\star \vec{\nu}_i + \vec{h} \right) \simeq 
-	\langle \vec{\Psi}_i^\star \vert \vec{h} \rangle +
-	\frac{1}{2} \langle \vec{h} \vert \bm{H}_i^\star \vert \vec{h} \rangle
-\end{equation}
- 
-\begin{equation}
-\begin{array}{rcl}
-0 & \simeq & \Gamma_i\left( \vec{C} + \delta\vec{C} + (\xi_i^\star+\delta\xi_i^\star) \vec{\nu}_i \right)\\
- & \simeq & \langle \vec{\Psi}_i^\star \vert \bm{\nu}^t \vert \delta\vec{\xi} \rangle 
- + \delta\xi_i^\star \langle \vec{\Psi}_i^\star \vert \vec{\nu}_i \rangle
- \\
- & + & \frac{1}{2} {\delta\xi_i^\star}^2 \langle \vec{\nu}_i \vert \bm{H}_i^\star \vert \vec{\nu}_i \rangle\\
- & + & \frac{1}{2}  \langle \delta\vec{\xi}   \vert \bm{\nu} \bm{H}_i^\star \bm{\nu}^t \vert  \delta\vec{\xi} \rangle\\
- & - & \delta\xi_i^\star \langle \vec{\nu}_i \vert \bm{H}_i^\star \vert \delta\vec{\xi} \rangle\\
-\end{array}
-\end{equation} 
- 
-\begin{equation}
-\begin{array}{rcl}
- 0 & = & A X^2 - 2 B X + C\\
- A & = & \langle \vec{\nu}_i \vert \bm{H}_i^\star \vert \vec{\nu}_i \rangle\\
- B & = & -\langle \vec{\Psi}_i^\star \vert \vec{\nu}_i \rangle + \langle \vec{\nu}_i \vert \bm{H}_i^\star \vert \delta\vec{\xi} \rangle\\
- C & = & \langle \delta\vec{\xi}   \vert \bm{\nu} \bm{H}_i^\star \bm{\nu}^t \vert  \delta\vec{\xi} \rangle 
- + 2 \langle \vec{\Psi}_i^\star \vert \bm{\nu}^t \vert \delta\vec{\xi} \rangle \\
-\end{array}
-\end{equation}
-
-\begin{equation}
-	X_\epsilon = \dfrac{\epsilon C}{\sqrt{B^2-AC}+\epsilon B}
-\end{equation}
-
- 
-\end{document}
-
-\begin{equation}
-	\Gamma_i\left( \vec{C} + \xi_i^\star \vec{\nu}^t_i + \vec{h} \right)
-	\simeq \langle \vec{\Psi_i}^\star \vert \vec{h} \rangle
-	+\dfrac{1}{2} \langle \vec{h} \vert \bm{H}_i^\star \vert \vec{h} \rangle
-\end{equation}
- 	
-\begin{equation}
-\begin{array}{rcl}
-	\Gamma_i\left( \vec{C} + \delta\vec{C} + (\xi_i^\star+\delta\xi_i^\star) \vec{\nu}^t_i \right)
-	&\simeq &\langle \vec{\Psi_i}^\star \vert \delta\vec{C} \rangle \\
-	&+& \delta\xi_i^\star \langle \vec{\Psi_i}^\star \vert \vec{\nu}^t_i  \rangle\\
-	& + & \frac{1}{2} \langle \delta\vec{C} \vert \bm{H}_i^\star \vert \delta\vec{C} \rangle \\
-	& + & \frac{1}{2} \langle \vec{\nu}^t_i  \vert \bm{H}_i^\star \vert \vec{\nu}^t_i  \rangle {\delta\xi_i^\star}^2\\
-	& + & \langle \vec{\nu}^t_i  \vert \bm{H}_i^\star \vert \delta\vec{C} \rangle \delta\xi_i^\star\\
-\end{array}
-\end{equation} 
-
-
-We look for a $\delta \xi_i^\star$ that will decrease $|\xi_i^\star+\delta \xi_i^\star|$
-
-\begin{equation}
-|\xi_i^\star+\delta \xi_i^\star| \leq |\xi_i^\star| 
-\Leftrightarrow 
-\left\lbrace
-\begin{array}{rcl}
-\xi_i^\star+\delta \xi_i^\star \geq 0 & \text{and} & \xi_i^\star+\delta \xi_i^\star \leq |\xi_i^\star|\\
-\xi_i^\star+\delta \xi_i^\star \leq 0 & \text{and} & \xi_i^\star+\delta \xi_i^\star \geq -|\xi_i^\star|\\
-\end{array}
-\right.
-\end{equation}
-
-\begin{equation}
-|\xi_i^\star+\delta \xi_i^\star| \leq |\xi_i^\star| 
-\Leftrightarrow 
-\left\lbrace
-\begin{array}{rcl}
- \delta\xi_i^\star  \geq - \xi_i^\star  & \text{and} & \delta \xi_i^\star \leq |\xi_i^\star| - \xi_i^\star\\
-\delta  \xi_i^\star \leq - \xi_i^\star  & \text{and} & \delta \xi_i^\star \geq -|\xi_i^\star| - \xi_i^\star\\
-\end{array}
-\right.
-\end{equation}
-
-\begin{equation}
-|\xi_i^\star+\delta \xi_i^\star| \leq |\xi_i^\star| 
-\Leftrightarrow 
-\delta \xi_i^\star \in [ -\xi_i^\star - |\xi_i^\star| ; -\xi_i^\star + |\xi_i^\star|  ]
-\end{equation}
-
- 
-A valid $\delta\vec{C}$ is
-\begin{equation}
-	\delta\vec{C} = \bm{\nu}^t \delta\vec{\xi}
-\end{equation}
- 
- \begin{equation}
-\begin{array}{rcl}
-	0
-		&\simeq &\langle \vec{\Psi_i}^\star \vert \bm{\nu}^t \delta\vec{\xi} \rangle \\
-	&+& \delta\xi_i^\star \langle \vec{\Psi_i}^\star \vert \vec{\nu}^t_i  \rangle\\
-	& + & \frac{1}{2} \langle \delta\vec{\xi} \vert \bm{\nu}\bm{H}_i^\star \bm{\nu}^t \vert \delta\vec{\xi} \rangle \\
-	& + & \frac{1}{2} \langle \vec{\nu}^t_i  \vert \bm{H}_i^\star \vert \vec{\nu}^t_i  \rangle {\delta\xi_i^\star}^2\\
-	& + & \langle \vec{\nu}^t_i  \vert \bm{H}_i^\star \bm{\nu}^t \vert \delta\vec{\xi} \rangle \delta\xi_i^\star\\
-\end{array}
-\end{equation} 
- 
-\begin{equation}
-\begin{array}{rcl}
-	0
-		&\simeq &\langle \vec{\Omega}_i  \vert \delta\vec{\xi} \rangle \\
-	&+& \delta\xi_i^\star \\
-	& + & \frac{1}{2} \langle \delta\vec{\xi} \vert \bm{\nu}\bm{\bar H}_i^\star \bm{\nu}^t \vert \delta\vec{\xi} \rangle \\
-	& + & \frac{1}{2} \langle \vec{\nu}^t_i  \vert \bm{\bar H}_i^\star \vert \vec{\nu}^t_i  \rangle {\delta\xi_i^\star}^2\\
-	& + & \langle \vec{\nu}^t_i  \vert \bm{\bar H}_i^\star \bm{\nu}^t \vert \delta\vec{\xi} \rangle \delta\xi_i^\star\\
-\end{array}
-\end{equation} 
-
-\begin{equation}
-\vec{0} \simeq 
-\left(
-	\bm{\Omega}
-	+ 
-\begin{bmatrix}
-\delta \xi_1^\star \langle \vec{\nu}^t_1  \vert \bm{\bar H}_1^\star \bm{\nu}^t \vert \\
-\ldots\\
-\ldots\\
-\end{bmatrix}
-\right) \delta\vec{\xi} + \delta\vec{\xi}^\star 
-\end{equation}
-
-\end{document}
-
-
-
-\section{Other} 
-  The function:
 \begin{equation}
 \left\lbrace
 \begin{array}{rcl}
-	\Gamma_i \left(\vec{C} +  \xi_i \vec{\nu}^t_i\right) & = &
-	 g_i(\xi_i) + 
-	 \left(\xi_i - \xi_i^\star\right) 	\langle \vec{\Psi_i}^\star \vert \vec{\nu}^t_i \rangle\\
-	 g_i(0)            & = & \Gamma_i + \xi_i^\star \langle \vec{\Psi_i}^\star \vert \vec{\nu}^t_i \rangle \\
-	 g_i(\xi_i^\star)  & = & 0\\
-	 g'_i(0)           & = & \underbrace{\langle \vec{\Psi_i} \vert \vec{\nu}^t_i \rangle}_{\Gamma'_i\leq0} - \underbrace{\langle \vec{\Psi_i}^\star \vert \vec{\nu}^t_i \rangle}_{<0} 
-	 = - \langle \delta\vec{\Psi}_i \vert \vec{\nu}^t_i \rangle\\
-	 g'_i(\xi_i^\star) & = & 0\\
-	 \end{array}
+g_i(\xi_i^\star)  & = & 0 \\
+g'_i(\xi_i^\star) & = & 0 \\
+g_i(0) & = & \Gamma_i + \xi_i^\star \langle \vec{\Psi}_i^\star \vert \vec{\nu}_i \rangle \\
+g'_i(0) & = & \langle \vec{\Psi}_i - \vec{\Psi}_i^\star \vert \vec{\nu}_i \rangle\\
+\end{array}
 \right.
 \end{equation}
-
-\begin{equation}
-	\Gamma_i \left(\vec{C} +  \xi_i \vec{\nu}^t_i  + \sum_{j\not=i} \xi_j \vec{\nu}^t_j \right) 
-	\simeq g_i(\xi_i) + \left(\xi_i - \xi_i^\star\right)
-	\langle \vec{\Psi_i}^\star \vert \vec{\nu}^t_i \rangle + \sum_{j\not=i} \xi_j \langle \vec{\Psi}_{\xi_i}  \vert \vec{\nu}^t_j \rangle
-\end{equation} 	
-
-\begin{equation}
-	\vec{\Psi}_{\xi_i} \simeq \vec{\Psi}_i + \xi_i \vec{\Theta}_i,\;\;
-	\vec{\Theta}_i = \dfrac{1}{\xi_i^\star}\left(\vec{\Psi}_i^\star-\vec{\Psi}_i\right)
-	= \dfrac{1}{\xi_i^\star} \delta\vec{\Psi}_i
-\end{equation}
-
+ 
 \end{document}
-
 
 
  
