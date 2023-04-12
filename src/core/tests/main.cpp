@@ -157,6 +157,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(apex_npd);
     YACK_UTEST(alga);
     YACK_UTEST(apex_isqrt);
+    YACK_UTEST(apex_xreal);
 
     YACK_UTEST(ios_c_file);
     YACK_UTEST(ios_streams);
