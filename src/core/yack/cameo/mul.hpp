@@ -110,6 +110,7 @@ namespace yack
                 return product();
             }
 
+            //! product of three
             template <typename U, typename V, typename W> inline
             double operator()(const U &u, const V &v, const W &w)
             {
@@ -120,6 +121,7 @@ namespace yack
                 return product();
             }
 
+            //! product of four
             template <typename U, typename V, typename W, typename X> inline
             double operator()(const U &u, const V &v, const W &w, const X &x)
             {

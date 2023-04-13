@@ -37,6 +37,17 @@ YACK_UTEST(apex_xreal)
         }
     }
 
+    if(xr.size()>0)
+    {
+        xreal<float> sum = xr[1];
+        for(size_t i=2;i<=xr.size();++i)
+        {
+            sum += xr[i];
+        }
+
+    }
+
+
 }
 YACK_UDONE()
 

@@ -84,5 +84,53 @@ namespace yack
             return *this;
         }
 
+        template <>
+        xreal<real_t> & xreal<real_t>:: operator +=(const xreal rhs)
+        {
+
+            static const unsigned zlhs = 0x01;
+            static const unsigned zrhs = 0x02;
+            static const unsigned zall = zlhs|zrhs;
+
+            // check trivial cases
+            unsigned flag = 0x00;
+            if(0==rhs.p) { flag |= zrhs; assert( fabs(rhs.m) <= 0); }
+            if(0==p)     { flag |= zlhs; assert( fabs(m) <= 0);     }
+
+            switch(flag)
+            {
+                case zrhs:
+                case zall:
+                    return *this;
+
+                case zlhs:
+                    return (*this) = rhs;
+
+                default:
+                    assert(!flag);
+                    break;
+            }
+
+
+            // find big/little exponents
+            int    lit_p = rhs.p; assert(0!=lit_p);
+            real_t lit_m = rhs.m; assert(fabs(lit_m)>0);
+            int    big_p = p;     assert(0!=big_p);
+            real_t big_m = m;     assert(fabs(big_m)>0);
+
+            if(lit_p>big_p)
+            {
+                cswap(big_m,lit_m);
+                cswap(big_p,lit_p);
+            }
+
+            std::cerr << "big: " << big_m << " * 2^(" << big_p << ")" << std::endl;
+            std::cerr << "lit: " << lit_m << " * 2^(" << lit_p << ")" << std::endl;
+
+
+            const int q = lit_p - big_p; assert(q<=0);
+            std::cerr << "-> " << big_m << " + (" << lit_m << ")/2^" << -q << std::endl;
+            return *this;
+        }
     }
 }
