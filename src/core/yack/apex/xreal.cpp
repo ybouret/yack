@@ -19,8 +19,7 @@ namespace yack
 
         template <> const long double xreal<long double>::maximum = LDBL_MAX;
         template <> const long double xreal<long double>::minimum = LDBL_MIN;
-
-
+        
     }
 }
 

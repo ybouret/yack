@@ -201,7 +201,7 @@ namespace yack
                                 }
                             }
                         EVAL:
-                            std::cerr << "eval=" << eval << std::endl;
+                            //std::cerr << "eval=" << eval << std::endl;
                             if(eval>0)
                             {
                                 if(eneg) res *= ipower<T,unsigned>(tenth,eval); else res *= ipower<T,unsigned>(ten,eval);

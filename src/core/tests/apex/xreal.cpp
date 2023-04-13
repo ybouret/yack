@@ -10,7 +10,7 @@ YACK_UTEST(apex_xreal)
     xreal<float> prod = 1;
     for(int i=1;i<argc;++i)
     {
-        const double       r = ios::ascii::convert::real<double>(argv[i]);
+        const float        r = ios::ascii::convert::real<float>(argv[i]);
         const xreal<float> f = r;
         std::cerr << r << " => " << f << std::endl;
         prod *= f;

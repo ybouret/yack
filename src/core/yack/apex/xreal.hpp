@@ -18,9 +18,9 @@ namespace yack
         public:
             static const T   maximum;
             static const T   minimum;
-            static T         ten_to(unit_t q) noexcept;
+            
+            const int        p;
             const T          m;
-            const unit_t     p;
 
             xreal(const T     r);
             xreal(const xreal &) noexcept;
@@ -29,29 +29,52 @@ namespace yack
 
             friend inline std::ostream & operator<<(std::ostream &os,const xreal<T> &x)
             {
-                os << x.m;
-                switch( __sign::of(x.p) )
+                os << '(' << x.m;
+                switch(x.p)
                 {
-                    case __zero__: break;
-                    case positive:
-                    case negative: os << 'E' << x.p; break;
+                    case -1: os << "/2"; goto END;
+                    case  0:             goto END;
+                    case  1: os << "*2"; goto END;
+                    default:
+                        break;
                 }
+                if(x.p<0)
+                {
+                    os << "*2^(" << x.p << ")";
+                }
+                else
+                {
+                    os << "*2^" << x.p;
+                }
+            END:
+                os << ')';
                 return os;
             }
 
+            //__________________________________________________________________
+            //
+            // unary operators
+            //__________________________________________________________________
             xreal operator+() const noexcept;
             xreal operator-() const noexcept;
 
             xreal &      operator*=(const xreal rhs);
-            friend xreal operator*(xreal lhs, const xreal rhs)
+            inline friend xreal operator*(xreal lhs, const xreal rhs)
             {
                 return lhs *= rhs;
             }
 
+            xreal &      operator/=(const xreal rhs);
+            inline friend xreal operator/(xreal lhs, const xreal rhs)
+            {
+                return lhs /= rhs;
+            }
+
 
         private:
-            xreal(const T m_, const unit_t p_) noexcept;
+            xreal(const int p_, const T m_) noexcept;
         };
+        
     }
 }
 
