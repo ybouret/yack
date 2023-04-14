@@ -2,13 +2,27 @@ namespace yack
 {
     namespace apex
     {
+        template <>
+        bool xreal<real_t>:: is_valid() const noexcept
+        {
+            static const real_t one(1);
+            static const real_t half(0.5);
 
+            const real_t am = fabs(m);
+            if(am>=one||am<half) {
+                std::cerr << "p=" << p << " and m=" << m << std::endl;
+                return false;
+            }
+
+            return true;
+        }
 
         template <>
         xreal<real_t>:: xreal(const real_t r) :
         p(0),
         m( frexp(r, & coerce(p) ) )
         {
+            assert( is_valid() );
         }
 
 
@@ -18,7 +32,7 @@ namespace yack
         p(other.p),
         m(other.m)
         {
-
+            assert( is_valid() );
         }
 
         template <>
@@ -26,6 +40,7 @@ namespace yack
         p(p_),
         m(m_)
         {
+            assert( is_valid() );
         }
         
 
@@ -69,6 +84,7 @@ namespace yack
             const xreal<real_t> xr(mm);
             coerce(m) = xr.m;
             coerce(p) = (fabs(m) <= 0) ? 0 : (xr.p + pp);
+            assert( is_valid() );
             return *this;
         }
 
@@ -81,6 +97,7 @@ namespace yack
             const xreal<real_t> xr(mm);
             coerce(m) = xr.m;
             coerce(p) = (fabs(m) <= 0) ? 0 : (xr.p + pp);
+            assert( is_valid() );
             return *this;
         }
 
@@ -88,31 +105,36 @@ namespace yack
         xreal<real_t> & xreal<real_t>:: operator +=(const xreal rhs)
         {
 
-            static const unsigned zlhs = 0x01;
-            static const unsigned zrhs = 0x02;
-            static const unsigned zall = zlhs|zrhs;
+            static const unsigned zero_lhs = 0x01;
+            static const unsigned zero_rhs = 0x02;
+            static const unsigned zero_all = zero_lhs|zero_rhs;
 
+            //------------------------------------------------------------------
             // check trivial cases
-            unsigned flag = 0x00;
-            if(0==rhs.p) { flag |= zrhs; assert( fabs(rhs.m) <= 0); }
-            if(0==p)     { flag |= zlhs; assert( fabs(m) <= 0);     }
-
-            switch(flag)
+            //------------------------------------------------------------------
             {
-                case zrhs:
-                case zall:
-                    return *this;
+                unsigned flag = 0x00;
+                if(fabs(rhs.m)<=0)  { flag |= zero_rhs; }
+                if(fabs(m)<=0)      { flag |= zero_lhs; }
 
-                case zlhs:
-                    return (*this) = rhs;
+                switch(flag)
+                {
+                    case zero_rhs:
+                    case zero_all:
+                        return *this;
 
-                default:
-                    assert(!flag);
-                    break;
+                    case zero_lhs:
+                        return (*this) = rhs;
+
+                    default:
+                        assert(!flag);
+                        break;
+                }
             }
 
-
+            //------------------------------------------------------------------
             // find big/little exponents
+            //------------------------------------------------------------------
             int    lit_p = rhs.p; assert(0!=lit_p);
             real_t lit_m = rhs.m; assert(fabs(lit_m)>0);
             int    big_p = p;     assert(0!=big_p);
@@ -128,8 +150,12 @@ namespace yack
             std::cerr << "lit: " << lit_m << " * 2^(" << lit_p << ")" << std::endl;
 
 
-            const int q = lit_p - big_p; assert(q<=0);
-            std::cerr << "-> " << big_m << " + (" << lit_m << ")/2^" << -q << std::endl;
+            const int   dp = lit_p - big_p; assert(dp<=0);
+            const xreal xr = lit_m / big_m;
+            coerce(xr.p) += dp;
+            std::cerr << "-> " << big_m << " + (" << lit_m << ")*2^(" << dp << ") => "
+            << big_m << "*(1+" << xr << ")" << std::endl;
+
             return *this;
         }
     }

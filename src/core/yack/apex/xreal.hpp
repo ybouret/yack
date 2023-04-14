@@ -114,6 +114,7 @@ namespace yack
 
         private:
             xreal(const int p_, const T m_) noexcept;
+            bool is_valid() const noexcept;
         };
         
     }
