@@ -2,6 +2,7 @@
 #include "yack/utest/run.hpp"
 #include "yack/ios/ascii/convert.hpp"
 #include "yack/sequence/vector.hpp"
+#include <cfloat>
 
 using namespace yack;
 using namespace apex;
@@ -37,16 +38,24 @@ YACK_UTEST(apex_xreal)
         }
     }
 
+    std::cerr << std::endl << "sum" << std::endl;
     if(xr.size()>0)
     {
         xreal<float> sum = xr[1];
         for(size_t i=2;i<=xr.size();++i)
         {
             sum += xr[i];
+            std::cerr << "\t" << sum << " = " << *sum << std::endl;
         }
 
     }
 
+    if(false)
+    {
+        const xreal<float>       ef(FLT_EPSILON);  std::cerr << "ef=" << ef << std::endl;
+        const xreal<double>      ed(DBL_EPSILON);  std::cerr << "ed=" << ed << std::endl;
+        const xreal<long double> el(LDBL_EPSILON); std::cerr << "el=" << el << std::endl;
+    }
 
 }
 YACK_UDONE()

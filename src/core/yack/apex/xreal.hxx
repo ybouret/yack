@@ -25,6 +25,12 @@ namespace yack
             assert( is_valid() );
         }
 
+        template <>
+        real_t   xreal<real_t>:: operator*() const
+        {
+            return ldexp(m,p);
+        }
+
 
 
         template <>
@@ -104,16 +110,18 @@ namespace yack
         template <>
         xreal<real_t> & xreal<real_t>:: operator +=(const xreal rhs)
         {
-
-            static const unsigned zero_lhs = 0x01;
-            static const unsigned zero_rhs = 0x02;
-            static const unsigned zero_all = zero_lhs|zero_rhs;
+            static const xreal<real_t> xeps(epsilon);
+            static const int           pmin = xeps.p-1;
 
             //------------------------------------------------------------------
             // check trivial cases
             //------------------------------------------------------------------
             {
-                unsigned flag = 0x00;
+                static const unsigned zero_lhs = 0x01;
+                static const unsigned zero_rhs = 0x02;
+                static const unsigned zero_all = zero_lhs|zero_rhs;
+                unsigned              flag     = 0x00;
+
                 if(fabs(rhs.m)<=0)  { flag |= zero_rhs; }
                 if(fabs(m)<=0)      { flag |= zero_lhs; }
 
@@ -135,28 +143,44 @@ namespace yack
             //------------------------------------------------------------------
             // find big/little exponents
             //------------------------------------------------------------------
-            int    lit_p = rhs.p; assert(0!=lit_p);
-            real_t lit_m = rhs.m; assert(fabs(lit_m)>0);
-            int    big_p = p;     assert(0!=big_p);
-            real_t big_m = m;     assert(fabs(big_m)>0);
+            xreal<real_t> lit(rhs);     assert(fabs(lit.m)>=0.5);
+            xreal<real_t> big(*this);   assert(fabs(big.m)>=0.5);
 
-            if(lit_p>big_p)
+
+            if(lit.p>big.p)
             {
-                cswap(big_m,lit_m);
-                cswap(big_p,lit_p);
+                cswap(big,lit);
+            }
+            assert(lit.p<=big.p);
+            //std::cerr << "big: " << big << std::endl;
+            //std::cerr << "lit: " << lit << std::endl;
+
+            //------------------------------------------------------------------
+            // factor for big.m
+            //------------------------------------------------------------------
+            const xreal xr = lit.m / big.m;
+            coerce(xr.p) += lit.p - big.p;
+            if(xr.p<pmin)
+            {
+                // underflow
+                //std::cerr << "underflow" << std::endl;
+                return (*this = big);
+            }
+            else
+            {
+                // compute new representation
+                const xreal<real_t> xf(big.m * (1 + *xr));
+                coerce(xf.p) += big.p;
+                return (*this = xf);
             }
 
-            std::cerr << "big: " << big_m << " * 2^(" << big_p << ")" << std::endl;
-            std::cerr << "lit: " << lit_m << " * 2^(" << lit_p << ")" << std::endl;
-
-
-            const int   dp = lit_p - big_p; assert(dp<=0);
-            const xreal xr = lit_m / big_m;
-            coerce(xr.p) += dp;
-            std::cerr << "-> " << big_m << " + (" << lit_m << ")*2^(" << dp << ") => "
-            << big_m << "*(1+" << xr << ")" << std::endl;
-
-            return *this;
         }
+
+        template <>
+        xreal<real_t> & xreal<real_t>:: operator -=(const xreal rhs)
+        {
+            return (*this) += -rhs;
+        }
+
     }
 }

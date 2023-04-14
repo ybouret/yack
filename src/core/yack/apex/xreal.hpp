@@ -29,7 +29,8 @@ namespace yack
             static const T   minimum; //!< [FLT|DBL|LDBL]_MIN
             static const int max_exp; //!< [FLT|DBL|LDBL]_MAX_EXP
             static const int min_exp; //!< [FLT|DBL|LDBL]_MIN_EXP
-
+            static const T   epsilon; //!< [FLT|DBL|LDBL]_EPSILON
+            
             //__________________________________________________________________
             //
             // C++
@@ -71,6 +72,12 @@ namespace yack
 
             //__________________________________________________________________
             //
+            // converson
+            //__________________________________________________________________
+            T operator*() const;
+
+            //__________________________________________________________________
+            //
             // unary operators
             //__________________________________________________________________
             xreal operator+() const noexcept; //!< unary+
@@ -103,6 +110,15 @@ namespace yack
             inline friend xreal operator+(xreal lhs, const xreal rhs) {
                 return    lhs += rhs;
             } //!< return lhs +  rhs
+
+            //__________________________________________________________________
+            //
+            // subtraction
+            //__________________________________________________________________
+            xreal &      operator-=(const xreal rhs); //!< subtraction
+            inline friend xreal operator-(xreal lhs, const xreal rhs) {
+                return    lhs -= rhs;
+            } //!< return lhs -  rhs
 
 
             //__________________________________________________________________
