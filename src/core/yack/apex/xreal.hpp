@@ -45,6 +45,8 @@ namespace yack
             // methods
             //___________________________________________________________________
 
+            static xreal _1() noexcept;
+
             //! output
             friend inline std::ostream & operator<<(std::ostream &os,const xreal<T> &x)
             {
@@ -120,6 +122,7 @@ namespace yack
                 return    lhs -= rhs;
             } //!< return lhs -  rhs
 
+            xreal & power(unsigned n) const;
 
             //__________________________________________________________________
             //

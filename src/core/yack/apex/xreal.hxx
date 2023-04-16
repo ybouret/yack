@@ -48,11 +48,18 @@ namespace yack
         {
             assert( is_valid() );
         }
-        
 
+        
         template <>
         xreal<real_t>:: ~xreal() noexcept
         {
+        }
+
+        template <>
+        xreal<real_t> xreal<real_t>:: _1() noexcept
+        {
+            static const real_t half(0.5);
+            return xreal(1,half);
         }
 
         template <>
@@ -180,6 +187,12 @@ namespace yack
         xreal<real_t> & xreal<real_t>:: operator -=(const xreal rhs)
         {
             return (*this) += -rhs;
+        }
+
+        template <>
+        xreal<real_t> & xreal<real_t>:: power(unsigned n) const
+        {
+            
         }
 
     }
