@@ -2,10 +2,25 @@
 #include "yack/utest/run.hpp"
 #include "yack/ios/ascii/convert.hpp"
 #include "yack/sequence/vector.hpp"
+#include "yack/system/rtti.hpp"
 #include <cfloat>
 
 using namespace yack;
 using namespace apex;
+
+template <typename T>
+static inline
+void check1()
+{
+    std::cerr << std::endl;
+    std::cerr << "check1<" << rtti::name<T>() << ">" << std::endl;
+    static const T one(1);
+    static const T half(0.5);
+    const xreal<T> xr1(one);
+    YACK_CHECK(1==xr1.p);
+    YACK_CHECK(fabs(half-xr1.m) <= 0);
+
+}
 
 YACK_UTEST(apex_xreal)
 {
@@ -47,8 +62,12 @@ YACK_UTEST(apex_xreal)
             sum += xr[i];
             std::cerr << "\t" << sum << " = " << *sum << std::endl;
         }
-
     }
+
+    check1<float>();
+    check1<double>();
+    check1<long double>();
+
 
     if(false)
     {
