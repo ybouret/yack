@@ -216,7 +216,8 @@ namespace yack
             std::cerr << "xQ=" << xQ << std::endl;
 
             std::cerr << "\tprod =" << Q.prod() << std::endl;
-            std::cerr << "\txprod=" << xQ.prod() << std::endl;
+            const apex::xreal<T> xp = xQ.prod();
+            std::cerr << "\txprod=" << xp << " => " << *xp << std::endl;
 
         }
     }
