@@ -61,6 +61,10 @@ namespace yack
         //! create default node
         inline node_type  *new_node() { return cache->create(); }
 
+        //! zombify an alive node
+        inline void zombify(node_type *alive) noexcept { cache->ingest(alive); }
+
+
         //! create one-argument node
         template <typename U>
         inline node_type *new_node(U &u) { return cache->create(u); }
@@ -111,14 +115,14 @@ namespace yack
         //! remove node
         inline void cut(NODE *node) noexcept {
             assert(node);
-            cache->ingest( pop(node) );
+            zombify( pop(node) );
         }
         
         //! remove back
         inline void cut_tail() noexcept
         {
             assert(size>=0);
-            cache->ingest( pop_back() );
+            zombify( pop_back() );
         }
 
         //! remove back n
@@ -132,8 +136,7 @@ namespace yack
         inline void cut_head() noexcept
         {
             assert(size);
-            cache->ingest( pop_front() );
-            //cache->zstore( cache->turn( pop_front() ) );
+            zombify( pop_front() );
         }
 
         //! remove front n
