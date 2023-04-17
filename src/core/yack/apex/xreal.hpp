@@ -123,6 +123,39 @@ namespace yack
                 return    lhs -= rhs;
             } //!< return lhs -  rhs
 
+            //! sign_type from comparison
+            static sign_type scompare(const xreal &lhs,
+                                      const xreal &rhs);
+
+            //__________________________________________________________________
+            //
+            // comparisons
+            //__________________________________________________________________
+            inline friend bool operator==(const xreal lhs, const xreal rhs) { return __zero__ == scompare(lhs,rhs); } //!< test
+            inline friend bool operator!=(const xreal lhs, const xreal rhs) { return __zero__ != scompare(lhs,rhs); } //!< test
+            inline friend bool operator< (const xreal lhs, const xreal rhs) { return negative == scompare(lhs,rhs); } //!< test
+            inline friend bool operator> (const xreal lhs, const xreal rhs) { return positive == scompare(lhs,rhs); } //!< tes
+            inline friend bool operator<=(const xreal lhs, const xreal rhs)
+            {
+                switch(scompare(lhs,rhs))
+                {
+                    case negative:
+                    case __zero__: return true;
+                    case positive: return false;
+                }
+            } //!< test
+
+            inline friend bool operator>=(const xreal lhs, const xreal rhs)
+            {
+                switch(scompare(lhs,rhs))
+                {
+                    case positive:
+                    case __zero__: return true;
+                    case negative: return false;
+                }
+            } //!< test
+
+
             
             //__________________________________________________________________
             //
@@ -135,7 +168,19 @@ namespace yack
             xreal(const int p_, const T m_) noexcept;
             bool is_valid() const noexcept;
         };
-        
+
+#if !defined(_MSC_VER)
+        //! declaring constants is necessary
+#define YACK_XREAL(VALUE)                                \
+template <> const float       xreal<float>      ::VALUE; \
+template <> const double      xreal<double>     ::VALUE; \
+template <> const long double xreal<long double>::VALUE
+
+        YACK_XREAL(epsilon);     //!< epsilon
+        YACK_XREAL(minimum);     //!< minimum
+        YACK_XREAL(maximum);     //!< maximum
+
+#endif
     }
 }
 

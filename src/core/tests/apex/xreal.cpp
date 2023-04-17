@@ -19,7 +19,8 @@ void check1()
     const xreal<T> xr1(one);
     YACK_CHECK(1==xr1.p);
     YACK_CHECK(fabs(half-xr1.m) <= 0);
-
+    std::cerr << "epsilon  = " << xreal<T>::epsilon  << std::endl;
+    std::cerr << "mant_dig = " << xreal<T>::mant_dig << std::endl;
 }
 
 YACK_UTEST(apex_xreal)
@@ -69,17 +70,7 @@ YACK_UTEST(apex_xreal)
     check1<long double>();
 
 
-    if(true)
-    {
-        const xreal<float>       ef(FLT_EPSILON);  std::cerr << "ef=" << ef << std::endl;
-        const xreal<double>      ed(DBL_EPSILON);  std::cerr << "ed=" << ed << std::endl;
-        const xreal<long double> el(LDBL_EPSILON); std::cerr << "el=" << el << std::endl;
-
-        std::cerr << "flt  mant_dig = " << xreal<float>      :: mant_dig << std::endl;
-        std::cerr << "dbl  mant_dig = " << xreal<double>     :: mant_dig << std::endl;
-        std::cerr << "ldbl mant_dig = " << xreal<long double>:: mant_dig << std::endl;
-
-    }
+    
 
 }
 YACK_UDONE()

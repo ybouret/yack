@@ -9,9 +9,20 @@ namespace yack
             static const real_t half(0.5);
 
             const real_t am = fabs(m);
-            if(am>=one||am<half) {
-                std::cerr << "p=" << p << " and m=" << m << std::endl;
-                return false;
+            if(am<=0)
+            {
+                if(p!=0)
+                {
+                    std::cerr << "p=" << p << " and m=" << m << std::endl;
+                    return false;
+                }
+            }
+            else
+            {
+                if(am>=one||am<half) {
+                    std::cerr << "p=" << p << " and m=" << m << std::endl;
+                    return false;
+                }
             }
 
             return true;
@@ -166,7 +177,7 @@ namespace yack
             // factor for big.m
             //------------------------------------------------------------------
             const xreal xr = lit.m / big.m;
-            coerce(xr.p) += lit.p - big.p;
+            coerce(xr.p)  += lit.p - big.p;
             if(xr.p<pmin)
             {
                 // underflow
@@ -177,7 +188,14 @@ namespace yack
             {
                 // compute new representation
                 const xreal<real_t> xf(big.m * (1 + *xr));
-                coerce(xf.p) += big.p;
+                if( fabs(xf.m) <= 0)
+                {
+                    coerce(xf.p) = 0;
+                }
+                else
+                {
+                    coerce(xf.p) += big.p;
+                }
                 return (*this = xf);
             }
 
@@ -189,7 +207,22 @@ namespace yack
             return (*this) += -rhs;
         }
 
-        
+
+        template <>
+        sign_type xreal<real_t>:: scompare(const xreal &lhs,
+                                           const xreal &rhs)
+        {
+            const xreal<real_t> delta = lhs-rhs;
+            if(delta.m<0)
+                return negative;
+            else
+            {
+                if(0<delta.m)
+                    return positive;
+                else
+                    return __zero__;
+            }
+        }
 
     }
 }
