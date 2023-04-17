@@ -45,7 +45,7 @@ namespace
             for(size_t i=ran.leq(10)+1;i>0;--i)
             {
                 const T tmp = bring::get<T>(ran);
-                rs.insert(tmp,ran.leq(4)+1);
+                rs.insert(tmp,unsigned(ran.leq(4)+1));
             }
             std::cerr << rs << std::endl;
         }
