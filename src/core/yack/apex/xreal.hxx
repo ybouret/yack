@@ -8,7 +8,7 @@ namespace yack
             static const real_t one(1);
             static const real_t half(0.5);
 
-            const real_t am = fabs(m);
+            const real_t am = std::abs(m);
             if(am<=0)
             {
                 if(p!=0)
@@ -107,7 +107,7 @@ namespace yack
             const int           pp = p + rhs.p;
             const xreal<real_t> xr(mm);
             coerce(m) = xr.m;
-            coerce(p) = (fabs(m) <= 0) ? 0 : (xr.p + pp);
+            coerce(p) = (std::abs(m) <= 0) ? 0 : (xr.p + pp);
             assert( is_valid() );
             return *this;
         }
@@ -115,12 +115,12 @@ namespace yack
         template <>
         xreal<real_t> & xreal<real_t>:: operator/=(const xreal rhs)
         {
-            if(fabs(rhs.m)<=0) throw libc::exception(EDOM,"xreal division by zero");
+            if(std::abs(rhs.m)<=0) throw libc::exception(EDOM,"xreal division by zero");
             const real_t        mm = m / rhs.m;
             const int           pp = p - rhs.p;
             const xreal<real_t> xr(mm);
             coerce(m) = xr.m;
-            coerce(p) = (fabs(m) <= 0) ? 0 : (xr.p + pp);
+            coerce(p) = (std::abs(m) <= 0) ? 0 : (xr.p + pp);
             assert( is_valid() );
             return *this;
         }
@@ -140,8 +140,8 @@ namespace yack
                 static const unsigned zero_all = zero_lhs|zero_rhs;
                 unsigned              flag     = 0x00;
 
-                if(fabs(rhs.m)<=0)  { flag |= zero_rhs; }
-                if(fabs(m)<=0)      { flag |= zero_lhs; }
+                if(std::abs(rhs.m)<=0)  { flag |= zero_rhs; }
+                if(std::abs(m)<=0)      { flag |= zero_lhs; }
 
                 switch(flag)
                 {
@@ -161,8 +161,8 @@ namespace yack
             //------------------------------------------------------------------
             // find big/little exponents
             //------------------------------------------------------------------
-            xreal<real_t> lit(rhs);     assert(fabs(lit.m)>=0.5);
-            xreal<real_t> big(*this);   assert(fabs(big.m)>=0.5);
+            xreal<real_t> lit(rhs);     assert(std::abs(lit.m)>=0.5);
+            xreal<real_t> big(*this);   assert(std::abs(big.m)>=0.5);
 
 
             if(lit.p>big.p)
@@ -188,7 +188,7 @@ namespace yack
             {
                 // compute new representation
                 const xreal<real_t> xf(big.m * (1 + *xr));
-                if( fabs(xf.m) <= 0)
+                if( std::abs(xf.m) <= 0)
                 {
                     coerce(xf.p) = 0;
                 }
