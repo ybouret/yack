@@ -46,7 +46,7 @@ namespace yack
             // methods
             //___________________________________________________________________
 
-            static xreal _1() noexcept;
+            static xreal _1() noexcept; //!< 0.5 * 2^1
 
             //! output
             friend inline std::ostream & operator<<(std::ostream &os,const xreal<T> &x)
@@ -75,9 +75,9 @@ namespace yack
 
             //__________________________________________________________________
             //
-            // converson
+            // conversion
             //__________________________________________________________________
-            T operator*() const;
+            T operator*() const; //!< ldexp
 
             //__________________________________________________________________
             //

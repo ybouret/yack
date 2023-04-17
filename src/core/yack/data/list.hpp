@@ -261,13 +261,39 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
             }
             else
             {
-                NODE *next = mine->next;
+                NODE *next = mine->next; assert(NULL!=next);
                 mine->next = node; node->next = next;
                 next->prev = node; node->prev = mine;
                 this->increase();
                 return node;
             }
         }
+
+        //! insert a sub list after an owned node
+        inline void insert_after(NODE          *mine,
+                                 list_of<NODE> &sub) noexcept
+        {
+            assert(owns(mine));
+            if(mine==tail)
+            {
+                merge_back(sub);
+            }
+            else
+            {
+                if(sub.size)
+                {
+                    // link
+                    NODE *next = mine->next; assert(NULL!=next);
+                    mine->next = sub.head; sub.head->prev = mine;
+                    next->prev = sub.tail; sub.tail->next = next;
+
+                    // update
+                    coerce(size) += sub.size;
+                    sub.hard_reset_();
+                }
+            }
+        }
+
         
         //! insert a new node before an owned node
         inline NODE *insert_before(NODE *mine,
