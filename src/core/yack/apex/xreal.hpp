@@ -25,12 +25,13 @@ namespace yack
             //
             // definitions
             //___________________________________________________________________
-            static const T   maximum; //!< [FLT|DBL|LDBL]_MAX
-            static const T   minimum; //!< [FLT|DBL|LDBL]_MIN
-            static const int max_exp; //!< [FLT|DBL|LDBL]_MAX_EXP
-            static const int min_exp; //!< [FLT|DBL|LDBL]_MIN_EXP
-            static const T   epsilon; //!< [FLT|DBL|LDBL]_EPSILON
-            
+            static const T        maximum;  //!< [FLT|DBL|LDBL]_MAX
+            static const T        minimum;  //!< [FLT|DBL|LDBL]_MIN
+            static const int      max_exp;  //!< [FLT|DBL|LDBL]_MAX_EXP
+            static const int      min_exp;  //!< [FLT|DBL|LDBL]_MIN_EXP
+            static const T        epsilon;  //!< [FLT|DBL|LDBL]_EPSILON
+            static const unsigned mant_dig; //!< [FLT|DBL|LDBL]_MANT_DIG
+
             //__________________________________________________________________
             //
             // C++

@@ -11,17 +11,20 @@ namespace yack
 {
     namespace apex
     {
-        template <> const float xreal<float>::maximum = FLT_MAX;
-        template <> const float xreal<float>::minimum = FLT_MIN;
-        template <> const float xreal<float>::epsilon = FLT_EPSILON;
+        template <> const float    xreal<float>::maximum  = FLT_MAX;
+        template <> const float    xreal<float>::minimum  = FLT_MIN;
+        template <> const float    xreal<float>::epsilon  = FLT_EPSILON;
+        template <> const unsigned xreal<float>::mant_dig = FLT_MANT_DIG;
 
-        template <> const double xreal<double>::maximum = DBL_MAX;
-        template <> const double xreal<double>::minimum = DBL_MIN;
-        template <> const double xreal<double>::epsilon = DBL_EPSILON;
+        template <> const double   xreal<double>::maximum  = DBL_MAX;
+        template <> const double   xreal<double>::minimum  = DBL_MIN;
+        template <> const double   xreal<double>::epsilon  = DBL_EPSILON;
+        template <> const unsigned xreal<double>::mant_dig = DBL_MANT_DIG;
 
-        template <> const long double xreal<long double>::maximum = LDBL_MAX;
-        template <> const long double xreal<long double>::minimum = LDBL_MIN;
-        template <> const long double xreal<long double>::epsilon = LDBL_EPSILON;
+        template <> const long double xreal<long double>::maximum  = LDBL_MAX;
+        template <> const long double xreal<long double>::minimum  = LDBL_MIN;
+        template <> const long double xreal<long double>::epsilon  = LDBL_EPSILON;
+        template <> const unsigned    xreal<long double>::mant_dig = LDBL_MANT_DIG;
 
         template <> const int xreal<float>::       max_exp = FLT_MAX_EXP;
         template <> const int xreal<double>::      max_exp = DBL_MAX_EXP;
@@ -30,6 +33,7 @@ namespace yack
         template <> const int xreal<float>::       min_exp = FLT_MIN_EXP;
         template <> const int xreal<double>::      min_exp = DBL_MIN_EXP;
         template <> const int xreal<long double>:: min_exp = LDBL_MIN_EXP;
+
 
 
 
