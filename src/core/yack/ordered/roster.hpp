@@ -60,6 +60,18 @@ namespace yack
         //! low-level access
         inline const base_list * operator->() const noexcept { return &my; }
 
+        //! low-level access
+        inline const base_list & operator*() const noexcept { return my; }
+
+        inline mutable_type lower() {
+            return my.pull_head();
+        }
+
+        inline mutable_type upper() {
+            return my.pull_tail();
+        }
+
+
         //! insert a new value
         inline void insert(param_type args)
         {
@@ -77,7 +89,7 @@ namespace yack
         }
 
         //! insert a new value a few times
-        //! 
+        //!
         inline void insert(param_type args, unsigned n)
         {
             base_list rep;

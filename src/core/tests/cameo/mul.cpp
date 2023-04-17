@@ -63,12 +63,14 @@ namespace yack
             {
             }
 
-            inline explicit marked_real(const marked_real &other) noexcept :
+            inline marked_real(const marked_real &other) noexcept :
             value(other.value),
             field(other.field)
             {
 
             }
+
+            inline const_type & operator*() const noexcept { return value; }
 
             inline friend std::ostream & operator<<(std::ostream &os, const marked_real &self)
             {
@@ -103,9 +105,16 @@ namespace yack
         {
         public:
             YACK_DECL_ARGS(T,type);
-            typedef marked_real<T>              real_type;
-            typedef marked_data<T>              data_type;
-            typedef roster<real_type,data_type> self_type;
+            typedef marked_real<T>                real_type;
+            typedef marked_data<T>                data_type;
+            typedef roster<real_type,data_type>   self_type;
+            typedef typename self_type::base_list base_type;
+
+            using self_type::size;
+            using self_type::lower;
+            using self_type::upper;
+            using self_type::insert;
+
 
             inline explicit marked_list() noexcept : self_type()
             {
@@ -118,9 +127,28 @@ namespace yack
             inline void push(param_type args)
             {
                 const real_type r(args);
-                this->insert(r);
+                insert(r);
             }
 
+            mutable_type prod()
+            {
+
+            LOOP:
+                switch( size() )
+                {
+                    case 0: return 0;
+                    case 1: return *lower();
+                    case 2: return *lower() * *upper();
+                    default:
+                        assert( size()>2 );
+                        const_type      l = *lower();
+                        const_type      r = *upper();
+                        const_type      p = l * r;
+                        const real_type x(p);
+                        insert(x);
+                        goto LOOP;
+                }
+            }
 
 
         private:
@@ -147,6 +175,7 @@ namespace yack
             Q.push( generate<T>(ran) );
             Q.push( generate<T>(ran) );
             std::cerr << "Q=" << Q << std::endl;
+            std::cerr << "prod=" << Q.prod() << std::endl;
         }
     }
 }
