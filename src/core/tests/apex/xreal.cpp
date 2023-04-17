@@ -18,7 +18,7 @@ void check1()
     static const T half(0.5);
     const xreal<T> xr1(one);
     YACK_CHECK(1==xr1.p);
-    YACK_CHECK(fabs(half-xr1.m) <= 0);
+    YACK_CHECK(std::abs(half-xr1.m) <= 0);
     std::cerr << "epsilon  = " << xreal<T>::epsilon  << std::endl;
     std::cerr << "mant_dig = " << xreal<T>::mant_dig << std::endl;
 }
@@ -47,7 +47,7 @@ YACK_UTEST(apex_xreal)
         for(size_t j=i;j<=xr.size();++j)
         {
             const xreal<float> &den = xr[j];
-            if(fabs(den.m)<=0) continue;
+            if(std::abs(den.m)<=0) continue;
             const xreal<float> q = num / den;
             const xreal<float> p = q * den;
             std::cerr << num << "/" << den << " = " << q << " => " << p << std::endl;

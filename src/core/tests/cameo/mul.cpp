@@ -6,6 +6,18 @@
 
 using namespace yack;
 
+namespace yack
+{
+    namespace cameo
+    {
+
+        template <typename T>
+        struct mfield;
+        
+
+    }
+}
+
 namespace {
 
 	template <typename T>
