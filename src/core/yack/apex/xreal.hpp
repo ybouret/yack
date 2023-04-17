@@ -123,8 +123,7 @@ namespace yack
                 return    lhs -= rhs;
             } //!< return lhs -  rhs
 
-            xreal & power(unsigned n) const;
-
+            
             //__________________________________________________________________
             //
             // members

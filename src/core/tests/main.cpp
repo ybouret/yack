@@ -104,6 +104,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(data_roll);
     YACK_UTEST(data_bunch);
     YACK_UTEST(data_set);
+    YACK_UTEST(data_roster);
 
     YACK_UTEST(dinky_znone);
     YACK_UTEST(dinky_zsolo);

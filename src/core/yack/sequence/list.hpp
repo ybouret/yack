@@ -88,7 +88,7 @@ namespace yack
         inline virtual size_t   capacity()  const noexcept { return impl.size+impl.ready(); } //!< alive+cache
         inline virtual size_t   available() const noexcept { return impl.ready(); }           //!< cache only
         inline virtual void     free()            noexcept { impl.clear();           }        //!< remove content into cache
-        inline virtual void     reserve(size_t n)         { impl.cache->reserve(n); }        //!< append zombie node into cache
+        inline virtual void     reserve(size_t n)          { impl.cache->reserve(n); }        //!< append zombie node into cache
 
         //______________________________________________________________________
         //
@@ -103,8 +103,8 @@ namespace yack
         //______________________________________________________________________
         inline virtual void push_back(param_type args)  { impl << args; }    //!< push back
         inline virtual void push_front(param_type args) { impl >> args; }    //!< push front
-        inline virtual void pop_back()  noexcept         { impl.cut_tail(); } //!< pop back
-        inline virtual void pop_front() noexcept         { impl.cut_head(); } //!< pop front
+        inline virtual void pop_back()  noexcept        { impl.cut_tail(); } //!< pop back
+        inline virtual void pop_front() noexcept        { impl.cut_head(); } //!< pop front
 
 
         //______________________________________________________________________

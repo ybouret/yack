@@ -189,11 +189,7 @@ namespace yack
             return (*this) += -rhs;
         }
 
-        template <>
-        xreal<real_t> & xreal<real_t>:: power(unsigned n) const
-        {
-            
-        }
+        
 
     }
 }

@@ -58,38 +58,53 @@ namespace yack
         // methods
         //______________________________________________________________________
 
+        //! create default node
+        inline node_type  *new_node() { return cache->create(); }
+
+        //! create one-argument node
+        template <typename U>
+        inline node_type *new_node(U &u) { return cache->create(u); }
+
+        //! create two-arguments node
+        template <typename U, typename V>
+        inline node_type *new_node(U &u, V &v) { return cache->create(u,v); }
+
+        //! create three-arguments node
+        template <typename U, typename V, typename W>
+        inline node_type *new_node(U &u, V &v, W &w) { return cache->create(u,v,w); }
+
         //! push back a default node
-        inline node_type *annex()  { return push_back( cache->create() ); }
+        inline node_type *annex()  { return push_back( new_node() ); }
 
         //! push front a default node
-        inline node_type *shove() { return push_front( cache->create() ); }
+        inline node_type *shove() { return push_front( new_node() ); }
 
         //! push back with one argument
         template <typename U>
-        inline node_type * annex(const U &u) { return push_back(  cache->create(u) ); }
+        inline node_type * annex(const U &u) { return push_back( new_node(u) ); }
         
         //! push front with one argument
         template <typename U>
-        inline node_type * shove(const U &u) { return push_front( cache->create(u) ); }
+        inline node_type * shove(const U &u) { return push_front( new_node(u) ); }
 
 
         //! push back with two arguments
         template <typename U, typename V>
-        inline node_type * annex(const U &u, const V &v) { return push_back(  cache->create(u,v) ); }
+        inline node_type * annex(const U &u, const V &v) { return push_back(  new_node(u,v) ); }
 
 
         //! push front with two arguments
         template <typename U, typename V>
-        inline node_type * shove(const U &u, const V &v) { return push_front(  cache->create(u,v) ); }
+        inline node_type * shove(const U &u, const V &v) { return push_front(  new_node(u,v) ); }
 
 
         //! push back with three arguments
         template <typename U, typename V, typename W>
-        inline node_type * annex(const U &u, const V &v, const W &w) { return push_back(  cache->create(u,v,w) ); }
+        inline node_type * annex(const U &u, const V &v, const W &w) { return push_back(  new_node(u,v,w) ); }
 
         //! push front with three arguments
         template <typename U, typename V, typename W>
-        inline node_type * shove(const U &u, const V &v, const W &w) { return push_front(  cache->create(u,v,w) ); }
+        inline node_type * shove(const U &u, const V &v, const W &w) { return push_front(  new_node(u,v,w) ); }
 
 
 
@@ -97,7 +112,6 @@ namespace yack
         inline void cut(NODE *node) noexcept {
             assert(node);
             cache->ingest( pop(node) );
-            //cache->zstore( cache->turn( pop(node) ) );
         }
         
         //! remove back
@@ -105,7 +119,6 @@ namespace yack
         {
             assert(size>=0);
             cache->ingest( pop_back() );
-            //cache->zstore( cache->turn( pop_back() ) );
         }
 
         //! remove back n

@@ -30,7 +30,7 @@ namespace yack
         //______________________________________________________________________
         inline  explicit solo_list() noexcept  : self_type()  {} //!< setup
         inline  virtual ~solo_list() noexcept                 {} //!< cleanup
-        inline  solo_list(const solo_list &_) : self_type(_) {} //!< copy
+        inline  solo_list(const solo_list &_) : self_type(_)  {} //!< copy
         
         
     private:
