@@ -101,6 +101,13 @@ namespace yack
         }
 
         template <>
+        xreal<real_t> xreal<real_t>:: abs() const noexcept
+        {
+            return xreal( p, std::abs(m) );
+        }
+
+
+        template <>
         xreal<real_t> & xreal<real_t>:: operator*=(const xreal rhs)
         {
             const real_t        mm = m * rhs.m;

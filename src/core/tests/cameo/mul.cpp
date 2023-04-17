@@ -4,6 +4,7 @@
 #include "yack/sequence/vector.hpp"
 #include "yack/sequence/list.hpp"
 #include "yack/ordered/roster.hpp"
+#include "yack/apex/xreal.hpp"
 
 using namespace yack;
 
@@ -46,7 +47,15 @@ namespace yack
         };
 
         
+        template <>
+        struct marked_data< apex::xreal<float> >
+        {
+            typedef apex::xreal<float>                info;
+            typedef marked_real< apex::xreal<float> > real;
 
+            sign_type   operator()(const real &, const real &);
+            static info from(const apex::xreal<float> x) { return x.abs(); }
+        };
 
 
         template <typename T>
@@ -99,6 +108,31 @@ namespace yack
         {
             return __sign::of(lhs.field,rhs.field);
         }
+
+
+        sign_type marked_data< apex::xreal<float> >:: operator()(const real &lhs, const real &rhs)
+        {
+            const apex::xreal<float> &l = lhs.field;
+            const apex::xreal<float> &r = rhs.field;
+            if(l.p<r.p)
+            {
+                return negative;
+            }
+            else
+            {
+                if(r.p<l.p)
+                {
+                    return positive;
+                }
+                else
+                {
+                    return __sign::of(l.m,r.m);
+                }
+            }
+
+
+        }
+
 
         template <typename T>
         class marked_list : public roster< marked_real<T> , marked_data<T> >
@@ -160,7 +194,7 @@ namespace yack
         T generate(randomized::bits &ran)
         {
             static const T ten(10);
-            static const T amp(20);
+            static const T amp(30);
             const T rxp = ran.symm<T>();
             const T tmp = (ran.choice() ? -1 : 1) * std::pow(ten, amp*rxp);
             return tmp;
@@ -171,11 +205,19 @@ namespace yack
         static inline void test_marked(randomized::bits &ran)
         {
             marked_list<T> Q;
-            Q.push( generate<T>(ran) );
-            Q.push( generate<T>(ran) );
-            Q.push( generate<T>(ran) );
-            std::cerr << "Q=" << Q << std::endl;
-            std::cerr << "prod=" << Q.prod() << std::endl;
+            marked_list< apex::xreal<T> > xQ;
+            for(size_t i=4;i>0;--i)
+            {
+                const T x = generate<T>(ran);
+                Q.push(x);
+                xQ.push(x);
+            }
+            std::cerr << "Q =" <<  Q << std::endl;
+            std::cerr << "xQ=" << xQ << std::endl;
+
+            std::cerr << "\tprod =" << Q.prod() << std::endl;
+            std::cerr << "\txprod=" << xQ.prod() << std::endl;
+
         }
     }
 }
@@ -235,8 +277,8 @@ YACK_UTEST(cameo_mul)
 	randomized::rand_ ran;
 
     cameo::test_marked<float>(ran);
-    cameo::test_marked<double>(ran);
-    cameo::test_marked<long double>(ran);
+    //cameo::test_marked<double>(ran);
+    //cameo::test_marked<long double>(ran);
 
     return 0;
 

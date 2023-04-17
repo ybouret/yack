@@ -123,9 +123,17 @@ namespace yack
                 return    lhs -= rhs;
             } //!< return lhs -  rhs
 
+
+            //__________________________________________________________________
+            //
+            // signs
+            //__________________________________________________________________
+
             //! sign_type from comparison
             static sign_type scompare(const xreal &lhs,
                                       const xreal &rhs);
+
+            xreal abs() const noexcept;
 
             //__________________________________________________________________
             //
