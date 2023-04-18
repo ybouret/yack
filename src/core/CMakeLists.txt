@@ -365,6 +365,17 @@ install( FILES ${cameo_decl} DESTINATION include/yack/cameo )
 
 ########################################################################
 ##
+## ipso
+##
+########################################################################
+file(GLOB ipso_impl yack/ipso/*.cpp yack/ipso/*.hxx)
+file(GLOB ipso_decl yack/ipso/*.hpp)
+set(ipso ${ipso_impl} ${ipso_decl})
+SOURCE_GROUP(ipso FILES ${ipso})
+install( FILES ${ipso_decl} DESTINATION include/yack/ipso )
+
+########################################################################
+##
 ## ios
 ##
 ########################################################################
@@ -679,6 +690,7 @@ ${functor}
 ${apex} ${apex_m} ${apex_n} ${apex_z} ${apex_q} ${apex_kernel} ${apex_alga} 
 ${raven}
 ${cameo}
+${ipso}
 ${concurrent} ${concurrent_quark} ${concurrent_loop} ${concurrent_queue} ${concurrent_queue_pipeline}
 ${ios} ${ios_c} ${ios_gz} ${ios_bz} ${ios_fmt} ${ios_gv} ${ios_ascii} ${ios_serializer} ${ios_scribe}
 ${randomized}

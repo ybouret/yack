@@ -177,8 +177,6 @@ namespace yack
                 cswap(big,lit);
             }
             assert(lit.p<=big.p);
-            //std::cerr << "big: " << big << std::endl;
-            //std::cerr << "lit: " << lit << std::endl;
 
             //------------------------------------------------------------------
             // factor for big.m

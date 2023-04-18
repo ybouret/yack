@@ -71,6 +71,9 @@ source_group(raven FILES ${raven})
 file(GLOB cameo cameo/*.cpp)
 source_group(cameo FILES ${cameo})
 
+file(GLOB ipso ipso/*.cpp)
+source_group(ipso FILES ${ipso})
+
 set(HERE ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_executable(test-core main.cpp main.hpp
@@ -98,6 +101,7 @@ ${field}
 ${color}
 ${raven}
 ${cameo}
+${ipso}
 )
 
 yack_link_libraries(test-core)
@@ -356,5 +360,6 @@ add_test(cameo:add        test-core cameo_add)
 add_test(cameo:static_add test-core cameo_static_add)
 add_test(cameo:mul        test-core cameo_mul)
 
+add_test(ipso:mul test-core ipso_mul)
 
 yack_testing(core)
