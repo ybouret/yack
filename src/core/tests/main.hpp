@@ -12,6 +12,7 @@
 #include "yack/type/v3d.hpp"
 #include "yack/string.hpp"
 #include "yack/color/rgba.hpp"
+#include "yack/math/extended.hpp"
 
 
 namespace yack
@@ -91,7 +92,15 @@ namespace yack
     {
         return ran.to<long double>();
     }
-    
+
+    // floating point
+    template <>
+    inline extended<float> bring:: get< extended<float> >(randomized::bits &ran)
+    {
+        return ran.to<float>();
+    }
+
+
     // complexes
     template <>
     inline complex<float> bring:: get< complex<float> >(randomized::bits &ran)

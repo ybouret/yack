@@ -222,6 +222,21 @@ YACK_UTEST(crout)
         nmax = ios::ascii::convert::to<size_t>(argv[1]);
     }
 
+    crout< extended<float> > lu(5);
+
+    matrix< extended<float> > M(5,5);
+
+    bring::fill(M,ran);
+
+    std::cerr << "M=" << M << std::endl;
+
+    if( lu.build(M) )
+    {
+        
+    }
+
+    return 0;
+
 
     check_precise<float>(nmax,ran);
     check_precise<double>(nmax,ran);

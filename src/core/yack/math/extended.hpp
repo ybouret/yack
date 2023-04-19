@@ -36,6 +36,7 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
+        extended() noexcept;                             //!< setup 0
         extended(const T     r);                         //!< setup with frexp
         extended(const extended &) noexcept;             //!< noexcept copy
         ~extended() noexcept;                            //!< cleanup

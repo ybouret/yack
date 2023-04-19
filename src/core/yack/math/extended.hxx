@@ -29,6 +29,14 @@ namespace yack
     }
 
     template <>
+    extended<real_t>:: extended() noexcept:
+    p(0),
+    m(0)
+    {
+        assert( is_valid() );
+    }
+
+    template <>
     extended<real_t>:: extended(const real_t r) :
     p(0),
     m( frexp(r, & coerce(p) ) )
@@ -95,7 +103,7 @@ namespace yack
             case __zero__: break;
             case positive:
             case negative:
-                return extended(-m,p);
+                return extended(p,-m);
         }
         return *this;
     }
