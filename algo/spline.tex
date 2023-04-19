@@ -84,7 +84,7 @@ a_1  & b_1 &     &         &         &         \\
 	y_2''\\
 	y_i''\\
 	y_{N-1}''\\
-	y_N\\
+	y_N''\\
 \end{bmatrix}
  = 
  \begin{bmatrix}
@@ -93,7 +93,7 @@ a_1  & b_1 &     &         &         &         \\
 	\delta_i\\
 	\delta_{N-1}\\
 	r_N\\
- \end{bmatrix},
+ \end{bmatrix}
 \end{equation}
 
 \begin{itemize}
@@ -114,7 +114,7 @@ $$
 	\Rightarrow a_1=\dfrac{x_2-x_1}{3}, b_1=\dfrac{x_2-x_1}{6}, r_1 = \dfrac{y_2-y_1}{x_2-x_1} - y_1'
 $$
 
-\item $y_1'$ at $x_1$:
+\item $y_N'$ at $x_N$:
 \begin{equation}
 	y_N' = \dfrac{y_{N}-y_{N-1}}{x_{N}-x_{N-1}} + \dfrac{(x_{N} - x_{N-1})}{6} y_{N-1}'' + \dfrac{(x_{N} - x_{N-1})}{3} y_{N}''
 \end{equation}
@@ -123,6 +123,31 @@ $$
 $$
 \end{itemize}
 
-	
+\subsection{Closed Spline}
+
+	\begin{equation}
+\begin{bmatrix}
+a_1  & b_1 &     &         &         &  c_1    \\
+     & a_2 & b_2 & c_2     &         &         \\
+     &     & a_i & b_i     & c_i     &         \\
+     &     &     & a_{N-1} & b_{N-1} & c_{N-1} \\
+ c_N &     &     &         &   a_N   & b_N     \\
+\end{bmatrix}
+\begin{bmatrix}
+	y_1''\\
+	y_2''\\
+	y_i''\\
+	y_{N-1}''\\
+	y_N''\\
+\end{bmatrix}
+ = 
+ \begin{bmatrix}
+ 	\delta_1\\
+	\delta_2\\
+	\delta_i\\
+	\delta_{N-1}\\
+	\delta_N\\
+ \end{bmatrix}
+\end{equation}
 	
 \end{document}
