@@ -36,6 +36,7 @@ YACK_UTEST_DECL(80)
     YACK_UTEST(corr);
     YACK_UTEST(distrib);
     YACK_UTEST(linear);
+    YACK_UTEST(spline);
    
     YACK_UTEST(area2d);
 
@@ -48,6 +49,8 @@ YACK_UTEST_DECL(80)
     YACK_UTEST(fitting_ode2);
 
     YACK_UTEST(proto_diff1d);
+
+ 
 
 }
 YACK_UTEST_EXEC()

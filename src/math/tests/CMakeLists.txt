@@ -92,6 +92,7 @@ add_test(chebyshev test-math chebyshev)
 add_test(corr      test-math corr)
 add_test(distrib   test-math distrib)
 add_test(linear    test-math linear)
+add_test(spline    test-math spline)
 
 #geom
 add_test(area2d test-math area2d)
