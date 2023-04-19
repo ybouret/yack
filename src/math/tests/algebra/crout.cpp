@@ -232,7 +232,13 @@ YACK_UTEST(crout)
 
     if( lu.build(M) )
     {
-        
+        vector< extended<float> > r(5);
+        bring::fill(r,ran);
+        vector< extended<float> > u(r);
+        lu.solve(M,u);
+        std::cerr << "r=" << r << std::endl;
+        std::cerr << "u=" << u << std::endl;
+
     }
 
     return 0;
