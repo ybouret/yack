@@ -4,7 +4,7 @@
 #include "yack/sequence/vector.hpp"
 #include "yack/sequence/list.hpp"
 #include "yack/ordered/roster.hpp"
-#include "yack/apex/xreal.hpp"
+#include "yack/math/extended.hpp"
 
 using namespace yack;
 
@@ -48,13 +48,13 @@ namespace yack
 
         
         template <>
-        struct marked_data< apex::xreal<float> >
+        struct marked_data< extended<float> >
         {
-            typedef apex::xreal<float>                info;
-            typedef marked_real< apex::xreal<float> > real;
+            typedef extended<float>                info;
+            typedef marked_real< extended<float> > real;
 
             sign_type   operator()(const real &, const real &);
-            static info from(const apex::xreal<float> x) { return x.abs(); }
+            static info from(const extended<float> x) { return x.abs(); }
         };
 
 
@@ -110,10 +110,10 @@ namespace yack
         }
 
 
-        sign_type marked_data< apex::xreal<float> >:: operator()(const real &lhs, const real &rhs)
+        sign_type marked_data< extended<float> >:: operator()(const real &lhs, const real &rhs)
         {
-            const apex::xreal<float> &l = lhs.field;
-            const apex::xreal<float> &r = rhs.field;
+            const extended<float> &l = lhs.field;
+            const extended<float> &r = rhs.field;
             if(l.p<r.p)
             {
                 return negative;
@@ -205,7 +205,7 @@ namespace yack
         static inline void test_marked(randomized::bits &ran)
         {
             marked_list<T> Q;
-            marked_list< apex::xreal<T> > xQ;
+            marked_list< extended<T> > xQ;
             for(size_t i=4;i>0;--i)
             {
                 const T x = generate<T>(ran);
@@ -216,7 +216,7 @@ namespace yack
             std::cerr << "xQ=" << xQ << std::endl;
 
             std::cerr << "\tprod =" << Q.prod() << std::endl;
-            const apex::xreal<T> xp = xQ.prod();
+            const extended<T> xp = xQ.prod();
             std::cerr << "\txprod=" << xp << " => " << *xp << std::endl;
 
         }
