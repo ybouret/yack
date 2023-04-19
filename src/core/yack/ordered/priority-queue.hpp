@@ -14,7 +14,7 @@ namespace yack
     //__________________________________________________________________________
     //
     //
-    //! priority queue operations
+    //! low-level priority queue operations
     //
     //__________________________________________________________________________
     template <typename T>
@@ -31,7 +31,7 @@ namespace yack
         // operations
         //______________________________________________________________________
 
-        //! insert with enough linear memory
+        //! insert with ENOUGH linear memory
         /**
          \param tree    linear space
          \param count   insert position (updated)
@@ -61,14 +61,13 @@ namespace yack
                 const size_t  ppos   = (ipos-1)>>1;
                 mutable_type &myself = tree[ipos];
                 mutable_type &parent = tree[ppos];
-                if( compare(parent,myself) < 0 )
-                {
+                if( compare(parent,myself) < 0 ) {
                     mswap(myself,parent);
                     ipos = ppos;
-                    continue;
+                    continue; // check next promotion from ipos
                 }
                 else
-                    break;
+                    break;    // balanced
             }
 
             //------------------------------------------------------------------
@@ -101,19 +100,15 @@ namespace yack
                 default:
                     break;
             }
+            assert(count>1);
 
             //------------------------------------------------------------------
             // contract tree: put last item at top
             //------------------------------------------------------------------
-            assert(count>1);
             {
-                uint8_t *target = static_cast<uint8_t *>(out_of_reach::address( destructed( &tree[0] ) ));
-                uint8_t *source = static_cast<uint8_t *>(out_of_reach::address( &tree[--count] ));
-                for(size_t i=0;i<sizeof(type);++i)
-                {
-                    target[i] = source[i];
-                    source[i] = 0;
-                }
+                void *target =  out_of_reach::address( destructed( &tree[0] ) );
+                void *source =  out_of_reach::address( &tree[--count] );
+                out_of_reach::zmov(target,source,sizeof(type));
             }
 
             //------------------------------------------------------------------

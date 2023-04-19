@@ -15,7 +15,7 @@ double X2(const readable<double> &x, const double mu, cameo::add<double> &xadd )
     const size_t n = x.size(); YACK_ASSERT(n>0);
     xadd.resume(n);
     for(size_t i=n;i>0;--i) {
-        xadd.push_( squared(x[i]-mu) );
+        xadd.grow( squared(x[i]-mu) );
     }
     return xadd.sum()/n;
 }

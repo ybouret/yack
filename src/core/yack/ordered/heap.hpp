@@ -76,9 +76,9 @@ namespace yack
         // types and definitions
         //______________________________________________________________________
         YACK_DECL_ARGS(T,type);                             //!< aliases
-        typedef low_level::heap               common_type;  //!< alias
-        typedef prio_queue<T,COMPARATOR>      pqueue_type;  //!< alias
-        typedef MEM_BUFFER                    buffer_type;  //!< alias
+        typedef low_level::heap               common_type;  //!< common type
+        typedef prio_queue<T,COMPARATOR>      pqueue_type;  //!< internal pqueue
+        typedef MEM_BUFFER                    buffer_type;  //!< internal buffer
 
         //______________________________________________________________________
         //
@@ -96,7 +96,7 @@ namespace yack
 
         }
 
-        //! generic copy with same comparator but maybe a different memory model and extra
+        //! generic copy with same comparator but maybe a different memory model and extra memory
         template <typename OTH_BUFFER>
         inline heap(const heap<T,COMPARATOR,OTH_BUFFER> &other, const as_copy_t &, const size_t extra) :
         my(other.size()+extra), pq(my.workspace,my.num_items,other.getQ())
@@ -156,20 +156,20 @@ namespace yack
         //______________________________________________________________________
 
         //! push with ENOUGH memory
-        inline void push_(param_type args)
+        inline void grow(param_type args)
         {
             assert(pq.count<pq.total);
             pq.insert(args);
         }
 
-        //! push with safe memory
+        //! push with memory checking
         inline void push(param_type args)
         {
             static const int2type<MEM_BUFFER::versatile> behavior = {};
             push(behavior,args);
         }
 
-        //! pop
+        //! pop highest priority element
         inline void pop() noexcept
         {
             assert(pq.count>0);

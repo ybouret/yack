@@ -54,7 +54,7 @@ namespace yack
                 {
                     const T  del = *(it++) - ave;
                     const T  sqr = del*del;
-                    xadd.push_(sqr);
+                    xadd.grow(sqr);
                 }
                 return xadd.sum() / (n-1);
             }

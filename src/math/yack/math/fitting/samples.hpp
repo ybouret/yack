@@ -152,7 +152,7 @@ namespace yack
                     {
                         single_type &s = coerce(***node);
                         const size_t n = s.dimension();
-                        xadd.push_(s.D2(func,aorg)*n);
+                        xadd.grow(s.D2(func,aorg)*n);
                         total += n;
                     }
                     return (total>0) ? xadd.sum() /  total : 0;
@@ -177,7 +177,7 @@ namespace yack
                     {
                         single_type &s = coerce(***node);
                         const size_t n = s.dimension();
-                        xadd.push_(s.D2_full(func,aorg,used,scal,drvs)*n);
+                        xadd.grow(s.D2_full(func,aorg,used,scal,drvs)*n);
                         total += n;
                     }
                     

@@ -17,7 +17,7 @@ namespace yack
     {
         out_of_reach::move(&lhs,&rhs,sizeof(T));
     }
-
+    
 
 }
 

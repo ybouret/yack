@@ -59,7 +59,7 @@ namespace yack
                 //______________________________________________________________
                 using heap_type::size;
                 using heap_type::pull;
-                using heap_type::push_;
+                using heap_type::grow;
                 using heap_type::resume;
 
                 //______________________________________________________________
@@ -89,7 +89,7 @@ namespace yack
                     const_type rhs = pull();
                     const_type tmp = lhs + rhs;
                     if (size() <= 0) return tmp;
-                    push_(tmp);
+                    grow(tmp);
                     goto REDUCE;
                 }
 
@@ -103,7 +103,7 @@ namespace yack
                 inline T range(ITERATOR i, size_t n)
                 {
                     resume(n);
-                    while (n-- > 0) push_(*(i++));
+                    while (n-- > 0) grow(*(i++));
                     return sum();
                 }
 
@@ -120,7 +120,7 @@ namespace yack
                 {
                     size_t n = arr.size();
                     resume(n);
-                    while (n > 0) push_(arr[n--]);
+                    while (n > 0) grow(arr[n--]);
                     return sum();
                 }
 
@@ -144,7 +144,7 @@ namespace yack
                         const_type l = lhs[i];
                         const_type r = rhs[i];
                         const_type p = l * r;
-                        push_(p);
+                        grow(p);
                     }
                     return sum();
                 }
@@ -159,7 +159,7 @@ namespace yack
                         const_type l = *(lhs++);
                         const_type r = *(rhs++);
                         const_type p = l*r;
-                        push_(p);
+                        grow(p);
                     }
                     return sum();
                 }
@@ -174,19 +174,19 @@ namespace yack
                 //! a+b+c
                 inline T operator()(const T a, const T b, const T c)
                 {
-                    resume(3); push_(a); push_(b); push_(c); return sum();
+                    resume(3); grow(a); grow(b); grow(c); return sum();
                 }
 
                 //! a+b+c+d
                 inline T operator()(const T a, const T b, const T c, const T d)
                 {
-                    resume(4); push_(a); push_(b); push_(c); push_(d); return sum();
+                    resume(4); grow(a); grow(b); grow(c); grow(d); return sum();
                 }
 
                 //! a+b+c+d+e
                 inline T operator()(const T a, const T b, const T c, const T d, const T e)
                 {
-                    resume(5); push_(a); push_(b); push_(c); push_(d); push_(e); return sum();
+                    resume(5); grow(a); grow(b); grow(c); grow(d); grow(e); return sum();
                 }
 
             private:

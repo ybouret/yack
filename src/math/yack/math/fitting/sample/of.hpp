@@ -150,14 +150,14 @@ namespace yack
                             const size_t    ii  = schedule[1];
                             const ORDINATE  o1 = ordinate[ii] - (adjusted[ii] = func.start(abscissa[ii],aorg,vars));
                             const ORDINATE  o2 = squared(o1 );
-                            xadd.push_(o2);
+                            xadd.grow(o2);
                         }
                         for(size_t i=2;i<=n;++i)
                         {
                             const size_t    ii = schedule[i];
                             const ORDINATE  o1 = ordinate[ii] - (adjusted[ii] = func.reach(abscissa[ii],aorg,vars));
                             const ORDINATE  o2 = squared(o1);
-                            xadd.push_(o2);
+                            xadd.grow(o2);
                         }
                         return xadd.sum()/2;
                     }
@@ -192,7 +192,7 @@ namespace yack
                             const ORDINATE  o1 = ordinate[ii] - (adjusted[ii] = func.start(abscissa[ii],aorg,vars));
                             deltaOrd[ii] = o1;
                             const ORDINATE  o2 = squared(o1);
-                            xadd.push_(o2);
+                            xadd.grow(o2);
                         }
                         for(size_t i=2;i<=dims;++i)
                         {
@@ -200,7 +200,7 @@ namespace yack
                             const ORDINATE  o1 = ordinate[ii] - (adjusted[ii] = func.reach(abscissa[ii],aorg,vars));
                             deltaOrd[ii] = o1;
                             const ORDINATE  o2 = squared(o1);
-                            xadd.push_(o2);
+                            xadd.grow(o2);
                         }
                         const ORDINATE res = xadd.sum()/2;
                         
