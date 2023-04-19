@@ -332,6 +332,7 @@ add_test(info:xbwt     test-core info_xbwt)
 add_test(info:alphabet test-core info_alphabet)
 
 add_test(math:api test-core math_api)
+add_test(math:extended test-core math_extended)
 
 add_test(vfs  test-core vfs)
 add_test(vfs:local test-core vfs_local)

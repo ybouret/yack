@@ -625,7 +625,7 @@ install( FILES ${string_decl} DESTINATION include/yack/string )
 ## math
 ##
 ########################################################################
-file(GLOB math_impl yack/math/*.cpp)
+file(GLOB math_impl yack/math/*.cpp yack/math/*.hxx)
 file(GLOB math_decl yack/math/*.hpp)
 set(math ${math_impl} ${math_decl})
 SOURCE_GROUP(math FILES ${math})

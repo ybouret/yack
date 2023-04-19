@@ -5,7 +5,6 @@ using namespace yack;
 
 namespace yack
 {
-
 }
 
 YACK_UTEST(ipso_mul)
