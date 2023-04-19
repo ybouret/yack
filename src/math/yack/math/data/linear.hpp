@@ -49,7 +49,7 @@ namespace yack
          Find a linear interpolation
          */
         template<typename T>
-        inline T linear(  T x, const readable< v2d<T> > &V )
+        inline T linear(T x, const readable< v2d<T> > &V )
         {
             assert( V.size() > 0 );
             const size_t n = V.size();
