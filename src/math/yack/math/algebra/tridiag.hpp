@@ -5,6 +5,7 @@
 
 #include "yack/math/api.hpp"
 #include "yack/sequence/arrays.hpp"
+#include "yack/spot-object.hpp"
 
 
 namespace yack {
@@ -17,12 +18,12 @@ namespace yack {
         //! tridiagonal base class
         //
         //______________________________________________________________________
-        class tridiag_
+        class tridiag_ : public spot_object
         {
         public:
             static const size_t  reserved = 4; //!< internal arrays
             const size_t         extraneous;   //!< extraneaous arrays
-            virtual ~tridiag_() noexcept;       //!< cleanup
+            virtual ~tridiag_() noexcept;      //!< cleanup
 
         protected:
             explicit tridiag_(const size_t extra) noexcept; //!< setup
@@ -35,7 +36,7 @@ namespace yack {
         //
         //! tridiagonal matrix interface and solver
         /**
-         works for float, double, long double, complexes, mpq
+         works for float, double, long double, complexes, apq, extended
          */
         //______________________________________________________________________
         template <typename T>
@@ -138,12 +139,11 @@ namespace yack {
             //__________________________________________________________________
             inline bool solve(writable<T> &u, const readable<T> &r )
             {
-                assert(mutual_size()>0);
                 assert(u.size()==mutual_size());
                 assert(r.size()==mutual_size());
 
                 // initialize
-                const size_t n   = mutual_size(); assert(n>0);
+                const size_t n   = mutual_size(); if(n<=0) return true;
                 T            piv = b[1];
                 {
                     const scalar_type apiv = abs_of(piv);

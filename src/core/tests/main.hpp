@@ -93,13 +93,24 @@ namespace yack
         return ran.to<long double>();
     }
 
-    // floating point
+    // extended floating point
     template <>
     inline extended<float> bring:: get< extended<float> >(randomized::bits &ran)
     {
         return ran.to<float>();
     }
 
+    template <>
+    inline extended<double> bring:: get< extended<double> >(randomized::bits &ran)
+    {
+        return ran.to<double>();
+    }
+
+    template <>
+    inline extended<long double> bring:: get< extended<long double> >(randomized::bits &ran)
+    {
+        return ran.to<long double>();
+    }
 
     // complexes
     template <>

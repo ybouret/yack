@@ -1,19 +1,19 @@
 #include "yack/sequence/arrays.hpp"
-#include "yack/memory/allocator/pooled.hpp"
-#include "yack/memory/allocator/pooled.hpp"
+#include "yack/memory/allocator/dyadic.hpp"
 
 namespace yack
 {
 
+
     static inline void *arrays_acquire(size_t &count, const size_t block_size)
     {
-        static memory::allocator &mgr = memory::pooled::instance();
+        static memory::allocator &mgr = memory::dyadic::instance();
         return mgr.acquire(count,block_size);
     }
 
     void arrays:: deallocate(void * &addr, size_t &size) noexcept
     {
-        static memory::allocator &mgr = memory::pooled::location();
+        static memory::allocator &mgr = memory::dyadic::location();
         mgr.release(addr,size);
     }
 

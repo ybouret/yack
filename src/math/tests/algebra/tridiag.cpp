@@ -61,9 +61,14 @@ YACK_UTEST(tridiag)
 {
     randomized::rand_ ran;
 
+
     test_tri<float>(ran,16);
     test_tri<double>(ran,16);
     test_tri<long double>(ran,16);
+
+    test_tri< extended<float> >(ran,16);
+    test_tri< extended<double> >(ran,16);
+    test_tri< extended<long double> >(ran,16);
 
     test_tri<complex<float>  >(ran,16);
     test_tri<complex<double> >(ran,16);
