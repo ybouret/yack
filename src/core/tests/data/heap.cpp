@@ -60,7 +60,7 @@ YACK_UTEST(data_heap)
     randomized::rand_ ran;
 
 
-    heap< int,icompare,compiled_buffer<int,5> >           fih;
+    heap< int,icompare,compiled_buffer<int,5> >              fih;
     heap< int,icompare,run_time_buffer<int,memory::pooled> > dih1;
     heap< int,icompare,run_time_buffer<int,memory::dyadic> > dih2(7);
 
