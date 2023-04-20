@@ -23,13 +23,16 @@ YACK_UTEST(spline)
 
     spline<float, v2d<float> > s(4);
 
-    float x_ = 0;
-    for(size_t i=1+ran.leq(10);i>0;--i)
+    const size_t np = 1+ran.leq(10);
+    const float  da = 6.28f/(np+1);
+    for(size_t i=np;i>0;--i)
     {
-        const v2d<float> v = bring::get< v2d<float> >( ran );
-        x_ += 5 * ran.to<float>();
-        s(x_,v);
+        const float     alpha = i*da + 0.3f * da* ran.symm<float>();
+        const v2d<float> v = v2d<float>( cos(alpha) + 0.1f * ran.symm<float>(),
+                                        sin(alpha) + 0.1f * ran.symm<float>());
+        s(alpha,v);
     }
+
     s.sort();
 
     std::cerr << "s.x=" << s.x << std::endl;

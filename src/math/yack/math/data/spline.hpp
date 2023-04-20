@@ -301,7 +301,13 @@ namespace yack
 
                     // prepare boundary conditions
                     a[1] = 0; b[1] = 1; c[1] = 0; r[1] = 0;
-                    a[n] = 0; b[n] = 1; c[n] = 0; r[n] = 0;
+
+                    a[n] = (x[n]-x[n-1])/6;
+                    b[n] = (x_next-x[n-1])/3;
+                    c[n] = (x_next-x[n])/6;
+                    r[n] = 0;
+
+                    std::cerr << "M=" << (*this) << std::endl;
                     for(unsigned d=0;d<dimension;++d)
                     {
                         this->bulk(s,d);
