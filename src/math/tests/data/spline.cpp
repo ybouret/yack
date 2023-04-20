@@ -1,7 +1,5 @@
-
 #include "yack/math/data/spline.hpp"
 #include "yack/utest/run.hpp"
-#include "yack/sequence/thin-array.hpp"
 #include "yack/ios/ocstream.hpp"
 #include "yack/type/v2d.hpp"
 #include "../core/tests/main.hpp"
@@ -24,7 +22,7 @@ YACK_UTEST(spline)
     straight_spline<float, v2d<float> > S(4);
     periodic_spline<float, v2d<float> > P(4);
 
-    const size_t np = 1+ran.leq(10);
+    const size_t np = 2+ran.leq(10);
     const float  da = 6.28f/(np+1);
     for(size_t i=np;i>0;--i)
     {
@@ -84,6 +82,11 @@ YACK_UTEST(spline)
             fp << "\n";
         }
     }
+
+    S.scale();
+    P.scale();
+    
+
 
 }
 YACK_UDONE()

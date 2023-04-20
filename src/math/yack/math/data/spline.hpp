@@ -81,6 +81,8 @@ namespace yack
             }
 
 
+
+
             void add(const param_abscissa X,
                      const param_ordinate Y)
             {
@@ -95,6 +97,7 @@ namespace yack
             virtual ordinate        operator()(param_abscissa xx) const = 0;
             virtual const_abscissa &lower() const noexcept = 0;
             virtual const_abscissa &upper() const noexcept = 0;
+            virtual bool            scale() = 0;
 
             const abscissae x;
             const ordinates y;
@@ -342,6 +345,23 @@ namespace yack
                 return x.back();
             }
 
+            virtual bool scale()
+            {
+                const size_t n = this->size();
+                if(n>=2)
+                {
+                    static const_abscissa _1(1);
+                    mutable_abscissa xx = 0;
+                    for(size_t i=1;i<=n;++i,xx+=_1)
+                    {
+                        coerce(x[i]) = xx;
+                    }
+                    return build();
+                }
+                return true;
+            }
+
+
             virtual ordinate operator()(param_abscissa xx) const
             {
                 const size_t n = x.size(); assert(n>0);
@@ -459,6 +479,22 @@ namespace yack
                 return xupper;
             }
 
+            virtual bool scale()
+            {
+                const size_t n = this->size();
+                if(n>=2)
+                {
+                    static const_abscissa _1(1);
+                    mutable_abscissa xx = 0;
+                    for(size_t i=1;i<=n;++i,xx+=_1)
+                    {
+                        coerce(x[i]) = xx;
+                    }
+                    return build(-_1,xx);
+                }
+                return true;
+            }
+
             virtual ordinate operator()(param_abscissa X) const
             {
                 const size_t n = x.size(); assert(n>0);
@@ -480,7 +516,7 @@ namespace yack
                     mutable_abscissa xup=0;
                     if(xx>=xend)
                     {
-                        std::cerr << "in extra" << std::endl;
+                        //std::cerr << "in extra" << std::endl;
                         jlo=n;
                         jup=1;
                         xlo=xend;
