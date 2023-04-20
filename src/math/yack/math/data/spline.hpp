@@ -9,6 +9,7 @@
 #include "yack/sequence/cxx-array.hpp"
 #include "yack/math/algebra/tridiag.hpp"
 #include "yack/sort/heap.hpp"
+#include "yack/ios/ostream.hpp"
 
 namespace yack
 {
@@ -42,6 +43,15 @@ namespace yack
             {
                 const abscissa *p = (const abscissa *)&Y;
                 return p[d];
+            }
+
+            static inline ios::ostream & print(ios::ostream &fp, param_ordinate Y)
+            {
+                for(unsigned d=0;d<dimension;++d)
+                {
+                    fp(" %.15g", double( coord(Y,d) ) );
+                }
+                return fp;
             }
 
             inline virtual ~spline() noexcept {}
