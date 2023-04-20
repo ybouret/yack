@@ -21,7 +21,8 @@ YACK_UTEST(spline)
     YACK_SIZEOF( cyclic<double> );
     YACK_SIZEOF( cyclic<long double> );
 
-    spline<float, v2d<float> > s(4);
+    straight_spline<float, v2d<float> > S(4);
+    periodic_spline<float, v2d<float> > P(4);
 
     const size_t np = 1+ran.leq(10);
     const float  da = 6.28f/(np+1);
@@ -30,44 +31,59 @@ YACK_UTEST(spline)
         const float     alpha = i*da + 0.3f * da* ran.symm<float>();
         const v2d<float> v = v2d<float>( cos(alpha) + 0.1f * ran.symm<float>(),
                                         sin(alpha) + 0.1f * ran.symm<float>());
-        s(alpha,v);
+        S.add(alpha,v);
+        P.add(alpha,v);
     }
 
-    s.sort();
+    S.sort();
+    P.sort();
 
-    std::cerr << "s.x=" << s.x << std::endl;
-    std::cerr << "s.y=" << s.y << std::endl;
+    std::cerr << "s.x=" << S.x << std::endl;
+    std::cerr << "s.y=" << S.y << std::endl;
 
     {
         ios::ocstream fp("spline.dat");
-        for(size_t i=1;i<=s.size();++i)
+        for(size_t i=1;i<=S.size();++i)
         {
-            fp("%g",s.x[i]);
-            s.print(fp,s.y[i]);
+            fp("%g",S.x[i]);
+            S.print(fp,S.y[i]);
             fp << "\n";
         }
     }
 
-    spline<float,v2d<float> >::straight ls(s.size());
-
-    ls(s);
-    std::cerr << "s.y2=" << s.y2 << std::endl;
-
-
+    S.build();
+    
     {
         ios::ocstream fp("splfcn.dat");
         const size_t N = 100;
         for(size_t i=0;i<=N;++i)
         {
-            const double     xx = s.x[1] + ((s.x.back()-s.x.front()) * i)/N;
-            const v2d<float> yy = s(xx);
+            const double     xx = S.lower() + ((S.upper()-S.lower()) * i)/N;
+            const v2d<float> yy = S(xx);
             fp("%g",xx);
-            s.print(fp,yy);
+            S.print(fp,yy);
             fp << "\n";
         }
     }
 
+    
+    P.build(P.x[1]-da,P.x[np]+da);
 
+    {
+        ios::ocstream fp("splper.dat");
+        std::cerr << "P.upper=" << P.upper() << " / P.end=" << P.x.back() << std::endl;
+        std::cerr << "P.lower=" << P.lower() << " / P.ini=" << P.x.front() << std::endl;
+
+        const size_t N = 100;
+        for(size_t i=0;i<=N;++i)
+        {
+            const double     xx = P.lower() + ((P.upper()-P.lower()) * i)/N;
+            const v2d<float> yy = P(xx);
+            fp("%g",xx);
+            P.print(fp,yy);
+            fp << "\n";
+        }
+    }
 
 }
 YACK_UDONE()

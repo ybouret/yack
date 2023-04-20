@@ -81,8 +81,8 @@ namespace yack
             }
 
 
-            void operator()(const param_abscissa X,
-                            const param_ordinate Y)
+            void add(const param_abscissa X,
+                     const param_ordinate Y)
             {
                 coerce(x).push_back(X);
                 try { coerce(y).push_back(Y);  } catch(...) { coerce(x).pop_back(); throw; }
@@ -92,58 +92,13 @@ namespace yack
                 out_of_reach::zset(&coerce(y2.back()),sizeof(ordinate));
             }
 
-            ordinate operator()(param_abscissa xx) const
-            {
-                const size_t n = x.size(); assert(n>0);
-                if(n<=1)
-                {
-                    return y[1];
-                }
-                else
-                {
-                    if(xx<=x[1])
-                    {
-                        return y[1];
-                    }
-                    else
-                    {
-                        if(xx>=x[n])
-                        {
-                            return y[n];
-                        }
-                        else
-                        {
-                            size_t jlo = 1;
-                            size_t jup = 2;
-                        CHECK:
-                            if(xx>=x[jlo]&&xx<=x[jup]) goto FOUND;
-                            ++jlo;
-                            ++jup;
-                            goto CHECK;
-                        FOUND:
-                            static const_abscissa _0(0);
-                            static const_abscissa _1(1);
-
-                            const_abscissa d = x[jup] - xx;
-                            const_abscissa h = x[jup] - x[jlo]; assert(h>0);
-                            const_abscissa A   = (d<=_0) ? _0 :(  (d>=h) ? _1 : d/h);
-                            const_abscissa B   = _1-A;
-
-                            return
-                            A * y[jlo] + B * y[jup] +
-                            (A*(A*A-_1)*y2[jlo]+B*(B*B-_1)*y2[jup]) * h * h / 6;
-                        }
-                    }
-                }
-            }
-
-
+            virtual ordinate        operator()(param_abscissa xx) const = 0;
+            virtual const_abscissa &lower() const noexcept = 0;
+            virtual const_abscissa &upper() const noexcept = 0;
 
             const abscissae x;
             const ordinates y;
             const ordinates y2;
-
-            class straight;
 
             class common
             {
@@ -205,6 +160,7 @@ namespace yack
                 using common::r;
                 using common::u;
                 using common::h;
+
 
 
                 inline explicit straight(const size_t n) :
@@ -275,7 +231,7 @@ namespace yack
                 {
                 }
 
-                inline virtual ~straight() noexcept
+                inline virtual ~periodic() noexcept
                 {
 
                 }
@@ -286,6 +242,8 @@ namespace yack
                 {
                     assert(this->mutual_size()==s.size());
                     const size_t n = s.size();
+
+
                     switch(n)
                     {
                         case 0:
@@ -300,17 +258,25 @@ namespace yack
                     this->init(a,b,c,s);
 
                     // prepare boundary conditions
-                    a[1] = 0; b[1] = 1; c[1] = 0; r[1] = 0;
+                    a[1] = (s.x[1]-x_prev)/6;
+                    b[1] = (s.x[2]-x_prev)/3;
+                    c[1] = (s.x[2]-s.x[1])/6;
 
-                    a[n] = (x[n]-x[n-1])/6;
-                    b[n] = (x_next-x[n-1])/3;
-                    c[n] = (x_next-x[n])/6;
-                    r[n] = 0;
+                    a[n] = (s.x[n]-s.x[n-1])/6;
+                    b[n] = (x_next-s.x[n-1])/3;
+                    c[n] = (x_next-s.x[n])/6;
 
-                    std::cerr << "M=" << (*this) << std::endl;
+                    //std::cerr << "M=" << (*this) << std::endl;
+
                     for(unsigned d=0;d<dimension;++d)
                     {
                         this->bulk(s,d);
+                        r[1] = (coord(s.y[2],d)-coord(s.y[1],d))/(s.x[2]-s.x[1])
+                        - (coord(s.y[1],d)-coord(s.y[n],d))/(s.x[1]-x_prev);
+
+                        r[n] = ( coord(s.y[1],d)-coord(s.y[n],d))/(x_next-s.x[n])
+                        - ( coord(s.y[n],d)-coord(s.y[n-1],d))/(s.x[n]-s.x[n-1]);
+
                         if(!this->solve(u,r)) return false;
                         for(size_t i=n;i>0;--i)
                         {
@@ -320,6 +286,7 @@ namespace yack
 
                     return true;
                 }
+                
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(periodic);
@@ -333,7 +300,220 @@ namespace yack
 
         };
 
-        
+        template <typename ABSCISSA, typename ORDINATE>
+        class straight_spline : public spline<ABSCISSA,ORDINATE>
+        {
+        public:
+            typedef spline<ABSCISSA,ORDINATE>      spline_type;
+            typedef typename spline_type::straight solver_type;
+            YACK_DECL_ARGS(ABSCISSA,abscissa);
+            YACK_DECL_ARGS(ORDINATE,ordinate);
+            using spline_type::x;
+            using spline_type::y;
+            using spline_type::y2;
+
+
+
+            inline virtual ~straight_spline() noexcept {}
+            inline explicit straight_spline(const size_t n) :
+            spline_type(n)
+            {}
+
+            inline bool build_with( solver_type &solver )
+            {
+                return solver(*this);
+            }
+
+            inline bool build()
+            {
+                solver_type solver( this->size() );
+                return build_with(solver);
+            }
+
+            virtual const_abscissa &lower() const noexcept
+            {
+                assert(this->size()>0);
+                return x.front();
+            }
+
+            virtual const_abscissa &upper() const noexcept
+            {
+                assert(this->size()>0);
+                return x.back();
+            }
+
+            virtual ordinate operator()(param_abscissa xx) const
+            {
+                const size_t n = x.size(); assert(n>0);
+                if(n<=1)
+                {
+                    return y[1];
+                }
+                else
+                {
+                    if(xx<=x[1])
+                    {
+                        return y[1];
+                    }
+                    else
+                    {
+                        if(xx>=x[n])
+                        {
+                            return y[n];
+                        }
+                        else
+                        {
+                            size_t jlo = 1;
+                            size_t jup = 2;
+                        CHECK:
+                            if(xx>=x[jlo]&&xx<=x[jup]) goto FOUND;
+                            ++jlo;
+                            ++jup;
+                            goto CHECK;
+                        FOUND:
+                            static const_abscissa _0(0);
+                            static const_abscissa _1(1);
+
+                            const_abscissa d = x[jup] - xx;
+                            const_abscissa h = x[jup] - x[jlo]; assert(h>0);
+                            const_abscissa A   = (d<=_0) ? _0 :(  (d>=h) ? _1 : d/h);
+                            const_abscissa B   = _1-A;
+
+                            return
+                            A * y[jlo] + B * y[jup] +
+                            (A*(A*A-_1)*y2[jlo]+B*(B*B-_1)*y2[jup]) * h * h / 6;
+                        }
+                    }
+                }
+            }
+
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(straight_spline);
+        };
+
+        template <typename ABSCISSA, typename ORDINATE>
+        class periodic_spline : public spline<ABSCISSA,ORDINATE>
+        {
+        public:
+            typedef spline<ABSCISSA,ORDINATE>      spline_type;
+            typedef typename spline_type::periodic solver_type;
+
+            YACK_DECL_ARGS(ABSCISSA,abscissa);
+            YACK_DECL_ARGS(ORDINATE,ordinate);
+            
+            using spline_type::x;
+            using spline_type::y;
+            using spline_type::y2;
+
+            const_abscissa xlower; //!< x[1]
+            const_abscissa xupper; //!< from x_next
+            const_abscissa period; //!< xupper - xlower
+
+            inline virtual ~periodic_spline() noexcept {}
+            inline explicit periodic_spline(const size_t n) :
+            spline_type(n),
+            xlower(0),
+            xupper(0),
+            period(0)
+            {}
+
+            inline bool build_with(solver_type   &solver,
+                                   param_abscissa x_prev,
+                                   param_abscissa x_next)
+            {
+                coerce(xlower) = 0;
+                coerce(xupper) = 0;
+                coerce(period) = 0;
+                if( solver(*this,x_prev,x_next) )
+                {
+                    if(this->size()>=2)
+                    {
+                        coerce(xlower) = x[1];
+                        coerce(xupper) = x_next;
+                        coerce(period) = xupper-xlower;
+                    }
+                    return true;
+                }
+                else
+                {
+
+                    return false;
+                }
+            }
+
+            inline bool build(param_abscissa x_prev,
+                              param_abscissa x_next)
+            {
+                solver_type solver(this->size());
+                return build_with(solver,x_prev,x_next);
+            }
+
+            virtual const_abscissa &lower() const noexcept
+            {
+                return xlower;
+            }
+
+            virtual const_abscissa &upper() const noexcept
+            {
+                return xupper;
+            }
+
+            virtual ordinate operator()(param_abscissa X) const
+            {
+                const size_t n = x.size(); assert(n>0);
+
+                if(n<=1)
+                {
+                    return y[1];
+                }
+                else
+                {
+                    mutable_abscissa xx = X;
+                    while(xx<xlower) xx += period;
+                    while(xx>xupper) xx -= period;
+                    const_abscissa   xend = x[n];
+
+                    size_t           jlo=1;
+                    size_t           jup=2;
+                    mutable_abscissa xlo=0;
+                    mutable_abscissa xup=0;
+                    if(xx>=xend)
+                    {
+                        std::cerr << "in extra" << std::endl;
+                        jlo=n;
+                        jup=1;
+                        xlo=xend;
+                        xup=xupper;
+                    }
+                    else
+                    {
+                    CHECK:
+                        if(xx>=x[jlo]&&xx<=x[jup]) goto FOUND;
+                        ++jlo;
+                        ++jup;
+                        goto CHECK;
+                    FOUND:
+                        xlo = x[jlo];
+                        xup = x[jup];
+                    }
+                    static const_abscissa _0(0);
+                    static const_abscissa _1(1);
+
+                    const_abscissa d = xup - xx;
+                    const_abscissa h = xup - xlo; assert(h>0);
+                    const_abscissa A   = (d<=_0) ? _0 :(  (d>=h) ? _1 : d/h);
+                    const_abscissa B   = _1-A;
+
+                    return
+                    A * y[jlo] + B * y[jup] +
+                    (A*(A*A-_1)*y2[jlo]+B*(B*B-_1)*y2[jup]) * h * h / 6;
+                }
+            }
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(periodic_spline);
+        };
 
 
     }
