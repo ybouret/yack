@@ -7,7 +7,7 @@
 #include "yack/memory/allocator/dyadic.hpp"
 #include "yack/sequence/vector.hpp"
 #include "yack/sequence/cxx-array.hpp"
-#include "yack/math/algebra/tridiag.hpp"
+#include "yack/math/algebra/cyclic.hpp"
 #include "yack/sort/heap.hpp"
 #include "yack/ios/ostream.hpp"
 
@@ -38,6 +38,7 @@ namespace yack
             static const size_t                   dimension = sizeof(ORDINATE)/sizeof(ABSCISSA);
             typedef cxx_array<abscissa,allocator> tableau;
             typedef tridiag<abscissa>             linear_solver;
+            typedef cyclic<abscissa>              cyclic_solver;
 
             static inline const abscissa &coord(const_ordinate &Y, const unsigned d) noexcept
             {
@@ -69,6 +70,10 @@ namespace yack
                 return x.size();
             }
 
+            inline void clear() noexcept
+            {
+                out_of_reach::zset( coerce(y2)(), y2.size()*sizeof(ordinate) );
+            }
 
             inline void sort() noexcept
             {
@@ -138,71 +143,22 @@ namespace yack
             const ordinates y;
             const ordinates y2;
 
-            class linear : public linear_solver
+
+            class common_solver
             {
             public:
-                using linear_solver::mutual_size;
-                using linear_solver::a;
-                using linear_solver::b;
-                using linear_solver::c;
+                inline virtual ~common_solver() noexcept {}
 
-                inline explicit linear(const size_t n) :
-                linear_solver(n),
-                u(n),
-                r(n),
-                h(n)
+            protected:
+                inline explicit common_solver(const size_t n) :
+                u(n), r(n), h(n)
                 {
                 }
 
-                inline virtual ~linear() noexcept
-                {
-
-                }
-
-                bool operator()(spline &s)
-                {
-                    assert(mutual_size()==s.size());
-                    const size_t n = s.size();
-                    switch(n)
-                    {
-                        case 0:
-                        case 1:
-                        case 2:
-                            out_of_reach::zset( coerce(s.y2)(), n*sizeof(ordinate) );
-                            return true;
-                        default:
-                            break;
-                    }
-                    // prepare matrix
-                    bulk(s);
-
-                    // prepare boundary conditions
-                    a[1] = 0; b[1] = 1; c[1] = 0; r[1] = 0;
-                    a[n] = 0; b[n] = 1; c[n] = 0; r[n] = 0;
-                    std::cerr << "M=" << (*this) << std::endl;
-                    for(unsigned d=0;d<dimension;++d)
-                    {
-                        bulk(s,d);
-                        std::cerr << "r=" << r << std::endl;
-                        if(!this->solve(u,r)) return false;
-                        std::cerr << "u=" << u << std::endl;
-                        for(size_t i=n;i>0;--i)
-                        {
-                            coerce(coord(s.y2[i],d)) = u[i];
-                        }
-                    }
-
-                    return true;
-                }
-
-
-                tableau u;
-                tableau r;
-                tableau h;
-
-            private:
-                YACK_DISABLE_COPY_AND_ASSIGN(linear);
-                void bulk(const spline &s)
+                inline void init(writable<abscissa> &a,
+                                 writable<abscissa> &b,
+                                 writable<abscissa> &c,
+                                 const spline       &s)
                 {
                     const size_t n = s.size();
 
@@ -210,7 +166,6 @@ namespace yack
                     {
                         h[i] = s.x[i] - s.x[im];
                     }
-                    std::cerr << "h=" << h << std::endl;
 
                     for(size_t i=2;i<n;++i)
                     {
@@ -231,6 +186,74 @@ namespace yack
                         r[i] = (yp-y0)/h[i+1] - (y0-ym)/h[i];
                     }
                 }
+
+                tableau u;
+                tableau r;
+                tableau h;
+
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(common_solver);
+            };
+
+            class linear : public linear_solver, public common_solver
+            {
+            public:
+                using linear_solver::a;
+                using linear_solver::b;
+                using linear_solver::c;
+                using common_solver::r;
+                using common_solver::u;
+                using common_solver::h;
+
+
+                inline explicit linear(const size_t n) :
+                linear_solver(n),
+                common_solver(n)
+                {
+                }
+
+                inline virtual ~linear() noexcept
+                {
+
+                }
+
+                bool operator()(spline &s)
+                {
+                    assert(this->mutual_size()==s.size());
+                    const size_t n = s.size();
+                    switch(n)
+                    {
+                        case 0:
+                        case 1:
+                        case 2:
+                            s.clear();
+                            return true;
+                        default:
+                            break;
+                    }
+                    // prepare matrix
+                    this->init(a,b,c,s);
+
+                    // prepare boundary conditions
+                    a[1] = 0; b[1] = 1; c[1] = 0; r[1] = 0;
+                    a[n] = 0; b[n] = 1; c[n] = 0; r[n] = 0;
+                    for(unsigned d=0;d<dimension;++d)
+                    {
+                        this->bulk(s,d);
+                        if(!this->solve(u,r)) return false;
+                        for(size_t i=n;i>0;--i)
+                        {
+                            coerce(coord(s.y2[i],d)) = u[i];
+                        }
+                    }
+
+                    return true;
+                }
+
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(linear);
+
+
             };
 
 

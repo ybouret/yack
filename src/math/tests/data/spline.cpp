@@ -17,6 +17,10 @@ YACK_UTEST(spline)
     YACK_SIZEOF( tridiag<double> );
     YACK_SIZEOF( tridiag<long double> );
 
+    YACK_SIZEOF( cyclic<float> );
+    YACK_SIZEOF( cyclic<double> );
+    YACK_SIZEOF( cyclic<long double> );
+
     spline<float, v2d<float> > s(4);
 
     float x_ = 0;
