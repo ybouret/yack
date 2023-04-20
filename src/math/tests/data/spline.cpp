@@ -45,7 +45,7 @@ YACK_UTEST(spline)
         }
     }
 
-    spline<float,v2d<float> >::linear ls(s.size());
+    spline<float,v2d<float> >::straight ls(s.size());
 
     ls(s);
     std::cerr << "s.y2=" << s.y2 << std::endl;

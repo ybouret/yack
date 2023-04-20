@@ -37,8 +37,8 @@ namespace yack
             typedef vector<ordinate,allocator>    ordinates;
             static const size_t                   dimension = sizeof(ORDINATE)/sizeof(ABSCISSA);
             typedef cxx_array<abscissa,allocator> tableau;
-            typedef tridiag<abscissa>             linear_solver;
-            typedef cyclic<abscissa>              cyclic_solver;
+            typedef tridiag<abscissa>             straight_solver;
+            typedef cyclic<abscissa>              periodic_solver;
 
             static inline const abscissa &coord(const_ordinate &Y, const unsigned d) noexcept
             {
@@ -143,14 +143,15 @@ namespace yack
             const ordinates y;
             const ordinates y2;
 
+            class straight;
 
-            class common_solver
+            class common
             {
             public:
-                inline virtual ~common_solver() noexcept {}
+                inline virtual ~common() noexcept {}
 
             protected:
-                inline explicit common_solver(const size_t n) :
+                inline explicit common(const size_t n) :
                 u(n), r(n), h(n)
                 {
                 }
@@ -192,32 +193,96 @@ namespace yack
                 tableau h;
 
             private:
-                YACK_DISABLE_COPY_AND_ASSIGN(common_solver);
+                YACK_DISABLE_COPY_AND_ASSIGN(common);
             };
 
-            class linear : public linear_solver, public common_solver
+            class straight : public straight_solver, public common
             {
             public:
-                using linear_solver::a;
-                using linear_solver::b;
-                using linear_solver::c;
-                using common_solver::r;
-                using common_solver::u;
-                using common_solver::h;
+                using straight_solver::a;
+                using straight_solver::b;
+                using straight_solver::c;
+                using common::r;
+                using common::u;
+                using common::h;
 
 
-                inline explicit linear(const size_t n) :
-                linear_solver(n),
-                common_solver(n)
+                inline explicit straight(const size_t n) :
+                straight_solver(n),
+                common(n)
                 {
                 }
 
-                inline virtual ~linear() noexcept
+                inline virtual ~straight() noexcept
                 {
 
                 }
 
+                //! natural spline
                 bool operator()(spline &s)
+                {
+                    assert(this->mutual_size()==s.size());
+                    const size_t n = s.size();
+                    switch(n)
+                    {
+                        case 0:
+                        case 1:
+                        case 2:
+                            s.clear();
+                            return true;
+                        default:
+                            break;
+                    }
+                    // prepare matrix
+                    this->init(a,b,c,s);
+
+                    // prepare boundary conditions
+                    a[1] = 0; b[1] = 1; c[1] = 0; r[1] = 0;
+                    a[n] = 0; b[n] = 1; c[n] = 0; r[n] = 0;
+
+                    // finalize bulk
+                    for(unsigned d=0;d<dimension;++d)
+                    {
+                        this->bulk(s,d);
+                        if(!this->solve(u,r)) return false;
+                        for(size_t i=n;i>0;--i)
+                        {
+                            coerce(coord(s.y2[i],d)) = u[i];
+                        }
+                    }
+
+                    return true;
+                }
+
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(straight);
+            };
+
+            class periodic : public periodic_solver, public common
+            {
+            public:
+                using periodic_solver::a;
+                using periodic_solver::b;
+                using periodic_solver::c;
+                using common::r;
+                using common::u;
+                using common::h;
+
+
+                inline explicit periodic(const size_t n) :
+                periodic_solver(n),
+                common(n)
+                {
+                }
+
+                inline virtual ~straight() noexcept
+                {
+
+                }
+
+                bool operator()(spline        &s,
+                                const abscissa x_prev,
+                                const abscissa x_next)
                 {
                     assert(this->mutual_size()==s.size());
                     const size_t n = s.size();
@@ -251,15 +316,13 @@ namespace yack
                 }
 
             private:
-                YACK_DISABLE_COPY_AND_ASSIGN(linear);
-
-
+                YACK_DISABLE_COPY_AND_ASSIGN(periodic);
             };
+
 
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(spline);
-
 
 
         };

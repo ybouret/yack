@@ -125,7 +125,14 @@ $$
 
 \subsection{Closed Spline}
 
-	\begin{equation}
+\begin{equation}
+  \underbrace{\dfrac{(x_{N} - x_{N-1})}{6}}_{a_N} y_{N-1}''
++ \underbrace{\dfrac{x_{N+1}-x_{N-1}}{3}}_{b_N} y_N''
++ \underbrace{\dfrac{(x_{N+1} - x_N)}{6}}_{c_N} y_{1}'' = 
+\underbrace{\dfrac{y_{1}-y_{N}}{x_{N+1}-x_{N}} - \dfrac{y_{N}-y_{N-1}}{x_{N}-x_{N-1}}}_{\delta_n}
+\end{equation}
+
+\begin{equation}
 \begin{bmatrix}
 a_1  & b_1 &     &         &         &  c_1    \\
      & a_2 & b_2 & c_2     &         &         \\
