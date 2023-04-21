@@ -168,6 +168,13 @@ YACK_UTEST(ipso_mul)
     ipso::static_add<double,8> sda;
     sda << -0.1 << 3 << 0.2;
     std::cerr << "sda=" << sda << std::endl;
+    std::cerr << sda.sum() << std::endl;
+
+    ipso::add<apq> dqa(16);
+    dqa << apq(-1,10) << apq(3) << apq(2,10);
+    std::cerr << "dqa=" << dqa << std::endl;
+    std::cerr << dqa.sum() << std::endl;
+
 
 
 
