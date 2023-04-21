@@ -14,28 +14,41 @@ namespace yack
     namespace ipso
     {
 
+        //! default for apex types
         template <typename T>
         struct inside
         {
             typedef T type;
-            static inline  const type & conv(const T &args) noexcept { return args; }
+            static inline const type & send(const T    &args) noexcept { return args; }
+            static inline const T    & recv(const type &args) noexcept { return args; }
         };
 
         template <>
         struct inside<float>
         {
             typedef extended<float> type;
-            static inline  type conv(const float f) { return f; }
+            static inline type  send(const float args)   { return  args; }
+            static inline float recv(const type &args)   { return *args; }
+
         };
 
-#if 1
         template <>
         struct inside<double>
         {
             typedef extended<double> type;
-            static inline  type conv(const double f) { return f; }
+            static inline type   send(const double args) { return  args; }
+            static inline double recv(const type  &args) { return *args; }
         };
-#endif
+
+
+        template <>
+        struct inside<long double>
+        {
+            typedef extended<long double> type;
+            static inline type        send(const long double args) { return  args; }
+            static inline long double recv(const type       &args) { return *args; }
+        };
+
 
         template <typename T>
         struct run_time_memory
@@ -94,8 +107,14 @@ namespace yack
                 inline explicit proto(const size_t n) : object_type(), heap_type(n) {} //!< setup with possible capacity
                 inline virtual ~proto() noexcept                                    {} //!< cleanup
 
+                //______________________________________________________________
+                //
+                // methods
+                //______________________________________________________________
+
+                //! convert and push value
                 proto & operator << (param_type args) {
-                    push( inside<type>::conv(args) );
+                    push( inside<type>::send(args) );
                     return *this;
                 }
 
@@ -117,6 +136,8 @@ namespace yack
                     goto REDUCE;
                 }
 
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(proto);
             };
         };
 
@@ -128,9 +149,9 @@ namespace yack
             typedef typename inside<T>::type                             inside_type;
             typedef adding::proto<T, typename run_time_memory<T>::type > proto_class;
 
-            inline explicit add() noexcept : proto_class() {}
-            inline virtual ~add() noexcept {}
+            inline explicit add() noexcept      : proto_class() {}
             inline explicit add(const size_t n) : proto_class(n) {}
+            inline virtual ~add() noexcept {}
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(add);

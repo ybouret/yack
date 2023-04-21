@@ -136,6 +136,9 @@ namespace yack
         //! absolute value
         extended abs() const noexcept;
 
+        //! sqrt
+        extended sqrt() const;
+
         //__________________________________________________________________
         //
         // comparisons

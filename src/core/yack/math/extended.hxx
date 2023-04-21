@@ -237,4 +237,28 @@ namespace yack
         }
     }
 
+    template <>
+    extended<real_t> extended<real_t>:: sqrt() const
+    {
+        switch( __sign::of(m) )
+        {
+            case negative: throw libc::exception(EDOM,"extended<real>.sqrt(negative)");
+            case __zero__: return extended<real_t>();
+            case positive: break;
+        }
+        int    pp = p;
+        real_t mm = m;
+        if(0!=(pp&1))
+        {
+            --pp;
+            mm *= 2;
+        }
+        assert(0==(pp&1));
+        extended xr( std::sqrt(mm) );
+        coerce(xr.p) += (pp>>1);
+        return xr;
+    }
+
+
+
 }

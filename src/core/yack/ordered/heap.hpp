@@ -27,8 +27,8 @@ namespace yack
             static  const char       lbrack;     //!< '['
             static  const char       rbrack;     //!< ']'
             static  const char       separator;  //!< ';'
-            typedef int2type<true>   versatile;
-            typedef int2type<false>  immutable;
+            typedef int2type<true>   versatile;  //!< helper alias
+            typedef int2type<false>  immutable;  //!< helper alias
 
 
             //__________________________________________________________________

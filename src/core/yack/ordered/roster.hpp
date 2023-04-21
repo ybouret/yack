@@ -63,10 +63,12 @@ namespace yack
         //! low-level access
         inline const base_list & operator*() const noexcept { return my; }
 
+        //! pull 'lower' value
         inline mutable_type lower() {
             return my.pull_head();
         }
 
+        //! pull 'upper' value
         inline mutable_type upper() {
             return my.pull_tail();
         }
@@ -89,7 +91,6 @@ namespace yack
         }
 
         //! insert a new value a few times
-        //!
         inline void insert(param_type args, unsigned n)
         {
             base_list rep;
@@ -142,6 +143,7 @@ namespace yack
         list_type          my;
         mutable COMPARATOR cm;
 
+        //! check validity, mostly to debug
         inline bool is_valid() const {
             const node_type *curr = my.head;
             while(curr && curr->next)
@@ -158,6 +160,7 @@ namespace yack
             return true;
         }
 
+        //! fast case when only one item
         inline void insert_second(node_type *node) noexcept
         {
             assert(1==my.size);
@@ -169,6 +172,7 @@ namespace yack
             }
         }
 
+        //! find preceding value
         inline node_type *find_preceding(const_type &value)
         {
             assert(my.size>=2);

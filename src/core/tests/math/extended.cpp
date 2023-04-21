@@ -67,6 +67,16 @@ YACK_UTEST(math_extended)
     check1<float>();
     check1<double>();
     check1<long double>();
+
+    std::cerr << std::endl << "sqrt" << std::endl;
+    for(size_t i=1;i<=xr.size();++i)
+    {
+        const extended<float> xx = xr[i].abs();
+        const extended<float> xs = xx.sqrt();
+        std::cerr << "sqrt(" << *xx << ") = " << *xs << std::endl;
+    }
+
+
 }
 YACK_UDONE()
 
