@@ -82,6 +82,9 @@ namespace yack
                 typedef heap<inside_type,comparator_,MEM_BUFFER> heap_type;
 
                 using  heap_type::push;
+                using  heap_type::size;
+                using  heap_type::pull;
+                using  heap_type::grow;
 
                 //______________________________________________________________
                 //
@@ -94,6 +97,24 @@ namespace yack
                 proto & operator << (param_type args) {
                     push( inside<type>::conv(args) );
                     return *this;
+                }
+
+                //! get the current sum
+                inline inside_type sum() {
+                    switch(size())
+                    {
+                        case 0:  return 0;
+                        case 1:  return pull();
+                        default: break;
+                    }
+                    assert(size() > 1);
+                REDUCE:
+                    const inside_type lhs = pull(); assert(size() >= 1);
+                    const inside_type rhs = pull();
+                    const inside_type tmp = lhs + rhs;
+                    if (size() <= 0) return tmp;
+                    grow(tmp);
+                    goto REDUCE;
                 }
 
             };
@@ -141,6 +162,8 @@ YACK_UTEST(ipso_mul)
     ipso::add<float> dfa;
     dfa << -0.1 << 3 << 0.2;
     std::cerr << "dsa=" << dfa << std::endl;
+
+    std::cerr << dfa.sum() << std::endl;
 
     ipso::static_add<double,8> sda;
     sda << -0.1 << 3 << 0.2;
