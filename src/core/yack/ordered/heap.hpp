@@ -24,9 +24,9 @@ namespace yack
         class heap : public container
         {
         public:
-            static  const char       lbrack; //!< '['
-            static  const char       rbrack; //!< ']'
-            static  const char       colon;  //!< ':'
+            static  const char       lbrack;     //!< '['
+            static  const char       rbrack;     //!< ']'
+            static  const char       separator;  //!< ';'
             typedef int2type<true>   versatile;
             typedef int2type<false>  immutable;
 
@@ -148,7 +148,7 @@ namespace yack
                 heap h(self,as_copy); assert(h.size()>=1);
                 os << lbrack;
                 os << h.pull();
-                while(h.size()) os << colon << h.pull();
+                while(h.size()) os << separator << h.pull();
                 os << rbrack;
             }
             return os;
@@ -170,7 +170,7 @@ namespace yack
         inline void push(param_type args)
         {
             static const int2type<MEM_BUFFER::versatile> behavior = {};
-            push(behavior,args);
+            inject(behavior,args);
         }
 
         //! pop highest priority element
@@ -212,7 +212,7 @@ namespace yack
         //______________________________________________________________________
         inline void release(const immutable &) noexcept { pq.finish(); }
         inline void reserve(const immutable &, size_t)  { no_possible_reserve(); }
-        inline void push(const immutable &, const_type &args )
+        inline void inject(const immutable &, const_type &args )
         {
             if(pq.count>=pq.total) push_on_memory_full();
             pq.insert(args);
@@ -252,7 +252,7 @@ namespace yack
         }
 
 
-        inline void push(const versatile &, const_type &args)
+        inline void inject(const versatile &, const_type &args)
         {
             const size_t capa = pq.total;
             if(pq.count<capa)
