@@ -233,6 +233,7 @@ namespace yack
 
 #include "yack/apex.hpp"
 #include "yack/type/complex.hpp"
+#include "yack/math/extended.hpp"
 
 namespace yack
 {
@@ -285,6 +286,8 @@ namespace yack
         YACK_RTTI(apz);
         YACK_RTTI(apq);
 
-
+        YACK_RTTI(extended<float>);
+        YACK_RTTI(extended<double>);
+        YACK_RTTI(extended<long double>);
     }
 }

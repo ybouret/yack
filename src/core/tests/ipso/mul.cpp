@@ -6,6 +6,9 @@
 #include "yack/ordered/run-time-buffer.hpp"
 #include "yack/ordered/compiled-buffer.hpp"
 #include "yack/apex.hpp"
+#include "yack/ordered/roster.hpp"
+#include "yack/system/rtti.hpp"
+#include "yack/string.hpp"
 
 using namespace yack;
 
@@ -136,6 +139,12 @@ namespace yack
                     goto REDUCE;
                 }
 
+                void display_info() const {
+                    static const string & myID = rtti::name<type>();
+                    static const string & inID = rtti::name<inside_type>();
+                    std::cerr << "add::proto<" << myID << "> working with <" << inID << ">" << std::endl;
+                }
+
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(proto);
             };
@@ -196,6 +205,10 @@ YACK_UTEST(ipso_mul)
     std::cerr << "dqa=" << dqa << std::endl;
     std::cerr << dqa.sum() << std::endl;
 
+
+    dfa.display_info();
+    sda.display_info();
+    dqa.display_info();
 
 
 
