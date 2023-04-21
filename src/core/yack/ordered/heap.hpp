@@ -24,9 +24,13 @@ namespace yack
         class heap : public container
         {
         public:
-            static const char lbrack; //!< '['
-            static const char rbrack; //!< ']'
-            static const char colon;  //!< ':'
+            static  const char       lbrack; //!< '['
+            static  const char       rbrack; //!< ']'
+            static  const char       colon;  //!< ':'
+            typedef int2type<true>   versatile;
+            typedef int2type<false>  immutable;
+
+
             //__________________________________________________________________
             //
             // interface
@@ -206,9 +210,9 @@ namespace yack
         //
         // methods for compiled_buffer
         //______________________________________________________________________
-        inline void release( const int2type<false> & ) noexcept { pq.finish(); }
-        inline void reserve( const int2type<false> &, size_t) { no_possible_reserve(); }
-        inline void push( const int2type<false> &, const_type &args )
+        inline void release(const immutable &) noexcept { pq.finish(); }
+        inline void reserve(const immutable &, size_t)  { no_possible_reserve(); }
+        inline void push(const immutable &, const_type &args )
         {
             if(pq.count>=pq.total) push_on_memory_full();
             pq.insert(args);
@@ -218,7 +222,7 @@ namespace yack
         //
         // methods for run_time_buffer
         //______________________________________________________________________
-        inline void release( const int2type<true>  & ) noexcept {
+        inline void release(const versatile &) noexcept {
             pq.finish();
             if(pq.total>0)
             {
@@ -229,7 +233,7 @@ namespace yack
             }
         }
 
-        inline void reserve(const int2type<true> &, size_t n)
+        inline void reserve(const versatile &, size_t n)
         {
             if(n>0)
             {
@@ -248,7 +252,7 @@ namespace yack
         }
 
 
-        inline void push( const int2type<true> &, const_type &args )
+        inline void push(const versatile &, const_type &args)
         {
             const size_t capa = pq.total;
             if(pq.count<capa)

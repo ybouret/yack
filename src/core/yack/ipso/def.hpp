@@ -12,8 +12,8 @@ namespace yack
     namespace ipso
     {
 
-        typedef  memory::dyadic allocator_type; //!< memory allocator for add
-        typedef  large_object   object_type;    //!< object type
+        typedef  memory::dyadic memory_type; //!< memory allocator for add
+        typedef  large_object   object_type; //!< object type
     }
 
 }
