@@ -24,14 +24,31 @@ namespace yack
             typedef T type;
             static inline const type & send(const T    &args) noexcept { return args; }
             static inline const T    & recv(const type &args) noexcept { return args; }
+            static inline sign_type    comp(const type &l, const type &r) {
+                return l<r ? negative : (r<l ? positive : __zero__);
+            }
+        };
+
+        template <typename XREAL>
+        struct xr_ops
+        {
+            static inline sign_type compare(const XREAL &l,
+                                            const XREAL &r) noexcept
+            {
+                return __sign::of(l.p,r.p);
+            }
         };
 
         template <>
         struct inside<float>
         {
             typedef extended<float> type;
-            static inline type  send(const float args)   { return  args; }
-            static inline float recv(const type &args)   { return *args; }
+            static inline type      send(const float args)   { return  args; }
+            static inline float     recv(const type &args)   { return *args; }
+            static inline sign_type comp(const type &l, const type &r)
+            {
+                return xr_ops<type>::compare(l,r);
+            }
 
         };
 
@@ -39,8 +56,12 @@ namespace yack
         struct inside<double>
         {
             typedef extended<double> type;
-            static inline type   send(const double args) { return  args; }
-            static inline double recv(const type  &args) { return *args; }
+            static inline type       send(const double args) { return  args; }
+            static inline double     recv(const type  &args) { return *args; }
+            static inline sign_type  comp(const type &l, const type &r)
+            {
+                return xr_ops<type>::compare(l,r);
+            }
         };
 
 
@@ -48,8 +69,12 @@ namespace yack
         struct inside<long double>
         {
             typedef extended<long double> type;
-            static inline type        send(const long double args) { return  args; }
-            static inline long double recv(const type       &args) { return *args; }
+            static inline type            send(const long double args) { return  args; }
+            static inline long double     recv(const type       &args) { return *args; }
+            static inline sign_type       comp(const type &l, const type &r)
+            {
+                return xr_ops<type>::compare(l,r);
+            }
         };
 
 
@@ -182,6 +207,41 @@ namespace yack
         };
 
 
+        template <typename T> struct inside_comparator
+        {
+            typedef typename inside<T>::type inside_type;
+            inline sign_type operator()(const inside_type &l,
+                                        const inside_type &r) noexcept
+            {
+                return inside<T>::comp(l,r);
+            }
+        };
+
+        template <typename T>
+        class mul : public roster< typename inside<T>::type, inside_comparator<T> >
+        {
+        public:
+            YACK_DECL_ARGS(T,type);
+            typedef typename inside<T>::type        inside_type;
+            typedef inside_comparator<type>         incomp_type;
+            typedef roster<inside_type,incomp_type> proto_class;
+            using proto_class::insert;
+
+            inline explicit mul() noexcept : proto_class() {}
+            inline virtual ~mul() noexcept {}
+
+            mul & operator<< (param_type args)
+            {
+                insert( inside<type>::send(args) );
+                return *this;
+            }
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(mul);
+        };
+
+
+
     }
 
 }
@@ -211,6 +271,13 @@ YACK_UTEST(ipso_mul)
     dqa.display_info();
 
 
+    ipso::mul<float> dfm;
+    dfm << -0.01 << 30 << 0.2;
+    std::cerr << "dfm=" << dfm << std::endl;
+
+    ipso::mul<apq> dqm;
+    dqm << apq(-1,100) << apq(30) << apq(2,10);
+    std::cerr << "dqm=" << dqm << std::endl;
 
 
 }
