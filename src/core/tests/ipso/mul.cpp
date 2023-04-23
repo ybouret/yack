@@ -226,6 +226,9 @@ namespace yack
             typedef inside_comparator<type>         incomp_type;
             typedef roster<inside_type,incomp_type> proto_class;
             using proto_class::insert;
+            using proto_class::size;
+            using proto_class::lower;
+            using proto_class::upper;
 
             inline explicit mul() noexcept : proto_class() {}
             inline virtual ~mul() noexcept {}
@@ -234,6 +237,33 @@ namespace yack
             {
                 insert( inside<type>::send(args) );
                 return *this;
+            }
+
+            inside_type product()
+            {
+                switch( size() )
+                {
+                    case 0: { const inside_type res(0); return res; }
+                    case 1: return lower();
+                    case 2: {
+                        const inside_type lhs = lower(); assert(1==size());
+                        const inside_type rhs = upper(); assert(0==size());
+                        const inside_type res = lhs*rhs;
+                        return res;
+                    }
+                    default:
+                        break;
+                }
+
+                assert(size()>2);
+
+            REDUCE:
+                const inside_type lhs = lower();
+                const inside_type rhs = upper();
+                const inside_type res = lhs*rhs;
+                if(size()<=0) return res;
+                insert(res);
+                goto REDUCE;
             }
 
         private:
@@ -274,10 +304,12 @@ YACK_UTEST(ipso_mul)
     ipso::mul<float> dfm;
     dfm << -0.01 << 30 << 0.2;
     std::cerr << "dfm=" << dfm << std::endl;
+    std::cerr << dfm.product() << std::endl;
 
     ipso::mul<apq> dqm;
     dqm << apq(-1,100) << apq(30) << apq(2,10);
     std::cerr << "dqm=" << dqm << std::endl;
+    std::cerr << dqm.product() << std::endl;
 
 
 }
