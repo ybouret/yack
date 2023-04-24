@@ -44,13 +44,13 @@ namespace yack
         //
         // virtual interface
         //______________________________________________________________________
-        inline virtual const char *category()  const noexcept { return low_level::roster_category; }
-        inline virtual size_t      size()      const noexcept { return my.size; }
-        inline virtual size_t      capacity()  const noexcept { return my.size+my.ready(); }
-        inline virtual size_t      available() const noexcept { return my.ready();}
-        inline virtual void        free()            noexcept { my.clear(); }
-        inline virtual void        release()         noexcept { my.clear(); my.cache->release(); }
-        inline virtual void        reserve(size_t n)          { return my.cache->reserve(n); }
+        inline virtual const char *category()  const noexcept { return low_level::roster_category; } //!< category
+        inline virtual size_t      size()      const noexcept { return my.size; }                    //!< size
+        inline virtual size_t      capacity()  const noexcept { return my.size+my.ready(); }         //!< capacity
+        inline virtual size_t      available() const noexcept { return my.ready();}                  //!< available
+        inline virtual void        free()            noexcept { my.clear(); }                        //!< free
+        inline virtual void        release()         noexcept { my.clear(); my.cache->release(); }   //!< release
+        inline virtual void        reserve(size_t n)          { return my.cache->reserve(n); }       //!< reserve
 
         //______________________________________________________________________
         //
