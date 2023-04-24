@@ -96,15 +96,24 @@ namespace yack
         class api : public object_type
         {
         public:
+            //__________________________________________________________________
+            //
+            // definitions
+            //__________________________________________________________________
             YACK_DECL_ARGS(T,type);
             typedef typename inside<T>::type inside_type;
-            inline virtual ~api() noexcept {}
 
+            //__________________________________________________________________
+            //
             // virtual interface
+            //__________________________________________________________________
             virtual void        append(const inside_type &) = 0; //!< append an inside type
             virtual inside_type reduce() = 0;                    //!< reduce to inside type
 
+            //__________________________________________________________________
+            //
             // non-virtual interface
+            //__________________________________________________________________
 
             //! high-level convert and push value
             inline api & operator<<(param_type args) {
@@ -118,8 +127,43 @@ namespace yack
                 return inside<T>::recv(res);
             }
 
+            //! load zero
+            inline void ldz() noexcept { super.free(); }
+
+            //! load zero, reserve memory
+            inline void ldz(const size_t n) { super.resume(n); }
+
+
+            //! reduce one arg
+            inline inside_type operator()(param_type a) { ldz(1); *this << a; return reduce(); }
+
+            //! reduce two args
+            inline inside_type operator()(param_type a,
+                                          param_type b) { ldz(2); *this << a << b; return reduce(); }
+
+            //! reduce three args
+            inline inside_type operator()(param_type a,
+                                          param_type b,
+                                          param_type c) { ldz(3); *this << a << b << c; return reduce(); }
+
+            //! reduce four args
+            inline inside_type operator()(param_type a,
+                                          param_type b,
+                                          param_type c,
+                                          param_type d) { ldz(4); *this << a << b << c << d; return reduce(); }
+
+            
+
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+
+            //! cleanup
+            inline virtual ~api() noexcept {}
 
         protected:
+            //! setup
             inline explicit api(container &_) noexcept : object_type(), super(_) {}
 
         private:
