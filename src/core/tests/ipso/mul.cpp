@@ -100,13 +100,24 @@ namespace yack
             typedef typename inside<T>::type inside_type;
             inline virtual ~api() noexcept {}
 
-            virtual void append(const inside_type &) = 0;
+            // virtual interface
+            virtual void        append(const inside_type &) = 0; //!< append an inside type
+            virtual inside_type reduce() = 0;                    //!< reduce to inside type
+
+            // non-virtual interface
 
             //! high-level convert and push value
             inline api & operator<<(param_type args) {
                 append( inside<type>::send(args) );
                 return *this;
             }
+
+            //! high-level reduction and conversiont
+            inline mutable_type operator*() {
+                const inside_type res = reduce();
+                return inside<T>::recv(res);
+            }
+
 
         protected:
             inline explicit api(container &_) noexcept : object_type(), super(_) {}
@@ -165,15 +176,13 @@ namespace yack
                 // methods
                 //______________________________________________________________
 
-                virtual void append(const inside_type &args)
-                {
+                inline virtual void append(const inside_type &args) {
                     push(args);
                 }
 
 
-
                 //! get the current sum
-                inline inside_type sum() {
+                inline virtual inside_type reduce() {
                     switch(size())
                     {
                         case 0:  return 0;
@@ -260,30 +269,23 @@ namespace yack
             inline virtual ~mul() noexcept {}
 
 
-            virtual void append(const inside_type &args)
+            inline virtual void append(const inside_type &args)
             {
                 insert(args);
             }
 
-            
 
-            inside_type product()
+            inline virtual inside_type reduce()
             {
                 switch( size() )
                 {
                     case 0: { const inside_type res(0); return res; }
                     case 1: return lower();
-                    case 2: {
-                        const inside_type lhs = lower(); assert(1==size());
-                        const inside_type rhs = upper(); assert(0==size());
-                        const inside_type res = lhs*rhs;
-                        return res;
-                    }
                     default:
                         break;
                 }
 
-                assert(size()>2);
+                assert(size()>=2);
 
             REDUCE:
                 const inside_type lhs = lower();
@@ -311,17 +313,17 @@ YACK_UTEST(ipso_mul)
     dfa << -0.1 << 3 << 0.2;
     std::cerr << "dsa=" << dfa << std::endl;
 
-    std::cerr << dfa.sum() << std::endl;
+    std::cerr << dfa.reduce() << std::endl;
 
     ipso::static_add<double,8> sda;
     sda << -0.1 << 3 << 0.2;
     std::cerr << "sda=" << sda << std::endl;
-    std::cerr << sda.sum() << std::endl;
+    std::cerr << sda.reduce() << std::endl;
 
     ipso::add<apq> dqa(16);
     dqa << apq(-1,10) << apq(3) << apq(2,10);
     std::cerr << "dqa=" << dqa << std::endl;
-    std::cerr << dqa.sum() << std::endl;
+    std::cerr << dqa.reduce() << std::endl;
 
 
     dfa.display_info();
@@ -332,12 +334,12 @@ YACK_UTEST(ipso_mul)
     ipso::mul<float> dfm;
     dfm << -0.01 << 30 << 0.2;
     std::cerr << "dfm=" << dfm << std::endl;
-    std::cerr << dfm.product() << std::endl;
+    std::cerr << dfm.reduce() << std::endl;
 
     ipso::mul<apq> dqm;
     dqm << apq(-1,100) << apq(30) << apq(2,10);
     std::cerr << "dqm=" << dqm << std::endl;
-    std::cerr << dqm.product() << std::endl;
+    std::cerr << dqm.reduce() << std::endl;
 
 
 }
