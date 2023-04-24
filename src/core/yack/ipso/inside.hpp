@@ -3,7 +3,7 @@
 #ifndef YACK_IPSO_INSIDE_INCLUDED
 #define YACK_IPSO_INSIDE_INCLUDED 1
 
-#include "yack/math/extended.hpp"
+#include "yack/math/xcomplex.hpp"
 
 namespace yack
 {

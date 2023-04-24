@@ -21,7 +21,7 @@ namespace yack
     {}
 
     template <>
-    xcomplex<real_t>:: xcomplex(const xreal X) noexcept:
+    xcomplex<real_t>:: xcomplex(const xflt X) noexcept:
     re(X),
     im()
     {}
@@ -42,7 +42,7 @@ namespace yack
     }
 
     template <>
-    xcomplex<real_t> & xcomplex<real_t>:: operator=( const xreal x ) noexcept
+    xcomplex<real_t> & xcomplex<real_t>:: operator=( const xflt x ) noexcept
     {
         re = x;
         im = 0;
@@ -101,34 +101,18 @@ namespace yack
     xcomplex<real_t>  & xcomplex<real_t>:: operator *=(const xcomplex rhs)
     {
 
-        const xreal re_ = re * rhs.re - im * rhs.im;
-        const xreal im_ = re * rhs.im + im * rhs.re;
+        const xflt re_ = re * rhs.re - im * rhs.im;
+        const xflt im_ = re * rhs.im + im * rhs.re;
         re = re_;
         im = im_;
         return *this;
     }
 
-    template <>
-    xcomplex<real_t>  & xcomplex<real_t>:: operator *=(const xreal rhs)
-    {
-        re *= rhs;
-        im *= rhs;
-        return *this;
-    }
-
-    template <>
-    xcomplex<real_t>  & xcomplex<real_t>:: operator *=(const real_t rhs)
-    {
-        const xreal fac(rhs);
-        re *= fac;
-        im *= fac;
-        return *this;
-    }
-
+    
     template <>
     xcomplex<real_t> & xcomplex<real_t>:: operator/=(const xcomplex den)
     {
-        const xreal    m2 = den.mod2(); if(m2.abs()<=0) throw libc::exception(EDOM,"xcomplex division by zero");
+        const xflt     m2 = den.mod2(); if(m2.abs()<=0) throw libc::exception(EDOM,"xcomplex division by zero");
         const xcomplex zz = *this * den.conj();
         re = zz.re/m2;
         im = zz.im/m2;

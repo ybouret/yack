@@ -23,8 +23,9 @@ namespace yack
         //
         // definitions
         //______________________________________________________________________
-        typedef extended<T> xreal; //!< alias
-        typedef complex<T>  cplx;  //!< alias
+        typedef T           type; //!< alias
+        typedef extended<T> xflt; //!< alias
+        typedef complex<T>  cplx; //!< alias
 
         //______________________________________________________________________
         //
@@ -35,24 +36,24 @@ namespace yack
         xcomplex &operator=(const xcomplex &) noexcept;    //!< assign
         ~xcomplex() noexcept;                              //!< cleanup
 
-        xcomplex(const T     x);                           //!< (x,0)
-        xcomplex(const xreal X) noexcept;                  //!< (X,0)
+        xcomplex(const type  x);                           //!< (x,0)
+        xcomplex(const xflt  X) noexcept;                  //!< (X,0)
         xcomplex(const cplx  z);                           //!< (z.re,z.im)
 
         //! special constructor (u,v)
         template <typename U, typename V> inline
         xcomplex(const U u, const V v) : re(u), im(v) {}
 
-        xcomplex & operator=(const T     x);               //!< (x,0)
-        xcomplex & operator=(const xreal X) noexcept;      //!< (X,0)
-        xcomplex & operator=(const cplx  z);               //!< (z.re,z.im)
+        xcomplex & operator=(const type x);               //!< (x,0)
+        xcomplex & operator=(const xflt X) noexcept;      //!< (X,0)
+        xcomplex & operator=(const cplx z);               //!< (z.re,z.im)
 
         //______________________________________________________________________
         //
         // methods
         //______________________________________________________________________
 
-        xreal    mod2() const;          //!< |z|^2
+        xflt     mod2() const;          //!< |z|^2
         xcomplex conj() const noexcept; //!< (re,-im)
 
 
@@ -68,67 +69,53 @@ namespace yack
         //
         // unary operators
         //______________________________________________________________________
-        xcomplex operator+() const noexcept;
-        xcomplex operator-() const noexcept;
+        xcomplex operator+() const noexcept; //!< unary +
+        xcomplex operator-() const noexcept; //!< unary -
+
 
 
         //______________________________________________________________________
         //
         // addition
         //______________________________________________________________________
-        xcomplex & operator+=(const xcomplex rhs);
-        inline friend xcomplex operator+(xcomplex lhs, const xcomplex rhs )
-        {
+        xcomplex & operator+=(const xcomplex rhs); //!< binary+
+        inline friend xcomplex operator+(xcomplex lhs, const xcomplex rhs) {
             return lhs += rhs;
         }
+
+
 
         //______________________________________________________________________
         //
         // subtraction
         //______________________________________________________________________
-        xcomplex & operator-=(const xcomplex rhs);
-        inline friend xcomplex operator-(xcomplex lhs, const xcomplex rhs )
-        {
+        xcomplex & operator-=(const xcomplex rhs); //!< binary-
+        inline friend xcomplex operator-(xcomplex lhs, const xcomplex rhs) {
             return lhs -= rhs;
         }
+
+
+
 
         //______________________________________________________________________
         //
         // multiplication
         //______________________________________________________________________
         xcomplex & operator*=(const xcomplex rhs);
-        inline friend xcomplex operator*(xcomplex lhs, const xcomplex rhs )
-        {
+        inline friend xcomplex operator*(xcomplex lhs, const xcomplex rhs) {
             return lhs *= rhs;
         }
 
-        xcomplex & operator*=(const xreal rhs);
-        inline friend xcomplex operator*(xcomplex lhs, const xreal rhs )
-        {
-            return lhs *= rhs;
-        }
-        inline friend xcomplex operator*(const xreal lhs, xcomplex rhs )
-        {
-            return rhs *= lhs;
-        }
-
-        xcomplex & operator*=(const T rhs);
-        inline friend xcomplex operator*(xcomplex lhs, const T rhs )
-        {
-            return lhs *= rhs;
-        }
-
-        inline friend xcomplex operator*(const T lhs, xcomplex rhs )
-        {
-            return rhs *= lhs;
-        }
+        
 
         //______________________________________________________________________
         //
         // division
         //______________________________________________________________________
         xcomplex & operator/=(const xcomplex den);
-
+        inline friend xcomplex operator/(xcomplex lhs, const xcomplex rhs) {
+            return lhs /= rhs;
+        }
 
 
 
@@ -136,8 +123,15 @@ namespace yack
         //
         // members
         //______________________________________________________________________
-        xreal re; //!< real part
-        xreal im; //!< imaginary part
+        xflt re; //!< real part
+        xflt im; //!< imaginary part
+    };
+
+    //! specific scalar type
+    template <typename T>
+    struct scalar_for< xcomplex<T> >
+    {
+        typedef typename xcomplex<T>::xflt type; //!< effective type
     };
 
 }
