@@ -216,6 +216,7 @@ YACK_UTEST_DECL(256)
 
     YACK_UTEST(math_api);
     YACK_UTEST(math_extended);
+    YACK_UTEST(math_xcomplex);
 
     YACK_UTEST(vfs);
     YACK_UTEST(vfs_local);

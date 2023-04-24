@@ -1,5 +1,3 @@
-
-
 #include "yack/math/extended.hpp"
 #include "yack/system/exception.hpp"
 
