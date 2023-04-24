@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_IPSO_DEF_INCLUDED

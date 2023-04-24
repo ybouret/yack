@@ -361,5 +361,8 @@ add_test(cameo:static_add test-core cameo_static_add)
 add_test(cameo:mul        test-core cameo_mul)
 
 add_test(ipso:mul test-core ipso_mul)
+add_test(ipso:add test-core ipso_add)
+add_test(ipso:add-static test-core ipso_add_static)
+
 
 yack_testing(core)

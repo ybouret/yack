@@ -245,5 +245,8 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(cameo_mul);
 
     YACK_UTEST(ipso_mul);
+    YACK_UTEST(ipso_add);
+    YACK_UTEST(ipso_add_static);
+
 }
 YACK_UTEST_EXEC()
