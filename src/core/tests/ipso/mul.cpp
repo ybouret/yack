@@ -152,7 +152,17 @@ namespace yack
                                           param_type c,
                                           param_type d) { ldz(4); *this << a << b << c << d; return reduce(); }
 
-            
+
+            //! load a range
+            template <typename ITERATOR>
+            api & range(ITERATOR curr, size_t n) {
+                ldz(n);
+                while(n-- > 0) {
+                    (*this) << *(curr++);
+                }
+                return *this;
+            }
+
 
             //__________________________________________________________________
             //
@@ -363,6 +373,11 @@ YACK_UTEST(ipso_mul)
     sda << -0.1 << 3 << 0.2;
     std::cerr << "sda=" << sda << std::endl;
     std::cerr << sda.reduce() << std::endl;
+
+    {
+        const int arr[] = { -7, 2, 48 };
+        std::cerr << *sda.range(arr,sizeof(arr)/sizeof(arr[0])) << std::endl;
+    }
 
     ipso::add<apq> dqa(16);
     dqa << apq(-1,10) << apq(3) << apq(2,10);
