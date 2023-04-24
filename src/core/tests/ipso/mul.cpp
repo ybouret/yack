@@ -29,6 +29,7 @@ namespace yack
             }
         };
 
+        //! extended reals ops
         template <typename XREAL>
         struct xr_ops
         {
@@ -91,6 +92,30 @@ namespace yack
         };
 
 
+        template <typename T>
+        class api : public object_type
+        {
+        public:
+            YACK_DECL_ARGS(T,type);
+            typedef typename inside<T>::type inside_type;
+            inline virtual ~api() noexcept {}
+
+            virtual void append(const inside_type &) = 0;
+
+            //! high-level convert and push value
+            inline api & operator<<(param_type args) {
+                append( inside<type>::send(args) );
+                return *this;
+            }
+
+        protected:
+            inline explicit api(container &_) noexcept : object_type(), super(_) {}
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(api);
+            container &super;
+        };
+
 
         struct adding
         {
@@ -114,7 +139,7 @@ namespace yack
             };
 
             template <typename T, typename MEM_BUFFER>
-            class proto : public object_type, public heap<typename inside<T>::type,comparator<T>,MEM_BUFFER>
+            class proto : public heap<typename inside<T>::type,comparator<T>,MEM_BUFFER>,  public api<T>
             {
             public:
                 YACK_DECL_ARGS(T,type);
@@ -131,20 +156,21 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                inline explicit proto() noexcept      : object_type(), heap_type()  {} //!< setup default
-                inline explicit proto(const size_t n) : object_type(), heap_type(n) {} //!< setup with possible capacity
-                inline virtual ~proto() noexcept                                    {} //!< cleanup
+                inline explicit proto() noexcept      : heap_type(),  api<T>(static_cast<container&>(*this)) {} //!< setup default
+                inline explicit proto(const size_t n) : heap_type(n), api<T>(static_cast<container&>(*this)) {} //!< setup with possible capacity
+                inline virtual ~proto() noexcept                                                             {} //!< cleanup
 
                 //______________________________________________________________
                 //
                 // methods
                 //______________________________________________________________
 
-                //! convert and push value
-                proto & operator << (param_type args) {
-                    push( inside<type>::send(args) );
-                    return *this;
+                virtual void append(const inside_type &args)
+                {
+                    push(args);
                 }
+
+
 
                 //! get the current sum
                 inline inside_type sum() {
@@ -218,7 +244,7 @@ namespace yack
         };
 
         template <typename T>
-        class mul : public roster< typename inside<T>::type, inside_comparator<T> >
+        class mul : public roster< typename inside<T>::type, inside_comparator<T> >, public api<T>
         {
         public:
             YACK_DECL_ARGS(T,type);
@@ -230,14 +256,16 @@ namespace yack
             using proto_class::lower;
             using proto_class::upper;
 
-            inline explicit mul() noexcept : proto_class() {}
+            inline explicit mul() noexcept : proto_class(), api<T>( static_cast<container&>(*this) ) {}
             inline virtual ~mul() noexcept {}
 
-            mul & operator<< (param_type args)
+
+            virtual void append(const inside_type &args)
             {
-                insert( inside<type>::send(args) );
-                return *this;
+                insert(args);
             }
+
+            
 
             inside_type product()
             {
