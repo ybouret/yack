@@ -32,7 +32,9 @@ namespace yack
             typedef typename inside::type                  inside_type; //!< internal computation
             typedef typename scalar_for<inside_type>::type scalar_type; //!< internal computation scalar
             typedef matrix<inside_type>                    matrix_type; //!< base class
-            
+            typedef ipso::add<type>                        xadd_type;   //!< alias
+            typedef ipso::mul<type>                        xmul_type;   //!< alias
+
             //__________________________________________________________________
             //
             // C++
@@ -59,7 +61,12 @@ namespace yack
                 assert( xmul.capacity() >= nmax );
             }
 
-            //! decompose matrix a into dcmp
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
+            //! decompose matrix
             template <typename U>
             inline bool build(const matrix<U> &a)
             {
@@ -78,14 +85,14 @@ namespace yack
                 {
                     size_t ii = 0;
                     for(size_t i=1;i<=n;i++) {
-                        const readable<inside_type> &d_i = lu[i];
+                        const readable<inside_type> &lu_i = lu[i];
                         xadd.free();
                         const size_t ip  = indx[i]; assert(ip>0); assert(ip<=n);
                         xadd.grow(rhs[ip]);
                         rhs[ip]=rhs[i];
                         if(ii)
                         {
-                            for (size_t j=ii;j<i;j++) xadd.grow(  -d_i[j]*rhs[j]);
+                            for (size_t j=ii;j<i;j++) xadd.grow(  -lu_i[j]*rhs[j]);
                             rhs[i] = xadd.reduce();
                         }
                         else
@@ -98,11 +105,11 @@ namespace yack
                 }
 
                 for(size_t i=n;i>0;--i) {
-                    const readable<inside_type> &d_i = lu[i];
+                    const readable<inside_type> &lu_i = lu[i];
                     xadd.free();
                     xadd.grow(rhs[i]);
-                    for(size_t j=n;j>i;--j) xadd.grow( -d_i[j]*rhs[j] );
-                    rhs[i] = xadd.reduce()/d_i[i];
+                    for(size_t j=n;j>i;--j) xadd.grow( -lu_i[j]*rhs[j] );
+                    rhs[i] = xadd.reduce()/lu_i[i];
                 }
             }
 
@@ -172,15 +179,20 @@ namespace yack
             inside_type det(const size_t n)
             {
                 xmul.free();
-                const matrix_type &dcmp = *this;
-                for(size_t i=n;i>0;--i) xmul.insert(dcmp[i][i]);
+                const matrix_type &lu = *this;
+                for(size_t i=n;i>0;--i) xmul.insert(lu[i][i]);
                 return dneg ? -xmul.reduce() : xmul.reduce();
             }
 
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            xadd_type                               xadd; //!< extended add
+            xmul_type                               xmul; //!< extended mul
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(LU);
-            ipso::add<inside_type>                  xadd;
-            ipso::mul<type>                         xmul;
+
             thin_array<size_t>                      indx;
             const memory::operative_of<scalar_type> smem;
             thin_array<scalar_type>                 scal;
