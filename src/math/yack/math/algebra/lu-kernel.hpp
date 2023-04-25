@@ -11,19 +11,37 @@ namespace yack
     namespace math
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! common fields for LU
+        //
+        //______________________________________________________________________
         class LU_Kernel : public large_object, public dynamic
         {
         public:
-            virtual ~LU_Kernel() noexcept;
-            explicit LU_Kernel(const size_t maxi_dims,
-                               const size_t scal_size,
-                               const size_t type_size);
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~LU_Kernel() noexcept; //!< cleanup
 
-            virtual size_t granted() const noexcept;
+            //! linear memory for maximum dimension and type sizes
+            explicit LU_Kernel(const size_t maximum_dim,
+                               const size_t scalar_size,
+                               const size_t inside_size);
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            virtual size_t granted() const noexcept; //!< linear memory
 
-
-            const size_t nmax;
-            const bool   dneg;
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const size_t nmax; //!< maximum size to solve
+            const bool   dneg; //!< keeping track of determinant sign
 
 
         protected:

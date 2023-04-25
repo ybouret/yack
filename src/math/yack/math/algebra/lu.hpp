@@ -13,18 +13,32 @@ namespace yack
 {
     namespace math
     {
-
+        //______________________________________________________________________
+        //
+        //
+        //! LU decomposition and solving
+        //
+        //______________________________________________________________________
         template <typename T>
         class LU : public LU_Kernel
         {
         public:
-            YACK_DECL_ARGS(T,type); //!< aliases
-            typedef ipso::inside<T>                        inside;
-            typedef typename inside::type                  inside_type;
-            typedef typename scalar_for<inside_type>::type scalar_type;
+            //__________________________________________________________________
+            //
+            // definitions
+            //__________________________________________________________________
+            YACK_DECL_ARGS(T,type);                                     //!< aliases
+            typedef ipso::inside<T>                        inside;      //!< alias
+            typedef typename inside::type                  inside_type; //!< internal computation
+            typedef typename scalar_for<inside_type>::type scalar_type; //!< internal computation scalar
 
-            inline virtual ~LU() noexcept {}
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            inline virtual ~LU() noexcept {} //!< cleanup
 
+            //! setup to solve up to [n x n] systems
             inline explicit LU(const size_t n) :
             LU_Kernel(n,sizeof(scalar_type),sizeof(inside_type)),
             dcmp(nmax,nmax),
@@ -123,6 +137,8 @@ namespace yack
             const inside_type                       inside1;
 
         private:
+
+            //! copy and scale user's matrix
             inline bool initialize(const matrix<T> &a)
             {
                 const size_t n = a.rows;

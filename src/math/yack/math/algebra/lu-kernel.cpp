@@ -26,10 +26,10 @@ namespace yack
 
         }
 
-        LU_Kernel:: LU_Kernel(const size_t maxi_dims,
-                              const size_t scal_size,
-                              const size_t type_size) :
-        nmax( maxi_dims ),
+        LU_Kernel:: LU_Kernel(const size_t maximum_dim,
+                              const size_t scalar_size,
+                              const size_t inside_size) :
+        nmax( maximum_dim ),
         dneg(false),
         indx_(0),
         scal_(0),
@@ -39,19 +39,16 @@ namespace yack
         {
             if(nmax>0)
             {
-                assert(scal_size>0);
-                assert(type_size>0);
+                assert(scalar_size>0);
+                assert(inside_size>=scalar_size);
 
-                static memory::allocator &mgr = memory::dyadic::instance();
-
-
-                memory::embed emb[] =
+                static memory::allocator &mgr   = memory::dyadic::instance();
+                memory::embed             emb[] =
                 {
                     memory::embed(indx_,nmax),
-                    memory::embed(scal_,scal_size*nmax,as_capacity),
-                    memory::embed(xtra_,type_size*nmax,as_capacity)
+                    memory::embed(scal_,scalar_size*nmax,as_capacity),
+                    memory::embed(xtra_,inside_size*nmax,as_capacity)
                 };
-
                 wksp = YACK_MEMORY_EMBED(emb,mgr,wlen);
             }
         }
