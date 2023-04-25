@@ -12,7 +12,7 @@
 #include "yack/type/v3d.hpp"
 #include "yack/string.hpp"
 #include "yack/color/rgba.hpp"
-#include "yack/math/extended.hpp"
+#include "yack/math/xcomplex.hpp"
 
 
 namespace yack
@@ -130,7 +130,26 @@ namespace yack
     {
         return randomized::in2d::in_disk<long double,complex>(ran);
     }
-    
+
+    // xcomplexes
+    template <>
+    inline xcomplex<float> bring:: get< xcomplex<float> >(randomized::bits &ran)
+    {
+        return randomized::in2d::in_disk<float,complex>(ran);
+    }
+
+    template <>
+    inline xcomplex<double> bring:: get< xcomplex<double> >(randomized::bits &ran)
+    {
+        return randomized::in2d::in_disk<double,complex>(ran);
+    }
+
+    template <>
+    inline xcomplex<long double> bring:: get< xcomplex<long double> >(randomized::bits &ran)
+    {
+        return randomized::in2d::in_disk<long double,complex>(ran);
+    }
+
     
     // apn
     template <>

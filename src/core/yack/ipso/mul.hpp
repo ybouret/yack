@@ -56,7 +56,8 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            inline explicit mul() noexcept : proto_class(), api<T>( static_cast<container&>(*this) ) {} //!< setup
+            inline explicit mul() noexcept       : proto_class(), api<T>( static_cast<container&>(*this) )  {} //!< setup empty
+            inline explicit mul(const size_t n)  : proto_class(n), api<T>( static_cast<container&>(*this) ) {} //!< setup with capacity
             inline virtual ~mul() noexcept {} //!< cleanup
 
             //__________________________________________________________________

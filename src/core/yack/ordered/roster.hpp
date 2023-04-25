@@ -37,8 +37,9 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline explicit roster() noexcept : container(), my(), cm() {} //!< setup empty
-        inline virtual ~roster() noexcept {}                           //!< cleanup
+        inline explicit roster() noexcept      : container(), my(), cm() {}  //!< setup empty
+        inline explicit roster(const size_t n) : container(), my(n), cm() {} //!< setup with capacity
+        inline virtual ~roster() noexcept {}                                 //!< cleanup
 
         //______________________________________________________________________
         //

@@ -11,11 +11,11 @@ namespace yack
     namespace math
     {
 
-        class lu_kernel : public large_object, public dynamic
+        class LU_Kernel : public large_object, public dynamic
         {
         public:
-            virtual ~lu_kernel() noexcept;
-            explicit lu_kernel(const size_t maxi_dims,
+            virtual ~LU_Kernel() noexcept;
+            explicit LU_Kernel(const size_t maxi_dims,
                                const size_t scal_size,
                                const size_t type_size);
 
@@ -32,7 +32,7 @@ namespace yack
             void         *xtra_; //!< memory for extra row/col [nmax * type_size*2]
 
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(lu_kernel);
+            YACK_DISABLE_COPY_AND_ASSIGN(LU_Kernel);
             void  *wksp;
             size_t wlen;
         };

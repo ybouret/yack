@@ -7,12 +7,12 @@ namespace yack
     namespace math
     {
 
-        size_t lu_kernel:: granted() const noexcept
+        size_t LU_Kernel:: granted() const noexcept
         {
             return wlen;
         }
 
-        lu_kernel:: ~lu_kernel() noexcept
+        LU_Kernel:: ~LU_Kernel() noexcept
         {
             if(nmax>0)
             {
@@ -26,7 +26,7 @@ namespace yack
 
         }
 
-        lu_kernel:: lu_kernel(const size_t maxi_dims,
+        LU_Kernel:: LU_Kernel(const size_t maxi_dims,
                               const size_t scal_size,
                               const size_t type_size) :
         nmax( maxi_dims ),
