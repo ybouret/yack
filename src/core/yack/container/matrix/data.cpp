@@ -6,7 +6,7 @@ namespace yack
     namespace kernel
     {
         matrix_data:: ~matrix_data() noexcept {}
-        matrix_data:: matrix_data() noexcept : object(), counted() {}
+        matrix_data:: matrix_data() noexcept : large_object(), counted() {}
     }
 
 }

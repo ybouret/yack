@@ -4,7 +4,7 @@
 #define YACK_CONTAINER_MATRIX_DATA_INCLUDED 1
 
 #include "yack/container/matrix/row.hpp"
-#include "yack/object.hpp"
+#include "yack/large-object.hpp"
 #include "yack/counted.hpp"
 
 namespace yack
@@ -16,7 +16,7 @@ namespace yack
         //
         //! base class for matrix_data
         //______________________________________________________________________
-        class matrix_data : public object, public counted
+        class matrix_data : public large_object, public counted
         {
         public:    virtual ~matrix_data() noexcept; //!< cleanup
         protected: explicit matrix_data() noexcept; //!< setup

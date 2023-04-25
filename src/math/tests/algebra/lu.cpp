@@ -25,12 +25,11 @@ static inline void doLU(randomized::bits &ran, const size_t nmax)
 
 
     vector<T> b(n);
+    vector<T> u(n);
     bring::fill(b,ran);
     lu.solve(b);
-
-
-    vector<T> u(n);
-    lu.load(u);
+    lu.save(u);
+    
 
 
     std::cerr << "a = " << M << std::endl;

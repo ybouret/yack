@@ -20,7 +20,7 @@ namespace yack
         //
         //______________________________________________________________________
         template <typename T>
-        class LU : public LU_Kernel
+        class LU : public matrix< typename ipso::inside<T>::type >, public LU_Kernel
         {
         public:
             //__________________________________________________________________
@@ -31,7 +31,8 @@ namespace yack
             typedef ipso::inside<T>                        inside;      //!< alias
             typedef typename inside::type                  inside_type; //!< internal computation
             typedef typename scalar_for<inside_type>::type scalar_type; //!< internal computation scalar
-
+            typedef matrix<inside_type>                    matrix_type; //!< base class
+            
             //__________________________________________________________________
             //
             // C++
@@ -40,8 +41,8 @@ namespace yack
 
             //! setup to solve up to [n x n] systems
             inline explicit LU(const size_t n) :
+            matrix_type(n,n),
             LU_Kernel(n,sizeof(scalar_type),sizeof(inside_type)),
-            dcmp(nmax,nmax),
             xadd(nmax),
             xmul(nmax),
             indx(indx_,nmax),
@@ -56,9 +57,9 @@ namespace yack
             {
                 assert( xadd.capacity() >= nmax );
                 assert( xmul.capacity() >= nmax );
-
             }
 
+            //! decompose matrix a into dcmp
             template <typename U>
             inline bool build(const matrix<U> &a)
             {
@@ -69,63 +70,113 @@ namespace yack
             }
 
             //! assume result[1..n] is ready
-            inline void solve(const size_t n)
+            inline void apply(const size_t n)
             {
                 assert(n<=nmax);
-                writable<inside_type> &b = result;
-                size_t ii = 0;
-                for(size_t i=1;i<=n;i++) {
-                    const readable<inside_type> &d_i = dcmp[i];
-                    const size_t ip  = indx[i]; assert(ip>0); assert(ip<=n);
-                    inside_type  sum = b[ip];
-                    b[ip]=b[i];
-                    if(ii)
-                    {
-                        for (size_t j=ii;j<=i-1;j++) sum -= d_i[j]*b[j];
+                const matrix_type     &lu  = *this;
+                writable<inside_type> &rhs = result;
+                {
+                    size_t ii = 0;
+                    for(size_t i=1;i<=n;i++) {
+                        const readable<inside_type> &d_i = lu[i];
+                        xadd.free();
+                        const size_t ip  = indx[i]; assert(ip>0); assert(ip<=n);
+                        xadd.grow(rhs[ip]);
+                        rhs[ip]=rhs[i];
+                        if(ii)
+                        {
+                            for (size_t j=ii;j<i;j++) xadd.grow(  -d_i[j]*rhs[j]);
+                            rhs[i] = xadd.reduce();
+                        }
+                        else
+                        {
+                            const inside_type sum = xadd.reduce();
+                            if( abs_of(sum) > scalar0) ii=i;
+                            rhs[i] = sum;
+                        }
                     }
-                    else
-                    {
-                        if( abs_of(sum) > scalar0) ii=i;
-                    }
-                    b[i]=sum;
                 }
 
                 for(size_t i=n;i>0;--i) {
-                    const readable<inside_type> &d_i = dcmp[i];
+                    const readable<inside_type> &d_i = lu[i];
                     xadd.free();
-                    xadd << b[i];
-                    for(size_t j=n;j>i;--j) xadd << -d_i[j]*b[j];
-                    b[i] = xadd.reduce()/d_i[i];
+                    xadd.grow(rhs[i]);
+                    for(size_t j=n;j>i;--j) xadd.grow( -d_i[j]*rhs[j] );
+                    rhs[i] = xadd.reduce()/d_i[i];
                 }
             }
 
             //! compute result from rhs
-            template <typename ARRAY>
-            void solve(ARRAY &rhs)
+            template <typename U>
+            void solve(const readable<U> &rhs)
             {
                 const size_t n = rhs.size(); assert(n<=nmax);
                 for(size_t i=n;i>0;--i) result[i] = inside::send(rhs[i]);
-                solve(n);
+                apply(n);
             }
 
             //! convert result into array
             template <typename ARRAY>
-            void load(ARRAY &u) const
+            inline void save(ARRAY &u) const
             {
                 const size_t n = u.size(); assert(n<=nmax);
                 for(size_t i=n;i>0;--i) u[i] = inside::recv(result[i]);
             }
 
+            //! input => result => solve => output
+            template <typename U, typename V>
+            inline void solve(writable<U>       &output,
+                              const readable<V> &input)
+            {
+                solve(input);
+                save(output);
+            }
+
+            //! solve all columns of rhs matrix
+            template <typename U>
+            void solve(matrix<U> &rhs)
+            {
+                assert(rhs.rows<=nmax);
+                const size_t n = rhs.rows;
+                for(size_t j=rhs.cols;j>0;--j)
+                {
+                    for(size_t i=n;i>0;--i)
+                        result[i] = inside::send(rhs[i][j]);
+                    solve(n);
+                    for(size_t i=n;i>0;--i)
+                        rhs[i][j] = inside::recv(result[i]);
+                }
+            }
+
+            //! compute inverse of decomposed into rhs
+            inline void inverse(matrix<T> &rhs)
+            {
+                assert(rhs.rows<=nmax);
+                const size_t n = rhs.rows;
+                for(size_t j=n;j>0;--j)
+                {
+                    // prepare result = delta_ij
+                    result.ld(inside0); result[j] = inside1;
+
+                    // apply to result
+                    apply(n);
+
+                    // upload result to rhs
+                    for(size_t i=n;i>0;--i)
+                        rhs[i][j] = inside::recv(result[i]);
+                }
+            }
+
+
             //! inside_type determinant from decomposed
             inside_type det(const size_t n)
             {
                 xmul.free();
+                const matrix_type &dcmp = *this;
                 for(size_t i=n;i>0;--i) xmul.insert(dcmp[i][i]);
                 return dneg ? -xmul.reduce() : xmul.reduce();
             }
 
-
-            matrix<inside_type>                     dcmp;
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(LU);
             ipso::add<inside_type>                  xadd;
@@ -136,11 +187,11 @@ namespace yack
             const memory::operative_of<inside_type> xmem;
 
         public:
-            thin_array<inside_type>                 result;
-            const scalar_type                       scalar0;
-            const scalar_type                       scalar1;
-            const inside_type                       inside0;
-            const inside_type                       inside1;
+            thin_array<inside_type>                 result;  //!< result array
+            const scalar_type                       scalar0; //!< 0 as scalar
+            const scalar_type                       scalar1; //!< 1 as scalar
+            const inside_type                       inside0; //!< 0 as inside
+            const inside_type                       inside1; //!< 1 as inside
 
         private:
 
@@ -154,7 +205,7 @@ namespace yack
                 {
                     scalar_type           piv = scalar0;
                     const readable<U>     &a_i = a[i];
-                    writable<inside_type> &d_i = dcmp[i];
+                    writable<inside_type> &d_i = (*this)[i];
 
                     for(size_t j=n;j>0;--j)
                     {
@@ -170,6 +221,7 @@ namespace yack
             //! Crout's algoritm
             inline bool decomposed(const size_t n)
             {
+                matrix<inside_type> &dcmp = *this;
                 for(size_t j=1;j<=n;++j)
                 {
                     for(size_t i=1;i<j;i++) {

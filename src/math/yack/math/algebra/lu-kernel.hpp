@@ -17,7 +17,7 @@ namespace yack
         //! common fields for LU
         //
         //______________________________________________________________________
-        class LU_Kernel : public large_object, public dynamic
+        class LU_Kernel : public dynamic
         {
         public:
             //__________________________________________________________________

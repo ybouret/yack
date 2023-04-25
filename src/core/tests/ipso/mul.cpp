@@ -11,7 +11,7 @@ YACK_UTEST(ipso_mul)
 
 
     ipso::mul<float> dfm;
-    dfm << -0.01 << 30 << 0.2;
+    dfm << -0.01f << 30.0f << 0.2f;
     std::cerr << "dfm=" << dfm << std::endl;
     std::cerr << dfm.reduce() << std::endl;
 
@@ -20,9 +20,10 @@ YACK_UTEST(ipso_mul)
     std::cerr << "dqm=" << dqm << std::endl;
     std::cerr << dqm.reduce() << std::endl;
 
-    ipso::mul< complex<float>  > dcfm;
-    
-
+    ipso::mul< complex<float> > dcfm;
+    dcfm << -0.01f << 30.0f<< 0.2f;
+    std::cerr << "dcfm=" << dcfm << std::endl;
+    std::cerr << dcfm.reduce() << std::endl;
 }
 YACK_UDONE()
 
