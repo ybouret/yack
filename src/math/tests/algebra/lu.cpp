@@ -57,10 +57,10 @@ YACK_UTEST(lu)
 
     const size_t nmax = 5;
     doLU<float>(ran,nmax);
-    doLU<apq>(ran,nmax);
     doLU<double>(ran,nmax);
     doLU< complex<float> >(ran,nmax);
     doLU< extended<float> >(ran,nmax);
+    doLU<apq>(ran,nmax);
 
 
     return 0;

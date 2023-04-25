@@ -59,7 +59,8 @@ namespace yack
 
             }
 
-            bool build(const matrix<T> &a)
+            template <typename U>
+            inline bool build(const matrix<U> &a)
             {
                 assert(a.is_square());
                 assert(a.rows<=nmax);
@@ -67,7 +68,8 @@ namespace yack
                 return decomposed(a.rows);
             }
 
-            void solve(const size_t n)
+            //! assume result[1..n] is ready
+            inline void solve(const size_t n)
             {
                 assert(n<=nmax);
                 writable<inside_type> &b = result;
@@ -97,14 +99,16 @@ namespace yack
                 }
             }
 
+            //! compute result from rhs
             template <typename ARRAY>
-            void solve(ARRAY &b)
+            void solve(ARRAY &rhs)
             {
-                const size_t n = b.size(); assert(n<=nmax);
-                for(size_t i=n;i>0;--i) result[i] = inside::send(b[i]);
+                const size_t n = rhs.size(); assert(n<=nmax);
+                for(size_t i=n;i>0;--i) result[i] = inside::send(rhs[i]);
                 solve(n);
             }
 
+            //! convert result into array
             template <typename ARRAY>
             void load(ARRAY &u) const
             {
@@ -112,6 +116,7 @@ namespace yack
                 for(size_t i=n;i>0;--i) u[i] = inside::recv(result[i]);
             }
 
+            //! inside_type determinant from decomposed
             inside_type det(const size_t n)
             {
                 xmul.free();
@@ -129,6 +134,7 @@ namespace yack
             const memory::operative_of<scalar_type> smem;
             thin_array<scalar_type>                 scal;
             const memory::operative_of<inside_type> xmem;
+
         public:
             thin_array<inside_type>                 result;
             const scalar_type                       scalar0;
@@ -139,14 +145,15 @@ namespace yack
         private:
 
             //! copy and scale user's matrix
-            inline bool initialize(const matrix<T> &a)
+            template <typename U>
+            inline bool initialize(const matrix<U> &a)
             {
                 const size_t n = a.rows;
                 coerce(dneg) = false;
                 for(size_t i=n;i>0;--i)
                 {
                     scalar_type           piv = scalar0;
-                    const readable<T>     &a_i = a[i];
+                    const readable<U>     &a_i = a[i];
                     writable<inside_type> &d_i = dcmp[i];
 
                     for(size_t j=n;j>0;--j)
@@ -160,31 +167,34 @@ namespace yack
                 return true;
             }
 
+            //! Crout's algoritm
             inline bool decomposed(const size_t n)
             {
                 for(size_t j=1;j<=n;++j)
                 {
                     for(size_t i=1;i<j;i++) {
+                        writable<inside_type> &d_i = dcmp[i];
                         xadd.free();
-                        xadd << dcmp[i][j];
+                        xadd.grow(d_i[j]);
                         for(size_t k=1;k<i;k++)
                         {
-                            xadd << -dcmp[i][k] * dcmp[k][j];
+                            xadd.grow( -d_i[k] * dcmp[k][j] );
                         }
-                        dcmp[i][j] = xadd.reduce();
+                        d_i[j] = xadd.reduce();
                     }
 
                     scalar_type piv = scalar0;
                     size_t      imx = j;
                     for (size_t i=j;i<=n;i++)
                     {
+                        writable<inside_type> &d_i = dcmp[i];
                         xadd.free();
-                        xadd << dcmp[i][j];
+                        xadd.grow(d_i[j]);
                         for (size_t k=1;k<j;k++)
                         {
-                            xadd << -dcmp[i][k]*dcmp[k][j];
+                            xadd.grow( -d_i[k]*dcmp[k][j] );
                         }
-                        const scalar_type tmp = scal[i] * abs_of(dcmp[i][j]=xadd.reduce());
+                        const scalar_type tmp = scal[i] * abs_of(d_i[j]=xadd.reduce());
                         if(tmp>piv)
                         {
                             piv = tmp;
@@ -195,7 +205,7 @@ namespace yack
                     if(j!=imx)
                     {
                         dcmp.swap_rows(j,imx);
-                        scal[j] = scal[imx];
+                        scal[j]      = scal[imx];
                         coerce(dneg) = !dneg;
                     }
 
