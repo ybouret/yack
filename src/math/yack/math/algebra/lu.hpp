@@ -50,8 +50,7 @@ namespace yack
                 assert(a.is_square());
                 assert(a.rows<=nmax);
                 if(!initialize(a)) return false;
-                const size_t n = a.rows;
-                return Crout(n);
+                return decomposed(a.rows);
             }
 
             void solve(const size_t n)
@@ -60,12 +59,13 @@ namespace yack
                 writable<inside_type> &b = result;
                 size_t ii = 0;
                 for(size_t i=1;i<=n;i++) {
-                    size_t      ip  = indx[i]; assert(ip>0); assert(ip<=n);
-                    inside_type sum = b[ip];
+                    const readable<inside_type> &d_i = dcmp[i];
+                    const size_t ip  = indx[i]; assert(ip>0); assert(ip<=n);
+                    inside_type  sum = b[ip];
                     b[ip]=b[i];
                     if(ii)
                     {
-                        for (size_t j=ii;j<=i-1;j++) sum -= dcmp[i][j]*b[j];
+                        for (size_t j=ii;j<=i-1;j++) sum -= d_i[j]*b[j];
                     }
                     else
                     {
@@ -75,10 +75,11 @@ namespace yack
                 }
 
                 for(size_t i=n;i>0;--i) {
+                    const readable<inside_type> &d_i = dcmp[i];
                     xadd.free();
                     xadd << b[i];
-                    for(size_t j=n;j>i;--j) xadd << -dcmp[i][j]*b[j];
-                    b[i] = xadd.reduce()/dcmp[i][i];
+                    for(size_t j=n;j>i;--j) xadd << -d_i[j]*b[j];
+                    b[i] = xadd.reduce()/d_i[i];
                 }
             }
 
@@ -87,7 +88,6 @@ namespace yack
             {
                 const size_t n = b.size(); assert(n<=nmax);
                 for(size_t i=n;i>0;--i) result[i] = inside::send(b[i]);
-                //std::cerr << "rhs=" << result << std::endl;
                 solve(n);
             }
 
@@ -144,7 +144,7 @@ namespace yack
                 return true;
             }
 
-            inline bool Crout(const size_t n)
+            inline bool decomposed(const size_t n)
             {
                 for(size_t j=1;j<=n;++j)
                 {

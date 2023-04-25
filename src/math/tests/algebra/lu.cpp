@@ -59,14 +59,12 @@ YACK_UTEST(lu)
     doLU<float>(ran,nmax);
     doLU<apq>(ran,nmax);
     doLU<double>(ran,nmax);
-    //doLU< complex<float> >(ran,nmax);
-
-    return 0;
-#if 0
+    doLU< complex<float> >(ran,nmax);
     doLU< extended<float> >(ran,nmax);
 
-    doLU< xcomplex<double> >(ran,nmax);
-#endif
+
+    return 0;
+
 }
 YACK_UDONE()
 
