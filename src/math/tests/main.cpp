@@ -5,6 +5,8 @@ YACK_UTEST_DECL(80)
     YACK_UTEST(numeric);
     YACK_UTEST(triplet);
 
+    YACK_UTEST(lu);
+
     YACK_UTEST(iota);
     YACK_UTEST(crout);
     YACK_UTEST(det);
