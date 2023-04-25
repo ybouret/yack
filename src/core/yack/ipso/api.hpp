@@ -23,6 +23,7 @@ namespace yack
         class api_ : public large_object
         {
         public:
+            static const size_t width = 23;   //!< to display
             virtual ~api_() noexcept;   //!< cleanup
             void     ldz()  noexcept;   //!< free
             void     ldz(const size_t); //!< resume(n)

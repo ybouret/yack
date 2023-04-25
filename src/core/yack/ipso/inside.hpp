@@ -24,6 +24,10 @@ namespace yack
             } //!< default comparison
         };
 
+    }
+
+    namespace ipso
+    {
         //! extended reals ops
         template <typename XREAL>
         struct xr_ops
@@ -83,7 +87,72 @@ namespace yack
             } //!< comparison for mul
         };
 
-        
+    }
+
+    namespace ipso {
+
+        //! extended reals ops
+        template <typename XCPLX>
+        struct xc_ops
+        {
+            //! compare by increasing exponent
+            static inline sign_type compare(const XCPLX &l, const XCPLX &r) noexcept {
+                const int lp = max_of(l.re.p,l.im.p);
+                const int rp = max_of(r.re.p,r.im.p);
+                return __sign::of(lp,rp);
+            }
+        };
+
+        //______________________________________________________________________
+        //
+        //! complex<float> / xcomplex<float>
+        //______________________________________________________________________
+        template <>
+        struct inside< complex<float> >
+        {
+            typedef xcomplex<float>      type; //!< alias
+            static inline type           send(const complex<float> args)  { return  args; } //!< cplx -> xcplx
+            static inline complex<float> recv(const type &args)           { return *args; } //!< xcplx-> cplx
+            static inline sign_type      comp(const type &l, const type &r)
+            {
+                return xc_ops<type>::compare(l,r);
+            } //!< comparison for mul
+        };
+
+        //______________________________________________________________________
+        //
+        //! complex<double> / xcomplex<double>
+        //______________________________________________________________________
+        template <>
+        struct inside< complex<double> >
+        {
+            typedef xcomplex<double>      type; //!< alias
+            static inline type            send(const complex<double> args)  { return  args; } //!< cplx -> xcplx
+            static inline complex<double> recv(const type &args)           { return *args; } //!< xcplx-> cplx
+            static inline sign_type       comp(const type &l, const type &r)
+            {
+                return xc_ops<type>::compare(l,r);
+            } //!< comparison for mul
+        };
+
+        //______________________________________________________________________
+        //
+        //! complex<long double> / xcomplex<long double>
+        //______________________________________________________________________
+        template <>
+        struct inside< complex<long double> >
+        {
+            typedef xcomplex<long double>      type; //!< alias
+            static inline type                 send(const complex<long double> args)  { return  args; } //!< cplx -> xcplx
+            static inline complex<long double> recv(const type &args)                 { return *args; } //!< xcplx-> cplx
+            static inline sign_type            comp(const type &l, const type &r)
+            {
+                return xc_ops<type>::compare(l,r);
+            } //!< comparison for mul
+        };
+
+
+
     }
 
 }

@@ -1,6 +1,6 @@
 
 #include "yack/ipso/api.hpp"
-#include "yack/string.hpp"
+#include "yack/ios/fmt/align.hpp"
 
 namespace yack
 {
@@ -15,7 +15,8 @@ namespace yack
         void api_:: disp(const rtti &outer,
                          const rtti &inner)  
         {
-            std::cerr << "ipos<" << outer.name() << "> => <" << inner.name() << ">" << std::endl;
+            std::cerr << "ipso[" << ios::align(outer.name(),width,ios::align::center)
+            << "] => [" <<  ios::align(inner.name(),width,ios::align::center) << "]" << std::endl;
         }
 
         void api_:: ldz() noexcept

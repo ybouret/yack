@@ -55,7 +55,7 @@ namespace yack
 
         xflt     mod2() const;          //!< |z|^2
         xcomplex conj() const noexcept; //!< (re,-im)
-
+        cplx     operator*() const;
 
         //! display
         inline friend std::ostream & operator<<(std::ostream   &os,

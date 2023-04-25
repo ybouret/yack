@@ -119,5 +119,10 @@ namespace yack
         return *this;
     }
 
+    template <>
+    complex<real_t> xcomplex<real_t>:: operator*() const
+    {
+        return cplx(*re,*im);
+    }
 
 }
