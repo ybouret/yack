@@ -1,0 +1,38 @@
+\documentclass[aps,11pt]{revtex4}
+\usepackage{graphicx}
+\usepackage{amssymb,amsfonts,amsmath,amsthm}
+\usepackage{chemarr}
+\usepackage{bm}
+\usepackage{pslatex}
+\usepackage{xfrac}
+
+
+
+\begin{document}
+\title{Diffusion}
+\maketitle
+
+We have $C_{i}$ at $x_i$ for $i\in[1:N]$.
+For $x\in[x_{i-1},x_{i+1}]$:
+\begin{equation}
+\left\lbrace
+\begin{array}{rcl}
+	C(x)    & = & C_i + \alpha_i (x-x_i) + \frac{1}{2}\beta_i (x-x_i)^2\\
+	C_{i-1} & = & C_i + \alpha_i (x_{i-1}-x_{i} ) + \frac{1}{2}\beta_i (x_{i-1}-x_i)^2\\
+    C_{i+1} & = & C_i + \alpha_i (x_{i+1}-x_{i} ) + \frac{1}{2}\beta_i (x_{i+1}-x_i)^2\\
+\end{array}
+\right.
+\end{equation}
+
+$$
+	\delta_{i_+} = (x_{i+1}-x_{i} ), \delta_{i_-} = (x_{i}-x_{i-1} ) 
+$$
+\begin{equation}
+	\alpha_i = \dfrac{ \delta_{i_-}^2 C_{i+1}  +(\delta_{i_+}^2-\delta_{i_-}^2)C_i - \delta_{i_+}^2 C_{i-1} }{ \delta_{i_+}\delta_{i_-}(\delta_{i_+}+\delta_{i_-})  }
+\end{equation}
+
+\begin{equation}
+	\beta_i = 2\dfrac{ \delta_{i_-} C_{i+1}  - (\delta_{i_+}+\delta_{i_-})C_i + \delta_{i_+} C_{i-1} }{ \delta_{i_+}\delta_{i_-}(\delta_{i_+}+\delta_{i_-})  }
+\end{equation}
+
+\end{document}
