@@ -20,6 +20,8 @@ YACK_UTEST(ipso_mul)
     std::cerr << "dqm=" << dqm << std::endl;
     std::cerr << dqm.reduce() << std::endl;
 
+    ipso::mul< complex<float>  > dcfm;
+    
 
 }
 YACK_UDONE()

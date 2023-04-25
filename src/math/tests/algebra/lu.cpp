@@ -36,8 +36,12 @@ static inline void doLU(randomized::bits &ran, const size_t nmax)
     std::cerr << "a = " << M << std::endl;
     std::cerr << "b = " << b << std::endl;
     std::cerr << "u = " << u << std::endl;
+    ipso::add<T> xadd;
     vector<T> au(n);
-    iota::mul(au,M,u);
+    for(size_t i=n;i>0;--i)
+    {
+        au[i] = *xadd.dot(M[i],u);
+    }
     std::cerr << "au= " << au << std::endl;
     for(size_t i=n;i>0;--i)
     {
@@ -55,12 +59,12 @@ YACK_UTEST(lu)
     doLU<float>(ran,nmax);
     doLU<apq>(ran,nmax);
     doLU<double>(ran,nmax);
+    //doLU< complex<float> >(ran,nmax);
 
     return 0;
 #if 0
     doLU< extended<float> >(ran,nmax);
 
-    doLU< complex<float> >(ran,nmax);
     doLU< xcomplex<double> >(ran,nmax);
 #endif
 }

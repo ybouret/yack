@@ -79,9 +79,6 @@ namespace yack
                     xadd << b[i];
                     for(size_t j=n;j>i;--j) xadd << -dcmp[i][j]*b[j];
                     b[i] = xadd.reduce()/dcmp[i][i];
-                    //inside_type sum=b[i];
-                    //for(size_t j=i+1;j<=n;j++) sum -= dcmp[i][j]*b[j];
-                    //b[i]=sum/dcmp[i][i];
                 }
             }
 
@@ -104,7 +101,7 @@ namespace yack
             inside_type det(const size_t n)
             {
                 xmul.free();
-                for(size_t i=n;i>0;--i) xmul << dcmp[i][i];
+                for(size_t i=n;i>0;--i) xmul.insert(dcmp[i][i]);
                 return dneg ? -xmul.reduce() : xmul.reduce();
             }
 
@@ -113,7 +110,7 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(LU);
             ipso::add<inside_type>                  xadd;
-            ipso::mul<inside_type>                  xmul;
+            ipso::mul<type>                         xmul;
             thin_array<size_t>                      indx;
             const memory::operative_of<scalar_type> smem;
             thin_array<scalar_type>                 scal;
