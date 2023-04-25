@@ -207,7 +207,7 @@ namespace yack
 
         private:
 
-            //! copy and scale user's matrix
+            //! copy and get scale of user's matrix
             template <typename U>
             inline bool initialize(const matrix<U> &a)
             {
@@ -215,7 +215,7 @@ namespace yack
                 coerce(dneg) = false;
                 for(size_t i=n;i>0;--i)
                 {
-                    scalar_type           piv = scalar0;
+                    scalar_type            piv = scalar0;
                     const readable<U>     &a_i = a[i];
                     writable<inside_type> &d_i = (*this)[i];
 
