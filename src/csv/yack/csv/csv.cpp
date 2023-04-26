@@ -1,5 +1,6 @@
 
 #include "yack/csv/csv.hpp"
+#include "yack/jive/lexical/plugin/jstring.hpp"
 
 namespace yack
 {
@@ -10,10 +11,15 @@ namespace yack
         {
         }
 
+
+
         Parser:: Parser() : jive::parser("CSV")
         {
-            
-            const rule &FIELD = term("FIELD","[:word:]+");
+
+            const rule &RAW = term("RAW","[ \t]");
+            const rule &STR = load<jive::lexical::jstring>("STR");
+
+            const rule &FIELD = choice(RAW,STR);
             const rule &SEP   = mark(',');
             const rule &ENDL  = EOL("ENDL", "[:endl:]",false);
             const rule &LINE  = agg("LINE") << FIELD << zom(cat(SEP,FIELD)) << ENDL;

@@ -41,6 +41,16 @@ namespace yack
             // terminal(s)
             //__________________________________________________________________
 
+            //! create a new terminal from a compiler pattern
+            template <typename ID>
+            const rule & user(const ID &id, pattern *p, const bool keep=true) {
+                const motif             m = p;
+                const tag               t = tags::make(id);
+                const lexical::action   a(this,&scanner::on_produce);  // make a leexeme
+                const syntax::term_role r = keep ? (m->is_univocal() ? syntax::univocal : syntax::standard) : syntax::division;
+                return create(t,m,a,r);
+            }
+
             //! create a new terminal id from expression rx
             template <typename ID, typename RX> inline
             const rule & term(const ID &id, const RX &rx)
