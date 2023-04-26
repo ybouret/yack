@@ -4,6 +4,12 @@ cmake_minimum_required(VERSION 3.0)
 set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/../sdk" )
 
 include(../etc/yack.cmake)
+set(YACK_ETC
+	../etc/yack.cmake
+	../etc/fltk.cmake
+	../etc/mpi.cmake
+)
+install( FILES ${YACK_ETC} DESTINATION etc/yack )
 
 #list of registered unit tests
 set(UNIT_TESTS "")
