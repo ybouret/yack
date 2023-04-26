@@ -97,9 +97,20 @@ $$
 $$
 
 \begin{equation}
-\forall 1<i<N, \;  
-- \dfrac{D\delta t}{\delta_{i_-}(\delta_{i_+}+\delta_{i_-})} C_{i-1}^{n+1} + \left[1+\dfrac{D\delta t}{\delta_{i_+}\delta_{i_-}}\right] C_i^{n+1} - \dfrac{D\delta t}{\delta_{i_+}(\delta_{i_+}+\delta_{i_-})}C_{i+1}^{n+1}
-= C_i^{n} +  \dfrac{D\delta t}{2} \beta_i^{n}
+\begin{array}{rl}
+\forall 1<i<N, &  
+- \dfrac{D\delta t}{\delta_{i_-}(\delta_{i_+}+\delta_{i_-})} C_{i-1}^{n+1} + \left[1+\dfrac{D\delta t}{\delta_{i_+}\delta_{i_-}}\right] C_i^{n+1} - \dfrac{D\delta t}{\delta_{i_+}(\delta_{i_+}+\delta_{i_-})}C_{i+1}^{n+1}\\
+\\
+ = & C_i^{n} +  \dfrac{D\delta t}{2} \beta_i^{n}\\
+ \\
+ = & \dfrac{D\delta t}{\delta_{i_-}(\delta_{i_+}+\delta_{i_-})} C_{i-1}^{n} 
+ +\left[1-\dfrac{D\delta t}{\delta_{i_+}\delta_{i_-}}\right] C_i^{n}
+ +\dfrac{D\delta t}{\delta_{i_+}(\delta_{i_+}+\delta_{i_-})}C_{i+1}^{n}\\
+ \end{array}
+ \end{equation}
+
+\begin{equation}
+	\gamma
 \end{equation}
 
 
