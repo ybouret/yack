@@ -879,6 +879,7 @@ INPUT                  = src/core/yack \
                          src/math/yack/math/fitting/least-squares \
                          src/jive/yack \
                          src/json/yack \
+			 src/csv/yack  \
                          src/lua++/yack \
                          src/net/yack \
 			 src/chem/yack \
