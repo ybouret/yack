@@ -13,10 +13,11 @@ namespace yack
 
 
 
-        Parser:: Parser() : jive::parser("CSV")
+        Parser:: Parser() : jive::parser("CSV") ,
+        tr( new jive::syntax::translator() )
         {
 
-            const rule &RAW = term("RAW","[ \t[:word:]']+");
+            const rule &RAW = term("RAW","[[:word:]']+");
             const rule &STR = load<jive::lexical::jstring>("STR");
 
             const rule &FIELD = choice(RAW,STR);
@@ -25,6 +26,7 @@ namespace yack
             const rule &LINE  = agg("LINE") << FIELD << zom(cat(SEP,FIELD)) << ENDL;
 
             top( zom(LINE) );
+            drop("[:blank:]");
             validate();
             gv();
         }

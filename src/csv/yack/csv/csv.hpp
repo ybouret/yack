@@ -4,6 +4,7 @@
 #define YACK_CSV_INCLUDED
 
 #include "yack/jive/parser.hpp"
+#include "yack/jive/syntax/translator.hpp"
 
 namespace yack
 {
@@ -18,6 +19,7 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Parser);
+            auto_ptr<jive::syntax::translator> tr;
         };
     }
 
