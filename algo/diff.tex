@@ -5,13 +5,16 @@
 \usepackage{bm}
 \usepackage{pslatex}
 \usepackage{xfrac}
-
+\usepackage{hyperref}
 
 
 \begin{document}
 \title{Diffusion}
 \maketitle
 
+\section{Evaluation}
+
+\subsection{Bulk}
 We have $C_{i}$ at $x_i$ for $i\in[1:N]$.
 For $x\in[x_{i-1},x_{i+1}]$:
 \begin{equation}
@@ -32,9 +35,11 @@ $$
 \end{equation}
 
 \begin{equation}
+\label{eq:beta_i}
 	\beta_i = 2\dfrac{ \delta_{i_-} C_{i+1}  - (\delta_{i_+}+\delta_{i_-})C_i + \delta_{i_+} C_{i-1} }{ \delta_{i_+}\delta_{i_-}(\delta_{i_+}+\delta_{i_-})  }
 \end{equation}
 
+\subsection{Left}
 \begin{equation}
 \left\lbrace
 \begin{array}{rcl}
@@ -53,14 +58,49 @@ $$
 	\alpha_1 = 0  \iff C_1 = \dfrac{ (\delta_{2_+}+\delta_{2_-})^2  C_2 - \delta_{2_-}^2 C_3}{\delta_{2_+}(\delta_{2_+}+2\delta_{2_-})}
 \end{equation}
 
+\subsection{Right}
 \begin{equation}
 \left\lbrace
 \begin{array}{rcl}
 	C(x)    & = & C_N + \alpha_N (x-x_N) + \frac{1}{2}\beta_N (x-x_N)^2\\
-	C_{N-1} & = & C_N + \alpha_N (x_{N-1}-x_{N}) +  \frac{1}{2}\beta_N (x_{N-1}-x_{N}) ^2\\
-	C_{N-2} & = & C_N + \alpha_N (x_{N-2}-x_{N}) +  \frac{1}{2}\beta_N (x_{N-2}-x_{N}) ^2\\
+	C_{N-1} & = & C_N + \alpha_N (x_{N-1}-x_{N}) +  \frac{1}{2}\beta_N (x_{N-1}-x_{N}) ^2 = C_N - \alpha_N {\delta_{N_{1+}}} +  \frac{1}{2}\beta_N {\delta_{N_{1+}}}^2\\\
+	C_{N-2} & = & C_N + \alpha_N (x_{N-2}-x_{N}) +  \frac{1}{2}\beta_N (x_{N-2}-x_{N}) ^2 = C_N - \alpha_N (\delta_{N_{1+}}+\delta_{N_{1-}}) + \frac{1}{2}\beta_N (\delta_{N_{1+}}+\delta_{N_{1-}})^2\\
 \end{array}
 \right.
 \end{equation}
+
+\begin{equation}
+	\alpha_N = \dfrac{\delta_{N_{1+}}^2C_{N-2} - (\delta_{N_{1+}}+\delta_{N_{1-}})^2 C_{N-1} + \delta_{N_{1-}}(2\delta_{N_{1-}}+\delta_{N_{1+}}) C_N }{(\delta_{N_{1+}}+\delta_{N_{1-}})\delta_{N_{1+}}\delta_{N_{1-}}}
+\end{equation}
+
+\begin{equation}
+	\alpha_N = 0 \iff C_N = \dfrac{(\delta_{N_{1+}}+\delta_{N_{1-}})^2 C_{N-1} - \delta_{N_{1+}}^2C_{N-2}}{\delta_{N_{1-}}(2\delta_{N_{1-}}+\delta_{N_{1+}}) }
+\end{equation}
+
+\subsection{Scheme}
+
+\begin{equation}
+C_1(t) = f(t), \partial_x C_N = 0
+\end{equation}	
+
+\begin{equation}
+\forall 1<i<N, \; \dfrac{C_i^{n+1}-C_i^{n}}{\delta t} = \dfrac{D}{2} \left[ \beta_i^{n+1} + \beta_i^{n}\right]
+\end{equation}
+
+\begin{equation}
+\forall 1<i<N, \;  C_i^{n+1} - \dfrac{D\delta t}{2} \beta_i^{n+1} = C_i^{n} +  \dfrac{D\delta t}{2} \beta_i^{n}
+\end{equation}
+using \eqref{eq:beta_i}
+
+$$
+		\beta_i = 2\dfrac{ \delta_{i_-} C_{i+1}  - (\delta_{i_+}+\delta_{i_-})C_i + \delta_{i_+} C_{i-1} }{ \delta_{i_+}\delta_{i_-}(\delta_{i_+}+\delta_{i_-})  }
+$$
+
+\begin{equation}
+\forall 1<i<N, \;  
+- \dfrac{D\delta t}{\delta_{i_-}(\delta_{i_+}+\delta_{i_-})} C_{i-1}^{n+1} + \left[1+\dfrac{D\delta t}{\delta_{i_+}\delta_{i_-}}\right] C_i^{n+1} - \dfrac{D\delta t}{\delta_{i_+}(\delta_{i_+}+\delta_{i_-})}C_{i+1}^{n+1}
+= C_i^{n} +  \dfrac{D\delta t}{2} \beta_i^{n}
+\end{equation}
+
 
 \end{document}
