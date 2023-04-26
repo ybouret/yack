@@ -16,7 +16,7 @@ namespace yack
         Parser:: Parser() : jive::parser("CSV")
         {
 
-            const rule &RAW = term("RAW","[ \t]");
+            const rule &RAW = term("RAW","[ \t[:word:]']+");
             const rule &STR = load<jive::lexical::jstring>("STR");
 
             const rule &FIELD = choice(RAW,STR);
