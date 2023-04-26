@@ -14,9 +14,9 @@ namespace yack
         {
 
             const rule &FIELD = term("FIELD","[:word:]+");
-            //const rule &SEP   = mark(',');
+            const rule &SEP   = mark(',');
             const rule &ENDL  = endline("ENDL", "[:endl:]",false);
-            const rule &LINE  = agg("LINE") << FIELD << ENDL;
+            const rule &LINE  = agg("LINE") << FIELD << zom(cat(SEP,FIELD)) << ENDL;
 
             top( zom(LINE) );
             validate();
