@@ -184,6 +184,7 @@ namespace yack
                 behavior on_produce(const token &) noexcept; //!< default produce method: return produce
                 behavior on_discard(const token &) noexcept; //!< default discard method: return discard
                 behavior on_newline(const token &) noexcept; //!< curr_->newline()    and return discard
+                behavior on_endline(const token &) noexcept; //!< curr_->newline()    and return produce
 
                 friend std::ostream & operator<<(std::ostream &, const scanner &); //!< output quoted directives
 

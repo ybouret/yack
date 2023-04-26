@@ -59,6 +59,16 @@ namespace yack
                 return term(id,id);
             }
 
+            template <typename ID, typename RX> inline
+            const rule & endline(const ID &id, const RX &rx, const bool keep=false)
+            {
+                const tag               t = tags::make(id);
+                const motif             m = regexp::compile(rx,&dict);
+                const lexical::action   a(this,&scanner::on_endline);  // produce ENDL
+                const syntax::term_role r = keep ? (m->is_univocal() ? syntax::univocal : syntax::standard) : syntax::division;
+                return create(t,m,a,r);
+            }
+
             //__________________________________________________________________
             //
             // division(s)

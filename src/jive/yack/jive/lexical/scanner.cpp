@@ -64,6 +64,13 @@ namespace yack
                 return discard;
             }
 
+            behavior scanner:: on_endline(const token &) noexcept
+            {
+                assert(flux);
+                (**flux).newline();
+                return produce;
+            }
+
             void scanner:: check_word(const tag &uuid, const token &word) const
             {
                 assert(NULL!=flux);
