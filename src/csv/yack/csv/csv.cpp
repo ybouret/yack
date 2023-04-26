@@ -12,10 +12,10 @@ namespace yack
 
         Parser:: Parser() : jive::parser("CSV")
         {
-
+            
             const rule &FIELD = term("FIELD","[:word:]+");
             const rule &SEP   = mark(',');
-            const rule &ENDL  = endline("ENDL", "[:endl:]",false);
+            const rule &ENDL  = EOL("ENDL", "[:endl:]",false);
             const rule &LINE  = agg("LINE") << FIELD << zom(cat(SEP,FIELD)) << ENDL;
 
             top( zom(LINE) );

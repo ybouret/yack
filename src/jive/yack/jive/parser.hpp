@@ -59,8 +59,9 @@ namespace yack
                 return term(id,id);
             }
 
+            //! specific EOL: produce lexeme and update line count
             template <typename ID, typename RX> inline
-            const rule & endline(const ID &id, const RX &rx, const bool keep=false)
+            const rule & EOL(const ID &id, const RX &rx, const bool keep=false)
             {
                 const tag               t = tags::make(id);
                 const motif             m = regexp::compile(rx,&dict);

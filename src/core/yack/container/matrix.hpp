@@ -115,6 +115,8 @@ namespace yack
         //
         // interface methods
         //______________________________________________________________________
+
+        //! release by exchanging with an empty matrix
         virtual void release() noexcept
         {
             matrix<T> tmp;

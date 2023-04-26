@@ -55,7 +55,7 @@ namespace yack
 
         xflt     mod2() const;          //!< |z|^2
         xcomplex conj() const noexcept; //!< (re,-im)
-        cplx     operator*() const;
+        cplx     operator*()     const; //!< rebuild complex
 
         //! display
         inline friend std::ostream & operator<<(std::ostream   &os,
@@ -81,7 +81,7 @@ namespace yack
         xcomplex & operator+=(const xcomplex rhs); //!< binary+
         inline friend xcomplex operator+(xcomplex lhs, const xcomplex rhs) {
             return lhs += rhs;
-        }
+        } //!< binary+
 
 
 
@@ -92,7 +92,7 @@ namespace yack
         xcomplex & operator-=(const xcomplex rhs); //!< binary-
         inline friend xcomplex operator-(xcomplex lhs, const xcomplex rhs) {
             return lhs -= rhs;
-        }
+        } //!< binary-
 
 
 
@@ -101,10 +101,10 @@ namespace yack
         //
         // multiplication
         //______________________________________________________________________
-        xcomplex & operator*=(const xcomplex rhs);
+        xcomplex & operator*=(const xcomplex rhs); //!< binary *
         inline friend xcomplex operator*(xcomplex lhs, const xcomplex rhs) {
             return lhs *= rhs;
-        }
+        } //!< binary *
 
         
 
@@ -112,10 +112,10 @@ namespace yack
         //
         // division
         //______________________________________________________________________
-        xcomplex & operator/=(const xcomplex den);
+        xcomplex & operator/=(const xcomplex den); //!< binary /
         inline friend xcomplex operator/(xcomplex lhs, const xcomplex rhs) {
             return lhs /= rhs;
-        }
+        } //!< binary /
 
 
 
@@ -123,7 +123,7 @@ namespace yack
         //
         // members
         //______________________________________________________________________
-        xflt re; //!< real part
+        xflt re; //!< real      part
         xflt im; //!< imaginary part
     };
 
