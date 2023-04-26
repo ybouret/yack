@@ -35,4 +35,32 @@ $$
 	\beta_i = 2\dfrac{ \delta_{i_-} C_{i+1}  - (\delta_{i_+}+\delta_{i_-})C_i + \delta_{i_+} C_{i-1} }{ \delta_{i_+}\delta_{i_-}(\delta_{i_+}+\delta_{i_-})  }
 \end{equation}
 
+\begin{equation}
+\left\lbrace
+\begin{array}{rcl}
+	C(x)   & = & C_1 + \alpha_1 (x-x_1) + \frac{1}{2}\beta_1 (x-x_1)^2\\
+	C_2    & = & C_1 + \alpha_1 (x_2-x_1) + \frac{1}{2}\beta_1 (x_2-x_1)^2 = C_1 + \alpha_1 \delta_{2_-} + \frac{1}{2}\beta_1 \delta_{2_-}^2 \\
+	C_3    & = & C_1 + \alpha_1 (x_3-x_1) + \frac{1}{2}\beta_1 (x_3-x_1)^2 = C_1 + \alpha_1 (\delta_{2_-}+ \delta_{2_+} )+ \frac{1}{2}\beta_1 (\delta_{2_-}+ \delta_{2_+} )^2
+\end{array}
+\right.
+\end{equation}
+
+\begin{equation}
+	\alpha_1 = \dfrac{ -\delta_{2_+}(\delta_{2_+}+2\delta_{2_-}) C_1 + (\delta_{2_+}+\delta_{2_-})^2  C_2 - \delta_{2_-}^2 C_3}{\delta_{2_+}\delta_{2_-}(\delta_{2_+}+\delta_{2_-})}
+\end{equation}
+
+\begin{equation}
+	\alpha_1 = 0  \iff C_1 = \dfrac{ (\delta_{2_+}+\delta_{2_-})^2  C_2 - \delta_{2_-}^2 C_3}{\delta_{2_+}(\delta_{2_+}+2\delta_{2_-})}
+\end{equation}
+
+\begin{equation}
+\left\lbrace
+\begin{array}{rcl}
+	C(x)    & = & C_N + \alpha_N (x-x_N) + \frac{1}{2}\beta_N (x-x_N)^2\\
+	C_{N-1} & = & C_N + \alpha_N (x_{N-1}-x_{N}) +  \frac{1}{2}\beta_N (x_{N-1}-x_{N}) ^2\\
+	C_{N-2} & = & C_N + \alpha_N (x_{N-2}-x_{N}) +  \frac{1}{2}\beta_N (x_{N-2}-x_{N}) ^2\\
+\end{array}
+\right.
+\end{equation}
+
 \end{document}
