@@ -20,7 +20,7 @@ namespace yack
             const rule &RAW = term("RAW","[[:word:]']+");
             const rule &STR = load<jive::lexical::jstring>("STR");
 
-            const rule &FIELD = choice(RAW,STR);
+            const rule &FIELD = choice(STR,RAW);
             const rule &SEP   = mark(',');
             const rule &ENDL  = EOL("ENDL", "[:endl:]",false);
             const rule &LINE  = agg("LINE") << FIELD << zom(cat(SEP,FIELD)) << ENDL;

@@ -110,8 +110,40 @@ $$
  \end{equation}
 
 \begin{equation}
-	\gamma
+	\gamma = \dfrac{D\delta t}{\bar{\delta}^2}
 \end{equation}
+
+\begin{equation}
+\begin{array}{rl}
+ & - \gamma\dfrac{\bar{\delta}^2}{\delta_{i_-}(\delta_{i_+}+\delta_{i_-})} C_{i-1}^{n+1} + \left[1+\gamma\dfrac{\bar{\delta}^2}{\delta_{i_+}\delta_{i_-}}\right] C_i^{n+1} - \gamma\dfrac{\bar{\delta}^2}{\delta_{i_+}(\delta_{i_+}+\delta_{i_-})}C_{i+1}^{n+1}\\
+ \\
+ = & \gamma\dfrac{\bar{\delta}^2}{\delta_{i_-}(\delta_{i_+}+\delta_{i_-})} C_{i-1}^{n} 
+ +\left[1-\gamma\dfrac{\bar{\delta}^2}{\delta_{i_+}\delta_{i_-}}\right] C_i^{n}
+ +\gamma\dfrac{\bar{\delta}^2}{\delta_{i_+}(\delta_{i_+}+\delta_{i_-})}C_{i+1}^{n}\\
+ \end{array}
+\end{equation}
+
+\begin{equation}
+\left\lbrace
+\begin{array}{rcc}
+	a_i & = & \dfrac{\bar{\delta}^2}{\delta_{i_-}(\delta_{i_+}+\delta_{i_-})}\\
+	\\
+	b_i & = & \dfrac{\bar{\delta}^2}{\delta_{i_+}\delta_{i_-}}\\
+	\\
+	c_i & = & \dfrac{\bar{\delta}^2}{\delta_{i_+}(\delta_{i_+}+\delta_{i_-})}\\
+\end{array}
+\right.
+\end{equation}
+
+\subsection{Fixed Left, Right Wall}
+\begin{equation}
+\begin{bmatrix}
+1 & \\
+-\gamma a_i & 1+ \gamma b_i & \gamma c_i \\
+            &               & \\
+\end{bmatrix}
+\end{equation}
+
 
 
 \end{document}
