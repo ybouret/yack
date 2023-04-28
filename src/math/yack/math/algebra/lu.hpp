@@ -149,7 +149,7 @@ namespace yack
                 {
                     for(size_t i=n;i>0;--i)
                         result[i] = inside::send(rhs[i][j]);
-                    solve(n);
+                    apply(n);
                     for(size_t i=n;i>0;--i)
                         rhs[i][j] = inside::recv(result[i]);
                 }

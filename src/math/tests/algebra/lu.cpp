@@ -36,7 +36,7 @@ static inline void doLU(randomized::bits &ran, const size_t nmax)
     std::cerr << "b = " << b << std::endl;
     std::cerr << "u = " << u << std::endl;
     ipso::add<T> xadd;
-    vector<T> au(n);
+    vector<T>    au(n);
     for(size_t i=n;i>0;--i)
     {
         au[i] = *xadd.dot(M[i],u);
@@ -48,6 +48,11 @@ static inline void doLU(randomized::bits &ran, const size_t nmax)
     }
     std::cerr << "aumb= " << au << std::endl;
     std::cerr << "d = " <<  ipso::inside<T>::recv(lu.det(n)) << std::endl;
+
+    matrix<T> Q(n,n);
+    lu.inverse(Q);
+    std::cerr << "Q=" << Q << std::endl;
+
 }
 
 YACK_UTEST(lu)
