@@ -144,6 +144,14 @@ $$
 \end{bmatrix}
 \end{equation}
 
+\subsection{Choosing $\delta t$}
+We want $\delta t$ with $\gamma_0$ and $\delta t = k \times \delta t_0$.
+$$
+	\gamma_0 \implies \delta t_0 = \dfrac{\gamma_0 \bar{\delta}^2}{D} \implies
+	k = \max\left(1,\mathrm{ceil}\left(\dfrac{\delta t}{\delta t_0}\right)\right)
+	\implies \delta t_1 = \dfrac{\delta t}{k} \implies \gamma_1 = \dfrac{D\delta t_1}{\bar{\delta}^2}
+$$
+
 
 
 \end{document}

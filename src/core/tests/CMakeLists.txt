@@ -290,6 +290,7 @@ add_test(ios:pstream    test-core ios_pstream)
 add_test(ios:markup     test-core ios_markup)
 add_test(ios:bits       test-core ios_bits)
 add_test(ios:xmlog      test-core ios_xmlog)
+add_test(ios:entity     test-core ios_entity)
 
 add_test(hashing:64      test-core hash64)
 add_test(hashing:fcn     test-core hashing_fcn)
