@@ -68,9 +68,12 @@ namespace yack
             explicit Parser();
             virtual ~Parser() noexcept;
 
+            Document * operator()(jive::module *m);
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Parser);
-            auto_ptr<jive::syntax::translator> tr;
+            class Translator;
+            Translator *tr;
         };
     }
 

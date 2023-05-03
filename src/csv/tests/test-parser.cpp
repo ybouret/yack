@@ -18,6 +18,9 @@ YACK_UTEST(parser)
     
     if(argc>1)
     {
+        csv( jive::module::open_file(argv[1]) );
+
+#if 0
         auto_ptr<jive::syntax::xnode> tree = csv.parse( jive::module::open_file(argv[1]) );
         YACK_CHECK(tree.is_valid());
         tree->gv("csv-tree.dot");
@@ -26,6 +29,7 @@ YACK_UTEST(parser)
 
         jive::syntax::translator tr;
         tr.walk(*tree,NULL);
+#endif
 
     }
 
