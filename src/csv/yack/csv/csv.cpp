@@ -34,7 +34,8 @@ namespace yack
             {
                 NilNode,
                 RawNode,
-                StrNode
+                StrNode,
+                SepNode
             };
 
             class Node : public object
@@ -45,11 +46,16 @@ namespace yack
                 Node          *next;
                 Node          *prev;
 
-                inline explicit Node() noexcept : type(NilNode), pstr(0), next(0), prev(0) {}
+                inline explicit Node(const NodeType t) noexcept : type(t), pstr(0), next(0), prev(0)
+                {
+                    assert(SepNode==type || NilNode==type);
+                }
+
                 inline virtual ~Node() noexcept {}
                 inline explicit Node(const NodeType t, const string &s) noexcept :
                 type(t), pstr( &s ), next(0), prev(0)
                 {
+                    assert(RawNode==type || StrNode==type);
                 }
 
                 inline friend std::ostream & operator<<(std::ostream &os, const Node &self)
@@ -57,6 +63,7 @@ namespace yack
                     switch(self.type)
                     {
                         case NilNode: os << "[NIL]"; assert(NULL==self.pstr); break;
+                        case SepNode: os << "[SEP]"; assert(NULL==self.pstr); break;
                         case RawNode: os << "[RAW]"; assert(NULL!=self.pstr); os << '[' << *self.pstr << ']'; break;
                         case StrNode: os << "[STR]"; assert(NULL!=self.pstr); os << '[' << *self.pstr << ']'; break;
                     }
@@ -115,6 +122,28 @@ namespace yack
                         break;
 
                     case CSV_COMMA:
+                        if(nodes.size<=0)
+                        {
+                            // push Nil/sep
+                            nodes.push_back( new Node(NilNode) );
+                            nodes.push_back( new Node(SepNode) );
+                        }
+                        else
+                        {
+                            // check previous
+                            switch(nodes.tail->type)
+                            {
+                                case SepNode:
+                                    nodes.push_back( new Node(NilNode) );
+                                    break;
+
+                                default:
+                                    break;
+
+                            }
+                            // and push separator
+                            nodes.push_back( new Node(SepNode) );
+                        }
                         break;
 
                     default:
