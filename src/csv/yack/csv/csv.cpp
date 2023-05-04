@@ -13,11 +13,14 @@ namespace yack
         //--------------------------------
         // keywords
         //--------------------------------
-        static const char *csv_terminals[] = {
+        const char *csv_terminals[] = {
             "RAW",
             "STR",
-            ","
+            ",",
+            "ENDL"
         };
+
+        // (csv_terminals,sizeof(csv_terminals)/sizeof(csv_terminals[0]))
 
         //--------------------------------
         // defines
@@ -25,6 +28,8 @@ namespace yack
 #define CSV_RAW      0 //!< "RAW"
 #define CSV_STR      1 //!< "STR"
 #define CSV_COMMA    2 //!< ","
+#define CSV_ENDL     3 //!< "ENDL"
+
 
 
         class Parser:: Translator : public spot_object, public jive::syntax::translator
@@ -35,7 +40,8 @@ namespace yack
                 NilNode,
                 RawNode,
                 StrNode,
-                SepNode
+                SepNode,
+                EolNode
             };
 
             class Node : public object
@@ -48,7 +54,7 @@ namespace yack
 
                 inline explicit Node(const NodeType t) noexcept : type(t), pstr(0), next(0), prev(0)
                 {
-                    assert(SepNode==type || NilNode==type);
+                    assert(SepNode==type || NilNode==type || EolNode==type );
                 }
 
                 inline virtual ~Node() noexcept {}
@@ -64,6 +70,7 @@ namespace yack
                     {
                         case NilNode: os << "[NIL]"; assert(NULL==self.pstr); break;
                         case SepNode: os << "[SEP]"; assert(NULL==self.pstr); break;
+                        case EolNode: os << "[EOL]"; assert(NULL==self.pstr); break;
                         case RawNode: os << "[RAW]"; assert(NULL!=self.pstr); os << '[' << *self.pstr << ']'; break;
                         case StrNode: os << "[STR]"; assert(NULL!=self.pstr); os << '[' << *self.pstr << ']'; break;
                     }
@@ -146,6 +153,10 @@ namespace yack
                         }
                         break;
 
+                    case CSV_ENDL:
+                        std::cerr << "todo..." << std::endl;
+                        break;
+
                     default:
                         throw exception("invalid terminal '%s' in CSV",id());
                 }
@@ -173,7 +184,7 @@ namespace yack
             const rule &STR   = load<jive::lexical::jstring>("STR");
             const rule &VALUE = choice(STR,RAW);
             const rule &COMMA = term(',');
-            const rule &ENDL  = EOL("ENDL", "[:endl:]",false);
+            const rule &ENDL  = EOL("ENDL", "[:endl:]",true);
             const rule &LINE  = agg("LINE") << zom( choice(VALUE,COMMA) ) << ENDL;
 
             top( zom(LINE) );
