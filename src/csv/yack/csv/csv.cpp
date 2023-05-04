@@ -1,18 +1,16 @@
 
 #include "yack/csv/csv.hpp"
 #include "yack/jive/lexical/plugin/jstring.hpp"
+#include "yack/spot-object.hpp"
 
 namespace yack
 {
 
     namespace CSV
     {
-        Parser:: ~Parser() noexcept
-        {
-        }
 
 
-        class Parser:: Translator : public object, public jive::syntax::translator
+        class Parser:: Translator : public spot_object, public jive::syntax::translator
         {
         public:
             enum NodeType
@@ -42,25 +40,41 @@ namespace yack
             };
 
             cxx_list_of<Node> nodes;
-            cxx_list_of<Cell> cells;
+            solo_list<string> texts;
 
             inline explicit Translator() noexcept {}
             inline virtual ~Translator() noexcept {}
 
             inline virtual void on_init() {
+                std::cerr << "Init CSV" << std::endl;
                 nodes.release();
-                cells.release();
+                texts.clear();
             }
 
             inline virtual void on_quit() noexcept
             {
-                
+                std::cerr << "Quit CSV" << std::endl;
+
+            }
+
+            virtual void on_terminal(const lexeme &lx)
+            {
+                jive::syntax::translator::on_terminal(lx);
+                std::cerr <<  "[" << lx << "]" << std::endl;
             }
 
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Translator);
         };
+
+        Parser:: ~Parser() noexcept
+        {
+            assert(tr);
+            delete tr;
+            tr = 0;
+        }
+
 
         Parser:: Parser() : jive::parser("CSV") ,
         tr( new Translator() )
