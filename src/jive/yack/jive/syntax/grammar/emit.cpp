@@ -65,16 +65,21 @@ namespace yack
                 for(size_t i=1;i<=id.size();++i)
                 {
                     const char c = id[i];
+
+                    switch(c)
+                    {
+                        case ' ': ans += '_';     continue;
+                        case ',': ans += "COMMA"; continue;
+                        default:
+                            break;
+                    }
+
                     if(isalnum(c)||'_'==c)
                     {
                         ans += c;
                         continue;
                     }
-                    if(c==' ')
-                    {
-                        ans += '_';
-                        continue;
-                    }
+
                     ans += 'x';
                     ans += hexa::uppercase_text[ uint8_t(c) ];
                     
@@ -118,6 +123,7 @@ namespace yack
                     fp << '\n';
                 }
                 fp << "};\n\n";
+                fp << "// (" << cxx_id << ',' << "sizeof(" << cxx_id << ")/sizeof(" << cxx_id << "[0]))\n\n";
 
                 output_sepline(fp);
                 fp << "// defines\n";
