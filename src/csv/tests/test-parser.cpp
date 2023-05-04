@@ -15,7 +15,12 @@ YACK_UTEST(parser)
 
     std::cerr << "terminals : " << terminals << std::endl;
     std::cerr << "internals : " << internals << std::endl;
-    
+
+    {
+        ios::ocstream fp(ios::cstderr);
+        jive::syntax::grammar::emit_keywords(fp,terminals,"csv_terminals","CSV_");
+    }
+
     if(argc>1)
     {
         csv( jive::module::open_file(argv[1]) );

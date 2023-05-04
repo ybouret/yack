@@ -83,6 +83,13 @@ namespace yack
                 df.push_back(ans);
             }
 
+            static inline void output_sepline(ios::ostream &fp)
+            {
+                fp << '/' << '/';
+                for(size_t i=0;i<32;++i) fp << '-';
+                fp << '\n';
+            }
+
             void grammar:: emit_keywords(ios::ostream           &fp,
                                          const readable<string> &table,
                                          const string           &cxx_id,
@@ -91,6 +98,10 @@ namespace yack
                 const size_t   n = table.size();
                 vector<string> df(n,as_capacity);
                 size_t         dw = 0;
+
+                output_sepline(fp);
+                fp << "// keywords\n";
+                output_sepline(fp);
                 fp << "const char *" << cxx_id << "[] = {\n";
                 if(n>0)
                 {
@@ -108,6 +119,9 @@ namespace yack
                 }
                 fp << "};\n\n";
 
+                output_sepline(fp);
+                fp << "// defines\n";
+                output_sepline(fp);
                 unsigned j = 0;
                 for(size_t i=1;i<=n;++i,++j)
                 {
