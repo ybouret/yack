@@ -134,7 +134,7 @@ namespace yack
                     const string &def = df[i];
                     fp << "#define " << prefix << def;
                     for(size_t k=def.size();k<dw;++k) fp << ' ';
-                    fp(" %4u ",j);
+                    fp(" %8u ",j);
                     fp << "//!< \"" << table[i] << "\"\n";
                 }
                 fp << '\n';
