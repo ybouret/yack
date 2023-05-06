@@ -53,6 +53,10 @@ namespace yack
         template <> const double      numeric<double>::     pi = float(M_PI);
         template <> const long double numeric<long double>::pi = (long double)(M_PI);
 
+        template <> const float       numeric<float>::      two_pi = numeric<float>::pi*2;
+        template <> const double      numeric<double>::     two_pi = numeric<double>::pi*2;
+        template <> const long double numeric<long double>::two_pi = numeric<long double>::pi*2;
+
         template <typename T> static inline
         T _sqrt_eps() noexcept
         {

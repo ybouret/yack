@@ -34,6 +34,7 @@ namespace yack
             static const int      min_10_exp;  //!< minimal 10 exp value
             static const int      max_10_exp;  //!< maximal 10 exp value
             static const T        pi;          //!< pi
+            static const T        two_pi;      //!< pi
             static const T        sqrt_eps;    //!< about sqrt(epsilon)
         };
 
@@ -53,6 +54,7 @@ template <> const long double numeric<long double>::VALUE
         YACK_MATH_NUMERIC(golden_i);    //!< golden_i
         YACK_MATH_NUMERIC(ftol);        //!< ftol
         YACK_MATH_NUMERIC(pi);          //!< pi
+        YACK_MATH_NUMERIC(two_pi);      //!< pi
         YACK_MATH_NUMERIC(sqrt_eps);    //!< sqrt_eps
 
 #endif
