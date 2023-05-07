@@ -21,10 +21,17 @@ YACK_UTEST(parser)
         jive::syntax::grammar::emit_keywords(fp,terminals,"csv_terminals","CSV_");
     }
 
+    {
+        ios::ocstream fp(ios::cstderr);
+        jive::syntax::grammar::emit_keywords(fp,internals,"csv_internals","CSV_");
+    }
+
+
+
     if(argc>1)
     {
-        csv( jive::module::open_file(argv[1]) );
-
+        auto_ptr<CSV::Document> doc = csv( jive::module::open_file(argv[1]) );
+        std::cerr << "#line=" << doc->size << std::endl;
 #if 0
         auto_ptr<jive::syntax::xnode> tree = csv.parse( jive::module::open_file(argv[1]) );
         YACK_CHECK(tree.is_valid());

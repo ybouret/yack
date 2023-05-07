@@ -21,8 +21,14 @@ namespace yack
                 isStr
             };
 
+            //! empty raw cell
             explicit Cell() : string(), type(isRaw), next(0), prev(0) {}
-            virtual ~Cell() noexcept;
+
+            template <typename DATA> inline
+            explicit Cell(const DATA &s, const Type t) : string(s), type(t), next(0), prev(0) {}
+
+            virtual ~Cell() noexcept {}
+            
             Cell(const Cell &other) : string(other), type(other.type), next(0), prev(0) {}
 
             Type  type;

@@ -30,6 +30,18 @@ namespace yack
 #define CSV_COMMA    2 //!< ","
 #define CSV_ENDL     3 //!< "ENDL"
 
+        //--------------------------------
+        // keywords
+        //--------------------------------
+        const char *csv_internals[] = {
+            "LINE"
+        };
+
+
+        //--------------------------------
+        // defines
+        //--------------------------------
+#define CSV_LINE        0 //!< "LINE"
 
 
         class Parser:: Translator : public spot_object, public jive::syntax::translator
@@ -40,8 +52,7 @@ namespace yack
                 NilNode,
                 RawNode,
                 StrNode,
-                SepNode,
-                EolNode
+                SepNode
             };
 
             class Node : public object
@@ -54,7 +65,7 @@ namespace yack
 
                 inline explicit Node(const NodeType t) noexcept : type(t), pstr(0), next(0), prev(0)
                 {
-                    assert(SepNode==type || NilNode==type || EolNode==type );
+                    assert(SepNode==type || NilNode==type );
                 }
 
                 inline virtual ~Node() noexcept {}
@@ -70,7 +81,7 @@ namespace yack
                     {
                         case NilNode: os << "[NIL]"; assert(NULL==self.pstr); break;
                         case SepNode: os << "[SEP]"; assert(NULL==self.pstr); break;
-                        case EolNode: os << "[EOL]"; assert(NULL==self.pstr); break;
+                        //case EolNode: os << "[EOL]"; assert(NULL==self.pstr); break;
                         case RawNode: os << "[RAW]"; assert(NULL!=self.pstr); os << '[' << *self.pstr << ']'; break;
                         case StrNode: os << "[STR]"; assert(NULL!=self.pstr); os << '[' << *self.pstr << ']'; break;
                     }
@@ -81,28 +92,39 @@ namespace yack
                 YACK_DISABLE_COPY_AND_ASSIGN(Node);
             };
 
+            auto_ptr<Document>      doc;
             const hashing::perfect  termH;
+            const hashing::perfect  ctrlH;
             cxx_list_of<Node>       nodes;
             solo_list<string>       texts;
 
             inline explicit Translator() :
+            doc(NULL),
             termH(csv_terminals,sizeof(csv_terminals)/sizeof(csv_terminals[0])),
+            ctrlH(csv_internals,sizeof(csv_internals)/sizeof(csv_internals[0])),
             nodes(),
             texts()
             {}
 
             inline virtual ~Translator() noexcept {}
 
-            inline virtual void on_init() {
-                std::cerr << "Init CSV" << std::endl;
+            inline void clear_all() noexcept
+            {
                 nodes.release();
                 texts.clear();
+            }
+
+            inline virtual void on_init() {
+                std::cerr << "Init CSV" << std::endl;
+                clear_all();
+                doc = new Document();
             }
 
             inline virtual void on_quit() noexcept
             {
                 std::cerr << "Quit CSV" << std::endl;
                 std::cerr << nodes << std::endl;
+                clear_all();
             }
 
             const string & stringified(const lexeme &lx)
@@ -113,10 +135,11 @@ namespace yack
                 }
                 return **texts.tail;
             }
+
             virtual void on_terminal(const lexeme &lx)
             {
                 jive::syntax::translator::on_terminal(lx);
-                std::cerr <<  "[" << lx << "]" << std::endl;
+                //std::cerr <<  "[" << lx << "]" << std::endl;
                 const string &id = *lx.name;
                 switch( termH(id) )
                 {
@@ -131,7 +154,7 @@ namespace yack
                     case CSV_COMMA:
                         if(nodes.size<=0)
                         {
-                            // push Nil/sep
+                            // push Nil/Sep
                             nodes.push_back( new Node(NilNode) );
                             nodes.push_back( new Node(SepNode) );
                         }
@@ -154,7 +177,11 @@ namespace yack
                         break;
 
                     case CSV_ENDL:
-                        std::cerr << "todo..." << std::endl;
+                        if(nodes.size<=0 || SepNode == nodes.tail->type)
+                        {
+                            // assume empty field
+                            nodes.push_back( new Node(NilNode) );
+                        }
                         break;
 
                     default:
@@ -162,9 +189,59 @@ namespace yack
                 }
             }
 
+
+
+            virtual void on_internal(const string &uuid, const size_t args)
+            {
+                jive::syntax::translator::on_internal(uuid,args);
+
+                switch(ctrlH(uuid))
+                {
+                    case CSV_LINE:
+                        buildLine();
+                        break;
+
+                    default:
+                        if("LINE*" != uuid)
+                            throw exception("invalid internal '%s' in CSV",uuid());
+                }
+            }
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Translator);
+            inline void buildLine()
+            {
+                removeSep();
+                std::cerr << "data: " << nodes << std::endl;
+                if(nodes.size<=0) throw exception("unexpected no data in CSV");
+                Line *line = doc->push_back( new Line() );
+                for(const Node *node=nodes.head;node;node=node->next)
+                {
+                    switch(node->type)
+                    {
+                        case SepNode: continue;
+                        case NilNode: line->push_back( new Cell() ); continue;
+                        case RawNode: line->push_back( new Cell(*(node->pstr), Cell::isRaw) ); continue;
+                        case StrNode: line->push_back( new Cell(*(node->pstr), Cell::isStr) ); continue;
+                    }
+                }
+                clear_all();
+            }
+            inline void removeSep() noexcept
+            {
+                cxx_list_of<Node> temp;
+                while(nodes.size)
+                {
+                    Node *node = nodes.pop_front();
+                    if(SepNode==node->type)
+                    {
+                        delete node;
+                        continue;
+                    }
+                    temp.push_back(node);
+                }
+                nodes.swap_with(temp);
+            }
         };
 
         Parser:: ~Parser() noexcept
@@ -198,7 +275,7 @@ namespace yack
             auto_ptr<jive::syntax::xnode> tree = parse(m);
             assert(tree.is_valid());
             tr->walk(*tree, NULL);
-            return NULL;
+            return tr->doc.yield();
         }
 
     }
