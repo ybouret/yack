@@ -64,6 +64,15 @@ namespace yack
             explicit Document() noexcept : Lines() {}
             virtual ~Document() noexcept {}
 
+            friend std::ostream & operator<<(std::ostream &os, const Document &doc)
+            {
+                for(const Line *line=doc.head;line;line=line->next)
+                {
+                    os << *line << std::endl;
+                }
+                return os;
+            }
+
         private:
             YACK_DISABLE_ASSIGN(Document);
         };

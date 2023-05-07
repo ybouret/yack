@@ -32,16 +32,8 @@ YACK_UTEST(parser)
     {
         auto_ptr<CSV::Document> doc = csv( jive::module::open_file(argv[1]) );
         std::cerr << "#line=" << doc->size << std::endl;
-#if 0
-        auto_ptr<jive::syntax::xnode> tree = csv.parse( jive::module::open_file(argv[1]) );
-        YACK_CHECK(tree.is_valid());
-        tree->gv("csv-tree.dot");
 
-
-
-        jive::syntax::translator tr;
-        tr.walk(*tree,NULL);
-#endif
+        std::cerr << doc << std::endl;
 
     }
 
