@@ -56,6 +56,7 @@ namespace yack
             accel(n),
             speed(n),
             amax(0),
+            smax(0),
             sm(n,n),
             lu(n),
             rhs(n)
@@ -105,6 +106,22 @@ namespace yack
                 }
             }
 
+            template <typename FILENAME>
+            inline void save_speed(const FILENAME &fn) const
+            {
+                const vertices &self = *this;
+                const size_t    n    =  size();
+                ios::ocstream   fp(fn);
+                for(size_t i=1;i<=n;++i)
+                {
+                    vertex p = self[i];
+                    emit(fp,p);
+                    p += speed[i]/smax;
+                    emit(fp,p);
+                    fp << '\n';
+                }
+            }
+
             const vertex   bar;    //!< barycenter
             const rvector  theta;
             const double   theta_prev;
@@ -112,6 +129,7 @@ namespace yack
             const vertices accel;
             const vertices speed;
             const double   amax;
+            const double   smax;
 
         private:
             YACK_DISABLE_ASSIGN(periodic_contour);
@@ -122,6 +140,26 @@ namespace yack
                                     const vertex &p)
             {
                 fp("%.15g %.15g\n", double(p.x), double(p.y));
+            }
+
+            static inline
+            T max_norm_of(const vertices &p) noexcept
+            {
+                T res = p[1].norm2();
+                for(size_t i=p.size();i>1;--i)
+                {
+                    const T tmp = p[i].norm2();
+                    if(tmp>res) res = tmp;
+                }
+                return std::sqrt(res);
+            }
+
+            inline
+            void make_speed(const double dth, const size_t i, const size_t ip1) noexcept
+            {
+                //const T      dth = theta[ip1]-theta[i];
+                const vertex dp  = (*this)[ip1] - (*this)[i];
+                coerce(speed)[i] = dp/dth - dth*(accel[i]+accel[i]+accel[ip1])/6;
             }
 
             void make_spline()
@@ -146,7 +184,7 @@ namespace yack
                 // decompose matrix
                 if(!lu.build(sm)) raise_singular();
 
-                // compute d2p
+                // compute accel
                 const vertices &self = *this;
                 for(size_t j=1;j<=2;++j)
                 {
@@ -160,13 +198,15 @@ namespace yack
                     for(size_t i=n;i>0;--i) coerce(accel[i][j]) = rhs[i];
                 }
                 std::cerr << "accel = " << accel << std::endl;
-                coerce(amax) = 0;
-                for(size_t i=n;i>0;--i)
-                {
-                    const double atmp = accel[i].norm2();
-                    if(atmp>amax) coerce(amax) = atmp;
-                }
-                coerce(amax) = std::sqrt( amax );
+                coerce(amax) = max_norm_of(accel);
+
+                // compute speed
+                for(size_t i=1;i<n;++i)
+                    make_speed(theta[i+1]-theta[i],i,i+1);
+                make_speed(theta_next-theta[n],n,1);
+
+                coerce(smax) = max_norm_of(speed);
+
             }
 
             // build theta and order points
