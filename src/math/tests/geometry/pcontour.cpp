@@ -20,7 +20,8 @@ YACK_UTEST(pcontour)
     shape.save("shape.dat");
     shape.save_accel("accel.dat");
     shape.save_speed("speed.dat");
-
+    shape.save_shape("spline.dat",100);
+    shape.save_curv("curv.dat");
 }
 YACK_UDONE()
 

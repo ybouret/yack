@@ -55,6 +55,9 @@ namespace yack
             theta_next(0),
             accel(n),
             speed(n),
+            tvec(n),
+            nvec(n),
+            curv(n),
             amax(0),
             smax(0),
             sm(n,n),
@@ -70,6 +73,7 @@ namespace yack
                 compute_bar();
                 build_theta();
                 make_spline();
+                local_frame();
             }
 
             template <typename FILENAME>
@@ -122,12 +126,64 @@ namespace yack
                 }
             }
 
+            template <typename FILENAME>
+            inline void save_curv(const FILENAME &fn) const
+            {
+                const vertices &self = *this;
+                const size_t    n    =  size();
+                ios::ocstream   fp(fn);
+                for(size_t i=1;i<=n;++i)
+                {
+                    vertex p = self[i];
+                    emit(fp,p);
+                    p += curv[i] * nvec[i];
+                    emit(fp,p);
+                    fp << '\n';
+                }
+            }
+
+            vertex operator()(const double th) const
+            {
+                static const T one(1);
+                static const T six(6);
+                size_t klo=0,khi=0;
+                T  A=0,B=0;
+                const double h   = find(klo,khi,A,B,th);
+                const vertex lo  = (*this)[klo];
+                const vertex hi  = (*this)[khi];
+                const vertex d2lo = accel[klo];
+                const vertex d2hi = accel[khi];
+                const vertex dtmp = A*(A*A-one) * d2lo + B*(B*B-one) * d2hi;
+                return A*lo + B*hi + (h*h*dtmp) / six;
+            }
+
+            template <typename FILENAME>
+            inline void save_shape(const FILENAME &fn, const size_t np) const
+            {
+                assert(np>=3);
+                ios::ocstream fp(fn);
+                for(size_t i=0;i<np;++i)
+                {
+                    const T      th = (i*numeric<T>::two_pi)/(np);
+                    const vertex p = (*this)(th);
+                    emit(fp,p);
+                }
+                {
+                    const vertex p = (*this)(0);
+                    emit(fp,p);
+                }
+
+            }
+
             const vertex   bar;    //!< barycenter
             const rvector  theta;
-            const double   theta_prev;
-            const double   theta_next;
+            const T        theta_prev;
+            const T        theta_next;
             const vertices accel;
             const vertices speed;
+            const vertices tvec;
+            const vertices nvec;
+            const rvector  curv;
             const double   amax;
             const double   smax;
 
@@ -136,11 +192,64 @@ namespace yack
             matrix<double> sm;
             crout<double>  lu;
             rvector        rhs;
+
+
+            inline double find(size_t &klo,
+                               size_t &khi,
+                               T &A,
+                               T &B,
+                               T  th) const
+            {
+                while(th>numeric<T>::two_pi) th -= numeric<T>::two_pi;
+                while(th<0) th += numeric<T>::two_pi;
+
+                const size_t N = size();
+                if(th<=theta[1])
+                {
+                    klo = N;
+                    khi = 1;
+                    const T h = theta[1] - theta_prev;
+                    A = (theta[1] - th)/h;
+                    B = (th-theta_prev)/h;
+                    return h;
+                }
+                else
+                {
+                    if(th>=theta[N])
+                    {
+                        klo = N;
+                        khi = 1;
+                        const T h = theta_next - theta[N];
+                        A = (theta_next - th)/h;
+                        B = (th-theta[N])/h;
+                        return h;
+                    }
+                    else
+                    {
+                        // generic case
+                        klo=1;
+                        khi=2;
+                        while( !(th>=theta[klo]&&th<=theta[khi]) )
+                        {
+                            ++klo;
+                            ++khi;
+                        }
+                        const T tlo = theta[klo];
+                        const T thi = theta[khi];
+                        const T h   = thi-tlo;
+                        A = (thi-th)/h;
+                        B = (th-tlo)/h;
+                        return h;
+                    }
+                }
+            }
+
             static inline void emit(ios::ostream &fp,
                                     const vertex &p)
             {
                 fp("%.15g %.15g\n", double(p.x), double(p.y));
             }
+
 
             static inline
             T max_norm_of(const vertices &p) noexcept
@@ -160,6 +269,20 @@ namespace yack
                 //const T      dth = theta[ip1]-theta[i];
                 const vertex dp  = (*this)[ip1] - (*this)[i];
                 coerce(speed)[i] = dp/dth - dth*(accel[i]+accel[i]+accel[ip1])/6;
+            }
+
+            void local_frame()
+            {
+                for(size_t i=size();i>0;--i)
+                {
+                    const vertex &s   = speed[i];
+                    const T       sn  = std::sqrt(s.norm2());
+                    coerce(tvec[i])   = s/sn;
+                    coerce(nvec[i].x) =  tvec[i].y;
+                    coerce(nvec[i].y) = -tvec[i].x;
+                    const vertex  &a  = accel[i];
+                    coerce(curv[i]) = (s.x * a.y - s.y * a.x)/(sn*sn*sn);
+                }
             }
 
             void make_spline()
