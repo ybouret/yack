@@ -41,7 +41,6 @@ YACK_UTEST_DECL(80)
     YACK_UTEST(spline);
     YACK_UTEST(shape);
    
-    YACK_UTEST(area2d);
 
     YACK_UTEST(fitting_lambda);
     YACK_UTEST(fitting_vars);
@@ -52,6 +51,9 @@ YACK_UTEST_DECL(80)
     YACK_UTEST(fitting_ode2);
 
     YACK_UTEST(proto_diff1d);
+
+    YACK_UTEST(area2d);
+    YACK_UTEST(pcontour);
 
  
 
