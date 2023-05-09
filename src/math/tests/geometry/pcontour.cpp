@@ -25,40 +25,24 @@ YACK_UTEST(pcontour)
     }
 
     periodic_contour<double> shape(N);
+    std::cerr << "curv_scale=" << shape.curv_scale << std::endl;
 
     for(size_t i=0;i<N;++i)
     {
-        const double th = (i*numeric<double>::two_pi) / N;
-        shape[i+1] = vertex( 1.0*cos(th), 1.0 * sin(th) );
+        const double th = (numeric<double>::two_pi * i)/N;
+        shape[i+1] = vertex( 1.5 * cos(th), 0.8 * sin(th) );
     }
-
-
     shape.update();
-
-    if(false)
-    {
-        ios::ocstream fp( vformat("metrics%lu.dat",N) );
-        for(size_t i=1;i<=N;++i)
-        {
-            fp("%g %g %g %g %g %g %g %g\n",
-               shape.theta[i],
-               shape.curv[i],
-               shape.speed[i].x,
-               shape.speed[i].y,
-               shape.accel[i].x,
-               shape.accel[i].y);
-        }
-    }
-
-    //shape.save_speed("speed.dat");
-    //shape.save_curv("curv.dat");
 
     const size_t np = 1000;
     shape.save("shape.dat");
     shape.save_shape("spline.dat",np);
+    shape.save_curv("curv.dat");
 
     std::cerr << "cmax=" << shape.cmax << std::endl;
 
+    return 0;
+    
     if(false)
         for(size_t i=1;i<=shape.size();++i)
         {
@@ -71,24 +55,23 @@ YACK_UTEST(pcontour)
             std::cerr << std::endl;
         }
 
-    return 0;
 
 
     for(unsigned iter=1;iter<=10;++iter)
     {
-        for(size_t k=0;k<10;++k)
+        for(size_t k=0;k<5;++k)
         {
             for(size_t i=shape.size();i>0;--i)
             {
-                shape[i] += 0.01*(1.0-shape.curv[i]) * shape.nvec[i];
+                shape[i] += 0.001*(1.0-1.0/shape.curv[i] ) * shape.nvec[i];
             }
             shape.update();
-            std::cerr << "curv=" << shape.curv << std::endl;
+            //std::cerr << "curv=" << shape.curv << std::endl;
         }
 
         shape.save( "shape.dat", true );
         shape.save_shape( "spline.dat", np, true);
-
+        shape.save_curv("curv.dat");
     }
 
 

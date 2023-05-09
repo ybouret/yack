@@ -83,12 +83,8 @@ namespace yack
             lu(n),
             rhs(n)
             {
-                vertices &self = *this;
-                for(size_t i=0;i<n;++i)
-                {
-                    const double th = (i*numeric<double>::two_pi) / n;
-                    self[i+1] = vertex(  cos(th),   sin(th) );
-                }
+                unit_circle();
+                compute_bar();
                 build_theta();
                 make_spline();
                 {
@@ -99,6 +95,7 @@ namespace yack
                 for(size_t i=n;i>0;--i) {
                     coerce(curv[i]) /= curv_scale;
                 }
+                coerce(cmax) = max_abs_of(curv);
             }
 
             inline virtual ~periodic_contour() noexcept {}
@@ -265,6 +262,17 @@ namespace yack
             crout<double>  lu;
             rvector        rhs;
 
+            inline void unit_circle() noexcept
+            {
+                coerce(bar) = vertex(0,0);
+                vertices    &self = *this;
+                const size_t n    = size();
+                for(size_t i=0;i<n;++i)
+                {
+                    const double th = (i*numeric<double>::two_pi) / n;
+                    self[i+1] = vertex(  cos(th),   sin(th) );
+                }
+            }
 
             inline T find(size_t &klo,
                           size_t &khi,
