@@ -77,13 +77,20 @@ template <> const long double numeric<long double>::VALUE
             const T        absb=std::abs(b);
             if(absa>absb)
             {
-                return absa*sqrt(one+squared(absb/absa));
+                return absa*std::sqrt(one+squared(absb/absa));
             }
             else
             {
-                return (absb <= 0 ? 0 : absb*sqrt(one+squared(absa/absb)));
+                return (absb <= 0 ? 0 : absb*std::sqrt(one+squared(absa/absb)));
             }
         }
+
+        template <typename VERTEX>
+        inline typename VERTEX::type hypothenuse(const VERTEX &v) noexcept
+        {
+            return hypothenuse(v.x,v.y);
+        }
+
 
         //! return the signed value of a w.r.t the sign of b
         template <typename T, typename U>

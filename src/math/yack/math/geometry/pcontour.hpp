@@ -70,6 +70,7 @@ namespace yack
             theta(n),
             theta_prev(0),
             theta_next(0),
+            curv_scale(1),
             accel(n),
             speed(n),
             tvec(n),
@@ -82,6 +83,22 @@ namespace yack
             lu(n),
             rhs(n)
             {
+                vertices &self = *this;
+                for(size_t i=0;i<n;++i)
+                {
+                    const double th = (i*numeric<double>::two_pi) / n;
+                    self[i+1] = vertex(  cos(th),   sin(th) );
+                }
+                build_theta();
+                make_spline();
+                {
+                    double kappa = 0;
+                    for(size_t i=n;i>0;--i) kappa += (coerce(curv[i]) = approx_curv(i));
+                    coerce(curv_scale) = kappa / n;
+                }
+                for(size_t i=n;i>0;--i) {
+                    coerce(curv[i]) /= curv_scale;
+                }
             }
 
             inline virtual ~periodic_contour() noexcept {}
@@ -102,11 +119,13 @@ namespace yack
 
             //! save control points
             template <typename FILENAME>
-            inline void save(const FILENAME &fn) const
+            inline void save(const FILENAME &fn,
+                             const bool append = false) const
             {
                 const vertices &self = *this;
                 const size_t    n    =  size();
-                ios::ocstream   fp(fn);
+                ios::ocstream   fp(fn,append);
+                if(append) fp << '\n';
                 for(size_t i=1;i<=n;++i)
                     emit(fp,self[i]);
                 emit(fp,self[1]);
@@ -189,12 +208,30 @@ namespace yack
                 return A*lo + B*hi +  (h*h*dtmp) / six;
             }
 
+            vertex spd(const double th)
+            {
+                static const T one(1);
+                static const T six(6);
+                size_t klo=0,khi=0;
+                T      A=0,B=0;
+                const T h        = find(klo,khi,A,B,th);
+                const vertex lo  = (*this)[klo];
+                const vertex hi  = (*this)[khi];
+                const vertex d2lo = accel[klo];
+                const vertex d2hi = accel[khi];
+                return (hi-lo)/h + (((one-3.0*A*A) * d2lo + (3.0*B*B-one) * d2hi)*h)/six;
+            }
+
+
             //! save shape using np>=3 points
             template <typename FILENAME>
-            inline void save_shape(const FILENAME &fn, const size_t np) const
+            inline void save_shape(const FILENAME &fn,
+                                   const size_t    np,
+                                   const bool      append = false) const
             {
                 assert(np>=3);
-                ios::ocstream fp(fn);
+                ios::ocstream fp(fn,append);
+                if(append) fp << '\n';
                 for(size_t i=0;i<np;++i)
                 {
                     const T      th = (i*numeric<T>::two_pi)/(np);
@@ -212,6 +249,7 @@ namespace yack
             const rvector  theta;        //!< angles
             const T        theta_prev;   //!< theta[0]
             const T        theta_next;   //!< theta[N+1]
+            const T        curv_scale;   //!< for a circle
             const vertices accel;        //!< accelerations
             const vertices speed;        //!< speeds
             const vertices tvec;         //!< tangent vector
@@ -230,9 +268,9 @@ namespace yack
 
             inline T find(size_t &klo,
                           size_t &khi,
-                          T &A,
-                          T &B,
-                          T  th) const
+                          T      &A,
+                          T      &B,
+                          T       th) const
             {
                 while(th>numeric<T>::two_pi) th -= numeric<T>::two_pi;
                 while(th<0)                  th += numeric<T>::two_pi;
@@ -288,13 +326,13 @@ namespace yack
             static inline
             T max_norm_of(const vertices &p) noexcept
             {
-                T res = p[1].norm2();
+                T res = hypothenuse(p[1]);
                 for(size_t i=p.size();i>1;--i)
                 {
-                    const T tmp = p[i].norm2();
+                    const T tmp = hypothenuse(p[i]);
                     if(tmp>res) res = tmp;
                 }
-                return std::sqrt(res);
+                return res;
             }
 
 
@@ -315,28 +353,36 @@ namespace yack
             inline
             void make_speed(const double dth, const size_t i, const size_t ip1) noexcept
             {
+                static const T six(6);
                 const vertex dp  = (*this)[ip1] - (*this)[i];
-                coerce(speed)[i] = dp/dth - dth*(accel[i]+accel[i]+accel[ip1])/6;
+                coerce(speed)[i] = dp/dth - dth*(accel[i]+accel[i]+accel[ip1])/six;
             }
 
+            inline
+            double approx_curv(const size_t i) noexcept
+            {
+                const vertex &s   = speed[i];
+                const T       sn  = hypothenuse(s);
+                coerce(tvec[i])   = s/sn;
+                coerce(nvec[i].x) =  tvec[i].y;
+                coerce(nvec[i].y) = -tvec[i].x;
+                const vertex  &a  =  accel[i];
+                return (s.x * a.y - s.y * a.x)/(sn*sn*sn);
+            }
+
+            inline
             void local_frame()
             {
                 for(size_t i=size();i>0;--i)
-                {
-                    const vertex &s   = speed[i];
-                    const T       sn  = std::sqrt(s.norm2());
-                    coerce(tvec[i])   = s/sn;
-                    coerce(nvec[i].x) =  tvec[i].y;
-                    coerce(nvec[i].y) = -tvec[i].x;
-                    const vertex  &a  = accel[i];
-                    coerce(curv[i]) = (s.x * a.y - s.y * a.x)/(sn*sn*sn);
-                }
+                    coerce(curv[i])   = approx_curv(i) / curv_scale;
                 coerce(cmax) = max_abs_of(curv);
             }
 
             void make_spline()
             {
-                // build matrix
+                //--------------------------------------------------------------
+                // build spline matrix
+                //--------------------------------------------------------------
                 const size_t n = size();
 
                 sm.ld(0);
@@ -355,11 +401,15 @@ namespace yack
                 sm[n][n-1] = ( theta[n]   - theta[n-1] )/6; assert( sm[n][n-1] > 0);
                 sm[n][1]   = ( theta_next - theta[n]   )/6; assert( sm[n][1] > 0);
 
-                std::cerr << "sm=" << sm << std::endl;
+                //std::cerr << "sm=" << sm << std::endl;
+                //--------------------------------------------------------------
                 // decompose matrix
+                //--------------------------------------------------------------
                 if(!lu.build(sm)) raise_singular();
 
-                // compute accel
+                //--------------------------------------------------------------
+                // compute accel per coordinate
+                //--------------------------------------------------------------
                 const vertices &self = *this;
                 for(size_t j=1;j<=2;++j)
                 {
@@ -372,10 +422,11 @@ namespace yack
                     lu.solve(sm,rhs);
                     for(size_t i=n;i>0;--i) coerce(accel[i][j]) = rhs[i];
                 }
-                //std::cerr << "accel = " << accel << std::endl;
                 coerce(amax) = max_norm_of(accel);
 
+                //--------------------------------------------------------------
                 // compute speed
+                //--------------------------------------------------------------
                 for(size_t i=1;i<n;++i)
                     make_speed(theta[i+1]-theta[i],i,i+1);
                 make_speed(theta_next-theta[n],n,1);
@@ -396,7 +447,6 @@ namespace yack
                     coerce(theta[i]) = a >=0 ?  a : (a+two_pi);
                 }
                 hsort(coerce(theta),coerce(*this), comparison::increasing<T> );
-                std::cerr << "theta=" << theta << std::endl;
                 coerce(theta_prev) = theta[n] - two_pi;
                 coerce(theta_next) = theta[1] + two_pi;
             }
