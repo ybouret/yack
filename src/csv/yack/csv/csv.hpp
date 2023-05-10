@@ -3,6 +3,7 @@
 #ifndef YACK_CSV_INCLUDED
 #define YACK_CSV_INCLUDED
 
+#include "yack/csv/cell.hpp"
 #include "yack/jive/parser.hpp"
 #include "yack/jive/syntax/translator.hpp"
 
@@ -12,33 +13,6 @@ namespace yack
     namespace CSV
     {
 
-        class Cell : public string
-        {
-        public:
-            enum Type
-            {
-                isRaw,
-                isStr
-            };
-
-            //! empty raw cell
-            explicit Cell() : string(), type(isRaw), next(0), prev(0) {}
-
-            template <typename DATA> inline
-            explicit Cell(const DATA &s, const Type t) : string(s), type(t), next(0), prev(0) {}
-
-            virtual ~Cell() noexcept {}
-            
-            Cell(const Cell &other) : string(other), type(other.type), next(0), prev(0) {}
-
-            Type  type;
-            Cell *next;
-            Cell *prev;
-
-        private:
-            YACK_DISABLE_ASSIGN(Cell);
-
-        };
 
         typedef cxx_list_of<Cell> Cells;
 
