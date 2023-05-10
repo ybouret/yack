@@ -121,17 +121,16 @@ namespace yack
         }
 
         //! NODE in [1:size], slow
-        inline NODE *get(const size_t indx) noexcept
-        {
+        inline NODE *get(const size_t indx) noexcept {
             return (NODE *)get_(indx);
         }
 
         //! const NODE in [1:size], slow
-        inline const NODE *get(const size_t indx) const noexcept
-        {
+        inline const NODE *get(const size_t indx) const noexcept {
             return get_(indx);
         }
 
+        
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(clist_of);
