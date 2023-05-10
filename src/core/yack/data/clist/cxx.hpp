@@ -35,7 +35,7 @@ namespace yack
         {
             try {
                 const NODE *node = other.head;
-                for(size_t i=other.size;i>0;--i,node-node->next)
+                for(size_t i=other.size;i>0;--i,node=node->next)
                 {
                     this->push_back( new NODE( *node ) );
                 }

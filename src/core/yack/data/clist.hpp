@@ -120,10 +120,39 @@ namespace yack
             return pop_front_any();
         }
 
+        //! NODE in [1:size], slow
+        inline NODE *get(const size_t indx) noexcept
+        {
+            return (NODE *)get_(indx);
+        }
+
+        //! const NODE in [1:size], slow
+        inline const NODE *get(const size_t indx) const noexcept
+        {
+            return get_(indx);
+        }
 
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(clist_of);
+
+        inline const NODE *get_(size_t indx) const noexcept
+        {
+            assert(indx>=1);
+            assert(indx<=size);
+            const size_t half = size >> 1;
+            const NODE  *node = head;
+            if(indx<=half)
+            {
+                while(--indx>0) node=node->next;
+            }
+            else
+            {
+                indx = size-(--indx);
+                while(indx-- > 0) node=node->prev;
+            }
+            return node;
+        }
 
         inline void push_first(NODE  *node) noexcept {
             assert(0==size);
