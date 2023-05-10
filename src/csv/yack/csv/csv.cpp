@@ -284,7 +284,9 @@ namespace yack
 
             std::cerr << "sizeof(Translator)=" << sizeof(Translator) << std::endl;
             dict("CONTENT", jive::logical::among(CSV_RawChars) );
-            const rule &RAW   = term("RAW","{content}+");
+
+            //const rule &RAW   = user("RAW",jive::regexp::compile("{CONTENT}+",&dict),true);
+            const rule &RAW   = term("RAW", "{CONTENT}+");
             const rule &STR   = load<jive::lexical::jstring>("STR");
             const rule &VALUE = choice(STR,RAW);
             const rule &COMMA = term(',');
@@ -295,6 +297,7 @@ namespace yack
             drop("[:blank:]");
             validate();
             gv();
+            dict.release();
         }
 
         Document * Parser:: operator()(jive::module *m)
