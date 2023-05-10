@@ -7,17 +7,36 @@
 
 namespace yack
 {
+    //__________________________________________________________________________
+    //
+    //
+    //! base class for circular linked list
+    //
+    //__________________________________________________________________________
     template <typename NODE>
     class clist_of : public interlinked<NODE>
     {
     public:
+        //______________________________________________________________________
+        //
+        // definitions
+        //______________________________________________________________________
         using interlinked<NODE>::size;
         using interlinked<NODE>::head;
 
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
         inline explicit clist_of() noexcept : interlinked<NODE>() {}
         inline virtual ~clist_of() noexcept { assert(0==size); }
 
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
 
+        //! testing ownership
         virtual bool owns(const NODE *other) const noexcept
         {
             const NODE *node = head;
@@ -28,6 +47,7 @@ namespace yack
             return false;
         }
 
+        //! reverse (using internal regular list)
         virtual void reverse() noexcept
         {
             list_of<NODE> temp;
@@ -35,11 +55,13 @@ namespace yack
             while(temp.size) push_back( temp.pop_back() );
         }
 
+        //! push_back, a.k.a before head
         inline NODE *push_back(NODE *node) noexcept
         {
             assert(NULL!=node);
             assert(NULL==node->next);
             assert(NULL==node->prev);
+            assert(!owns(node));
             switch(size)
             {
                 case 0:  push_first(node);  break;
@@ -51,13 +73,13 @@ namespace yack
         }
 
 
-
-
+        //! push_front a new node
         inline NODE *push_front(NODE *node) noexcept
         {
             assert(NULL!=node);
             assert(NULL==node->next);
             assert(NULL==node->prev);
+            assert(!owns(node));
             switch(size)
             {
                 case 0:  push_first(node);         break;
@@ -68,6 +90,7 @@ namespace yack
             return node;
         }
 
+        //! pop_back node before head
         inline NODE *pop_back() noexcept
         {
             assert(size>0);
@@ -82,6 +105,7 @@ namespace yack
             return pop_back_any();
         }
 
+        //! pop_back head
         inline NODE *pop_front() noexcept
         {
             assert(size>0);
