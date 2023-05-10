@@ -3,7 +3,7 @@
 #ifndef YACK_DATA_CLIST_INCLUDED
 #define YACK_DATA_CLIST_INCLUDED 1
 
-#include "yack/data/linked.hpp"
+#include "yack/data/list.hpp"
 
 namespace yack
 {
@@ -30,7 +30,9 @@ namespace yack
 
         virtual void reverse() noexcept
         {
-
+            list_of<NODE> temp;
+            while(size) temp.push_back(pop_front());
+            while(temp.size) push_back( temp.pop_back() );
         }
 
         inline NODE *push_back(NODE *node) noexcept

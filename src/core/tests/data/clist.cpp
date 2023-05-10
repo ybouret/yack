@@ -35,7 +35,8 @@ namespace
 
 YACK_UTEST(data_clist)
 {
-    clist_of<XNode> xlist;
+    cxx_clist_of<XNode> xlist;
+    randomized::rand_    ran;
 
     std::cerr << "push_back" << std::endl;
     for(int i=1;i<=10;++i)
@@ -55,14 +56,21 @@ YACK_UTEST(data_clist)
         xlist.push_front( new XNode(i) );
         std::cerr << xlist << std::endl;
     }
-    
+
     while(xlist.size)
     {
         delete xlist.pop_front();
         std::cerr << xlist << std::endl;
     }
 
-
+    std::cerr << "reverse" << std::endl;
+    for(int i=1;i<=10;++i)
+    {
+        if( ran.choice() ) xlist.push_front( new XNode(i) ); else xlist.push_back( new XNode(i) );
+    }
+    std::cerr << xlist << std::endl;
+    xlist.reverse();
+    std::cerr << xlist << std::endl;
 
 }
 YACK_UDONE()

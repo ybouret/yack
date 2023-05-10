@@ -15,15 +15,15 @@ namespace yack
     public:
 
         explicit cxx_clist_of() noexcept : clist_of<NODE>(), releasable() {}
-        virtual ~cxx_clist_of() noexcept {}
-
-        virtual void release() noexcept
-        {
-
-        }
+        virtual ~cxx_clist_of() noexcept { release_(); }
+        
+        virtual void release() noexcept { release_(); }
 
     private:
         YACK_DISABLE_ASSIGN(cxx_clist_of);
+        inline void release_() noexcept {
+            while( this->size ) delete this->pop_back();
+        }
     };
 
 }
