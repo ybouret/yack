@@ -101,9 +101,11 @@ namespace yack
             const NODE *node = self.head;
             if(node)
             {
+                assert(self.size>0);
                 os << "{ " << *node;
-                for(node=node->next;node;node=node->next)
+                for(size_t i=self.size-1;i>0;--i)
                 {
+                    node=node->next;
                     os << ", " << *node;
                 }
                 os << " }";

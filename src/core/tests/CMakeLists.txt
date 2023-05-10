@@ -223,6 +223,7 @@ add_test(data:roll         test-core data_roll)
 add_test(data:bunch        test-core data_bunch)
 add_test(data:set          test-core data_set)
 add_test(data:roster       test-core data_roster)
+add_test(data:clist        test-core data_clist)
 
 add_test(dinky:znone       test-core dinky_znone)
 add_test(dinky:zsolo       test-core dinky_zsolo)

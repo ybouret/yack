@@ -115,6 +115,11 @@ set(data_dinky ${data_dinky_impl} ${data_dinky_decl})
 SOURCE_GROUP(data/dinky FILES ${data_dinky})
 install( FILES ${data_dinky_decl} DESTINATION include/yack/data/dinky )
 
+file(GLOB data_clist_impl yack/data/clist/*.cpp)
+file(GLOB data_clist_decl yack/data/clist/*.hpp)
+set(data_clist ${data_clist_impl} ${data_clist_decl})
+SOURCE_GROUP(data/clist FILES ${data_clist})
+install( FILES ${data_clist_decl} DESTINATION include/yack/data/clist )
 
 ########################################################################
 ##
@@ -678,7 +683,7 @@ ${type}
 ${arith}
 ${check}
 ${system}
-${data} ${data_list} ${data_pool} ${data_small} ${data_suffix} ${data_hash} ${data_dinky}
+${data} ${data_list} ${data_pool} ${data_small} ${data_suffix} ${data_hash} ${data_dinky} ${data_clist}
 ${container} ${container_matrix} ${container_iterator} ${container_tuple}
 ${sequence}
 ${ordered}
