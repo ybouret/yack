@@ -85,6 +85,7 @@ template <> const long double numeric<long double>::VALUE
             }
         }
 
+        //! hypothenuse of v2d/complex
         template <typename VERTEX>
         inline typename VERTEX::type hypothenuse(const VERTEX &v) noexcept
         {

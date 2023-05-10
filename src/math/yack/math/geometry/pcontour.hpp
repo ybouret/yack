@@ -26,12 +26,13 @@ namespace yack
             class periodic_contour : public spot_object
             {
             public:
-                typedef memory::dyadic allocator;
-                virtual ~periodic_contour() noexcept;
+                typedef memory::dyadic allocator; //!< alias
+
+                virtual ~periodic_contour() noexcept; //!< cleanup
 
             protected:
-                explicit periodic_contour(const size_t n);
-                void     raise_singular() const;
+                explicit periodic_contour(const size_t n); //!< setup with points
+                void     raise_singular() const;           //!< raise exception
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(periodic_contour);
@@ -61,8 +62,10 @@ namespace yack
 
             //__________________________________________________________________
             //
-            //! C++
+            // C++
             //__________________________________________________________________
+
+            //! setup
             inline explicit periodic_contour(const size_t n) :
             kernel::periodic_contour(n),
             vertices(n),
@@ -205,6 +208,8 @@ namespace yack
                 return A*lo + B*hi +  (h*h*dtmp) / six;
             }
 
+
+            //! compute speed
             vertex spd(const double th)
             {
                 static const T one(1);

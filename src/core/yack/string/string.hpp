@@ -55,8 +55,8 @@ namespace yack
             //
             // memory::ro_buffer interface
             //__________________________________________________________________
-            virtual const char *class_uid() const noexcept;
-            virtual size_t      serialize(ios::ostream &) const;
+            virtual const char *class_uid() const noexcept;       //!< "string<T>"
+            virtual size_t      serialize(ios::ostream &) const;  //!< length+content
 
 
             //__________________________________________________________________
