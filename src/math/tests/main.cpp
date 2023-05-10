@@ -54,6 +54,7 @@ YACK_UTEST_DECL(80)
 
     YACK_UTEST(area2d);
     YACK_UTEST(pcontour);
+    YACK_UTEST(cyclic_shape);
 
  
 

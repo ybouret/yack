@@ -99,6 +99,7 @@ add_test(shape     test-math shape)
 #geom
 add_test(area2d test-math area2d)
 add_test(pcontour test-math pcontour)
+add_test(cyclic_shape test-math cyclic_shape)
 
 #fitting
 add_test(fitting:lambda  test-math fitting_lambda)
