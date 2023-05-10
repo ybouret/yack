@@ -4,6 +4,7 @@
 #include "yack/spot-object.hpp"
 #include "yack/hashing/perfect.hpp"
 #include "yack/exception.hpp"
+#include "yack/jive/pattern/logic/logical.hpp"
 
 namespace yack
 {
@@ -41,6 +42,8 @@ namespace yack
         // defines
         //--------------------------------
 #define CSV_LINE        0 //!< "LINE"
+
+
 
 
         class Parser:: Translator : public spot_object, public jive::syntax::translator
@@ -260,12 +263,28 @@ namespace yack
         }
 
 
+        static const char CSV_RawChars[95]={
+            ' ', '!', '#', '$', '%', '&', '\'', '(',
+            ')', '*', '+', '-', '.', '/', '0', '1',
+            '2', '3', '4', '5', '6', '7', '8', '9',
+            ':', ';', '<', '=', '>', '?', '@', 'A',
+            'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
+            'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
+            'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',
+            'Z', '[', '\x5C', ']', '^', '_', '`', 'a',
+            'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
+            'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
+            'r', 's', 't', 'u', 'v', 'w', 'x', 'y',
+            'z', '{', '|', '}', '~', '\x7F', 0
+        };
+
         Parser:: Parser() : jive::parser("CSV") ,
         tr( new Translator() )
         {
 
             std::cerr << "sizeof(Translator)=" << sizeof(Translator) << std::endl;
-            const rule &RAW   = term("RAW","[[:word:]']+");
+            dict("CONTENT", jive::logical::among(CSV_RawChars) );
+            const rule &RAW   = term("RAW","{content}+");
             const rule &STR   = load<jive::lexical::jstring>("STR");
             const rule &VALUE = choice(STR,RAW);
             const rule &COMMA = term(',');
