@@ -95,19 +95,19 @@ namespace yack
                 fp << '\n';
             }
 
-            void grammar:: emit_keywords(ios::ostream           &fp,
+            void grammar:: emit_keywords(const string           &prefix,
+                                         ios::ostream           &fp,
                                          const readable<string> &table,
-                                         const string           &cxx_id,
-                                         const string           &prefix)
+                                         const string           &cxx_id)
             {
                 const size_t   n = table.size();
                 vector<string> df(n,as_capacity);
-                size_t         dw = 0;
-
+                size_t         dw   = 0;
+                const string   tid  = prefix + cxx_id;
                 output_sepline(fp);
                 fp << "// keywords\n";
                 output_sepline(fp);
-                fp << "const char *" << cxx_id << "[] = {\n";
+                fp << "const char *" << tid << "[] = {\n";
                 if(n>0)
                 {
                     emit_quoted(fp,table[1]);
@@ -123,7 +123,7 @@ namespace yack
                     fp << '\n';
                 }
                 fp << "};\n\n";
-                fp << "// (" << cxx_id << ',' << "sizeof(" << cxx_id << ")/sizeof(" << cxx_id << "[0]))\n\n";
+                fp << "// (" << tid << ',' << "sizeof(" << tid << ")/sizeof(" << tid << "[0]))\n\n";
 
                 output_sepline(fp);
                 fp << "// defines\n";

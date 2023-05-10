@@ -20,7 +20,6 @@ namespace yack
             "ENDL"
         };
 
-        // (csv_terminals,sizeof(csv_terminals)/sizeof(csv_terminals[0]))
 
         //--------------------------------
         // defines
@@ -81,7 +80,6 @@ namespace yack
                     {
                         case NilNode: os << "[NIL]"; assert(NULL==self.pstr); break;
                         case SepNode: os << "[SEP]"; assert(NULL==self.pstr); break;
-                        //case EolNode: os << "[EOL]"; assert(NULL==self.pstr); break;
                         case RawNode: os << "[RAW]"; assert(NULL!=self.pstr); os << '[' << *self.pstr << ']'; break;
                         case StrNode: os << "[STR]"; assert(NULL!=self.pstr); os << '[' << *self.pstr << ']'; break;
                     }
@@ -139,7 +137,6 @@ namespace yack
             virtual void on_terminal(const lexeme &lx)
             {
                 jive::syntax::translator::on_terminal(lx);
-                //std::cerr <<  "[" << lx << "]" << std::endl;
                 const string &id = *lx.name;
                 switch( termH(id) )
                 {
@@ -154,13 +151,17 @@ namespace yack
                     case CSV_COMMA:
                         if(nodes.size<=0)
                         {
+                            //--------------------------------------------------
                             // push Nil/Sep
+                            //--------------------------------------------------
                             nodes.push_back( new Node(NilNode) );
                             nodes.push_back( new Node(SepNode) );
                         }
                         else
                         {
+                            //--------------------------------------------------
                             // check previous
+                            //--------------------------------------------------
                             switch(nodes.tail->type)
                             {
                                 case SepNode:
@@ -171,7 +172,10 @@ namespace yack
                                     break;
 
                             }
+
+                            //--------------------------------------------------
                             // and push separator
+                            //--------------------------------------------------
                             nodes.push_back( new Node(SepNode) );
                         }
                         break;
@@ -179,7 +183,9 @@ namespace yack
                     case CSV_ENDL:
                         if(nodes.size<=0 || SepNode == nodes.tail->type)
                         {
+                            //--------------------------------------------------
                             // assume empty field
+                            //--------------------------------------------------
                             nodes.push_back( new Node(NilNode) );
                         }
                         break;
@@ -227,6 +233,8 @@ namespace yack
                 }
                 clear_all();
             }
+
+            
             inline void removeSep() noexcept
             {
                 cxx_list_of<Node> temp;

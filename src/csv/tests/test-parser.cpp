@@ -8,6 +8,11 @@ using namespace yack;
 
 YACK_UTEST(parser)
 {
+
+    if(true)
+    {
+
+    }
     CSV::Parser csv;
     vector<string> terminals;
     vector<string> internals;
@@ -18,12 +23,12 @@ YACK_UTEST(parser)
 
     {
         ios::ocstream fp(ios::cstderr);
-        jive::syntax::grammar::emit_keywords(fp,terminals,"csv_terminals","CSV_");
+        jive::syntax::grammar::emit_keywords("CSV_",fp,terminals,"terminals");
     }
 
     {
         ios::ocstream fp(ios::cstderr);
-        jive::syntax::grammar::emit_keywords(fp,internals,"csv_internals","CSV_");
+        jive::syntax::grammar::emit_keywords("CSV_",fp,internals,"internals");
     }
 
 

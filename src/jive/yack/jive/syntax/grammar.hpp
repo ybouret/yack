@@ -213,10 +213,10 @@ namespace yack
                                       sequence<string> &internals) const;
 
                 //! emit some keywordds
-                static void emit_keywords(ios::ostream           &fp,
+                static void emit_keywords(const string           &prefix,
+                                          ios::ostream           &fp,
                                           const readable<string> &table,
-                                          const string           &cxx_id,
-                                          const string           &prefix);
+                                          const string           &cxx_id);
 
                 //______________________________________________________________
                 //
