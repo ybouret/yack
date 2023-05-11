@@ -39,21 +39,33 @@ YACK_UTEST(cyclic_shape)
     shape.save_n("shape_n.dat");
     shape.save_a("shape_a.dat");
 
-    for(unsigned iter=1;iter<=5;++iter)
+    ios::ocstream fp("kappa.dat");
+
+    for(unsigned iter=1;iter<=10;++iter)
     {
-        for(size_t k=0;k<100;++k)
+        for(size_t k=0;k<50;++k)
         {
             node2D<double> *node = shape.head;
             for(size_t i=shape.size;i>0;--i,node=node->next)
             {
-                node->r += 0.01*(1.0-hypothenuse(node->r)) * node->n;
-                //node->r += 0.1*(1.0-node->kappa)*node->n;
+                //node->r += 0.01*(1.0-hypothenuse(node->r)) * node->n;
+                node->r += 0.01*(1.0-node->kappa)*node->n;
             }
             shape.update();
             //shape.center();
+
         }
-        shape.save( vformat("shape%u.dat",iter) );
+        {
+            const node2D<double> *node = shape.head;
+            for(size_t i=1;i<=shape.size;++i,node=node->next)
+            {
+                fp("%lu %g\n",i,node->kappa);
+            }
+            fp << '\n';
+        }
+        shape.save(   vformat("shape%u.dat",iter) );
         shape.save_n( vformat("shape%u-n.dat",iter) );
+        shape.save_kappa( vformat("shape%u-kappa.dat",iter) );
 
     }
 

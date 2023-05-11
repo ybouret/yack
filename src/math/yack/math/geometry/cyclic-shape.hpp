@@ -149,6 +149,21 @@ namespace yack
                 }
             }
 
+            template <typename FILENAME> inline
+            void save_kappa(const FILENAME &fn)
+            {
+                ios::ocstream   fp(fn);
+                const node_type *node = this->head;
+                for(size_t i=size;i>0;--i,node=node->next)
+                {
+                    emit(fp,node->r);
+                    emit(fp,node->r+node->kappa*node->n);
+                    fp << '\n';
+                }
+            }
+
+
+
             void update()
             {
                 bar             = vertex(0,0);
