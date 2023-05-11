@@ -7,8 +7,7 @@
 
 using namespace yack;
 using namespace math;
-
-typedef v2d<double>      vertex;
+typedef v2d<double> vertex;
 
 
 

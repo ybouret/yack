@@ -23,23 +23,52 @@ namespace yack
             typedef v2d<T> vertex;
 
             inline node2D(const vertex p) :
-            spot_object(), r(p), v(), a(), t(), n(), next(0), prev(0)
+            spot_object(), r(p), speed(), accel(), t(), n(), kappa(0), next(0), prev(0)
             {
             }
 
             inline virtual ~node2D() noexcept {}
 
             inline node2D(const node2D &_) noexcept :
-            spot_object(), r(_.r), v(_.v), a(_.a), t(_.t), n(_.n), next(0), prev(0)
+            spot_object(), r(_.r), speed(_.speed), accel(_.accel), t(_.t), n(_.n), kappa(_.kappa), next(0), prev(0)
             {
             }
 
+            inline vertex       & operator*() noexcept       { return r; }
+            inline const vertex & operator*() const noexcept { return r; }
 
+
+            inline void update()
+            {
+                static const T half(0.5);
+                static const T four(4);
+
+                const vertex A  = prev->r;
+                const vertex B  = r;
+                const vertex C  = next->r;
+                const vertex AB = B-A;
+                const vertex BC = C-B;
+                const vertex AC = C-A;
+                const T      a  = hypothenuse(AB);
+                const T      b  = hypothenuse(BC);
+                const T      c  = hypothenuse(AC);
+                const T      s  = half * (a+b+c);
+                const T      area = std::sqrt( s * (s-a) * (s-b) * (s-c) );
+
+                kappa = four * area /a/b/c;
+                speed = half * AC;
+                t     =  speed / hypothenuse(speed);
+                n.x   =  t.y;
+                n.y   = -t.x;
+                accel = BC-AB;
+                if(  accel *  n > 0) kappa = -kappa;
+                //std::cerr << "kappa=" << kappa << std::endl;
+            }
 
 
             vertex  r;
-            vertex  v;
-            vertex  a;
+            vertex  speed;
+            vertex  accel;
             vertex  t;
             vertex  n;
             T       kappa;
@@ -60,7 +89,7 @@ namespace yack
             using nodes::head;
             using nodes::size;
 
-            explicit cyclic_contour() noexcept : nodes() {}
+            explicit cyclic_contour() noexcept : nodes(), bar() {}
             virtual ~cyclic_contour() noexcept {}
 
             cyclic_contour & operator<<( const vertex p )
@@ -81,34 +110,71 @@ namespace yack
                 emit(fp,node->r);
             }
 
+            template <typename FILENAME> inline
+            void save_a(const FILENAME &fn)
+            {
+                ios::ocstream   fp(fn);
+                const node_type *node = this->head;
+                for(size_t i=size;i>0;--i,node=node->next)
+                {
+                    emit(fp,node->r);
+                    emit(fp,node->r+node->accel);
+                    fp << '\n';
+                }
+            }
+
+            template <typename FILENAME> inline
+            void save_t(const FILENAME &fn)
+            {
+                ios::ocstream   fp(fn);
+                const node_type *node = this->head;
+                for(size_t i=size;i>0;--i,node=node->next)
+                {
+                    emit(fp,node->r);
+                    emit(fp,node->r+node->t);
+                    fp << '\n';
+                }
+            }
+
+            template <typename FILENAME> inline
+            void save_n(const FILENAME &fn)
+            {
+                ios::ocstream   fp(fn);
+                const node_type *node = this->head;
+                for(size_t i=size;i>0;--i,node=node->next)
+                {
+                    emit(fp,node->r);
+                    emit(fp,node->r+node->n);
+                    fp << '\n';
+                }
+            }
 
             void update()
+            {
+                bar             = vertex(0,0);
+                node_type *node = this->head;
+                for(size_t i=size;i>0;--i,node=node->next)
+                {
+                    node->update();
+                    bar += node->r;
+                }
+                bar /= size;
+            }
+
+            void center() noexcept
             {
                 node_type *node = this->head;
                 for(size_t i=size;i>0;--i,node=node->next)
                 {
-                    static const T half(0.5);
-                    static const T four(4);
-                    const vertex A = node->prev->r;
-                    const vertex B = node->r;
-                    const vertex C = node->next->r;
-                    const vertex AB = B-A;
-                    const vertex BC = C-B;
-                    const vertex AC = C-A;
-                    const T      a  = hypothenuse(AB);
-                    const T      b  = hypothenuse(BC);
-                    const T      c  = hypothenuse(AC);
-                    const T      s  = half * (a+b+c);
-                    const T      area = std::sqrt( s * (s-a) * (s-b) * (s-c) );
-                    node->kappa = four * area /a/b/c;
-                    std::cerr << "kappa=" << node->kappa << std::endl;
-                    node->v     = half * AC;
-
+                    node->r -= bar;
                 }
+                bar             = vertex(0,0);
             }
 
+            vertex bar;
+
         private:
-            YACK_DISABLE_ASSIGN(cyclic_contour);
+            YACK_DISABLE_COPY_AND_ASSIGN(cyclic_contour);
             static inline void emit(ios::ocstream &fp,
                                     const vertex  &v)
             {

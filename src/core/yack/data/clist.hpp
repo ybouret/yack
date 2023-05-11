@@ -147,7 +147,8 @@ namespace yack
             }
             else
             {
-                indx = size-(--indx);
+                --indx;
+                indx = size-indx;
                 while(indx-- > 0) node=node->prev;
             }
             return node;
