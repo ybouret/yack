@@ -4,6 +4,7 @@
 #define YACK_JIVE_DSL_PARSER_INCLUDED 1
 
 #include "yack/jive/parser.hpp"
+#include "yack/jive/syntax/xnode.hpp"
 
 namespace yack
 {
