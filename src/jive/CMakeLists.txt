@@ -115,6 +115,15 @@ set(jive_syntax_xnode ${jive_syntax_xnode_decl} ${jive_syntax_xnode_srcs})
 SOURCE_GROUP(jive/syntax/xnode FILES ${jive_syntax_xnode})
 install( FILES ${jive_syntax_xnode_decl} DESTINATION include/yack/jive/syntax/xnode )
 
+
+#dsl
+file(GLOB jive_dsl_decl yack/jive/dsl/*.hpp)
+file(GLOB jive_dsl_srcs yack/jive/dsl/*.cpp)
+set(jive_dsl ${jive_dsl_decl} ${jive_dsl_srcs})
+SOURCE_GROUP(jive/dsl FILES ${jive_dsl})
+install( FILES ${jive_dsl_decl} DESTINATION include/yack/jive/dsl )
+
+
 add_library(yack-jive STATIC
 ${jive_main}
 ${jive_pattern} ${jive_pattern_basic} ${jive_pattern_joker} ${jive_pattern_logic}
@@ -125,6 +134,7 @@ ${jive_syntax}
 ${jive_syntax_rule} ${jive_syntax_rule_wildcard} ${jive_syntax_rule_compound}
 ${jive_syntax_grammar} 
 ${jive_syntax_xnode}
+${jive_dsl}
 )
 
 install( TARGETS yack-jive ARCHIVE DESTINATION lib )

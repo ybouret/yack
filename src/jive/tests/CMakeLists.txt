@@ -12,12 +12,15 @@ source_group(lexical FILES ${lexical} )
 file(GLOB syntax syntax/*.cpp)
 source_group(syntax FILES ${syntax} )
 
+file(GLOB dsl dsl/*.cpp)
+source_group(dsl FILES ${dsl} )
+
 add_executable(test-jive main.cpp
 ${io}
 ${pattern}
 ${lexical}
 ${syntax}
-dynamo.cpp
+${dsl}
 )
 
 target_link_libraries(test-jive yack-jive)
@@ -49,7 +52,8 @@ add_test(eval         test-jive eval)
 
 add_test(vfs          test-jive vfs)
 add_test(vfs:rm       test-jive vfs_rm)
-add_test(dynamo       test-jive dynamo)
+add_test(dsl:parser   test-jive dsl_parser)
+add_test(dsl:eval     test-jive dsl_eval)
 
 
 
