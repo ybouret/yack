@@ -34,6 +34,12 @@ namespace yack
             {
             }
 
+            inline friend std::ostream & operator<<(std::ostream &os, const node2D &node)
+            {
+                os << node.r;
+                return os;
+            }
+
             inline vertex       & operator*() noexcept       { return r; }
             inline const vertex & operator*() const noexcept { return r; }
 
@@ -80,29 +86,79 @@ namespace yack
         };
 
         template <typename T>
-        class cyclic_contour : public cxx_clist_of< node2D<T> >
+        class segment2D : public spot_object
         {
         public:
             typedef node2D<T> node_type;
             typedef v2d<T>    vertex;
-            typedef cxx_clist_of<node_type> nodes;
+
+            inline explicit segment2D(const node_type *a, const node_type *b) noexcept :
+            spot_object(), A(a), B(b), quadratic(), cubic(), next(0), prev(0)
+            {
+            }
+
+            inline virtual ~segment2D() noexcept {}
+
+            inline void update()
+            {
+                const vertex AB   = B->r - A->r;
+                const vertex vA   = A->speed;
+                const vertex vB   = B->speed;
+                const vertex rhs1 = AB - vA;
+                const vertex rhs2 = vB - vA;
+                quadratic = 3*rhs1 - rhs2;
+                cubic     = rhs2 - 2*rhs1;
+            }
+
+            inline vertex eval(const double lam) const
+            {
+                return A->r + lam * ( A->speed + lam * ( quadratic + lam * cubic) );
+            }
+
+            inline friend std::ostream & operator<<(std::ostream &os, const segment2D &seg)
+            {
+                os << '{' << *seg.A << "->" << *seg.B << '}';
+                return os;
+            }
+
+            const node_type * const A;
+            const node_type * const B;
+            vertex                  quadratic;
+            vertex                  cubic;
+            segment2D       *       next;
+            segment2D       *       prev;
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(segment2D);
+        };
+
+        template <typename T>
+        class cyclic_contour : public cxx_clist_of< node2D<T> >
+        {
+        public:
+            typedef node2D<T>            node_t;
+            typedef v2d<T>               vertex;
+            typedef segment2D<T>         segm_t;
+            typedef cxx_clist_of<node_t> nodes;
+            typedef cxx_clist_of<segm_t> segments;
+
             using nodes::head;
             using nodes::size;
 
-            explicit cyclic_contour() noexcept : nodes(), bar() {}
+            explicit cyclic_contour() noexcept : nodes(), sides(), bar() {}
             virtual ~cyclic_contour() noexcept {}
 
             cyclic_contour & operator<<( const vertex p )
             {
-                this->push_back( new node_type(p) );
+                this->push_back( new node_t(p) );
                 return *this;
             }
 
             template <typename FILENAME> inline
             void save(const FILENAME &fn)
             {
-                ios::ocstream   fp(fn);
-                const node_type *node = this->head;
+                ios::ocstream fp(fn);
+                const node_t *node = this->head;
                 for(size_t i=size;i>0;--i,node=node->next)
                 {
                     emit(fp,node->r);
@@ -114,7 +170,7 @@ namespace yack
             void save_a(const FILENAME &fn)
             {
                 ios::ocstream   fp(fn);
-                const node_type *node = this->head;
+                const node_t *node = this->head;
                 for(size_t i=size;i>0;--i,node=node->next)
                 {
                     emit(fp,node->r);
@@ -126,8 +182,8 @@ namespace yack
             template <typename FILENAME> inline
             void save_t(const FILENAME &fn)
             {
-                ios::ocstream   fp(fn);
-                const node_type *node = this->head;
+                ios::ocstream fp(fn);
+                const node_t *node = this->head;
                 for(size_t i=size;i>0;--i,node=node->next)
                 {
                     emit(fp,node->r);
@@ -137,10 +193,27 @@ namespace yack
             }
 
             template <typename FILENAME> inline
+            void smooth(const FILENAME &fn, const size_t pps)
+            {
+                ios::ocstream  fp(fn);
+                const segm_t  *seg = sides.head;
+                for(size_t i=sides.size;i>0;--i, seg=seg->next)
+                {
+                    for(size_t i=0;i<pps;++i)
+                    {
+                        const T l0 = T(i)/pps;
+                        emit(fp,seg->eval(l0));
+                    }
+                }
+                emit(fp,sides.head->eval(0));
+            }
+
+
+            template <typename FILENAME> inline
             void save_n(const FILENAME &fn)
             {
-                ios::ocstream   fp(fn);
-                const node_type *node = this->head;
+                ios::ocstream fp(fn);
+                const node_t *node = this->head;
                 for(size_t i=size;i>0;--i,node=node->next)
                 {
                     emit(fp,node->r);
@@ -152,8 +225,8 @@ namespace yack
             template <typename FILENAME> inline
             void save_kappa(const FILENAME &fn)
             {
-                ios::ocstream   fp(fn);
-                const node_type *node = this->head;
+                ios::ocstream fp(fn);
+                const node_t *node = this->head;
                 for(size_t i=size;i>0;--i,node=node->next)
                 {
                     emit(fp,node->r);
@@ -166,19 +239,30 @@ namespace yack
 
             void update()
             {
-                bar             = vertex(0,0);
-                node_type *node = this->head;
-                for(size_t i=size;i>0;--i,node=node->next)
+                sides.release();
+                bar          = vertex(0,0);
                 {
-                    node->update();
-                    bar += node->r;
+                    node_t *node = this->head;
+                    for(size_t i=size;i>0;--i,node=node->next)
+                    {
+                        node->update();
+                        bar += node->r;
+                        sides.push_back( new segm_t(node,node->next) );
+                    }
                 }
                 bar /= size;
+                {
+                    segm_t  *seg = sides.head;
+                    for(size_t i=sides.size;i>0;--i, seg=seg->next)
+                    {
+                        seg->update();
+                    }
+                }
             }
 
             void center() noexcept
             {
-                node_type *node = this->head;
+                node_t *node = this->head;
                 for(size_t i=size;i>0;--i,node=node->next)
                 {
                     node->r -= bar;
@@ -186,10 +270,14 @@ namespace yack
                 bar             = vertex(0,0);
             }
 
-            vertex bar;
+            segments sides;
+            vertex   bar;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(cyclic_contour);
+
+
+
             static inline void emit(ios::ocstream &fp,
                                     const vertex  &v)
             {

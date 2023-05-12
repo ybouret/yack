@@ -120,6 +120,40 @@ namespace yack
             return pop_front_any();
         }
 
+        //! remove current node
+        inline NODE *pop(NODE *node) noexcept
+        {
+            assert(NULL!=node);
+            assert(NULL!=node->next);
+            assert(NULL!=node->prev);
+            assert(owns(node));
+
+            if(head==node)
+            {
+                return pop_front();
+            }
+            else
+            {
+                if(2==size) {
+                    assert(head->next==node);
+                    return pop_back_two();
+                }
+                else
+                {
+                    assert(size>2);
+                    NODE *next = node->next;
+                    NODE *prev = node->prev;
+                    next->prev = prev;
+                    prev->next = next;
+                    node->next = NULL;
+                    node->prev = NULL;
+                    this->decrease();
+                    return node;
+                }
+            }
+            
+        }
+
         //! NODE in [1:size], slow
         inline NODE *get(const size_t indx) noexcept {
             return (NODE *)get_(indx);

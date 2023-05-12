@@ -28,16 +28,25 @@ YACK_UTEST(cyclic_shape)
     for(size_t i=0;i<np;++i)
     {
         const double th = (i * numeric<double>::two_pi)/np;
-        shape << vertex( 1.5 * cos(th), 0.5 * sin(th) );
+        shape << vertex( 1.1 * cos(th), 0.9 * sin(th) );
     }
 
 
     shape.update();
     shape.center();
+
+    std::cerr << "nodes: " << shape.size << std::endl;
+    std::cerr << "sides: " << shape.sides.size << std::endl;
+    std::cerr << shape << std::endl;
+    std::cerr << shape.sides << std::endl;
+
     shape.save("shape.dat");
     shape.save_t("shape_t.dat");
     shape.save_n("shape_n.dat");
     shape.save_a("shape_a.dat");
+    shape.smooth("smooth.dat",16);
+
+    return 0;
 
     ios::ocstream fp("kappa.dat");
 
