@@ -28,7 +28,7 @@ YACK_UTEST(cyclic_shape)
     for(size_t i=0;i<np;++i)
     {
         const double th = (i * numeric<double>::two_pi)/np;
-        shape << vertex( 1.1 * cos(th), 0.9 * sin(th) );
+        shape << vertex( 1.5 * cos(th), 0.8 * sin(th) );
     }
 
 
@@ -37,20 +37,15 @@ YACK_UTEST(cyclic_shape)
 
     std::cerr << "nodes: " << shape.size << std::endl;
     std::cerr << "sides: " << shape.sides.size << std::endl;
-    std::cerr << shape << std::endl;
-    std::cerr << shape.sides << std::endl;
 
-    shape.save("shape.dat");
-    shape.save_t("shape_t.dat");
-    shape.save_n("shape_n.dat");
-    shape.save_a("shape_a.dat");
-    shape.smooth("smooth.dat",16);
 
-    return 0;
+    shape.save("shape0.dat");
+    shape.smooth("smooth0.dat",16);
+
 
     ios::ocstream fp("kappa.dat");
 
-    for(unsigned iter=1;iter<=10;++iter)
+    for(unsigned iter=1;iter<=5;++iter)
     {
         for(size_t k=0;k<50;++k)
         {
@@ -73,8 +68,7 @@ YACK_UTEST(cyclic_shape)
             fp << '\n';
         }
         shape.save(   vformat("shape%u.dat",iter) );
-        shape.save_n( vformat("shape%u-n.dat",iter) );
-        shape.save_kappa( vformat("shape%u-kappa.dat",iter) );
+        shape.smooth( vformat("smooth%u.dat",iter), 16 );
 
     }
 
