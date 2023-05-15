@@ -165,7 +165,7 @@ namespace yack
                 //! create and alternate
                 compound &alt_(const tag &name);
 
-                //! create an optional rule from an existing rule
+                //! create an alternate rule
                 template <typename ID> inline
                 compound &alt(const ID &id)
                 {

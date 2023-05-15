@@ -32,6 +32,9 @@ namespace yack
             //------------------------------------------------------------------
             const rule &END       = mark(';');
             const rule &SEP       = mark(':');
+            const rule &LPAREN    = mark('(');
+            const rule &RPAREN    = mark(')');
+            const rule &ALTERN    = mark('|');
 
             //------------------------------------------------------------------
             //
@@ -41,13 +44,23 @@ namespace yack
             MODULE << cat(term("MODULE_ID","[.]" DSL_IDENTIFIER_RX ),END);
 
             
-            const rule &RULE_ID = term("RULE_ID",DSL_IDENTIFIER_RX);       // Rule IDentifier
+            const rule &RULE_ID = term("RULE_ID",DSL_IDENTIFIER_RX);           // Rule IDentifier
             const rule &JSTRING = load<jive::lexical::jstring>("JSTRING"); // JSTRING
             const rule &RSTRING = load<jive::lexical::jstring>("RSTRING"); // RSTRING
-            const rule &STRING  = choice(JSTRING,RSTRING);
+            const rule &ASTRING = choice(JSTRING,RSTRING);
             
+            compound   &ALT     = agg("ALT");
+            compound   &SXP     = agg("SXP");
+            compound   &ATOM    = alt("ATOM");
 
-            
+            ALT  << SXP  << zom(cat(ALTERN,SXP));
+            SXP  << ATOM << zom(ATOM);
+            ATOM << RULE_ID << JSTRING << RSTRING << cat(LPAREN,ALT,RPAREN);
+
+            const rule &RULE  = agg("RULE") << RULE_ID << SEP << ALT << END;
+
+
+            MODULE << zom(RULE);
 
             //------------------------------------------------------------------
             //
