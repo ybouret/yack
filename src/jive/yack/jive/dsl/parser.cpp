@@ -140,6 +140,8 @@ namespace yack
             endl("[:endl:]");
 
             gv();
+
+            validate();
         }
 
 
