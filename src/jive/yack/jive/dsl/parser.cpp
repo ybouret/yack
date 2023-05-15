@@ -40,10 +40,10 @@ namespace yack
             const rule &ZOM       = term('*');
             const rule &OPT       = term('?');
 
-            const rule &JS   = load<jive::lexical::jstring>("JS");
-            const rule &RS   = load<jive::lexical::jstring>("RS");
-            const rule &STRING  = alt("STR") << JS << RS;
-            const rule &STRINGS = oom(STRING);
+            const rule &JSTRING  = load<jive::lexical::jstring>("JSTRING");
+            const rule &RSTRING  = load<jive::lexical::jstring>("RSTRING");
+            const rule &ASTRING  = alt("ASTRING") << JSTRING << RSTRING;
+            const rule &STRINGS  = oom(ASTRING);
 
             //------------------------------------------------------------------
             //
@@ -66,12 +66,12 @@ namespace yack
                 compound   &ALT     = act("ALT");
                 compound   &SXP     = act("SXP");
                 compound   &ATOM    = alt("ATOM");
-                compound   &JKR     = act("JKR");
+                compound   &JOKER   = act("JOKER");
 
-                ALT  << SXP  << zom(cat(ALTERN,SXP));
-                SXP  << JKR << zom(JKR);
-                ATOM << RID << JS << RS << cat(LPAREN,ALT,RPAREN);
-                JKR  << ATOM << opt(choice(OOM,ZOM,OPT));
+                ALT    << SXP   << zom(cat(ALTERN,SXP));
+                SXP    << JOKER << zom(JOKER);
+                ATOM   << RID   << ASTRING << cat(LPAREN,ALT,RPAREN);
+                JOKER  << ATOM  << opt(choice(OOM,ZOM,OPT));
                 compound &RULE  = agg("RULE") << RID << SEP << ALT << END;
                 CONTENT << RULE;
             }
