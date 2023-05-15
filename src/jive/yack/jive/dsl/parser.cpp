@@ -49,8 +49,8 @@ namespace yack
             const rule &RSTRING = load<jive::lexical::jstring>("RSTRING"); // RSTRING
             const rule &ASTRING = choice(JSTRING,RSTRING);
             
-            compound   &ALT     = agg("ALT");
-            compound   &SXP     = agg("SXP");
+            compound   &ALT     = act("ALT");
+            compound   &SXP     = act("SXP");
             compound   &ATOM    = alt("ATOM");
 
             ALT  << SXP  << zom(cat(ALTERN,SXP));
