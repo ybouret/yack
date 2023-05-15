@@ -42,7 +42,7 @@ namespace yack
         {
 
             assert(top);
-            const syntax::rule &here = **top; assert("MODULE"==*here.name);
+            assert("MODULE" == *(**top).name);
             syntax::xlist      &self = top->sub();
             syntax::xlist       temp;
             while(self.size)

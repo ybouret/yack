@@ -12,18 +12,37 @@ namespace yack
     namespace jive
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! Domain Specific Language parser
+        //
+        //______________________________________________________________________
         class dsl_parser : public parser
         {
         public:
-            static const int  _jstring = 0;
-            static const int  _rstring = 1;
-            static const int  _bstring = 2;
-            static const char _include[];
+            //__________________________________________________________________
+            //
+            // definitions
+            //__________________________________________________________________
+            static const int  _jstring = 0; //!< hash code for jstring
+            static const int  _rstring = 1; //!< hash code for rstring
+            static const int  _bstring = 2; //!< hash code for bstring
+            static const char _include[];   //!< "#include"
 
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
             explicit dsl_parser();
             virtual ~dsl_parser() noexcept;
 
-            //! include
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
+            //! preprocess the directives
             void preprocess(syntax::xnode *);
 
 
