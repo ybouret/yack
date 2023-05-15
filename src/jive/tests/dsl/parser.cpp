@@ -32,6 +32,13 @@ YACK_UTEST(dsl_parser)
         tree->gv("dsl.dot");
         dsl.preprocess(& *tree);
         tree->gv("dsl-pp.dot");
+
+        {
+            ios::ocstream fp("dsl-tree.bin");
+            const size_t nw = tree->serialize(fp);
+            std::cerr << "saved in binary #" << nw << std::endl;
+        }
+
     }
 
 }
