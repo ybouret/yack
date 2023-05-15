@@ -36,6 +36,14 @@ namespace yack
             const rule &RPAREN    = mark(')');
             const rule &ALTERN    = mark('|');
 
+            const rule &OOM       = term('+');
+            const rule &ZOM       = term('*');
+            const rule &OPT       = term('?');
+
+            const rule &JS  = load<jive::lexical::jstring>("JS");
+            const rule &RS  = load<jive::lexical::jstring>("RS");
+            const rule &STR = alt("STR") << JS << RS;
+
             //------------------------------------------------------------------
             //
             // a module starts with a MODULE_ID
@@ -44,23 +52,39 @@ namespace yack
             MODULE << cat(term("MODULE_ID","[.]" DSL_IDENTIFIER_RX ),END);
 
             
-            const rule &RULE_ID = term("RULE_ID",DSL_IDENTIFIER_RX);           // Rule IDentifier
-            const rule &JSTRING = load<jive::lexical::jstring>("JSTRING"); // JSTRING
-            const rule &RSTRING = load<jive::lexical::jstring>("RSTRING"); // RSTRING
-            const rule &ASTRING = choice(JSTRING,RSTRING);
-            
-            compound   &ALT     = act("ALT");
-            compound   &SXP     = act("SXP");
-            compound   &ATOM    = alt("ATOM");
 
-            ALT  << SXP  << zom(cat(ALTERN,SXP));
-            SXP  << ATOM << zom(ATOM);
-            ATOM << RULE_ID << JSTRING << RSTRING << cat(LPAREN,ALT,RPAREN);
+            //------------------------------------------------------------------
+            //
+            // defining a rule
+            //
+            //------------------------------------------------------------------
+            compound &RULE  = agg("RULE");
+            {
+                const rule &RID     = term("RID",DSL_IDENTIFIER_RX); // Rule IDentifier
+                compound   &ALT     = act("ALT");
+                compound   &SXP     = act("SXP");
+                compound   &ATOM    = alt("ATOM");
+                compound   &JKR     = act("JKR");
 
-            const rule &RULE  = agg("RULE") << RULE_ID << SEP << ALT << END;
+                ALT  << SXP  << zom(cat(ALTERN,SXP));
+                SXP  << JKR << zom(JKR);
+                ATOM << RID << JS << RS << cat(LPAREN,ALT,RPAREN);
+                JKR  << ATOM << opt(choice(OOM,ZOM,OPT));
+                RULE << RID << SEP << ALT << END;
+            }
 
 
-            MODULE << zom(RULE);
+
+            //------------------------------------------------------------------
+            //
+            // defining a plugin
+            //
+            //------------------------------------------------------------------
+            compound &PLUGIN = agg("PLUGIN") << term("PID","@" DSL_IDENTIFIER_RX) << SEP << oom(STR) << END;
+
+
+            MODULE << zom(choice(RULE,PLUGIN));
+
 
             //------------------------------------------------------------------
             //
