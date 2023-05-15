@@ -40,9 +40,10 @@ namespace yack
             const rule &ZOM       = term('*');
             const rule &OPT       = term('?');
 
-            const rule &JS  = load<jive::lexical::jstring>("JS");
-            const rule &RS  = load<jive::lexical::jstring>("RS");
-            const rule &STR = alt("STR") << JS << RS;
+            const rule &JS   = load<jive::lexical::jstring>("JS");
+            const rule &RS   = load<jive::lexical::jstring>("RS");
+            const rule &STRING  = alt("STR") << JS << RS;
+            const rule &STRINGS = oom(STRING);
 
             //------------------------------------------------------------------
             //
@@ -51,6 +52,7 @@ namespace yack
             //------------------------------------------------------------------
             MODULE << cat(term("MODULE_ID","[.]" DSL_IDENTIFIER_RX ),END);
 
+            compound &CONTENT = alt("CONTENT");
             
 
             //------------------------------------------------------------------
@@ -58,7 +60,7 @@ namespace yack
             // defining a rule
             //
             //------------------------------------------------------------------
-            compound &RULE  = agg("RULE");
+
             {
                 const rule &RID     = term("RID",DSL_IDENTIFIER_RX); // Rule IDentifier
                 compound   &ALT     = act("ALT");
@@ -70,9 +72,9 @@ namespace yack
                 SXP  << JKR << zom(JKR);
                 ATOM << RID << JS << RS << cat(LPAREN,ALT,RPAREN);
                 JKR  << ATOM << opt(choice(OOM,ZOM,OPT));
-                RULE << RID << SEP << ALT << END;
+                compound &RULE  = agg("RULE") << RID << SEP << ALT << END;
+                CONTENT << RULE;
             }
-
 
 
             //------------------------------------------------------------------
@@ -80,10 +82,24 @@ namespace yack
             // defining a plugin
             //
             //------------------------------------------------------------------
-            compound &PLUGIN = agg("PLUGIN") << term("PID","@" DSL_IDENTIFIER_RX) << SEP << oom(STR) << END;
+            CONTENT << (agg("PLUGIN") << term("PID","@" DSL_IDENTIFIER_RX) << SEP << STRINGS << END);
+
+            //------------------------------------------------------------------
+            //
+            // defining a lexical
+            //
+            //------------------------------------------------------------------
+            CONTENT << (agg("LEX") << term("LID","%" DSL_IDENTIFIER_RX) << SEP << STRINGS << END);
 
 
-            MODULE << zom(choice(RULE,PLUGIN));
+            //------------------------------------------------------------------
+            //
+            // defining a plugin
+            //
+            //------------------------------------------------------------------
+
+
+            MODULE << zom(CONTENT);
 
 
             //------------------------------------------------------------------
