@@ -41,20 +41,24 @@ namespace yack
         void dsl_parser:: preprocess(syntax::xnode *top)
         {
 
-            assert(top);
-            assert("MODULE" == *(**top).name);
+            //------------------------------------------------------------------
+            //
+            // process top-level
+            //
+            //------------------------------------------------------------------
+            assert(top); assert("MODULE" == *(**top).name);
+
             syntax::xlist      &self = top->sub();
             syntax::xlist       temp;
+
             while(self.size)
             {
                 syntax::xnode      *node = self.head; assert(node);
                 const syntax::rule &from = **node;
                 if( *from.name == "INC" )
                 {
-                    std::cerr << "found INC" << std::endl;
                     temp.push_back( parse(open_from(node->head()->lex())) );
                     delete self.pop_front();
-
                 }
                 else
                 {

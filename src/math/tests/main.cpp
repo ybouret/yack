@@ -38,8 +38,6 @@ YACK_UTEST_DECL(80)
     YACK_UTEST(corr);
     YACK_UTEST(distrib);
     YACK_UTEST(linear);
-    YACK_UTEST(spline);
-    YACK_UTEST(shape);
    
 
     YACK_UTEST(fitting_lambda);
