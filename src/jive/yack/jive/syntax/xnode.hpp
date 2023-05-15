@@ -59,14 +59,14 @@ namespace yack
                 //______________________________________________________________
                 static xnode *make(const internal &);                           //!< create data=xlist
                 static xnode *make(const terminal &, lexeme *);                 //!< set    data=lexeme
-                static void   grow( xnode * &tree, xnode *node) noexcept;        //!< grow tree
+                static void   grow( xnode * &tree, xnode *node) noexcept;       //!< grow tree
                 static void   grow( xnode * &tree, const internal &);           //!< grow(tree,make(internal))
                 static void   grow( xnode * &tree, const terminal &, lexeme *); //!< grow(tree,make(terminal,lexeme))
-                static void   join( xnode * &tree, xnode *node) noexcept;        //!< set tree or merge content
+                static void   join( xnode * &tree, xnode *node) noexcept;       //!< set tree or merge content
 
                 lexeme               &lex()       noexcept; //!< return content  for terminal
                 const lexeme         &lex() const noexcept; //!< return content  for terminal
-                list                 &sub()       noexcept; //!< retun  children for internal
+                list                 &sub()       noexcept; //!< return children for internal
                 const list           &sub() const noexcept; //!< return children for internal
 
                 lexeme               *rip() noexcept;                //!< extract lexeme, delete this
@@ -113,9 +113,9 @@ namespace yack
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(xnode);
-                explicit xnode(const internal &);                   //!< internal
+                explicit xnode(const internal &);                    //!< internal
                 explicit xnode(const terminal &, lexeme *) noexcept; //!< terminal
-                void     gv_(ios::ostream &)                 const; //!< write self, child, link
+                void     gv_(ios::ostream &)                 const;  //!< write self, child, link
 
                 void    *data; //!< lexeme/xlist
             };

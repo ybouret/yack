@@ -91,7 +91,7 @@ namespace yack
             static inline void output_sepline(ios::ostream &fp)
             {
                 fp << '/' << '/';
-                for(size_t i=0;i<32;++i) fp << '-';
+                for(size_t i=0;i<64;++i) fp << '-';
                 fp << '\n';
             }
 

@@ -12,7 +12,7 @@ source_group(lexical FILES ${lexical} )
 file(GLOB syntax syntax/*.cpp)
 source_group(syntax FILES ${syntax} )
 
-file(GLOB dsl dsl/*.cpp)
+file(GLOB dsl dsl/*.cpp dsl/*.g)
 source_group(dsl FILES ${dsl} )
 
 add_executable(test-jive main.cpp

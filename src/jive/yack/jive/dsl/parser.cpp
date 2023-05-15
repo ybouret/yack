@@ -7,6 +7,7 @@
 
 #include "yack/jive/lexical/plugin/jstring.hpp"
 #include "yack/jive/lexical/plugin/rstring.hpp"
+#include "yack/jive/lexical/plugin/bstring.hpp"
 
 
 namespace yack
@@ -16,7 +17,19 @@ namespace yack
 
 #define DSL_IDENTIFIER_RX "[_[:alpha:]][:word:]*"
 
-        dsl_parser:: dsl_parser() : parser("dsl_parser")
+
+        const char dsl_parser:: _include[] = "#include";
+
+        static const char * strids[] = {
+            "JSTRING",
+            "RSTRING",
+            "BSTRING"
+        };
+
+
+        dsl_parser:: dsl_parser() :
+        parser("dsl_parser"),
+        str2type(strids,sizeof(strids)/sizeof(strids[0]))
         {
             //------------------------------------------------------------------
             //
@@ -41,7 +54,8 @@ namespace yack
             const rule &OPT       = term('?');
 
             const rule &JSTRING  = load<jive::lexical::jstring>("JSTRING");
-            const rule &RSTRING  = load<jive::lexical::jstring>("RSTRING");
+            const rule &RSTRING  = load<jive::lexical::rstring>("RSTRING");
+            const rule &BSTRING  = load<jive::lexical::bstring>("BSTRING");
             const rule &ASTRING  = alt("ASTRING") << JSTRING << RSTRING;
             const rule &STRINGS  = oom(ASTRING);
 
@@ -62,18 +76,18 @@ namespace yack
             //------------------------------------------------------------------
 
             {
-                const rule &RID     = term("RID",DSL_IDENTIFIER_RX); // Rule IDentifier
-                compound   &ALT     = act("ALT");
-                compound   &SXP     = act("SXP");
-                compound   &ATOM    = alt("ATOM");
-                compound   &JOKER   = act("JOKER");
+                const rule &RID       = term("RID",DSL_IDENTIFIER_RX); // Rule IDentifier
+                compound   &ALTERNATE = act("ALTERNATE");
+                compound   &AGGREGATE = act("AGGREGATE");
+                compound   &ATOM      = alt("ATOM");
+                compound   &JOKER     = act("JOKER");
 
-                ALT    << SXP   << zom(cat(ALTERN,SXP));
-                SXP    << JOKER << zom(JOKER);
-                ATOM   << RID   << ASTRING << cat(LPAREN,ALT,RPAREN);
-                JOKER  << ATOM  << opt(choice(OOM,ZOM,OPT));
-                compound &RULE  = agg("RULE") << RID << SEP << ALT << END;
-                CONTENT << RULE;
+                ALTERNATE << AGGREGATE << zom(cat(ALTERN,AGGREGATE));
+                AGGREGATE << JOKER << zom(JOKER);
+                ATOM      << RID   << ASTRING << cat(LPAREN,ALTERNATE,RPAREN);
+                JOKER     << ATOM  << opt(choice(OOM,ZOM,OPT));
+
+                CONTENT << (agg("RULE") << RID << SEP << ALTERNATE << END);
             }
 
 
@@ -86,19 +100,26 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // defining a lexical
+            // defining a lexical only rule
             //
             //------------------------------------------------------------------
             CONTENT << (agg("LEX") << term("LID","%" DSL_IDENTIFIER_RX) << SEP << STRINGS << END);
 
 
+
             //------------------------------------------------------------------
             //
-            // defining a plugin
+            // defining an include
             //
             //------------------------------------------------------------------
+            CONTENT << (agg("INC") << mark(_include) <<  choice(JSTRING,BSTRING));
 
 
+            //------------------------------------------------------------------
+            //
+            // feeding module with one or more content
+            //
+            //------------------------------------------------------------------
             MODULE << zom(CONTENT);
 
 
@@ -127,6 +148,9 @@ namespace yack
             
         }
 
+
+
+      
     }
 
 }
