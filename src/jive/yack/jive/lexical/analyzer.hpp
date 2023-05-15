@@ -69,7 +69,9 @@ namespace yack
                 //
                 // setup methods
                 //______________________________________________________________
-                const scan_set & operator*() const noexcept; //!< access to db
+
+                //! access database of scanners
+                const scan_set & operator*() const noexcept;
 
                 //! declare a new scanner, post-process according to decl_t
                 /**
@@ -84,7 +86,7 @@ namespace yack
                 }
 
                 //! register a plugin
-                const plugin & import(plugin *);
+                const plugin & admit(plugin *);
 
                 //! import a no-arg plugin
                 template <
@@ -93,7 +95,7 @@ namespace yack
                 >
                 inline const plugin & plug( type2type<PLUGIN>, const IDENTIFIER &uuid)
                 {
-                    return import( new PLUGIN(uuid,*this) );
+                    return admit( new PLUGIN(uuid,*this) );
                 }
 
                 //! import a 1-arg plugin
@@ -104,7 +106,7 @@ namespace yack
                 >
                 inline const plugin & plug( type2type<PLUGIN>, const IDENTIFIER &uuid, const EXPRESSION &expr)
                 {
-                    return import( new PLUGIN(uuid,expr,*this) );
+                    return admit( new PLUGIN(uuid,expr,*this) );
                 }
 
                 //! import a 2-args plugin
@@ -116,7 +118,7 @@ namespace yack
                 >
                 inline const plugin & plug( type2type<PLUGIN>, const IDENTIFIER &uuid, const EXPRESSINI &init, const EXPRESSEND &done)
                 {
-                    return import( new PLUGIN(uuid,init,done,*this) );
+                    return admit( new PLUGIN(uuid,init,done,*this) );
                 }
                 
 
@@ -137,7 +139,7 @@ namespace yack
                 //
                 // high-level analyzing
                 //______________________________________________________________
-                lexeme *      query(source &);         //!< query next lexeme
+                lexeme *      query(source &);          //!< query next lexeme
                 void          store(lexeme *) noexcept; //!< store a parsed lexeme
                 void          reset()         noexcept; //!< reset all
 
@@ -145,7 +147,7 @@ namespace yack
                 //
                 // check status
                 //______________________________________________________________
-                const lexeme *peek(source &);                     //!< found next?
+                const lexeme *peek(source &);                      //!< found next?
                 bool          owns(const lexeme *) const noexcept; //!< in repository ?
 
                 //______________________________________________________________

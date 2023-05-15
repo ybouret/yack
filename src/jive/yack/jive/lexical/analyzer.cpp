@@ -72,7 +72,7 @@ namespace yack
                 }
             }
 
-            const plugin & analyzer::import( plugin *plg )
+            const plugin & analyzer::admit( plugin *plg )
             {
                 assert(NULL!=plg);
                 plugin &p = decl<plugin>(plg,declare_plugin);

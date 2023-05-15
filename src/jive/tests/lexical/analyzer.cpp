@@ -42,7 +42,7 @@ namespace
             HEXA.back("[:xdigit:]!",this,&mylexer::leaveHex);
 
 
-            import( new jive::lexical::multi_lines_comment("C_Comments","/\\*","\\*/",*this) );
+            admit( new jive::lexical::multi_lines_comment("C_Comments","/\\*","\\*/",*this) );
 
             plug( jive::lexical::cxx_comment::clid, "C++Comment");
 

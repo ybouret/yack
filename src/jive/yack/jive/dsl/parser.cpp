@@ -49,11 +49,19 @@ namespace yack
 
             
 
-            // comments
-            plug( jive::lexical::cxx_comment::clid, "C++Comment");
-            plug( jive::lexical::c_comments::clid,  "C_Comments");
-
+            //------------------------------------------------------------------
+            //
+            // lexical comments
+            //
+            //------------------------------------------------------------------
+            (void) plug( jive::lexical::cxx_comment::clid, "C++Comment");
+            (void) plug( jive::lexical::c_comments::clid,  "C_Comments");
+            
+            //------------------------------------------------------------------
+            //
             // lexical only
+            //
+            //------------------------------------------------------------------
             drop("[:blank:]+");
             endl("[:endl:]");
 

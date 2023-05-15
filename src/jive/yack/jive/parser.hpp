@@ -109,19 +109,25 @@ namespace yack
             // no-args plugins to terminal
             //__________________________________________________________________
 
-            //! load plugin to produce terminal 'id'
-            template <typename PLUGIN>
-            const rule &load(const string &id)
+            //! load plugin (no-arg) to produce terminal 'uuid'
+            template <
+            typename PLUGIN,
+            typename IDENTIFIER>
+            const rule &load(const IDENTIFIER &uuid)
             {
-                return term__(plug( type2type<PLUGIN>(), id).label,syntax::standard);
+                return term__(plug( type2type<PLUGIN>(), uuid).label,syntax::standard);
             }
 
-            //! load plugin to produce terminal 'id'
-            template <typename PLUGIN>
-            const rule &load(const char *id)
+            //! load plugin (1-arg) to produce terminal 'uuid'
+            template <
+            typename PLUGIN,
+            typename IDENTIFIER,
+            typename EXPRESSION>
+            const rule &load(const IDENTIFIER &uuid, const EXPRESSION &expr)
             {
-                return term__(plug( type2type<PLUGIN>(), id).label,syntax::standard);
+                return term__(plug( type2type<PLUGIN>(), uuid, expr).label,syntax::standard);
             }
+            
 
             //__________________________________________________________________
             //
