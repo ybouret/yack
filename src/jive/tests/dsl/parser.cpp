@@ -3,6 +3,7 @@
 #include "yack/utest/run.hpp"
 #include "yack/sequence/vector.hpp"
 #include "yack/ios/gz/ostream.hpp"
+#include "yack/jive/syntax/translator.hpp"
 
 using namespace yack;
 using namespace jive;
@@ -37,6 +38,9 @@ YACK_UTEST(dsl_parser)
             const size_t nw = tree->serialize(fp);
             std::cerr << "saved in binary #" << nw << std::endl;
         }
+
+        syntax::translator tr;
+        tr.walk(*tree, NULL);
 
     }
 
