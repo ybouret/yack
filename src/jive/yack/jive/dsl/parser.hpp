@@ -30,6 +30,7 @@ namespace yack
             static const int  _bstring = 2; //!< hash code for bstring
             static const char _include[];   //!< "#include"
 
+
             //__________________________________________________________________
             //
             // C++
@@ -45,6 +46,8 @@ namespace yack
             //! preprocess the directives
             void preprocess(syntax::xnode *);
 
+            //! parse and preprocess
+            syntax::xnode *compile(module *);
 
 
         private:

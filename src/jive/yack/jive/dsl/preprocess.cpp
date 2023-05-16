@@ -57,7 +57,7 @@ namespace yack
                 const syntax::rule &from = **node;
                 if( *from.name == "INC" )
                 {
-                    temp.push_back( parse(open_from(node->head()->lex())) );
+                    temp.push_back( compile(open_from(node->head()->lex())) );
                     delete self.pop_front();
                 }
                 else
@@ -67,6 +67,15 @@ namespace yack
             }
             self.swap_with(temp);
         }
+
+        syntax::xnode *dsl_parser:: compile(module *m)
+        {
+            auto_ptr<syntax::xnode> tree = parse(m);
+            assert(tree.is_valid());
+            preprocess(& *tree);
+            return tree.yield();
+        }
+
 
     }
 

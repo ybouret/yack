@@ -77,15 +77,15 @@ namespace yack
 
             {
                 const rule &RID       = term("RID",DSL_IDENTIFIER_RX); // Rule IDentifier
-                compound   &ALTERNATE = act("ALTERNATE");
-                compound   &AGGREGATE = act("AGGREGATE");
-                compound   &ATOM      = alt("ATOM");
-                compound   &JOKER     = act("JOKER");
+                compound   &ALTERNATE = act("ALT");
+                compound   &AGGREGATE = act("AGG");
+                compound   &ITEM      = alt("ITM");
+                compound   &JOKER     = act("JRK");
 
                 ALTERNATE << AGGREGATE << zom(cat(ALTERN,AGGREGATE));
                 AGGREGATE << JOKER << zom(JOKER);
-                ATOM      << RID   << ASTRING << cat(LPAREN,ALTERNATE,RPAREN);
-                JOKER     << ATOM  << opt(choice(OOM,ZOM,OPT));
+                ITEM      << RID   << ASTRING << cat(LPAREN,ALTERNATE,RPAREN);
+                JOKER     << ITEM  << opt(choice(OOM,ZOM,OPT));
 
                 CONTENT << (agg("RULE") << RID << SEP << ALTERNATE << END);
             }
@@ -96,7 +96,7 @@ namespace yack
             // defining a plugin
             //
             //------------------------------------------------------------------
-            CONTENT << (agg("PLUGIN") << term("PID","@" DSL_IDENTIFIER_RX) << SEP << STRINGS << END);
+            CONTENT << (agg("PLG") << term("PID","@" DSL_IDENTIFIER_RX) << SEP << STRINGS << END);
 
             //------------------------------------------------------------------
             //
@@ -144,14 +144,12 @@ namespace yack
             validate();
         }
 
-
         dsl_parser:: ~dsl_parser() noexcept
         {
             
         }
 
-
-
+       
       
     }
 

@@ -1,6 +1,8 @@
 #include "yack/jive/dsl/parser.hpp"
+
 #include "yack/utest/run.hpp"
 #include "yack/sequence/vector.hpp"
+#include "yack/ios/gz/ostream.hpp"
 
 using namespace yack;
 using namespace jive;
@@ -27,14 +29,11 @@ YACK_UTEST(dsl_parser)
 
     if(argc>1)
     {
-        auto_ptr<syntax::xnode> tree = dsl.parse( jive::module::open_file(argv[1]));
-        YACK_CHECK(tree.is_valid());
+        auto_ptr<syntax::xnode> tree = dsl.compile( jive::module::open_file(argv[1]));
         tree->gv("dsl.dot");
-        dsl.preprocess(& *tree);
-        tree->gv("dsl-pp.dot");
 
         {
-            ios::ocstream fp("dsl-tree.bin");
+            ios::gz::ostream fp("dsl-tree.bin.gz");
             const size_t nw = tree->serialize(fp);
             std::cerr << "saved in binary #" << nw << std::endl;
         }
