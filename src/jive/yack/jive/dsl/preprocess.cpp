@@ -50,22 +50,27 @@ namespace yack
 
             syntax::xlist      &self = top->sub();
             syntax::xlist       temp;
-
+            size_t              nr = 0;
             while(self.size)
             {
                 syntax::xnode      *node = self.head; assert(node);
                 const syntax::rule &from = **node;
-                if( *from.name == "INC" )
+                const string       &name = *from.name;
+                switch( top2type(name) )
                 {
-                    temp.push_back( compile(open_from(node->head()->lex())) );
-                    delete self.pop_front();
+                    case _inc: assert("INC"==name);
+                        temp.push_back( compile(open_from(node->head()->lex())) );
+                        delete self.pop_front();
+                        continue;
+
+                    case _rule: ++nr; assert("RULE"==name);
+                    default:
+                        break;
                 }
-                else
-                {
-                    temp.push_back( self.pop_front() );
-                }
+                temp.push_back( self.pop_front() );
             }
             self.swap_with(temp);
+            std::cerr << "\t\t#rule = " << nr << std::endl;
         }
 
         syntax::xnode *dsl_parser:: compile(module *m)

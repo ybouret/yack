@@ -26,10 +26,16 @@ namespace yack
             "BSTRING"
         };
 
+        static const char * topids[] = {
+            "INC",
+            "RULE"
+        };
+
 
         dsl_parser:: dsl_parser() :
         parser("dsl_parser"),
-        str2type(strids,sizeof(strids)/sizeof(strids[0]))
+        str2type(strids,sizeof(strids)/sizeof(strids[0])),
+        top2type(topids,sizeof(topids)/sizeof(topids[0]))
         {
             //------------------------------------------------------------------
             //
