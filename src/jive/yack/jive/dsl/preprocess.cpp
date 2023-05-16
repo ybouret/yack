@@ -48,6 +48,7 @@ namespace yack
             }
             return nr;
         }
+        
         void dsl_parser:: process_(syntax::xnode *top, size_t &nr)
         {
 
