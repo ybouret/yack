@@ -9,6 +9,36 @@ using namespace yack;
 using namespace jive;
 
 
+namespace  yack
+{
+    namespace jive
+    {
+
+        class meta_parser
+        {
+        public:
+            parser::handle self;
+
+
+            explicit meta_parser(const string &uid) :
+            self( new parser(uid) )
+            {
+            }
+
+            virtual ~meta_parser() noexcept
+            {
+
+            }
+
+
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(meta_parser);
+        };
+    }
+}
+
+
 YACK_UTEST(dsl_parser)
 {
 
