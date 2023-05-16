@@ -37,24 +37,14 @@ namespace yack
                     throw imported::exception( (*label)(), "unexpected %s %s=[%s]", _include, lid(), fn());
             }
         }
-
-        static inline size_t count_rules_of(const syntax::xnode &node)
-        {
-            assert(node.name() == "MODULE");
-            size_t nr = 0;
-            for(const syntax::xnode *xn=node.sub().head;xn;xn=xn->next)
-            {
-                if("RULE" == xn->name() ) ++nr;
-            }
-            return nr;
-        }
+        
         
         void dsl_parser:: process_(syntax::xnode *top, size_t &nr)
         {
 
             //------------------------------------------------------------------
             //
-            // process top-level
+            // process top level list a.k.a "MODULE"
             //
             //------------------------------------------------------------------
             assert(top); assert("MODULE" == top->name() );

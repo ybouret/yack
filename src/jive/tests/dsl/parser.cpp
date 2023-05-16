@@ -43,7 +43,6 @@ YACK_UTEST(dsl_parser)
 {
 
     jive::dsl_parser dsl;
-
     vector<string>   terminals;
     vector<string>   internals;
     dsl.collect_keywords(terminals,internals);
