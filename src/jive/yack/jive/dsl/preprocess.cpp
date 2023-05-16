@@ -38,7 +38,17 @@ namespace yack
             }
         }
 
-        void dsl_parser:: preprocess(syntax::xnode *top)
+        static inline size_t count_rules_of(const syntax::xnode &node)
+        {
+            assert(node.name() == "MODULE");
+            size_t nr = 0;
+            for(const syntax::xnode *xn=node.sub().head;xn;xn=xn->next)
+            {
+                if("RULE" == xn->name() ) ++nr;
+            }
+            return nr;
+        }
+        void dsl_parser:: process_(syntax::xnode *top, size_t &nr)
         {
 
             //------------------------------------------------------------------
@@ -46,38 +56,59 @@ namespace yack
             // process top-level
             //
             //------------------------------------------------------------------
-            assert(top); assert("MODULE" == *(**top).name);
-
-            syntax::xlist      &self = top->sub();
-            syntax::xlist       temp;
-            size_t              nr = 0;
-            while(self.size)
+            assert(top); assert("MODULE" == top->name() );
+            assert(0==nr);
             {
-                syntax::xnode      *node = self.head; assert(node);
-                const syntax::rule &from = **node;
-                const string       &name = *from.name;
-                switch( top2type(name) )
+                syntax::xlist      &self = top->sub();
+                syntax::xlist       temp;
+                while(self.size)
                 {
-                    case _inc: assert("INC"==name);
-                        temp.push_back( compile(open_from(node->head()->lex())) );
+                    syntax::xnode      *node = self.head; assert(node);
+                    const string       &name = node->name();
+                    if( "INC" == name )
+                    {
+                        size_t                  xr = 0;
+                        auto_ptr<syntax::xnode> xn = compile_(open_from(node->head()->lex()),xr);
+                        if(xr<=0)
+                        {
+                            syntax::xlist &sub = xn->sub();
+                            delete sub.pop_front();
+                            temp.merge_back( sub );
+                            //temp.push_back( xn.yield() );
+                        }
+                        else
+                        {
+                            temp.push_back( xn.yield() );
+                        }
                         delete self.pop_front();
-                        continue;
-
-                    case _rule: ++nr; assert("RULE"==name);
-                    default:
-                        break;
+                    }
+                    else
+                    {
+                        if("RULE" == name) ++nr;
+                        temp.push_back( self.pop_front() );
+                    }
                 }
-                temp.push_back( self.pop_front() );
+                self.swap_with(temp);
             }
-            self.swap_with(temp);
-            std::cerr << "\t\t#rule = " << nr << std::endl;
+
+        }
+
+        syntax::xnode *dsl_parser:: compile_(module *m, size_t &nr)
+        {
+            assert(0==nr);
+            auto_ptr<syntax::xnode> tree = parse(m);
+            assert(tree.is_valid());
+            process_(& *tree, nr);
+            return tree.yield();
         }
 
         syntax::xnode *dsl_parser:: compile(module *m)
         {
-            auto_ptr<syntax::xnode> tree = parse(m);
-            assert(tree.is_valid());
-            preprocess(& *tree);
+            size_t                  nr = 0;
+            auto_ptr<syntax::xnode> tree = compile_(m,nr);
+            std::cerr << "\t-------- top-module #rule=" <<  nr << std::endl;
+            if(nr<=0)
+                throw imported::exception( (*label)(), "no rules in top-level module");
             return tree.yield();
         }
 
