@@ -5,8 +5,8 @@
 
 
 #include "yack/hashing/perfect.hpp"
-#include "yack/spot-object.hpp"
-#include "yack/counted.hpp"
+#include "yack/ptr/counted-interface.hpp"
+#include "yack/ptr/arc.hpp"
 
 namespace yack
 {
@@ -52,6 +52,13 @@ namespace yack
         class dsl_code : public object
         {
         public:
+            //------------------------------------------------------------------
+            //
+            // definitions
+            //
+            //------------------------------------------------------------------
+            typedef arc_ptr<const dsl_code> handle; //!< alias
+
             //------------------------------------------------------------------
             //
             // C++

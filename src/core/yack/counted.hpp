@@ -1,35 +1,13 @@
-
 //! \file
 
 #ifndef YACK_COUNTED_INCLUDED
 #define YACK_COUNTED_INCLUDED 1
 
 #include "yack/setup.hpp"
+#include "yack/ptr/counted-interface.hpp"
 
 namespace yack
 {
-
-    //__________________________________________________________________________
-    //
-    //
-    //! declare counted object interface
-    //
-    //__________________________________________________________________________
-#define YACK_COUNTED_DECL()                                                          \
-void     withhold() noexcept;       /* increase quantity */                          \
-bool     liberate() noexcept;       /* decrease quantity, true if  quantity() == 0*/ \
-size_t   quantity() const noexcept  /* current quantity */
-
-    //__________________________________________________________________________
-    //
-    //
-    //! implement methods for counted CLASS with quantity = FIELD
-    //
-    //__________________________________________________________________________
-#define YACK_COUNTED_IMPL(CLASS,FIELD)                                              \
-void   CLASS :: withhold() noexcept       { ++FIELD; }                              \
-bool   CLASS :: liberate() noexcept       { assert(FIELD>0); return --FIELD <= 0; } \
-size_t CLASS :: quantity() const noexcept { return FIELD; }
 
     //__________________________________________________________________________
     //

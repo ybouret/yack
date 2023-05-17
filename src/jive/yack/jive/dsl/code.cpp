@@ -50,6 +50,8 @@ namespace yack
 
         }
 
+        YACK_COUNTED_IMPL(dsl_code,nref)
+
     }
 
 }
