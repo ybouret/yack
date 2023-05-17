@@ -11,21 +11,8 @@ namespace yack
     {
         
     }
+
+    YACK_COUNTED_IMPL(counted,nref)
+
     
-    void counted:: withhold() noexcept
-    {
-        ++nref;
-    }
-        
-    bool counted:: liberate() noexcept
-    {
-        assert(nref>0);
-        return --nref <= 0;
-    }
-
-    size_t counted:: quantity() const noexcept
-    {
-        return nref;
-    }
-
 }

@@ -43,14 +43,39 @@ namespace yack
 #define YACK_DSL_LEX           6 //!< "LEX"
 #define YACK_DSL_INC           7 //!< "INC"
 
-        class dsl_code : public spot_object
+
+        //----------------------------------------------------------------------
+        //
+        //! hash code from dsl_parser
+        //
+        //----------------------------------------------------------------------
+        class dsl_code : public object
         {
         public:
-            explicit dsl_code();
-            virtual ~dsl_code() noexcept;
+            //------------------------------------------------------------------
+            //
+            // C++
+            //
+            //------------------------------------------------------------------
+            explicit dsl_code();          //!< setup tables
+            virtual ~dsl_code() noexcept; //!< cleanup
 
-            const hashing::perfect terminal_hash;
-            const hashing::perfect internal_hash;
+            //------------------------------------------------------------------
+            //
+            // methods
+            //
+            //------------------------------------------------------------------
+            YACK_COUNTED_DECL(); //!< counted interface
+
+
+            //------------------------------------------------------------------
+            //
+            // members
+            //
+            //------------------------------------------------------------------
+            const hashing::perfect terminal_hash; //!< hash for terminals
+            const hashing::perfect internal_hash; //!< hash for internals
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(dsl_code);

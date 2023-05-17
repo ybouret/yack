@@ -26,7 +26,7 @@ namespace yack
             //
             // definition
             //__________________________________________________________________
-            typedef ark_ptr<string,parser> handle;
+            typedef ark_ptr<string,parser> handle; //!< alias
 
             //__________________________________________________________________
             //

@@ -39,7 +39,8 @@ namespace yack
 
         dsl_code:: dsl_code() :
         terminal_hash(YACK_DSL_Terminals,sizeof(YACK_DSL_Terminals)/sizeof(YACK_DSL_Terminals[0])),
-        internal_hash(YACK_DSL_Internals,sizeof(YACK_DSL_Internals)/sizeof(YACK_DSL_Internals[0]))
+        internal_hash(YACK_DSL_Internals,sizeof(YACK_DSL_Internals)/sizeof(YACK_DSL_Internals[0])),
+        nref(0)
         {
 
         }
