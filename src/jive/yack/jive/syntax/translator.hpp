@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_JIVE_SYNTAX_TRANSLATOR_INCLUDED

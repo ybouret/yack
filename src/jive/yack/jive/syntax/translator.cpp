@@ -24,7 +24,10 @@ namespace yack
                 return os;
             }
 
-            void translator:: on_init() {}
+            void translator:: on_init()
+            {
+                
+            }
 
             void translator:: on_quit() noexcept
             {

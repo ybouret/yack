@@ -2,7 +2,7 @@
 #include "yack/jive/parser.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/jive/lexical/plugin/jstring.hpp"
-#include "yack/jive/syntax/translator.hpp"
+#include "yack/jive/syntax/transcriber.hpp"
 
 using namespace yack;
 
@@ -62,6 +62,89 @@ namespace
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(myparser);
     };
+
+#define JTRANS_CONNECT(UUID) YACK_JIVE_CONNECT(UUID,jTrans)
+#define JTRANS_CONTROL(UUID) YACK_JIVE_CONTROL(UUID,jTrans)
+
+    class jTrans : public jive::syntax::transcriber
+    {
+    public:
+        explicit jTrans() :  jive::syntax::transcriber("JSON")
+        {
+            JTRANS_CONNECT(number);
+            JTRANS_CONNECT(true);
+            JTRANS_CONNECT(false);
+            JTRANS_CONNECT(string);
+            JTRANS_CONNECT(null);
+
+            JTRANS_CONTROL(pair);
+            JTRANS_CONTROL(heavy_array);
+            JTRANS_CONTROL(heavy_object);
+            JTRANS_CONTROL(empty_array);
+            JTRANS_CONTROL(empty_object);
+
+        }
+
+        virtual ~jTrans() noexcept
+        {
+        }
+
+        void on_number(const lexeme &lxm) {
+            jive::syntax::translator::on_terminal(lxm);
+        }
+
+        void on_true(const lexeme &lxm) {
+            jive::syntax::translator::on_terminal(lxm);
+        }
+
+        void on_false(const lexeme &lxm) {
+            jive::syntax::translator::on_terminal(lxm);
+        }
+
+        void on_null(const lexeme &lxm) {
+            jive::syntax::translator::on_terminal(lxm);
+        }
+
+        void on_string(const lexeme &lxm) {
+            jive::syntax::translator::on_terminal(lxm);
+        }
+
+        void on_pair(const string &uuid, const size_t narg)
+        {
+            assert("pair"==uuid);
+            assert(2==narg);
+            jive::syntax::translator::on_internal(uuid,narg);
+        }
+
+        void on_heavy_array(const string &uuid, const size_t narg)
+        {
+            assert("heavy_array"==uuid);
+            jive::syntax::translator::on_internal(uuid,narg);
+        }
+
+        void on_heavy_object(const string &uuid, const size_t narg)
+        {
+            assert("heavy_object"==uuid);
+            jive::syntax::translator::on_internal(uuid,narg);
+        }
+
+        void on_empty_array(const string &uuid, const size_t narg)
+        {
+            assert("empty_array"==uuid);
+            jive::syntax::translator::on_internal(uuid,narg);
+        }
+
+        void on_empty_object(const string &uuid, const size_t narg)
+        {
+            assert("empty_object"==uuid);
+            jive::syntax::translator::on_internal(uuid,narg);
+        }
+
+
+
+    private:
+        YACK_DISABLE_COPY_AND_ASSIGN(jTrans);
+    };
 }
 
 #include "yack/ios/serializer/cfile.hpp"
@@ -80,8 +163,15 @@ YACK_UTEST(parser)
         tree->gv("tree.dot");
         ios::serializer::cfile::save("tree.bin",*tree);
 
+        std::cerr << std::endl;
+        std::cerr << "Using Translator" << std::endl;
         jive::syntax::translator xt;
         xt.walk(*tree,NULL);
+
+        std::cerr << "Using Transcriber" << std::endl;
+        jTrans xtc;
+        xtc.walk(*tree,NULL);
+        
 
     }
 
