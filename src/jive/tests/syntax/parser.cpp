@@ -69,7 +69,7 @@ namespace
     class jTrans : public jive::syntax::transcriber
     {
     public:
-        explicit jTrans() :  jive::syntax::transcriber("JSON")
+        explicit jTrans() :  jive::syntax::transcriber("JSON",true)
         {
             JTRANS_CONNECT(number);
             JTRANS_CONNECT(true);
@@ -89,55 +89,49 @@ namespace
         {
         }
 
-        void on_number(const lexeme &lxm) {
-            jive::syntax::translator::on_terminal(lxm);
+        void on_number(const lexeme & ) {
         }
 
-        void on_true(const lexeme &lxm) {
-            jive::syntax::translator::on_terminal(lxm);
+        void on_true(const lexeme & ) {
         }
 
-        void on_false(const lexeme &lxm) {
-            jive::syntax::translator::on_terminal(lxm);
+        void on_false(const lexeme & ) {
         }
 
-        void on_null(const lexeme &lxm) {
-            jive::syntax::translator::on_terminal(lxm);
+        void on_null(const lexeme & ) {
         }
 
-        void on_string(const lexeme &lxm) {
-            jive::syntax::translator::on_terminal(lxm);
+        void on_string(const lexeme & ) {
         }
 
         void on_pair(const string &uuid, const size_t narg)
         {
-            assert("pair"==uuid);
-            assert(2==narg);
-            jive::syntax::translator::on_internal(uuid,narg);
+            YACK_ASSERT("pair"==uuid);
+            YACK_ASSERT(2==narg);
         }
 
         void on_heavy_array(const string &uuid, const size_t narg)
         {
-            assert("heavy_array"==uuid);
-            jive::syntax::translator::on_internal(uuid,narg);
+            YACK_ASSERT("heavy_array"==uuid);
+            YACK_ASSERT(narg>0);
         }
 
         void on_heavy_object(const string &uuid, const size_t narg)
         {
-            assert("heavy_object"==uuid);
-            jive::syntax::translator::on_internal(uuid,narg);
+            YACK_ASSERT("heavy_object"==uuid);
+            YACK_ASSERT(narg>0);
         }
 
         void on_empty_array(const string &uuid, const size_t narg)
         {
-            assert("empty_array"==uuid);
-            jive::syntax::translator::on_internal(uuid,narg);
+            YACK_ASSERT("empty_array"==uuid);
+            YACK_ASSERT(0==narg);
         }
 
         void on_empty_object(const string &uuid, const size_t narg)
         {
-            assert("empty_object"==uuid);
-            jive::syntax::translator::on_internal(uuid,narg);
+            YACK_ASSERT("empty_object"==uuid);
+            YACK_ASSERT(0==narg);
         }
 
 

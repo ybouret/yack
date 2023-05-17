@@ -47,8 +47,8 @@ namespace yack
 
                 //! setup with label
                 template <typename LABEL>
-                explicit transcriber(const LABEL &id) :
-                label( tags::make(id) ), tmap(), imap()
+                explicit transcriber(const LABEL &id, bool verb=false) :
+                label( tags::make(id) ), tmap(), imap(), verbose(verb)
                 {
                 }
                 virtual ~transcriber() noexcept;
@@ -109,6 +109,8 @@ namespace yack
                 void control_(const string &uuid, const internal_event &ev);
                 void control_(const char   *uuid, const internal_event &ev);
 
+            public:
+                bool verbose;
             };
 
         }

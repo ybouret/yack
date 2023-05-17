@@ -16,6 +16,7 @@ namespace yack
             
             void transcriber:: on_terminal(const lexeme &lxm)
             {
+                if(verbose) translator::on_terminal(lxm);
                 const string         &key = *lxm.name;
                 const terminal_event *evt = tmap.search(key);
                 if(!evt)
@@ -26,6 +27,7 @@ namespace yack
 
             void transcriber:: on_internal(const string &uuid, const size_t narg)
             {
+                if(verbose) translator::on_internal(uuid,narg);
                 const internal_event *evt = imap.search(uuid);
                 if(!evt)
                     throw imported::exception( (*label)(),"no control for [%s]", uuid() );
