@@ -23,8 +23,9 @@ ${syntax}
 ${dsl}
 )
 
-target_link_libraries(test-jive yack-z yack-jive)
+target_link_libraries(test-jive yack-jive)
 yack_link_libraries(test-jive)
+target_link_libraries(test-jive yack-z)
 
 yack_testing(jive)
 
