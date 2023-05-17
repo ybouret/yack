@@ -1,4 +1,5 @@
 #include "yack/jive/dsl/parser.hpp"
+#include "yack/jive/dsl/code.hpp"
 
 #include "yack/utest/run.hpp"
 #include "yack/sequence/vector.hpp"
@@ -13,6 +14,9 @@ namespace  yack
 {
     namespace jive
     {
+
+
+
 
         class meta_parser
         {
@@ -52,8 +56,8 @@ YACK_UTEST(dsl_parser)
 
     {
         ios::ocstream fp(ios::cstdout);
-        dsl.emit_keywords("DSL_", fp, terminals, "Terminals");
-        dsl.emit_keywords("DSL_", fp, internals, "Internals");
+        dsl.emit_keywords("YACK_DSL_", fp, terminals, "Terminals");
+        dsl.emit_keywords("YACK_DSL_", fp, internals, "Internals");
 
     }
 
@@ -72,6 +76,8 @@ YACK_UTEST(dsl_parser)
         tr.walk(*tree, NULL);
 
     }
+
+    YACK_SIZEOF(dsl_code);
 
 }
 YACK_UDONE()

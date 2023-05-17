@@ -126,7 +126,9 @@ namespace yack
                 fp << "// (" << tid << ',' << "sizeof(" << tid << ")/sizeof(" << tid << "[0]))\n\n";
 
                 output_sepline(fp);
-                fp << "// defines\n";
+                fp << "//\n";
+                fp << "// defines for " << cxx_id << "\n";
+                fp << "//\n";
                 output_sepline(fp);
                 unsigned j = 0;
                 for(size_t i=1;i<=n;++i,++j)

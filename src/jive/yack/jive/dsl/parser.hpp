@@ -30,6 +30,7 @@ namespace yack
             static const int  _bstring = 2; //!< hash code for bstring
             static const char _include[];   //!< "#include"
             
+
             //__________________________________________________________________
             //
             // C++
