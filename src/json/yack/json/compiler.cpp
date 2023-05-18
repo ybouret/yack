@@ -51,7 +51,7 @@ namespace yack
                 drop("[:blank:]");
                 endl("[:endl:]");
 
-                gv();
+                //gv();
                 validate();
             }
 
@@ -87,6 +87,7 @@ namespace yack
             //! initialize
             inline explicit Linker(const Compiler::Reader &r) :
             jive::syntax::transcriber(r.label,true),
+            result(),
             values(),
             pairs()
             {
@@ -289,7 +290,8 @@ namespace yack
 
         Compiler:: Compiler() :
         singleton<Compiler>(),
-        reader( NULL )
+        reader( NULL ),
+        linker( NULL )
         {
             reader = new ( YACK_STATIC_ZSET(reader_addr) ) Reader();
             try
