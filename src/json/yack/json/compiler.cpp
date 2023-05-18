@@ -8,9 +8,20 @@ namespace yack
 
     namespace JSON
     {
+        //----------------------------------------------------------------------
+        //
+        //
+        // creating a JSON reader
+        //
+        //
+        //----------------------------------------------------------------------
         class Compiler:: Reader : public jive::parser
         {
         public:
+
+            //------------------------------------------------------------------
+            // create parsing rules
+            //------------------------------------------------------------------
             inline explicit Reader() :
             jive::parser(Compiler::call_sign)
             {
@@ -51,14 +62,13 @@ namespace yack
                 drop("[:blank:]");
                 endl("[:endl:]");
 
-                //gv();
                 validate();
             }
 
-            inline virtual ~Reader() noexcept
-            {
-                
-            }
+            //------------------------------------------------------------------
+            // cleanup
+            //------------------------------------------------------------------
+            inline virtual ~Reader() noexcept {}
 
 
         private:
@@ -80,11 +90,22 @@ namespace yack
 #define JSON_CONNECT(UUID) YACK_JIVE_CONNECT(UUID,Linker)
 #define JSON_CONTROL(UUID) YACK_JIVE_CONTROL(UUID,Linker)
 
+        //----------------------------------------------------------------------
+        //
+        //
+        // creating a JSON linker from a C++ transcriber
+        //
+        //
+        //----------------------------------------------------------------------
         class Compiler::Linker : public jive::syntax::transcriber
         {
         public:
 
-            //! initialize
+            //------------------------------------------------------------------
+            //
+            // initialize
+            //
+            //------------------------------------------------------------------
             inline explicit Linker(const Compiler::Reader &r) :
             jive::syntax::transcriber(r.label,true),
             result(),
@@ -111,10 +132,20 @@ namespace yack
             {
             }
 
-            Value            result;
-            solo_list<Value> values;
-            solo_list<Pair>  pairs;
+            //------------------------------------------------------------------
+            //
+            // members
+            //
+            //------------------------------------------------------------------
+            Value            result; //!< final result
+            solo_list<Value> values; //!< stack of values
+            solo_list<Pair>  pairs;  //!< stack of pairs
 
+            //------------------------------------------------------------------
+            //
+            // entry point method
+            //
+            //------------------------------------------------------------------
             Value &build(const jive::syntax::xnode &tree)
             {
                 walk(tree,NULL);
@@ -125,26 +156,37 @@ namespace yack
                 return result;
             }
 
+            //------------------------------------------------------------------
+            //! reset status
+            //------------------------------------------------------------------
             inline void reset() noexcept
             {
                 values.clear();
                 pairs.clear();
             }
 
+            //------------------------------------------------------------------
+            //! initialize linker
+            //------------------------------------------------------------------
             inline virtual void on_init() {
                 result.nil();
                 reset();
             }
 
-            
+            //------------------------------------------------------------------
             //! create a new nil value at end of values
+            //------------------------------------------------------------------
             inline void push(Value &v) {
                 const Value nil;
                 values << nil;
                 (**values.tail).xch(v);
             }
 
+            //------------------------------------------------------------------
+            //
             // connect
+            //
+            //------------------------------------------------------------------
             inline void on_string(const lexeme &lxm) {
                 const string s = lxm.data.to_string(1,1);
                 Value        v(s);
@@ -188,7 +230,11 @@ namespace yack
                 return s;
             }
 
+            //------------------------------------------------------------------
+            //
             // control
+            //
+            //------------------------------------------------------------------
             inline void on_pair(const string &uuid, const size_t argn) {
                 if(2!=argn) raise_corrupted(uuid);
                 assert(values.size>=2);
