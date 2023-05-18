@@ -157,16 +157,6 @@ namespace yack
 
         private:
             void *impl;
-#if 0
-            union
-            {
-                void    *impl;   //!< for allocated types
-                bool     flag;   //!< info
-                double   number; //!< number
-                uint64_t qword;  //!< to reset
-            };
-#endif
-            
             void display(std::ostream &os, size_t depth) const;
         };
 
@@ -193,6 +183,9 @@ namespace yack
             //__________________________________________________________________
             const string &key() const noexcept; //!< for Object
             friend std::ostream & operator<<(std::ostream &, const Pair_ &); //!< helper
+
+            Value       & operator*() noexcept;
+            const Value & operator*() const noexcept;
 
             //__________________________________________________________________
             //

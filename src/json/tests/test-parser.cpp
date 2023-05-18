@@ -1,5 +1,6 @@
 
 #include "yack/json/parser.hpp"
+#include "yack/json/compiler.hpp"
 #include "yack/json/value.hpp"
 #include "yack/utest/run.hpp"
 
@@ -18,14 +19,16 @@ YACK_UTEST(parser)
     YACK_SIZEOF(JSON::Array);
     YACK_SIZEOF(JSON::Object);
 
-
-    JSON::Parser J;
+    JSON::Compiler &J = JSON::Compiler::instance();
 
     if(argc>1)
     {
-        const JSON::Value &jv = J(jive::module::open_file(argv[1]));
+        JSON::Value &jv = J(jive::module::open_file(argv[1]));
         std::cerr << jv << std::endl;
     }
+
+    return 0;
+    
 
 }
 YACK_UDONE()

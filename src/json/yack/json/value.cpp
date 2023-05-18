@@ -83,6 +83,9 @@ namespace yack
             return os;
         }
 
+        Value       & Pair_:: operator*() noexcept       { return val_; }
+        const Value & Pair_:: operator*() const noexcept { return val_; }
+
 
 
         Value:: Value() noexcept :

@@ -15,7 +15,7 @@ namespace yack
     //
     //__________________________________________________________________________
     template <typename T>
-    class solo_list : public dinky_registry<T,zsolo>
+    class solo_list : public dinky_registry<T,zsolo>, public releasable
     {
     public:
         //______________________________________________________________________
@@ -33,7 +33,12 @@ namespace yack
         inline  explicit solo_list(const size_t n) : self_type()  { cache->reserve(n); } //!< setup with capacity
         inline  virtual ~solo_list() noexcept                     {} //!< cleanup
         inline  solo_list(const solo_list &_) : self_type(_)      {} //!< copy
-        
+
+        //! release all owned memory
+        inline virtual void release() noexcept {
+            this->clear();
+            this->cache->release();
+        }
         
     private:
         YACK_DISABLE_ASSIGN(solo_list);

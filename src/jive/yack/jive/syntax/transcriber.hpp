@@ -13,18 +13,6 @@ namespace yack
         namespace syntax
         {
 
-            //__________________________________________________________________
-            //
-            //
-            // types for transcriber
-            //
-            //__________________________________________________________________
-            typedef functor<void,TL1(const lexeme &)>         terminal_event; //!< event for terminal
-            typedef suffix_map<string,terminal_event>         terminal_table; //!< table of events
-
-            typedef functor<void,TL2(const string &,size_t)>  internal_event; //!< event for internal
-            typedef suffix_map<string,internal_event>         internal_table; //!< table of events
-
 
 #define YACK_JIVE_TRANSFN(FN,UUID,CLASS) FN(#UUID, static_cast<CLASS*>(this), & CLASS:: on_##UUID) //!< helper
 #define YACK_JIVE_CONNECT(UUID,CLASS) YACK_JIVE_TRANSFN(connect,UUID,CLASS) //!< helper
@@ -34,12 +22,23 @@ namespace yack
             //
             //
             //! transcriber to process AST by event
+            /**
+             designed to be derived to compile AST, C++ style
+             */
             //
             //__________________________________________________________________
             class transcriber : public translator
             {
-
             public:
+                //______________________________________________________________
+                //
+                // definitions
+                //______________________________________________________________
+                typedef functor<void,TL1(const lexeme &)>         terminal_event; //!< event for terminal
+                typedef suffix_map<string,terminal_event>         terminal_table; //!< table of events
+                typedef functor<void,TL2(const string &,size_t)>  internal_event; //!< event for internal
+                typedef suffix_map<string,internal_event>         internal_table; //!< table of events
+
                 //______________________________________________________________
                 //
                 // C++
