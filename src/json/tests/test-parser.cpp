@@ -1,5 +1,4 @@
 
-#include "yack/json/parser.hpp"
 #include "yack/json/compiler.hpp"
 #include "yack/json/value.hpp"
 #include "yack/utest/run.hpp"
