@@ -74,6 +74,9 @@ source_group(cameo FILES ${cameo})
 file(GLOB ipso ipso/*.cpp)
 source_group(ipso FILES ${ipso})
 
+file(GLOB woven woven/*.cpp)
+source_group(woven FILES ${woven})
+
 set(HERE ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_executable(test-core main.cpp main.hpp
@@ -102,6 +105,7 @@ ${color}
 ${raven}
 ${cameo}
 ${ipso}
+${woven}
 )
 
 yack_link_libraries(test-core)
@@ -367,6 +371,8 @@ add_test(cameo:mul        test-core cameo_mul)
 add_test(ipso:mul test-core ipso_mul)
 add_test(ipso:add test-core ipso_add)
 add_test(ipso:add-static test-core ipso_add_static)
+
+add_test(woven test-core woven)
 
 
 yack_testing(core)

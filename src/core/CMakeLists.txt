@@ -660,6 +660,18 @@ install( FILES ${field_decl} DESTINATION include/yack/field )
 
 ########################################################################
 ##
+## woven
+##
+########################################################################
+file(GLOB woven_impl yack/woven/*.cpp)
+file(GLOB woven_decl yack/woven/*.hpp)
+set(woven ${woven_impl} ${woven_decl})
+SOURCE_GROUP(woven FILES ${woven})
+install( FILES ${woven_decl} DESTINATION include/yack/woven )
+
+
+########################################################################
+##
 ## color
 ##
 ########################################################################
@@ -710,6 +722,7 @@ ${info} ${info_modulation} ${info_compression}
 ${math}
 ${ptr}
 ${field}
+${woven}
 ${color} ${color_convert}
 ${utest}
 )

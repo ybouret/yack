@@ -1,6 +1,7 @@
 #include "yack/apex/flak.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/sequence/vector.hpp"
+#include "yack/sequence/cxx-array.hpp"
 
 using namespace yack;
 using namespace apex;
@@ -38,6 +39,19 @@ YACK_UTEST(apex_flak)
     test_colinear<int>();
     test_colinear<short>();
     test_colinear<apq>();
+
+    vector<int> u; u << 1 << 1 << 1;
+    vector<int> v; v << 1 << 2 << 3;
+
+    cxx_array<apq> p(u.size());
+    cxx_array<apq> q(u.size());
+
+    std::cerr << "u=" << u << std::endl;
+    std::cerr << "v=" << v << std::endl;
+    flak::orthogonal_projection(p, v, u);
+    flak::orthogonal_difference(q, v, u);
+    std::cerr << "p=" << p << std::endl;
+    std::cerr << "q=" << q << std::endl;
 
 
 }
