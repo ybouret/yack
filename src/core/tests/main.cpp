@@ -252,5 +252,6 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(ipso_add);
     YACK_UTEST(ipso_add_static);
 
+    YACK_UTEST(woven);
 }
 YACK_UTEST_EXEC()

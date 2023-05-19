@@ -12,40 +12,64 @@ namespace yack
 
         namespace internal
         {
-            template <typename U, typename V> inline
-            void add_prod_to(apq &p, const U &u, const V &v)
+            template <typename U,typename V>
+            struct add_prod
             {
-                const apq u_(u);
-                const apq v_(v);
-                p += u_ * v_;
-            }
+                static inline void to(apq &p, const U &u, const V &v)
+                {
+                    const apq u_(u);
+                    const apq v_(v);
+                    p += u_ * v_;
+                }
+            };
 
-            template <typename U> inline
-            void add_prod_to(apq &p, const U &u, const apq &v)
+            template <typename U>
+            struct add_prod<U,apq>
             {
-                const apq u_(u);
-                p += u_ * v;
-            }
+                static inline void to(apq &p, const U &u, const apq &v)
+                {
+                    const apq u_(u);
+                    p += u_ * v;
+                }
+            };
 
-            template <typename V> inline
-            void add_prod_to(apq &p, const apq &u, const V &v)
+            template <typename V>
+            struct add_prod<apq,V>
             {
-                const apq v_(v);
-                p += u * v_;
-            }
+                static inline void to(apq &p, const apq &u, const V &v)
+                {
+                    const apq v_(v);
+                    p += u * v_;
+                }
+            };
 
-            template <typename T> inline
-            void add_mod2_to(apq &p2, const T &t)
+            template <>
+            struct add_prod<apq,apq>
             {
-                const apq t_(t);
-                p2 += t_.mod2();
-            }
+                static inline void to(apq &p, const apq &u, const apq &v)
+                {
+                    p += u * v;
+                }
+            };
 
-            template <> inline
-            void add_mod2_to(apq &p2, const apq &t)
+            template <typename T>
+            struct add_mod2
             {
-                p2 += t.mod2();
-            }
+                static inline void to(apq &p2, const T &t)
+                {
+                    const apq t_(t);
+                    p2 += t_.mod2();
+                }
+            };
+
+            template <>
+            struct add_mod2<apq>
+            {
+                static inline void to(apq &p2, const apq &t)
+                {
+                    p2 += t.mod2();
+                }
+            };
 
         }
 
@@ -86,7 +110,7 @@ namespace yack
                 assert(lhs.size()==rhs.size());
                 apq res;
                 for(size_t i=lhs.size();i>0;--i)
-                    internal::add_prod_to(res, lhs[i], rhs[i]);
+                    internal::add_prod<typename LHS::type,typename RHS::type>::to(res, lhs[i], rhs[i]);
                 return res;
             }
 
@@ -115,9 +139,9 @@ namespace yack
                 {
                     typename ALPHA::const_type &alpha_i = alpha[i];
                     typename BETA::const_type  &beta_i  = beta[i];
-                    internal::add_prod_to(ab, alpha_i, beta_i);
-                    internal::add_mod2_to(b2, beta_i);
-                    internal::add_mod2_to(a2, alpha_i);
+                    internal::add_prod<typename ALPHA::type, typename BETA::type>::to(ab, alpha_i, beta_i);
+                    internal::add_mod2<typename BETA::type> ::to(b2, beta_i);
+                    internal::add_mod2<typename ALPHA::type>::to(a2, alpha_i);
                 }
 
                 if(a2.num.s==__zero__ && b2.num.s==__zero__)
@@ -170,8 +194,8 @@ namespace yack
                 for(size_t i=source.size();i>0;--i)
                 {
                     typename TARGET::const_type &target_i = target[i];
-                    internal::add_prod_to(ts, target_i, source[i]);
-                    internal::add_mod2_to(t2, target_i);
+                    internal::add_prod<typename TARGET::type, typename SOURCE::type>::to(ts, target_i, source[i]);
+                    internal::add_mod2<typename TARGET::type>::to(t2, target_i);
                 }
                 if(__zero__ == t2.num.s) raise_error(msg);
                 return ts/t2;
