@@ -4,7 +4,7 @@
 #define YACK_WOVEN_QVECTOR_INCLUDED 1
 
 #include "yack/woven/q-array.hpp"
-#include "yack/apex/flak.hpp"
+#include "yack/container/writable.hpp"
 
 namespace yack
 {
@@ -26,15 +26,20 @@ namespace yack
                         coord[i] = arr[i];
                 finalize();
             }
+            
+            //! keep rational orthogonal component of source from *this
+            template <typename SOURCE>
+            bool ortho(writable<apq> &result, SOURCE &source) const {
+                apq prod;
+                for(size_t i=dimensions;i>0;--i) prod +=  coord[i] * source[i];
+                const apq fac = prod/norm2;
+                for(size_t i=dimensions;i>0;--i) result[i] = source[i] - fac * coord[i];
+                return check_not_null(result);
+            }
 
             const apz &norm2;
 
-            //! keep rational orthogonal component of source from *this
-            template <typename SOURCE>
-            bool ortho(writable<apq> &result, SOURCE &source) {
-                apex::flak::orthogonal_difference(result, source, *this);
-                return check_not_null(result);
-            }
+
 
 
         private:

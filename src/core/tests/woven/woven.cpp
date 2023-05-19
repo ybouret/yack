@@ -1,4 +1,4 @@
-#include "yack/woven/qvector.hpp"
+#include "yack/woven/qfamily.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/sequence/vector.hpp"
 #include "yack/sequence/cxx-array.hpp"
@@ -8,26 +8,31 @@ using namespace yack;
 YACK_UTEST(woven)
 {
     
-    vector<int>    v1; v1 << -1 << 2;
-    woven::qvector q1(v1);
-
+    vector<int>    v1; v1 << -1 << 2 << 0;
     std::cerr << "v1=" << v1 << std::endl;
-    std::cerr << "q1=" << q1 << "@" << q1.norm2 << std::endl;
+    woven::qfamily F(v1.size());
+    YACK_CHECK(F.try_grow(v1));
+    std::cerr << "F=" << F << std::endl;
 
-    YACK_SIZEOF(woven::qvector);
+    cxx_array<short> v2(F.dimensions);
 
-    cxx_array<apq> arr(q1.dimensions);
-    cxx_array<int> vec(q1.dimensions);
+    v2[1] = 7;
+    v2[2] = 13;
+    std::cerr << "v2=" << v2 << std::endl;
 
-    vec[1] = 7;
-    vec[2] = 13;
-    std::cerr << "vec=" << vec << std::endl;
+    YACK_CHECK(F.try_grow(v2));
+    std::cerr << "F=" << F << std::endl;
 
-    YACK_CHECK(q1.ortho(arr,vec));
-    std::cerr << "arr=" << arr << std::endl;
-    woven::qvector q2(arr);
-    std::cerr << "q2=" << q2 << "@" << q2.norm2 << std::endl;
+    cxx_array<short> v3(F.dimensions);
 
+    v3[1] = 0;
+    v3[2] = 5;
+    v3[3] = -3;
+    std::cerr << "v3=" << v3 << std::endl;
+
+    YACK_CHECK(F.try_grow(v3));
+    std::cerr << "F=" << F << std::endl;
+    
 
 }
 YACK_UDONE()

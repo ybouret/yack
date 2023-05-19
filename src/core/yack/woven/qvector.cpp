@@ -19,15 +19,7 @@ namespace yack
             finalize();
         }
 
-        bool q_array::check_not_null(const readable<apq> &Q) noexcept
-        {
-            for(size_t i=Q.size();i>0;--i)
-            {
-                if(__zero__!=Q[i].num.s) return true;
-            }
-            return false;
-        }
-
+      
 
 
     }
