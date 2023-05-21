@@ -27,8 +27,8 @@ YACK_UTEST(woven)
 
     cxx_array<short> v3(F.dimensions);
 
-    v3[1] = 0;
-    v3[2] = 5;
+    v3[1] =  0;
+    v3[2] =  5;
     v3[3] = -3;
     std::cerr << "v3=" << v3 << std::endl;
 
