@@ -184,8 +184,8 @@ namespace yack
             const string &key() const noexcept; //!< for Object
             friend std::ostream & operator<<(std::ostream &, const Pair_ &); //!< helper
 
-            Value       & operator*() noexcept;
-            const Value & operator*() const noexcept;
+            Value       & operator*()       noexcept; //!< access value
+            const Value & operator*() const noexcept; //!< access value
 
             //__________________________________________________________________
             //

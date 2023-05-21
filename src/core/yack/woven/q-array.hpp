@@ -13,25 +13,38 @@ namespace yack
     {
         class qvector;
 
+        //______________________________________________________________________
+        //
+        //
+        //! base class for qvectors (handle memory)
+        //
+        //______________________________________________________________________
         class q_array : public metrics, public readable<apq>
         {
         public:
-            virtual ~q_array() noexcept;
+            //__________________________________________________________________
+            //
+            //  methods
+            //__________________________________________________________________
+            virtual            ~q_array()                noexcept;              //!< cleanup
+            virtual size_t      size()             const noexcept;              //!< dimensions
+            virtual const apq & operator[](size_t) const noexcept;              //!< coordinate
+            static  bool        check_not_null(const readable<apq> &) noexcept; //!< helper
 
-            virtual size_t      size()             const noexcept;
-            virtual const apq & operator[](size_t) const noexcept;
-
-            static bool check_not_null(const readable<apq> &) noexcept;
-
-            qvector *next;
-            qvector *prev;
+            //__________________________________________________________________
+            //
+            //  members
+            //__________________________________________________________________
+            qvector *next; //!< for list
+            qvector *prev; //!< for list
 
         protected:
-            explicit q_array(const size_t dims);
-            void      finalize();
+            explicit q_array(const size_t dims); //!< setup
+            void     finalize();                 //!< compute |coord|^2
 
-            apq   *coord;
-            apz   *znrm2;
+            apq   *coord; //!< memory for coodinates [1..dimensions]
+            apz   *znrm2; //!< memory for |coord|^2
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(q_array);
             void init();

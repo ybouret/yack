@@ -7,12 +7,14 @@ using namespace yack;
 
 YACK_UTEST(woven)
 {
-    
-    vector<int>    v1; v1 << -1 << 2 << 0;
+
+
+    vector<int>    v1; v1 << -1 << 2 << 0 << 0;
     std::cerr << "v1=" << v1 << std::endl;
-    woven::qfamily F(v1.size());
-    YACK_CHECK(F.try_grow(v1));
-    std::cerr << "F=" << F << std::endl;
+    woven::indxFund qfund = new woven::indxBank();
+    woven::qfamily F(v1.size(),3,qfund);
+    YACK_CHECK(F.try_grow(v1,2));
+    std::cerr << "F=" << F << " | " << *F.base << std::endl;
 
     cxx_array<short> v2(F.dimensions);
 
@@ -20,8 +22,8 @@ YACK_UTEST(woven)
     v2[2] = 13;
     std::cerr << "v2=" << v2 << std::endl;
 
-    YACK_CHECK(F.try_grow(v2));
-    std::cerr << "F=" << F << std::endl;
+    YACK_CHECK(F.try_grow(v2,3));
+    std::cerr << "F=" << F << " | " << *F.base << std::endl;
 
     cxx_array<short> v3(F.dimensions);
 
@@ -30,9 +32,12 @@ YACK_UTEST(woven)
     v3[3] = -3;
     std::cerr << "v3=" << v3 << std::endl;
 
-    YACK_CHECK(F.try_grow(v3));
-    std::cerr << "F=" << F << std::endl;
-    
+    YACK_CHECK(F.try_grow(v3,1));
+    std::cerr << "F=" << F << " | " << *F.base << std::endl;
+
+
+    YACK_SIZEOF(woven::qvector);
+    YACK_SIZEOF(woven::qfamily);
 
 }
 YACK_UDONE()

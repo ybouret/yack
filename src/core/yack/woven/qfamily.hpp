@@ -8,25 +8,47 @@
 #include "yack/data/list/cxx.hpp"
 #include "yack/sequence/cxx-array.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
+#include "yack/data/set.hpp"
 
 namespace yack
 {
     namespace woven
     {
 
-        typedef cxx_list_of<qvector>   qvectors;
-        typedef memory::dyadic         qmemory;
-        typedef cxx_array<apq,qmemory> qtableau;
+        typedef cxx_list_of<qvector>   qvectors; //!< base class
+        typedef memory::dyadic         qmemory;  //!< base class
+        typedef cxx_array<apq,qmemory> qtableau; //!< helper class
+        typedef data_set<size_t>       qindices; //!< indices
+        typedef qindices::list_type    indxList;
+        typedef qindices::bank_type    indxBank;
+        typedef qindices::fund_type    indxFund;
 
+        //______________________________________________________________________
+        //
+        //
+        //! family of orthogonal integer vectors
+        //
+        //______________________________________________________________________
         class qfamily : public metrics, public qvectors
         {
         public:
-            explicit qfamily(const size_t dims);
-            virtual ~qfamily() noexcept;
-            qfamily(const qfamily &);
+            static const char clid[]; //!< "qfamily"
 
-            qtableau qarr;
-            qtableau qtmp;
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit qfamily(const size_t     dims,
+                             const size_t     rank,
+                             const indxFund  &isrc); //!< create with dimensions
+            virtual ~qfamily() noexcept;             //!< cleanup
+            qfamily(const qfamily &);                //!< hard copy
+
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
 
             //! accepts a new vector to expand
             template <typename ARRAY>
@@ -50,9 +72,7 @@ namespace yack
             {
                 assert(arr.size()==dimensions);
                 if(size<=0)
-                {
                     return false;
-                }
                 else
                 {
                     load(arr);
@@ -60,35 +80,41 @@ namespace yack
                 }
             }
 
+            //! try grow a new vector
             template <typename ARRAY> inline
-            bool try_grow(ARRAY &arr)
+            bool try_grow(ARRAY &arr, const size_t idx)
             {
-                if(accepts(arr)) {
-                    grow();
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                if(accepts(arr)) { grow(idx); return true;  }
+                else             { drop(idx); return false; }
             }
 
-            void grow();
+            //! append idx to primary
+            void grow(const size_t idx);
 
+            //! append idx to replica
+            void drop(const size_t idx);
 
-
-
-            qfamily *next;
-            qfamily *prev;
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            indxList  code;  //!< list of indices to explore
+            qindices  base;  //!< indices of independant vectors
+            qindices  deps;  //!< indices of dependent vectors
+            qfamily  *next;  //!< for list
+            qfamily  *prev;  //!< for list
 
         private:
             YACK_DISABLE_ASSIGN(qfamily);
+            qtableau qarr;
+            qtableau qtmp;
+
             bool accepts();  // from loaded qarr
             bool contains(); // from loaded qarr
 
+            //! helper to load arr into qarr
             template <typename ARRAY>
-            void load(ARRAY &arr)
-            {
+            void load(ARRAY &arr) {
                 assert(dimensions==arr.size());
                 for(size_t i=dimensions;i>0;--i) qarr[i] = arr[i];
             }

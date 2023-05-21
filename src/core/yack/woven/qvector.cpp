@@ -16,10 +16,10 @@ namespace yack
         {
             for(size_t i=dimensions;i>0;--i)
                 coord[i] = other.coord[i];
-            finalize();
+            *znrm2 = other.norm2;
         }
 
-      
+
 
 
     }

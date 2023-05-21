@@ -9,14 +9,28 @@ namespace yack
 {
     namespace woven
     {
+        //______________________________________________________________________
+        //
+        //
+        //! common metrics for derived class
+        //
+        //______________________________________________________________________
         class metrics
         {
         public:
-            explicit metrics(const size_t dims);
-            virtual ~metrics() noexcept;
-            metrics(const metrics &) noexcept;
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit metrics(const size_t dims); //!< dims >= 2
+            virtual ~metrics() noexcept;         //!< cleanup
+            metrics(const metrics &) noexcept;   //!< copy
 
-            const size_t dimensions;
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const size_t dimensions; //!< phase space dimensions
 
         private:
             YACK_DISABLE_ASSIGN(metrics);

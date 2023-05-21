@@ -13,7 +13,12 @@ namespace yack
 
     namespace JSON
     {
-        
+        //______________________________________________________________________
+        //
+        //
+        //! convert input into a JSON value
+        //
+        //______________________________________________________________________
         class Compiler : public singleton<Compiler>
         {
         public:
@@ -30,8 +35,8 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            Value & operator()(jive::module *);
-            void gc() noexcept;
+            Value & operator()(jive::module *); //!< parse/compile
+            void gc() noexcept;                 //!< release internal data
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Compiler);

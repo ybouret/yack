@@ -109,7 +109,7 @@ namespace yack
                 void control_(const char   *uuid, const internal_event &ev);
 
             public:
-                bool verbose;
+                bool verbose; //!< display process flag
             };
 
         }

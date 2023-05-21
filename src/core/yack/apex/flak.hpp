@@ -3,7 +3,7 @@
 
 #include "yack/apex.hpp"
 #include "yack/math/api.hpp"
-#include "yack/container/writable.hpp"
+#include "yack/container/matrix.hpp"
 
 namespace yack
 {
@@ -12,71 +12,83 @@ namespace yack
 
         namespace internal
         {
-            template <typename U,typename V>
-            struct add_prod
-            {
+            //! add product to a rational
+            template <typename U,typename V> struct add_prod {
                 static inline void to(apq &p, const U &u, const V &v)
                 {
                     const apq u_(u);
                     const apq v_(v);
                     p += u_ * v_;
-                }
+                } //!< implementation
             };
 
-            template <typename U>
-            struct add_prod<U,apq>
-            {
+            //! add product to a rational
+            template <typename U> struct add_prod<U,apq> {
                 static inline void to(apq &p, const U &u, const apq &v)
                 {
                     const apq u_(u);
                     p += u_ * v;
-                }
+                } //!< implementation
             };
 
-            template <typename V>
-            struct add_prod<apq,V>
-            {
+            //! add product to a rational
+            template <typename V> struct add_prod<apq,V> {
                 static inline void to(apq &p, const apq &u, const V &v)
                 {
                     const apq v_(v);
                     p += u * v_;
-                }
+                } //!< implementation
             };
 
-            template <>
-            struct add_prod<apq,apq>
-            {
+            //! add product to a rational
+            template <> struct add_prod<apq,apq> {
                 static inline void to(apq &p, const apq &u, const apq &v)
                 {
                     p += u * v;
-                }
+                } //!< implementation
             };
 
-            template <typename T>
-            struct add_mod2
+            template <typename LHS, typename RHS>   inline
+            apq dot(LHS &lhs, RHS &rhs)
+            {
+                assert(lhs.size()==rhs.size());
+                apq res;
+                for(size_t i=lhs.size();i>0;--i)
+                    internal::add_prod<typename LHS::type,typename RHS::type>::to(res, lhs[i], rhs[i]);
+                return res;
+            }
+
+
+            //! add mod2 to a rational
+            template <typename T> struct add_mod2
             {
                 static inline void to(apq &p2, const T &t)
                 {
                     const apq t_(t);
                     p2 += t_.mod2();
-                }
+                } //!< implementation
             };
 
+            //! add mod2 to a rational
             template <>
             struct add_mod2<apq>
             {
                 static inline void to(apq &p2, const apq &t)
                 {
                     p2 += t.mod2();
-                }
+                } //!< implementation
             };
 
         }
 
-
+        //! Linear Algebra Kernel
         struct flak
         {
 
+            //__________________________________________________________________
+            //
+            //! raise specific error
+            //__________________________________________________________________
             static void raise_error(const char *msg);
 
             //__________________________________________________________________
@@ -101,18 +113,19 @@ namespace yack
                 return res;
             }
 
+            //__________________________________________________________________
+            //
+            //! convert rationals to integerss
+            //__________________________________________________________________
             static void simplify(writable<apq> &q);
+
+            //__________________________________________________________________
+            //
+            //! convert rationals to integers with univocal sign
+            //__________________________________________________________________
             static void univocal(writable<apq> &q);
 
-            template <typename LHS, typename RHS> static inline
-            apq dot(LHS &lhs, RHS &rhs)
-            {
-                assert(lhs.size()==rhs.size());
-                apq res;
-                for(size_t i=lhs.size();i>0;--i)
-                    internal::add_prod<typename LHS::type,typename RHS::type>::to(res, lhs[i], rhs[i]);
-                return res;
-            }
+
 
             //__________________________________________________________________
             //
@@ -184,22 +197,6 @@ namespace yack
             }
 
 
-            template <typename SOURCE, typename TARGET> static inline
-            apq orthogonal_coefficient(SOURCE &source, TARGET &target, const char *msg)
-            {
-                assert(source.size()>0);
-                assert(source.size()==target.size());
-                apq          ts;
-                apq          t2;
-                for(size_t i=source.size();i>0;--i)
-                {
-                    typename TARGET::const_type &target_i = target[i];
-                    internal::add_prod<typename TARGET::type, typename SOURCE::type>::to(ts, target_i, source[i]);
-                    internal::add_mod2<typename TARGET::type>::to(t2, target_i);
-                }
-                if(__zero__ == t2.num.s) raise_error(msg);
-                return ts/t2;
-            }
 
 
             //! direct projection of source on target
@@ -230,9 +227,45 @@ namespace yack
                 {
                     result[i] = source[i] - fac * target[i];
                 }
-                assert(0==dot(result,target));
+                assert(0==internal::dot(result,target));
             }
 
+            //______________________________________________________________________
+            //
+            //! rank by gauss jordan
+            //______________________________________________________________________
+            static size_t rank_of(matrix<apq> &Q);
+
+            //______________________________________________________________________
+            //
+            //! rank by gauss jordan of a matrix converted to apq
+            //______________________________________________________________________
+            template <typename T> static inline
+            size_t  rank(const matrix<T> &M)
+            {
+                matrix<apq> Q(M,transmogrify);
+                assert(matrix_metrics::have_same_sizes(Q,M));
+                return  rank_of(Q);
+            }
+
+
+        private:
+            template <typename SOURCE, typename TARGET> static inline
+            apq orthogonal_coefficient(SOURCE &source, TARGET &target, const char *msg)
+            {
+                assert(source.size()>0);
+                assert(source.size()==target.size());
+                apq          ts;
+                apq          t2;
+                for(size_t i=source.size();i>0;--i)
+                {
+                    typename TARGET::const_type &target_i = target[i];
+                    internal::add_prod<typename TARGET::type, typename SOURCE::type>::to(ts, target_i, source[i]);
+                    internal::add_mod2<typename TARGET::type>::to(t2, target_i);
+                }
+                if(__zero__ == t2.num.s) raise_error(msg);
+                return ts/t2;
+            }
 
         };
 

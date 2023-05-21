@@ -1,17 +1,28 @@
 
 #include "yack/woven/qfamily.hpp"
+#include "yack/system/imported.hpp"
 
 namespace yack
 {
     namespace woven
     {
-        qfamily:: qfamily(const size_t dims) :
+
+        const char qfamily:: clid[] = "qfamily";
+
+        qfamily:: qfamily(const size_t    dims,
+                          const size_t    rank,
+                          const indxFund &isrc) :
         metrics(dims),
         qvectors(),
+        code(isrc),
+        base(isrc),
+        deps(isrc),
+        next(0),
+        prev(0),
         qarr(dimensions),
-        qtmp(dimensions),
-        next(0), prev(0)
+        qtmp(dimensions)
         {
+            for(size_t i=1;i<=rank;++i) code << i;
         }
 
         qfamily:: ~qfamily() noexcept
@@ -21,10 +32,13 @@ namespace yack
         qfamily:: qfamily(const qfamily &F) :
         metrics(F),
         qvectors(F),
-        qarr(dimensions),
-        qtmp(dimensions),
+        code(F.code),
+        base(F.base),
+        deps(F.deps),
         next(0),
-        prev(0)
+        prev(0),
+        qarr(dimensions),
+        qtmp(dimensions)
         {
         }
 
@@ -40,7 +54,7 @@ namespace yack
             {
                 for(const qvector *qvec=head;qvec;qvec=qvec->next)
                 {
-                    if(!qvec->ortho(qtmp,qarr)) return false; // no more orthogonal component
+                    if(!qvec->make_ortho(qtmp,qarr)) return false; // no more orthogonal component
                     for(size_t i=dimensions;i>0;--i)
                     {
                         qarr[i].xch(qtmp[i]);
@@ -61,7 +75,7 @@ namespace yack
             {
                 for(const qvector *qvec=head;qvec;qvec=qvec->next)
                 {
-                    if(!qvec->ortho(qtmp,qarr)) return true; // no more orthogonal component
+                    if(!qvec->make_ortho(qtmp,qarr)) return true; // no more orthogonal component
                     for(size_t i=dimensions;i>0;--i)
                     {
                         qarr[i].xch(qtmp[i]);
@@ -71,10 +85,26 @@ namespace yack
             }
         }
 
-        void qfamily:: grow()
+        void qfamily:: grow(const size_t idx)
         {
             assert( q_array::check_not_null(qarr) );
+            assert( !base.contains(idx) );
+            assert( !deps.contains(idx) );
+            
             push_back( new qvector(qarr) );
+            try {  base += idx; }
+            catch(...)
+            {
+                delete pop_back();
+                throw;
+            }
+        }
+
+        void qfamily:: drop(const size_t idx)
+        {
+            assert( !base.contains(idx) );
+            assert( !deps.contains(idx) );
+            deps += idx;
         }
 
     }

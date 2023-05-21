@@ -10,34 +10,51 @@ namespace yack
 {
     namespace woven
     {
-        
+        //______________________________________________________________________
+        //
+        //
+        //! univocal vector of integers (as rationals)
+        //
+        //______________________________________________________________________
         class qvector : public object, public q_array
         {
         public:
-            virtual ~qvector() noexcept;
-            qvector(const qvector &);
+            //__________________________________________________________________
+            //
+            //  C++
+            //__________________________________________________________________
+            virtual ~qvector() noexcept; //!< cleanup
+            qvector(const qvector &);    //!< copy
 
+            //! setup from compatible user's data
             template <typename T> inline
-            qvector(const readable<T> &arr) :
-            q_array(arr.size()),
-            norm2(*znrm2)
+            qvector(const readable<T> &arr) : q_array(arr.size()), norm2(*znrm2)
             {
                 for(size_t i=dimensions;i>0;--i)
                         coord[i] = arr[i];
                 finalize();
             }
-            
+
+            //__________________________________________________________________
+            //
+            //  methods
+            //__________________________________________________________________
+
             //! keep rational orthogonal component of source from *this
             template <typename SOURCE>
-            bool ortho(writable<apq> &result, SOURCE &source) const {
-                apq prod;
-                for(size_t i=dimensions;i>0;--i) prod +=  coord[i] * source[i];
-                const apq fac = prod/norm2;
+            bool make_ortho(writable<apq> &result, SOURCE &source) const {
+                apq fac;
+                for(size_t i=dimensions;i>0;--i) fac +=  coord[i] * source[i];
+                fac /= norm2;
                 for(size_t i=dimensions;i>0;--i) result[i] = source[i] - fac * coord[i];
                 return check_not_null(result);
             }
 
-            const apz &norm2;
+            //__________________________________________________________________
+            //
+            //  members
+            //__________________________________________________________________
+            const apz &norm2; //!< reference to internal |coord|^2
 
 
 

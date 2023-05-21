@@ -108,8 +108,8 @@ namespace yack
         inline void       dismiss(param_type args)    { (void) remove(args); }         //!< ensure a value is not present
         inline data_set & operator+=(param_type args) { ensure(args); return *this; }  //!< ensure(args)
         inline data_set & operator-=(param_type args) { dismiss(args); return *this; } //!< dismiss(args)
-        inline void       pop_upper() noexcept         { dlist.cut_tail(); }            //!< remove upper value
-        inline void       pop_lower() noexcept         { dlist.cut_head(); }            //!< remove lower value
+        inline void       pop_upper() noexcept        { dlist.cut_tail(); }            //!< remove upper value
+        inline void       pop_lower() noexcept        { dlist.cut_head(); }            //!< remove lower value
         inline type       pull_upper()                { return dlist.pull_tail(); }    //!< pull upper value
         inline type       pull_lower()                { return dlist.pull_head(); }    //!< pull lower value
 
