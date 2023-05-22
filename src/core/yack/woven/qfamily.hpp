@@ -107,6 +107,19 @@ namespace yack
                 }
             }
 
+            bool contains_all(const qfamily &other)
+            {
+                for(const qvector *v=other.head;v;v=v->next)
+                {
+                    if(!contains(*v))
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            
+
             //! try to grow family with next M[indx]
             template <typename T> inline
             bool try_grow(const matrix<T> &M)

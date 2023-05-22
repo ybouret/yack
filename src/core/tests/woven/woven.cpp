@@ -34,8 +34,7 @@ YACK_UTEST(woven)
     woven::indices::fund fund = new woven::indices::bank();
     woven::qbranch Q(dims,fund);
     woven::qbranch Qng(dims,fund);
-
-    woven::zrepository repo(dims);
+    woven::zrepo   repo(dims);
 
     Q.initialize(M,repo,false);
     std::cerr << Q << std::endl;

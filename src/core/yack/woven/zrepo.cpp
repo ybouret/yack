@@ -1,5 +1,5 @@
 
-#include "yack/woven/zrepository.hpp"
+#include "yack/woven/zrepo.hpp"
 
 namespace yack
 {
@@ -7,8 +7,11 @@ namespace yack
     {
 
         zvector:: zvector(const size_t dims) :
+        object(),
         metrics(dims),
-        ztableau(dims)
+        ztableau(dims),
+        next(0),
+        prev(0)
         {
         }
 
@@ -17,19 +20,25 @@ namespace yack
         }
 
 
-        zvector:: zvector(const zvector &other) : metrics(other), ztableau(other)
+        zvector:: zvector(const zvector &other) :
+        collection(),
+        object(),
+        metrics(other),
+        ztableau(other),
+        next(0),
+        prev(0)
         {
         }
         
 
 
-        zrepository:: ~zrepository() noexcept {}
+        zrepo:: ~zrepo() noexcept {}
 
-        zrepository:: zrepository(const size_t dims)  : metrics(dims), zvectors()
+        zrepo:: zrepo(const size_t dims)  : metrics(dims), zvectors()
         {
         }
 
-        zrepository:: zrepository(const zrepository &other) : metrics(other), zvectors(other)
+        zrepo:: zrepo(const zrepo &other) : metrics(other), zvectors(other)
         {
 
         }
@@ -45,7 +54,7 @@ namespace yack
             return true;
         }
 
-        void zrepository:: ensure(const qvector &lhs)
+        void zrepo:: ensure(const qvector &lhs)
         {
             assert(dimensions==lhs.dimensions);
             for(const zvector *rhs=head;rhs;rhs=rhs->next)
@@ -65,7 +74,7 @@ namespace yack
         }
 
 
-        void zrepository:: ensure(const list_of<qvector> &lhs)
+        void zrepo:: ensure(const list_of<qvector> &lhs)
         {
             for(const qvector *qv=lhs.head;qv;qv=qv->next)
             {

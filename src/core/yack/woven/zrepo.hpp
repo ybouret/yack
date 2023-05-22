@@ -31,18 +31,18 @@ namespace yack
 
         typedef cxx_list_of<zvector> zvectors;
 
-        class zrepository : public metrics, public zvectors
+        class zrepo : public metrics, public zvectors
         {
         public:
-            explicit zrepository(const size_t dims);
-            virtual ~zrepository() noexcept;
-            zrepository(const zrepository &);
+            explicit zrepo(const size_t dims);
+            virtual ~zrepo() noexcept;
+            zrepo(const zrepo &);
 
-            void ensure(const qvector &lhs);
+            void ensure(const qvector          &lhs);
             void ensure(const list_of<qvector> &lhs);
 
         private:
-            YACK_DISABLE_ASSIGN(zrepository);
+            YACK_DISABLE_ASSIGN(zrepo);
         };
 
     }

@@ -77,7 +77,7 @@ namespace yack
             return os << '}';
         }
 
-        void qbranch:: collect(zrepository &repo) const
+        void qbranch:: collect(zrepo &repo) const
         {
             for(const qfamily *f=head;f;f=f->next)
             {
@@ -89,20 +89,35 @@ namespace yack
         static inline
         bool drop_family(qfamily &source, qfamily &target)
         {
+            assert(source.size==target.size);
 
-
-            if(source.base == target.base )
+            if(source.base == target.base)
             {
-                std::cerr << "source: base=" << *source.base << " | deps=" << *source.deps << " | indx=" << source.indx << std::endl;
-                std::cerr << "target: base=" << *target.base << " | deps=" << *target.deps << " | indx=" << target.indx << std::endl;
-                std::cerr << std::endl;
+                //std::cerr << "source: base=" << *source.base << " | deps=" << *source.deps << " | indx=" << source.indx << std::endl;
+                //std::cerr << "target: base=" << *target.base << " | deps=" << *target.deps << " | indx=" << target.indx << std::endl;
+                //std::cerr << std::endl;
                 if(source.deps == target.deps)
                 {
+                    assert(source.contains_all(target));
+                    assert(target.contains_all(source));
                     return true;
                 }
                 else
                 {
                     exit(0);
+                }
+            }
+            else
+            {
+                // same image ?
+                if(target.contains_all(source))
+                {
+                    std::cerr << "-- SAME --" << std::endl;
+                    std::cerr << "source: base=" << *source.base << " | deps=" << *source.deps << " | indx=" << source.indx << std::endl;
+                    std::cerr << "target: base=" << *target.base << " | deps=" << *target.deps << " | indx=" << target.indx << std::endl;
+                    std::cerr << std::endl;
+                    assert(source.contains_all(target));
+                    //exit(0);
                 }
             }
             return false;

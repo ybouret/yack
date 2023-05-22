@@ -105,6 +105,8 @@ namespace yack
             assert(roll>=1);
             assert(roll<=ndof);
 
+            release();
+            
             indx.clear();
             base.free();
             deps.free();

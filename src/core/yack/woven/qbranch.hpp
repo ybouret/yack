@@ -7,7 +7,7 @@
 #include "yack/woven/qfamily.hpp"
 #include "yack/ptr/auto.hpp"
 #include "yack/data/dinky/solo-repo.hpp"
-#include "yack/woven/zrepository.hpp"
+#include "yack/woven/zrepo.hpp"
 
 namespace yack
 {
@@ -49,7 +49,7 @@ namespace yack
             //! initialize families with each row of data
             template <typename T> inline
             void initialize(const matrix<T> &data,
-                            zrepository     &repo,
+                            zrepo           &repo,
                             const bool       load = false)
             {
                 initialize( check_ndof(data) );
@@ -72,7 +72,7 @@ namespace yack
             void generate(const qbranch    &ancestors,
                           const matrix <T> &data,
                           const size_t      rank,
-                          zrepository      &repo)
+                          zrepo            &repo)
             {
                 assert( this != &ancestors );
                 release();
@@ -83,7 +83,7 @@ namespace yack
 
             }
 
-            void collect( zrepository &repo ) const;
+            void collect( zrepo &repo ) const;
             
 
             indices::fund fund; //!< shared memory for indices
@@ -106,7 +106,7 @@ namespace yack
             void generate(const qfamily    &parents,
                           const matrix <T> &data,
                           const size_t      rank,
-                          zrepository      &repo)
+                          zrepo            &repo)
             {
                 assert(rank>0);
                 assert(rank<=min_of(data.cols,data.rows));
