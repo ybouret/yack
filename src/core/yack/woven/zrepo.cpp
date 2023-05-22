@@ -1,5 +1,6 @@
 
 #include "yack/woven/zrepo.hpp"
+#include "yack/data/list/sort.hpp"
 
 namespace yack
 {
@@ -30,7 +31,11 @@ namespace yack
         {
         }
         
-
+        int zvector:: compare(const zvector *lhs, const zvector *rhs) noexcept
+        {
+            assert(lhs->size()==rhs->size());
+            return comparison::lexicographic(&(*lhs)[1], &(*rhs)[1], rhs->size());
+        }
 
         zrepo:: ~zrepo() noexcept {}
 
@@ -81,6 +86,26 @@ namespace yack
                 ensure(*qv);
             }
         }
+
+        std::ostream & operator<<(std::ostream &os, const zrepo &repo)
+        {
+            os << "<zrepo size=\'" << repo.size << "\'>" << std::endl;
+            size_t i=1;
+            for(const zvector *node=repo.head;node;node=node->next,++i)
+            {
+                os << "\tZ" << i << " = " << *node << std::endl;
+            }
+            os << "<zrepo/>";
+            return os;
+        }
+
+        void zrepo:: sort()
+        {
+            merge_list_of<zvector>::sort(*this, zvector::compare);
+        }
+
+
+
     }
 
 }

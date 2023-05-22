@@ -25,6 +25,9 @@ namespace yack
 
             zvector *next;
             zvector *prev;
+
+            static int compare(const zvector *lhs, const zvector *rhs) noexcept;
+
         private:
             YACK_DISABLE_ASSIGN(zvector);
         };
@@ -40,6 +43,10 @@ namespace yack
 
             void ensure(const qvector          &lhs);
             void ensure(const list_of<qvector> &lhs);
+            void sort();
+
+
+            friend std::ostream & operator<<(std::ostream &, const zrepo &);
 
         private:
             YACK_DISABLE_ASSIGN(zrepo);

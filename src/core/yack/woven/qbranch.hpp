@@ -33,6 +33,7 @@ namespace yack
             // definitions
             //__________________________________________________________________
             static const char clid[]; //!< "qbranch"
+            static bool       doReduce;
 
             //__________________________________________________________________
             //
@@ -181,7 +182,8 @@ namespace yack
                 // children count reduction
                 //
                 //--------------------------------------------------------------
-                reduce(children);
+                if(doReduce)
+                    reduce(children);
                 merge_back(children);
 
                 //--------------------------------------------------------------
@@ -189,7 +191,8 @@ namespace yack
                 // incremental count reduction
                 //
                 //--------------------------------------------------------------
-                reduce(*this);
+                if(doReduce)
+                    reduce(*this);
             }
 
             static void reduce(qfamilies &);

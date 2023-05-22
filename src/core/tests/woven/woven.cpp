@@ -9,6 +9,13 @@
 
 using namespace yack;
 
+namespace yack
+{
+    namespace  woven
+    {
+        bool qbranch::doReduce = true;
+    }
+}
 YACK_UTEST(woven)
 {
 
@@ -36,9 +43,9 @@ YACK_UTEST(woven)
     woven::qbranch Qng(dims,fund);
     woven::zrepo   repo(dims);
 
+
     Q.initialize(M,repo,false);
     std::cerr << Q << std::endl;
-    //std::cerr << "repo: " << repo << std::endl;
     while(Q.size)
     {
         Qng.generate(Q,M,rank,repo);
@@ -46,12 +53,27 @@ YACK_UTEST(woven)
         std::cerr << Q << std::endl;
     }
 
-    std::cerr << "M=" << M << std::endl;
-    size_t i=1;
-    for(const woven::zvector *Z=repo.head;Z;Z=Z->next,++i)
+
+
+    woven::qbranch::doReduce = false;
+    woven::zrepo   repo2(dims);
+
+    Q.initialize(M,repo2,false);
+    std::cerr << Q << std::endl;
+    while(Q.size)
     {
-        std::cerr << "\tV" << i << " = " << *Z << std::endl;
+        Qng.generate(Q,M,rank,repo2);
+        Q.swap_with(Qng);
+        std::cerr << Q << std::endl;
     }
+
+    std::cerr << "M=" << M << std::endl;
+    repo.sort();
+    std::cerr << repo << std::endl;
+    repo2.sort();
+    std::cerr << repo2 << std::endl;
+
+
     YACK_SIZEOF(woven::qvector);
     YACK_SIZEOF(woven::qfamily);
     YACK_SIZEOF(woven::qbranch);
