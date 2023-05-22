@@ -15,21 +15,22 @@ namespace yack
         {
         }
 
-        qbranch:: qbranch(const size_t dims) :
+        
+
+        qbranch:: qbranch(const size_t dims, const indices::fund &_)   :
         metrics(dims),
         qfamilies(),
-        fund( new indices::bank() )
+        fund(_)
         {
-            
+
         }
 
-        size_t qbranch:: check_dims(const matrix_metrics &M) const
+        size_t qbranch:: check_ndof(const matrix_metrics &M) const
         {
             const size_t dims = M.cols;
-            const size_t rmax = M.rows;
-            if(dims!=dimensions)        throw imported::exception(clid,"invalid matrix #cols/dimensions");
-            if(rmax<1||rmax>dimensions) throw imported::exception(clid,"invalid matrix #rows/max rank");
-            return rmax;
+            const size_t ndof = M.rows;
+            if(dims!=dimensions) throw imported::exception(clid,"invalid matrix #cols/dimensions");
+            return ndof;
         }
         
         void qbranch:: raise_null() const
@@ -37,23 +38,31 @@ namespace yack
             throw imported::exception(clid,"null vector provided");
         }
 
+        void qbranch:: raise_greater_rank() const
+        {
+            throw imported::exception(clid,"data matrix has greater rank");
+        }
+
+        void qbranch:: raise_smaller_rank() const
+        {
+            throw imported::exception(clid,"data matrix has smaller rank");
+        }
 
         
-        void qbranch:: initialize(const size_t rmax)
+        void qbranch:: initialize(const size_t ndof)
         {
             // sanity
-            assert(rmax>=1);
-            assert(rmax<=dimensions);
+            assert(ndof>=1);
 
             // adjust size
-            while(size>rmax)  delete pop_back();
-            while(size<rmax) (void) push_back( new qfamily(dimensions,fund) );
-            assert(rmax==size);
+            while(size>ndof) delete pop_back();
+            while(size<ndof) (void) push_back( new qfamily(dimensions,fund) );
+            assert(ndof==size);
 
             // initialize families
             size_t i=1;
             for(qfamily *f=head;f;f=f->next,++i)
-                f->initialize(rmax,i);
+                f->initialize(ndof,i);
 
         }
 
@@ -66,6 +75,14 @@ namespace yack
                 os << *f << std::endl;
             }
             return os << '}';
+        }
+
+        void qbranch:: collect(zrepository &repo) const
+        {
+            for(const qfamily *f=head;f;f=f->next)
+            {
+                if(f->tail) repo.ensure(*(f->tail));
+            }
         }
 
     }

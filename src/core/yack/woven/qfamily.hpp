@@ -5,29 +5,41 @@
 #define YACK_WOVEN_QFAMILY_INCLUDED 1
 
 #include "yack/woven/qvector.hpp"
-#include "yack/data/list/cxx.hpp"
 #include "yack/sequence/cxx-array.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
 #include "yack/data/set.hpp"
 #include "yack/container/matrix.hpp"
+#include "yack/data/list/cxx.hpp"
 
 namespace yack
 {
     namespace woven
     {
-
-        typedef cxx_list_of<qvector>         qvectors; //!< base class
+        //______________________________________________________________________
+        //
+        //
+        // common types
+        //
+        //______________________________________________________________________
         typedef memory::dyadic               qmemory;  //!< base class
         typedef cxx_array<apq,qmemory>       qtableau; //!< helper class
+        typedef cxx_list_of<qvector>         qvectors; //!< base class
 
 
+        //______________________________________________________________________
+        //
+        //
+        //! handling indices
+        //
+        //______________________________________________________________________
         struct indices
         {
-            typedef data_set<size_t>             set;  //!< indices
-            typedef data_set<size_t> ::list_type list;
-            typedef data_set<size_t> ::bank_type bank;
-            typedef data_set<size_t> ::fund_type fund;
+            typedef data_set<size_t>             set;  //!< set of ordered, uniq indices
+            typedef data_set<size_t>::list_type list;  //!< coop list of ints
+            typedef data_set<size_t>::bank_type bank;  //!< bank for list
+            typedef data_set<size_t>::fund_type fund;  //!< shared bank for list
         };
+
 
         //______________________________________________________________________
         //
@@ -48,7 +60,7 @@ namespace yack
             //! initialize family
             /**
              \param dims phase space dimension
-             \param rmax maximum rank
+             \param fund shared bank of ints
              */
             explicit qfamily(const size_t         dims,
                              const indices::fund &fund);
@@ -61,8 +73,9 @@ namespace yack
             // methods
             //__________________________________________________________________
 
-            void initialize(const size_t r,
-                            const size_t i);
+            //! initialized indices [1..ndof] rolled down 
+            void initialize(const size_t ndof,
+                            const size_t roll);
 
             //! accepts a new vector to expand
             template <typename ARRAY>
@@ -94,16 +107,23 @@ namespace yack
                 }
             }
 
+            //! try to grow family with next M[indx]
             template <typename T> inline
             bool try_grow(const matrix<T> &M)
             {
-                assert(indx.size>0);
-                const size_t i = indx.pull_head(); assert(i>=1); assert(i<=M.rows);
-                return try_grow(M[i],i);
+                if(indx.size>0)
+                {
+                    const size_t i = indx.pull_head(); assert(i>=1); assert(i<=M.rows);
+                    return try_grow(M[i],i);
+                }
+                else
+                {
+                    return false;
+                }
             }
 
-            
 
+            //! display
             friend std::ostream & operator<<(std::ostream &, const qfamily &);
 
 
@@ -116,10 +136,10 @@ namespace yack
             indices::set  deps;  //!< indices of dependent vectors
             qfamily      *next;  //!< for list
             qfamily      *prev;  //!< for list
+            qtableau      qarr;  //!< for internal computation
 
         private:
             YACK_DISABLE_ASSIGN(qfamily);
-            qtableau qarr;
             qtableau qtmp;
 
             bool accepts();  // from loaded qarr

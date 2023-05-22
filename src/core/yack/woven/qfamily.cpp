@@ -98,20 +98,19 @@ namespace yack
         }
 
 
-        void qfamily:: initialize(const size_t r,
-                                  const size_t i)
+        void qfamily:: initialize(const size_t ndof,
+                                  const size_t roll)
         {
-            assert(r>=1);
-            assert(r<=dimensions);
-            assert(i>=1);
-            assert(i<=r);
+            assert(ndof>=1);
+            assert(roll>=1);
+            assert(roll<=ndof);
 
             indx.clear();
             base.free();
             deps.free();
 
-            for(size_t j=1;j<=r;++j)  indx << j;
-            for(size_t k=i-1;k>0;--k) indx.roll_down();
+            for(size_t j=1;j<=ndof;++j)  indx << j;
+            for(size_t k=roll-1;k>0;--k) indx.roll_down();
 
         }
 
