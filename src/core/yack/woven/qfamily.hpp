@@ -39,7 +39,7 @@ namespace yack
             // C++
             //__________________________________________________________________
             explicit qfamily(const size_t     dims,
-                             const size_t     rank,
+                             const size_t     rmax,
                              const indxFund  &isrc); //!< create with dimensions
             virtual ~qfamily() noexcept;             //!< cleanup
             qfamily(const qfamily &);                //!< hard copy

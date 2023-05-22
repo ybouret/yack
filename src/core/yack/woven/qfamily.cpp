@@ -10,7 +10,7 @@ namespace yack
         const char qfamily:: clid[] = "qfamily";
 
         qfamily:: qfamily(const size_t    dims,
-                          const size_t    rank,
+                          const size_t    rmax,
                           const indxFund &isrc) :
         metrics(dims),
         qvectors(),
@@ -22,7 +22,7 @@ namespace yack
         qarr(dimensions),
         qtmp(dimensions)
         {
-            for(size_t i=1;i<=rank;++i) code << i;
+            for(size_t i=1;i<=rmax;++i) code << i;
         }
 
         qfamily:: ~qfamily() noexcept
