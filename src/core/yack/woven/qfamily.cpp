@@ -9,20 +9,20 @@ namespace yack
 
         const char qfamily:: clid[] = "qfamily";
 
-        qfamily:: qfamily(const size_t    dims,
-                          const size_t    rmax,
-                          const indxFund &isrc) :
+
+        qfamily:: qfamily(const size_t         dims,
+                          const indices::fund &fund) :
         metrics(dims),
         qvectors(),
-        code(isrc),
-        base(isrc),
-        deps(isrc),
+        indx(fund),
+        base(fund),
+        deps(fund),
         next(0),
         prev(0),
         qarr(dimensions),
         qtmp(dimensions)
         {
-            for(size_t i=1;i<=rmax;++i) code << i;
+
         }
 
         qfamily:: ~qfamily() noexcept
@@ -32,7 +32,7 @@ namespace yack
         qfamily:: qfamily(const qfamily &F) :
         metrics(F),
         qvectors(F),
-        code(F.code),
+        indx(F.indx),
         base(F.base),
         deps(F.deps),
         next(0),
@@ -46,43 +46,33 @@ namespace yack
         bool qfamily:: accepts()
         {
             assert(size>0);
-            if(size>=dimensions)
+
+            for(const qvector *qvec=head;qvec;qvec=qvec->next)
             {
-                return false;
-            }
-            else
-            {
-                for(const qvector *qvec=head;qvec;qvec=qvec->next)
+                if(!qvec->make_ortho(qtmp,qarr)) return false; // no more orthogonal component
+                for(size_t i=dimensions;i>0;--i)
                 {
-                    if(!qvec->make_ortho(qtmp,qarr)) return false; // no more orthogonal component
-                    for(size_t i=dimensions;i>0;--i)
-                    {
-                        qarr[i].xch(qtmp[i]);
-                    }
+                    qarr[i].xch(qtmp[i]);
                 }
-                return true;
             }
+            return true;
+
         }
 
         bool qfamily:: contains()
         {
             assert(size>0);
-            if(size>=dimensions)
+
+            for(const qvector *qvec=head;qvec;qvec=qvec->next)
             {
-                return true;
-            }
-            else
-            {
-                for(const qvector *qvec=head;qvec;qvec=qvec->next)
+                if(!qvec->make_ortho(qtmp,qarr)) return true; // no more orthogonal component
+                for(size_t i=dimensions;i>0;--i)
                 {
-                    if(!qvec->make_ortho(qtmp,qarr)) return true; // no more orthogonal component
-                    for(size_t i=dimensions;i>0;--i)
-                    {
-                        qarr[i].xch(qtmp[i]);
-                    }
+                    qarr[i].xch(qtmp[i]);
                 }
-                return false; // projected vector is not zero
             }
+            return false; // projected vector is not zero
+
         }
 
         void qfamily:: grow(const size_t idx)
@@ -107,5 +97,35 @@ namespace yack
             deps += idx;
         }
 
+
+        void qfamily:: initialize(const size_t r,
+                                  const size_t i)
+        {
+            assert(r>=1);
+            assert(r<=dimensions);
+            assert(i>=1);
+            assert(i<=r);
+
+            indx.clear();
+            base.free();
+            deps.free();
+
+            for(size_t j=1;j<=r;++j)  indx << j;
+            for(size_t k=i-1;k>0;--k) indx.roll_down();
+
+        }
+
+        std::ostream & operator<<(std::ostream &os, const qfamily &f)
+        {
+            os << "  <base=" << *(f.base) << " | deps=" << *(f.deps) << " | indx=" << (f.indx) << ">" << std::endl;
+            for(const qvector *v=f.head;v;v=v->next) {
+                os << "       |_" << *v;
+                if(v->next) os << std::endl;
+            }
+            return os;
+        }
+
     }
+    
 }
+

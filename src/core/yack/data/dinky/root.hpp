@@ -189,10 +189,8 @@ namespace yack
         //! clear alive NODEs
         inline void   clear() noexcept { cache->devour(*this); }
         
-        //! avalailable zombies
+        //! availalable zombies
         inline size_t ready() const noexcept { return coerce(cache)->stowage(); }
-        
-        
         
         
         //______________________________________________________________________

@@ -63,12 +63,14 @@ namespace yack
         inline T pull_head() { assert(this->head);
             T res = **(this->head); this->cut_head(); return res;
         }
-        
+
+
         //! pull tail value
         inline T pull_tail() { assert(this->tail);
             T res = **(this->tail); this->cut_tail(); return res;
         }
-        
+
+
         //! sort
         template <typename FUNC> inline
         void sort_with( FUNC &func )

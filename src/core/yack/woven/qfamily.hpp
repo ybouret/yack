@@ -9,19 +9,25 @@
 #include "yack/sequence/cxx-array.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
 #include "yack/data/set.hpp"
+#include "yack/container/matrix.hpp"
 
 namespace yack
 {
     namespace woven
     {
 
-        typedef cxx_list_of<qvector>   qvectors; //!< base class
-        typedef memory::dyadic         qmemory;  //!< base class
-        typedef cxx_array<apq,qmemory> qtableau; //!< helper class
-        typedef data_set<size_t>       qindices; //!< indices
-        typedef qindices::list_type    indxList;
-        typedef qindices::bank_type    indxBank;
-        typedef qindices::fund_type    indxFund;
+        typedef cxx_list_of<qvector>         qvectors; //!< base class
+        typedef memory::dyadic               qmemory;  //!< base class
+        typedef cxx_array<apq,qmemory>       qtableau; //!< helper class
+
+
+        struct indices
+        {
+            typedef data_set<size_t>             set;  //!< indices
+            typedef data_set<size_t> ::list_type list;
+            typedef data_set<size_t> ::bank_type bank;
+            typedef data_set<size_t> ::fund_type fund;
+        };
 
         //______________________________________________________________________
         //
@@ -38,17 +44,25 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit qfamily(const size_t     dims,
-                             const size_t     rmax,
-                             const indxFund  &isrc); //!< create with dimensions
-            virtual ~qfamily() noexcept;             //!< cleanup
-            qfamily(const qfamily &);                //!< hard copy
+
+            //! initialize family
+            /**
+             \param dims phase space dimension
+             \param rmax maximum rank
+             */
+            explicit qfamily(const size_t         dims,
+                             const indices::fund &fund);
+            virtual ~qfamily() noexcept;                 //!< cleanup
+            qfamily(const qfamily &);                    //!< hard copy
 
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
+
+            void initialize(const size_t r,
+                            const size_t i);
 
             //! accepts a new vector to expand
             template <typename ARRAY>
@@ -80,6 +94,38 @@ namespace yack
                 }
             }
 
+            template <typename T> inline
+            bool try_grow(const matrix<T> &M)
+            {
+                assert(indx.size>0);
+                const size_t i = indx.pull_head(); assert(i>=1); assert(i<=M.rows);
+                return try_grow(M[i],i);
+            }
+
+            
+
+            friend std::ostream & operator<<(std::ostream &, const qfamily &);
+
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            indices::list indx;  //!< available indices
+            indices::set  base;  //!< indices of independant vectors
+            indices::set  deps;  //!< indices of dependent vectors
+            qfamily      *next;  //!< for list
+            qfamily      *prev;  //!< for list
+
+        private:
+            YACK_DISABLE_ASSIGN(qfamily);
+            qtableau qarr;
+            qtableau qtmp;
+
+            bool accepts();  // from loaded qarr
+            bool contains(); // from loaded qarr
+
+
             //! try grow a new vector
             template <typename ARRAY> inline
             bool try_grow(ARRAY &arr, const size_t idx)
@@ -93,24 +139,6 @@ namespace yack
 
             //! append idx to replica
             void drop(const size_t idx);
-
-            //__________________________________________________________________
-            //
-            // members
-            //__________________________________________________________________
-            indxList  code;  //!< list of indices to explore
-            qindices  base;  //!< indices of independant vectors
-            qindices  deps;  //!< indices of dependent vectors
-            qfamily  *next;  //!< for list
-            qfamily  *prev;  //!< for list
-
-        private:
-            YACK_DISABLE_ASSIGN(qfamily);
-            qtableau qarr;
-            qtableau qtmp;
-
-            bool accepts();  // from loaded qarr
-            bool contains(); // from loaded qarr
 
             //! helper to load arr into qarr
             template <typename ARRAY>
