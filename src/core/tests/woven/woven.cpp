@@ -37,9 +37,9 @@ YACK_UTEST(woven)
 
     woven::zrepository repo(dims);
 
-    Q.initialize(M,repo,true);
+    Q.initialize(M,repo,false);
     std::cerr << Q << std::endl;
-    std::cerr << "repo: " << repo << std::endl;
+    //std::cerr << "repo: " << repo << std::endl;
     while(Q.size)
     {
         Qng.generate(Q,M,rank,repo);
@@ -47,6 +47,12 @@ YACK_UTEST(woven)
         std::cerr << Q << std::endl;
     }
 
+    std::cerr << "M=" << M << std::endl;
+    size_t i=1;
+    for(const woven::zvector *Z=repo.head;Z;Z=Z->next,++i)
+    {
+        std::cerr << "\tV" << i << " = " << *Z << std::endl;
+    }
     YACK_SIZEOF(woven::qvector);
     YACK_SIZEOF(woven::qfamily);
     YACK_SIZEOF(woven::qbranch);

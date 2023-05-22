@@ -1,5 +1,5 @@
 
-#include "yack/woven/qrepository.hpp"
+#include "yack/woven/zrepository.hpp"
 
 namespace yack
 {
@@ -61,6 +61,7 @@ namespace yack
                 assert(1==lhs[i].den);
                 Z[i] = lhs[i].num;
             }
+            std::cerr << "added " << Z << std::endl;
         }
 
 

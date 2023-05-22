@@ -7,7 +7,7 @@
 #include "yack/woven/qfamily.hpp"
 #include "yack/ptr/auto.hpp"
 #include "yack/data/dinky/solo-repo.hpp"
-#include "yack/woven/qrepository.hpp"
+#include "yack/woven/zrepository.hpp"
 
 namespace yack
 {
@@ -125,7 +125,6 @@ namespace yack
                         // all done: check all remaining vectors are contained
                         //------------------------------------------------------
                         assert(rank==parents.size);
-                        std::cerr << "Done" << std::endl;
                         auto_ptr<qfamily> lineage = new qfamily(parents);
                         while(lineage->try_grow(data)) raise_greater_rank();
                     } return;
@@ -136,17 +135,15 @@ namespace yack
                         // any indep vector shall produce the same output
                         //------------------------------------------------------
                         assert(rank-1==parents.size);
-                        std::cerr << "Last" << std::endl;
                         auto_ptr<qfamily> lineage = new qfamily(parents);
                     BUILD_LAST:
                         if(lineage->try_grow(data)) { assert(rank==lineage->size); // found last vector
                             while(lineage->try_grow(data)) raise_greater_rank();   // lineage should have max rank
-                            repo.ensure( *push_back( lineage.yield() ) ); // push back lineage
-                            return;                                                // and return
+                            repo.ensure( *push_back( lineage.yield() ) );          // push back lineage and update repo
+                            return;                                                // and return without compression
                         }
                         if(lineage->indx.size<=0) raise_smaller_rank();
                         goto BUILD_LAST;
-
                     }
 
 
@@ -169,7 +166,7 @@ namespace yack
                 LINEAGE:
                     if(lineage->try_grow(data))
                     {
-                        children.push_back( lineage.yield() );
+                        repo.ensure(*children.push_back( lineage.yield() ));
                         if(++rotation<siblings)
                         {
                             lineage = new qfamily(parents);
@@ -181,18 +178,22 @@ namespace yack
 
                 //--------------------------------------------------------------
                 //
-                // compress children
+                // children count reduction
                 //
                 //--------------------------------------------------------------
+                reduce(children);
                 merge_back(children);
 
                 //--------------------------------------------------------------
                 //
-                // incremental compression
+                // incremental count reduction
                 //
                 //--------------------------------------------------------------
-
+                reduce(*this);
             }
+
+            static void reduce(qfamilies &);
+
         };
 
     }

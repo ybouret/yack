@@ -85,6 +85,53 @@ namespace yack
             }
         }
 
+
+        static inline
+        bool drop_family(qfamily &source, qfamily &target)
+        {
+
+
+            if(source.base == target.base )
+            {
+                std::cerr << "source: base=" << *source.base << " | deps=" << *source.deps << " | indx=" << source.indx << std::endl;
+                std::cerr << "target: base=" << *target.base << " | deps=" << *target.deps << " | indx=" << target.indx << std::endl;
+                std::cerr << std::endl;
+                if(source.deps == target.deps)
+                {
+                    return true;
+                }
+                else
+                {
+                    exit(0);
+                }
+            }
+            return false;
+        }
+
+        void qbranch:: reduce(qfamilies &F)
+        {
+            std::cerr << "[[ REDUCTION ]]" << std::endl;
+            //std::cerr << F << std::endl;
+            qfamilies R;
+            while(F.size)
+            {
+                auto_ptr<qfamily> source = F.pop_front();
+                bool              keep = true;
+                for(qfamily *target = R.head;target;target=target->next)
+                {
+                    assert(target->size==source->size);
+                    if(drop_family(*source, *target))
+                    {
+                        keep = false;
+                        break;
+                    }
+                }
+
+                if(keep)
+                    R.push_back( source.yield() );
+            }
+            R.swap_with(F);
+        }
     }
 
 }
