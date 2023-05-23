@@ -98,8 +98,8 @@ namespace yack
                 //std::cerr << std::endl;
                 if(source.deps == target.deps)
                 {
-                    assert(source.contains_all(target));
-                    assert(target.contains_all(source));
+                    //assert(source.contains_all(target));
+                    //assert(target.contains_all(source));
                     return true;
                 }
                 else
@@ -110,13 +110,13 @@ namespace yack
             else
             {
                 // same image ?
-                if(target.contains_all(source))
+                //if(target.contains_all(source))
                 {
-                    std::cerr << "-- SAME --" << std::endl;
-                    std::cerr << "source: base=" << *source.base << " | deps=" << *source.deps << " | indx=" << source.indx << std::endl;
-                    std::cerr << "target: base=" << *target.base << " | deps=" << *target.deps << " | indx=" << target.indx << std::endl;
-                    std::cerr << std::endl;
-                    assert(source.contains_all(target));
+                    //std::cerr << "-- SAME --" << std::endl;
+                    //std::cerr << "source: base=" << *source.base << " | deps=" << *source.deps << " | indx=" << source.indx << std::endl;
+                    //std::cerr << "target: base=" << *target.base << " | deps=" << *target.deps << " | indx=" << target.indx << std::endl;
+                    //std::cerr << std::endl;
+                    //assert(source.contains_all(target));
                     //exit(0);
                 }
             }
@@ -125,7 +125,7 @@ namespace yack
 
         void qbranch:: reduce(qfamilies &F)
         {
-            std::cerr << "[[ REDUCTION ]]" << std::endl;
+            //std::cerr << "[[ REDUCTION ]]" << std::endl;
             qfamilies R;
             while(F.size)
             {

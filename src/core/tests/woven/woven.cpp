@@ -40,43 +40,22 @@ YACK_UTEST(woven)
     std::cerr << "M=" << M << std::endl;
     std::cerr << "rank=" << rank << std::endl;
 
-    woven::indices::fund fund = new woven::indices::bank();
-    woven::qbranch Q(dims,fund);
-    woven::qbranch Qng(dims,fund);
-    woven::zrepo   repo(dims);
+    woven::qbuilder Q(dims);
+    woven::zrepo    repo1(dims);
+    woven::zrepo    repo2(dims);
 
     std::cerr << "With Reduction" << std::endl;
-    woven::qbranch::doReduce = false;
-    uint64_t  n64 = 0;
-    YACK_TMX_ADD(n64,Q.initialize(M,repo,false));
-    while(Q.size)
-    {
-        YACK_TMX_ADD(n64,
-                     Qng.generate(Q,M,rank,repo);
-                     Q.swap_with(Qng)
-                     );
-        (std::cerr << '.').flush();
-    }
-    std::cerr << std::endl;
+    woven::qbranch::doReduce = true;
+    const uint64_t n64 = Q(repo1,M,rank,false);
+
 
     std::cerr << "Without Reduction" << std::endl;
     woven::qbranch::doReduce = false;
-    woven::zrepo   repo2(dims);
-    uint64_t  r64 = 0;
-    YACK_TMX_ADD(r64,Q.initialize(M,repo,false));
-    while(Q.size)
-    {
-        YACK_TMX_ADD(r64,
-                     Qng.generate(Q,M,rank,repo);
-                     Q.swap_with(Qng)
-                     );
-        (std::cerr << '.').flush();
-    }
-    std::cerr << std::endl;
+    const uint64_t r64 = Q(repo2,M,rank,false);
 
     std::cerr << "M=" << M << std::endl;
-    repo.sort();
-    std::cerr << repo << std::endl;
+    repo1.sort();
+    std::cerr << repo1 << std::endl;
     repo2.sort();
     std::cerr << repo2 << std::endl;
 
