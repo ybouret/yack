@@ -111,7 +111,6 @@ namespace yack
                 //std::cerr << " (+) source: base=" << *source.base << " | deps=" << *source.deps << " | indx=" << source.indx << std::endl;
                 //std::cerr << " (+) target: base=" << *target.base << " | deps=" << *target.deps << " | indx=" << target.indx << std::endl;
 
-
                 target.base += source.base;
                 target.deps += source.deps;
                 {
@@ -155,6 +154,29 @@ namespace yack
             }
             R.swap_with(F);
         }
+
+        void qbranch:: reduce(qfamilies &lhs, qfamilies &rhs)
+        {
+            while(rhs.size)
+            {
+                auto_ptr<qfamily> source = rhs.pop_front();
+                bool              keep   = true;
+                for(qfamily *target = lhs.head;target;target=target->next)
+                {
+                    assert(target->size==source->size);
+                    if(drop_family(*source, *target))
+                    {
+                        keep = false;
+                        break;
+                    }
+                }
+
+                if(keep)
+                    lhs.push_back( source.yield() );
+            }
+        }
+
+
     }
 
 }

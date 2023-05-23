@@ -158,7 +158,8 @@ namespace yack
                 // build all possible families
                 //
                 //--------------------------------------------------------------
-                qfamilies         children;
+                qfamilies children;
+
                 {
                     const size_t      siblings = parents.indx.size;
                     size_t            rotation = 0;
@@ -183,19 +184,22 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 if(doReduce)
-                    reduce(children);
-                merge_back(children);
+                {
+                    qfamilies sampling;
+                    reduce(sampling,children);
+                    reduce(*this,sampling);
+                }
+                else
+                {
+                    merge_back(children);
+                }
 
-                //--------------------------------------------------------------
-                //
-                // incremental count reduction
-                //
-                //--------------------------------------------------------------
-                if(doReduce)
-                    reduce(*this);
+
             }
 
             static void reduce(qfamilies &);
+            static void reduce(qfamilies &lhs, qfamilies &rhs);
+
 
         };
 
