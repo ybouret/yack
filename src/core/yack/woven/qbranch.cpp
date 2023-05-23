@@ -86,40 +86,49 @@ namespace yack
         }
 
 
+
+        static inline
+        void dispatch(indices::set        &db,
+                      const indices::list &indx,
+                      const qfamily       &target)
+        {
+            for(const indices::node *node=indx.head;node;node=node->next)
+            {
+                const size_t ival = **node;
+                if(target.used(ival)) continue;
+                db += ival;
+            }
+        }
+
+        //! merge in target is necessary
         static inline
         bool drop_family(qfamily &source, qfamily &target)
         {
             assert(source.size==target.size);
+            const bool same_base = source.base == target.base;
+            if( same_base || target.contains_all(source) )
+            {
+                //std::cerr << " (+) source: base=" << *source.base << " | deps=" << *source.deps << " | indx=" << source.indx << std::endl;
+                //std::cerr << " (+) target: base=" << *target.base << " | deps=" << *target.deps << " | indx=" << target.indx << std::endl;
 
-            if(source.base == target.base)
-            {
-                //std::cerr << "source: base=" << *source.base << " | deps=" << *source.deps << " | indx=" << source.indx << std::endl;
-                //std::cerr << "target: base=" << *target.base << " | deps=" << *target.deps << " | indx=" << target.indx << std::endl;
+
+                target.base += source.base;
+                target.deps += source.deps;
+                {
+                    indices::set db( target.indx.cache );
+                    dispatch(db,target.indx,target);
+                    dispatch(db,source.indx,target);
+                    db.replace(target.indx);
+                }
+                //std::cerr << " (*) target: base=" << *target.base << " | deps=" << *target.deps << " | indx=" << target.indx << std::endl;
                 //std::cerr << std::endl;
-                if(source.deps == target.deps)
-                {
-                    //assert(source.contains_all(target));
-                    //assert(target.contains_all(source));
-                    return true;
-                }
-                else
-                {
-                    exit(0);
-                }
+
+                //if(!same_base) exit(0);
+
+                return true;
             }
-            else
-            {
-                // same image ?
-                //if(target.contains_all(source))
-                {
-                    //std::cerr << "-- SAME --" << std::endl;
-                    //std::cerr << "source: base=" << *source.base << " | deps=" << *source.deps << " | indx=" << source.indx << std::endl;
-                    //std::cerr << "target: base=" << *target.base << " | deps=" << *target.deps << " | indx=" << target.indx << std::endl;
-                    //std::cerr << std::endl;
-                    //assert(source.contains_all(target));
-                    //exit(0);
-                }
-            }
+
+
             return false;
         }
 

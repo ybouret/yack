@@ -128,6 +128,12 @@ namespace yack
             return os;
         }
 
+        bool qfamily:: used(const size_t idx) const noexcept
+        {
+            return base.contains(idx) || deps.contains(idx);
+        }
+
+
     }
     
 }

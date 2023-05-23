@@ -182,7 +182,7 @@ namespace yack
         }
 
 
-        inline void       free() noexcept                    { dlist.clear(); }              //!< free content
+        inline void       free() noexcept                   { dlist.clear(); }              //!< free content
         inline data_set & operator+=(const data_set &other) { merge(other); return *this; } //!< merge other
         inline data_set & operator-=(const data_set &other) { purge(other); return *this; } //!< purge other
 
@@ -192,6 +192,16 @@ namespace yack
             return list_ops::are_equal(lhs.dlist,rhs.dlist);
         }
 
+        //! test difference
+        inline friend bool operator!=(const data_set &lhs, const data_set &rhs) {
+            return !list_ops::are_equal(lhs.dlist,rhs.dlist);
+        }
+
+
+        void replace(list_type &target) noexcept {
+            target.clear();
+            target.swap_with(dlist);
+        }
 
     private:
         coop_list<T> dlist;

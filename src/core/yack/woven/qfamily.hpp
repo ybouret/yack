@@ -37,6 +37,7 @@ namespace yack
             typedef data_set<size_t>::list_type list;  //!< coop list of ints
             typedef data_set<size_t>::bank_type bank;  //!< bank for list
             typedef data_set<size_t>::fund_type fund;  //!< shared bank for list
+            typedef list::node_type             node;  //!< alias
         };
 
         //______________________________________________________________________
@@ -133,6 +134,8 @@ namespace yack
                 }
             }
 
+            bool used(const size_t idx) const noexcept;
+            
 
             //! display
             friend std::ostream & operator<<(std::ostream &, const qfamily &);
