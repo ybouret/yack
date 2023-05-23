@@ -11,20 +11,34 @@ namespace yack
 {
     namespace woven
     {
-        typedef cxx_list_of<zvector> zvectors;
+        typedef cxx_list_of<zvector> zvectors; //!< alias
 
+        //______________________________________________________________________
+        //
+        //
+        //! management of zvectors
+        //
+        //______________________________________________________________________
         class zrepo : public metrics, public zvectors
         {
         public:
-            explicit zrepo(const size_t dims);
-            virtual ~zrepo() noexcept;
-            zrepo(const zrepo &);
+            //______________________________________________________________________
+            //
+            // C++
+            //______________________________________________________________________
+            explicit zrepo(const size_t dims); //!< setup
+            virtual ~zrepo() noexcept;         //!< cleanup
+            zrepo(const zrepo &);              //!< copy
 
-            void ensure(const qvector          &lhs);
-            void ensure(const list_of<qvector> &lhs);
-            void sort();
+            //______________________________________________________________________
+            //
+            // methods
+            //______________________________________________________________________
+            void ensure(const qvector          &lhs); //!< check/copy/finalize
+            void ensure(const list_of<qvector> &lhs); //!< ensure all in lhs
+            void sort();                              //!< sort
 
-
+            //! display
             friend std::ostream & operator<<(std::ostream &, const zrepo &);
 
         private:

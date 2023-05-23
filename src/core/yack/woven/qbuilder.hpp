@@ -10,12 +10,33 @@ namespace yack
 {
     namespace woven
     {
+        //______________________________________________________________________
+        //
+        //
+        //! iterative builder of successive qbranches
+        //
+        //______________________________________________________________________
         class qbuilder : public metrics, public indices::fund
         {
         public:
-            explicit qbuilder(const size_t dims);
-            virtual ~qbuilder() noexcept;
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit qbuilder(const size_t dims); //!< initialize
+            virtual ~qbuilder() noexcept;         //!< cleanup
 
+
+            //__________________________________________________________________
+            //
+            // fill repository
+            /**
+             \param repo repository to fill
+             \param data original matrix
+             \param rank orignial rank
+             \param load keep single rows in repository
+             */
+            //__________________________________________________________________
             template <typename T> inline
             uint64_t operator()(woven::zrepo    &repo,
                                 const matrix<T> &data,

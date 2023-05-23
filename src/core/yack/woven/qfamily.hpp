@@ -106,17 +106,7 @@ namespace yack
                 }
             }
 
-            bool contains_all(const qfamily &other)
-            {
-                for(const qvector *v=other.head;v;v=v->next)
-                {
-                    if(!contains(*v))
-                    {
-                        return false;
-                    }
-                }
-                return true;
-            }
+
             
 
             //! try to grow family with next M[indx]
@@ -134,7 +124,7 @@ namespace yack
                 }
             }
 
-            bool used(const size_t idx) const noexcept;
+            //bool used(const size_t idx) const noexcept;
             
 
             //! display
@@ -148,6 +138,7 @@ namespace yack
             indices::list indx;  //!< available indices
             indices::set  base;  //!< indices of independant vectors
             indices::set  deps;  //!< indices of dependent vectors
+            indices::set  used;  //!< base+deps
             qfamily      *next;  //!< for list
             qfamily      *prev;  //!< for list
             qtableau      qarr;  //!< for internal computation

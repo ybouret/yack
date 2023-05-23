@@ -12,22 +12,34 @@ namespace yack
 {
     namespace woven
     {
+        //! base class for zvector
         typedef cxx_array<apz,memory::dyadic> ztableau;
 
+        //______________________________________________________________________
+        //
+        //
+        //! vectors of apex integers
+        //
+        //______________________________________________________________________
         class zvector : public spot_object, public metrics, public ztableau
         {
         public:
-            explicit zvector(const size_t dims);
-            virtual ~zvector() noexcept;
-            zvector(const zvector &);
+            //__________________________________________________________________
+            //
+            // C++
+            //______________________________________________________________________
+            explicit zvector(const size_t dims); //!< setup
+            virtual ~zvector() noexcept;         //!< cleanup
+            zvector(const zvector &);            //!< copy
 
-            zvector *next;
-            zvector *prev;
-            size_t   ncoeff;
-            apn      weight;
+            zvector *next;   //!< for list
+            zvector *prev;   //!< for list
+            size_t   ncoeff; //!< number of coefficients not equal to zero
+            apn      weight; //!< |this|_1
 
-            void       finalize();
-            static int compare(const zvector *lhs, const zvector *rhs) noexcept;
+            void       finalize(); //!< compute ncoeff and weight
+            static int compare(const zvector *lhs,
+                               const zvector *rhs) noexcept; //!< hybrid comparison
 
         private:
             YACK_DISABLE_ASSIGN(zvector);

@@ -18,6 +18,7 @@ namespace yack
         indx(fund),
         base(fund),
         deps(fund),
+        used(fund),
         next(0),
         prev(0),
         qarr(dimensions),
@@ -37,6 +38,7 @@ namespace yack
         indx(F.indx),
         base(F.base),
         deps(F.deps),
+        used(F.used),
         next(0),
         prev(0),
         qarr(dimensions),
@@ -82,7 +84,8 @@ namespace yack
             assert( q_array::check_not_null(qarr) );
             assert( !base.contains(idx) );
             assert( !deps.contains(idx) );
-            
+            assert(used->size == base->size + deps->size);
+
             push_back( new qvector(qarr) );
             try {  base += idx; }
             catch(...)
@@ -90,13 +93,39 @@ namespace yack
                 delete pop_back();
                 throw;
             }
+
+            try {
+                used += idx;
+            }
+            catch(...)
+            {
+                base -= idx;
+                delete pop_back();
+                throw;
+            }
+
+            assert(used->size == base->size + deps->size);
+
         }
 
         void qfamily:: drop(const size_t idx)
         {
             assert( !base.contains(idx) );
             assert( !deps.contains(idx) );
+            assert( !used.contains(idx) );
+            assert(used->size == base->size + deps->size);
+
             deps += idx;
+            try {
+                used += idx;
+            }
+            catch(...)
+            {
+                deps -= idx;
+                throw;
+            }
+
+            assert(used->size == base->size + deps->size);
         }
 
 
@@ -112,6 +141,7 @@ namespace yack
             indx.clear();
             base.free();
             deps.free();
+            used.free();
 
             for(size_t j=1;j<=ndof;++j)  indx << j;
             for(size_t k=roll-1;k>0;--k) indx.roll_down();
@@ -128,11 +158,7 @@ namespace yack
             return os;
         }
 
-        bool qfamily:: used(const size_t idx) const noexcept
-        {
-            return base.contains(idx) || deps.contains(idx);
-        }
-
+        
 
     }
     

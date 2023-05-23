@@ -198,6 +198,7 @@ namespace yack
         }
 
 
+        //! replace target content with this content, now empty
         void replace(list_type &target) noexcept {
             target.clear();
             target.swap_with(dlist);

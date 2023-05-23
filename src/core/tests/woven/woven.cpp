@@ -40,18 +40,26 @@ YACK_UTEST(woven)
     std::cerr << "M=" << M << std::endl;
     std::cerr << "rank=" << rank << std::endl;
 
-    woven::qbuilder Q(dims);
     woven::zrepo    repo1(dims);
     woven::zrepo    repo2(dims);
 
     std::cerr << "With Reduction" << std::endl;
     woven::qbranch::doReduce = true;
-    const uint64_t n64 = Q(repo1,M,rank,false);
-
+    uint64_t n64 = 0;
+    {
+        woven::qbuilder Q(dims);
+        n64 = Q(repo1,M,rank,false);
+        (std::cerr << "--> done" << std::endl).flush();
+    }
 
     std::cerr << "Without Reduction" << std::endl;
     woven::qbranch::doReduce = false;
-    const uint64_t r64 = Q(repo2,M,rank,false);
+    uint64_t r64 = 0;
+    {
+        woven::qbuilder Q(dims);
+        r64 = Q(repo2,M,rank,false);
+        (std::cerr << "--> done" << std::endl).flush();
+    }
 
     std::cerr << "M=" << M << std::endl;
     repo1.sort();

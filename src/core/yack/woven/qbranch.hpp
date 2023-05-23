@@ -32,8 +32,8 @@ namespace yack
             //
             // definitions
             //__________________________________________________________________
-            static const char clid[]; //!< "qbranch"
-            static bool       doReduce;
+            static const char clid[];   //!< "qbranch"
+            static bool       doReduce; //!< helper
 
             //__________________________________________________________________
             //
@@ -84,9 +84,10 @@ namespace yack
 
             }
 
-            void collect( zrepo &repo ) const;
-            
-
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
             indices::fund fund; //!< shared memory for indices
 
         private:
@@ -96,6 +97,9 @@ namespace yack
             void   raise_null() const;                        //!< found null vector
             void   raise_greater_rank() const;                //!< invalid matrix rank
             void   raise_smaller_rank() const;                //!< invalid matrix rank
+
+            //! collect latest produced vectors
+            void collect( zrepo &repo ) const;
 
             //! incremental generation from ONE family of parents
             /**
@@ -194,11 +198,50 @@ namespace yack
                     merge_back(children);
                 }
 
-
             }
 
-            static void reduce(qfamilies &);
-            static void reduce(qfamilies &lhs, qfamilies &rhs);
+            void reduce(qfamilies &lhs, qfamilies &rhs)
+            {
+                while(rhs.size)
+                {
+                    auto_ptr<qfamily> source = rhs.pop_front();
+                    bool              keepIt = true;
+                    for(qfamily *target=lhs.head;target;target=target->next)
+                    {
+                        if(target->used==source->used)
+                        {
+                            keepIt = false;
+                            break;
+                        }
+                    }
+
+                    if(keepIt) lhs.push_back( source.yield() );
+
+                }
+            }
+
+#if 0
+            template <typename T> static inline
+            void reduce(qfamilies &lhs, qfamilies &rhs, const matrix<T> &data)
+            {
+                while(rhs.size)
+                {
+                    auto_ptr<qfamily> source = rhs.pop_front();
+                    bool              keepIt = true;
+                    for(qfamily *target=lhs.head;target;target=target->next)
+                    {
+                        if(qfamily::reduce(*target,*source,data))
+                        {
+                            keepIt = false;
+                            break;
+                        }
+                    }
+
+                    if(keepIt) lhs.push_back( source.yield() );
+
+                }
+            }
+#endif
 
 
         };
