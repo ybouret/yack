@@ -25,8 +25,7 @@ namespace yack
             //__________________________________________________________________
             explicit qbuilder(const size_t dims); //!< initialize
             virtual ~qbuilder() noexcept;         //!< cleanup
-
-
+            
             //__________________________________________________________________
             //
             // fill repository
@@ -51,6 +50,8 @@ namespace yack
                     lineage.generate(parents,data,rank,repo);
                     lineage.swap_with(parents);
                 }
+                lineage.release();
+                std::cerr << "#fund = " << (*this)->stowage() << std::endl;
                 return wtime::ticks() - mark;
             }
 
