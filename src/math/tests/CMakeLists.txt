@@ -68,6 +68,7 @@ add_test(cyclic      test-math cyclic)
 add_test(diagonalize test-math diagonalize)
 add_test(cholesky    test-math cholesky)
 add_test(ortho       test-math ortho)
+add_test(woven       test-math woven)
 
 #ode
 add_test(rk4      test-math rk4)

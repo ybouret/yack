@@ -3,6 +3,13 @@
 #include "yack/woven/qbranch.hpp"
 #include "yack/system/imported.hpp"
 
+namespace yack
+{
+    namespace  woven
+    {
+        bool qbranch::doReduce = true;
+    }
+}
 
 namespace yack
 {

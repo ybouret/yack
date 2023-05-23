@@ -24,6 +24,15 @@ namespace yack
             }
         }
 
+        void flak:: simplify_rows(matrix<apq> &M)
+        {
+            for(size_t i=M.rows;i>0;--i)
+            {
+                simplify(M[i]);
+            }
+        }
+
+
         void flak:: univocal( writable<apq> &v )
         {
             //------------------------------------------------------------------
@@ -134,6 +143,15 @@ namespace yack
                     coerce(v[i].num.n) /= g;
             }
         }
+
+        void flak:: univocal_rows(matrix<apq> &M)
+        {
+            for(size_t i=M.rows;i>0;--i)
+            {
+                univocal(M[i]);
+            }
+        }
+
 
         size_t flak:: rank_of(matrix<apq> &Q)
         {

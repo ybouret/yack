@@ -3,7 +3,7 @@
 #ifndef YACK_MATH_ORTHO_FAMILY_INCLUDED
 #define YACK_MATH_ORTHO_FAMILY_INCLUDED 1
 
-#include "yack/apex/alga.hpp"
+#include "yack/apex/flak.hpp"
 #include "yack/container/matrix.hpp"
 
 namespace yack
@@ -30,7 +30,7 @@ namespace yack
                     matrix<apq> PP(P,transmogrify);
                     if(!make(QQ,PP)) return false;
                 }
-                if(univocal) alga::univocal_rows(QQ); else alga::simplify_rows(QQ);
+                if(univocal) apex::flak::univocal_rows(QQ); else apex::flak::simplify_rows(QQ);
                 Q.apply(numerator_of,QQ);
                 return true;
             }
@@ -45,13 +45,12 @@ namespace yack
                     matrix<apq> PP(P,transmogrify);
                     if(!make(QQ,PP)) return false;
                 }
-                if(univocal) alga::univocal_rows(QQ); else alga::simplify_rows(QQ);
+                if(univocal) apex::flak::univocal_rows(QQ); else apex::flak::simplify_rows(QQ);
                 Q.apply(numerator_to<T>,QQ);
                 return true;
             }
 
-
-
+            
             //! get numerator of simplified rational
             static apz numerator_of(const apq &);
 

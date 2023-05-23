@@ -21,7 +21,7 @@ YACK_UTEST(ortho)
                 P[i][j] = Pi[i][j] = static_cast<int>(ran.in(-10,10));
             }
         }
-        if(alga::rank(P)<nr) continue;
+        if(apex::flak::rank(P)<nr) continue;
         std::cerr << "P=" << P << std::endl;
         matrix<apq> Q(nc,nc);
         YACK_ASSERT(ortho_family::make(Q,P));

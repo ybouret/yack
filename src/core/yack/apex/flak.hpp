@@ -79,6 +79,15 @@ namespace yack
                 } //!< implementation
             };
 
+            template <typename LHS>   inline
+            apq mod2(LHS &lhs)
+            {
+                apq res;
+                for(size_t i=lhs.size();i>0;--i)
+                    internal::add_mod2<typename LHS::type>::to(res, lhs[i]);
+                return res;
+            }
+
         }
 
         //! Linear Algebra Kernel
@@ -115,15 +124,17 @@ namespace yack
 
             //__________________________________________________________________
             //
-            //! convert rationals to integerss
+            //! convert rationals to integers representation
             //__________________________________________________________________
             static void simplify(writable<apq> &q);
+            static void simplify_rows(matrix<apq> &M);
 
             //__________________________________________________________________
             //
             //! convert rationals to integers with univocal sign
             //__________________________________________________________________
             static void univocal(writable<apq> &q);
+            static void univocal_rows(matrix<apq> &M);
 
 
 
