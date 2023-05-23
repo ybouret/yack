@@ -11,9 +11,16 @@ namespace yack
     namespace woven
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! compressing input rows
+        //
+        //______________________________________________________________________
         struct qcompress
         {
 
+            //! count number of no zero coefficients
             template <typename ARRAY>
             static inline size_t neqz(ARRAY &arr)
             {
@@ -25,9 +32,10 @@ namespace yack
                 return res;
             }
 
+            //! keeping only not null, not pairwise colinear vectors
             template <typename T, typename U> static inline
-            size_t build(matrix<T>       &Qc,
-                         const matrix<U> &Q,
+            size_t build(matrix<T>       &output,
+                         const matrix<U> &input,
                          size_t           nmin=0)
             {
                 typedef readable<U>                  row_type;
@@ -36,10 +44,10 @@ namespace yack
 
                 nmin = max_of<size_t>(nmin,1);
                 row_repo rows;
-                for(size_t i=1;i<=Q.rows;++i)
+                for(size_t i=1;i<=input.rows;++i)
                 {
-                    const row_type &rhs  = Q[i];
-                    if( neqz(rhs) < nmin ) continue;;
+                    const row_type &rhs  = input[i];
+                    if( neqz(rhs) < nmin ) continue;
 
                     bool ok  = true;
                     for(const row_node *node=rows.head;node;node=node->next)
@@ -56,21 +64,21 @@ namespace yack
                 const size_t nr = rows.size;
                 if(nr<=0)
                 {
-                    Qc.release();
+                    output.release();
                     return 0;
                 }
                 else
                 {
-                    const size_t nc = Q.cols;
-                    Qc.make(nr,nc);
+                    const size_t nc = input.cols;
+                    output.make(nr,nc);
                     size_t ir=1;
                     for(const row_node *node=rows.head;node;node=node->next,++ir)
                     {
-                        writable<T>    &target = Qc[ir];
+                        writable<T>    &target = output[ir];
                         const row_type &source = ***node; assert(source.size()==target.size());
                         for(size_t j=nc;j>0;--j) target[j] = static_cast<T>(source[j]);
                     }
-                    return apex::flak::rank(Qc);
+                    return apex::flak::rank(output);
                 }
             }
 

@@ -12,6 +12,8 @@ namespace yack
     {
         q_array:: q_array(const size_t dims) :
         metrics(dims),
+        next(0),
+        prev(0),
         coord(0),
         znrm2(0),
         entry(0),

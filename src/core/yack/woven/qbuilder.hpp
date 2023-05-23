@@ -44,6 +44,7 @@ namespace yack
             {
                 const uint64_t mark = wtime::ticks();
                 parents.initialize(data,repo,load);
+
                 while(parents.size)
                 {
                     std::cerr << "#parents: " << parents.size << std::endl;
@@ -51,7 +52,7 @@ namespace yack
                     lineage.swap_with(parents);
                 }
                 lineage.release();
-                std::cerr << "#fund = " << (*this)->stowage() << std::endl;
+                repo.sort();
                 return wtime::ticks() - mark;
             }
 

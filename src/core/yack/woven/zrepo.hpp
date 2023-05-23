@@ -34,9 +34,8 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            void ensure(const qvector          &lhs); //!< check/copy/finalize
-            void ensure(const list_of<qvector> &lhs); //!< ensure all in lhs
-            void sort();                              //!< sort
+            void ensure(const qvector &lhs); //!< check/copy/finalize
+            void sort();                     //!< hybrid sort
 
             //! display
             friend std::ostream & operator<<(std::ostream &, const zrepo &);

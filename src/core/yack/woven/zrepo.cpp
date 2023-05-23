@@ -45,17 +45,10 @@ namespace yack
                 Z[i] = lhs[i].num;
             }
             Z.finalize();
-            // std::cerr << "added " << Z << std::endl;
         }
 
 
-        void zrepo:: ensure(const list_of<qvector> &lhs)
-        {
-            for(const qvector *qv=lhs.head;qv;qv=qv->next)
-            {
-                ensure(*qv);
-            }
-        }
+
 
         std::ostream & operator<<(std::ostream &os, const zrepo &repo)
         {
@@ -71,6 +64,17 @@ namespace yack
 
         void zrepo:: sort()
         {
+            {
+                zvectors output;
+                while(head)
+                {
+                    if(head->ncoeff<=1)
+                        delete pop_front();
+                    else
+                        output.push_back( pop_front() );
+                }
+                swap_with(output);
+            }
             merge_list_of<zvector>::sort(*this, zvector::compare);
         }
 

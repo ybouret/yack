@@ -127,6 +127,11 @@ namespace yack
             //! convert rationals to integers representation
             //__________________________________________________________________
             static void simplify(writable<apq> &q);
+
+            //__________________________________________________________________
+            //
+            //! simplify all rows
+            //__________________________________________________________________
             static void simplify_rows(matrix<apq> &M);
 
             //__________________________________________________________________
@@ -134,6 +139,11 @@ namespace yack
             //! convert rationals to integers with univocal sign
             //__________________________________________________________________
             static void univocal(writable<apq> &q);
+
+            //__________________________________________________________________
+            //
+            //! make all univocal rows
+            //__________________________________________________________________
             static void univocal_rows(matrix<apq> &M);
 
 

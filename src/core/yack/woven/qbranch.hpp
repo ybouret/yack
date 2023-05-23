@@ -58,7 +58,7 @@ namespace yack
                 for(qfamily *f=head;f;f=f->next)
                 {
                     if(!f->try_grow(data)) raise_null();
-                    if(load) repo.ensure(*f);
+                    if(load) repo.ensure( *(f->tail) );
                 }
             }
             
@@ -144,7 +144,7 @@ namespace yack
                     BUILD_LAST:
                         if(lineage->try_grow(data)) { assert(rank==lineage->size); // found last vector
                             while(lineage->try_grow(data)) raise_greater_rank();   // lineage should have max rank
-                            repo.ensure( *push_back( lineage.yield() ) );          // push back lineage and update repo
+                            repo.ensure( *(push_back( lineage.yield() )->tail) );  // push back lineage and update repo
                             return;                                                // and return without compression
                         }
                         if(lineage->indx.size<=0) raise_smaller_rank();
@@ -172,7 +172,7 @@ namespace yack
                 LINEAGE:
                     if(lineage->try_grow(data))
                     {
-                        repo.ensure(*children.push_back( lineage.yield() ));
+                        repo.ensure( *(children.push_back( lineage.yield() )->tail) );
                         if(++rotation<siblings)
                         {
                             lineage = new qfamily(parents);
@@ -214,34 +214,10 @@ namespace yack
                             break;
                         }
                     }
-
                     if(keepIt) lhs.push_back( source.yield() );
-
                 }
             }
 
-#if 0
-            template <typename T> static inline
-            void reduce(qfamilies &lhs, qfamilies &rhs, const matrix<T> &data)
-            {
-                while(rhs.size)
-                {
-                    auto_ptr<qfamily> source = rhs.pop_front();
-                    bool              keepIt = true;
-                    for(qfamily *target=lhs.head;target;target=target->next)
-                    {
-                        if(qfamily::reduce(*target,*source,data))
-                        {
-                            keepIt = false;
-                            break;
-                        }
-                    }
-
-                    if(keepIt) lhs.push_back( source.yield() );
-
-                }
-            }
-#endif
 
 
         };
