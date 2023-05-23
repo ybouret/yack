@@ -7,36 +7,6 @@ namespace yack
     namespace woven
     {
 
-        zvector:: zvector(const size_t dims) :
-        object(),
-        metrics(dims),
-        ztableau(dims),
-        next(0),
-        prev(0)
-        {
-        }
-
-        zvector:: ~zvector() noexcept
-        {
-        }
-
-
-        zvector:: zvector(const zvector &other) :
-        collection(),
-        object(),
-        metrics(other),
-        ztableau(other),
-        next(0),
-        prev(0)
-        {
-        }
-        
-        int zvector:: compare(const zvector *lhs, const zvector *rhs) noexcept
-        {
-            assert(lhs->size()==rhs->size());
-            return comparison::lexicographic(&(*lhs)[1], &(*rhs)[1], rhs->size());
-        }
-
         zrepo:: ~zrepo() noexcept {}
 
         zrepo:: zrepo(const size_t dims)  : metrics(dims), zvectors()
@@ -47,7 +17,6 @@ namespace yack
         {
 
         }
-
 
         static inline bool are_equal(const qvector &lhs, const zvector &rhs) noexcept
         {
@@ -68,14 +37,15 @@ namespace yack
                 if(are_equal(lhs,*rhs)) return;
             }
 
-            //! create a new vector
+            // create a new vector
             zvector &Z = * push_back( new zvector(dimensions) );
             for(size_t i=dimensions;i>0;--i)
             {
                 assert(1==lhs[i].den);
                 Z[i] = lhs[i].num;
             }
-            std::cerr << "added " << Z << std::endl;
+            Z.finalize();
+            // std::cerr << "added " << Z << std::endl;
         }
 
 
@@ -93,7 +63,7 @@ namespace yack
             size_t i=1;
             for(const zvector *node=repo.head;node;node=node->next,++i)
             {
-                os << "\tZ" << i << " = " << *node << std::endl;
+                os << "\tZ" << i << " = " << *node << " |" << node->weight << "| #" << node->ncoeff << std::endl;
             }
             os << "<zrepo/>";
             return os;

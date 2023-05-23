@@ -5,6 +5,7 @@
 
 #include "yack/woven/q-array.hpp"
 #include "yack/container/writable.hpp"
+#include "yack/spot-object.hpp"
 
 namespace yack
 {
@@ -28,7 +29,7 @@ namespace yack
 
             //! setup from compatible user's data
             template <typename T> inline
-            qvector(const readable<T> &arr) : q_array(arr.size()), norm2(*znrm2)
+            qvector(const readable<T> &arr) : object(), q_array(arr.size()), norm2(*znrm2)
             {
                 for(size_t i=dimensions;i>0;--i)
                         coord[i] = arr[i];

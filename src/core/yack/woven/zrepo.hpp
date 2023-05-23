@@ -1,37 +1,16 @@
 
 //! \file
 
-#ifndef YACK_WOVEN_QREPOSITORY_INCLUDED
-#define YACK_WOVEN_QREPOSITORY_INCLUDED 1
+#ifndef YACK_WOVEN_ZREPO_INCLUDED
+#define YACK_WOVEN_ZREPO_INCLUDED 1
 
-#include "yack/woven/qvector.hpp"
+#include "yack/woven/zvector.hpp"
 #include "yack/data/list/cxx.hpp"
-#include "yack/sequence/cxx-array.hpp"
-#include "yack/memory/allocator/dyadic.hpp"
 
 namespace yack
 {
     namespace woven
     {
-
-        typedef cxx_array<apz,memory::dyadic> ztableau;
-
-        class zvector : public object, public metrics, public ztableau
-        {
-        public:
-            explicit zvector(const size_t dims);
-            virtual ~zvector() noexcept;
-            zvector(const zvector &);
-
-            zvector *next;
-            zvector *prev;
-
-            static int compare(const zvector *lhs, const zvector *rhs) noexcept;
-
-        private:
-            YACK_DISABLE_ASSIGN(zvector);
-        };
-
         typedef cxx_list_of<zvector> zvectors;
 
         class zrepo : public metrics, public zvectors

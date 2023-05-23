@@ -126,7 +126,6 @@ namespace yack
         void qbranch:: reduce(qfamilies &F)
         {
             std::cerr << "[[ REDUCTION ]]" << std::endl;
-            //std::cerr << F << std::endl;
             qfamilies R;
             while(F.size)
             {

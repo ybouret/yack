@@ -1,4 +1,4 @@
-#include "yack/woven/qbranch.hpp"
+#include "yack/woven/qbuilder.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/sequence/vector.hpp"
 #include "yack/sequence/cxx-array.hpp"
@@ -6,6 +6,7 @@
 #include "../main.hpp"
 #include "yack/apex/flak.hpp"
 #include "yack/ios/ascii/convert.hpp"
+#include "yack/utest/tmx.hpp"
 
 using namespace yack;
 
@@ -20,6 +21,7 @@ YACK_UTEST(woven)
 {
 
     randomized::rand_ ran;
+    wtime chrono;
 
 
     size_t dims = 4; if(argc>1) dims = ios::ascii::convert::to<size_t>(argv[1], "dims");
@@ -43,29 +45,34 @@ YACK_UTEST(woven)
     woven::qbranch Qng(dims,fund);
     woven::zrepo   repo(dims);
 
-
-    Q.initialize(M,repo,false);
-    std::cerr << Q << std::endl;
+    std::cerr << "With Reduction" << std::endl;
+    woven::qbranch::doReduce = false;
+    uint64_t  n64 = 0;
+    YACK_TMX_ADD(n64,Q.initialize(M,repo,false));
     while(Q.size)
     {
-        Qng.generate(Q,M,rank,repo);
-        Q.swap_with(Qng);
-        std::cerr << Q << std::endl;
+        YACK_TMX_ADD(n64,
+                     Qng.generate(Q,M,rank,repo);
+                     Q.swap_with(Qng)
+                     );
+        (std::cerr << '.').flush();
     }
+    std::cerr << std::endl;
 
-
-
+    std::cerr << "Without Reduction" << std::endl;
     woven::qbranch::doReduce = false;
     woven::zrepo   repo2(dims);
-
-    Q.initialize(M,repo2,false);
-    std::cerr << Q << std::endl;
+    uint64_t  r64 = 0;
+    YACK_TMX_ADD(r64,Q.initialize(M,repo,false));
     while(Q.size)
     {
-        Qng.generate(Q,M,rank,repo2);
-        Q.swap_with(Qng);
-        std::cerr << Q << std::endl;
+        YACK_TMX_ADD(r64,
+                     Qng.generate(Q,M,rank,repo);
+                     Q.swap_with(Qng)
+                     );
+        (std::cerr << '.').flush();
     }
+    std::cerr << std::endl;
 
     std::cerr << "M=" << M << std::endl;
     repo.sort();
@@ -73,7 +80,9 @@ YACK_UTEST(woven)
     repo2.sort();
     std::cerr << repo2 << std::endl;
 
+    std::cerr << "red: " << chrono(n64) << " / raw: " << chrono(r64) << std::endl;
 
+    YACK_SIZEOF(woven::zvector);
     YACK_SIZEOF(woven::qvector);
     YACK_SIZEOF(woven::qfamily);
     YACK_SIZEOF(woven::qbranch);

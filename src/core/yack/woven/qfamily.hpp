@@ -25,7 +25,6 @@ namespace yack
         typedef cxx_array<apq,qmemory>       qtableau; //!< helper class
         typedef cxx_list_of<qvector>         qvectors; //!< base class
 
-
         //______________________________________________________________________
         //
         //
@@ -40,14 +39,13 @@ namespace yack
             typedef data_set<size_t>::fund_type fund;  //!< shared bank for list
         };
 
-
         //______________________________________________________________________
         //
         //
         //! family of orthogonal integer vectors
         //
         //______________________________________________________________________
-        class qfamily : public metrics, public qvectors
+        class qfamily : public spot_object, public metrics, public qvectors
         {
         public:
             static const char clid[]; //!< "qfamily"

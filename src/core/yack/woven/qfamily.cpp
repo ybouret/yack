@@ -12,6 +12,7 @@ namespace yack
 
         qfamily:: qfamily(const size_t         dims,
                           const indices::fund &fund) :
+        spot_object(),
         metrics(dims),
         qvectors(),
         indx(fund),
@@ -30,6 +31,7 @@ namespace yack
         }
 
         qfamily:: qfamily(const qfamily &F) :
+        spot_object(),
         metrics(F),
         qvectors(F),
         indx(F.indx),

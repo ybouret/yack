@@ -11,6 +11,7 @@ namespace yack
         }
 
         qvector:: qvector(const qvector &other) :
+        object(),
         q_array(other.dimensions),
         norm2(*znrm2)
         {

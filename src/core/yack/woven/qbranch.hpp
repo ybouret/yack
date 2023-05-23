@@ -51,7 +51,7 @@ namespace yack
             template <typename T> inline
             void initialize(const matrix<T> &data,
                             zrepo           &repo,
-                            const bool       load = false)
+                            const bool       load)
             {
                 initialize( check_ndof(data) );
                 repo.release();
