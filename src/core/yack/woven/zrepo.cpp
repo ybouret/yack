@@ -31,6 +31,8 @@ namespace yack
         void zrepo:: ensure(const qvector &lhs)
         {
             assert(dimensions==lhs.dimensions);
+
+            // check no multiple
             for(const zvector *rhs=head;rhs;rhs=rhs->next)
             {
                 assert(dimensions==rhs->dimensions);
