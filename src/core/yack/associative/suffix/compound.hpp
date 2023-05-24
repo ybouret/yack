@@ -83,7 +83,9 @@ namespace yack
         //______________________________________________________________________
 
         //! get tree structure
-        inline const tree_type &get_tree() const noexcept { return tree; }
+        inline const tree_type & get_tree() const noexcept { return tree; }
+
+
 
         //! exchange content, keep resources
         void exchange_content_with(suffix_compound &other) noexcept

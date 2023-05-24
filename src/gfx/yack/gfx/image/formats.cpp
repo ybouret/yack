@@ -26,7 +26,7 @@ namespace yack
             const format & formats:: format_for(const string &filename) const
             {
                 YACK_LOCK(access);
-                for(const knot_type *node = (*get_tree()).head;node;node=node->next)
+                for(const knot_type *node = tree->head;node;node=node->next)
                 {
                     format &io =  coerce(***node);
                     if(io.matches(filename)) return io;
@@ -65,7 +65,7 @@ namespace yack
             {
                 if(id)
                 {
-                    const fmt_ptr *ppC = get_tree().search(id,strlen(id));
+                    const fmt_ptr *ppC = tree.search(id,strlen(id));
                     return NULL!=ppC ? & **ppC : NULL;
                 }
                 else

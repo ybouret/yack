@@ -14,6 +14,12 @@ namespace yack
         {
         }
 
+        const string & entity:: key() const noexcept
+        {
+            return name;
+        }
+
+
     }
 }
 
@@ -25,6 +31,10 @@ namespace yack
         entity:: group:: ~group() noexcept {}
         entity:: group::  group(const group &g) noexcept : maxlen(g.maxlen) {}
 
+        void entity::group:: update(const entity &ent) noexcept
+        {
+            coerce(maxlen) = max_of(maxlen,ent.name.size());
+        }
     }
 
 }

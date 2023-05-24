@@ -30,7 +30,7 @@ namespace yack
         {
             if(key)
             {
-                return this->get_tree().search(key,strlen(key));
+                return tree.search(key,strlen(key));
             }
             else
             {
