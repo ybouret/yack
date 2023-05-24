@@ -32,7 +32,7 @@ namespace yack
 
             friend std::ostream & operator<<(std::ostream &, const Species &);
 
-
+            
             const int z;
 
         private:

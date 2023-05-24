@@ -12,7 +12,7 @@ namespace yack
 
         std::ostream & operator<<(std::ostream &os, const Species &sp)
         {
-            os << '[' << sp.name << ']' << std::endl;
+            os << '[' << sp.name << ']';
             return os;
         }
 
