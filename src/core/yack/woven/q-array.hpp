@@ -5,6 +5,7 @@
 #define YACK_WOVEN_Q_ARRAY_INCLUDED 1
 
 #include "yack/woven/metrics.hpp"
+#include "yack/container/dynamic.hpp"
 #include "yack/apex.hpp"
 
 namespace yack
@@ -19,7 +20,7 @@ namespace yack
         //! base class for qvectors (handle memory)
         //
         //______________________________________________________________________
-        class q_array : public metrics, public readable<apq>
+        class q_array : public metrics, public readable<apq>, public dynamic
         {
         public:
             //__________________________________________________________________
@@ -28,6 +29,7 @@ namespace yack
             //__________________________________________________________________
             virtual            ~q_array()                noexcept;              //!< cleanup
             virtual size_t      size()             const noexcept;              //!< dimensions
+            virtual size_t      granted()          const noexcept;              //!< granted memory
             virtual const apq & operator[](size_t) const noexcept;              //!< coordinate
             static  bool        check_not_null(const readable<apq> &) noexcept; //!< helper
 
@@ -40,7 +42,7 @@ namespace yack
 
         protected:
             explicit q_array(const size_t dims); //!< setup
-            void     finalize();                 //!< compute |coord|^2
+            void     finalize();                 //!< make univocal and compute |coord|^2
 
             apq   *coord; //!< memory for coodinates [1..dimensions]
             apz   *znrm2; //!< memory for |coord|^2

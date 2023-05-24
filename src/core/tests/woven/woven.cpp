@@ -38,35 +38,20 @@ YACK_UTEST(woven)
     std::cerr << "M =" << M  << std::endl;
     std::cerr << "rank=" << rank << std::endl;
 
-    woven::zrepo    repo1(dims);
-    woven::zrepo    repo2(dims);
+    woven::zrepo    repo(dims);
 
-    //std::cerr << "With Reduction" << std::endl;
-    //woven::qbranch::doReduce = true;
+
     uint64_t n64 = 0;
     {
         woven::qbuilder Q(dims);
-        n64 = Q(repo1,M,rank,false);
+        n64 = Q(repo,M,rank,false);
         (std::cerr << "--> done" << std::endl).flush();
     }
+    std::cerr << "in "  << chrono(n64) << " s" << std::endl;
 
-
-    std::cerr << "Without Reduction" << std::endl;
-    woven::qbranch::doReduce = false;
-    uint64_t r64 = 0;
-    {
-        woven::qbuilder Q(dims);
-        r64 = Q(repo2,M,rank,false);
-        (std::cerr << "--> done" << std::endl).flush();
-    }
 
     std::cerr << "M=" << M << std::endl;
-    repo1.sort();
-    std::cerr << repo1 << std::endl;
-    repo2.sort();
-    std::cerr << repo2 << std::endl;
-
-    std::cerr << "red: " << chrono(n64) << " / raw: " << chrono(r64) << std::endl;
+    repo.sort();
 
     YACK_SIZEOF(woven::zvector);
     YACK_SIZEOF(woven::qvector);

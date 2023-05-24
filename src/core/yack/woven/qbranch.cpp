@@ -3,13 +3,7 @@
 #include "yack/woven/qbranch.hpp"
 #include "yack/system/imported.hpp"
 
-namespace yack
-{
-    namespace  woven
-    {
-        bool qbranch::doReduce = true;
-    }
-}
+
 
 namespace yack
 {
@@ -83,17 +77,25 @@ namespace yack
             }
             return os << '}';
         }
+        
 
-        void qbranch:: collect(zrepo &repo) const
+        void qbranch:: reduce(qfamilies &lhs, qfamilies &rhs) noexcept
         {
-            for(const qfamily *f=head;f;f=f->next)
+            while(rhs.size)
             {
-                if(f->tail) repo.ensure(*(f->tail));
+                auto_ptr<qfamily> source = rhs.pop_front();
+                bool              keepIt = true;
+                for(qfamily *target=lhs.head;target;target=target->next)
+                {
+                    if(target->used==source->used)
+                    {
+                        keepIt = false;
+                        break;
+                    }
+                }
+                if(keepIt) lhs.push_back( source.yield() );
             }
         }
-
-
-
        
 
 

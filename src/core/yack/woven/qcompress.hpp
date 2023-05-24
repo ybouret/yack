@@ -20,7 +20,10 @@ namespace yack
         struct qcompress
         {
 
+            //__________________________________________________________________
+            //
             //! count number of no zero coefficients
+            //__________________________________________________________________
             template <typename ARRAY>
             static inline size_t neqz(ARRAY &arr)
             {
@@ -32,23 +35,39 @@ namespace yack
                 return res;
             }
 
+            //__________________________________________________________________
+            //
             //! keeping only not null, not pairwise colinear vectors
+            /**
+             \param output valid entry matrix for qbuilder
+             \param input  matrix of test rows
+             */
+            //__________________________________________________________________
             template <typename T, typename U> static inline
             size_t build(matrix<T>       &output,
-                         const matrix<U> &input,
-                         size_t           nmin=0)
+                         const matrix<U> &input)
             {
                 typedef readable<U>                  row_type;
                 typedef core_repo<row_type>          row_repo;
                 typedef typename row_repo::node_type row_node;
 
-                nmin = max_of<size_t>(nmin,1);
+                //--------------------------------------------------------------
+                //
+                // initialize empty rows
+                //
+                //--------------------------------------------------------------
                 row_repo rows;
                 for(size_t i=1;i<=input.rows;++i)
                 {
+                    //----------------------------------------------------------
+                    // take next input row
+                    //----------------------------------------------------------
                     const row_type &rhs  = input[i];
-                    if( neqz(rhs) < nmin ) continue;
+                    if( neqz(rhs) <= 0 ) continue;
 
+                    //----------------------------------------------------------
+                    // check no colinearity with recorded rows
+                    //----------------------------------------------------------
                     bool ok  = true;
                     for(const row_node *node=rows.head;node;node=node->next)
                     {
@@ -59,8 +78,18 @@ namespace yack
                             break;
                         }
                     }
+
+                    //----------------------------------------------------------
+                    // record this row
+                    //----------------------------------------------------------
                     if(ok) rows << rhs;
                 }
+
+                //--------------------------------------------------------------
+                //
+                // prepare and fill output
+                //
+                //--------------------------------------------------------------
                 const size_t nr = rows.size;
                 if(nr<=0)
                 {

@@ -33,7 +33,6 @@ namespace yack
             // definitions
             //__________________________________________________________________
             static const char clid[];   //!< "qbranch"
-            static bool       doReduce; //!< helper
 
             //__________________________________________________________________
             //
@@ -48,6 +47,11 @@ namespace yack
             //__________________________________________________________________
 
             //! initialize families with each row of data
+            /**
+             \param data rows of trial vectors
+             \param repo destination repository
+             \param load if true, load initial vectors into repository
+             */
             template <typename T> inline
             void initialize(const matrix<T> &data,
                             zrepo           &repo,
@@ -67,17 +71,22 @@ namespace yack
             friend std::ostream & operator<<(std::ostream &, const qbranch &);
 
 
-
             //! compute next generation
+            /**
+             \param parents distinct families with the same size
+             \param data    rows of trial vectors
+             \param rank    rank of data
+             \param repo    destination repository
+             */
             template <typename T> inline
-            void generate(const qbranch    &ancestors,
+            void generate(const qbranch    &parents,
                           const matrix <T> &data,
                           const size_t      rank,
                           zrepo            &repo)
             {
-                assert( this != &ancestors );
+                assert( this != &parents );
                 release();
-                for(const qfamily *F=ancestors.head;F;F=F->next)
+                for(const qfamily *F=parents.head;F;F=F->next)
                 {
                     generate(*F,data,rank,repo);
                 }
@@ -98,8 +107,6 @@ namespace yack
             void   raise_greater_rank() const;                //!< invalid matrix rank
             void   raise_smaller_rank() const;                //!< invalid matrix rank
 
-            //! collect latest produced vectors
-            void collect( zrepo &repo ) const;
 
             //! incremental generation from ONE family of parents
             /**
@@ -131,7 +138,7 @@ namespace yack
                         //------------------------------------------------------
                         assert(rank==parents.size);
                         auto_ptr<qfamily> lineage = new qfamily(parents);
-                        while(lineage->try_grow(data)) raise_greater_rank();
+                        check_consistency(*lineage,data);
                     } return;
 
                     case 1:
@@ -144,7 +151,7 @@ namespace yack
                     BUILD_LAST:
                         if(lineage->try_grow(data)) { assert(rank==lineage->size); // found last vector
                             while(lineage->try_grow(data)) raise_greater_rank();   // lineage should have max rank
-                            repo.ensure( *(push_back( lineage.yield() )->tail) );  // push back lineage and update repo
+                            repo.ensure( push_back( lineage.yield() )->last() );  // push back lineage and update repo
                             return;                                                // and return without compression
                         }
                         if(lineage->indx.size<=0) raise_smaller_rank();
@@ -172,7 +179,7 @@ namespace yack
                 LINEAGE:
                     if(lineage->try_grow(data))
                     {
-                        repo.ensure( *(children.push_back( lineage.yield() )->tail) );
+                        repo.ensure( children.push_back( lineage.yield() )->last() );
                         if(++rotation<siblings)
                         {
                             lineage = new qfamily(parents);
@@ -187,36 +194,27 @@ namespace yack
                 // children count reduction
                 //
                 //--------------------------------------------------------------
-                if(doReduce)
-                {
-                    qfamilies sampling;
-                    reduce(sampling,children);
-                    reduce(*this,sampling);
-                }
-                else
-                {
-                    merge_back(children);
-                }
+#if 1
+                qfamilies sampling;
+                reduce(sampling,children);
+                reduce(*this,sampling);
 
+#else
+                merge_back(children);
+#endif
             }
 
-            void reduce(qfamilies &lhs, qfamilies &rhs)
+            template <typename T> inline
+            void check_consistency(qfamily &lineage, const matrix<T> &data)
             {
-                while(rhs.size)
+                while( lineage.indx.size )
                 {
-                    auto_ptr<qfamily> source = rhs.pop_front();
-                    bool              keepIt = true;
-                    for(qfamily *target=lhs.head;target;target=target->next)
-                    {
-                        if(target->used==source->used)
-                        {
-                            keepIt = false;
-                            break;
-                        }
-                    }
-                    if(keepIt) lhs.push_back( source.yield() );
+                    if(lineage.try_grow(data)) raise_greater_rank();
                 }
             }
+
+
+            static void reduce(qfamilies &lhs, qfamilies &rhs) noexcept;
 
 
 

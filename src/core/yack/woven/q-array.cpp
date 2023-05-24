@@ -28,6 +28,11 @@ namespace yack
             quit(dimensions);
         }
 
+        size_t q_array:: granted() const noexcept
+        {
+            return bytes;
+        }
+
         void q_array:: quit(size_t n) noexcept
         {
             static memory::allocator &mgr = memory::dyadic::location();

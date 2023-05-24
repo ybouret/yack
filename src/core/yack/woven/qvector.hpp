@@ -42,6 +42,10 @@ namespace yack
             //__________________________________________________________________
 
             //! keep rational orthogonal component of source from *this
+            /**
+             \param result rational orthogonal reminder
+             \param source a compatible test vector
+             */
             template <typename SOURCE>
             bool make_ortho(writable<apq> &result, SOURCE &source) const {
                 apq fac;

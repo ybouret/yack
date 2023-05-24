@@ -22,7 +22,7 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit metrics(const size_t dims); //!< dims >= 2
+            explicit metrics(const size_t dims); //!< check dims >= 2
             virtual ~metrics() noexcept;         //!< cleanup
             metrics(const metrics &) noexcept;   //!< copy
 
@@ -31,7 +31,7 @@ namespace yack
             // members
             //__________________________________________________________________
             const size_t dimensions; //!< phase space dimensions
-
+            
         private:
             YACK_DISABLE_ASSIGN(metrics);
         };

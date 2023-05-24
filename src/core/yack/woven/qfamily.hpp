@@ -49,6 +49,10 @@ namespace yack
         class qfamily : public spot_object, public metrics, public qvectors
         {
         public:
+            //__________________________________________________________________
+            //
+            // definition
+            //__________________________________________________________________
             static const char clid[]; //!< "qfamily"
 
             //__________________________________________________________________
@@ -59,7 +63,7 @@ namespace yack
             //! initialize family
             /**
              \param dims phase space dimension
-             \param fund shared bank of ints
+             \param fund shared bank of ints to handle indices
              */
             explicit qfamily(const size_t         dims,
                              const indices::fund &fund);
@@ -72,11 +76,16 @@ namespace yack
             // methods
             //__________________________________________________________________
 
-            //! initialized indices [1..ndof] rolled down 
+            //! initialize content
+            /**
+             \param ndof make indx=[1:ndof]
+             \param rool indx.roll_down(roll)
+             */
             void initialize(const size_t ndof,
                             const size_t roll);
 
-            //! accepts a new vector to expand
+
+            //! accepts a new compatible vector to expand
             template <typename ARRAY>
             bool accepts(ARRAY &arr)
             {
@@ -109,7 +118,11 @@ namespace yack
 
             
 
-            //! try to grow family with next M[indx]
+            //! try to grow family with next M[indx], updating databases
+            /**
+             \param M matrix with compatible rows
+             \return true if M[indx.head] constructed a base vector
+             */
             template <typename T> inline
             bool try_grow(const matrix<T> &M)
             {
@@ -124,12 +137,13 @@ namespace yack
                 }
             }
 
-            //bool used(const size_t idx) const noexcept;
-            
+            //! access the last added qvector
+            const qvector &last() const noexcept;
+
 
             //! display
             friend std::ostream & operator<<(std::ostream &, const qfamily &);
-
+            
 
             //__________________________________________________________________
             //
@@ -145,7 +159,7 @@ namespace yack
 
         private:
             YACK_DISABLE_ASSIGN(qfamily);
-            qtableau qtmp;
+            qtableau      qtmp;  //!< for internal computation
 
             bool accepts();  // from loaded qarr
             bool contains(); // from loaded qarr
@@ -159,10 +173,10 @@ namespace yack
                 else             { drop(idx); return false; }
             }
 
-            //! append idx to primary
+            //! append idx to base and used while constructing qvector from qarr
             void grow(const size_t idx);
 
-            //! append idx to replica
+            //! append idx to deps and used
             void drop(const size_t idx);
 
             //! helper to load arr into qarr

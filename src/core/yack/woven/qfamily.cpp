@@ -46,6 +46,13 @@ namespace yack
         {
         }
 
+        const qvector & qfamily:: last() const noexcept
+        {
+            assert(size>0);
+            return *tail;
+        }
+
+
 
         bool qfamily:: accepts()
         {
