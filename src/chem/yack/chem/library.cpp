@@ -19,7 +19,7 @@ namespace yack
 
         }
 
-        const SList * Library:: operator->() const noexcept
+        const sList * Library:: operator->() const noexcept
         {
             return & *sdb.get_tree();
         }
@@ -41,6 +41,7 @@ namespace yack
                 // new species
                 if(!sdb.insert(lhs)) throw imported::exception(CLID,"unexpected failure to add '%s'", sp->name());
                 update(*lhs);
+                coerce(lhs->indx[TopLevel]) = sdb.size();
                 return *lhs;
             }
 

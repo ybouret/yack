@@ -14,10 +14,8 @@ namespace yack
     namespace Chemical
     {
 
-        typedef spot_object Object;
-        typedef counted     Counted;
 
-        class Species : public Object, public  Entity, public Counted
+        class Species : public spot_object, public  Entity, public counted
         {
         public:
             typedef ark_ptr<string,Species> Pointer;

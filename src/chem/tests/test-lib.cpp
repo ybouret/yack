@@ -1,5 +1,5 @@
 #include "yack/chem/library.hpp"
-#include "yack/chem/eqs/actors.hpp"
+#include "yack/chem/eqs/components.hpp"
 #include "yack/utest/run.hpp"
 
 using namespace yack;
@@ -12,6 +12,8 @@ YACK_UTEST(lib)
     YACK_SIZEOF(Library);
     YACK_SIZEOF(Actor);
     YACK_SIZEOF(Actors);
+    YACK_SIZEOF(Component);
+    YACK_SIZEOF(Components);
 
 
     Library lib;
@@ -22,27 +24,33 @@ YACK_UTEST(lib)
     std::cerr << proton    << std::endl;
     std::cerr << hydroxy   << std::endl;
 
-    for(const SNode *sn = lib->head; sn; sn=sn->next)
+    for(const sNode *sn = lib->head; sn; sn=sn->next)
     {
         const Species &sp = ***sn;
         lib.pad(std::cerr << sp,sp) << " : z=" << sp.z << std::endl;
     }
 
-    Actors A;
-    for(unsigned i=1;i<=2;++i)
     {
-        for(unsigned j=1;j<=2;++j)
+        Actors A;
+        for(unsigned i=1;i<=2;++i)
         {
-            A.release();
-            A.push_back( new Actor(i,proton)  );
-            A.push_back( new Actor(j,hydroxy) );
-            A.makeName();
-            std::cerr << "output: " << A << std::endl;
-            std::cerr << "name  : " << A.name << std::endl;
+            for(unsigned j=1;j<=2;++j)
+            {
+                A.release();
+                A.push_back( new Actor(i,proton)  );
+                A.push_back( new Actor(j,hydroxy) );
+                A.makeName();
+                std::cerr << "output: " << A << std::endl;
+                std::cerr << "name  : " << A.name << std::endl;
+            }
         }
     }
 
-
+    Components water;
+    water(1,proton);
+    water(1,hydroxy);
+    std::cerr << "#water=" << water->size << std::endl;
+    water.display(std::cerr) << std::endl;
 }
 YACK_UDONE()
 

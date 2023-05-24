@@ -11,7 +11,7 @@ namespace yack
 
         }
 
-        static const char noname[] = "";
+        static const char noname[] = ".";
 
         Actors:: Actors() : Actors_(), Entity(noname)
         {

@@ -12,8 +12,8 @@ namespace yack
     namespace Chemical
     {
         typedef suffix_set<string,Species::Pointer> SpeciesDB;
-        typedef SpeciesDB::knot_type                SNode;
-        typedef list_of<SNode>                      SList;
+        typedef SpeciesDB::knot_type                sNode;
+        typedef list_of<sNode>                      sList;
 
         class Library : public Gathering
         {
@@ -23,7 +23,7 @@ namespace yack
             explicit Library() noexcept;
             virtual ~Library() noexcept;
 
-            const SList * operator->() const throw();
+            const sList * operator->() const throw();
 
             template <typename NAME>
             const Species & operator()(const NAME &id,
