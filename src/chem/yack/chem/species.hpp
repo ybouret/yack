@@ -14,24 +14,46 @@ namespace yack
     namespace Chemical
     {
 
-
+        //______________________________________________________________________
+        //
+        //
+        //! a species is an Entity with a charge
+        //
+        //______________________________________________________________________
         class Species : public spot_object, public  Entity, public counted
         {
         public:
-            typedef ark_ptr<string,Species> Pointer;
+            //__________________________________________________________________
+            //
+            // definitions
+            //__________________________________________________________________
+            typedef ark_ptr<string,Species> Pointer; //!< alias
 
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+
+            //! setup
             template <typename NAME> inline
             explicit Species(const NAME &id,
                              const int   zz) :
             Entity(id),
             z(zz) {}
 
-            virtual ~Species() noexcept;
-
+            virtual ~Species() noexcept; //!< cleanup
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            //! display as '[name]'
             friend std::ostream & operator<<(std::ostream &, const Species &);
 
-            
-            const int z;
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const int z; //!< algebraic charge
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Species);

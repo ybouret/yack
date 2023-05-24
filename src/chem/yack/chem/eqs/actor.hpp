@@ -10,29 +10,44 @@ namespace yack
     namespace Chemical
     {
 
-
+        //______________________________________________________________________
+        //
+        //
+        //! an Actor is a species with a POSITIVE coefficient
+        //
+        //______________________________________________________________________
         class Actor : public object
         {
         public:
-            explicit Actor(const unsigned, const Species &) noexcept;
-            virtual ~Actor() noexcept;
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit Actor(const unsigned, const Species &) noexcept; //!< setup
+            virtual ~Actor()                                noexcept; //!< cleanup
 
-            const Species & operator*() const noexcept;
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            const Species & operator*()         const noexcept; //!< access
+            void            displayFirst(std::ostream &) const; //!< display
+            void            displayExtra(std::ostream &) const; //!< display
+            string          displayFirst()               const; //!< format
+            string          displayExtra()               const; //!< format
 
-            const unsigned nu;
-
-            void   displayFirst(std::ostream &) const;
-            void   displayExtra(std::ostream &) const;
-            string displayFirst() const;
-            string displayExtra() const;
-
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const unsigned nu; //!< coefficient>0
 
         private:
             const Species &sp;
             YACK_DISABLE_ASSIGN(Actor);
         public:
-            Actor *next;
-            Actor *prev;
+            Actor *next; //!< for list
+            Actor *prev; //!< for list
         };
 
     }

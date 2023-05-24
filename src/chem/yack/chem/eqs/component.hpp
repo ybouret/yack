@@ -9,18 +9,41 @@ namespace yack
 {
     namespace Chemical
     {
+        //______________________________________________________________________
+        //
+        //
+        //! a Component is a Species with a SIGNED coefficient != 0
+        //
+        //______________________________________________________________________
         class Component : public object, public counted
         {
         public:
-            typedef ark_ptr<string,Component> Pointer;
-            
-            explicit Component(const int, const Species &sp) noexcept;
-            virtual ~Component() noexcept;
+            //__________________________________________________________________
+            //
+            // definitions
+            //__________________________________________________________________
+            typedef ark_ptr<string,Component> Pointer; //!< alias
 
-            const Species & operator*() const noexcept;
-            const string  & key()       const noexcept;
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit Component(const int, const Species &sp) noexcept; //!< setup>
+            virtual ~Component() noexcept; //!< cleanup
 
-            const int      nu;
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            const Species & operator*() const noexcept; //!< access
+            const string  & key()       const noexcept; //!< species name
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const int      nu; //!< coefficient != 0
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Component);
             const Species &sp;

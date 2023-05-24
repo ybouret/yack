@@ -12,24 +12,41 @@ namespace yack
 {
     namespace Chemical
     {
-        typedef suffix_set<string,Component::Pointer> ComponentsDB;
-        typedef ComponentsDB::knot_type               cNode;
-        typedef list_of<cNode>                        cList;
+        typedef suffix_set<string,Component::Pointer> ComponentsDB; //!< alias
+        typedef ComponentsDB::knot_type               cNode;        //!< alias
+        typedef list_of<cNode>                        cList;        //!< alias
 
+        //______________________________________________________________________
+        //
+        //
+        //! Components hold a database of components and lists of reac/prod
+        //
+        //______________________________________________________________________
         class Components
         {
         public:
-            static const char CLID[];
-            
+            //__________________________________________________________________
+            //
+            // definitions
+            //__________________________________________________________________
+            static const char CLID[]; //!< "Chemical::Components"
+
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
             explicit Components() noexcept;
             virtual ~Components() noexcept;
 
-            const cList * operator->() const throw();
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            const cList *  operator->() const throw();              //!< access
+            void           operator()(const int, const Species &);  //!< register nu * species
+            std::ostream & display(std::ostream &) const;           //!< output reac <=> prod
 
-            void operator()(const int, const Species &);
-
-            std::ostream & display(std::ostream &) const;
-
+            //! fill array using indx[level] of species
             template <typename T> inline
             void fill( writable<T> &Nu, const IndexLevel level) const
             {
@@ -40,9 +57,13 @@ namespace yack
                     Nu[ sp.indx[level] ] = cc.nu;
                 }
             }
-            
-            const Actors reac;
-            const Actors prod;
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const Actors reac; //!< reactants list
+            const Actors prod; //!< products  list
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Components);
             ComponentsDB cdb;

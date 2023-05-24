@@ -10,12 +10,25 @@ namespace yack
 {
     namespace Chemical
     {
+
+        //______________________________________________________________________
+        //
+        //
+        //! constant equilibrium
+        //
+        //______________________________________________________________________
         class ConstEquilibrium : public Equilibrium
         {
         public:
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+
+            //! setup
             template <typename NAME> inline
             explicit ConstEquilibrium(const NAME &id) : Equilibrium(id) {}
-            virtual ~ConstEquilibrium() noexcept;
+            virtual ~ConstEquilibrium() noexcept; //!< cleanup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(ConstEquilibrium);

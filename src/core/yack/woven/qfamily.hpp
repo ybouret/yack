@@ -79,7 +79,7 @@ namespace yack
             //! initialize content
             /**
              \param ndof make indx=[1:ndof]
-             \param rool indx.roll_down(roll)
+             \param roll indx.roll_down(roll)
              */
             void initialize(const size_t ndof,
                             const size_t roll);

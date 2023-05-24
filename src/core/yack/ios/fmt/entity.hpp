@@ -31,7 +31,7 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            const string &key() const noexcept;
+            const string &key() const noexcept; //!< name
 
             //__________________________________________________________________
             //

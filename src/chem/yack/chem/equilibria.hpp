@@ -11,20 +11,39 @@ namespace yack
 {
     namespace Chemical
     {
-        typedef suffix_set<string,Equilibrium::Pointer> EqsDB;
-        typedef EqsDB::knot_type                        eNode;
-        typedef list_of<eNode>                          eList;
+        typedef suffix_set<string,Equilibrium::Pointer> EqsDB; //!< alias
+        typedef EqsDB::knot_type                        eNode; //!< alias
+        typedef list_of<eNode>                          eList; //!< alias
 
+        //______________________________________________________________________
+        //
+        //
+        //! constant equilibrium
+        //
+        //______________________________________________________________________
         class Equilibria : public Gathering
         {
         public:
-            static const char CLID[];
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            static const char CLID[]; //!< "Chemical::Equilibria"
 
-            explicit Equilibria() noexcept;
-            virtual ~Equilibria() noexcept;
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit Equilibria() noexcept; //!< setup
+            virtual ~Equilibria() noexcept; //!< cleanup
 
-            const eList * operator->() const noexcept;
+            //__________________________________________________________________
+            //
+            // mehtods
+            //__________________________________________________________________
+            const eList * operator->() const noexcept; //!< access
 
+            //! register a new equilibrium, update Gathering
             template <typename EQID> inline
             EQID & operator()(EQID *eq)
             {
@@ -44,12 +63,18 @@ namespace yack
                 }
             }
 
+            //! display
             friend std::ostream & operator<<(std::ostream &, const Equilibria &);
 
+            //! setup reac/proc gatherin
             void finalize() noexcept;
 
-            Gathering reac;
-            Gathering prod;
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            Gathering reac; //!< for all reactants
+            Gathering prod; //!< for all products
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Equilibria);

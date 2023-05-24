@@ -10,14 +10,29 @@ namespace yack
     namespace Chemical
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! Equilibrium interfce
+        //
+        //______________________________________________________________________
         class Equilibrium : public spot_object, public counted, public Entity, public Components
         {
         public:
-            typedef ark_ptr<string,Equilibrium> Pointer;
+            //__________________________________________________________________
+            //
+            // definitions
+            //__________________________________________________________________
+            typedef ark_ptr<string,Equilibrium> Pointer; //!< alias
 
-            virtual ~Equilibrium() noexcept;
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~Equilibrium() noexcept; //!< cleanup
 
         protected:
+            //! setup
             template <typename NAME> inline
             Equilibrium(const NAME &id) : Entity(id)
             {

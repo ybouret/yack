@@ -11,20 +11,39 @@ namespace yack
 {
     namespace Chemical
     {
-        typedef suffix_set<string,Species::Pointer> SpeciesDB;
-        typedef SpeciesDB::knot_type                sNode;
-        typedef list_of<sNode>                      sList;
+        typedef suffix_set<string,Species::Pointer> SpecDB; //!< alias
+        typedef SpecDB::knot_type                   sNode;     //!< alias
+        typedef list_of<sNode>                      sList;     //!< alias
 
+        //______________________________________________________________________
+        //
+        //
+        //! constant equilibrium
+        //
+        //______________________________________________________________________
         class Library : public Gathering
         {
         public:
-            static const char CLID[];
+            //__________________________________________________________________
+            //
+            // definitions
+            //__________________________________________________________________
+            static const char CLID[]; //!< "Chemical::Libary"
 
-            explicit Library() noexcept;
-            virtual ~Library() noexcept;
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit Library() noexcept; //!< setup
+            virtual ~Library() noexcept; //!< cleanup
 
-            const sList * operator->() const throw();
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            const sList * operator->() const throw(); //!< access
 
+            //! insert a new/multiple species
             template <typename NAME>
             const Species & operator()(const NAME &id,
                                        const int   zz)
@@ -32,13 +51,13 @@ namespace yack
                 return inserted( new Species(id,zz) );
             }
 
-            const Species * query(const string &) noexcept;
-            const Species * query(const char   *);
+            const Species * query(const string &) noexcept; //!< query by name
+            const Species * query(const char   *);          //!< query by name
             
 
         private:
             YACK_DISABLE_ASSIGN(Library);
-            SpeciesDB sdb;
+            SpecDB sdb;
 
             const Species & inserted(Species *sp);
         };
