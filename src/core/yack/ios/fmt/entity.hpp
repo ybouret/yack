@@ -68,7 +68,7 @@ namespace yack
 
                 //! padding output
                 template <typename OSTREAM> inline
-                OSTREAM & pad(OSTREAM &os, const entity &en) {
+                OSTREAM & pad(OSTREAM &os, const entity &en) const {
                     for(size_t i=en.name.size();i<=maxlen;++i) os << ' ';
                     return os;
                 }
