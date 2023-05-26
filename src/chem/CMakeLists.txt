@@ -21,11 +21,18 @@ set(chem_eqs ${chem_eqs_decl} ${chem_eqs_srcs})
 SOURCE_GROUP(chem/eqs FILES ${chem_eqs})
 install( FILES ${chem_eqs_decl} DESTINATION include/yack/chem/eqs )
 
+#weasel
+file(GLOB chem_weasel_decl yack/chem/weasel/*.hpp)
+file(GLOB chem_weasel_srcs yack/chem/weasel/*.cpp yack/chem/weasel/*.hxx)
+set(chem_weasel ${chem_weasel_decl} ${chem_weasel_srcs})
+SOURCE_GROUP(chem/weasel FILES ${chem_weasel})
+install( FILES ${chem_weasel_decl} DESTINATION include/yack/chem/weasel )
 
 add_library(yack-chem STATIC
 ${chem_main}
 ${chem_com}
 ${chem_eqs}
+${chem_weasel}
 )
 
 install( TARGETS yack-chem ARCHIVE DESTINATION lib )

@@ -8,4 +8,6 @@ yack_link_libraries(test-chem)
 yack_testing(chem)
 
 enable_testing()
+add_test(lib test-chem lib)
+add_test(wsl test-chem wsl)
 

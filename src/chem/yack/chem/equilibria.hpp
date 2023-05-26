@@ -66,7 +66,7 @@ namespace yack
             //! display
             friend std::ostream & operator<<(std::ostream &, const Equilibria &);
 
-            //! setup reac/proc gatherin
+            //! setup reac/proc gathering for clean display
             void finalize() noexcept;
 
             //__________________________________________________________________
