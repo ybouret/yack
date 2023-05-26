@@ -24,6 +24,18 @@ namespace yack
             return & *sdb.get_tree();
         }
 
+        std::ostream & operator<<(std::ostream &os, const Library &lib)
+        {
+            os << '{' << std::endl;
+            for(const sNode *node=lib->head;node;node=node->next)
+            {
+                const Species &sp = ***node;
+                lib.pad(os << ' ' << sp.name,sp) << " : z =" << sp.z << std::endl;
+            }
+            os << '}';
+            return os;
+        }
+
         const Species & Library:: inserted(Species *sp)
         {
             const Species::Pointer  lhs(sp);

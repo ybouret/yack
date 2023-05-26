@@ -43,6 +43,8 @@ namespace yack
             //__________________________________________________________________
             const sList * operator->() const throw(); //!< access
 
+            friend std::ostream & operator<<(std::ostream &, const Library &);
+            
             //! insert a new/multiple species
             template <typename NAME>
             const Species & operator()(const NAME &id,

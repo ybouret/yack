@@ -18,6 +18,12 @@ namespace yack
             
         }
 
+        Actors:: Actors(const Actors &other) : Actors_(other), Entity(other.name)
+        {
+
+        }
+
+
         std::ostream & operator<<(std::ostream &os, const Actors &self)
         {
             const Actor *a = self.head;

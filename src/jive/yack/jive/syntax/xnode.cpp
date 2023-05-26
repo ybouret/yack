@@ -146,6 +146,13 @@ namespace yack
                 return static_cast<const xlist *>(data)->head;
             }
 
+            xnode * xnode:: head() noexcept
+            {
+                assert(internal_type==(**this).type);
+                return static_cast<xlist *>(data)->head;
+            }
+
+
             const xnode * xnode::tail() const noexcept
             {
                 assert(internal_type==(**this).type);

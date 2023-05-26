@@ -18,6 +18,21 @@ namespace yack
             assert(nu>0);
         }
 
+        Actor:: Actor(const Actor &other) noexcept :
+        nu( other.nu ),
+        sp( other.sp ),
+        next(0),
+        prev(0)
+        {
+            assert(nu>0);
+        }
+
+        const Species & Actor:: operator*() const noexcept
+        {
+            return sp;
+        }
+
+
         void Actor:: displayFirst(std::ostream &os) const
         {
             assert(nu>0);

@@ -20,9 +20,16 @@ namespace yack
             public:
                 explicit Parser();
                 virtual ~Parser() noexcept;
-                
+
+                XNode * operator()(jive::module *);
+
+
+
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(Parser);
+
+                //! remove all the optional '+'
+                void cleanAST(XNode *);
             };
         }
 

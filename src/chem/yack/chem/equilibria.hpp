@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_CHEM_EQUILIBRIA_INCLUDED

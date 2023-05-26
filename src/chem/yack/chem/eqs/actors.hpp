@@ -26,7 +26,7 @@ namespace yack
         //! List of Actors with a naming system
         //
         //______________________________________________________________________
-        class Actors : public Actors_, public Entity
+        class Actors :  public Actors_, public Entity
         {
         public:
             //__________________________________________________________________
@@ -34,6 +34,7 @@ namespace yack
             // C++
             //__________________________________________________________________
             explicit Actors();
+            Actors(const Actors &);
             virtual ~Actors() noexcept;
 
             //__________________________________________________________________
@@ -43,8 +44,9 @@ namespace yack
             friend std::ostream & operator<<(std::ostream &, const Actors &); //!< display
             void   makeName();                                                //!< create name from list
 
+            
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(Actors);
+            YACK_DISABLE_ASSIGN(Actors);
         };
 
     }

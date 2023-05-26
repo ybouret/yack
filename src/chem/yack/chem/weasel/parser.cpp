@@ -53,7 +53,7 @@ namespace yack
                 //--------------------------------------------------------------
                 // describe components lhs/rhs
                 //--------------------------------------------------------------
-                const rule &ca    = choice(term('.'),ac);
+                const rule &ca    = choice(term("nil",'.'),ac);
                 const rule &cm    = agg("cm") << opt( cat(ca,mark("<=>")) ) << ca;
 
                 //--------------------------------------------------------------
@@ -91,7 +91,41 @@ namespace yack
 
             }
 
+            void Parser:: cleanAST(XNode *node)
+            {
+                const rule &from = **node;
+                switch(from.type)
+                {
+                    case jive::syntax::terminal_type:
+                        return;
 
+                    case jive::syntax::internal_type:
+                        if("xa" == *from.name)
+                        {
+                            delete node->sub().pop_front();
+                            return;
+                        }
+
+                        if( ("fa" == *from.name) && node->size()>2)
+                        {
+                            delete node->sub().pop_front();
+                            return;
+                        }
+
+                        for(XNode *sub=node->head();sub;sub=sub->next)
+                        {
+                            cleanAST(sub);
+                        }
+
+                }
+            }
+
+            XNode * Parser:: operator()(jive::module *m) {
+                auto_ptr<XNode> tree = parse(m);
+                if(tree.is_valid())
+                    cleanAST(& *tree);
+                return tree.yield();
+            }
         }
 
     }

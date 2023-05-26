@@ -24,6 +24,7 @@ namespace yack
             // C++
             //__________________________________________________________________
             explicit Actor(const unsigned, const Species &) noexcept; //!< setup
+            Actor(const Actor &)                            noexcept; //!< copy
             virtual ~Actor()                                noexcept; //!< cleanup
 
             //__________________________________________________________________

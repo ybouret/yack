@@ -79,6 +79,7 @@ namespace yack
                 // helpers
                 //______________________________________________________________
                 const xnode           *head() const noexcept; //!< first children for internal
+                xnode                 *head()       noexcept; //!< first children for internal
                 const xnode           *tail() const noexcept; //!< last  children for internal
                 const token           &word() const noexcept; //!< return token   for terminal
                 virtual size_t         size() const noexcept; //!< internal: list size, terminal: word.size
