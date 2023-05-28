@@ -59,7 +59,7 @@ namespace yack
             return os;
         }
 
-        bool Components:: uses(const Species &sp) const noexcept
+        bool Components:: contains(const Species &sp) const noexcept
         {
             const Component::Pointer *ppc = cdb.search(sp.name);
             if(ppc)
@@ -73,12 +73,21 @@ namespace yack
             }
         }
 
+        void Components:: submitTo(addrbook &ab) const
+        {
+            for(const cNode *cn = (*this)->head; cn; cn=cn->next)
+            {
+                const Species &sp = ****cn;
+                ab.ensure(&sp);
+            }
+        }
 
-        bool Components:: connectedTo(const Components &other) const noexcept
+
+        bool Components:: linkedTo(const Components &other) const noexcept
         {
             for(const cNode *node=other->head;node;node=node->next)
             {
-                if(uses(****node)) return true;
+                if(contains(****node)) return true;
             }
             return false;
         }

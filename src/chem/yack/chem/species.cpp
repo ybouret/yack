@@ -5,6 +5,8 @@ namespace yack
     namespace Chemical
     {
 
+        bool Species::Verbose = false;
+        
         Species:: ~Species() noexcept
         {
             

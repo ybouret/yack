@@ -7,6 +7,7 @@
 #include "yack/chem/eqs/component.hpp"
 #include "yack/chem/eqs/actors.hpp"
 #include "yack/associative/suffix/set.hpp"
+#include "yack/associative/addrbook.hpp"
 
 namespace yack
 {
@@ -58,9 +59,9 @@ namespace yack
                 }
             }
 
-            bool uses(const Species &sp) const noexcept;
-            bool connectedTo(const Components &) const noexcept;
-
+            bool contains(const Species    &) const noexcept;
+            bool linkedTo(const Components &) const noexcept;
+            void submitTo(addrbook &) const;
 
             //__________________________________________________________________
             //

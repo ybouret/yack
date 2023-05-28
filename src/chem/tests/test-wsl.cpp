@@ -24,8 +24,8 @@ YACK_UTEST(wsl)
     {
         wsl( jive::module::open_file(argv[1]),lib,eqs);
         std::cerr << "lib=" << lib << std::endl;
-        std::cerr << "eqs=" << (Equilibria&)eqs << std::endl;
-
+        std::cerr << "eqs=" << eqs << std::endl;
+        
     }
 
 }

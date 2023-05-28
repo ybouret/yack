@@ -8,6 +8,7 @@
 #include "yack/spot-object.hpp"
 #include "yack/counted.hpp"
 #include "yack/ptr/ark.hpp"
+#include "yack/data/dinky/core-repo.hpp"
 
 namespace yack
 {
@@ -28,6 +29,7 @@ namespace yack
             // definitions
             //__________________________________________________________________
             typedef ark_ptr<string,Species> Pointer; //!< alias
+            static  bool                    Verbose; //!< to debug
 
             //__________________________________________________________________
             //
@@ -59,6 +61,10 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(Species);
 
         };
+
+        typedef core_repo<Species> SpRepo;
+        typedef SpRepo::node_type  SpNode;
+        
     }
 
 }

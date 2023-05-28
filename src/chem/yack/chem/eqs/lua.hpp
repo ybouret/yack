@@ -18,7 +18,7 @@ namespace yack
         //! equilibria with internal Lua Virual Machine
         //
         //______________________________________________________________________
-        class LuaEquilibria : public Equilibria, public Lua::VM
+        class LuaEquilibria : public Equilibria
         {
         public:
             //__________________________________________________________________
@@ -35,7 +35,8 @@ namespace yack
              */
             Equilibrium & operator()(const string &name, const string &kstr);
             
-
+            Lua::VM lvm;
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(LuaEquilibria);
         };

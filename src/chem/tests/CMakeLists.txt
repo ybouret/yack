@@ -10,4 +10,5 @@ yack_testing(chem)
 enable_testing()
 add_test(lib test-chem lib)
 add_test(wsl test-chem wsl)
+add_test(vat test-chem vat)
 

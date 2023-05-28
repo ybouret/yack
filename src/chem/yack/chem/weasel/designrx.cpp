@@ -24,8 +24,12 @@ namespace yack
             {
                 typedef shared_ptr<jive::matching> matcher;
                 Designer &self = *this;
+
+                //--------------------------------------------------------------
                 // create list of matching
+                //--------------------------------------------------------------
                 vector<matcher> matches;
+                
                 for(const solo_list<string>::node_type *node=linker->alias.head;node;node=node->next)
                 {
                     const string  &rx = **node;
@@ -34,8 +38,9 @@ namespace yack
                     matches << temp;
                 }
 
-                // loop over all known eqs
-                size_t ok = 0;
+                //--------------------------------------------------------------
+                // loop ONCE over all known eqs
+                //--------------------------------------------------------------
                 for(unsigned i=0;i<known;++i)
                 {
                     const char *inp = db[i];
@@ -48,9 +53,7 @@ namespace yack
                     {
                         if(matches[k]->exactly(uid))
                         {
-                            std::cerr << "\t" << uid << std::endl;
                             self( jive::module::open_data(uid,inp), lib, eqs);
-                            ++ok;
                             break;
                         }
                     }

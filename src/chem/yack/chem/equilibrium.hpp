@@ -4,6 +4,7 @@
 #define YACK_CHEM_EQUILIBRIUM_INCLUDED 1
 
 #include "yack/chem/eqs/components.hpp"
+#include "yack/data/dinky/core-repo.hpp"
 
 namespace yack
 {
@@ -41,6 +42,9 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Equilibrium);
         };
+
+        typedef core_repo<Equilibrium> EqRepo;
+        typedef EqRepo::node_type      EqNode;
 
     }
 

@@ -28,11 +28,19 @@ set(chem_weasel ${chem_weasel_decl} ${chem_weasel_srcs})
 SOURCE_GROUP(chem/weasel FILES ${chem_weasel})
 install( FILES ${chem_weasel_decl} DESTINATION include/yack/chem/weasel )
 
+#vat
+file(GLOB chem_vat_decl yack/chem/vat/*.hpp)
+file(GLOB chem_vat_srcs yack/chem/vat/*.cpp yack/chem/vat/*.hxx)
+set(chem_vat ${chem_vat_decl} ${chem_vat_srcs})
+SOURCE_GROUP(chem/vat FILES ${chem_vat})
+install( FILES ${chem_vat_decl} DESTINATION include/yack/chem/vat )
+
 add_library(yack-chem STATIC
 ${chem_main}
 ${chem_com}
 ${chem_eqs}
 ${chem_weasel}
+${chem_vat}
 )
 
 install( TARGETS yack-chem ARCHIVE DESTINATION lib )

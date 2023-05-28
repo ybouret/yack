@@ -12,7 +12,8 @@ namespace yack
         {
         }
 
-        LuaEquilibria:: LuaEquilibria() : Lua::VM( new Lua::State() )
+        LuaEquilibria:: LuaEquilibria() : Equilibria(),
+        lvm( new Lua::State() )
         {}
 
 
@@ -39,9 +40,9 @@ namespace yack
                                                  const string &kstr)
         {
             Equilibria &self = *this;
-            Lua::State &L    = **this;
+            Lua::State &L    = *lvm;
             L.getglobal(kstr);
-            if( LUA_TFUNCTION == L.type(-1) ) return self( new LuaEq(name,*this,kstr) );
+            if( LUA_TFUNCTION == L.type(-1) ) return self( new LuaEq(name,lvm,kstr) );
 
             const double K0 = L.eval<double>(kstr); 
             return self( new ConstEquilibrium(name) );
