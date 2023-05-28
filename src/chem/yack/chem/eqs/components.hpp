@@ -58,6 +58,10 @@ namespace yack
                 }
             }
 
+            bool uses(const Species &sp) const noexcept;
+            bool connectedTo(const Components &) const noexcept;
+
+
             //__________________________________________________________________
             //
             // members

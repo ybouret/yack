@@ -59,6 +59,29 @@ namespace yack
             return os;
         }
 
+        bool Components:: uses(const Species &sp) const noexcept
+        {
+            const Component::Pointer *ppc = cdb.search(sp.name);
+            if(ppc)
+            {
+                assert(& ***ppc == &sp);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
+        bool Components:: connectedTo(const Components &other) const noexcept
+        {
+            for(const cNode *node=other->head;node;node=node->next)
+            {
+                if(uses(****node)) return true;
+            }
+            return false;
+        }
 
     }
 

@@ -18,7 +18,18 @@ namespace yack
 #define WEASEL_CONNECT(UUID) YACK_JIVE_CONNECT(UUID,Linker)
 #define WEASEL_CONTROL(UUID) YACK_JIVE_CONTROL(UUID,Linker)
 
-            Linker:: Linker() : jive::syntax::transcriber("Weasel")
+            Linker:: Linker() :
+            jive::syntax::transcriber("Weasel"),
+            names(),
+            signs(),
+            specs(),
+            coefs(),
+            troup(),
+            sides(),
+            reac(),
+            prod(),
+            codes(),
+            alias()
             {
                 WEASEL_CONNECT(id);
                 WEASEL_CONNECT(plus);
