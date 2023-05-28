@@ -215,20 +215,21 @@ namespace yack
                 const string name = names.pull_tail();
                 Equilibrium &eq   = tgt().eqs(name,kstr);
 
+                // load reactants
                 for(const Actor *r=reac.head;r;r=r->next)
                 {
                     eq(-static_cast<int>(r->nu),**r);
                 }
                 reac.release();
 
+                // load products
                 for(const Actor *p=prod.head;p;p=p->next)
                 {
                     eq(p->nu,**p);
                 }
                 prod.release();
 
-
-
+                
             }
 
 

@@ -13,7 +13,7 @@ namespace yack
     {
         namespace  Weasel
         {
-            typedef jive::syntax::xnode XNode;
+            typedef jive::syntax::xnode XNode; //!< alias
         }
     }
 

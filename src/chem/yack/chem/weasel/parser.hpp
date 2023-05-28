@@ -14,13 +14,28 @@ namespace yack
 
         namespace Weasel
         {
-            
+            //__________________________________________________________________
+            //
+            //
+            //! Parser for parsing species and equilibria
+            //
+            //__________________________________________________________________
             class Parser : public jive::parser
             {
             public:
-                explicit Parser();
-                virtual ~Parser() noexcept;
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
+                explicit Parser();           //!< setup
+                virtual ~Parser() noexcept;  //!< cleanup
 
+                //______________________________________________________________
+                //
+                // methods
+                //______________________________________________________________
+
+                //! parse and post-process input
                 XNode * operator()(jive::module *);
 
 

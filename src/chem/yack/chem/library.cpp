@@ -1,6 +1,7 @@
 
 #include "yack/chem/library.hpp"
 #include "yack/system/imported.hpp"
+#include <iomanip>
 
 namespace yack
 {
@@ -30,7 +31,7 @@ namespace yack
             for(const sNode *node=lib->head;node;node=node->next)
             {
                 const Species &sp = ***node;
-                lib.pad(os << ' ' << sp.name,sp) << " : z =" << sp.z << std::endl;
+                lib.pad(os << ' ' << sp.name,sp) << " : z = " << std::setw(3) << sp.z << std::endl;
             }
             os << '}';
             return os;

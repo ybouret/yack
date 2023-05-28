@@ -1,6 +1,4 @@
-#include "yack/chem/weasel/parser.hpp"
-#include "yack/chem/weasel/linker.hpp"
-#include "yack/jive/syntax/translator.hpp"
+#include "yack/chem/weasel/designer.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/fs/local/fs.hpp"
 
@@ -18,30 +16,15 @@ YACK_UTEST(wsl)
     fs.try_remove_file("wsl.png");
 
 
-    Weasel::Parser wsl;
-    Weasel::Linker lnk;
-    wsl.gv();
-    lnk.verbose = true;
-    vector<string> terminals;
-    vector<string> internals;
-
-    wsl.collect_keywords(terminals,internals);
-    std::cerr << "terminals : " << terminals << std::endl;
-    std::cerr << "internals : " << internals << std::endl;
-
-    Library       lib;
-    LuaEquilibria eqs;
+    Weasel::Designer & wsl = Weasel::Designer::instance();
+    Library           lib;
+    LuaEquilibria     eqs;
 
     if(argc>1)
     {
-        auto_ptr<Weasel::XNode> tree = wsl( jive::module::open_file(argv[1]) );
-        if(tree.is_valid())
-        {
-            tree->gv("wsl.dot");
-            lnk(*tree,lib,eqs);
-        }
-        std::cerr << lib << std::endl;
-        std::cerr << (Equilibria&)eqs << std::endl;
+        wsl( jive::module::open_file(argv[1]),lib,eqs);
+        std::cerr << "lib=" << lib << std::endl;
+        std::cerr << "eqs=" << (Equilibria&)eqs << std::endl;
 
     }
 

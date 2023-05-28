@@ -33,9 +33,9 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit Actors();
-            Actors(const Actors &);
-            virtual ~Actors() noexcept;
+            explicit Actors();          //!< setup empty
+            Actors(const Actors &);     //!< copy
+            virtual ~Actors() noexcept; //!< cleanup
 
             //__________________________________________________________________
             //

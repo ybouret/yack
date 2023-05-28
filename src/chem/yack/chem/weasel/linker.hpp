@@ -21,26 +21,53 @@ namespace yack
 
         namespace Weasel
         {
+            //__________________________________________________________________
+            //
+            //
+            //! process AST
+            //
+            //__________________________________________________________________
             class Linker : public jive::syntax::transcriber
             {
             public:
+                //______________________________________________________________
+                //
+                // definitions
+                //______________________________________________________________
+
+                //! type for sign detection
                 enum Sign
                 {
-                    Plus  =  1,
-                    Minus = -1
+                    Plus  =  1, //!< '+'
+                    Minus = -1  //!< '-'
                 };
 
+                //! wrapper for internal data
                 struct Target
                 {
-                    Library    &lib;
-                    LuaEquilibria &eqs;
+                    Library       &lib; //!< user's library
+                    LuaEquilibria &eqs; //!< user's equilibria
                 };
 
-                explicit Linker();
-                virtual ~Linker() noexcept;
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
+                explicit Linker();           //!< setup
+                virtual ~Linker() noexcept;  //!< cleanup
 
+                //______________________________________________________________
+                //
+                // methods
+                //______________________________________________________________
+
+                //! populate library and equilibiria from AST
                 void operator()(const XNode &, Library &, LuaEquilibria &);
 
+                //______________________________________________________________
+                //
+                // members
+                //______________________________________________________________
                 solo_list<string>   names; //!< stack of names
                 solo_list<Sign>     signs; //!< stack of signs
                 solo_repo<Species>  specs; //!< stack of species
@@ -50,7 +77,7 @@ namespace yack
                 Actors              reac;  //!< prepared reactants
                 Actors              prod;  //!< prepared products
                 solo_list<string>   codes; //!< stack of constant codes
-                solo_list<string>   alias; //!< list of <rx>
+                solo_list<string>   alias; //!< list of regular expressions to post-process
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(Linker);

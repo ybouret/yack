@@ -12,12 +12,27 @@ namespace yack
     namespace Chemical
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! equilibria with internal Lua Virual Machine
+        //
+        //______________________________________________________________________
         class LuaEquilibria : public Equilibria, public Lua::VM
         {
         public:
-            explicit LuaEquilibria();
-            virtual ~LuaEquilibria() noexcept;
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit LuaEquilibria();           //!< setup
+            virtual ~LuaEquilibria() noexcept;  //!< cleanup
 
+            //! convert a name and a string into an equilibrium
+            /**
+             \param name equilibrium's name
+             \param kstr function of numerical value
+             */
             Equilibrium & operator()(const string &name, const string &kstr);
             
 
