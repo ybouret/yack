@@ -29,12 +29,16 @@ namespace yack
             void updateIO() noexcept;
             void finalize(const xmlog &xml);
 
-            SpRepo      active;
-            matrix<int> Nu;
+            SpRepo           active;
+            matrix<int>      Nu;
+            matrix<unsigned> Qm;
+            const size_t     Qr; //!< rank(Qm)
+            
             Cluster    *next;
             Cluster    *prev;
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Cluster);
+            void discoverLaws(const xmlog &);
         };
 
     }

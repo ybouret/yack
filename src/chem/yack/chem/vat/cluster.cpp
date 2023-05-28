@@ -12,6 +12,7 @@ namespace yack
 
         Cluster:: Cluster(Equilibrium &first) :
         EqRepo(),
+        Qr(0),
         next(0),
         prev(0)
         {
@@ -93,6 +94,7 @@ namespace yack
                 YACK_XMLOG(xml, " (*) " << active);
 
 
+
             }
 
             if(size)
@@ -105,6 +107,9 @@ namespace yack
                     eq.fill(Nu[ eq.indx[SubLevel] ], SubLevel);
                 }
                 YACK_XMLOG(xml, " Nu = " << Nu);
+
+                // finding out conservation laws
+                discoverLaws(xml);
             }
 
 
