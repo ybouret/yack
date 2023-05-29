@@ -4,7 +4,7 @@
 #ifndef YACK_CHEM_VAT_CLUSTER_INCLUDED
 #define YACK_CHEM_VAT_CLUSTER_INCLUDED 1
 
-#include "yack/chem/equilibrium.hpp"
+#include "yack/chem/equilibria.hpp"
 #include "yack/ios/xmlog.hpp"
 #include "yack/container/matrix.hpp"
 
@@ -48,7 +48,7 @@ namespace yack
              - discoverLaws()
              - makeManifold()
              */
-            void finalize(const xmlog &xml);
+            void finalize(const xmlog &xml, Equilibria &eqs);
 
             //! display components
             friend std::ostream & operator<<( std::ostream &, const Cluster &);
@@ -57,7 +57,7 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const SpList           species; //!< employed specis
+            const SpList           lib;     //!< employed species
             const matrix<int>      Nu;      //!< main topology
             const matrix<unsigned> Qm;      //!< matrix of constraints
             const size_t           Qr;      //!< rank(Qm)
@@ -67,7 +67,7 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Cluster);
             void discoverLaws(const xmlog &);
-            void makeManifold(const xmlog &);
+            void makeManifold(const xmlog &, Equilibria &eqs);
         };
 
     }

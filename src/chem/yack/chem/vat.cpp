@@ -9,9 +9,8 @@ namespace yack
         {
         }
 
-        Vat:: Vat(const Library &lib,
-                  Equilibria    &eqs,
-                  const xmlog   &xml) :
+        Vat:: Vat(const xmlog   &xml,
+                  Equilibria    &eqs) :
         Clusters()
         {
             makeClusters(xml,eqs);

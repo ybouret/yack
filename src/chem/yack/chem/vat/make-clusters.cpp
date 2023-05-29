@@ -56,7 +56,10 @@ namespace yack
 
             // finalize all clusters
             for(Cluster *cl=head;cl;cl=cl->next)
-                cl->finalize(xml);
+                cl->finalize(xml,eqs);
+
+            // update global equilibria
+            eqs.finalize();
             
         }
 

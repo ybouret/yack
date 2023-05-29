@@ -11,7 +11,7 @@ namespace yack
 
         void Cluster:: discoverLaws(const xmlog &xml)
         {
-            const size_t nc = species.size;
+            const size_t nc = lib.size;
             if(nc<=1) return;
             YACK_XMLSUB(xml,"Cluster::discoverLaws");
             woven::zrepo     repo(nc);

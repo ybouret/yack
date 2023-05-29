@@ -1,5 +1,5 @@
 #include "yack/utest/run.hpp"
-#include "yack/arith/gcd.h"
+#include "yack/arith/gcd.hpp"
 
 using namespace yack;
 
@@ -24,6 +24,12 @@ YACK_UTEST(gcd64)
         std::cerr << "lcm(" << a << "," << b << ")=" << yack_lcm64(a,b) << std::endl;
 
     }
+
+
+    int x[] = { 1024, 32, 64 };
+
+    const uint64_t g = gcdxx::of(&x[0],sizeof(x)/sizeof(x[0]));
+    std::cerr << g << std::endl;
 
 }
 YACK_UDONE()

@@ -50,8 +50,7 @@ namespace yack
             Z.finalize();
         }
 
-
-
+        
 
         std::ostream & operator<<(std::ostream &os, const zrepo &repo)
         {

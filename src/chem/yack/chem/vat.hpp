@@ -28,9 +28,9 @@ namespace yack
             virtual ~Vat() noexcept;           //!< cleanup
 
             //! setup
-            explicit Vat(const Library &lib,
-                         Equilibria    &eqs,
-                         const xmlog   &xml);
+            explicit Vat(const xmlog   &xml,
+                         Equilibria    &eqs);
+
 
 
 

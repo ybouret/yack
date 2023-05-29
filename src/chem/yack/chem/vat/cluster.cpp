@@ -52,7 +52,7 @@ namespace yack
             for(const EqNode *en = cl.head;en;en=en->next)
             {
                 const Equilibrium &eq = ***en;
-                cl.pad(os << "  <" << eq.name, eq) << ">";
+                cl.pad(os << "  <" << eq.name << ">", eq);
                 os << std::endl;
             }
             os << '}';
@@ -60,11 +60,12 @@ namespace yack
         }
 
 
-        void Cluster:: finalize(const xmlog &xml)
+        void Cluster:: finalize(const xmlog &xml,
+                                Equilibria  &eqs)
         {
             YACK_XMLSUB(xml,"Cluster::finalize");
-            assert(0==species.size);
-
+            assert(0==lib.size);
+            
             {
                 addrbook ab;
 
@@ -91,7 +92,7 @@ namespace yack
 
                 //--------------------------------------------------------------
                 //
-                // collect active from renumber species
+                // collect lib from renumber species
                 //
                 //--------------------------------------------------------------
                 {
@@ -99,11 +100,11 @@ namespace yack
                     for(addrbook::const_iterator it=ab.begin();it!=ab.end();++it,++sub)
                     {
                         const Species &sp = *static_cast<const Species *>(*it);
-                        coerce(species) << sp;
+                        coerce(lib) << sp;
                         coerce(sp.indx[SubLevel]) = sub;
                     }
                 }
-                YACK_XMLOG(xml, " (*) " << species);
+                YACK_XMLOG(xml, " (*) " << lib);
 
 
 
@@ -116,8 +117,8 @@ namespace yack
                 // create principal topology
                 //
                 //--------------------------------------------------------------
-                assert(species.size>0);
-                coerce(Nu).make(size,species.size);
+                assert(lib.size>0);
+                coerce(Nu).make(size,lib.size);
                 for(const EqNode *en=head;en;en=en->next)
                 {
                     const Equilibrium &eq = ***en;
@@ -141,7 +142,7 @@ namespace yack
                 // build manifold
                 //
                 //--------------------------------------------------------------
-                makeManifold(xml);
+                makeManifold(xml,eqs);
             }
 
 

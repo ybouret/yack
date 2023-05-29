@@ -25,7 +25,7 @@ YACK_UTEST(vat)
 
     Species::Verbose = true;
     xmlog xml("[chem]",std::cerr,Species::Verbose);
-    Vat vat(lib,eqs,xml);
+    Vat   vat(xml,eqs);
 
     YACK_SIZEOF(Cluster);
 
