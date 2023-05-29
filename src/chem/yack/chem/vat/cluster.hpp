@@ -5,6 +5,7 @@
 #define YACK_CHEM_VAT_CLUSTER_INCLUDED 1
 
 #include "yack/chem/equilibria.hpp"
+#include "yack/chem/vat/canon.hpp"
 #include "yack/ios/xmlog.hpp"
 #include "yack/container/matrix.hpp"
 
@@ -59,8 +60,10 @@ namespace yack
             //__________________________________________________________________
             const SpList           lib;     //!< employed species
             const matrix<int>      Nu;      //!< main topology
-            const matrix<unsigned> Qm;      //!< matrix of constraints
-            const size_t           Qr;      //!< rank(Qm)
+            const matrix<unsigned> Qmat;    //!< matrix of constraints
+            const size_t           Qrnk;    //!< rank(Qm)
+            const ConservationLaws laws;    //!< effective laws
+            const Canons           acts;    //!< group of dependent laws
             Cluster               *next;    //!< for list
             Cluster               *prev;    //!< for list
             Gathering              reac;    //!< to display reac
@@ -69,6 +72,7 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Cluster);
             void discoverLaws(const xmlog &);
+            void assembleActs(const xmlog &);
             void makeManifold(const xmlog &, Equilibria &eqs);
         };
 

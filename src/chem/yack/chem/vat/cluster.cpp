@@ -13,7 +13,7 @@ namespace yack
 
         Cluster:: Cluster(Equilibrium &first) :
         EqList(),
-        Qr(0),
+        Qrnk(0),
         next(0),
         prev(0)
         {

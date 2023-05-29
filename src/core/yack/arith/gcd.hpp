@@ -9,8 +9,16 @@
 namespace yack
 {
 
+
+    //__________________________________________________________________________
+    //
+    //
+    //! C++ helpers for simplifications
+    //
+    //__________________________________________________________________________
     struct gcdxx
     {
+        //! gcd of items that are not zeo
         template <typename ITER> static inline
         uint64_t of(ITER curr, const size_t n)
         {
@@ -38,6 +46,7 @@ namespace yack
             return 1; // all coefficient were 0
         }
 
+        //! compute gcd and simplify
         template <typename ITER> static inline
         void simplify_(ITER curr, size_t n)
         {
@@ -45,6 +54,7 @@ namespace yack
             while(n-- > 0) *(curr++)/=g;
         }
 
+        //! simplify an integral array
         template <typename T> static inline
         void simplify(T *arr, const size_t num)
         {
@@ -52,6 +62,7 @@ namespace yack
             simplify_(arr,num);
         }
 
+        //! simplify an integral sequence
         template <typename SEQ> static inline
         void simplify(SEQ &seq)
         {

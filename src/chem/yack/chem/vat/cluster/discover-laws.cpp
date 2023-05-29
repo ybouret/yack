@@ -73,21 +73,107 @@ namespace yack
             //
             //------------------------------------------------------------------
             const size_t qn = good.size;
-            coerce(Qm).make(qn,nc);
+            coerce(Qmat).make(qn,nc);
             {
                 size_t i = 1;
                 for(const zvecs::node_type *node=good.head;node;node=node->next,++i)
                 {
-                    writable<unsigned>  &u = coerce(Qm)[i];
+                    writable<unsigned>  &u = coerce(Qmat)[i];
                     const readable<apz> &z = (***node);
-                    for(size_t j=nc;j>0;--j) u[j] = z[j].cast_to<unsigned>("law coefficient");
+                    for(size_t j=nc;j>0;--j)
+                    {
+                        u[j] = z[j].cast_to<unsigned>("law coefficient");
+                    }
+
+                    ConservationLaw &claw = * coerce(laws).push_back( new ConservationLaw() );
+                    for(const SpNode *sn=lib.head;sn;sn=sn->next)
+                    {
+                        const Species &sp = ***sn;
+                        const size_t   sj = sp.indx[SubLevel];
+                        const unsigned nu = u[sj];
+                        if(nu>0)
+                        {
+                            claw.push_back( new Actor(nu,sp) );
+                        }
+                    }
+
                 }
             }
-            coerce(Qr) = apex::flak::rank(Qm);
-            YACK_XMLOG(xml, " Qm = " << Qm);
-            YACK_XMLOG(xml, " Qr = " << Qr);
+            coerce(Qrnk) = apex::flak::rank(Qmat);
+            coerce(laws).finalize();
+            YACK_XMLOG(xml, " Qmat = " << Qmat);
+            YACK_XMLOG(xml, " Qrnk = " << Qrnk);
+            YACK_XMLOG(xml, " laws = " << laws);
+
+            assembleActs(xml);
 
         }
+
+
+        static inline void tryReduceCanons(Canons &target)
+        {
+            Canons store;
+            while(target.size)
+            {
+                Canon *rhs = target.pop_front();
+                for(Canon *lhs = store.head; lhs; lhs=lhs->next)
+                {
+                    if(lhs->linkedTo(*rhs))
+                    {
+                        lhs->merge_back(*rhs);
+                        delete rhs;
+                        rhs = 0;
+                        break;
+                    }
+                }
+
+                if(rhs)
+                    store.push_back(rhs);
+
+            }
+            target.swap_with(store);
+        }
+
+        void Cluster:: assembleActs(const xmlog &xml)
+        {
+            YACK_XMLSUB(xml,"Cluster::assembleActs");
+            {
+                Canons &target = coerce(acts);
+                for(const ConservationLaw *node=laws.head;node;node=node->next)
+                {
+                    bool                   use = false;
+                    const ConservationLaw &law = *node;
+                    for(Canon *canon=target.head;canon;canon=canon->next)
+                    {
+                        if(canon->endorses(law))
+                        {
+                            use = true;
+                            *canon << law;
+                            break;
+                        }
+                    }
+
+                    if(use)
+                    {
+                        tryReduceCanons(target);
+                    }
+                    else
+                    {
+                        target.push_back( new Canon(law) );
+                    }
+                }
+            }
+            if(xml.verbose)
+            {
+                *xml << "#acts=" << acts.size << std::endl;
+                for(const Canon *c=acts.head;c;c=c->next)
+                {
+                    *xml << *c << std::endl;
+                }
+            }
+
+        }
+
 
     }
 

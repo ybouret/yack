@@ -1,0 +1,55 @@
+//! \file
+
+#ifndef YACK_CHEM_VAT_CLAW_INCLUDED
+#define YACK_CHEM_VAT_CLAW_INCLUDED 1
+
+#include "yack/chem/eqs/actors.hpp"
+#include "yack/ios/xmlog.hpp"
+
+namespace yack
+{
+    namespace Chemical
+    {
+        //______________________________________________________________________
+        //
+        //
+        //! Conservation Law as a list of Actors
+        //
+        //______________________________________________________________________
+        class ConservationLaw : public Actors
+        {
+        public:
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit ConservationLaw();          //!< setup
+            virtual ~ConservationLaw() noexcept; //!< cleanup
+            
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
+            bool involves(const Species         &) const noexcept; //!< check if species is involved in conservation
+            bool linkedTo(const ConservationLaw &) const noexcept; //!< check if a species is shared
+
+            //! simple display
+            friend std::ostream & operator<<(std::ostream &, const ConservationLaw &);
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            ConservationLaw *next; //!< for list
+            ConservationLaw *prev; //!< for list
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(ConservationLaw);
+        };
+
+      
+    }
+
+}
+
+#endif
