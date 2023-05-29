@@ -63,7 +63,9 @@ namespace yack
             const size_t           Qr;      //!< rank(Qm)
             Cluster               *next;    //!< for list
             Cluster               *prev;    //!< for list
-
+            Gathering              reac;    //!< to display reac
+            Gathering              prod;    //!< to display prod
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Cluster);
             void discoverLaws(const xmlog &);

@@ -60,6 +60,7 @@ namespace yack
 
             // update global equilibria
             eqs.finalize();
+
             
         }
 

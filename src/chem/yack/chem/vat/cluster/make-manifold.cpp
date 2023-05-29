@@ -183,7 +183,7 @@ namespace yack
 
                 woven::qbuilder  work(nr);
                 work(repo,P,rank,false);
-                std::cerr << repo << std::endl;
+                //std::cerr << repo << std::endl;
             }
 
             //------------------------------------------------------------------
@@ -228,7 +228,7 @@ namespace yack
                 //--------------------------------------------------------------
                 if(mix.size<2)
                 {
-                    YACK_XMLOG(xml," (-) no mix @" << weight);
+                    //YACK_XMLOG(xml," (-) no mix @" << weight);
                     continue;
                 }
 
@@ -240,13 +240,13 @@ namespace yack
                 const size_t out = woven::qcompress::neqz(sto);
                 if(out>=inp)
                 {
-                    YACK_XMLOG(xml," (-) no vanishing species @" << weight);
+                    //YACK_XMLOG(xml," (-) no vanishing species @" << weight);
                     continue;
                 }
 
                 if(!idb.insert(sto))
                 {
-                    YACK_XMLOG(xml," (-) multiple mix @" << sto);
+                    // YACK_XMLOG(xml," (-) multiple mix @" << sto);
                     continue;
                 }
 
@@ -275,16 +275,31 @@ namespace yack
             // merge ordered combinations
             //
             //------------------------------------------------------------------
-            merge_list_of<MxNode>::sort(sub, MxCompare);
-            while(sub.size)
             {
-                auto_ptr<MxNode> node = sub.pop_front();
-                Equilibrium     &eq   = ***node;
-                *this << eq;
-                update(eq);
+                merge_list_of<MxNode>::sort(sub, MxCompare);
+                size_t idx = (***tail).indx[SubLevel];
+                while(sub.size)
+                {
+                    auto_ptr<MxNode> node = sub.pop_front();
+                    Equilibrium     &eq   = ***node;
+                    *this << eq;
+                    update(eq);
+                    coerce(eq.indx[SubLevel]) = ++idx;
+                }
             }
 
+            {
+                coerce(reac.maxlen) = 0;
+                coerce(prod.maxlen) = 0;
 
+                for(const EqNode *node=head;node;node=node->next)
+                {
+                    const Equilibrium &eq = ***node;
+                    reac.update(eq.reac);
+                    prod.update(eq.prod);
+                }
+
+            }
 
             std::cerr << *this << std::endl;
 

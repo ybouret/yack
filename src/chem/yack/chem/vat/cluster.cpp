@@ -49,10 +49,14 @@ namespace yack
         std::ostream & operator<<( std::ostream &os, const Cluster &cl)
         {
             os << '{' << std::endl;
-            for(const EqNode *en = cl.head;en;en=en->next)
+            for(const EqNode *node=cl.head;node;node=node->next)
             {
-                const Equilibrium &eq = ***en;
-                cl.pad(os << "  <" << eq.name << ">", eq);
+                const Equilibrium &eq = ***node;
+                cl.pad(os << " <" << eq.name,eq) << "> : ";
+                cl.reac.pad(os << eq.reac.name,eq.reac);
+                os << " <=> ";
+                cl.prod.pad(os << eq.prod.name,eq.prod);
+                os << " : ";
                 os << std::endl;
             }
             os << '}';

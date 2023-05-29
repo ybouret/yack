@@ -47,7 +47,7 @@ namespace yack
 
                 while(parents.size)
                 {
-                    std::cerr << "#parents: " << parents.size << std::endl;
+                    //std::cerr << "#parents: " << parents.size << std::endl;
                     lineage.generate(parents,data,rank,repo);
                     lineage.swap_with(parents);
                 }
