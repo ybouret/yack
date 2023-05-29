@@ -63,6 +63,9 @@ namespace yack
             bool linkedTo(const Components &) const noexcept;
             void submitTo(addrbook &) const;
 
+            bool neutral() const;
+            bool minimal() const;
+
             //__________________________________________________________________
             //
             // members

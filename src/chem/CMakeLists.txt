@@ -35,12 +35,16 @@ set(chem_vat ${chem_vat_decl} ${chem_vat_srcs})
 SOURCE_GROUP(chem/vat FILES ${chem_vat})
 install( FILES ${chem_vat_decl} DESTINATION include/yack/chem/vat )
 
+#vat/cluster
+file(GLOB chem_vat_cluster yack/chem/vat/cluster/*.cpp)
+SOURCE_GROUP(chem/vat/cluster FILES ${chem_vat_cluster})
+
 add_library(yack-chem STATIC
 ${chem_main}
 ${chem_com}
 ${chem_eqs}
 ${chem_weasel}
-${chem_vat}
+${chem_vat} ${chem_vat_cluster}
 )
 
 install( TARGETS yack-chem ARCHIVE DESTINATION lib )

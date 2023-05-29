@@ -13,26 +13,47 @@ namespace yack
     namespace Chemical
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! Cluster of interdependent equilibria
+        //
+        //______________________________________________________________________
         class Cluster : public spot_object, public EqRepo, public Gathering
         {
         public:
-            static const char CLID[];
+            //__________________________________________________________________
+            //
+            // definitions
+            //__________________________________________________________________
+            static const char CLID[]; //! "Cluster"
 
-            explicit Cluster(Equilibrium &first);
-            virtual ~Cluster() noexcept;
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit Cluster(Equilibrium &first); //!< setup with first equilibrium
+            virtual ~Cluster() noexcept;          //!< cleanup
 
-            bool recruits(const Equilibrium &) const noexcept;
-            bool linkedTo(const Cluster     &) const noexcept;
-
-            friend std::ostream & operator<<( std::ostream &, const Cluster &);
-
-            void updateIO() noexcept;
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            bool recruits(const Equilibrium &) const noexcept; //!< true if equilibrium is link to one of self
+            bool linkedTo(const Cluster     &) const noexcept; //!< true if at least two equilibria area linked
             void finalize(const xmlog &xml);
 
-            SpRepo           active;
-            matrix<int>      Nu;
-            matrix<unsigned> Qm;
-            const size_t     Qr; //!< rank(Qm)
+            //!< display components
+            friend std::ostream & operator<<( std::ostream &, const Cluster &);
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const SpRepo           species;
+            const matrix<int>      Nu;     //!< main topology
+            const matrix<unsigned> Qm;     //!< matrix of constraints
+            const size_t           Qr;     //!< rank(Qm)
             
             Cluster    *next;
             Cluster    *prev;

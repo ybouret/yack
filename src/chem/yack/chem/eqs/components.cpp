@@ -1,6 +1,7 @@
 
 #include "yack/chem/eqs/components.hpp"
 #include "yack/system/imported.hpp"
+#include "yack/apex/integer.hpp"
 
 namespace yack
 {
@@ -92,6 +93,39 @@ namespace yack
             return false;
         }
 
+        bool Components:: neutral() const
+        {
+            apz dz = 0;
+            for(const cNode *node=(*this)->head;node;node=node->next)
+            {
+                const Component &cc = ***node;
+                const apz        nu = cc.nu;
+                const apz        z  = (*cc).z;
+                dz += z * nu;
+            }
+            return __zero__ == dz.s;
+        }
+
+
+        bool Components:: minimal() const
+        {
+            const cList &self = *cdb.get_tree();
+            switch(self.size)
+            {
+                case 0:
+                case 1:
+                    return true;
+            }
+            const cNode *node = self.head;
+            apn g = std::abs( (***node).nu ); if(1==g) return true;
+            for(node=node->next;node;node=node->next)
+            {
+                const apn nu = std::abs( (***node).nu );
+                g = apn::gcd(g,nu); if(1==g) return true;
+            }
+            return false;
+
+        }
     }
 
 }

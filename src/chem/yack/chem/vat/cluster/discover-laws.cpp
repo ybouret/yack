@@ -11,7 +11,7 @@ namespace yack
 
         void Cluster:: discoverLaws(const xmlog &xml)
         {
-            const size_t nc = active.size;
+            const size_t nc = species.size;
             if(nc<=1) return;
             YACK_XMLSUB(xml,"Cluster::discoverLaws");
             woven::zrepo     repo(nc);
@@ -59,12 +59,12 @@ namespace yack
             }
 
             const size_t qn = good.size;
-            Qm.make(qn,nc);
+            coerce(Qm).make(qn,nc);
             {
                 size_t i = 1;
                 for(const zvecs::node_type *node=good.head;node;node=node->next,++i)
                 {
-                    writable<unsigned>  &u = Qm[i];
+                    writable<unsigned>  &u = coerce(Qm)[i];
                     const readable<apz> &z = (***node);
                     for(size_t j=nc;j>0;--j) u[j] = z[j].cast_to<unsigned>("law coefficient");
                 }

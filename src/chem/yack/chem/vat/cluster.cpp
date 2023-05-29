@@ -1,5 +1,6 @@
 #include "yack/chem/vat/cluster.hpp"
 #include "yack/system/imported.hpp"
+#include "yack/apex/flak.hpp"
 
 namespace yack
 {
@@ -62,18 +63,25 @@ namespace yack
         void Cluster:: finalize(const xmlog &xml)
         {
             YACK_XMLSUB(xml,"Cluster::finalize");
-            assert(0==active.size);
+            assert(0==species.size);
 
             {
                 addrbook ab;
 
-                // collect species from renumbered eqs
+                //--------------------------------------------------------------
+                //
+                // collect species and renumber eqs
+                //
+                //--------------------------------------------------------------
                 {
                     size_t sub = 1;
                     for(const EqNode *en=head;en;en=en->next,++sub)
                     {
                         const Equilibrium &eq = ***en;
                         update(eq);
+                        if(eq->size<=0)   throw imported::exception(CLID,"empty <%s>",       eq.name());
+                        if(!eq.neutral()) throw imported::exception(CLID,"not neutral <%s>", eq.name());
+                        if(!eq.minimal()) throw imported::exception(CLID,"not minimal <%s>", eq.name());
                         eq.submitTo(ab);
                         coerce(eq.indx[SubLevel]) = sub;
                         if(xml.verbose) *xml << " (+) " << eq.name << std::endl;
@@ -81,17 +89,21 @@ namespace yack
                 }
 
 
+                //--------------------------------------------------------------
+                //
                 // collect active from renumber species
+                //
+                //--------------------------------------------------------------
                 {
                     size_t sub = 1;
                     for(addrbook::const_iterator it=ab.begin();it!=ab.end();++it,++sub)
                     {
                         const Species &sp = *static_cast<const Species *>(*it);
-                        active << sp;
+                        coerce(species) << sp;
                         coerce(sp.indx[SubLevel]) = sub;
                     }
                 }
-                YACK_XMLOG(xml, " (*) " << active);
+                YACK_XMLOG(xml, " (*) " << species);
 
 
 
@@ -99,16 +111,29 @@ namespace yack
 
             if(size)
             {
-                if(active.size <= 0) throw imported::exception(CLID,"invalid equilibria");
-                Nu.make(size,active.size);
+                //--------------------------------------------------------------
+                //
+                // create principal topology
+                //
+                //--------------------------------------------------------------
+                assert(species.size>0);
+                coerce(Nu).make(size,species.size);
                 for(const EqNode *en=head;en;en=en->next)
                 {
                     const Equilibrium &eq = ***en;
-                    eq.fill(Nu[ eq.indx[SubLevel] ], SubLevel);
+                    eq.fill( coerce(Nu)[ eq.indx[SubLevel] ], SubLevel);
                 }
                 YACK_XMLOG(xml, " Nu = " << Nu);
 
+                const size_t rank = apex::flak::rank(Nu);
+                if(size!=rank)
+                    throw imported::exception(CLID,"system rank=%u < size=%u", unsigned(rank), unsigned(size));
+
+                //--------------------------------------------------------------
+                //
                 // finding out conservation laws
+                //
+                //--------------------------------------------------------------
                 discoverLaws(xml);
             }
 
