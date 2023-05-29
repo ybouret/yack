@@ -64,6 +64,7 @@ namespace yack
             const size_t           Qrnk;    //!< rank(Qm)
             const ConservationLaws laws;    //!< effective laws
             const Canons           acts;    //!< group of dependent laws
+            
             Cluster               *next;    //!< for list
             Cluster               *prev;    //!< for list
             Gathering              reac;    //!< to display reac
