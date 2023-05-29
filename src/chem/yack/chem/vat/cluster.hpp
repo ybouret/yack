@@ -19,14 +19,14 @@ namespace yack
         //! Cluster of interdependent equilibria
         //
         //______________________________________________________________________
-        class Cluster : public spot_object, public EqRepo, public Gathering
+        class Cluster : public spot_object, public EqList, public Gathering
         {
         public:
             //__________________________________________________________________
             //
             // definitions
             //__________________________________________________________________
-            static const char CLID[]; //! "Cluster"
+            static const char CLID[]; //!< "Cluster"
 
             //__________________________________________________________________
             //
@@ -41,25 +41,33 @@ namespace yack
             //__________________________________________________________________
             bool recruits(const Equilibrium &) const noexcept; //!< true if equilibrium is link to one of self
             bool linkedTo(const Cluster     &) const noexcept; //!< true if at least two equilibria area linked
+
+            //! finalize cluster
+            /**
+             - build and check topology and local indices
+             - discoverLaws()
+             - makeManifold()
+             */
             void finalize(const xmlog &xml);
 
-            //!< display components
+            //! display components
             friend std::ostream & operator<<( std::ostream &, const Cluster &);
 
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
-            const SpRepo           species;
-            const matrix<int>      Nu;     //!< main topology
-            const matrix<unsigned> Qm;     //!< matrix of constraints
-            const size_t           Qr;     //!< rank(Qm)
-            
-            Cluster    *next;
-            Cluster    *prev;
+            const SpList           species; //!< employed specis
+            const matrix<int>      Nu;      //!< main topology
+            const matrix<unsigned> Qm;      //!< matrix of constraints
+            const size_t           Qr;      //!< rank(Qm)
+            Cluster               *next;    //!< for list
+            Cluster               *prev;    //!< for list
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Cluster);
             void discoverLaws(const xmlog &);
+            void makeManifold(const xmlog &);
         };
 
     }

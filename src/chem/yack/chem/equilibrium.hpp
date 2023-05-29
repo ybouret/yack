@@ -43,8 +43,8 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(Equilibrium);
         };
 
-        typedef core_repo<Equilibrium> EqRepo;
-        typedef EqRepo::node_type      EqNode;
+        typedef core_repo<Equilibrium> EqList; //!< alias
+        typedef EqList::node_type      EqNode; //!< alias
 
     }
 

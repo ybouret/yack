@@ -12,7 +12,7 @@ namespace yack
         Cluster:: ~Cluster() noexcept {}
 
         Cluster:: Cluster(Equilibrium &first) :
-        EqRepo(),
+        EqList(),
         Qr(0),
         next(0),
         prev(0)
@@ -135,7 +135,16 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 discoverLaws(xml);
+
+                //--------------------------------------------------------------
+                //
+                // build manifold
+                //
+                //--------------------------------------------------------------
+                makeManifold(xml);
             }
+
+
 
 
         }

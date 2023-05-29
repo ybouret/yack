@@ -59,12 +59,11 @@ namespace yack
                 }
             }
 
-            bool contains(const Species    &) const noexcept;
-            bool linkedTo(const Components &) const noexcept;
-            void submitTo(addrbook &) const;
-
-            bool neutral() const;
-            bool minimal() const;
+            bool contains(const Species    &) const noexcept; //!< check species is used
+            bool linkedTo(const Components &) const noexcept; //!< check shared species
+            void submitTo(addrbook &) const;                  //!< record all species addresses
+            bool neutral() const;                             //!< check if neutral
+            bool minimal() const;                             //!< check if minimal
 
             //__________________________________________________________________
             //

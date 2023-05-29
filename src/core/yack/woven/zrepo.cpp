@@ -1,6 +1,7 @@
 
 #include "yack/woven/zrepo.hpp"
 #include "yack/data/list/sort.hpp"
+#include "yack/arith/base10.hpp"
 
 namespace yack
 {
@@ -56,9 +57,13 @@ namespace yack
         {
             os << "<zrepo size=\'" << repo.size << "\'>" << std::endl;
             size_t i=1;
+            const size_t w = digits_for(repo.size);
             for(const zvector *node=repo.head;node;node=node->next,++i)
             {
-                os << "\tZ" << i << " = " << *node << " |" << node->weight << "| #" << node->ncoeff << std::endl;
+                const size_t nd = digits_for(i);
+                os << "\tZ" << i;
+                for(size_t j=nd;j<w;++j) os << ' ';
+                os << " = " << *node << " |" << node->weight << "| #" << node->ncoeff << std::endl;
             }
             os << "<zrepo/>";
             return os;

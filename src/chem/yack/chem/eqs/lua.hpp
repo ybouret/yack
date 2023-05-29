@@ -28,14 +28,23 @@ namespace yack
             explicit LuaEquilibria();           //!< setup
             virtual ~LuaEquilibria() noexcept;  //!< cleanup
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
             //! convert a name and a string into an equilibrium
             /**
              \param name equilibrium's name
              \param kstr function of numerical value
              */
             Equilibrium & operator()(const string &name, const string &kstr);
-            
-            Lua::VM lvm;
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            Lua::VM lvm; //!< lua virtual machine
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(LuaEquilibria);

@@ -16,7 +16,11 @@ namespace yack
             YACK_XMLSUB(xml,"Cluster::discoverLaws");
             woven::zrepo     repo(nc);
 
+            //------------------------------------------------------------------
+            //
             // using WOVEn to build possible laws
+            //
+            //------------------------------------------------------------------
             {
                 matrix<int>  Q(nc,nc);
                 if(!math::ortho_family::build(Q,Nu,true))
@@ -31,7 +35,11 @@ namespace yack
                 work(repo,P,rank,true);
             }
 
+            //------------------------------------------------------------------
+            //
             // process repo
+            //
+            //------------------------------------------------------------------
             typedef core_repo<const woven::zvector> zvecs;
             zvecs good;
             for(const woven::zvector *v=repo.head;v;v=v->next)
@@ -56,8 +64,14 @@ namespace yack
             if(good.size<=0)
             {
                 YACK_XMLOG(xml,"no possible conservation");
+                return;
             }
 
+            //------------------------------------------------------------------
+            //
+            // create laws
+            //
+            //------------------------------------------------------------------
             const size_t qn = good.size;
             coerce(Qm).make(qn,nc);
             {

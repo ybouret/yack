@@ -62,8 +62,8 @@ namespace yack
 
         };
 
-        typedef core_repo<Species> SpRepo;
-        typedef SpRepo::node_type  SpNode;
+        typedef core_repo<Species> SpList; //!< alias
+        typedef SpList::node_type  SpNode; //!< alias
         
     }
 

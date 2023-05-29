@@ -10,20 +10,33 @@ namespace yack
 {
     namespace Chemical
     {
-        typedef cxx_list_of<Cluster> Clusters;
+        typedef cxx_list_of<Cluster> Clusters; //!< alias
 
+        //______________________________________________________________________
+        //
+        //
+        //! Vat of equilibria
+        //
+        //______________________________________________________________________
         class Vat : public Clusters
         {
         public:
-            virtual ~Vat() noexcept;
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~Vat() noexcept;           //!< cleanup
+
+            //! setup
             explicit Vat(const Library &lib,
                          Equilibria    &eqs,
                          const xmlog   &xml);
 
+
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Vat);
             void makeClusters(const xmlog &, Equilibria &);
-            void tryReduce() noexcept;
         };
     }
 
