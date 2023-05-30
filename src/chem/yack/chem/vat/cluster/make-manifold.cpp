@@ -129,6 +129,7 @@ namespace yack
             const iList  cof;
             const size_t neqz;
             const size_t norm;
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(MixedEquilibrium);
         };

@@ -105,10 +105,60 @@ namespace yack
             YACK_XMLOG(xml, " Qrnk = " << Qrnk);
             YACK_XMLOG(xml, " laws = " << laws);
 
+            
+            findOutRoles(xml);
             assembleActs(xml);
 
         }
 
+
+        void Cluster:: findOutRoles(const xmlog &xml)
+        {
+            YACK_XMLSUB(xml,"Cluster::findOutRoles");
+
+            addrbook &cdb = coerce(conservedDB);
+            addrbook &udb = coerce(unboundedDB);
+
+            // register all species as unbounded
+            for(const SpNode *node=lib.head;node;node=node->next)
+            {
+                const Species &sp = ***node;
+                udb.ensure(&sp);
+            }
+
+            // check output
+            for(const ConservationLaw *law=laws.head;law;law=law->next)
+            {
+                for(const Actor *ac=law->head;ac;ac=ac->next)
+                {
+                    const Species &sp = **ac;
+                    udb.revoke(&sp);
+                    cdb.ensure(&sp);
+                }
+            }
+
+            // build lists
+            {
+                SpList &usl = coerce(unbounded);
+                for(addrbook::const_iterator it=udb.begin();it!=udb.end();++it)
+                {
+                    usl << *static_cast<const Species*>( *it );
+                }
+            }
+
+            {
+                SpList &csl = coerce(conserved);
+                for(addrbook::const_iterator it=cdb.begin();it!=cdb.end();++it)
+                {
+                    csl << *static_cast<const Species*>( *it );
+                }
+            }
+
+            YACK_XMLOG(xml,"conserved : " << conserved);
+            YACK_XMLOG(xml,"unbounded : " << unbounded);
+
+
+        }
 
         static inline void tryReduceActs(Acts &target)
         {

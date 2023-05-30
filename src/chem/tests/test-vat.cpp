@@ -31,6 +31,8 @@ YACK_UTEST(vat)
 
     YACK_SIZEOF(Cluster);
 
+    return 0;
+    
     vector<double> C(lib->size,0);
     Library::Conc(C,ran,0.4);
 

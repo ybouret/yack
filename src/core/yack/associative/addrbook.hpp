@@ -38,9 +38,10 @@ namespace yack
         //
         // methods
         //______________________________________________________________________
-        void              ensure(const void *);               //!< ensure presence
-        bool              insert(const void *);               //!< insert, address is BE key
+        void              ensure(const void *);                //!< ensure presence
+        bool              insert(const void *);                //!< insert, address is BE key
         bool              search(const void *) const noexcept; //!< search if registered
+        void              revoke(const void *) noexcept;       //!< revoke presence
 
         //______________________________________________________________________
         //

@@ -101,7 +101,15 @@ namespace yack
             const size_t           Qrnk;    //!< rank(Qm)
             const ConservationLaws laws;    //!< effective laws
             const Acts             acts;    //!< group of dependent laws
-            
+            const SpList           conserved;
+            const SpList           unbounded;
+            const addrbook         conservedDB;
+            const addrbook         unboundedDB;
+
+            const EqList           regular; //!< at least a conserved species on each side
+            const EqList           roaming; //!<
+            const EqList           mongrel;
+
             Cluster               *next;    //!< for list
             Cluster               *prev;    //!< for list
             Gathering              reac;    //!< to display reac
@@ -111,6 +119,7 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(Cluster);
             void discoverLaws(const xmlog &);
             void assembleActs(const xmlog &);
+            void findOutRoles(const xmlog &);
             void makeManifold(const xmlog &, Equilibria &eqs);
         };
 
