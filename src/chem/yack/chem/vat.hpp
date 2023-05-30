@@ -30,7 +30,7 @@ namespace yack
             //! setup
             explicit Vat(const xmlog   &xml,
                          Equilibria    &eqs);
-
+            
 
 
 

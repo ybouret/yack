@@ -15,39 +15,39 @@ namespace yack
         //______________________________________________________________________
         //
         //
-        //! Canon of dependents laws
+        //! Act of dependents laws
         //
         //______________________________________________________________________
-        class Canon : public object, public LawRepo
+        class Act : public object, public LawRepo
         {
         public:
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            explicit Canon(const ConservationLaw &first); //!< initialize
-            virtual ~Canon() noexcept;                    //!< cleanup
+            explicit Act(const ConservationLaw &first); //!< initialize
+            virtual ~Act() noexcept;                    //!< cleanup
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
             bool endorses(const ConservationLaw &) const noexcept; //!< check if law is in the list
-            bool linkedTo(const Canon           &) const noexcept; //!< check if shared law
+            bool linkedTo(const Act             &) const noexcept; //!< check if shared law
 
 
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
-            Canon *next; //!< for list
-            Canon *prev; //!< for list
+            Act *next; //!< for list
+            Act *prev; //!< for list
 
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(Canon);
+            YACK_DISABLE_COPY_AND_ASSIGN(Act);
         };
 
-        typedef cxx_list_of<Canon> Canons; //!< alias
+        typedef cxx_list_of<Act> Acts; //!< alias
 
     }
 

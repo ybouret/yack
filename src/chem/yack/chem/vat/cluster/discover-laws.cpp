@@ -110,13 +110,13 @@ namespace yack
         }
 
 
-        static inline void tryReduceCanons(Canons &target)
+        static inline void tryReduceActs(Acts &target)
         {
-            Canons store;
+            Acts store;
             while(target.size)
             {
-                Canon *rhs = target.pop_front();
-                for(Canon *lhs = store.head; lhs; lhs=lhs->next)
+                Act *rhs = target.pop_front();
+                for(Act *lhs = store.head; lhs; lhs=lhs->next)
                 {
                     if(lhs->linkedTo(*rhs))
                     {
@@ -138,12 +138,12 @@ namespace yack
         {
             YACK_XMLSUB(xml,"Cluster::assembleActs");
             {
-                Canons &target = coerce(acts);
+                Acts &target = coerce(acts);
                 for(const ConservationLaw *node=laws.head;node;node=node->next)
                 {
                     bool                   use = false;
                     const ConservationLaw &law = *node;
-                    for(Canon *canon=target.head;canon;canon=canon->next)
+                    for(Act *canon=target.head;canon;canon=canon->next)
                     {
                         if(canon->endorses(law))
                         {
@@ -155,18 +155,18 @@ namespace yack
 
                     if(use)
                     {
-                        tryReduceCanons(target);
+                        tryReduceActs(target);
                     }
                     else
                     {
-                        target.push_back( new Canon(law) );
+                        target.push_back( new Act(law) );
                     }
                 }
             }
             if(xml.verbose)
             {
                 *xml << "#acts=" << acts.size << std::endl;
-                for(const Canon *c=acts.head;c;c=c->next)
+                for(const Act *c=acts.head;c;c=c->next)
                 {
                     *xml << *c << std::endl;
                 }

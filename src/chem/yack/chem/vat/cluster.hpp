@@ -5,7 +5,7 @@
 #define YACK_CHEM_VAT_CLUSTER_INCLUDED 1
 
 #include "yack/chem/equilibria.hpp"
-#include "yack/chem/vat/canon.hpp"
+#include "yack/chem/vat/act.hpp"
 #include "yack/ios/xmlog.hpp"
 #include "yack/container/matrix.hpp"
 
@@ -63,7 +63,7 @@ namespace yack
             const matrix<unsigned> Qmat;    //!< matrix of constraints
             const size_t           Qrnk;    //!< rank(Qm)
             const ConservationLaws laws;    //!< effective laws
-            const Canons           acts;    //!< group of dependent laws
+            const Acts             acts;    //!< group of dependent laws
             
             Cluster               *next;    //!< for list
             Cluster               *prev;    //!< for list

@@ -1,4 +1,3 @@
-
 #include "yack/chem/vat.hpp"
 
 namespace yack
