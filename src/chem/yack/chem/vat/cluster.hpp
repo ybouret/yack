@@ -106,9 +106,10 @@ namespace yack
             const addrbook         conservedDB;
             const addrbook         unboundedDB;
 
-            const EqList           regular; //!< at least a conserved species on each side
-            const EqList           roaming; //!<
-            const EqList           mongrel;
+            const EqList           standard; //!< at least a conserved species on each side
+            const EqList           prodOnly; //!< product(s) only
+            const EqList           reacOnly; //!< reactant(s) onlu
+            const EqList           nebulous; //!< based only on unbounded species
 
             Cluster               *next;    //!< for list
             Cluster               *prev;    //!< for list

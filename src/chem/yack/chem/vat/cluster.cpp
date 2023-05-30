@@ -19,6 +19,17 @@ namespace yack
         Qrnk(0),
         laws(),
         acts(),
+
+        conserved(),
+        unbounded(),
+        conservedDB(),
+        unboundedDB(),
+
+        standard(),
+        prodOnly(),
+        reacOnly(),
+        nebulous(),
+
         next(0),
         prev(0),
         reac(),
@@ -59,7 +70,7 @@ namespace yack
             for(const EqNode *node=cl.head;node;node=node->next)
             {
                 const Equilibrium &eq = ***node;
-                cl.pad(os << " <" << eq.name,eq) << "> : ";
+                cl.pad(os << " <" << eq.name << ">",eq) << " : ";
                 cl.reac.pad(os << eq.reac.name,eq.reac);
                 os << " <=> ";
                 cl.prod.pad(os << eq.prod.name,eq.prod);
@@ -157,6 +168,7 @@ namespace yack
                 makeManifold(xml,eqs);
             }
 
+            findOutRoles(xml);
 
 
 

@@ -106,7 +106,6 @@ namespace yack
             YACK_XMLOG(xml, " laws = " << laws);
 
             
-            findOutRoles(xml);
             assembleActs(xml);
 
         }
@@ -119,14 +118,22 @@ namespace yack
             addrbook &cdb = coerce(conservedDB);
             addrbook &udb = coerce(unboundedDB);
 
+            //------------------------------------------------------------------
+            //
             // register all species as unbounded
+            //
+            //------------------------------------------------------------------
             for(const SpNode *node=lib.head;node;node=node->next)
             {
                 const Species &sp = ***node;
                 udb.ensure(&sp);
             }
 
+            //------------------------------------------------------------------
+            //
             // check output
+            //
+            //------------------------------------------------------------------
             for(const ConservationLaw *law=laws.head;law;law=law->next)
             {
                 for(const Actor *ac=law->head;ac;ac=ac->next)
@@ -137,7 +144,11 @@ namespace yack
                 }
             }
 
+            //------------------------------------------------------------------
+            //
             // build lists
+            //
+            //------------------------------------------------------------------
             {
                 SpList &usl = coerce(unbounded);
                 for(addrbook::const_iterator it=udb.begin();it!=udb.end();++it)
@@ -156,6 +167,44 @@ namespace yack
 
             YACK_XMLOG(xml,"conserved : " << conserved);
             YACK_XMLOG(xml,"unbounded : " << unbounded);
+
+            assert(lib.size==conserved.size+unbounded.size);
+
+            //------------------------------------------------------------------
+            //
+            // sorting out eqs
+            //
+            //------------------------------------------------------------------
+            for(const EqNode *node=head;node;node=node->next)
+            {
+                const Equilibrium &eq = ***node;
+                const char        *id = NULL;
+                if(eq.reac.size<=0)
+                {
+                    assert(eq.prod.size>0);
+                    id = "prodOnly";
+                    coerce(prodOnly) << eq;
+                    goto END;
+                }
+
+                if(eq.prod.size<=0)
+                {
+                    assert(eq.reac.size>0);
+                    id = "reacOnly";
+                    coerce(reacOnly) << eq;
+                    goto END;
+                }
+                
+
+
+                assert(eq.reac.size>0);
+                assert(eq.prod.size>0);
+
+                continue;
+
+            END:
+                YACK_XMLOG(xml, " (" << id << ") " << eq.name);
+            }
 
 
         }
