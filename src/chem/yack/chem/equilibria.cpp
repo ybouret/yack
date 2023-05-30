@@ -9,7 +9,10 @@ namespace yack
 
         Equilibria:: ~Equilibria() noexcept {}
 
-        Equilibria::  Equilibria() noexcept
+        Equilibria::  Equilibria() noexcept :
+        reac(),
+        prod(),
+        edb()
         {}
 
         const eList *  Equilibria::  operator->() const noexcept

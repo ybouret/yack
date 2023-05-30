@@ -7,7 +7,10 @@ namespace yack
     {
         Guardian:: ~Guardian() noexcept {}
 
-        Guardian:: Guardian()
+        Guardian:: Guardian() :
+        broken(),
+        excess(),
+        xadd()
         {
         }
 

@@ -10,6 +10,7 @@ namespace yack
         }
 
         Actor:: Actor(const unsigned n, const Species &s) noexcept :
+        object(),
         nu(n),
         sp(s),
         next(0),
@@ -19,6 +20,7 @@ namespace yack
         }
 
         Actor:: Actor(const Actor &other) noexcept :
+        object(),
         nu( other.nu ),
         sp( other.sp ),
         next(0),

@@ -34,7 +34,7 @@ namespace yack
             //__________________________________________________________________
             bool endorses(const ConservationLaw &) const noexcept; //!< check if law is in the list
             bool linkedTo(const Act             &) const noexcept; //!< check if shared law
-            void finalize() noexcept;
+            void finalize() noexcept;                              //!< update gathering
 
             //__________________________________________________________________
             //

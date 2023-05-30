@@ -13,14 +13,17 @@ namespace yack
     namespace Chemical
     {
 
-        typedef ipso::add<double>  Adder;
-        typedef Adder::inside_type XReal;
+        typedef ipso::add<double>  Adder; //!< alias
+        typedef Adder::inside_type XReal; //!< alias
 
+        //! conversion from double to extended
         inline XReal  Double2XReal(const double x) { return ipso::inside<double>::send(x); }
+
+        //! conversion from extended to double
         inline double XReal2Double(const XReal &x) { return ipso::inside<double>::recv(x); }
 
-        typedef core_list<XReal>     CoreXList;
-        typedef CoreXList::node_type CoreXNode;
+        typedef core_list<XReal>     CoreXList; //!< alias
+        typedef CoreXList::node_type CoreXNode; //!< alias
 
         //______________________________________________________________________
         //
@@ -45,11 +48,12 @@ namespace yack
 
             bool involves(const Species         &) const noexcept; //!< check if species is involved in conservation
             bool linkedTo(const ConservationLaw &) const noexcept; //!< check if a species is shared
-            void finalize();                                       //!< compute xnu
+            void finalize();                                       //!< compute Q/Q2
 
             //! simple display
             friend std::ostream & operator<<(std::ostream &, const ConservationLaw &);
 
+            //! compute excess, must be process if positive
             XReal excess(const readable<double> &C,
                          Adder                  &xadd,
                          const IndexLevel        level) const;

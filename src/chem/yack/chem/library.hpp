@@ -30,9 +30,13 @@ namespace yack
             // definitions
             //__________________________________________________________________
             static const char CLID[]; //!< "Chemical::Libary"
-            static const int  pmin = -30;
-            static const int  pmax =  1;
+            static const int  pmin = -30; //!< Cmin = 10^pmin
+            static const int  pmax =  1;  //!< Cmax = 10^pmax
+
+            //! draw random concentration with a negative probability
             static double     Conc(randomized::bits &, const double probaNeg) noexcept;
+
+            //! draw random concentrations with a negative probability
             static void       Conc(writable<double> &, randomized::bits &, const double probaNeg) noexcept;
 
             //__________________________________________________________________
@@ -62,6 +66,7 @@ namespace yack
             const Species * query(const string &) noexcept; //!< query by name
             const Species * query(const char   *);          //!< query by name
 
+            //! helper to display top-level info
             template <typename ARRAY> inline
             std::ostream & operator()(std::ostream &os, const char *pfx, ARRAY &arr, const char *sfx) const
             {

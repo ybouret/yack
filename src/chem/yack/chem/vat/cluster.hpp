@@ -54,6 +54,7 @@ namespace yack
             //! display components
             friend std::ostream & operator<<( std::ostream &, const Cluster &);
 
+            //! target[SubLevel] = source[TopLevel]
             template <typename TARGET, typename SOURCE> inline
             void load(TARGET &target, SOURCE &source) const
             {
@@ -64,10 +65,12 @@ namespace yack
                 }
             }
 
+            //! fill with active species only
             void fill(writable<double> &C,
                       randomized::bits &ran,
                       const IndexLevel  level) const noexcept;
 
+            //! helper to display info
             template <typename ARRAY> inline
             std::ostream & operator()(std::ostream    & os,
                                       const char      * pfx,

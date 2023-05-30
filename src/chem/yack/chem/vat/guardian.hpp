@@ -12,34 +12,59 @@ namespace yack
 {
     namespace Chemical
     {
-        typedef vector<XReal,memory::dyadic> Injected;
+        typedef vector<XReal,memory::dyadic> Injected; //!< alias
 
+        //----------------------------------------------------------------------
+        //
+        //
+        //! operating on consrvation laws to enforce them
+        //
+        //----------------------------------------------------------------------
         class Guardian : public Injected
         {
         public:
-            typedef solo_repo<const ConservationLaw> Broken;
-            typedef solo_list<XReal>                 Excess;
-            typedef Excess::node_type                XsNode;
-            
-            explicit Guardian();
-            virtual ~Guardian() noexcept;
+            //__________________________________________________________________
+            //
+            // definitions
+            //__________________________________________________________________
+            typedef solo_repo<const ConservationLaw> Broken; //!< alias
+            typedef solo_list<XReal>                 Excess; //!< alias
+            typedef Excess::node_type                XsNode; //!< alias
 
-            void restart(const size_t M);
-            void enforce(const xmlog      &xml,
-                         writable<double> &C0,
-                         const       Act  &act);
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit Guardian();           //!< setup
+            virtual ~Guardian() noexcept;  //!< cleanup
 
+
+            //__________________________________________________________________
+            //
+            // mehods
+            //__________________________________________________________________
+
+            //! iterative laws enforcement
             void operator()(const xmlog            &xml,
                             writable<double>       &C0,
                             const list_of<Cluster> &clusters);
 
 
-            Broken broken;
-            Excess excess;
-            Adder  xadd;
+
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Guardian);
+            Broken broken;
+            Excess excess;
+            Adder  xadd;
+
+            //! make this = zeros(M)
+            void restart(const size_t M);
+
+            //! iterative law enforcement, keeping track of injected
+            void enforce(const xmlog      &xml,
+                         writable<double> &C0,
+                         const       Act  &act);
         };
 
     }

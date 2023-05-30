@@ -13,9 +13,16 @@ namespace yack
 
         Cluster:: Cluster(Equilibrium &first) :
         EqList(),
+        lib(),
+        Nu(),
+        Qmat(),
         Qrnk(0),
+        laws(),
+        acts(),
         next(0),
-        prev(0)
+        prev(0),
+        reac(),
+        prod()
         {
             (*this) << first;
         }

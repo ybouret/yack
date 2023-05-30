@@ -46,6 +46,7 @@ namespace yack
         private:
             const Species &sp;
             YACK_DISABLE_ASSIGN(Actor);
+            
         public:
             Actor *next; //!< for list
             Actor *prev; //!< for list

@@ -5,7 +5,11 @@ namespace yack
 {
     namespace Chemical
     {
-        ConservationLaw:: ConservationLaw()
+        ConservationLaw:: ConservationLaw() :
+        Q(),
+        Q2(),
+        next(0),
+        prev(0)
         {
         }
 
