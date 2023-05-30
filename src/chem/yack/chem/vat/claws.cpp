@@ -19,6 +19,7 @@ namespace yack
             for(ConservationLaw *claw=head;claw;claw=claw->next)
             {
                 claw->makeName();
+                claw->finalize();
                 update(*claw);
             }
         }

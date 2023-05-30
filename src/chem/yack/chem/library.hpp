@@ -6,6 +6,7 @@
 
 #include "yack/chem/species.hpp"
 #include "yack/associative/suffix/set.hpp"
+#include "yack/randomized/bits.hpp"
 
 namespace yack
 {
@@ -29,6 +30,10 @@ namespace yack
             // definitions
             //__________________________________________________________________
             static const char CLID[]; //!< "Chemical::Libary"
+            static const int  pmin = -30;
+            static const int  pmax =  1;
+            static double     Conc(randomized::bits &, const double probaNeg) noexcept;
+            static void       Conc(writable<double> &, randomized::bits &, const double probaNeg) noexcept;
 
             //__________________________________________________________________
             //
@@ -56,7 +61,22 @@ namespace yack
 
             const Species * query(const string &) noexcept; //!< query by name
             const Species * query(const char   *);          //!< query by name
-            
+
+            template <typename ARRAY> inline
+            std::ostream & operator()(std::ostream &os, const char *pfx, ARRAY &arr, const char *sfx) const
+            {
+                if(!pfx) pfx = "";
+                if(!sfx) sfx = "";
+                os << '{' << std::endl;
+                for(const sNode *node=(*this)->head;node;node=node->next)
+                {
+                    const Species &sp = ***node;
+                    pad(os << ' ' << pfx << sp.name << sfx,sp) << " = " << arr[ sp.indx[TopLevel] ] << std::endl;
+                }
+                os << '}';
+                return os;
+            }
+
 
         private:
             YACK_DISABLE_ASSIGN(Library);

@@ -163,14 +163,14 @@ namespace yack
                     }
                 }
             }
-            if(xml.verbose)
+            YACK_XMLOG(xml, "#acts=" << acts.size);
+
+            for(Act *c=acts.head;c;c=c->next)
             {
-                *xml << "#acts=" << acts.size << std::endl;
-                for(const Act *c=acts.head;c;c=c->next)
-                {
-                    *xml << *c << std::endl;
-                }
+                YACK_XMLOG(xml, *c);
+                c->finalize();
             }
+
 
         }
 

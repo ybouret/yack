@@ -223,7 +223,7 @@ namespace yack
 
     template <>
     sign_type extended<real_t>:: scompare(const extended &lhs,
-                                       const extended &rhs)
+                                          const extended &rhs)
     {
         const extended<real_t> delta = lhs-rhs;
         if(delta.m<0)

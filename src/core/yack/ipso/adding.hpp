@@ -95,6 +95,16 @@ namespace yack
                     goto REDUCE;
                 }
 
+                //! load simple product
+                template <typename LHS, typename RHS>
+                void prod(typename type_traits<LHS>::parameter_type lhs,
+                          typename type_traits<RHS>::parameter_type rhs)
+                {
+                    const inside_type l = inside<T>::send( lhs );
+                    const inside_type r = inside<T>::send( rhs );
+                    const inside_type p = l*r;
+                    push(p);
+                }
 
                 //! load dot product
                 template <typename LHS, typename RHS> inline

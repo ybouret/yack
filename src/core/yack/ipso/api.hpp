@@ -75,7 +75,7 @@ namespace yack
                 return *this;
             }
 
-            //! high-level reduction and conversiont
+            //! high-level reduction and conversion
             inline mutable_type operator*() {
                 const inside_type res = reduce();
                 return inside<T>::recv(res);

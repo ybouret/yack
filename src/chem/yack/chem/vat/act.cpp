@@ -35,6 +35,16 @@ namespace yack
             return false;
         }
 
+        void Act:: finalize() noexcept
+        {
+            for(const LawNode *node=head;node;node=node->next)
+            {
+                const ConservationLaw &law = ***node;
+                update(law);
+            }
+        }
+
+
 
     }
 

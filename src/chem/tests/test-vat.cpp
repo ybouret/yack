@@ -4,6 +4,7 @@
 #include "yack/chem/vat.hpp"
 
 #include "yack/chem/eqs/lua.hpp"
+#include "yack/chem/vat/guardian.hpp"
 
 
 using namespace yack;
@@ -11,6 +12,7 @@ using namespace Chemical;
 
 YACK_UTEST(vat)
 {
+    randomized::rand_ ran;
 
     Weasel::Designer & wsl = Weasel::Designer::instance();
     Library           lib;
@@ -28,6 +30,18 @@ YACK_UTEST(vat)
     Vat   vat(xml,eqs);
 
     YACK_SIZEOF(Cluster);
+
+    vector<double> C(lib->size,0);
+    Library::Conc(C,ran,0.4);
+
+    lib(std::cerr,"[",C,"]") << std::endl;
+
+    Guardian guard;
+    guard(xml,C,vat);
+
+    std::cerr << "injected=" << guard << std::endl;
+
+
 
 }
 YACK_UDONE()

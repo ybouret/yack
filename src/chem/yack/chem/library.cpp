@@ -20,6 +20,18 @@ namespace yack
 
         }
 
+        double Library:: Conc(randomized::bits &ran, const double probaNeg) noexcept
+        {
+            const double p   = double(pmin) + ran.to<double>() * double(pmax-pmin);
+            const double ans = pow(10.0,p);
+            return ( ran.choice() < probaNeg ) ? -ans : ans;
+        }
+
+        void Library:: Conc(writable<double> &C, randomized::bits &ran, const double probaNeg) noexcept
+        {
+            for(size_t i=C.size();i>0;--i) C[i] = Conc(ran,probaNeg);
+        }
+
         const sList * Library:: operator->() const noexcept
         {
             return & *sdb.get_tree();

@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_CHEM_VAT_CLUSTER_INCLUDED
@@ -8,6 +7,7 @@
 #include "yack/chem/vat/act.hpp"
 #include "yack/ios/xmlog.hpp"
 #include "yack/container/matrix.hpp"
+#include "yack/randomized/bits.hpp"
 
 namespace yack
 {
@@ -53,6 +53,40 @@ namespace yack
 
             //! display components
             friend std::ostream & operator<<( std::ostream &, const Cluster &);
+
+            template <typename TARGET, typename SOURCE> inline
+            void load(TARGET &target, SOURCE &source) const
+            {
+                for(const SpNode *sn=lib.head;sn;sn=sn->next)
+                {
+                    const Species &sp = ***sn;
+                    target[ sp.indx[SubLevel] ] = source[ sp.indx[TopLevel] ];
+                }
+            }
+
+            void fill(writable<double> &C,
+                      randomized::bits &ran,
+                      const IndexLevel  level) const noexcept;
+
+            template <typename ARRAY> inline
+            std::ostream & operator()(std::ostream    & os,
+                                      const char      * pfx,
+                                      ARRAY           & arr,
+                                      const char      * sfx,
+                                      const IndexLevel  level)
+            {
+                if(!pfx) pfx="";
+                if(!sfx) sfx="";
+                os << '{' << std::endl;
+                for(const SpNode *node=lib.head;node;node=node->next)
+                {
+                    const Species &sp = ***node;
+                    pad( os << pfx << sp.name << sfx,sp) << " = " << arr[ sp.indx[level] ] << std::endl;
+                }
+                os << '}';
+                return os;
+            }
+
 
             //__________________________________________________________________
             //

@@ -18,7 +18,7 @@ namespace yack
         //! Act of dependents laws
         //
         //______________________________________________________________________
-        class Act : public object, public LawRepo
+        class Act : public object, public LawRepo, public Gathering
         {
         public:
             //__________________________________________________________________
@@ -34,7 +34,7 @@ namespace yack
             //__________________________________________________________________
             bool endorses(const ConservationLaw &) const noexcept; //!< check if law is in the list
             bool linkedTo(const Act             &) const noexcept; //!< check if shared law
-
+            void finalize() noexcept;
 
             //__________________________________________________________________
             //
