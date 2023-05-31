@@ -28,14 +28,16 @@ namespace yack
             //
             // definitions
             //__________________________________________________________________
-            typedef ark_ptr<string,Species> Pointer; //!< alias
-            static  bool                    Verbose; //!< to debug
-            typedef core_repo<Species>      CoreRepo;
-            typedef CoreRepo::node_type     Node;
+            typedef ark_ptr<string,Species> Pointer;  //!< alias
+            static  bool                    Verbose;  //!< to debug
+            typedef core_repo<Species>      CoreRepo; //!< alias
+            typedef CoreRepo::node_type     Node;     //!< alias
+
+            //! category of species
             enum Category
             {
-                Conserved,
-                Unbounded
+                Conserved, //!< in a conservation law
+                Unbounded  //!< not involved in conservation
             };
 
             //__________________________________________________________________

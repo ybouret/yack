@@ -27,8 +27,8 @@ namespace yack
             //
             // definitions
             //__________________________________________________________________
-            static const char CLID[]; //!< "Cluster"
-            typedef vector<Species::Category,memory::dyadic> SpeciesCategories;
+            static const char CLID[];                                           //!< "Cluster"
+            typedef vector<Species::Category,memory::dyadic> SpeciesCategories; //!< alias
 
             //__________________________________________________________________
             //
@@ -88,6 +88,8 @@ namespace yack
                 return os;
             }
 
+            bool isConserved(const Species &) const noexcept; //!< helper
+            bool isUnbounded(const Species &) const noexcept; //!< helper
 
             //__________________________________________________________________
             //
@@ -104,8 +106,8 @@ namespace yack
             const SpeciesCategories category;      //!< sub-level vector of categories
 
             const Equilibrium::CoreRepo standard; //!< at least a conserved species on each side
-            const Equilibrium::CoreRepo prodOnly; //!< product(s) only
-            const Equilibrium::CoreRepo reacOnly; //!< reactant(s) onlu
+            const Equilibrium::CoreRepo prodOnly; //!< product(s)  only
+            const Equilibrium::CoreRepo reacOnly; //!< reactant(s) only
             const Equilibrium::CoreRepo nebulous; //!< based only on unbounded species
 
             Cluster                *next;    //!< for list

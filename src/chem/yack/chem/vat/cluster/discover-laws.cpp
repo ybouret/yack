@@ -118,6 +118,14 @@ namespace yack
                 size_t unbounded;
                 size_t extensive;
 
+#if 0
+                inline friend std::ostream & operator<<(std::ostream &os, const ActorCount &self)
+                {
+                    os << "(extensive=" << self.extensive << ", conserved=" << self.conserved << ", unbounded=" << self.unbounded << ")";
+                    return os;
+                }
+#endif
+
                 static inline void Count(ActorCount                        &count,
                                          const Actors                      &actors,
                                          const readable<Species::Category> &category)
@@ -203,9 +211,58 @@ namespace yack
             for(const Equilibrium::Node *node=head;node;node=node->next)
             {
                 const Equilibrium &eq = ***node;
-                ActorCount         nr = { 0,0,0 };
-                ActorCount         np = { 0,0,0 };
-                ActorCount::Get(nr,np,eq,category);
+                ActorCount  nr = { 0,0,0 };
+                ActorCount  np = { 0,0,0 };
+                ActorCount::Get(nr,np, eq, category);
+                const char *id = NULL;
+
+
+                if(nr.extensive<=0)
+                {
+                    assert(nr.conserved<=0); assert(nr.unbounded<=0);
+                    assert(np.extensive>0);  assert(np.unbounded==np.extensive); assert(np.conserved==0);
+                    coerce(prodOnly) << eq;
+                    id = "prodOnly";
+                    goto END;
+                }
+
+                if(np.extensive<=0)
+                {
+                    assert(np.conserved<=0); assert(np.unbounded<=0);
+                    assert(nr.extensive>0);  assert(nr.unbounded==nr.extensive); assert(nr.conserved==0);
+                    coerce(prodOnly) << eq;
+                    id = "reacOnly";
+                    goto END;
+                }
+
+                assert(nr.extensive>0);
+                assert(np.extensive>0);
+
+                static const unsigned ConservedNone = 0x00;
+                static const unsigned ConservedReac = 0x01;
+                static const unsigned ConservedProd = 0x02;
+                static const unsigned ConservedBoth = ConservedReac | ConservedProd;
+                {
+                    unsigned flag = ConservedNone;
+                    if(nr.conserved>0) flag |= ConservedReac;
+                    if(np.conserved>0) flag |= ConservedProd;
+
+                    switch(flag)
+                    {
+                        case ConservedNone: coerce(nebulous) << eq; id="nebulous"; goto END;
+                        case ConservedBoth: coerce(standard) << eq; id="standard"; goto END;
+                        default:
+                            break;
+                    }
+
+                }
+
+                id = "- todo -";
+
+
+            END:
+                assert(NULL!=id);
+                YACK_XMLOG(xml, "(" << id << ") " << eq.name);
 
             }
 

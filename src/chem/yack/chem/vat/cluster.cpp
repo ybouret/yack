@@ -177,6 +177,17 @@ namespace yack
 
 
         }
+
+        bool Cluster:: isConserved(const Species &sp) const noexcept
+        {
+            return Species::Conserved == category[ sp.indx[SubLevel] ];
+        }
+
+
+        bool Cluster:: isUnbounded(const Species &sp) const noexcept
+        {
+            return Species::Unbounded == category[ sp.indx[SubLevel] ];
+        }
     }
 
 }

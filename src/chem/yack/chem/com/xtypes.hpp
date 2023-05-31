@@ -11,11 +11,16 @@ namespace yack {
 
     namespace Chemical
     {
-
+        //______________________________________________________________________
+        //
+        //
+        //! extended precision management
+        //
+        //______________________________________________________________________
         struct Extended
         {
-            typedef extended<double>  Real;
-            typedef ipso::add<double> Adder;
+            typedef extended<double>  Real;   //!< alias
+            typedef ipso::add<double> Adder;  //!< alias
 
             //! conversion from double to extended
             static inline Real   Send(const double x) { return ipso::inside<double>::send(x); }
@@ -24,9 +29,9 @@ namespace yack {
             static inline double Recv(const Real &x) { return ipso::inside<double>::recv(x); }
 
 
-            typedef core_list<Real>     CoreList;
-            typedef solo_list<Real>     SoloList;
-            typedef CoreList::node_type Node;
+            typedef core_list<Real>     CoreList; //!< alias
+            typedef solo_list<Real>     SoloList; //!< alias
+            typedef CoreList::node_type Node;     //!< alias
 
         };
 
