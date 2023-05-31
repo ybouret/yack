@@ -1,9 +1,9 @@
-
 #include "yack/chem/vat/cluster.hpp"
 #include "yack/system/imported.hpp"
 #include "yack/woven/qcompress.hpp"
 #include "yack/woven/qbuilder.hpp"
 #include "yack/data/dinky/core-list.hpp"
+#include "yack/type/abs.hpp"
 
 namespace yack
 {
@@ -264,7 +264,7 @@ namespace yack
                     {
                         mixed(nu,sp);
                         coerce(mixed.neqz)++;
-                        coerce(mixed.norm) += std::abs(nu);
+                        coerce(mixed.norm) += absolute(nu);
                     }
                 }
                 sub << mixed;
