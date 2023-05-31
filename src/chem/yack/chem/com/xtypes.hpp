@@ -11,17 +11,26 @@ namespace yack {
     namespace Chemical
     {
 
-        typedef ipso::add<double>  Adder; //!< alias
-        typedef Adder::inside_type XReal; //!< alias
+        struct Extended
+        {
+            typedef extended<double>  Real;
+            typedef ipso::add<double> Adder;
+
+            //! conversion from double to extended
+            static inline Real   Send(const double x) { return ipso::inside<double>::send(x); }
+
+            //! conversion from extended to double
+            static inline double Recv(const Real &x) { return ipso::inside<double>::recv(x); }
+
+
+            typedef core_list<Real>     CoreList;
+            typedef CoreList::node_type Node;
+
+        };
+
+        typedef Extended::Real    XReal; //!< alias
         
-        //! conversion from double to extended
-        inline XReal  Double2XReal(const double x) { return ipso::inside<double>::send(x); }
-
-        //! conversion from extended to double
-        inline double XReal2Double(const XReal &x) { return ipso::inside<double>::recv(x); }
-
-        typedef core_list<XReal>         XRealCoreList; //!< alias
-        typedef XRealCoreList::node_type XRealNode; //!< alias
+        
         
 
     }

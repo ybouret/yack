@@ -99,9 +99,9 @@ namespace yack
                     if(xml.verbose)
                         act.pad(*xml << " --> " << law, law) << " = " << lxs << " <--" << std::endl;
 
-                    const XReal      d = law.Q2;
-                    const Actor     *a = law.head;    assert(a); assert(law.size==law.Q.size);
-                    const XRealNode *q = law.Q.head;  assert(q);
+                    const XReal           d = law.Q2;
+                    const Actor          *a = law.head;    assert(a); assert(law.size==law.Q.size);
+                    const Extended::Node *q = law.Q.head;  assert(q);
                     for(;a;a=a->next,q=q->next)
                     {
                         const XReal  dC = (lxs * (**q))/d;

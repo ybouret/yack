@@ -54,9 +54,9 @@ namespace yack
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Guardian);
-            Broken broken;
-            Excess excess;
-            Adder  xadd;
+            Broken          broken;
+            Excess          excess;
+            Extended::Adder xadd;
 
             //! make this = zeros(M)
             void restart(const size_t M);

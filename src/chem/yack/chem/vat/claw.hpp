@@ -44,15 +44,15 @@ namespace yack
 
             //! compute excess, must be process if positive
             XReal excess(const readable<double> &C,
-                         Adder                  &xadd,
+                         Extended::Adder        &xadd,
                          const IndexLevel        level) const;
 
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
-            const XRealCoreList  Q;  //!< coefficients as extended real
-            const XReal          Q2; //!< |Q|^2
+            const Extended::CoreList  Q;  //!< coefficients as extended real
+            const XReal               Q2; //!< |Q|^2
             ConservationLaw     *next; //!< for list
             ConservationLaw     *prev; //!< for list
         private:

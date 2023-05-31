@@ -19,15 +19,15 @@ namespace yack
 
         void ConservationLaw:: finalize()
         {
-            Adder      xadd;
+            Extended::Adder xadd;
             xadd.ensure(size);
-            XRealCoreList &xl = coerce(Q); assert(0==xl.size);
+            Extended::CoreList &xl = coerce(Q); assert(0==xl.size);
             try
             {
                 for(const Actor *a=head;a;a=a->next)
                 {
-                    const XReal xr = Double2XReal(a->nu);
-                    xl << Double2XReal(a->nu);
+                    const XReal xr = Extended::Send(a->nu);
+                    xl << xr;
                     xadd.append(xr);
                 }
                 coerce(Q2) = xadd.reduce();
@@ -67,18 +67,18 @@ namespace yack
         }
 
         XReal ConservationLaw:: excess(const readable<double> &C,
-                                        Adder                  &xadd,
-                                        const IndexLevel        level) const
+                                       Extended::Adder        &xadd,
+                                       const IndexLevel        level) const
         {
             assert(size==Q.size);
             xadd.resume(size);
-            const Actor     *ac = head;
-            const XRealNode *nu = Q.head;
+            const Actor          *ac = head;
+            const Extended::Node *nu = Q.head;
 
             for(;ac;ac=ac->next,nu=nu->next)
             {
                 assert(nu!=NULL);
-                XReal p = Double2XReal( C[ (**ac).indx[level] ] );
+                XReal p = Extended::Send( C[ (**ac).indx[level] ] );
                 p *= **nu;
                 xadd.append(p);
             }
