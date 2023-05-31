@@ -2,6 +2,7 @@
 #include "yack/chem/eqs/components.hpp"
 #include "yack/system/imported.hpp"
 #include "yack/apex/integer.hpp"
+#include "yack/type/abs.hpp"
 
 namespace yack
 {
@@ -120,10 +121,11 @@ namespace yack
                     return true;
             }
             const cNode *node = self.head;
-            apn g = std::abs( (***node).nu ); if(1==g) return true;
+            apn g = absolute( ( (***node).nu ) );
+            if(1==g) return true;
             for(node=node->next;node;node=node->next)
             {
-                const apn nu = std::abs( (***node).nu );
+                const apn nu = absolute( (***node).nu );
                 g = apn::gcd(g,nu); if(1==g) return true;
             }
             return false;
