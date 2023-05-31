@@ -9,7 +9,11 @@ namespace yack
 {
     namespace Chemical
     {
-        typedef core_repo<const ConservationLaw> LawRepo; //!< base class for Canon
+        //______________________________________________________________________
+        //
+        // definitions
+        //______________________________________________________________________
+        typedef core_repo<const ConservationLaw> LawRepo; //!< base class for Act
         typedef LawRepo::node_type               LawNode; //!< alias
 
         //______________________________________________________________________
@@ -25,7 +29,7 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit Act(const ConservationLaw &first); //!< initialize
+            explicit Act(const ConservationLaw &first); //!< initialize with first law
             virtual ~Act() noexcept;                    //!< cleanup
 
             //__________________________________________________________________
@@ -33,8 +37,8 @@ namespace yack
             // methods
             //__________________________________________________________________
             bool endorses(const ConservationLaw &) const noexcept; //!< check if law is in the list
-            bool linkedTo(const Act             &) const noexcept; //!< check if shared law
-            void finalize() noexcept;                              //!< update gathering
+            bool linkedTo(const Act             &) const noexcept; //!< check if there is a shared law
+            void finalize() noexcept;                              //!< update Gathering for display
 
             //__________________________________________________________________
             //
@@ -47,6 +51,10 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(Act);
         };
 
+        //______________________________________________________________________
+        //
+        // definition
+        //______________________________________________________________________
         typedef cxx_list_of<Act> Acts; //!< alias
 
     }

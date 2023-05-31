@@ -33,7 +33,11 @@ namespace yack
         {
             YACK_XMLSUB(xml, "Vat::makeCluster");
 
+            //------------------------------------------------------------------
+            //
             // make all clusters by connectivity
+            //
+            //------------------------------------------------------------------
             for(eNode *en=eqs->head;en;en=en->next)
             {
                 bool         ok = false;
@@ -54,11 +58,19 @@ namespace yack
                     push_back( new Cluster(eq) );
             }
 
+            //------------------------------------------------------------------
+            //
             // finalize all clusters
+            //
+            //------------------------------------------------------------------
             for(Cluster *cl=head;cl;cl=cl->next)
                 cl->finalize(xml,eqs);
 
+            //------------------------------------------------------------------
+            //
             // update global equilibria
+            //
+            //------------------------------------------------------------------
             eqs.finalize();
 
             

@@ -30,14 +30,13 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit ConservationLaws() noexcept;
-            virtual ~ConservationLaws() noexcept;
+            explicit ConservationLaws() noexcept; //!< setup empty
+            virtual ~ConservationLaws() noexcept; //!< cleanup
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-
             void finalize(); //!< make names and update gathering
 
             //! nice display once finalized

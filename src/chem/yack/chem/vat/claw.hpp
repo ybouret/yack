@@ -13,7 +13,6 @@ namespace yack
     {
 
 
-
         //______________________________________________________________________
         //
         //
@@ -37,12 +36,12 @@ namespace yack
 
             bool involves(const Species         &) const noexcept; //!< check if species is involved in conservation
             bool linkedTo(const ConservationLaw &) const noexcept; //!< check if a species is shared
-            void finalize();                                       //!< compute Q/Q2
+            void finalize();                                       //!< compute Q2
 
             //! simple display
             friend std::ostream & operator<<(std::ostream &, const ConservationLaw &);
 
-            //! compute excess, must be process if positive
+            //! compute excess, must be processed if POSITICE
             Extended::Real excess(const readable<double> &C,
                                   Extended::Adder        &xadd,
                                   const IndexLevel        level) const;
@@ -51,7 +50,7 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const Extended::Real  Q2;   //!< sum nu^2
+            const Extended::Real  Q2;   //!< sum of nu^2, to compute corrective values
             ConservationLaw      *next; //!< for list
             ConservationLaw      *prev; //!< for list
         private:
