@@ -5,6 +5,7 @@
 #define YACK_ARITH_GCDXX_INCLUDED 1
 
 #include "yack/arith/gcd.h"
+#include "yack/type/abs.hpp"
 
 namespace yack
 {
@@ -32,11 +33,12 @@ namespace yack
 
             for(size_t i=0;i<n;++i)
             {
-                uint64_t g = std::abs( *(curr++) );
-                if(g<=0) continue;
+                uint64_t g = absolute( *(curr++) );
+                if(g<=0)
+                    continue;
                 for(++i;i<n;++i)
                 {
-                    const uint64_t rhs = std::abs( *(curr++) );
+                    const uint64_t rhs = absolute( *(curr++) );
                     if(rhs<=0) continue;
                     g = yack_gcd64_(g,rhs);
                 }
