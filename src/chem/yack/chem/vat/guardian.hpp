@@ -11,7 +11,7 @@ namespace yack
 {
     namespace Chemical
     {
-        typedef vector<Extended::Real,memory::dyadic> Injected; //!< alias
+        typedef vector<Extended::Real,memory::dyadic> Injected; //!< base class for Guardian
 
         //----------------------------------------------------------------------
         //

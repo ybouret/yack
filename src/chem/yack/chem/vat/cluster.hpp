@@ -95,25 +95,23 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const Species::CoreRepo lib;           //!< employed species
-            const matrix<int>       Nu;            //!< main topology
-            const matrix<unsigned>  Qmat;          //!< matrix of constraints
-            const size_t            Qrnk;          //!< rank(Qm)
-            const ConservationLaws  laws;          //!< effective laws
-            const Acts              acts;          //!< group of dependent laws
-            const Species::CoreRepo conserved;     //!< list of conserved species
-            const Species::CoreRepo unbounded;     //!< list of unbounded species
-            const SpeciesCategories category;      //!< sub-level vector of categories
-
+            const Species::CoreRepo     lib;      //!< employed species
+            const matrix<int>           Nu;       //!< main topology
+            const matrix<unsigned>      Qmat;     //!< matrix of constraints
+            const size_t                Qrnk;     //!< rank(Qm)
+            const ConservationLaws      laws;     //!< effective laws
+            const Acts                  acts;     //!< group of dependent laws
+            const Species::CoreRepo     conserved;//!< list of conserved species
+            const Species::CoreRepo     unbounded;//!< list of unbounded species
+            const SpeciesCategories     category; //!< sub-level vector of categories
             const Equilibrium::CoreRepo standard; //!< at least a conserved species on each side
             const Equilibrium::CoreRepo prodOnly; //!< product(s)  only
             const Equilibrium::CoreRepo reacOnly; //!< reactant(s) only
             const Equilibrium::CoreRepo nebulous; //!< based only on unbounded species
-
-            Cluster                *next;    //!< for list
-            Cluster                *prev;    //!< for list
-            Gathering               reac;    //!< to display reac
-            Gathering               prod;    //!< to display prod
+            Cluster                    *next;     //!< for list
+            Cluster                    *prev;     //!< for list
+            Gathering                   reac;     //!< to display reac
+            Gathering                   prod;     //!< to display prod
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Cluster);
