@@ -21,7 +21,7 @@ namespace yack
         {
             Adder      xadd;
             xadd.ensure(size);
-            CoreXList &xl = coerce(Q); assert(0==xl.size);
+            XRealCoreList &xl = coerce(Q); assert(0==xl.size);
             try
             {
                 for(const Actor *a=head;a;a=a->next)
@@ -73,7 +73,7 @@ namespace yack
             assert(size==Q.size);
             xadd.resume(size);
             const Actor     *ac = head;
-            const CoreXNode *nu = Q.head;
+            const XRealNode *nu = Q.head;
 
             for(;ac;ac=ac->next,nu=nu->next)
             {

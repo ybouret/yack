@@ -101,7 +101,7 @@ namespace yack
 
                     const XReal      d = law.Q2;
                     const Actor     *a = law.head;    assert(a); assert(law.size==law.Q.size);
-                    const CoreXNode *q = law.Q.head;  assert(q);
+                    const XRealNode *q = law.Q.head;  assert(q);
                     for(;a;a=a->next,q=q->next)
                     {
                         const XReal  dC = (lxs * (**q))/d;

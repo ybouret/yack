@@ -4,26 +4,15 @@
 #define YACK_CHEM_VAT_CLAW_INCLUDED 1
 
 #include "yack/chem/eqs/actors.hpp"
+#include "yack/chem/com/xtypes.hpp"
 #include "yack/ios/xmlog.hpp"
-#include "yack/ipso/add.hpp"
-#include "yack/data/dinky/core-list.hpp"
 
 namespace yack
 {
     namespace Chemical
     {
 
-        typedef ipso::add<double>  Adder; //!< alias
-        typedef Adder::inside_type XReal; //!< alias
 
-        //! conversion from double to extended
-        inline XReal  Double2XReal(const double x) { return ipso::inside<double>::send(x); }
-
-        //! conversion from extended to double
-        inline double XReal2Double(const XReal &x) { return ipso::inside<double>::recv(x); }
-
-        typedef core_list<XReal>     CoreXList; //!< alias
-        typedef CoreXList::node_type CoreXNode; //!< alias
 
         //______________________________________________________________________
         //
@@ -62,10 +51,10 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const CoreXList  Q;  //!< coefficients as extended real
-            const XReal      Q2; //!< |Q|^2
-            ConservationLaw *next; //!< for list
-            ConservationLaw *prev; //!< for list
+            const XRealCoreList  Q;  //!< coefficients as extended real
+            const XReal          Q2; //!< |Q|^2
+            ConservationLaw     *next; //!< for list
+            ConservationLaw     *prev; //!< for list
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(ConservationLaw);
         };
