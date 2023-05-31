@@ -20,7 +20,7 @@ namespace yack
         //! Cluster of interdependent equilibria
         //
         //______________________________________________________________________
-        class Cluster : public spot_object, public EqList, public Gathering
+        class Cluster : public spot_object, public Equilibrium::CoreRepo, public Gathering
         {
         public:
             //__________________________________________________________________
@@ -28,6 +28,7 @@ namespace yack
             // definitions
             //__________________________________________________________________
             static const char CLID[]; //!< "Cluster"
+            typedef vector<Species::Category,memory::dyadic> SpeciesCategories;
 
             //__________________________________________________________________
             //
@@ -59,7 +60,7 @@ namespace yack
             template <typename TARGET, typename SOURCE> inline
             void load(TARGET &target, SOURCE &source) const
             {
-                for(const SpNode *sn=lib.head;sn;sn=sn->next)
+                for(const Species::Node *sn=lib.head;sn;sn=sn->next)
                 {
                     const Species &sp = ***sn;
                     target[ sp.indx[SubLevel] ] = source[ sp.indx[TopLevel] ];
@@ -78,7 +79,7 @@ namespace yack
                 if(!pfx) pfx="";
                 if(!sfx) sfx="";
                 os << '{' << std::endl;
-                for(const SpNode *node=lib.head;node;node=node->next)
+                for(const Species::Node *node=lib.head;node;node=node->next)
                 {
                     const Species &sp = ***node;
                     pad( os << pfx << sp.name << sfx,sp) << " = " << arr[ sp.indx[level] ] << std::endl;
@@ -92,26 +93,25 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const SpList           lib;     //!< employed species
-            const matrix<int>      Nu;      //!< main topology
-            const matrix<unsigned> Qmat;    //!< matrix of constraints
-            const size_t           Qrnk;    //!< rank(Qm)
-            const ConservationLaws laws;    //!< effective laws
-            const Acts             acts;    //!< group of dependent laws
-            const SpList           conserved;
-            const SpList           unbounded;
-            const addrbook         conservedDB;
-            const addrbook         unboundedDB;
+            const Species::CoreRepo lib;           //!< employed species
+            const matrix<int>       Nu;            //!< main topology
+            const matrix<unsigned>  Qmat;          //!< matrix of constraints
+            const size_t            Qrnk;          //!< rank(Qm)
+            const ConservationLaws  laws;          //!< effective laws
+            const Acts              acts;          //!< group of dependent laws
+            const Species::CoreRepo conserved;     //!< list of conserved species
+            const Species::CoreRepo unbounded;     //!< list of unbounded species
+            const SpeciesCategories category;      //!< sub-level vector of categories
 
-            const EqList           standard; //!< at least a conserved species on each side
-            const EqList           prodOnly; //!< product(s) only
-            const EqList           reacOnly; //!< reactant(s) onlu
-            const EqList           nebulous; //!< based only on unbounded species
+            const Equilibrium::CoreRepo standard; //!< at least a conserved species on each side
+            const Equilibrium::CoreRepo prodOnly; //!< product(s) only
+            const Equilibrium::CoreRepo reacOnly; //!< reactant(s) onlu
+            const Equilibrium::CoreRepo nebulous; //!< based only on unbounded species
 
-            Cluster               *next;    //!< for list
-            Cluster               *prev;    //!< for list
-            Gathering              reac;    //!< to display reac
-            Gathering              prod;    //!< to display prod
+            Cluster                *next;    //!< for list
+            Cluster                *prev;    //!< for list
+            Gathering               reac;    //!< to display reac
+            Gathering               prod;    //!< to display prod
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Cluster);

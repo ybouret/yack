@@ -30,6 +30,13 @@ namespace yack
             //__________________________________________________________________
             typedef ark_ptr<string,Species> Pointer; //!< alias
             static  bool                    Verbose; //!< to debug
+            typedef core_repo<Species>      CoreRepo;
+            typedef CoreRepo::node_type     Node;
+            enum Category
+            {
+                Conserved,
+                Unbounded
+            };
 
             //__________________________________________________________________
             //
@@ -62,8 +69,7 @@ namespace yack
 
         };
 
-        typedef core_repo<Species> SpList; //!< alias
-        typedef SpList::node_type  SpNode; //!< alias
+
         
     }
 

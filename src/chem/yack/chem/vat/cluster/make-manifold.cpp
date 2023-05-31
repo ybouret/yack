@@ -64,12 +64,12 @@ namespace yack
         typedef core_list<int>   iList;
         typedef iList::node_type iNode;
 
-        static inline string MixedName(const EqList mix,
-                                       const iList  cof)
+        static inline string MixedName(const Equilibrium::CoreRepo &mix,
+                                       const iList                 &cof)
         {
-            string        id;
-            const EqNode *en = mix.head; assert(en);
-            const iNode  *in = cof.head; assert(in);
+            string                   id;
+            const Equilibrium::Node *en = mix.head; assert(en);
+            const iNode             *in = cof.head; assert(in);
 
             // first eq
             {
@@ -108,9 +108,9 @@ namespace yack
         class MixedEquilibrium : public Equilibrium
         {
         public:
-            inline explicit MixedEquilibrium(const string   &user_uid,
-                                             EqList         &user_mix,
-                                             iList          &user_cof) :
+            inline explicit MixedEquilibrium(const string           &user_uid,
+                                             Equilibrium::CoreRepo  &user_mix,
+                                             iList                  &user_cof) :
             Equilibrium(user_uid),
             mix(),
             cof(),
@@ -124,12 +124,11 @@ namespace yack
             inline virtual ~MixedEquilibrium() noexcept {}
 
 
+            const Equilibrium::CoreRepo mix;
+            const iList                 cof;
+            const size_t                neqz;
+            const size_t                norm;
 
-            const EqList mix;
-            const iList  cof;
-            const size_t neqz;
-            const size_t norm;
-            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(MixedEquilibrium);
         };
@@ -203,12 +202,12 @@ namespace yack
                 //--------------------------------------------------------------
                 // compute coefficients of the new equilibrium
                 //--------------------------------------------------------------
-                const readable<apz> &weight = *v;
-                EqList               mix;
-                core_list<int>       cof;
+                const readable<apz>  &weight = *v;
+                Equilibrium::CoreRepo mix;
+                iList                 cof;
                 adb.free();
                 sto.ld(0);
-                for(const EqNode *node=head;node;node=node->next)
+                for(const Equilibrium::Node *node=head;node;node=node->next)
                 {
                     const Equilibrium &eq = ***node;
                     const size_t       ei = eq.indx[SubLevel];
@@ -256,7 +255,7 @@ namespace yack
                 //--------------------------------------------------------------
                 const string      mixedName = MixedName(mix,cof);
                 MixedEquilibrium &mixed     = eqs( new MixedEquilibrium(mixedName,mix,cof) );
-                for(const SpNode *sn=lib.head;sn;sn=sn->next)
+                for(const Species::Node *sn=lib.head;sn;sn=sn->next)
                 {
                     const Species &sp = ***sn;
                     const size_t   sj = sp.indx[SubLevel];
@@ -293,7 +292,7 @@ namespace yack
                 coerce(reac.maxlen) = 0;
                 coerce(prod.maxlen) = 0;
 
-                for(const EqNode *node=head;node;node=node->next)
+                for(const Equilibrium::Node *node=head;node;node=node->next)
                 {
                     const Equilibrium &eq = ***node;
                     reac.update(eq.reac);

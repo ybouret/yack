@@ -86,7 +86,7 @@ namespace yack
                     }
 
                     ConservationLaw &claw = * coerce(laws).push_back( new ConservationLaw() );
-                    for(const SpNode *sn=lib.head;sn;sn=sn->next)
+                    for(const Species::Node *sn=lib.head;sn;sn=sn->next)
                     {
                         const Species &sp = ***sn;
                         const size_t   sj = sp.indx[SubLevel];
@@ -118,42 +118,33 @@ namespace yack
                 size_t unbounded;
                 size_t extensive;
 
-                static inline void Count(ActorCount     &count,
-                                         const Actors   &actors,
-                                         const addrbook &cdb,
-                                         const addrbook &udb)
+                static inline void Count(ActorCount                        &count,
+                                         const Actors                      &actors,
+                                         const readable<Species::Category> &category)
                 {
                     assert( out_of_reach::is0(&count,sizeof(ActorCount)) );
                     count.extensive = actors.size;
                     for(const Actor *ac=actors.head;ac;ac=ac->next)
                     {
-                        const Species &sp = **ac;
-                        unsigned       fl = 0x00;
-                        if(cdb.search(&sp)) fl |= 0x01;
-                        if(udb.search(&sp)) fl |= 0x02;
-
-                        switch(fl)
+                        switch(category[(**ac).indx[SubLevel]])
                         {
-                            case 0x01: ++count.conserved; break;
-                            case 0x02: ++count.unbounded; break;
-                            default:
-                                throw imported::exception(Cluster::CLID,"corrupted species role for '%s'", sp.name() );
+                            case Species::Conserved: ++count.conserved; break;
+                            case Species::Unbounded: ++count.unbounded; break;
                         }
                     }
                     assert(count.conserved+count.unbounded==count.extensive);
                 }
 
                 static inline
-                void Get(ActorCount        &reac,
-                         ActorCount        &prod,
-                         const Equilibrium &eq,
-                         const addrbook    &cdb,
-                         const addrbook    &udb)
+                void Get(ActorCount                        &reac,
+                         ActorCount                        &prod,
+                         const Equilibrium                 &eq,
+                         const readable<Species::Category> &category)
                 {
                     assert( out_of_reach::is0(&reac,sizeof(ActorCount)) );
                     assert( out_of_reach::is0(&prod,sizeof(ActorCount)) );
-                    Count(reac,eq.reac,cdb,udb);
-                    Count(prod,eq.prod,cdb,udb);
+                    Count(reac,eq.reac,category);
+                    Count(prod,eq.prod,category);
                 }
             };
 
@@ -165,20 +156,8 @@ namespace yack
         void Cluster:: findOutRoles(const xmlog &xml)
         {
             YACK_XMLSUB(xml,"Cluster::findOutRoles");
+            coerce(category).make(lib.size,Species::Unbounded);
 
-            addrbook &cdb = coerce(conservedDB);
-            addrbook &udb = coerce(unboundedDB);
-
-            //------------------------------------------------------------------
-            //
-            // register all species as unbounded
-            //
-            //------------------------------------------------------------------
-            for(const SpNode *node=lib.head;node;node=node->next)
-            {
-                const Species &sp = ***node;
-                udb.ensure(&sp);
-            }
 
             //------------------------------------------------------------------
             //
@@ -190,8 +169,7 @@ namespace yack
                 for(const Actor *ac=law->head;ac;ac=ac->next)
                 {
                     const Species &sp = **ac;
-                    udb.revoke(&sp);
-                    cdb.ensure(&sp);
+                    coerce(category)[ sp.indx[SubLevel] ] = Species::Conserved;
                 }
             }
 
@@ -200,21 +178,17 @@ namespace yack
             // build lists from databases
             //
             //------------------------------------------------------------------
+            for(const Species::Node *node=lib.head;node;node=node->next)
             {
-                SpList &usl = coerce(unbounded);
-                for(addrbook::const_iterator it=udb.begin();it!=udb.end();++it)
+                const Species &sp = ***node;
+                switch(category[sp.indx[SubLevel]])
                 {
-                    usl << *static_cast<const Species*>( *it );
+                    case Species::Unbounded: coerce(unbounded) << sp; break;
+                    case Species::Conserved: coerce(conserved) << sp; break;
                 }
             }
 
-            {
-                SpList &csl = coerce(conserved);
-                for(addrbook::const_iterator it=cdb.begin();it!=cdb.end();++it)
-                {
-                    csl << *static_cast<const Species*>( *it );
-                }
-            }
+
 
             YACK_XMLOG(xml,"conserved : " << conserved);
             YACK_XMLOG(xml,"unbounded : " << unbounded);
@@ -226,12 +200,12 @@ namespace yack
             // sorting out eqs
             //
             //------------------------------------------------------------------
-            for(const EqNode *node=head;node;node=node->next)
+            for(const Equilibrium::Node *node=head;node;node=node->next)
             {
                 const Equilibrium &eq = ***node;
                 ActorCount         nr = { 0,0,0 };
                 ActorCount         np = { 0,0,0 };
-                ActorCount::Get(nr, np, eq, conservedDB, unboundedDB);
+                ActorCount::Get(nr,np,eq,category);
 
             }
 

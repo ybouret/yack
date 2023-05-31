@@ -12,7 +12,7 @@ namespace yack
         Cluster:: ~Cluster() noexcept {}
 
         Cluster:: Cluster(Equilibrium &first) :
-        EqList(),
+        Equilibrium::CoreRepo(),
         lib(),
         Nu(),
         Qmat(),
@@ -22,9 +22,8 @@ namespace yack
 
         conserved(),
         unbounded(),
-        conservedDB(),
-        unboundedDB(),
-
+        category(),
+        
         standard(),
         prodOnly(),
         reacOnly(),
@@ -41,7 +40,7 @@ namespace yack
 
         bool Cluster:: recruits(const Equilibrium &other) const noexcept
         {
-            for(const EqNode *en=head;en;en=en->next)
+            for(const Equilibrium::Node *en=head;en;en=en->next)
             {
                 const Equilibrium &eq = ***en;
                 if(eq.linkedTo(other)) return true;
@@ -51,10 +50,10 @@ namespace yack
 
         bool Cluster:: linkedTo(const Cluster &other) const noexcept
         {
-            for(const EqNode *en=head;en;en=en->next)
+            for(const Equilibrium::Node *en=head;en;en=en->next)
             {
                 const Equilibrium &lhs = ***en;
-                for(const EqNode *on=other.head;on;on=on->next)
+                for(const Equilibrium::Node *on=other.head;on;on=on->next)
                 {
                     const Equilibrium &rhs = ***on;
                     assert(&rhs != &lhs);
@@ -67,7 +66,7 @@ namespace yack
         std::ostream & operator<<( std::ostream &os, const Cluster &cl)
         {
             os << '{' << std::endl;
-            for(const EqNode *node=cl.head;node;node=node->next)
+            for(const Equilibrium::Node *node=cl.head;node;node=node->next)
             {
                 const Equilibrium &eq = ***node;
                 cl.pad(os << " <" << eq.name << ">",eq) << " : ";
@@ -99,7 +98,7 @@ namespace yack
                 //--------------------------------------------------------------
                 {
                     size_t sub = 1;
-                    for(const EqNode *en=head;en;en=en->next,++sub)
+                    for(const Equilibrium::Node *en=head;en;en=en->next,++sub)
                     {
                         const Equilibrium &eq = ***en;
                         update(eq);
@@ -142,7 +141,7 @@ namespace yack
                 //--------------------------------------------------------------
                 assert(lib.size>0);
                 coerce(Nu).make(size,lib.size);
-                for(const EqNode *en=head;en;en=en->next)
+                for(const Equilibrium::Node *en=head;en;en=en->next)
                 {
                     const Equilibrium &eq = ***en;
                     eq.fill( coerce(Nu)[ eq.indx[SubLevel] ], SubLevel);

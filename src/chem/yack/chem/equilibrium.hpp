@@ -24,7 +24,9 @@ namespace yack
             //
             // definitions
             //__________________________________________________________________
-            typedef ark_ptr<string,Equilibrium> Pointer; //!< alias
+            typedef ark_ptr<string,Equilibrium> Pointer;  //!< alias
+            typedef core_repo<Equilibrium>      CoreRepo; //!< alias
+            typedef CoreRepo::node_type         Node;     //!< alias
 
             //__________________________________________________________________
             //
@@ -43,8 +45,7 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(Equilibrium);
         };
 
-        typedef core_repo<Equilibrium> EqList; //!< alias
-        typedef EqList::node_type      EqNode; //!< alias
+        
 
     }
 
