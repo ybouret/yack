@@ -168,6 +168,11 @@ namespace yack
                 makeManifold(xml,eqs);
             }
 
+            //------------------------------------------------------------------
+            //
+            // collect species and renumber eqs
+            //
+            //------------------------------------------------------------------
             findOutRoles(xml);
 
 
@@ -177,22 +182,4 @@ namespace yack
 
 }
 
-#include "yack/chem/library.hpp"
-
-namespace yack
-{
-    namespace Chemical
-    {
-        void Cluster:: fill(writable<double> &C,
-                            randomized::bits &ran,
-                            const IndexLevel  level) const noexcept
-        {
-            for(const SpNode *node=lib.head;node;node=node->next)
-            {
-                const Species &sp = ***node;
-                C[ sp.indx[level] ] = Library::Conc(ran,0);
-            }
-        }
-    }
-}
-
+ 

@@ -110,6 +110,57 @@ namespace yack
 
         }
 
+        namespace
+        {
+            struct ActorCount
+            {
+                size_t conserved;
+                size_t unbounded;
+                size_t extensive;
+
+                static inline void Count(ActorCount     &count,
+                                         const Actors   &actors,
+                                         const addrbook &cdb,
+                                         const addrbook &udb)
+                {
+                    assert( out_of_reach::is0(&count,sizeof(ActorCount)) );
+                    count.extensive = actors.size;
+                    for(const Actor *ac=actors.head;ac;ac=ac->next)
+                    {
+                        const Species &sp = **ac;
+                        unsigned       fl = 0x00;
+                        if(cdb.search(&sp)) fl |= 0x01;
+                        if(udb.search(&sp)) fl |= 0x02;
+
+                        switch(fl)
+                        {
+                            case 0x01: ++count.conserved; break;
+                            case 0x02: ++count.unbounded; break;
+                            default:
+                                throw imported::exception(Cluster::CLID,"corrupted species role for '%s'", sp.name() );
+                        }
+                    }
+                    assert(count.conserved+count.unbounded==count.extensive);
+                }
+
+                static inline
+                void Get(ActorCount        &reac,
+                         ActorCount        &prod,
+                         const Equilibrium &eq,
+                         const addrbook    &cdb,
+                         const addrbook    &udb)
+                {
+                    assert( out_of_reach::is0(&reac,sizeof(ActorCount)) );
+                    assert( out_of_reach::is0(&prod,sizeof(ActorCount)) );
+                    Count(reac,eq.reac,cdb,udb);
+                    Count(prod,eq.prod,cdb,udb);
+                }
+            };
+
+
+
+        }
+
 
         void Cluster:: findOutRoles(const xmlog &xml)
         {
@@ -131,7 +182,7 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // check output
+            // check from conservation laws
             //
             //------------------------------------------------------------------
             for(const ConservationLaw *law=laws.head;law;law=law->next)
@@ -146,7 +197,7 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // build lists
+            // build lists from databases
             //
             //------------------------------------------------------------------
             {
@@ -178,32 +229,10 @@ namespace yack
             for(const EqNode *node=head;node;node=node->next)
             {
                 const Equilibrium &eq = ***node;
-                const char        *id = NULL;
-                if(eq.reac.size<=0)
-                {
-                    assert(eq.prod.size>0);
-                    id = "prodOnly";
-                    coerce(prodOnly) << eq;
-                    goto END;
-                }
+                ActorCount         nr = { 0,0,0 };
+                ActorCount         np = { 0,0,0 };
+                ActorCount::Get(nr, np, eq, conservedDB, unboundedDB);
 
-                if(eq.prod.size<=0)
-                {
-                    assert(eq.reac.size>0);
-                    id = "reacOnly";
-                    coerce(reacOnly) << eq;
-                    goto END;
-                }
-                
-
-
-                assert(eq.reac.size>0);
-                assert(eq.prod.size>0);
-
-                continue;
-
-            END:
-                YACK_XMLOG(xml, " (" << id << ") " << eq.name);
             }
 
 
