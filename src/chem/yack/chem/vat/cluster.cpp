@@ -32,7 +32,8 @@ namespace yack
         next(0),
         prev(0),
         reac(),
-        prod()
+        prod(),
+        spec()
         {
             (*this) << first;
         }
@@ -124,6 +125,7 @@ namespace yack
                         const Species &sp = *static_cast<const Species *>(*it);
                         coerce(lib) << sp;
                         coerce(sp.indx[SubLevel]) = sub;
+                        spec.update(sp);
                     }
                 }
                 YACK_XMLOG(xml, " (*) " << lib);
@@ -169,11 +171,18 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // collect species and renumber eqs
+            // find out species and equilibria roles
             //
             //------------------------------------------------------------------
             findOutRoles(xml);
 
+
+            //------------------------------------------------------------------
+            //
+            // create tribes
+            //
+            //------------------------------------------------------------------
+            gatherTribes(xml);
 
 
         }

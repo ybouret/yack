@@ -5,15 +5,14 @@
 
 #include "yack/chem/equilibria.hpp"
 #include "yack/chem/vat/act.hpp"
-#include "yack/ios/xmlog.hpp"
-#include "yack/container/matrix.hpp"
+#include "yack/chem/vat/tribe.hpp"
 #include "yack/randomized/bits.hpp"
 
 namespace yack
 {
     namespace Chemical
     {
-
+        
         //______________________________________________________________________
         //
         //
@@ -70,11 +69,11 @@ namespace yack
 
             //! helper to display info
             template <typename ARRAY> inline
-            std::ostream & operator()(std::ostream    & os,
-                                      const char      * pfx,
-                                      ARRAY           & arr,
-                                      const char      * sfx,
-                                      const IndexLevel  level)
+            std::ostream & for_each_species(std::ostream    & os,
+                                            const char      * pfx,
+                                            ARRAY           & arr,
+                                            const char      * sfx,
+                                            const IndexLevel  level)
             {
                 if(!pfx) pfx="";
                 if(!sfx) sfx="";
@@ -82,11 +81,34 @@ namespace yack
                 for(const Species::Node *node=lib.head;node;node=node->next)
                 {
                     const Species &sp = ***node;
-                    pad( os << pfx << sp.name << sfx,sp) << " = " << arr[ sp.indx[level] ] << std::endl;
+                    spec.pad( os << pfx << sp.name << sfx,sp) << " = " << arr[ sp.indx[level] ] << std::endl;
                 }
                 os << '}';
                 return os;
             }
+
+            //! helper to display info
+            template <typename ARRAY> inline
+            std::ostream & for_each_equilibrium(std::ostream    & os,
+                                                const char      * pfx,
+                                                ARRAY           & arr,
+                                                const char      * sfx,
+                                                const IndexLevel  level)
+            {
+                if(!pfx) pfx="";
+                if(!sfx) sfx="";
+                os << '{' << std::endl;
+                for(const Equilibrium::Node *node=head;node;node=node->next)
+                {
+                    const Equilibrium &eq = ***node;
+                    pad( os << pfx << eq.name << sfx,eq) << " = " << arr[ eq.indx[level] ] << std::endl;
+                }
+                os << '}';
+                return os;
+            }
+
+            
+
 
             bool isConserved(const Species &) const noexcept; //!< helper
             bool isUnbounded(const Species &) const noexcept; //!< helper
@@ -112,6 +134,7 @@ namespace yack
             Cluster                    *prev;     //!< for list
             Gathering                   reac;     //!< to display reac
             Gathering                   prod;     //!< to display prod
+            Gathering                   spec;     //!< to display species
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Cluster);
@@ -119,6 +142,12 @@ namespace yack
             void assembleActs(const xmlog &);
             void findOutRoles(const xmlog &);
             void makeManifold(const xmlog &, Equilibria &eqs);
+            void gatherTribes(const xmlog &);
+
+            void settleTribes(const xmlog        &,
+                              Tribes             &tribes,
+                              const matrix<bool> &separated);
+
         };
 
     }

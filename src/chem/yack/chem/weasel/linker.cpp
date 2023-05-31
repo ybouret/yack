@@ -164,8 +164,7 @@ namespace yack
                     nu = coefs.pull_tail();
                 }
                 troup.push_back( new Actor(nu,sp) );
-                std::cerr << "troup = " << troup << std::endl;
-            }
+             }
 
             void Linker:: on_ac(const string &, const size_t narg)
             {
@@ -179,7 +178,6 @@ namespace yack
                 {
                     ac.push_front( troup.pop_back() );
                 }
-                std::cerr << "ac=" << ac << std::endl;
             }
 
             void Linker:: on_nil(const lexeme &)
@@ -201,8 +199,6 @@ namespace yack
                 {
                     reac.release();
                 }
-                std::cerr << "reac=" << reac << std::endl;
-                std::cerr << "prod=" << prod << std::endl;
             }
 
             void Linker:: on_str(const lexeme &lxm)

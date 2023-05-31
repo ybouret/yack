@@ -6,6 +6,7 @@
 #include "yack/ipso/add.hpp"
 #include "yack/data/dinky/core-list.hpp"
 #include "yack/data/dinky/solo-list.hpp"
+#include "yack/proto-ostream.hpp"
 
 namespace yack {
 

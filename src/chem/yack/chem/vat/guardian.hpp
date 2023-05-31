@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_CHEM_VAT_GUARDIAN_INCLUDED
