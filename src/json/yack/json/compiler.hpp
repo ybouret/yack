@@ -27,7 +27,7 @@ namespace yack
             // types and definitions
             //__________________________________________________________________
             static const at_exit::longevity life_time = 13; //!< longevity
-            static const char               call_sign[];    //!< "JSON"
+            static const char * const       call_sign;      //!< "JSON"
             class Reader;
             class Linker;
 

@@ -310,7 +310,7 @@ namespace yack
     namespace JSON
     {
 
-        const char  Compiler:: call_sign[] = "JSON";
+        const char  * const Compiler:: call_sign = "JSON";
 
         static void *reader_addr[ YACK_WORDS_FOR(Compiler::Reader) ] = { 0 };
         static void *linker_addr[ YACK_WORDS_FOR(Compiler::Linker) ] = { 0 };
