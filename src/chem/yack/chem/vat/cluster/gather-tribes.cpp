@@ -30,8 +30,8 @@ namespace yack
             if(xml.verbose)
                 for_each_equilibrium( *xml << "separated = ","<",separated,">",SubLevel) << std::endl;
 
-            Tribes full;
-            settleTribes(xml,full,separated);
+            settleTribes(xml,coerce(regulating),*this,separated);
+            
         }
 
 
@@ -69,29 +69,29 @@ namespace yack
             }
         }
 
-        void Cluster:: settleTribes(const xmlog        &xml,
-                                    Tribes             &tribes,
-                                    const matrix<bool> &separated)
+        void Cluster:: settleTribes(const xmlog                 &xml,
+                                    Tribes                      &tribes,
+                                    const Equilibrium::CoreRepo &source,
+                                    const matrix<bool>          &separated)
         {
             YACK_XMLSUB(xml,"settleTribes");
             tribes.release();
 
             // initialize
-            for(const Equilibrium::Node *node=head;node;node=node->next)
+            for(const Equilibrium::Node *node=source.head;node;node=node->next)
             {
                 tribes.push_back( new Tribe(***node) );
             }
 
 
             // try to grow
-            for(const Equilibrium::Node *node=head;node;node=node->next)
+            for(const Equilibrium::Node *node=source.head;node;node=node->next)
             {
                 const Equilibrium &curr = ***node;
                 for(Tribe *tribe=tribes.head;tribe;tribe=tribe->next)
                 {
                     if(tribe->accepts(curr,separated))
                     {
-                        //if(xml.verbose) pad( *xml << "[" << curr.name << "]", curr) << " -> " << *tribe << std::endl;
                         tribes.push_front( new Tribe(*tribe,curr) );
                     }
                 }

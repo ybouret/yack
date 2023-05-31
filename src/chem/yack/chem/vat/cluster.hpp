@@ -130,6 +130,10 @@ namespace yack
             const Equilibrium::CoreRepo prodOnly; //!< product(s)  only
             const Equilibrium::CoreRepo reacOnly; //!< reactant(s) only
             const Equilibrium::CoreRepo nebulous; //!< based only on unbounded species
+
+            const Tribes                regulating; //!< ...
+            const Tribes                equalizing; //!< ...
+
             Cluster                    *next;     //!< for list
             Cluster                    *prev;     //!< for list
             Gathering                   reac;     //!< to display reac
@@ -144,9 +148,10 @@ namespace yack
             void makeManifold(const xmlog &, Equilibria &eqs);
             void gatherTribes(const xmlog &);
 
-            void settleTribes(const xmlog        &,
-                              Tribes             &tribes,
-                              const matrix<bool> &separated);
+            void settleTribes(const xmlog                 &,
+                              Tribes                      &tribes,
+                              const Equilibrium::CoreRepo &source,
+                              const matrix<bool>          &separated);
 
         };
 
