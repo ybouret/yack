@@ -3,6 +3,7 @@
 #include "yack/chem/vat/cluster.hpp"
 #include "yack/system/imported.hpp"
 #include "yack/data/list/sort.hpp"
+#include <iomanip>
 
 namespace yack
 {
@@ -13,24 +14,32 @@ namespace yack
             YACK_XMLSUB(xml,"Cluster::gatherTribes");
 
             const size_t n =  size;
-            matrix<bool> separated(n,n);
-            for(const Equilibrium::Node *lhs=head;lhs;lhs=lhs->next)
+            matrix<bool> indep(n,n);
             {
-                const Equilibrium &L = ***lhs;
-                const size_t       l = L.indx[SubLevel];
-                separated[l][l] = false;
-                for(const Equilibrium::Node *rhs=lhs->next;rhs;rhs=rhs->next)
+                indep.ld(false);
+                // computing matrix of independents equilibria
+                for(const Equilibrium::Node *lhs=head;lhs;lhs=lhs->next)
                 {
-                    const Equilibrium &R = ***rhs;
-                    const size_t       r = R.indx[SubLevel];
-                    separated[l][r] = separated[r][l] = !L.linkedTo(R);
+                    const Equilibrium &L = ***lhs;
+                    const size_t       l = L.indx[SubLevel];
+                    for(const Equilibrium::Node *rhs=lhs->next;rhs;rhs=rhs->next)
+                    {
+                        const Equilibrium &R = ***rhs;
+                        const size_t       r = R.indx[SubLevel];
+                        indep[l][r] = indep[r][l] = !L.linkedTo(R);
+                    }
                 }
+
+                if(xml.verbose)
+                    for_each_equilibrium( *xml << "indep = ","<",indep,">",SubLevel) << std::endl;
+
+                // build regulating tribes
+                settleTribes(xml,coerce(regulating),*this,indep);
             }
 
-            if(xml.verbose)
-                for_each_equilibrium( *xml << "separated = ","<",separated,">",SubLevel) << std::endl;
-
-            settleTribes(xml,coerce(regulating),*this,separated);
+            {
+                indep.ld(false);
+            }
             
         }
 
@@ -72,39 +81,44 @@ namespace yack
         void Cluster:: settleTribes(const xmlog                 &xml,
                                     Tribes                      &tribes,
                                     const Equilibrium::CoreRepo &source,
-                                    const matrix<bool>          &separated)
+                                    const matrix<bool>          &indep)
         {
             YACK_XMLSUB(xml,"settleTribes");
             tribes.release();
 
-            // initialize
+            //------------------------------------------------------------------
+            // initialize with single equilibria
+            //------------------------------------------------------------------
             for(const Equilibrium::Node *node=source.head;node;node=node->next)
             {
                 tribes.push_back( new Tribe(***node) );
             }
 
-
+            //------------------------------------------------------------------
             // try to grow
+            //------------------------------------------------------------------
             for(const Equilibrium::Node *node=source.head;node;node=node->next)
             {
                 const Equilibrium &curr = ***node;
                 for(Tribe *tribe=tribes.head;tribe;tribe=tribe->next)
                 {
-                    if(tribe->accepts(curr,separated))
+                    if(tribe->accepts(curr,indep))
                     {
                         tribes.push_front( new Tribe(*tribe,curr) );
                     }
                 }
             }
 
+            //------------------------------------------------------------------
             // sort
+            //------------------------------------------------------------------
             merge_list_of<Tribe>::sort(tribes,compareTribes);
 
             if(xml.verbose)
             {
                 for(const Tribe *tribe = tribes.head; tribe; tribe=tribe->next)
                 {
-                    *xml << " (*) " << *tribe << std::endl;
+                    *xml << " (*) #" << std::setw(4) << tribe->size << " @" << *tribe << std::endl;
                 }
             }
 

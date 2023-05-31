@@ -105,8 +105,8 @@ namespace yack
             YACK_XMLOG(xml, " Qrnk = " << Qrnk);
             YACK_XMLOG(xml, " laws = " << laws);
 
-            
-            assembleActs(xml);
+            if(laws.size)
+                assembleActs(xml);
 
         }
 
@@ -171,8 +171,6 @@ namespace yack
                 YACK_XMLOG(xml, *c);
                 c->finalize();
             }
-
-
         }
 
 
