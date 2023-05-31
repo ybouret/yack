@@ -6,7 +6,6 @@ namespace yack
     namespace Chemical
     {
         ConservationLaw:: ConservationLaw() :
-        Q(),
         Q2(),
         next(0),
         prev(0)
@@ -21,22 +20,10 @@ namespace yack
         {
             Extended::Adder xadd;
             xadd.ensure(size);
-            Extended::CoreList &xl = coerce(Q); assert(0==xl.size);
-            try
-            {
-                for(const Actor *a=head;a;a=a->next)
-                {
-                    const XReal xr = Extended::Send(a->nu);
-                    xl << xr;
-                    xadd.append(xr);
-                }
-                coerce(Q2) = xadd.reduce();
-            }
-            catch(...)
-            {
-                xl.clear();
-                throw;
-            }
+
+            for(const Actor *a=head;a;a=a->next)
+                xadd.append(a->xn);
+            coerce(Q2) = xadd.reduce();
         }
 
         std::ostream & operator<<(std::ostream &os, const ConservationLaw &claw)
@@ -66,30 +53,27 @@ namespace yack
             return false;
         }
 
-        XReal ConservationLaw:: excess(const readable<double> &C,
-                                       Extended::Adder        &xadd,
-                                       const IndexLevel        level) const
+        Extended::Real ConservationLaw:: excess(const readable<double> &C,
+                                                Extended::Adder        &xadd,
+                                                const IndexLevel        level) const
         {
-            assert(size==Q.size);
             xadd.resume(size);
             const Actor          *ac = head;
-            const Extended::Node *nu = Q.head;
 
-            for(;ac;ac=ac->next,nu=nu->next)
+            for(;ac;ac=ac->next )
             {
-                assert(nu!=NULL);
-                XReal p = Extended::Send( C[ (**ac).indx[level] ] );
-                p *= **nu;
+                Extended::Real p = Extended::Send( C[ (**ac).indx[level] ] );
+                p *= ac->xn;
                 xadd.append(p);
             }
-            const XReal xs = xadd.reduce();
+            const Extended::Real xs = xadd.reduce();
             if(xs.m<0)
             {
                 return -xs;
             }
             else
             {
-                return XReal();
+                return Extended::Real();
             }
         }
 

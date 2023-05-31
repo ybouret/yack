@@ -5,6 +5,7 @@
 
 #include "yack/ipso/add.hpp"
 #include "yack/data/dinky/core-list.hpp"
+#include "yack/data/dinky/solo-list.hpp"
 
 namespace yack {
 
@@ -24,12 +25,12 @@ namespace yack {
 
 
             typedef core_list<Real>     CoreList;
+            typedef solo_list<Real>     SoloList;
             typedef CoreList::node_type Node;
 
         };
 
-        typedef Extended::Real    XReal; //!< alias
-        
+
         
         
 

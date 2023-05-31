@@ -4,6 +4,7 @@
 #define YACK_CHEM_ACTOR_INCLUDED 1
 
 #include "yack/chem/species.hpp"
+#include "yack/chem/com/xtypes.hpp"
 
 namespace yack
 {
@@ -41,8 +42,9 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const unsigned nu; //!< coefficient>0
-
+            const unsigned       nu;   //!< coefficient>0
+            const Extended::Real xn;   //!< nu as extended real
+            
         private:
             const Species &sp;
             YACK_DISABLE_ASSIGN(Actor);

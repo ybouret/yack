@@ -16,7 +16,7 @@ namespace yack
 
         void Guardian:: restart(const size_t M)
         {
-            const XReal zero(0);
+            const Extended::Real zero(0);
             adjust(M,zero);
             ld(zero);
         }
@@ -26,7 +26,7 @@ namespace yack
                                 const       Act  &act)
         {
             YACK_XMLSUB(xml,"Guardian::enforce");
-            writable<XReal> &Me = *this;
+            writable<Extended::Real> &Me = *this;
             //------------------------------------------------------------------
             //
             //
@@ -40,7 +40,7 @@ namespace yack
             for(const LawNode *node=act.head;node;node=node->next)
             {
                 const ConservationLaw &law = ***node;
-                const XReal            lxs = law.excess(C0,xadd,TopLevel);
+                const Extended::Real   lxs = law.excess(C0,xadd,TopLevel);
                 assert(lxs>=0);
 
                 bool ok = true;
@@ -95,17 +95,16 @@ namespace yack
                 //--------------------------------------------------------------
                 {
                     const ConservationLaw &law = ***bestBroken;
-                    const XReal            lxs = **bestExcess;
+                    const Extended::Real   lxs = **bestExcess;
                     if(xml.verbose)
                         act.pad(*xml << " --> " << law, law) << " = " << lxs << " <--" << std::endl;
 
-                    const XReal           d = law.Q2;
-                    const Actor          *a = law.head;    assert(a); assert(law.size==law.Q.size);
-                    const Extended::Node *q = law.Q.head;  assert(q);
-                    for(;a;a=a->next,q=q->next)
+                    const Extended::Real  d = law.Q2;
+                    const Actor          *a = law.head;    assert(a);
+                    for(;a;a=a->next)
                     {
-                        const XReal  dC = (lxs * (**q))/d;
-                        const size_t sj = (**a).indx[TopLevel];
+                        const Extended::Real dC = (lxs * (a->xn))/d;
+                        const size_t         sj = (**a).indx[TopLevel];
                         Me[sj] += dC;
                         C0[sj] += *dC;
                     }
@@ -125,11 +124,11 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 {
-                    LawRepo          tempBroken;
-                    core_list<XReal> tempExcess;
+                    LawRepo            tempBroken;
+                    Extended::CoreList tempExcess;
                     while(broken.size)
                     {
-                        const XReal lxs = (***broken.head).excess(C0,xadd,TopLevel);
+                        const Extended::Real lxs = (***broken.head).excess(C0,xadd,TopLevel);
                         if(lxs>0)
                         {
                             (void) tempBroken.push_back( broken.pop_front() );

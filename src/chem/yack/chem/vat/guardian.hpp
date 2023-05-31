@@ -6,13 +6,12 @@
 
 #include "yack/chem/vat/cluster.hpp"
 #include "yack/data/dinky/solo-repo.hpp"
-#include "yack/data/dinky/solo-list.hpp"
 
 namespace yack
 {
     namespace Chemical
     {
-        typedef vector<XReal,memory::dyadic> Injected; //!< alias
+        typedef vector<Extended::Real,memory::dyadic> Injected; //!< alias
 
         //----------------------------------------------------------------------
         //
@@ -28,8 +27,8 @@ namespace yack
             // definitions
             //__________________________________________________________________
             typedef solo_repo<const ConservationLaw> Broken; //!< alias
-            typedef solo_list<XReal>                 Excess; //!< alias
-            typedef Excess::node_type                XsNode; //!< alias
+            typedef Extended::SoloList               Excess; //!< alias
+            typedef Extended::Node                   XsNode; //!< alias
 
             //__________________________________________________________________
             //

@@ -43,18 +43,17 @@ namespace yack
             friend std::ostream & operator<<(std::ostream &, const ConservationLaw &);
 
             //! compute excess, must be process if positive
-            XReal excess(const readable<double> &C,
-                         Extended::Adder        &xadd,
-                         const IndexLevel        level) const;
+            Extended::Real excess(const readable<double> &C,
+                                  Extended::Adder        &xadd,
+                                  const IndexLevel        level) const;
 
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
-            const Extended::CoreList  Q;  //!< coefficients as extended real
-            const XReal               Q2; //!< |Q|^2
-            ConservationLaw     *next; //!< for list
-            ConservationLaw     *prev; //!< for list
+            const Extended::Real  Q2;   //!< sum nu^2
+            ConservationLaw      *next; //!< for list
+            ConservationLaw      *prev; //!< for list
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(ConservationLaw);
         };

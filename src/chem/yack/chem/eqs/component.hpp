@@ -4,6 +4,7 @@
 #define YACK_CHEM_COMPONENT_INCLUDED 1
 
 #include "yack/chem/species.hpp"
+#include "yack/chem/com/xtypes.hpp"
 
 namespace yack
 {
@@ -42,8 +43,9 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const int      nu; //!< coefficient != 0
-
+            const int            nu; //!< coefficient != 0
+            const Extended::Real xn; //!< nu as extended real
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Component);
             const Species &sp;
