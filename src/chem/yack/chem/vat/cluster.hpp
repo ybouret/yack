@@ -123,9 +123,11 @@ namespace yack
             const size_t                Qrnk;     //!< rank(Qm)
             const ConservationLaws      laws;     //!< effective laws
             const Acts                  acts;     //!< group of dependent laws
+
             const Species::CoreRepo     conserved;//!< list of conserved species
             const Species::CoreRepo     unbounded;//!< list of unbounded species
             const SpeciesCategories     category; //!< sub-level vector of categories
+
             const Equilibrium::CoreRepo standard; //!< at least a conserved species on each side
             const Equilibrium::CoreRepo prodOnly; //!< product(s)  only
             const Equilibrium::CoreRepo reacOnly; //!< reactant(s) only

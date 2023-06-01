@@ -9,6 +9,31 @@ namespace yack
 {
     namespace Chemical
     {
+
+        static inline
+        bool areLinkedByConservedSpecies(const Equilibrium                 &lhs,
+                                         const Equilibrium                 &rhs,
+                                         const readable<Species::Category> &cat)
+        {
+            for(const cNode *lnode=lhs->head;lnode;lnode=lnode->next)
+            {
+                const Species &ls = ****lnode;
+                const size_t   lj = ls.indx[SubLevel];
+                if(Species::Unbounded==cat[lj]) continue;
+                for(const cNode *rnode=rhs->head;rnode;rnode=rnode->next)
+                {
+                    const Species &rs = ****rnode;
+                    const size_t   rj = rs.indx[SubLevel];
+                    if(Species::Unbounded==cat[rj]) continue;
+                    if( &rs == &ls )
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         void Cluster:: gatherTribes(const xmlog &xml)
         {
             YACK_XMLSUB(xml,"Cluster::gatherTribes");
@@ -34,11 +59,29 @@ namespace yack
                     for_each_equilibrium( *xml << "indep = ","<",indep,">",SubLevel) << std::endl;
 
                 // build regulating tribes
+                YACK_XMLOG(xml, "[[ regulating tribes ]]");
                 settleTribes(xml,coerce(regulating),*this,indep);
             }
 
             {
                 indep.ld(false);
+                for(const Equilibrium::Node *lhs=standard.head;lhs;lhs=lhs->next)
+                {
+                    const Equilibrium &L = ***lhs;
+                    const size_t       l = L.indx[SubLevel];
+                    for(const Equilibrium::Node *rhs=lhs->next;rhs;rhs=rhs->next)
+                    {
+                        const Equilibrium &R = ***rhs;
+                        const size_t       r = R.indx[SubLevel];
+                        indep[l][r] = indep[r][l] = !areLinkedByConservedSpecies(L,R,category);
+                    }
+                }
+                if(xml.verbose)
+                    for_each_equilibrium( *xml << "indep = ","<",indep,">",SubLevel) << std::endl;
+
+                YACK_XMLOG(xml, "[[ equalizing tribes ]]");
+                settleTribes(xml,coerce(equalizing),standard,indep);
+
             }
             
         }
