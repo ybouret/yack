@@ -55,8 +55,7 @@ namespace yack
                     }
                 }
 
-                if(xml.verbose)
-                    for_each_equilibrium( *xml << "indep = ","<",indep,">",SubLevel) << std::endl;
+                //if(xml.verbose) for_each_equilibrium( *xml << "indep = ","<",indep,">",SubLevel) << std::endl;
 
                 // build regulating tribes
                 YACK_XMLOG(xml, "[[ regulating tribes ]]");
@@ -64,6 +63,7 @@ namespace yack
             }
 
             {
+                // computing matrix of independents standard equilibria
                 indep.ld(false);
                 for(const Equilibrium::Node *lhs=standard.head;lhs;lhs=lhs->next)
                 {
@@ -76,8 +76,7 @@ namespace yack
                         indep[l][r] = indep[r][l] = !areLinkedByConservedSpecies(L,R,category);
                     }
                 }
-                if(xml.verbose)
-                    for_each_equilibrium( *xml << "indep = ","<",indep,">",SubLevel) << std::endl;
+                //if(xml.verbose) for_each_equilibrium( *xml << "indep = ","<",indep,">",SubLevel) << std::endl;
 
                 YACK_XMLOG(xml, "[[ equalizing tribes ]]");
                 settleTribes(xml,coerce(equalizing),standard,indep);
