@@ -62,11 +62,9 @@ namespace yack
                 }
             }
 
-            //! display
-            friend std::ostream & operator<<(std::ostream &, const Equilibria &);
 
-            //! setup reac/proc gathering for clean display
-            void finalize() noexcept;
+            YACK_PROTO_OSTREAM(Equilibria); //! display
+            void finalize() noexcept;       //! setup reac/proc gathering for clean display
 
             //__________________________________________________________________
             //

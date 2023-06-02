@@ -9,6 +9,7 @@
 #include "yack/counted.hpp"
 #include "yack/ptr/ark.hpp"
 #include "yack/data/dinky/core-repo.hpp"
+#include "yack/proto-ostream.hpp"
 
 namespace yack
 {
@@ -57,8 +58,7 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            //! display as '[name]'
-            friend std::ostream & operator<<(std::ostream &, const Species &);
+            YACK_PROTO_OSTREAM(Species); //! display as '[name]'
 
             //__________________________________________________________________
             //

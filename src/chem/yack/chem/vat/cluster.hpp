@@ -53,7 +53,7 @@ namespace yack
             void finalize(const xmlog &xml, Equilibria &eqs);
 
             //! display components
-            friend std::ostream & operator<<( std::ostream &, const Cluster &);
+            YACK_PROTO_OSTREAM(Cluster);
 
             //! target[SubLevel] = source[TopLevel]
             template <typename TARGET, typename SOURCE> inline

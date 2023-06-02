@@ -39,7 +39,7 @@ namespace yack
             void finalize();                                       //!< compute Q2
 
             //! simple display
-            friend std::ostream & operator<<(std::ostream &, const ConservationLaw &);
+            YACK_PROTO_OSTREAM(ConservationLaw);
 
             //! compute excess, must be processed if POSITICE
             Extended::Real excess(const readable<double> &C,

@@ -12,25 +12,54 @@ namespace yack
 {
     namespace Chemical
     {
-        typedef core_repo<const Equilibrium> Tribe_;
-        typedef Tribe_::node_type            TribeNode;
-        
+        //______________________________________________________________________
+        //
+        //
+        // Definitions for Tribes
+        //
+        //______________________________________________________________________
+        typedef core_repo<const Equilibrium> Tribe_;    //!< alias
+        typedef Tribe_::node_type            TribeNode; //!< alias
+
+
+        //______________________________________________________________________
+        //
+        //
+        //! Tribe of independant equilibria combinations
+        //
+        //______________________________________________________________________
         class Tribe : public object, public Tribe_
         {
         public:
+            //__________________________________________________________________
+            //
+            // definitions
+            //__________________________________________________________________
+
             explicit Tribe(const Equilibrium &first);  //!< setup with first
             virtual ~Tribe() noexcept;                 //!< cleanup
             Tribe(const Tribe &, const Equilibrium &); //!< copy + append
 
+            //__________________________________________________________________
+            //
+            // method
+            //__________________________________________________________________
+
+            //! accepts if indep and index greater
             bool accepts(const Equilibrium &, const matrix<bool> &) const noexcept;
-            YACK_PROTO_OSTREAM(Tribe);
-            
-            Tribe *next;
-            Tribe *prev;
+            YACK_PROTO_OSTREAM(Tribe); //!< display
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            Tribe *next; //!< for list
+            Tribe *prev; //!< for list
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Tribe);
         };
+
 
         typedef cxx_list_of<Tribe> Tribes_;
 

@@ -37,10 +37,9 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            void finalize(); //!< make names and update gathering
+            void finalize();                      //!< make names and update gathering
+            YACK_PROTO_OSTREAM(ConservationLaws); //!< nice display once finalized
 
-            //! nice display once finalized
-            friend std::ostream & operator<<(std::ostream &, const ConservationLaws &);
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(ConservationLaws);

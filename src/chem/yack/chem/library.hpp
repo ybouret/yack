@@ -51,9 +51,8 @@ namespace yack
             // methods
             //__________________________________________________________________
             const sList * operator->() const throw(); //!< access
+            YACK_PROTO_OSTREAM(Library);              //!< formatted output
 
-            //! formatted output
-            friend std::ostream & operator<<(std::ostream &, const Library &);
             
             //! insert a new/multiple species
             template <typename NAME>

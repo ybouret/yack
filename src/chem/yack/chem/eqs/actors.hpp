@@ -41,8 +41,8 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            friend std::ostream & operator<<(std::ostream &, const Actors &); //!< display
-            void   makeName();                                                //!< create name from list
+            YACK_PROTO_OSTREAM(Actors); //!< display
+            void makeName();            //!< create name from list
 
             
         private:
