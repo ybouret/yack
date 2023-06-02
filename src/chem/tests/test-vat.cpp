@@ -5,6 +5,7 @@
 
 #include "yack/chem/eqs/lua.hpp"
 #include "yack/chem/vat/guardian.hpp"
+#include "yack/chem/vat/equalizer.hpp"
 
 
 using namespace yack;
@@ -31,18 +32,25 @@ YACK_UTEST(vat)
 
     YACK_SIZEOF(Cluster);
 
-    return 0;
-    
+
     vector<double> C(lib->size,0);
     Library::Conc(C,ran,0.4);
 
     lib(std::cerr,"[",C,"]") << std::endl;
 
-    Guardian guard;
-    guard(xml,C,vat);
+    if(true)
+    {
+        Guardian guard;
+        guard(xml,C,vat);
 
-    std::cerr << "injected=" << guard << std::endl;
+        std::cerr << "injected=" << guard << std::endl;
+        lib(std::cerr,"[",C,"]") << std::endl;
+    }
 
+
+    Equalizer equalizer;
+    if(vat.size)
+        equalizer.run(xml,C,*vat.head);
 
 
 }

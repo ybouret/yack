@@ -32,7 +32,7 @@ namespace yack
             // methods
             //__________________________________________________________________
             void run(const xmlog      &xml,
-                     writable<double> &C,
+                     writable<double> &C0,
                      const Cluster    &cl);
 
 
