@@ -9,6 +9,7 @@
 #include "yack/counted.hpp"
 #include "yack/ptr/ark.hpp"
 #include "yack/data/dinky/core-repo.hpp"
+#include "yack/data/dinky/coop-repo.hpp"
 #include "yack/proto-ostream.hpp"
 
 namespace yack
@@ -33,6 +34,9 @@ namespace yack
             static  bool                    Verbose;  //!< to debug
             typedef core_repo<Species>      CoreRepo; //!< alias
             typedef CoreRepo::node_type     Node;     //!< alias
+            typedef coop_repo<Species>      CoopRepo; //!< alias
+            typedef CoopRepo::zpool_type    Bank;
+            typedef CoopRepo::proxy_type    Fund;
 
             //! category of species
             enum Category

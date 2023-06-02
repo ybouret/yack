@@ -11,10 +11,14 @@ namespace yack
         {
         }
 
-        Equalizer:: Equalizer()
+        Equalizer:: Equalizer() :
+        speciesFund( new Species::Bank() ),
+        xadd()
         {
         }
 
+
+        
         void Equalizer:: run(const xmlog      &xml,
                              writable<double> &C0,
                              const Cluster    &cl)
@@ -25,6 +29,9 @@ namespace yack
             {
                 const Equilibrium &eq = ***node;
                 eq.display_compact(cl.pad(std::cerr << eq.name, eq) << " : ",C0,TopLevel) << std::endl;
+
+
+
             }
 
         }

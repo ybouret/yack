@@ -4,7 +4,7 @@
 #define YACK_CHEM_VAT_EQUALIZER_INCLUDED 1
 
 #include "yack/chem/vat/cluster.hpp"
-#include "yack/data/dinky/solo-repo.hpp"
+#include "yack/data/dinky/coop-list.hpp"
 
 namespace yack
 {
@@ -40,6 +40,7 @@ namespace yack
             //
             // members
             //__________________________________________________________________
+            Species::Fund   speciesFund;
             Extended::Adder xadd;
             
         private:
