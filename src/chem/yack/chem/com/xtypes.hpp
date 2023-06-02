@@ -23,6 +23,11 @@ namespace yack {
             typedef extended<double>  Real;   //!< alias
             typedef ipso::add<double> Adder;  //!< alias
 
+            static inline sign_type   Comp(const Real &lhs, const Real &rhs) noexcept
+            {
+                return Real::scompare(lhs,rhs);
+            }
+
             //! conversion from double to extended
             static inline Real   Send(const double x) { return ipso::inside<double>::send(x); }
 
