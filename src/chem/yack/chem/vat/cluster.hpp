@@ -5,7 +5,7 @@
 
 #include "yack/chem/equilibria.hpp"
 #include "yack/chem/vat/act.hpp"
-#include "yack/chem/vat/tribe.hpp"
+#include "yack/chem/vat/tribes.hpp"
 #include "yack/randomized/bits.hpp"
 
 namespace yack

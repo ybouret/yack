@@ -14,6 +14,17 @@ namespace yack
         Equalizer:: Equalizer()
         {
         }
+
+        void Equalizer:: run(const xmlog      &xml,
+                             writable<double> &C,
+                             const Cluster    &cl)
+        {
+            YACK_XMLSUB(xml,"Equalizing");
+
+
+            
+
+        }
         
     }
 

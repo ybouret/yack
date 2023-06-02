@@ -58,7 +58,7 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            YACK_PROTO_OSTREAM(Species); //! display as '[name]'
+            YACK_PROTO_OSTREAM(Species); //!< display as '[name]'
 
             //__________________________________________________________________
             //

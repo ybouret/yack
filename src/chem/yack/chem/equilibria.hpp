@@ -63,8 +63,8 @@ namespace yack
             }
 
 
-            YACK_PROTO_OSTREAM(Equilibria); //! display
-            void finalize() noexcept;       //! setup reac/proc gathering for clean display
+            YACK_PROTO_OSTREAM(Equilibria); //!< display
+            void finalize() noexcept;       //!< setup reac/proc gathering for clean display
 
             //__________________________________________________________________
             //

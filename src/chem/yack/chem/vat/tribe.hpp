@@ -61,17 +61,6 @@ namespace yack
         };
 
 
-        typedef cxx_list_of<Tribe> Tribes_;
-
-        class Tribes : public Tribes_
-        {
-        public:
-            explicit Tribes() noexcept;
-            virtual ~Tribes() noexcept;
-
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(Tribes);
-        };
     }
 
 }
