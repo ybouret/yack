@@ -16,16 +16,15 @@ namespace yack
         class Limit : public Extended::Real, public Species::CoopRepo
         {
         public:
+            explicit Limit(const Species::Fund &) noexcept;
             virtual ~Limit() throw();
+            Limit(const Limit &);
+            Limit & operator=(const Limit &);
             virtual void initialize() noexcept;
 
             YACK_PROTO_OSTREAM(Limit);
 
-        protected:
-            explicit Limit(const Species::Fund &) noexcept;
-
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(Limit);
+            
         };
 
     }

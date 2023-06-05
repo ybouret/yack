@@ -162,6 +162,14 @@ namespace yack
 
             }
 
+            {
+                size_t aux=0;
+                for(const Equilibrium::Node *node = standard.head; node; node=node->next)
+                {
+                    coerce((***node).indx[AuxLevel]) = ++aux;
+                }
+            }
+
 
         }
 

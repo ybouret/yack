@@ -25,8 +25,8 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit Equalizer();
-            virtual ~Equalizer() noexcept;
+            explicit Equalizer();              //!< setup
+            virtual ~Equalizer() noexcept;     //!< cleanup
 
             //__________________________________________________________________
             //
@@ -43,6 +43,8 @@ namespace yack
             //__________________________________________________________________
             Species::Fund   speciesFund;
             Cursor::Fund    cursorsFund;
+            Limit           Leqz;
+            Limit           Ltmp;
             Metrics         reac;
             Metrics         prod;
             Extended::Adder xadd;

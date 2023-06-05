@@ -27,7 +27,7 @@ namespace yack
                 os << **node;
                 for(node=node->next;node;node=node->next)
                 {
-                    os << '<' << **node;
+                    os << " < " << **node;
                 }
             }
             os << ']';

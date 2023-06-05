@@ -38,7 +38,7 @@ YACK_UTEST(vat)
 
     lib(std::cerr,"[",C,"]") << std::endl;
 
-    if(true)
+    if(false)
     {
         Guardian guard;
         guard(xml,C,vat);

@@ -16,6 +16,26 @@ namespace yack
         {
         }
 
+        Limit:: Limit(const Limit &other) :
+        Extended::Real(other),
+        Species::CoopRepo(other)
+        {
+        }
+
+        static inline void xr_assign(Extended::Real       &target,
+                                     const Extended::Real &source) noexcept
+        {
+            target = source;
+        }
+
+        Limit & Limit:: operator=(const Limit &other)
+        {
+            Limit tmp(other);
+            swap_with(tmp);
+            xr_assign(*this,other);
+            return *this;
+        }
+
         void Limit:: initialize() noexcept
         {
             Extended::Real &xi = *this;
@@ -29,7 +49,7 @@ namespace yack
             switch(lim.size)
             {
                 case 0:  os << "[none]"; break;
-                default: os << Extended::Recv(lim) << " @" << self;
+                default: os << Extended::Recv(lim) << "@" << self;
             }
             return os;
         }

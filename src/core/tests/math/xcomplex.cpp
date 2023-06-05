@@ -10,9 +10,10 @@ using namespace yack;
 
 YACK_UTEST(math_xcomplex)
 {
-    YACK_SIZEOF( extended<float> );
-    YACK_SIZEOF( xcomplex<float> );
-    YACK_SIZEOF( extended<double> );
+
+    YACK_SIZEOF( yack::extended<float> );
+    YACK_SIZEOF( yack::xcomplex<float> );
+    YACK_SIZEOF( yack::extended<double> );
     YACK_SIZEOF( xcomplex<double> );
     YACK_SIZEOF( extended<long double> );
     YACK_SIZEOF( xcomplex<long double> );

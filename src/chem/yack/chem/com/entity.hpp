@@ -17,8 +17,9 @@ namespace yack
         //______________________________________________________________________
         enum IndexLevel
         {
-            TopLevel = 0, //!< top level (Library/Equilibria)
-            SubLevel = 1  //!< sub level (Subset/Cluster)
+            TopLevel = 0,  //!< top level (Library/Equilibria)
+            SubLevel = 1,  //!< sub level (Subset/Cluster)
+            AuxLevel = 2   //!< aux level (withing Cluster)
         };
 
         //______________________________________________________________________
@@ -34,7 +35,7 @@ namespace yack
             //
             // definitions
             //__________________________________________________________________
-            static const size_t Levels = SubLevel+1; //!< number of levels
+            static const size_t Levels = AuxLevel+1; //!< number of levels
 
             //__________________________________________________________________
             //

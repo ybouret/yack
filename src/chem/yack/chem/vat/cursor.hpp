@@ -12,14 +12,28 @@ namespace yack
     namespace Chemical
     {
 
-        //! cursor for equalizer
+        //______________________________________________________________________
+        //
+        //
+        //! Cursor for Equalizer, holding extent and vanishing species
+        //
+        //______________________________________________________________________
         class Cursor : public Limit
         {
         public:
-            typedef coop_list<Cursor> List;
-            typedef List::node_type   Node;
-            typedef List::zpool_type  Bank;
-            typedef List::proxy_type  Fund;
+            //__________________________________________________________________
+            //
+            // definitions
+            //__________________________________________________________________
+            typedef coop_list<Cursor> List; //!< alias
+            typedef List::node_type   Node; //!< alias
+            typedef List::zpool_type  Bank; //!< alias
+            typedef List::proxy_type  Fund; //!< alias
+
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
 
             //! initialize with first species
             explicit Cursor(const double         c,
