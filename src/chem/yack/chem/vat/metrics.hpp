@@ -12,17 +12,27 @@ namespace yack
     namespace Chemical
     {
 
+        //______________________________________________________________________
+        //
+        //
         //! Metrics for reactants or products
+        //
+        //______________________________________________________________________
         class Metrics
         {
         public:
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
             explicit Metrics(const Species::Fund &,
-                             const Cursor::Fund  &) noexcept;
-            virtual ~Metrics() noexcept;
+                             const Cursor::Fund  &) noexcept; //!< setup
+            virtual ~Metrics() noexcept;                      //!< cleanup
 
-            Regulating regulating;
-            Equalizing equalizing;
-
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
             //!
             /**
              \param C0       TopLevel concentrations
@@ -33,7 +43,15 @@ namespace yack
                                    const Actors                      &actors,
                                    const readable<Species::Category> &category);
 
+            //! display
             YACK_PROTO_OSTREAM(Metrics);
+
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            Regulating regulating; //!< regulating extent
+            Equalizing equalizing; //!< equalizing extent(s)
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Metrics);

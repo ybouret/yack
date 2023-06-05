@@ -12,19 +12,30 @@ namespace yack
     namespace Chemical
     {
 
-        // Limit: value and vanishing species
+        //______________________________________________________________________
+        //
+        //
+        //! Limit: value and vanishing species
+        //
+        //______________________________________________________________________
         class Limit : public Extended::Real, public Species::CoopRepo
         {
         public:
-            explicit Limit(const Species::Fund &) noexcept;
-            virtual ~Limit() throw();
-            Limit(const Limit &);
-            Limit & operator=(const Limit &);
-            virtual void initialize() noexcept;
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit Limit(const Species::Fund &) noexcept; //!< setup
+            virtual ~Limit() throw();                       //!< cleanup
+            Limit(const Limit &);                           //!< copy
+            Limit & operator=(const Limit &);               //!< assign
 
-            YACK_PROTO_OSTREAM(Limit);
-
-            
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            virtual void initialize() noexcept; //!< set to 0 and empty
+            YACK_PROTO_OSTREAM(Limit);          //!< display
         };
 
     }

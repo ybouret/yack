@@ -35,8 +35,8 @@ namespace yack
             typedef core_repo<Species>      CoreRepo; //!< alias
             typedef CoreRepo::node_type     Node;     //!< alias
             typedef coop_repo<Species>      CoopRepo; //!< alias
-            typedef CoopRepo::zpool_type    Bank;
-            typedef CoopRepo::proxy_type    Fund;
+            typedef CoopRepo::zpool_type    Bank;     //!< alias
+            typedef CoopRepo::proxy_type    Fund;     //!< aluas
 
             //! category of species
             enum Category

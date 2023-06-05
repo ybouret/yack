@@ -33,6 +33,7 @@ namespace yack
             // methods
             //__________________________________________________________________
 
+            //! display a compact list of values
             template <typename T>
             std::ostream & display_compact(std::ostream &os, const readable<T> &field, const IndexLevel level) const
             {

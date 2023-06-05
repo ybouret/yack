@@ -13,14 +13,28 @@ namespace yack
     {
 
 
-
-        // Regulation: Limiting with selected extent
+        //______________________________________________________________________
+        //
+        //
+        //! Regulating: Limiting with selected extent
+        //
+        //______________________________________________________________________
         class Regulating : public Limit
         {
         public:
-            explicit Regulating(const Species::Fund &) noexcept;
-            virtual ~Regulating() noexcept;
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit Regulating(const Species::Fund &) noexcept; //!< setup
+            virtual ~Regulating() noexcept;                      //!< cleanup
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
+            //! try decrease current value with a new concentration/actor
             void     tryDecreaseWith(const double c, const Actor &a);
 
         private:

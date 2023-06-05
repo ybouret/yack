@@ -32,6 +32,8 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
+
+            //! best effort equalization
             void run(const xmlog      &xml,
                      writable<double> &C0,
                      const Cluster    &cl);
@@ -41,13 +43,13 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            Species::Fund   speciesFund;
-            Cursor::Fund    cursorsFund;
-            Limit           Leqz;
-            Limit           Ltmp;
-            Metrics         reac;
-            Metrics         prod;
-            Extended::Adder xadd;
+            Species::Fund   speciesFund; //!< shared memory for species
+            Cursor::Fund    cursorsFund; //!< shared memory for cursors
+            Limit           Leqz;        //!< helper
+            Limit           Ltmp;        //!< helper
+            Metrics         reac;        //!< metrics for reactants
+            Metrics         prod;        //!< metrics for products
+            Extended::Adder xadd;        //!< internal ops
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Equalizer);
