@@ -30,6 +30,8 @@ namespace yack
             Limit(const Limit &);                           //!< copy
             Limit & operator=(const Limit &);               //!< assign
 
+            void neg() noexcept;
+
             //__________________________________________________________________
             //
             // methods

@@ -104,7 +104,7 @@ namespace yack
                 //--------------------------------------------------------------
                 // check last value
                 //--------------------------------------------------------------
-                Cursor::Node *up = tail;
+                const Cursor::Node * const up = tail;
                 switch( Extended::Comp(xi,**up) )
                 {
                     case negative: break;
@@ -141,6 +141,72 @@ namespace yack
                 throw;
             }
 
+        }
+
+
+        void Equalizing:: findBestEffort(Limit &regulating)
+        {
+            assert(regulating.size>0);
+            assert(this->size>0);
+            assert(this->isValid());
+
+            //------------------------------------------------------------------
+            //
+            // test against head
+            //
+            //------------------------------------------------------------------
+            const Cursor::Node *curr = head;
+            switch( Extended::Comp(regulating,**curr) )
+            {
+                case negative: return;                                     // limited by regulating
+                case __zero__: regulating.merge_back_copy(**curr); return; // same values
+                case positive:
+                    if(1==size)
+                    {
+                        // specific most favorable case
+                        regulating = **curr;
+                        return;
+                    }
+                    break;
+            }
+
+            //------------------------------------------------------------------
+            //
+            // test against tail
+            //
+            //------------------------------------------------------------------
+            assert(size>=2);
+            const Cursor::Node * const last = tail; assert(last!=curr);
+            switch( Extended::Comp(regulating,**last) )
+            {
+                case positive: regulating = **last;                return; // most favorable case!
+                case __zero__: regulating.merge_back_copy(**last); return; // most favorable case as well
+                case negative: break;
+            }
+
+            //------------------------------------------------------------------
+            //
+            // generic sequential search
+            //
+            //------------------------------------------------------------------
+            const Cursor::Node *       next = curr->next;
+            while(next!=last)
+            {
+                switch( Extended::Comp(regulating,**next))
+                {
+                    case negative: goto FOUND_GENERIC;
+                    case __zero__: regulating.merge_back_copy(**next); return;
+                    case positive: break;
+                }
+                curr = next;
+                next = next->next;
+            }
+            assert(next==last);
+
+        FOUND_GENERIC:
+            assert( regulating > **curr );
+            assert( regulating < **next );
+            regulating = **curr;
         }
 
     }

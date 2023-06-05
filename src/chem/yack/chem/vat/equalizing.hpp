@@ -34,6 +34,8 @@ namespace yack
 
             //! insert new or update cursor multiplicity
             void tryInsertCursor(const double c, const Actor &a);
+            void findBestEffort(Limit &regulating);
+
 
 
             YACK_PROTO_OSTREAM(Equalizing); //!< display

@@ -22,16 +22,6 @@ namespace yack
         {
         }
 
-        static inline
-        void computeLimit(Limit            &lim,
-                          const Regulating &regulating,
-                          const Equalizing &equalizing)
-        {
-            lim.initialize();
-            std::cerr << " --> equalizing " << equalizing << " with " << regulating << std::endl;
-            
-
-        }
 
         void Equalizer:: run(const xmlog      &xml,
                              writable<double> &C0,
@@ -65,6 +55,7 @@ namespace yack
                 if(reac.equalizing.size>0) eqz_flag |= eqz_reac;
                 if(prod.equalizing.size>0) eqz_flag |= eqz_prod;
 
+                Limit *lim = NULL;
                 switch(eqz_flag)
                 {
                     case eqz_none: YACK_XMLOG(xml,"  |_[RUNNING]"); continue;
@@ -72,16 +63,22 @@ namespace yack
 
                     case eqz_reac: assert(reac.equalizing.size>0); assert(0==prod.equalizing.size); assert(prod.regulating.size>0);
                         YACK_XMLOG(xml,"  |_[(-)REAC]");
-                        computeLimit(Leqz,prod.regulating,reac.equalizing);
-                        continue;
+                        reac.equalizing.findBestEffort(prod.regulating);
+                        prod.regulating.neg();
+                        lim = & prod.regulating;
+                        break;
 
                     case eqz_prod: assert(prod.equalizing.size>0); assert(0==reac.equalizing.size); assert(reac.regulating.size>0);
-                        YACK_XMLOG(xml,"  |_[(-)PROD");
-                        continue;
+                        YACK_XMLOG(xml,"  |_[(-)PROD]");
+                        prod.equalizing.findBestEffort(reac.regulating);
+                        lim = & reac.regulating;
+                        break;
 
                     default:
                         throw imported::exception("Equalizer","corrupted code");
                 }
+                assert(lim);
+                YACK_XMLOG(xml, " |_[ USING ] " << *lim);
 
 
             }

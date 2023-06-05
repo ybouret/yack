@@ -28,6 +28,12 @@ namespace yack
             target = source;
         }
 
+        void Limit:: neg() noexcept
+        {
+            Extended::Real &xi = *this;
+            xi = -xi;
+        }
+
         Limit & Limit:: operator=(const Limit &other)
         {
             Limit tmp(other);
