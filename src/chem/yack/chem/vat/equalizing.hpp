@@ -22,7 +22,8 @@ namespace yack
             void tryInsertCursor(const double c, const Actor &a);
             YACK_PROTO_OSTREAM(Equalizing);
 
-
+            bool isValid() const noexcept;
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Equalizing);
             Species::Fund speciesFund;
