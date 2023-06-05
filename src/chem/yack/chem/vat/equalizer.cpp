@@ -75,10 +75,14 @@ namespace yack
             // computing optimal extents for each eq
             //
             //------------------------------------------------------------------
+            const Equilibrium *best = NULL;
+            Extended::Real     gain = _0;
+
             for(const Equilibrium::Node *node=cl.standard.head;node;node=node->next)
             {
-                const Equilibrium &eq = ***node;
-                const size_t       ei = eq.indx[SubLevel];
+                const Equilibrium        &eq = ***node;
+                const size_t              ei = eq.indx[SubLevel];
+                writable<Extended::Real> &Ci = Ceqz[ei];
 
                 //--------------------------------------------------------------
                 // analyze phase space
@@ -107,14 +111,14 @@ namespace yack
                     case eqz_both: YACK_XMLOG(xml,"  |_[BLOCKED]"); continue;
 
                     case eqz_reac: assert(reac.equalizing.size>0); assert(0==prod.equalizing.size); assert(prod.regulating.size>0);
-                        YACK_XMLOG(xml,"  |_[(-)REAC]");
+                        //YACK_XMLOG(xml,"  |_[(-)REAC]");
                         reac.equalizing.findBestEffort(prod.regulating);
                         prod.regulating.neg();
                         lim = & prod.regulating;
                         break;
 
                     case eqz_prod: assert(prod.equalizing.size>0); assert(0==reac.equalizing.size); assert(reac.regulating.size>0);
-                        YACK_XMLOG(xml,"  |_[(-)PROD]");
+                        //YACK_XMLOG(xml,"  |_[(-)PROD]");
                         prod.equalizing.findBestEffort(reac.regulating);
                         lim = & reac.regulating;
                         break;
@@ -129,7 +133,6 @@ namespace yack
                 // compute trial concentration 
                 //--------------------------------------------------------------
                 const Extended::Real      xi   = **lim;
-                writable<Extended::Real> &Ctmp = Ceqz[ei];
                 for(const cNode *cn=eq->head;cn;cn=cn->next)
                 {
                     const Component     &cc   = ***cn;
@@ -140,18 +143,18 @@ namespace yack
                     const Extended::Real newC = oldC+dC;
                     if(cl.isUnbounded(sp))
                     {
-                        Ctmp[sj] = newC;
+                        Ci[sj] = newC;
                     }
                     else
                     {
                         assert(cl.isConserved(sp));
                         if(oldC>=0)
                         {
-                            Ctmp[sj] = max_of(newC,_0);
+                            Ci[sj] = max_of(newC,_0);
                         }
                         else
                         {
-                            Ctmp[sj] = newC;
+                            Ci[sj] = newC;
                         }
                     }
                 }
@@ -161,9 +164,9 @@ namespace yack
                 //--------------------------------------------------------------
                 for(const Species::Node *sn=lim->head;sn;sn=sn->next)
                 {
-                    Ctmp[ (***sn).indx[SubLevel] ] = _0;
+                    Ci[ (***sn).indx[SubLevel] ] = _0;
                 }
-                eq.display_compact(cl.pad( *xml << '<' << eq.name << '>', eq) << " : ",Ctmp,SubLevel) << std::endl;
+                eq.display_compact(cl.pad( *xml << '<' << eq.name << '>', eq) << " : ",Ci,SubLevel) << std::endl;
 
                 //--------------------------------------------------------------
                 // compute gain
@@ -172,14 +175,27 @@ namespace yack
                 for(const Species::Node *sn=cl.conserved.head;sn;sn=sn->next)
                 {
                     const size_t         j = (***sn).indx[SubLevel];
-                    const Extended::Real oldV = -min_of(Corg[j],_0);
-                    const Extended::Real newV = min_of(Ctmp[j],_0);
+                    const Extended::Real oldV = -min_of(Corg[j], _0);
+                    const Extended::Real newV =  min_of(Ci[j],   _0);
                     xadd.append(oldV);
                     xadd.append(newV);
                 }
-                const Extended::Real gain = xadd.reduce();
-                std::cerr << " --> gain=" << gain << std::endl;
+                const Extended::Real g = xadd.reduce().abs();
+                std::cerr << " --> gain=" << g << std::endl;
+                if(!best || g<gain)
+                {
+                    best = &eq;
+                    gain =  g;
+                }
+            }
 
+            if(best)
+            {
+                std::cerr << "best=" << best->name << std::endl;
+            }
+            else
+            {
+                std::cerr << "no possible..." << std::endl;
             }
 
 
