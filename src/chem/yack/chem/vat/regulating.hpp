@@ -35,7 +35,7 @@ namespace yack
             //__________________________________________________________________
 
             //! try decrease current value with a new concentration/actor
-            void     tryDecreaseWith(const double c, const Actor &a);
+            void     tryDecreaseWith(const Extended::Real &c, const Actor &a);
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Regulating);

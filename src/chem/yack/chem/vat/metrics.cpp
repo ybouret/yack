@@ -23,9 +23,10 @@ namespace yack
             return os;
         }
 
-        void Metrics:: computeFrom(const readable<double>            &C0,
+        void Metrics:: computeFrom(const readable<Extended::Real>    &C0,
                                    const Actors                      &actors,
-                                   const readable<Species::Category> &category)
+                                   const readable<Species::Category> &category,
+                                   const IndexLevel                   level)
         {
             regulating.initialize();
             equalizing.clear();
@@ -33,8 +34,8 @@ namespace yack
             {
                 const Species &sp = **ac;
                 if( Species::Unbounded == category[sp.indx[SubLevel]] ) continue;
-                const double c = C0[ sp.indx[TopLevel] ];
-                if(c>=0)
+                const Extended::Real &c = C0[ sp.indx[level] ];
+                if(c.m>=0)
                 {
                     regulating.tryDecreaseWith(c,*ac);
                 }

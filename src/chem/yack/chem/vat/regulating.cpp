@@ -17,10 +17,10 @@ namespace yack
 
       
 
-        void Regulating:: tryDecreaseWith(const double c, const Actor &a)
+        void Regulating:: tryDecreaseWith(const Extended::Real &c, const Actor &a)
         {
-            Extended::Real &xi = *this;
-            const Extended::Real tmp = Extended::Real(c)/a.xn;
+            Extended::Real      &xi  = *this;
+            const Extended::Real tmp = c/a.xn;
             if(size<=0)
             {
                 xi      = tmp;

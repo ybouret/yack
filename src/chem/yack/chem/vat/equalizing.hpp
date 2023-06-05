@@ -33,7 +33,7 @@ namespace yack
             //__________________________________________________________________
 
             //! insert new or update cursor multiplicity
-            void tryInsertCursor(const double c, const Actor &a);
+            void tryInsertCursor(const Extended::Real c, const Actor &a);
             void findBestEffort(Limit &regulating);
 
 

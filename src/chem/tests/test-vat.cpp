@@ -47,8 +47,9 @@ YACK_UTEST(vat)
         lib(std::cerr,"[",C,"]") << std::endl;
     }
 
-
-    Equalizer equalizer;
+    std::cerr << "#maxClusterSize=" << vat.maxClusterSize << std::endl;
+    
+    Equalizer equalizer(vat.maxClusterSize,vat.maximumSpecies);
     if(vat.size)
         equalizer.run(xml,C,*vat.head);
 

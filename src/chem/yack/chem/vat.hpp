@@ -30,8 +30,8 @@ namespace yack
             //! setup
             explicit Vat(const xmlog   &xml,
                          Equilibria    &eqs);
-            
-
+            const size_t maxClusterSize;
+            const size_t maximumSpecies;
 
 
         private:

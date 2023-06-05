@@ -35,13 +35,14 @@ namespace yack
             //__________________________________________________________________
             //!
             /**
-             \param C0       TopLevel concentrations
+             \param C0       converted concentrations
              \param actors   reac/prod
              \param category SubLevel category
              */
-            void       computeFrom(const readable<double>            &C0,
+            void       computeFrom(const readable<Extended::Real>    &C0,
                                    const Actors                      &actors,
-                                   const readable<Species::Category> &category);
+                                   const readable<Species::Category> &category,
+                                   const IndexLevel                   level);
 
             //! display
             YACK_PROTO_OSTREAM(Metrics);

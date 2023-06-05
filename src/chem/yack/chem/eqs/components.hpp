@@ -65,6 +65,45 @@ namespace yack
             bool neutral() const;                             //!< check if neutral
             bool minimal() const;                             //!< check if minimal
 
+            template <typename TARGET, typename SOURCE> inline
+            void load(TARGET &target, const IndexLevel targetLevel,
+                      SOURCE &source, const IndexLevel sourceLevel) const
+            {
+                for(const cNode *node=(*this)->head;node;node=node->next)
+                {
+                    const Component &cc = ***node;
+                    const Species   &sp = *cc;
+                    target[ sp.indx[targetLevel] ] = source[ sp.indx[sourceLevel] ];
+                }
+            }
+
+            //! assuming target is extended reals
+            template <typename TARGET> inline
+            void move(TARGET &target, const IndexLevel targetLevel, const Extended::Real &xi)
+            {
+                for(const cNode *node=(*this)->head;node;node=node->next)
+                {
+                    const Component &cc = ***node;
+                    const Species   &sp = *cc;
+                    target[ sp.indx[targetLevel] ] +=  xi * cc.xn;
+                }
+            }
+
+            //! assuming target and source are extended reals
+            template <typename TARGET, typename SOURCE> inline
+            void make(TARGET &target, const IndexLevel targetLevel,
+                      SOURCE &source, const IndexLevel sourceLevel,
+                      const Extended::Real &xi) const
+            {
+                for(const cNode *node=(*this)->head;node;node=node->next)
+                {
+                    const Component &cc = ***node;
+                    const Species   &sp = *cc;
+                    target[ sp.indx[targetLevel] ] = source[ sp.indx[sourceLevel] ] + cc.xn * xi;
+                }
+            }
+
+
             //__________________________________________________________________
             //
             // members

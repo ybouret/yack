@@ -50,11 +50,11 @@ namespace yack
             return true;
         }
 
-        void Equalizing:: tryInsertCursor(const double c, const Actor &a)
+        void Equalizing:: tryInsertCursor(const Extended::Real c, const Actor &a)
         {
-            Cursor::Node        *curr = new_node<const double,const Actor,const Species::Fund>(c,a,speciesFund);
+            Cursor::Node        *curr = new_node<const Extended::Real,const Actor,const Species::Fund>(c,a,speciesFund);
             const Extended::Real xi   = **curr;
-            std::cerr << "==> adding " << *curr << " to " << *this << std::endl;
+            //std::cerr << "==> adding " << *curr << " to " << *this << std::endl;
             try
             {
                 switch(size)

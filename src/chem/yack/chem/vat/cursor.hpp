@@ -36,9 +36,9 @@ namespace yack
             //__________________________________________________________________
 
             //! initialize with first species
-            explicit Cursor(const double         c,
-                            const Actor         &a,
-                            const Species::Fund &f);
+            explicit Cursor(const Extended::Real  &c,
+                            const Actor           &a,
+                            const Species::Fund   &f);
 
             //! cleanup
             virtual ~Cursor() noexcept;

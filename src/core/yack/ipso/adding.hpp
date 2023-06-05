@@ -76,6 +76,12 @@ namespace yack
                     push(args);
                 }
 
+                //! append precompiled values to heap
+                template <typename ARRAY> inline
+                void load(ARRAY &arr) {
+                    for(size_t i=arr.size();i>0;--i)
+                        push( arr[i] );
+                }
 
                 //! get the current sum
                 inline virtual inside_type reduce() {

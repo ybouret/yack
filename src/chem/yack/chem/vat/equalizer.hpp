@@ -21,11 +21,15 @@ namespace yack
         class Equalizer
         {
         public:
+            typedef vector<Extended::Real,memory::dyadic> XVector;
+            typedef matrix<Extended::Real>                XMatrix;
+
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            explicit Equalizer();              //!< setup
+            explicit Equalizer(const size_t maxClusterSize,
+                               const size_t maximumSpecies); //!< setup
             virtual ~Equalizer() noexcept;     //!< cleanup
 
             //__________________________________________________________________
@@ -43,16 +47,22 @@ namespace yack
             //
             // members
             //__________________________________________________________________
+            const Extended::Real _0;
             Species::Fund   speciesFund; //!< shared memory for species
             Cursor::Fund    cursorsFund; //!< shared memory for cursors
-            Limit           Leqz;        //!< helper
-            Limit           Ltmp;        //!< helper
             Metrics         reac;        //!< metrics for reactants
             Metrics         prod;        //!< metrics for products
+            XVector         Corg;        //!< Extended C0
+            XVector         xbad;        //!< initial bad values
+            XMatrix         Ceqz;        //!< equalized
             Extended::Adder xadd;        //!< internal ops
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Equalizer);
+
+            void runConserved(const xmlog      &xml,
+                              writable<double> &C0,
+                              const Cluster    &cl);
         };
 
     }
