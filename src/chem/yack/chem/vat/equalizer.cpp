@@ -34,8 +34,8 @@ namespace yack
                 eq.display_compact(cl.pad(std::cerr << eq.name, eq) << " : ",C0,TopLevel) << std::endl;
                 reac.computeFrom(C0,eq.reac,cl.category);
                 prod.computeFrom(C0,eq.prod,cl.category);
-                std::cerr << "reac: " << reac << std::endl;
-                std::cerr << "prod: " << prod << std::endl;
+                std::cerr << "  |_reac: " << reac << std::endl;
+                std::cerr << "  |_prod: " << prod << std::endl;
             }
 
         }

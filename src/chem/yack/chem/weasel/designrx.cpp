@@ -28,14 +28,16 @@ namespace yack
                 //--------------------------------------------------------------
                 // create list of matching
                 //--------------------------------------------------------------
-                vector<matcher> matches;
-                
+                vector<matcher> matches(linker->alias.size,as_capacity);
+                vector<bool>    wasUsed(linker->alias.size,as_capacity);
+
                 for(const solo_list<string>::node_type *node=linker->alias.head;node;node=node->next)
                 {
                     const string  &rx = **node;
                     std::cerr << "processing <" << rx << ">" << std::endl;
                     const matcher temp = new jive::matching(rx);
                     matches << temp;
+                    wasUsed << false;
                 }
 
                 //--------------------------------------------------------------
@@ -54,10 +56,29 @@ namespace yack
                         if(matches[k]->exactly(uid))
                         {
                             self( jive::module::open_data(uid,inp), lib, eqs);
+                            wasUsed[k] = true;
                             break;
                         }
                     }
+                }
 
+                string unused;
+                {
+                    size_t k=1;
+                    for(const solo_list<string>::node_type *node=linker->alias.head;node;node=node->next,++k)
+                    {
+                        if(!wasUsed[k])
+                        {
+                            const string  &rx = **node;
+                            unused += " '";
+                            unused += rx;
+                            unused += "'";
+                        }
+                    }
+                }
+                if(unused.size())
+                {
+                    throw imported::exception(call_sign,"unused %s",unused());
                 }
 
             }
