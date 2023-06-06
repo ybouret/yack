@@ -179,19 +179,32 @@ namespace yack
                 used << eq;
             }
 
-            std::cerr << "used = " << used << std::endl;
-            
-            for(const Tribe *tribe=cluster.equalizing.head;tribe;tribe=tribe->next)
+
+
+            YACK_XMLOG(xml,"used=" << used);
             {
-                if(tribe->is_subset_of(used))
+                Extended::Real          gain = 0;
+                for(size_t j=m;j>0;--j) Cend[j] = Corg[j];
+                for(const Tribe *tribe=cluster.equalizing.head;tribe;tribe=tribe->next)
                 {
-                    const Extended::Real g = gainOf(*tribe,cluster);
-                    std::cerr <<  " (+) " << std::setw(15) << *g  << " " << *tribe << " @" << g << std::endl;
+                    if(tribe->is_subset_of(used))
+                    {
+                        const Extended::Real g   = gainOf(*tribe,cluster);
+                        if(g>gain)
+                        {
+                            gain = g;
+                            for(size_t j=m;j>0;--j) Cend[j] = Ctmp[j];
+                            YACK_XMLOG(xml, " (+) " <<  std::setw(15) << *g  << " " << *tribe << " @" << g);
+                        }
+                    }
                 }
-                else
-                {
-                    //std::cerr << " (-) "  << *tribe << std::endl;
-                }
+            }
+
+            for(const Species::Node *sn=cluster.lib.head;sn;sn=sn->next)
+            {
+                const Species &sp = ***sn;
+                const size_t   j  = sp.indx[SubLevel];
+                cluster.spec.pad(*xml << sp, sp) << " : " << std::setw(15) << *Corg[j] << " => " << std::setw(15) << *Cend[j] << std::endl;
             }
 
 
