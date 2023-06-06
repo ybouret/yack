@@ -186,7 +186,7 @@ namespace yack
                 if(tribe->is_subset_of(used))
                 {
                     const Extended::Real g = gainOf(*tribe,cluster);
-                    std::cerr <<  " (+) " << std::setw(15) << g   << " " << *tribe << std::endl;
+                    std::cerr <<  " (+) " << std::setw(15) << *g  << " " << *tribe << " @" << g << std::endl;
                 }
                 else
                 {
@@ -257,9 +257,9 @@ namespace yack
                 const size_t         j    = sp.indx[SubLevel];
                 const Extended::Real oldV = -min_of(Corg[j], _0);
                 const Extended::Real newV =  min_of(Ctmp[j], _0);
-                xadd.append(oldV);
-                xadd.append(newV);
-                cluster.spec.pad(std::cerr << sp,sp) << " : " << std::setw(15) << *Corg[j] << " -> " << std::setw(15) << *Ctmp[j] << " : " << (newV+oldV) << std::endl;
+                const Extended::Real gain = (oldV+newV).abs();
+                xadd.append(gain);
+                //cluster.spec.pad(std::cerr << sp,sp) << " : " << std::setw(15) << *Corg[j] << " -> " << std::setw(15) << *Ctmp[j] << " : " << gain << std::endl;
             }
 
 
