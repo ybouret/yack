@@ -180,7 +180,7 @@ namespace yack
             }
 
             std::cerr << "used = " << used << std::endl;
-
+            
             for(const Tribe *tribe=cluster.equalizing.head;tribe;tribe=tribe->next)
             {
                 if(tribe->is_subset_of(used))
@@ -260,7 +260,6 @@ namespace yack
                 assert(newV>=oldV);
                 const Extended::Real gain = (oldV-newV).abs();
                 xadd.append(gain);
-                //cluster.spec.pad(std::cerr << sp,sp) << " : " << std::setw(15) << *Corg[j] << " -> " << std::setw(15) << *Ctmp[j] << " : " << gain << std::endl;
             }
 
 
