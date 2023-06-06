@@ -255,9 +255,10 @@ namespace yack
             {
                 const Species        &sp = ***sn;
                 const size_t         j    = sp.indx[SubLevel];
-                const Extended::Real oldV = -min_of(Corg[j], _0);
+                const Extended::Real oldV =  min_of(Corg[j], _0);
                 const Extended::Real newV =  min_of(Ctmp[j], _0);
-                const Extended::Real gain = (oldV+newV).abs();
+                assert(newV>=oldV);
+                const Extended::Real gain = (oldV-newV).abs();
                 xadd.append(gain);
                 //cluster.spec.pad(std::cerr << sp,sp) << " : " << std::setw(15) << *Corg[j] << " -> " << std::setw(15) << *Ctmp[j] << " : " << gain << std::endl;
             }
