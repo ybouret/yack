@@ -18,9 +18,8 @@ namespace yack
         // Definitions for Tribes
         //
         //______________________________________________________________________
-        typedef core_repo<const Equilibrium> Tribe_;    //!< alias
-        typedef Tribe_::node_type            TribeNode; //!< alias
-
+        typedef Equilibrium::CoreRepo Tribe_;    //!< alias
+        
 
         //______________________________________________________________________
         //
@@ -45,6 +44,9 @@ namespace yack
             // method
             //__________________________________________________________________
 
+            //! build library from equilibria
+            void finalize();
+
             //! accepts if indep and index greater
             bool accepts(const Equilibrium &, const matrix<bool> &) const noexcept;
             YACK_PROTO_OSTREAM(Tribe); //!< display
@@ -53,8 +55,9 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            Tribe *next; //!< for list
-            Tribe *prev; //!< for list
+            const Species::CoreRepo lib;
+            Tribe                  *next; //!< for list
+            Tribe                  *prev; //!< for list
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Tribe);

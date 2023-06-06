@@ -1,5 +1,6 @@
 #include "yack/chem/vat/equalizer.hpp"
 #include "yack/system/imported.hpp"
+#include <iomanip>
 
 namespace yack
 {
@@ -17,7 +18,10 @@ namespace yack
         cursorsFund( new Cursor::Bank()  ),
         reac( speciesFund, cursorsFund   ),
         prod( speciesFund, cursorsFund   ),
+        used( maxClusterSize ),
         Corg(maximumSpecies,as_capacity),
+        Ctmp(maximumSpecies,as_capacity),
+        Cend(maximumSpecies,as_capacity),
         Ceqz(maxClusterSize, maxClusterSize ? maximumSpecies : 0),
         xadd()
         {
@@ -30,11 +34,11 @@ namespace yack
             YACK_XMLSUB(xml,"Equalizer::run");
             runConserved(xml,C0,cl);
         }
-
+        
 
         void Equalizer:: runConserved(const xmlog      &xml,
                                       writable<double> &C0,
-                                      const Cluster    &cl)
+                                      const Cluster    &cluster)
         {
             YACK_XMLSUB(xml,"Equalizer::runConserved");
 
@@ -43,8 +47,11 @@ namespace yack
             static const unsigned eqz_prod = 0x02;
             static const unsigned eqz_both = eqz_reac | eqz_prod;
 
-            const size_t m    = C0.size();
+            assert(cluster.lib.size == (***cluster.lib.tail).indx[SubLevel]);
+            const size_t m = cluster.lib.size;
             Corg.adjust(m,_0);
+            Ctmp.adjust(m,_0);
+            Cend.adjust(m,_0);
 
             //------------------------------------------------------------------
             //
@@ -52,12 +59,12 @@ namespace yack
             //
             //------------------------------------------------------------------
             double       cbad = 0;
-            for(const Species::Node *node=cl.lib.head;node;node=node->next)
+            for(const Species::Node *node=cluster.lib.head;node;node=node->next)
             {
                 const Species       &sp  = ***node;
                 const double         cj  = C0[sp.indx[TopLevel]];
                 Corg[sp.indx[SubLevel]]  = Extended::Send(cj);
-                if(cl.isUnbounded(sp)) continue;
+                if(cluster.isUnbounded(sp)) continue;
                 if(cj<0)
                 {
                     cbad -= cj;
@@ -75,10 +82,8 @@ namespace yack
             // computing optimal extents for each eq
             //
             //------------------------------------------------------------------
-            const Equilibrium *best = NULL;
-            Extended::Real     gain = _0;
-
-            for(const Equilibrium::Node *node=cl.standard.head;node;node=node->next)
+            used.clear();
+            for(const Equilibrium::Node *node=cluster.standard.head;node;node=node->next)
             {
                 const Equilibrium        &eq = ***node;
                 const size_t              ei = eq.indx[SubLevel];
@@ -87,12 +92,12 @@ namespace yack
                 //--------------------------------------------------------------
                 // analyze phase space
                 //--------------------------------------------------------------
-                reac.computeFrom(Corg,eq.reac,cl.category,SubLevel);
-                prod.computeFrom(Corg,eq.prod,cl.category,SubLevel);
+                reac.computeFrom(Corg,eq.reac,cluster.category,SubLevel);
+                prod.computeFrom(Corg,eq.prod,cluster.category,SubLevel);
 
                 if(xml.verbose)
                 {
-                    eq.display_compact(cl.pad( *xml << '<' << eq.name << '>', eq) << " : ",Corg,SubLevel) << std::endl;
+                    eq.display_compact(cluster.pad( *xml << '<' << eq.name << '>', eq) << " : ",Corg,SubLevel) << std::endl;
                     *xml << "  |_reac: " << reac << std::endl;
                     *xml << "  |_prod: " << prod << std::endl;
                 }
@@ -132,6 +137,8 @@ namespace yack
                 //--------------------------------------------------------------
                 // compute trial concentration 
                 //--------------------------------------------------------------
+                for(size_t j=m;j>0;--j)
+                    Ci[j] = Corg[j];
                 const Extended::Real      xi   = **lim;
                 for(const cNode *cn=eq->head;cn;cn=cn->next)
                 {
@@ -141,19 +148,20 @@ namespace yack
                     const Extended::Real oldC = Corg[sj];
                     const Extended::Real dC   = cc.xn * xi;
                     const Extended::Real newC = oldC+dC;
-                    if(cl.isUnbounded(sp))
+                    if(cluster.isUnbounded(sp))
                     {
                         Ci[sj] = newC;
                     }
                     else
                     {
-                        assert(cl.isConserved(sp));
+                        assert(cluster.isConserved(sp));
                         if(oldC>=0)
                         {
                             Ci[sj] = max_of(newC,_0);
                         }
                         else
                         {
+                            assert(dC>0);
                             Ci[sj] = newC;
                         }
                     }
@@ -166,39 +174,96 @@ namespace yack
                 {
                     Ci[ (***sn).indx[SubLevel] ] = _0;
                 }
-                eq.display_compact(cl.pad( *xml << '<' << eq.name << '>', eq) << " : ",Ci,SubLevel) << std::endl;
+                eq.display_compact(cluster.pad( *xml << '<' << eq.name << '>', eq) << " : ",Ci,SubLevel) << std::endl;
 
-                //--------------------------------------------------------------
-                // compute gain
-                //--------------------------------------------------------------
-                xadd.resume(m);
-                for(const Species::Node *sn=cl.conserved.head;sn;sn=sn->next)
+                used << eq;
+            }
+
+            std::cerr << "used = " << used << std::endl;
+
+            for(const Tribe *tribe=cluster.equalizing.head;tribe;tribe=tribe->next)
+            {
+                if(tribe->is_subset_of(used))
                 {
-                    const size_t         j = (***sn).indx[SubLevel];
-                    const Extended::Real oldV = -min_of(Corg[j], _0);
-                    const Extended::Real newV =  min_of(Ci[j],   _0);
-                    xadd.append(oldV);
-                    xadd.append(newV);
+                    const Extended::Real g = gainOf(*tribe,cluster);
+                    std::cerr <<  " (+) " << std::setw(15) << *g   << " " << *tribe << std::endl;
                 }
-                const Extended::Real g = xadd.reduce().abs();
-                std::cerr << " --> gain=" << g << std::endl;
-                if(!best || g<gain)
+                else
                 {
-                    best = &eq;
-                    gain =  g;
+                    //std::cerr << " (-) "  << *tribe << std::endl;
                 }
             }
 
-            if(best)
+
+        }
+
+
+        Extended::Real Equalizer:: gainOf(const Tribe   &tribe,
+                                          const Cluster &cluster)
+        {
+            assert(Corg.size()==Cend.size());
+            assert(Corg.size()==Ctmp.size());
+            assert(cluster.lib.size == Corg.size());
+
+            const size_t m = cluster.lib.size;
+
+            //------------------------------------------------------------------
+            //
+            // initialize Ctmp
+            //
+            //------------------------------------------------------------------
+            for(size_t j=m;j>0;--j)
             {
-                std::cerr << "best=" << best->name << std::endl;
+                Ctmp[j] = Corg[j];
             }
-            else
+
+            //------------------------------------------------------------------
+            //
+            // compute Cend for each species in tribe
+            // using precomputed concentrations to deduce
+            // sum of extents
+            //
+            //------------------------------------------------------------------
+            for(const Species::Node *sn=tribe.lib.head;sn;sn=sn->next)
             {
-                std::cerr << "no possible..." << std::endl;
+                const Species        &sp = ***sn;
+                const size_t          j  = sp.indx[SubLevel];
+                const Extended::Real  c0 = Corg[j];
+                const Extended::Real  m0 = -c0;
+                xadd.free();
+                xadd.push(c0);
+                for(const Equilibrium::Node *en=tribe.head;en;en=en->next)
+                {
+                    const Equilibrium &eq = ***en;
+                    const size_t       i  = eq.indx[SubLevel];
+                    xadd.push(m0);
+                    xadd.push(Ceqz[i][j]);
+                }
+                Ctmp[j] = xadd.reduce();
+                //cluster.spec.pad(std::cerr << " (*) " << sp,sp) << " : " << std::setw(15) << *Corg[j] << " -> " << std::setw(15) << *Ctmp[j] << std::endl;
             }
 
 
+
+            //------------------------------------------------------------------
+            //
+            // compute gain
+            //
+            //------------------------------------------------------------------
+            xadd.free();
+            for(const Species::Node *sn=cluster.conserved.head;sn;sn=sn->next)
+            {
+                const Species        &sp = ***sn;
+                const size_t         j    = sp.indx[SubLevel];
+                const Extended::Real oldV = -min_of(Corg[j], _0);
+                const Extended::Real newV =  min_of(Ctmp[j], _0);
+                xadd.append(oldV);
+                xadd.append(newV);
+                cluster.spec.pad(std::cerr << sp,sp) << " : " << std::setw(15) << *Corg[j] << " -> " << std::setw(15) << *Ctmp[j] << std::endl;
+            }
+
+
+            return xadd.reduce();
         }
         
     }

@@ -31,11 +31,11 @@ namespace yack
         std::ostream & operator<<( std::ostream &os, const Tribe &tribe)
         {
             os << '[';
-            const TribeNode *node = tribe.head;
-            os << (***node).name;
+            const Equilibrium::Node *node = tribe.head;
+            os << (***node);
             for(node=node->next;node;node=node->next)
             {
-                os << ',' << (***node).name;
+                os << ',' << (***node);
             }
             os << ']';
             return os;
@@ -53,7 +53,7 @@ namespace yack
                 if(indx<=last.indx[SubLevel]) return false;
             }
 
-            for(const TribeNode *node=head;node;node=node->next)
+            for(const Equilibrium::Node *node=head;node;node=node->next)
             {
                 const Equilibrium &scan = ***node;
                 const size_t       jndx = scan.indx[SubLevel];
@@ -63,6 +63,21 @@ namespace yack
 
             return true;
         }
+
+        void Tribe:: finalize()
+        {
+            addrbook db;
+            for(const Equilibrium::Node *node=head;node;node=node->next)
+            {
+                (***node).submitTo(db);
+            }
+            for(addrbook::const_iterator it=db.begin();it!=db.end();++it)
+            {
+                coerce(lib) << *static_cast<const Species *>(*it);
+            }
+        }
+
+
     }
 
 }

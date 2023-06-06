@@ -5,6 +5,7 @@
 
 #include "yack/chem/eqs/components.hpp"
 #include "yack/data/dinky/core-repo.hpp"
+#include "yack/data/dinky/solo-repo.hpp"
 
 namespace yack
 {
@@ -27,6 +28,7 @@ namespace yack
             typedef ark_ptr<string,Equilibrium> Pointer;  //!< alias
             typedef core_repo<Equilibrium>      CoreRepo; //!< alias
             typedef CoreRepo::node_type         Node;     //!< alias
+            typedef solo_repo<Equilibrium>      SoloRepo; //!< alias
 
             //__________________________________________________________________
             //
@@ -47,7 +49,7 @@ namespace yack
                 return os;
             }
 
-           
+            YACK_PROTO_OSTREAM(Equilibrium);
 
             //__________________________________________________________________
             //

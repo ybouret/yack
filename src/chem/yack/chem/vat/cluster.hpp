@@ -106,7 +106,6 @@ namespace yack
                 os << '}';
                 return os;
             }
-
             
 
 
@@ -133,8 +132,8 @@ namespace yack
             const Equilibrium::CoreRepo reacOnly; //!< reactant(s) only
             const Equilibrium::CoreRepo nebulous; //!< based only on unbounded species
 
-            const Tribes                regulating; //!< ...
-            const Tribes                equalizing; //!< ...
+            const Tribes                regulating; //!< tribes used to regulate
+            const Tribes                equalizing; //!< tribes used to equalize
 
             Cluster                    *next;     //!< for list
             Cluster                    *prev;     //!< for list

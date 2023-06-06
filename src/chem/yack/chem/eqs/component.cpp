@@ -11,7 +11,7 @@ namespace yack
 
         Component:: Component(const int n, const Species &s) noexcept :
         nu(n),
-        xn(nu),
+        xn(n),
         sp(s)
         {
             assert(nu!=0);

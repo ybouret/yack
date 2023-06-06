@@ -102,7 +102,7 @@ namespace yack
                 }
                 else
                 {
-                    for(const TribeNode *L = lhs->head, *R = rhs->head;
+                    for(const Equilibrium::Node *L = lhs->head, *R = rhs->head;
                         L;
                         L=L->next,R=R->next)
                     {
@@ -156,13 +156,16 @@ namespace yack
             //------------------------------------------------------------------
             merge_list_of<Tribe>::sort(tribes,compareTribes);
 
-            if(xml.verbose)
+            //------------------------------------------------------------------
+            // finalize
+            //------------------------------------------------------------------
+            for(Tribe *tribe = tribes.head; tribe; tribe=tribe->next)
             {
-                for(const Tribe *tribe = tribes.head; tribe; tribe=tribe->next)
-                {
-                    *xml << " (*) #" << std::setw(4) << tribe->size << " @" << *tribe << std::endl;
-                }
+                tribe->finalize();
+                YACK_XMLOG(xml," (*) #" << std::setw(4) << tribe->size << " @" << *tribe);
             }
+
+
 
 
         }
