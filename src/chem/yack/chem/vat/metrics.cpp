@@ -19,7 +19,7 @@ namespace yack
 
         std::ostream & operator<<(std::ostream &os, const Metrics &self)
         {
-            os << self.regulating << " | " << self.equalizing;
+            os << "valid: " << self.regulating << " | wrong: " << self.equalizing;
             return os;
         }
 

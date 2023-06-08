@@ -52,7 +52,11 @@ namespace yack
             Cursor::Fund          cursorsFund; //!< shared memory for cursors
             Metrics               reac;        //!< metrics for reactants
             Metrics               prod;        //!< metrics for products
-            Equilibrium::SoloRepo used;        //!< used equilibria
+
+            Equilibrium::SoloRepo inUse;       //!< used equilibria
+            Species::CoopRepo     valid;       //!< valid species concentration
+            Species::CoopRepo     wrong;       //!< wrong species concentration
+
             XVector               Corg;        //!< Extended C0
             XVector               Ctmp;        //!< auxiliary
             XVector               Cend;        //!< auxiliary

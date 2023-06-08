@@ -79,7 +79,7 @@ namespace yack
 
             //! assuming target is extended reals
             template <typename TARGET> inline
-            void move(TARGET &target, const IndexLevel targetLevel, const Extended::Real &xi)
+            void move(TARGET &target, const IndexLevel targetLevel, const Extended::Real &xi) const 
             {
                 for(const cNode *node=(*this)->head;node;node=node->next)
                 {
