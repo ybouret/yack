@@ -134,8 +134,8 @@ namespace yack
                 if(xml.verbose)
                 {
                     eq.display_compact(cluster.pad( *xml << '<' << eq.name << '>', eq) << " : ",Corg,SubLevel) << std::endl;
-                    *xml << "  |_reac: " << reac << std::endl;
-                    *xml << "  |_prod: " << prod << std::endl;
+                    //*xml << "  |_reac: " << reac << std::endl;
+                    //*xml << "  |_prod: " << prod << std::endl;
                 }
 
                 unsigned                   eqz_flag  = eqz_none;
