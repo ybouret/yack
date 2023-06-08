@@ -22,7 +22,7 @@ namespace yack
 
         conserved(),
         unbounded(),
-        category(),
+        isRegular(),
         
         standard(),
         prodOnly(),
@@ -189,13 +189,13 @@ namespace yack
 
         bool Cluster:: isConserved(const Species &sp) const noexcept
         {
-            return Species::Conserved == category[ sp.indx[SubLevel] ];
+            return isRegular[ sp.indx[SubLevel] ];
         }
 
 
         bool Cluster:: isUnbounded(const Species &sp) const noexcept
         {
-            return Species::Unbounded == category[ sp.indx[SubLevel] ];
+            return !isRegular[ sp.indx[SubLevel] ];
         }
     }
 

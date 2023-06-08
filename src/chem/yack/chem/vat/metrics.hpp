@@ -37,11 +37,11 @@ namespace yack
             /**
              \param C0       converted concentrations
              \param actors   reac/prod
-             \param category SubLevel category
+             \param category SubLevel isRegular species
              */
             void       computeFrom(const readable<Extended::Real>    &C0,
                                    const Actors                      &actors,
-                                   const readable<Species::Category> &category,
+                                   const readable<bool>              &regular,
                                    const IndexLevel                   level);
 
             //! display

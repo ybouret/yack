@@ -45,6 +45,7 @@ namespace yack
         {
             YACK_XMLSUB(xml,"Equalizer::runConserved");
 
+#if 0
             static const unsigned eqz_none = 0x00;
             static const unsigned eqz_reac = 0x01;
             static const unsigned eqz_prod = 0x02;
@@ -261,7 +262,7 @@ namespace yack
                 oldBad = newBad;
                 goto CYCLE;
             }
-
+#endif
 
         }
 

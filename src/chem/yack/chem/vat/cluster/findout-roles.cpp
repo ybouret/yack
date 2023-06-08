@@ -22,19 +22,23 @@ namespace yack
                 }
 #endif
 
-                static inline void Count(ActorCount                        &count,
-                                         const Actors                      &actors,
-                                         const readable<Species::Category> &category)
+                static inline void Count(ActorCount           &count,
+                                         const Actors         &actors,
+                                         const readable<bool> &regular)
                 {
                     assert( out_of_reach::is0(&count,sizeof(ActorCount)) );
                     count.extensive = actors.size;
                     for(const Actor *ac=actors.head;ac;ac=ac->next)
                     {
-                        switch(category[(**ac).indx[SubLevel]])
+                        if(regular[(**ac).indx[SubLevel]])
                         {
-                            case Species::Conserved: ++count.conserved; break;
-                            case Species::Unbounded: ++count.unbounded; break;
+                            ++count.conserved;
                         }
+                        else
+                        {
+                            ++count.unbounded;
+                        }
+
                     }
                     assert(count.conserved+count.unbounded==count.extensive);
                 }
@@ -43,12 +47,12 @@ namespace yack
                 void Get(ActorCount                        &reac,
                          ActorCount                        &prod,
                          const Equilibrium                 &eq,
-                         const readable<Species::Category> &category)
+                         const readable<bool>              &regular)
                 {
                     assert( out_of_reach::is0(&reac,sizeof(ActorCount)) );
                     assert( out_of_reach::is0(&prod,sizeof(ActorCount)) );
-                    Count(reac,eq.reac,category);
-                    Count(prod,eq.prod,category);
+                    Count(reac,eq.reac,regular);
+                    Count(prod,eq.prod,regular);
                 }
             };
 
@@ -60,7 +64,14 @@ namespace yack
         void Cluster:: findOutRoles(const xmlog &xml)
         {
             YACK_XMLSUB(xml,"Cluster::findOutRoles");
-            coerce(category).make(lib.size,Species::Unbounded);
+
+
+            //------------------------------------------------------------------
+            //
+            // set all species to not regular
+            //
+            //------------------------------------------------------------------
+            coerce(isRegular).make(lib.size,false);
 
 
 
@@ -74,7 +85,7 @@ namespace yack
                 for(const Actor *ac=law->head;ac;ac=ac->next)
                 {
                     const Species &sp = **ac;
-                    coerce(category)[ sp.indx[SubLevel] ] = Species::Conserved;
+                    coerce(isRegular)[ sp.indx[SubLevel] ] = true;
                 }
             }
 
@@ -86,10 +97,13 @@ namespace yack
             for(const Species::Node *node=lib.head;node;node=node->next)
             {
                 const Species &sp = ***node;
-                switch(category[sp.indx[SubLevel]])
+                if( isConserved(sp) )
                 {
-                    case Species::Unbounded: coerce(unbounded) << sp; break;
-                    case Species::Conserved: coerce(conserved) << sp; break;
+                    coerce(conserved) << sp;
+                }
+                else
+                {
+                    coerce(unbounded) << sp;
                 }
             }
 
@@ -109,9 +123,9 @@ namespace yack
             for(const Equilibrium::Node *node=head;node;node=node->next)
             {
                 const Equilibrium &eq = ***node;
-                ActorCount  nr = { 0,0,0 };
-                ActorCount  np = { 0,0,0 };
-                ActorCount::Get(nr,np, eq, category);
+                ActorCount         nr = { 0,0,0 };
+                ActorCount         np = { 0,0,0 };
+                ActorCount::Get(nr,np, eq, isRegular);
                 const char *id = NULL;
 
 

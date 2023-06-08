@@ -38,13 +38,7 @@ namespace yack
             typedef CoopRepo::zpool_type    Bank;     //!< alias
             typedef CoopRepo::proxy_type    Fund;     //!< aluas
 
-            //! category of species
-            enum Category
-            {
-                Conserved, //!< in a conservation law
-                Unbounded  //!< not involved in conservation
-            };
-
+            
             //__________________________________________________________________
             //
             // C++

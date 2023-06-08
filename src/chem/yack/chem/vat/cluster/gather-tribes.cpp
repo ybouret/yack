@@ -11,20 +11,20 @@ namespace yack
     {
 
         static inline
-        bool areLinkedByConservedSpecies(const Equilibrium                 &lhs,
-                                         const Equilibrium                 &rhs,
-                                         const readable<Species::Category> &cat)
+        bool areLinkedByConservedSpecies(const Equilibrium    &lhs,
+                                         const Equilibrium    &rhs,
+                                         const readable<bool> &reg)
         {
             for(const cNode *lnode=lhs->head;lnode;lnode=lnode->next)
             {
                 const Species &ls = ****lnode;
                 const size_t   lj = ls.indx[SubLevel];
-                if(Species::Unbounded==cat[lj]) continue;
+                if(!reg[lj]) continue;
                 for(const cNode *rnode=rhs->head;rnode;rnode=rnode->next)
                 {
                     const Species &rs = ****rnode;
                     const size_t   rj = rs.indx[SubLevel];
-                    if(Species::Unbounded==cat[rj]) continue;
+                    if(!reg[rj]) continue;
                     if( &rs == &ls )
                     {
                         return true;
@@ -73,7 +73,7 @@ namespace yack
                     {
                         const Equilibrium &R = ***rhs;
                         const size_t       r = R.indx[SubLevel];
-                        indep[l][r] = indep[r][l] = !areLinkedByConservedSpecies(L,R,category);
+                        indep[l][r] = indep[r][l] = !areLinkedByConservedSpecies(L,R,isRegular);
                     }
                 }
                 //if(xml.verbose) for_each_equilibrium( *xml << "indep = ","<",indep,">",SubLevel) << std::endl;

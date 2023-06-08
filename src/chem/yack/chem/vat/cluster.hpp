@@ -12,7 +12,8 @@ namespace yack
 {
     namespace Chemical
     {
-        
+        typedef vector<bool,memory::dyadic> Flags;
+
         //______________________________________________________________________
         //
         //
@@ -26,8 +27,7 @@ namespace yack
             //
             // definitions
             //__________________________________________________________________
-            static const char CLID[];                                           //!< "Cluster"
-            typedef vector<Species::Category,memory::dyadic> SpeciesCategories; //!< alias
+            static const char CLID[]; //!< "Cluster"
 
             //__________________________________________________________________
             //
@@ -123,9 +123,9 @@ namespace yack
             const ConservationLaws      laws;     //!< effective laws
             const Acts                  acts;     //!< group of dependent laws
 
-            const Species::CoreRepo     conserved;//!< list of conserved species
-            const Species::CoreRepo     unbounded;//!< list of unbounded species
-            const SpeciesCategories     category; //!< sub-level vector of categories
+            const Species::CoreRepo     conserved; //!< list of conserved species
+            const Species::CoreRepo     unbounded; //!< list of unbounded species
+            const Flags                 isRegular; //!< if is conserved
 
             const Equilibrium::CoreRepo standard; //!< at least a conserved species on each side
             const Equilibrium::CoreRepo prodOnly; //!< product(s)  only

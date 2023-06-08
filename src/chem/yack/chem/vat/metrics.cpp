@@ -25,7 +25,7 @@ namespace yack
 
         void Metrics:: computeFrom(const readable<Extended::Real>    &C0,
                                    const Actors                      &actors,
-                                   const readable<Species::Category> &category,
+                                   const readable<bool>              &regular,
                                    const IndexLevel                   level)
         {
             regulating.initialize();
@@ -33,7 +33,7 @@ namespace yack
             for(const Actor *ac=actors.head;ac;ac=ac->next)
             {
                 const Species &sp = **ac;
-                if( Species::Unbounded == category[sp.indx[SubLevel]] ) continue;
+                if( ! regular[ sp.indx[SubLevel] ] ) continue;
                 const Extended::Real &c = C0[ sp.indx[level] ];
                 if(c.m>=0)
                 {
