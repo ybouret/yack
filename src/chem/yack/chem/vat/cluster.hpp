@@ -73,7 +73,7 @@ namespace yack
                                             const char      * pfx,
                                             ARRAY           & arr,
                                             const char      * sfx,
-                                            const IndexLevel  level)
+                                            const IndexLevel  level) const
             {
                 if(!pfx) pfx="";
                 if(!sfx) sfx="";
@@ -93,7 +93,7 @@ namespace yack
                                                 const char      * pfx,
                                                 ARRAY           & arr,
                                                 const char      * sfx,
-                                                const IndexLevel  level)
+                                                const IndexLevel  level) const
             {
                 if(!pfx) pfx="";
                 if(!sfx) sfx="";

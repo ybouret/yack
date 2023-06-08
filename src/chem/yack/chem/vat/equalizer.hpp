@@ -56,6 +56,7 @@ namespace yack
             Equilibrium::SoloRepo inUse;       //!< used equilibria
             Species::CoopRepo     valid;       //!< valid species concentration
             Species::CoopRepo     wrong;       //!< wrong species concentration
+            Species::CoopRepo     nomad;       //!< unbouded
 
             XVector               Corg;        //!< Extended C0
             XVector               Ctmp;        //!< auxiliary

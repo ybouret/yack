@@ -24,6 +24,7 @@ namespace yack
         inUse( maxClusterSize ),
         valid( speciesFund ),
         wrong( speciesFund ),
+        nomad( speciesFund ),
         Corg(maximumSpecies,as_capacity),
         Ctmp(maximumSpecies,as_capacity),
         Cend(maximumSpecies,as_capacity),
@@ -59,26 +60,39 @@ namespace yack
             Cend.adjust(m,_0);
             cluster.load(Corg,C0);
 
-
             //------------------------------------------------------------------
             //
             // categorizing species
             //
             //------------------------------------------------------------------
+            unsigned cycle=0;
+        CYCLE:
+            ++cycle;
+            std::cerr << "---------- cycle " << cycle << " ----------" << std::endl;
+            cluster.for_each_species(std::cerr << "Corg=", "\t[", Corg, "]", SubLevel) << std::endl;;
+
             valid.clear();
             wrong.clear();
+            nomad.clear();
             inUse.clear();
             for(const Species::Node *node=cluster.lib.head;node;node=node->next)
             {
                 const Species       &sp = ***node;
                 const Extended::Real cj = Corg[sp.indx[SubLevel]];
-                if(cluster.isConserved(sp) && cj.m<0)
+                if(cluster.isConserved(sp))
                 {
-                    wrong << sp;
+                    if(cj<_0)
+                    {
+                        wrong << sp;
+                    }
+                    else
+                    {
+                        valid << sp; //!< will stay valid
+                    }
                 }
                 else
                 {
-                    valid << sp;
+                    nomad << sp;
                 }
 
             }
@@ -89,7 +103,9 @@ namespace yack
                 return;
             }
 
-            YACK_XMLOG(xml," (*) wrong= " << wrong);
+            YACK_XMLOG(xml," (*) wrong = " << wrong);
+            YACK_XMLOG(xml," (*) valid = " << valid);
+            YACK_XMLOG(xml," (*) nomad = " << nomad);
 
             //------------------------------------------------------------------
             //
@@ -213,8 +229,7 @@ namespace yack
                 //--------------------------------------------------------------
                 // initialize to no gain @Corg
                 //--------------------------------------------------------------
-                Extended::Real gain = 0;
-                const Tribe   *best = NULL;
+                Extended::Real gain = -1;
                 keto::load(Cend,Corg);
 
                 //--------------------------------------------------------------
@@ -228,218 +243,20 @@ namespace yack
                         if(g>gain)
                         {
                             gain = g;
-                            best = tribe;
                             keto::load(Cend,Ctmp);
                             YACK_XMLOG(xml, " (+) " <<  std::setw(15) << *g  << " " << *tribe << " @" << g);
                         }
                     }
                 }
 
-                if(!best)
-                {
-                    assert(_0==gain);
-                    throw exception("null gain");
-                }
-
+                assert(gain>=0);
             }
+            //cluster.for_each_species(std::cerr << "Cend=", "\t[", Cend, "]", SubLevel) << std::endl;;
+
+            keto::load(Corg,Cend);
 
 
-
-
-#if 0
-            static const unsigned eqz_none = 0x00;
-            static const unsigned eqz_reac = 0x01;
-            static const unsigned eqz_prod = 0x02;
-            static const unsigned eqz_both = eqz_reac | eqz_prod;
-
-            Corg.adjust(m,_0);
-            Ctmp.adjust(m,_0);
-            Cend.adjust(m,_0);
-
-
-
-            //------------------------------------------------------------------
-            //
-            // Reducing negavity
-            //
-            //------------------------------------------------------------------
-            size_t cycle = 0;
-        CYCLE:
-            ++cycle;
-            YACK_XMLOG(xml, "-------- #cycle = " << std::setw(4) << cycle << " #bad = " << oldBad << " --------");
-            //------------------------------------------------------------------
-            //
-            // computing optimal extents for each eq
-            //
-            //------------------------------------------------------------------
-            used.clear();
-            for(const Equilibrium::Node *node=cluster.standard.head;node;node=node->next)
-            {
-                const Equilibrium        &eq = ***node;
-                const size_t              ei = eq.indx[SubLevel];
-                writable<Extended::Real> &Ci = Ceqz[ei];
-
-                //--------------------------------------------------------------
-                // analyze phase space
-                //--------------------------------------------------------------
-                reac.computeFrom(Corg,eq.reac,cluster.category,SubLevel);
-                prod.computeFrom(Corg,eq.prod,cluster.category,SubLevel);
-
-                if(xml.verbose)
-                {
-                    eq.display_compact(cluster.pad( *xml << '<' << eq.name << '>', eq) << " : ",Corg,SubLevel) << std::endl;
-                    //*xml << "  |_reac: " << reac << std::endl;
-                    //*xml << "  |_prod: " << prod << std::endl;
-                }
-
-                unsigned                   eqz_flag  = eqz_none;
-                if(reac.equalizing.size>0) eqz_flag |= eqz_reac;
-                if(prod.equalizing.size>0) eqz_flag |= eqz_prod;
-
-                //--------------------------------------------------------------
-                // decide what to do according to analysis
-                //--------------------------------------------------------------
-                Limit *lim = NULL;
-                switch(eqz_flag)
-                {
-                    case eqz_none: YACK_XMLOG(xml,"  |_[RUNNING]"); continue;
-                    case eqz_both: YACK_XMLOG(xml,"  |_[BLOCKED]"); continue;
-
-                    case eqz_reac: assert(reac.equalizing.size>0); assert(0==prod.equalizing.size); assert(prod.regulating.size>0);
-                        //YACK_XMLOG(xml,"  |_[(-)REAC]");
-                        reac.equalizing.findBestEffort(prod.regulating);
-                        prod.regulating.neg();
-                        lim = & prod.regulating;
-                        break;
-
-                    case eqz_prod: assert(prod.equalizing.size>0); assert(0==reac.equalizing.size); assert(reac.regulating.size>0);
-                        //YACK_XMLOG(xml,"  |_[(-)PROD]");
-                        prod.equalizing.findBestEffort(reac.regulating);
-                        lim = & reac.regulating;
-                        break;
-
-                    default:
-                        throw imported::exception("Equalizer","corrupted code");
-                }
-                assert(lim);
-                const Extended::Real xi = **lim;
-                if( xi.abs() <= _0 )
-                {
-                    YACK_XMLOG(xml, "  |_[STALLED] " << *lim);
-                    continue;
-                }
-                else
-                {
-                    YACK_XMLOG(xml, "  |_[ USING ] " << *lim);
-                }
-
-                //--------------------------------------------------------------
-                // compute trial concentration
-                //--------------------------------------------------------------
-                keto::load(Ci,Corg);
-                for(const cNode *cn=eq->head;cn;cn=cn->next)
-                {
-                    const Component     &cc   = ***cn;
-                    const Species       &sp   = *cc;
-                    const size_t         sj   = sp.indx[SubLevel];
-                    const Extended::Real oldC = Corg[sj];
-                    const Extended::Real dC   = cc.xn * xi;
-                    const Extended::Real newC = oldC+dC;
-                    if(cluster.isUnbounded(sp))
-                    {
-                        Ci[sj] = newC;
-                    }
-                    else
-                    {
-                        assert(cluster.isConserved(sp));
-                        if(oldC>=0)
-                        {
-                            Ci[sj] = max_of(newC,_0);
-                        }
-                        else
-                        {
-                            assert(dC>=0);
-                            Ci[sj] = newC;
-                        }
-                    }
-                }
-
-                //--------------------------------------------------------------
-                // make vanishing species
-                //--------------------------------------------------------------
-                for(const Species::Node *sn=lim->head;sn;sn=sn->next)
-                {
-                    Ci[ (***sn).indx[SubLevel] ] = _0;
-                }
-                if(xml.verbose) eq.display_compact(cluster.pad( *xml << '<' << eq.name << '>', eq) << " : ",Ci,SubLevel) << std::endl;
-
-                //--------------------------------------------------------------
-                // register equilibrium
-                //--------------------------------------------------------------
-                used << eq;
-            }
-
-            YACK_XMLOG(xml,"used=" << used);
-
-            if(used.size<=0)
-            {
-                throw exception("no usable eq @cycle=%u", cycle);
-            }
-
-            //------------------------------------------------------------------
-            //
-            // find out the best gain
-            //
-            //------------------------------------------------------------------
-            {
-                //--------------------------------------------------------------
-                // initialize to no gain @Corg
-                //--------------------------------------------------------------
-                Extended::Real gain = 0;
-                keto::load(Cend,Corg);
-
-                //--------------------------------------------------------------
-                // try each compatible tribe
-                //--------------------------------------------------------------
-                for(const Tribe *tribe=cluster.equalizing.head;tribe;tribe=tribe->next)
-                {
-                    if(tribe->is_subset_of(used))
-                    {
-                        const Extended::Real g   = gainOf(*tribe,cluster);
-                        if(g>gain)
-                        {
-                            gain = g;
-                            keto::load(Cend,Ctmp);
-                            YACK_XMLOG(xml, " (+) " <<  std::setw(15) << *g  << " " << *tribe << " @" << g);
-                        }
-                    }
-                }
-            }
-
-            {
-                size_t newBad = 0;
-                for(const Species::Node *sn=cluster.lib.head;sn;sn=sn->next)
-                {
-                    const Species &sp = ***sn;
-                    const size_t   j  = sp.indx[SubLevel];
-                    cluster.spec.pad(*xml << sp, sp) << " : " << std::setw(15) << *Corg[j] << " => " << std::setw(15) << *Cend[j] << std::endl;
-                    const Extended::Real cj = Corg[j] = Cend[j];
-                    if(Species::Conserved == cluster.category[j] && cj.m<0)
-                    {
-                        ++newBad;
-                    }
-                }
-                if(newBad<=0)
-                {
-                    YACK_XMLOG(xml, "[all good @cycle=" << cycle << "]");
-                    return;
-                }
-
-
-                oldBad = newBad;
-                goto CYCLE;
-            }
-#endif
+            goto CYCLE;
 
         }
 
@@ -451,7 +268,6 @@ namespace yack
             assert(Corg.size()==Ctmp.size());
             assert(cluster.lib.size == Corg.size());
 
-            //const size_t m = cluster.lib.size;
 
             //------------------------------------------------------------------
             //
@@ -482,12 +298,18 @@ namespace yack
                     xadd.push(m0);
                     xadd.push(Ceqz[i][j]);
                 }
-                //Ctmp[j] = xadd.reduce();
-                Extended::Real &c1 = (Ctmp[j] = xadd.reduce());
-                if(c1.abs()<=_0) c1 = _0;
-
+                Ctmp[j] = xadd.reduce();
             }
 
+            // regularizing valid species
+            for(const Species::Node *sn=valid.head;sn;sn=sn->next)
+            {
+                const Species  &sp = ***sn;
+                const size_t    j  = sp.indx[SubLevel];
+                Extended::Real &c  = Ctmp[j];
+                if(c<=_0) c=_0;
+            }
+            
 
 
             //------------------------------------------------------------------
@@ -496,7 +318,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             xadd.free();
-            for(const Species::Node *sn=cluster.conserved.head;sn;sn=sn->next)
+            for(const Species::Node *sn=wrong.head;sn;sn=sn->next)
             {
                 const Species        &sp = ***sn;
                 const size_t         j    = sp.indx[SubLevel];
