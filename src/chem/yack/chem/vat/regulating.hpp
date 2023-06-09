@@ -1,11 +1,11 @@
 
 //! \file
 
-#ifndef YACK_CHEM_VAT_REGULATING_INCLUDED
-#define YACK_CHEM_VAT_REGULATING_INCLUDED 1
+#ifndef YACK_CHEM_REGULATING_INCLUDED
+#define YACK_CHEM_REGULATING_INCLUDED 1
 
 #include "yack/chem/vat/limit.hpp"
-
+#include "yack/chem/eqs/actor.hpp"
 
 namespace yack
 {

@@ -5,6 +5,7 @@
 
 #include "yack/chem/vat/regulating.hpp"
 #include "yack/chem/vat/equalizer/equalizing.hpp"
+#include "yack/chem/eqs/actors.hpp"
 
 
 namespace yack

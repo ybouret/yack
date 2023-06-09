@@ -6,6 +6,7 @@
 
 #include "yack/chem/vat/limit.hpp"
 #include "yack/data/dinky/coop-list.hpp"
+#include "yack/chem/eqs/actor.hpp"
 
 namespace yack
 {

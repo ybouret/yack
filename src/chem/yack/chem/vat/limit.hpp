@@ -1,11 +1,11 @@
 
 //! \file
 
-#ifndef YACK_CHEM_VAT_LIMIT_INCLUDED
-#define YACK_CHEM_VAT_LIMIT_INCLUDED 1
+#ifndef YACK_CHEM_LIMIT_INCLUDED
+#define YACK_CHEM_LIMIT_INCLUDED 1
 
-#include "yack/chem/vat/cluster.hpp"
-#include "yack/data/dinky/coop-list.hpp"
+#include "yack/chem/species.hpp"
+#include "yack/chem/com/xtypes.hpp"
 
 namespace yack
 {
