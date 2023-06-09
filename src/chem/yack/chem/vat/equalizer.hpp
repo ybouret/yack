@@ -37,14 +37,15 @@ namespace yack
             // methods
             //__________________________________________________________________
 
-            //! best effort equalization
-            void run(const xmlog      &xml,
-                     writable<double> &C0,
-                     const Cluster    &cl);
-
-            void runConserved(const xmlog      &xml,
-                              writable<double> &C0,
-                              const Cluster    &cl);
+            //!
+            /**
+             \param xml     display info
+             \param C0      [TopLevel] concentrations
+             \param cluster cluster to process
+             */
+            bool runConserved(const xmlog              &xml,
+                              writable<Extended::Real> &C0,
+                              const Cluster            &cluster);
             
             //__________________________________________________________________
             //

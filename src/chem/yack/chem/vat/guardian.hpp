@@ -51,6 +51,11 @@ namespace yack
 
 
             //! iterative law enforcement, keeping track of injected
+            /**
+             \param xml  to display info
+             \param Corg [TopLevel] concentrations, converted
+             \param act  set of dependent conservation laws
+             */
             void enforce(const xmlog              &xml,
                          writable<Extended::Real> &Corg,
                          const       Act          &act);

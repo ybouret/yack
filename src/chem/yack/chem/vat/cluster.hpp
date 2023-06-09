@@ -66,6 +66,17 @@ namespace yack
                 }
             }
 
+            //! target[TopLevel] = source[SubLevel]
+            template <typename TARGET, typename SOURCE> inline
+            void save(TARGET &target, SOURCE &source) const
+            {
+                for(const Species::Node *sn=lib.head;sn;sn=sn->next)
+                {
+                    const Species &sp = ***sn;
+                    target[ sp.indx[TopLevel] ] = source[ sp.indx[SubLevel] ];
+                }
+            }
+
 
             //! helper to display info
             template <typename ARRAY> inline

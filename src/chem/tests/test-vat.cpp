@@ -38,6 +38,8 @@ YACK_UTEST(vat)
 
     lib(std::cerr,"[",C,"]") << std::endl;
 
+    vector<Extended::Real> C0(C,transmogrify);
+
     if(false)
     {
         Guardian guard;
@@ -51,7 +53,7 @@ YACK_UTEST(vat)
     
     Equalizer equalizer(vat.maxClusterSize,vat.maximumSpecies);
     if(vat.size)
-        equalizer.run(xml,C,*vat.head);
+        equalizer.runConserved(xml,C0,*vat.head);
 
 
 }

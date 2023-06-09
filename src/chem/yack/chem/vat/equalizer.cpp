@@ -33,18 +33,12 @@ namespace yack
         {
         }
 
-        void Equalizer:: run(const xmlog      &xml,
-                             writable<double> &C0,
-                             const Cluster    &cl)
-        {
-            YACK_XMLSUB(xml,"Equalizer::run");
-            runConserved(xml,C0,cl);
-        }
+        
         
 
-        void Equalizer:: runConserved(const xmlog      &xml,
-                                      writable<double> &C0,
-                                      const Cluster    &cluster)
+        bool Equalizer:: runConserved(const xmlog              &xml,
+                                      writable<Extended::Real> &C0,
+                                      const Cluster            &cluster)
         {
             YACK_XMLSUB(xml,"Equalizer::runConserved");
             assert(cluster.lib.size == (***cluster.lib.tail).indx[SubLevel]);
@@ -100,7 +94,9 @@ namespace yack
             if(wrong.size<=0)
             {
                 YACK_XMLOG(xml, "[all good]");
-                return;
+                if(cycle>1)
+                    cluster.save(C0,Corg);
+                return true;
             }
 
             YACK_XMLOG(xml," (*) wrong = " << wrong);
@@ -134,8 +130,6 @@ namespace yack
                 if(xml.verbose)
                 {
                     eq.display_compact(cluster.pad( *xml << '<' << eq.name << '>', eq) << " : ",Corg,SubLevel) << std::endl;
-                    //*xml << "  |_reac: " << reac << std::endl;
-                    //*xml << "  |_prod: " << prod << std::endl;
                 }
 
                 unsigned                   eqz_flag  = eqz_none;
@@ -215,7 +209,8 @@ namespace yack
 
             if( inUse.size <= 0)
             {
-                throw exception("no equilibria to reduce negativity" );
+                YACK_XMLOG(xml, "[still negative: " << wrong << "]");
+                return false;
             }
 
             YACK_XMLOG(xml, "inUse = " << inUse );
@@ -253,11 +248,13 @@ namespace yack
             }
             //cluster.for_each_species(std::cerr << "Cend=", "\t[", Cend, "]", SubLevel) << std::endl;;
 
+            //------------------------------------------------------------------
+            //
+            // update Corg
+            //
+            //------------------------------------------------------------------
             keto::load(Corg,Cend);
-
-
             goto CYCLE;
-
         }
 
 
