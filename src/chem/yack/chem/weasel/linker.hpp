@@ -102,7 +102,7 @@ namespace yack
                 void on_ac(const string &, const size_t);    //!< gather actors
                 void on_cm(const string &, const size_t);    //!< create components
                 void on_eq(const string &, const size_t);    //!< create an equilibrium
-                void on_weasel(const string &,const size_t);
+                void on_weasel(const string &,const size_t); //!< top level
             };
         }
     }
