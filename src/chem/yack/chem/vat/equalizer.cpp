@@ -33,7 +33,21 @@ namespace yack
         {
         }
 
-        
+
+        static inline
+        void displayStatus(const xmlog                    &xml,
+                           const Equilibrium              &E,
+                           const readable<Extended::Real> &C,
+                           const Cluster                  &cluster,
+                           const char                     *status,
+                           const bool                      newline=true)
+        {
+            if(xml.verbose)
+            {
+                E.display_compact(cluster.pad( *xml << "  |_[" <<status << "] " << '<' << E.name << '>', E) << " : ",C,SubLevel);
+                if(newline) xml() << std::endl;
+            }
+        }
         
 
         bool Equalizer:: runConserved(const xmlog              &xml,
@@ -93,7 +107,7 @@ namespace yack
 
             if(wrong.size<=0)
             {
-                YACK_XMLOG(xml, "[all good]");
+                YACK_XMLOG(xml, "[all good conserved]");
                 if(cycle>1)
                     cluster.save(C0,Corg);
                 return true;
@@ -127,10 +141,6 @@ namespace yack
                 reac.computeFrom(Corg,eq.reac,cluster.isRegular,SubLevel);
                 prod.computeFrom(Corg,eq.prod,cluster.isRegular,SubLevel);
 
-                if(xml.verbose)
-                {
-                    eq.display_compact(cluster.pad( *xml << '<' << eq.name << '>', eq) << " : ",Corg,SubLevel) << std::endl;
-                }
 
                 unsigned                   eqz_flag  = eqz_none;
                 if(reac.equalizing.size>0) eqz_flag |= eqz_reac;
@@ -144,8 +154,8 @@ namespace yack
                 Limit *lim = NULL;
                 switch(eqz_flag)
                 {
-                    case eqz_none: YACK_XMLOG(xml,"  |_[RUNNING]"); continue;
-                    case eqz_both: YACK_XMLOG(xml,"  |_[BLOCKED]"); continue;
+                    case eqz_none: displayStatus(xml, eq, Corg, cluster, "RUNNING" ); continue;
+                    case eqz_both: displayStatus(xml, eq, Corg, cluster, "BLOCKED" ); continue;
 
                     case eqz_reac: assert(reac.equalizing.size>0); assert(0==prod.equalizing.size); assert(prod.regulating.size>0);
                         reac.equalizing.findBestEffort(prod.regulating);
@@ -165,13 +175,16 @@ namespace yack
                 const Extended::Real xi = **lim;
                 if( xi.abs().m <= 0 )
                 {
-                    YACK_XMLOG(xml, "  |_[STALLED] " << *lim);
+                    displayStatus(xml, eq, Corg, cluster, "STALLED" );
                     continue;
                 }
+#if 0
                 else
                 {
-                    YACK_XMLOG(xml, "  |_[ USING ] " << *lim);
+                    displayStatus(xml, eq, Corg, cluster, " USING " );
+                    YACK_XMLOG(xml, "   |_[ " << *lim << " ]" );
                 }
+#endif
 
                 //--------------------------------------------------------------
                 //
@@ -195,10 +208,10 @@ namespace yack
                 // make vanishing species
                 //--------------------------------------------------------------
                 for(const Species::Node *sn=lim->head;sn;sn=sn->next)
-                {
                     Ci[ (***sn).indx[SubLevel] ] = _0;
-                }
-                if(xml.verbose) eq.display_compact(cluster.pad( *xml << '<' << eq.name << '>', eq) << " : ",Ci,SubLevel) << std::endl;
+
+                displayStatus(xml, eq, Ci, cluster, " USING ", false);
+                if(xml.verbose) xml() << " <-- " << *lim << std::endl;
 
                 //--------------------------------------------------------------
                 // register equilibrium
@@ -213,8 +226,8 @@ namespace yack
                 return false;
             }
 
-            YACK_XMLOG(xml, "inUse = " << inUse );
-            YACK_XMLOG(xml, " (*) finding best tribe...");
+            YACK_XMLOG(xml, " (*) => " << inUse );
+            YACK_XMLOG(xml, " (*) => finding best tribe:");
             //------------------------------------------------------------------
             //
             // find out the best gain

@@ -52,10 +52,11 @@ namespace yack
         std::ostream & operator<<(std::ostream &os, const Limit &lim)
         {
             const Species::CoopRepo &self = lim;
+            const Extended::Real    &xi   = lim;
             switch(lim.size)
             {
                 case 0:  os << "[none]"; break;
-                default: os << Extended::Recv(lim) << "@" << self;
+                default: os << xi << "@" << self;
             }
             return os;
         }
