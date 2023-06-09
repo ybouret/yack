@@ -197,6 +197,8 @@ namespace yack
             if( inUse.size <= 0)
             {
                 YACK_XMLOG(xml, "[still negative: " << wrong << "]");
+                if(cycle>1)
+                    cluster.save(C0,Corg);
                 return false;
             }
 
@@ -233,7 +235,7 @@ namespace yack
 
                 assert(gain>=0);
             }
-            
+
             //------------------------------------------------------------------
             //
             // update Corg
