@@ -21,11 +21,11 @@ namespace yack
             ld(zero);
         }
 
-        void Guardian:: enforce(const xmlog      &xml,
-                                writable<double> &C0,
-                                const       Act  &act)
+        void Guardian:: enforce(const xmlog              &xml,
+                                writable<Extended::Real> &C0,
+                                const       Act          &act)
         {
-            YACK_XMLSUB(xml,"Guardian::enforce");
+            YACK_XMLSUB(xml,"Guardian::enforceAct");
             writable<Extended::Real> &Me = *this;
             //------------------------------------------------------------------
             //
@@ -95,7 +95,7 @@ namespace yack
                 //--------------------------------------------------------------
                 {
                     const ConservationLaw &law = ***bestBroken;
-                    const Extended::Real   lxs = **bestExcess;
+                    const Extended::Real   lxs =  **bestExcess;
                     if(xml.verbose)
                         act.pad(*xml << " --> " << law, law) << " = " << lxs << " <--" << std::endl;
 
@@ -106,7 +106,7 @@ namespace yack
                         const Extended::Real dC = (lxs * (a->xn))/d;
                         const size_t         sj = (**a).indx[TopLevel];
                         Me[sj] += dC;
-                        C0[sj] += *dC;
+                        C0[sj] += dC;
                     }
                 }
 
@@ -148,20 +148,13 @@ namespace yack
 
         }
 
-        void Guardian:: operator()(const xmlog            &xml,
-                                   writable<double>       &C0,
-                                   const list_of<Cluster> &clusters)
+        void Guardian:: enforce(const xmlog              &xml,
+                                writable<Extended::Real> &Corg,
+                                const Cluster            &cluster)
         {
-            YACK_XMLSUB(xml,"Gardian::enforceAll");
-            restart(C0.size());
-            for(const Cluster *cluster = clusters.head; cluster; cluster=cluster->next)
-            {
-                for(const Act *act = cluster->acts.head; act; act=act->next)
-                {
-                    enforce(xml,C0,*act);
-                }
-            }
-
+            YACK_XMLSUB(xml,"Guardian::enforce");
+            for(const Act *act = cluster.acts.head; act; act=act->next)
+                enforce(xml,Corg,*act);
         }
 
     }

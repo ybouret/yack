@@ -41,7 +41,7 @@ YACK_UTEST(vat)
     if(false)
     {
         Guardian guard;
-        guard(xml,C,vat);
+        //guard(xml,C,vat);
 
         std::cerr << "injected=" << guard << std::endl;
         lib(std::cerr,"[",C,"]") << std::endl;
