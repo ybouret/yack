@@ -1,4 +1,4 @@
-#include "yack/chem/vat/cursor.hpp"
+#include "yack/chem/vat/equalizer/cursor.hpp"
 
 namespace yack
 {

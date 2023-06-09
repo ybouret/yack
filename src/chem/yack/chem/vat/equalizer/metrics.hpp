@@ -4,7 +4,7 @@
 #define YACK_CHEM_VAT_METRICS_INCLUDED 1
 
 #include "yack/chem/vat/regulating.hpp"
-#include "yack/chem/vat/equalizing.hpp"
+#include "yack/chem/vat/equalizer/equalizing.hpp"
 
 
 namespace yack

@@ -1,4 +1,4 @@
-#include "yack/chem/vat/equalizing.hpp"
+#include "yack/chem/vat/equalizer/equalizing.hpp"
 #include "yack/exception.hpp"
 
 namespace yack

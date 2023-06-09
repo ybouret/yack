@@ -1,5 +1,5 @@
 
-#include "yack/chem/vat/metrics.hpp"
+#include "yack/chem/vat/equalizer/metrics.hpp"
 
 namespace yack
 {

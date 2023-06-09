@@ -4,7 +4,7 @@
 #ifndef YACK_CHEM_VAT_EQUALIZING_INCLUDED
 #define YACK_CHEM_VAT_EQUALIZING_INCLUDED 1
 
-#include "yack/chem/vat/cursor.hpp"
+#include "yack/chem/vat/equalizer/cursor.hpp"
 
 namespace yack
 {

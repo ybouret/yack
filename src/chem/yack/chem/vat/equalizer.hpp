@@ -4,7 +4,7 @@
 #define YACK_CHEM_VAT_EQUALIZER_INCLUDED 1
 
 #include "yack/chem/vat/cluster.hpp"
-#include "yack/chem/vat/metrics.hpp"
+#include "yack/chem/vat/equalizer/metrics.hpp"
 
 
 namespace yack

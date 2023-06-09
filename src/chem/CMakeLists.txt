@@ -36,13 +36,18 @@ SOURCE_GROUP(chem/vat FILES ${chem_vat})
 install( FILES ${chem_vat_decl} DESTINATION include/yack/chem/vat )
 
 #vat/cluster
-file(GLOB chem_vat_cluster yack/chem/vat/cluster/*.cpp)
+file(GLOB chem_vat_cluster_decl yack/chem/vat/cluster/*.hpp)
+file(GLOB chem_vat_cluster_srcs yack/chem/vat/cluster/*.cpp)
+set(chem_vat_cluster ${chem_vat_cluster_decl} ${chem_vat_cluster_srcs})
 SOURCE_GROUP(chem/vat/cluster FILES ${chem_vat_cluster})
+install( FILES ${chem_vat_cluster_decl} DESTINATION include/yack/chem/vat/cluster )
 
 #vat/equalizer
-file(GLOB chem_vat_equalizer yack/chem/vat/equalizer/*.cpp)
+file(GLOB chem_vat_equalizer_decl yack/chem/vat/equalizer/*.hpp)
+file(GLOB chem_vat_equalizer_srcs yack/chem/vat/equalizer/*.cpp)
+set(chem_vat_equalizer ${chem_vat_equalizer_decl} ${chem_vat_equalizer_srcs})
 SOURCE_GROUP(chem/vat/equalizer FILES ${chem_vat_equalizer})
-
+install( FILES ${chem_vat_equalizer_decl} DESTINATION include/yack/chem/vat/equalizer )
 
 add_library(yack-chem STATIC
 ${chem_main}
