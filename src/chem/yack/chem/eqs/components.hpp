@@ -65,6 +65,7 @@ namespace yack
             bool neutral() const;                             //!< check if neutral
             bool minimal() const;                             //!< check if minimal
 
+            //! target[targetLevel] = source[soucreLevel] for each component
             template <typename TARGET, typename SOURCE> inline
             void load(TARGET &target, const IndexLevel targetLevel,
                       SOURCE &source, const IndexLevel sourceLevel) const

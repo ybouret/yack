@@ -25,13 +25,20 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~Vat() noexcept;           //!< cleanup
 
             //! setup
             explicit Vat(const xmlog   &xml,
                          Equilibria    &eqs);
-            const size_t maxClusterSize;
-            const size_t maximumSpecies;
+
+            //! cleanup
+            virtual ~Vat() noexcept;
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const size_t maxClusterSize; //!< maximum number of equilibria in a cluster
+            const size_t maximumSpecies; //!< maximum number of active species in a cluster
 
 
         private:

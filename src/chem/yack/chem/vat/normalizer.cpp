@@ -22,14 +22,9 @@ namespace yack
                                   writable<Extended::Real> &C0,
                                   const Cluster            &cluster)
         {
-
+            
             while(!equalizer.runConserved(xml,C0,cluster))
                 custodian.enforce(xml,C0,cluster);
-#if 0
-        CONSERVED:
-            custodian.enforce(xml,C0,cluster);
-            if(!equalizer.runConserved(xml,C0,cluster)) goto CONSERVED;
-#endif
 
             equalizer.runUnbounded(xml,C0,cluster);
         }

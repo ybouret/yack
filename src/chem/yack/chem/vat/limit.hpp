@@ -30,8 +30,13 @@ namespace yack
             Limit(const Limit &);                           //!< copy
             Limit & operator=(const Limit &);               //!< assign
 
-            void neg() noexcept;
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            void neg() noexcept; //!< take negative of current extent
 
+            //! set recorded species concentrations to 0
             template <typename ARRAY> inline
             void nullify(ARRAY &arr, const IndexLevel level) const
             {

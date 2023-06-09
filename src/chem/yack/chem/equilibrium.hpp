@@ -49,7 +49,7 @@ namespace yack
                 return os;
             }
 
-            YACK_PROTO_OSTREAM(Equilibrium);
+            YACK_PROTO_OSTREAM(Equilibrium); //!< display
 
             //__________________________________________________________________
             //

@@ -55,7 +55,7 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const Species::CoreRepo lib;
+            const Species::CoreRepo lib;  //!< local library
             Tribe                  *next; //!< for list
             Tribe                  *prev; //!< for list
 

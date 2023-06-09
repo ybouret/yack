@@ -34,6 +34,8 @@ namespace yack
 
             //! insert new or update cursor multiplicity
             void tryInsertCursor(const Extended::Real c, const Actor &a);
+
+            //! find best effor regulating limit to improve positivity
             void findBestEffort(Limit &regulating);
 
 

@@ -21,8 +21,12 @@ namespace yack
         class Equalizer
         {
         public:
-            typedef vector<Extended::Real,memory::dyadic> XVector;
-            typedef matrix<Extended::Real>                XMatrix;
+            //__________________________________________________________________
+            //
+            // definitions
+            //__________________________________________________________________
+            typedef vector<Extended::Real,memory::dyadic> XVector; //!< alias
+            typedef matrix<Extended::Real>                XMatrix; //!< alias
 
             //__________________________________________________________________
             //
@@ -61,7 +65,7 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const Extended::Real  _0;
+            const Extended::Real  _0;          //!< helper
             Species::Fund         speciesFund; //!< shared memory for species
             Cursor::Fund          cursorsFund; //!< shared memory for cursors
 

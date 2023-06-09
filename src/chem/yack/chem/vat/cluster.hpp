@@ -12,7 +12,8 @@ namespace yack
 {
     namespace Chemical
     {
-        typedef vector<bool,memory::dyadic> Flags;
+
+        typedef vector<bool,memory::dyadic> Flags; //!< alias
 
         //______________________________________________________________________
         //

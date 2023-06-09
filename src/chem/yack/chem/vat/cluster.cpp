@@ -29,6 +29,9 @@ namespace yack
         reacOnly(),
         nebulous(),
 
+        regulating(),
+        equalizing(),
+
         next(0),
         prev(0),
         reac(),
