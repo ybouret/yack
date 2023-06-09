@@ -47,8 +47,14 @@ namespace yack
                             writable<double>       &C0,
                             const list_of<Cluster> &clusters);
 
+            //! make this = zeros(M)
+            void restart(const size_t M);
 
 
+            //! iterative law enforcement, keeping track of injected
+            void enforce(const xmlog      &xml,
+                         writable<double> &C0,
+                         const       Act  &act);
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Guardian);
@@ -56,13 +62,7 @@ namespace yack
             Excess          excess;
             Extended::Adder xadd;
 
-            //! make this = zeros(M)
-            void restart(const size_t M);
 
-            //! iterative law enforcement, keeping track of injected
-            void enforce(const xmlog      &xml,
-                         writable<double> &C0,
-                         const       Act  &act);
         };
 
     }

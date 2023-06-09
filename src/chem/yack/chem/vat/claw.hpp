@@ -41,11 +41,16 @@ namespace yack
             //! simple display
             YACK_PROTO_OSTREAM(ConservationLaw);
 
-            //! compute excess, must be processed if POSITICE
+            //! compute excess, must be processed if POSITIVE
             Extended::Real excess(const readable<double> &C,
                                   Extended::Adder        &xadd,
                                   const IndexLevel        level) const;
 
+
+            //! compute excess, must be processed if POSITIVE
+            Extended::Real excess(const readable<Extended::Real> &C,
+                                  Extended::Adder                &xadd,
+                                  const IndexLevel                level) const;
             //__________________________________________________________________
             //
             // members

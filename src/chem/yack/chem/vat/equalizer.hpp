@@ -42,7 +42,10 @@ namespace yack
                      writable<double> &C0,
                      const Cluster    &cl);
 
-
+            void runConserved(const xmlog      &xml,
+                              writable<double> &C0,
+                              const Cluster    &cl);
+            
             //__________________________________________________________________
             //
             // members
@@ -56,7 +59,7 @@ namespace yack
             Equilibrium::SoloRepo inUse;       //!< used equilibria
             Species::CoopRepo     valid;       //!< valid species concentration
             Species::CoopRepo     wrong;       //!< wrong species concentration
-            Species::CoopRepo     nomad;       //!< unbouded
+            Species::CoopRepo     nomad;       //!< unbounded
 
             XVector               Corg;        //!< Extended C0
             XVector               Ctmp;        //!< auxiliary
@@ -68,9 +71,7 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Equalizer);
 
-            void runConserved(const xmlog      &xml,
-                              writable<double> &C0,
-                              const Cluster    &cl);
+
 
             //! compute Ctmp and its gain
             Extended::Real gainOf(const Tribe &, const Cluster &);

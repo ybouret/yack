@@ -77,6 +77,30 @@ namespace yack
             }
         }
 
+        Extended::Real ConservationLaw:: excess(const readable<Extended::Real> &C,
+                                                Extended::Adder                &xadd,
+                                                const IndexLevel               level) const
+        {
+            xadd.resume(size);
+            const Actor          *ac = head;
+
+            for(;ac;ac=ac->next )
+            {
+                Extended::Real p =   C[ (**ac).indx[level] ];
+                p *= ac->xn;
+                xadd.append(p);
+            }
+            const Extended::Real xs = xadd.reduce();
+            if(xs.m<0)
+            {
+                return -xs;
+            }
+            else
+            {
+                return Extended::Real();
+            }
+        }
+
     }
 
 }
