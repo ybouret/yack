@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_CHEM_REGULATING_INCLUDED
@@ -11,7 +10,6 @@ namespace yack
 {
     namespace Chemical
     {
-
 
         //______________________________________________________________________
         //
