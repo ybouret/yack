@@ -37,7 +37,7 @@ namespace yack
             // methods
             //__________________________________________________________________
 
-            //!
+            //! try to adjust conserved species
             /**
              \param xml     display info
              \param C0      [TopLevel] concentrations
@@ -46,7 +46,17 @@ namespace yack
             bool runConserved(const xmlog              &xml,
                               writable<Extended::Real> &C0,
                               const Cluster            &cluster);
-            
+
+            //! adjust ubounded species
+            /**
+             \param xml     display info
+             \param C0      [TopLevel] concentrations
+             \param cluster cluster to process
+             */
+            void runUbounded(const xmlog              &xml,
+                             writable<Extended::Real> &C0,
+                             const Cluster            &cluster);
+
             //__________________________________________________________________
             //
             // members
