@@ -1,5 +1,5 @@
 
-#include "yack/chem/vat/limit.hpp"
+#include "yack/chem/eqs/limit.hpp"
 
 
 namespace yack

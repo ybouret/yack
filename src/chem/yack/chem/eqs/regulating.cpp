@@ -1,5 +1,5 @@
 
-#include "yack/chem/vat/regulating.hpp"
+#include "yack/chem/eqs/regulating.hpp"
 
 
 namespace yack

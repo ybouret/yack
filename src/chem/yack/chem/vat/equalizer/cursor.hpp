@@ -4,7 +4,7 @@
 #ifndef YACK_CHEM_VAT_CURSOR_INCLUDED
 #define YACK_CHEM_VAT_CURSOR_INCLUDED 1
 
-#include "yack/chem/vat/limit.hpp"
+#include "yack/chem/eqs/limit.hpp"
 #include "yack/data/dinky/coop-list.hpp"
 #include "yack/chem/eqs/actor.hpp"
 
