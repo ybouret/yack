@@ -1,4 +1,4 @@
-#include "yack/chem/vat/tribe.hpp"
+#include "yack/chem/vat/cluster/tribe.hpp"
 
 namespace yack
 {
@@ -8,6 +8,7 @@ namespace yack
         Tribe:: Tribe(const Equilibrium &first) :
         object(),
         Tribe_(),
+        lib(),
         next(0),
         prev(0)
         {
@@ -22,6 +23,7 @@ namespace yack
                       const Equilibrium &extra) :
         object(),
         Tribe_(other),
+        lib(),
         next(0),
         prev(0)
         {

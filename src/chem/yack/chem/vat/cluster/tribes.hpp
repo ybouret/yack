@@ -4,7 +4,7 @@
 #ifndef YACK_CHEM_VAT_TRIBES_INCLUDED
 #define YACK_CHEM_VAT_TRIBES_INCLUDED 1
 
-#include "yack/chem/vat/tribe.hpp"
+#include "yack/chem/vat/cluster/tribe.hpp"
 
 namespace yack
 {

@@ -1,4 +1,4 @@
-#include "yack/chem/vat/tribes.hpp"
+#include "yack/chem/vat/cluster/tribes.hpp"
 
 namespace yack
 {
