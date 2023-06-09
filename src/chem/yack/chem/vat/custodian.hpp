@@ -1,7 +1,7 @@
 //! \file
 
-#ifndef YACK_CHEM_VAT_GUARDIAN_INCLUDED
-#define YACK_CHEM_VAT_GUARDIAN_INCLUDED 1
+#ifndef YACK_CHEM_VAT_CUSTODIAN_INCLUDED
+#define YACK_CHEM_VAT_CUSTODIAN_INCLUDED 1
 
 #include "yack/chem/vat/cluster.hpp"
 #include "yack/data/dinky/solo-repo.hpp"
@@ -20,7 +20,7 @@ namespace yack
         //! operating on consrvation laws to enforce them
         //
         //----------------------------------------------------------------------
-        class Guardian : public Injected
+        class Custodian : public Injected
         {
         public:
             //__________________________________________________________________
@@ -35,8 +35,8 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit Guardian();           //!< setup
-            virtual ~Guardian() noexcept;  //!< cleanup
+            explicit Custodian(const size_t maximumSpecies); //!< setup
+            virtual ~Custodian() noexcept;                   //!< cleanup
 
 
             //__________________________________________________________________
@@ -66,7 +66,7 @@ namespace yack
 
 
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(Guardian);
+            YACK_DISABLE_COPY_AND_ASSIGN(Custodian);
             Broken          broken;
             Excess          excess;
             Extended::Adder xadd;

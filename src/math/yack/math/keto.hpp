@@ -22,6 +22,15 @@ namespace yack {
                     target[i] = source[i];
             }
 
+            //! target[1:source.size()] = source[1:source.size()]
+            template <typename TARGET, typename SOURCE> static inline
+            void save(TARGET &target, SOURCE &source)
+            {
+                assert(target.size()>=source.size());
+                for(size_t i=source.size();i>0;--i)
+                    target[i] = source[i];
+            }
+
         };
     }
 

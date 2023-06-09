@@ -42,6 +42,7 @@ namespace yack
             Corg.adjust(m,_0);
             Ctmp.adjust(m,_0);
             Cend.adjust(m,_0);
+            Ceqz.ld(_0);
             cluster.load(Corg,C0);
 
             //------------------------------------------------------------------
@@ -52,8 +53,9 @@ namespace yack
             unsigned cycle=0;
         CYCLE:
             ++cycle;
-            std::cerr << "---------- cycle " << cycle << " ----------" << std::endl;
-            cluster.for_each_species(std::cerr << "Corg=", "\t[", Corg, "]", SubLevel) << std::endl;;
+            YACK_XMLOG(xml, "---------- cycle " << std::setw(4) << cycle);
+            if(xml.verbose)
+                cluster.for_each_species( *xml << "Corg=", "\t[", Corg, "]", SubLevel) << std::endl;;
 
             valid.clear();
             wrong.clear();
@@ -81,9 +83,10 @@ namespace yack
 
             }
 
+
             if(wrong.size<=0)
             {
-                YACK_XMLOG(xml, "[all good conserved]");
+                YACK_XMLOG(xml, "---------- all conserved are ok");
                 if(cycle>1)
                     cluster.save(C0,Corg);
                 return true;
@@ -168,7 +171,8 @@ namespace yack
                 //--------------------------------------------------------------
                 const size_t              ei = eq.indx[SubLevel];
                 writable<Extended::Real> &Ci = Ceqz[ei];
-                keto::load(Ci,Corg);
+                assert(Ci.size()>=Corg.size());
+                keto::save(Ci,Corg);
                 eq.move(Ci,SubLevel,xi);
 
                 //--------------------------------------------------------------
@@ -196,7 +200,7 @@ namespace yack
 
             if( inUse.size <= 0)
             {
-                YACK_XMLOG(xml, "[still negative: " << wrong << "]");
+                YACK_XMLOG(xml, "---------- still negative " << wrong);
                 if(cycle>1)
                     cluster.save(C0,Corg);
                 return false;

@@ -29,7 +29,7 @@ namespace yack
                                       writable<Extended::Real> &C0,
                                       const Cluster            &cluster)
         {
-            YACK_XMLSUB(xml,"Equalizer::runUbounded");
+            YACK_XMLSUB(xml,"Equalizer::runUnbounded");
             assert(cluster.lib.size == (***cluster.lib.tail).indx[SubLevel]);
 
             //------------------------------------------------------------------
@@ -37,14 +37,22 @@ namespace yack
             // adjusting workspace
             //
             //------------------------------------------------------------------
-            const size_t m = cluster.lib.size;
-            Corg.adjust(m,_0);
-            Ctmp.adjust(m,_0);
-            Cend.adjust(m,_0);
+            {
+                const size_t m = cluster.lib.size;
+                Corg.adjust(m,_0);
+                Ctmp.adjust(m,_0);
+                Cend.adjust(m,_0);
+            }
+
+            bool modified = false;
             cluster.load(Corg,C0);
+            if(xml.verbose) cluster.for_each_species( *xml << "Corg=", "\t[", Corg, "]", SubLevel) << std::endl;;
 
-            cluster.for_each_species(std::cerr << "Corg=", "\t[", Corg, "]", SubLevel) << std::endl;;
-
+            //------------------------------------------------------------------
+            //
+            // loop over reac-only
+            //
+            //------------------------------------------------------------------
             for(const Equilibrium::Node *en=cluster.reacOnly.head;en;en=en->next)
             {
                 const Equilibrium &eq = ***en;
@@ -55,11 +63,16 @@ namespace yack
                     cursor.neg();
                     eq.move(Corg,SubLevel,cursor);
                     cursor.nullify(Corg,SubLevel);
-                    cluster.for_each_species(std::cerr << eq << " -> ", "\t[", Corg, "]", SubLevel) << std::endl;;
+                    if(xml.verbose) cluster.for_each_species(*xml << eq << " -> ", "\t[", Corg, "]", SubLevel) << std::endl;
+                    modified = true;
                 }
             }
 
-
+            //------------------------------------------------------------------
+            //
+            // loop over prod-only
+            //
+            //------------------------------------------------------------------
             for(const Equilibrium::Node *en=cluster.prodOnly.head;en;en=en->next)
             {
                 const Equilibrium &eq = ***en;
@@ -69,14 +82,13 @@ namespace yack
                     Cursor &cursor = **side.tail;
                     eq.move(Corg,SubLevel,cursor);
                     cursor.nullify(Corg,SubLevel);
-                    cluster.for_each_species(std::cerr << eq << " -> ", "\t[", Corg, "]", SubLevel) << std::endl;;
+                    if(xml.verbose) cluster.for_each_species(*xml << eq << " -> ", "\t[", Corg, "]", SubLevel) << std::endl;
+                    modified = true;
                 }
             }
 
-
-
-
-
+            if(modified) cluster.save(C0,Corg);
+            
         }
 
     }

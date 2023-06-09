@@ -1,20 +1,21 @@
 
-#include "yack/chem/vat/guardian.hpp"
+#include "yack/chem/vat/custodian.hpp"
 
 namespace yack
 {
     namespace Chemical
     {
-        Guardian:: ~Guardian() noexcept {}
+        Custodian:: ~Custodian() noexcept {}
 
-        Guardian:: Guardian() :
+        Custodian:: Custodian(const size_t maximumSpecies) :
+        Injected(maximumSpecies,as_capacity),
         broken(),
         excess(),
         xadd()
         {
         }
 
-        void Guardian:: restart(const size_t M)
+        void Custodian:: restart(const size_t M)
         {
             Injected &self = *this;
             while( self.size() < M )
@@ -27,7 +28,7 @@ namespace yack
 
         }
 
-        void Guardian:: enforce(const xmlog              &xml,
+        void Custodian:: enforce(const xmlog              &xml,
                                 writable<Extended::Real> &C0,
                                 const       Act          &act)
         {
@@ -154,7 +155,7 @@ namespace yack
 
         }
 
-        void Guardian:: enforce(const xmlog              &xml,
+        void Custodian:: enforce(const xmlog              &xml,
                                 writable<Extended::Real> &Corg,
                                 const Cluster            &cluster)
         {

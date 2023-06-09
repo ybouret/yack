@@ -4,9 +4,9 @@
 #include "yack/chem/vat.hpp"
 
 #include "yack/chem/eqs/lua.hpp"
-#include "yack/chem/vat/guardian.hpp"
-#include "yack/chem/vat/equalizer.hpp"
+#include "yack/chem/vat/normalizer.hpp"
 
+#include "yack/system/env.hpp"
 
 using namespace yack;
 using namespace Chemical;
@@ -26,7 +26,7 @@ YACK_UTEST(vat)
     std::cerr << "lib=" << lib << std::endl;
     std::cerr << "eqs=" << eqs << std::endl;
 
-    Species::Verbose = true;
+    Species::Verbose = environment::flag("VERBOSE");
     xmlog xml("[chem]",std::cerr,Species::Verbose);
     Vat   vat(xml,eqs);
 
@@ -36,13 +36,25 @@ YACK_UTEST(vat)
     vector<double> C(lib->size,0);
     Library::Conc(C,ran,0.4);
 
-    lib(std::cerr,"[",C,"]") << std::endl;
+    lib(std::cerr << "C0=","[",C,"]") << std::endl;
 
     vector<Extended::Real> C0(C,transmogrify);
 
+    Normalizer normalizer(vat.maxClusterSize,vat.maximumSpecies);
+    normalizer(xml,C0,vat);
+
+    for(size_t i=C.size();i>0;--i)
+    {
+        C[i] = *C0[i];
+    }
+    lib(std::cerr << "C1=","[",C,"]") << std::endl;
+    lib(std::cerr << "dC=","[",normalizer.custodian,"]") << std::endl;
+
+
+#if 0
     if(true)
     {
-        Guardian guard;
+        Custodian guard(vat.maximumSpecies);
         if(vat.size)
         {
             guard.restart(C0.size());
@@ -60,7 +72,7 @@ YACK_UTEST(vat)
         equalizer.runConserved(xml,C0,*vat.head);
         equalizer.runUnbounded(xml,C0,*vat.head);
     }
-
+#endif
 
 }
 YACK_UDONE()
