@@ -6,6 +6,7 @@
 #include "yack/ipso/api.hpp"
 #include "yack/math/api.hpp"
 #include "yack/ordered/heap.hpp"
+#include "yack/large-object.hpp"
 
 namespace yack
 {
@@ -41,7 +42,7 @@ namespace yack
             //
             //__________________________________________________________________
             template <typename T, typename MEM_BUFFER>
-            class proto : public heap<typename inside<T>::type,comparator<T>,MEM_BUFFER>,  public api<T>
+            class proto : public large_object, public counted, public heap<typename inside<T>::type,comparator<T>,MEM_BUFFER>,  public api<T>
             {
             public:
                 //______________________________________________________________

@@ -9,7 +9,7 @@ namespace yack
 
 
 
-        api_::  api_(container &_) noexcept : large_object(), super(_) {}
+        api_::  api_(container &_) noexcept :  super(_) {}
         api_:: ~api_() noexcept {}
 
         void api_:: disp(const rtti &outer,

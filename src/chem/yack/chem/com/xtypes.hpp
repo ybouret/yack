@@ -20,8 +20,9 @@ namespace yack {
         //______________________________________________________________________
         struct Extended
         {
-            typedef extended<double>  Real;   //!< alias
-            typedef ipso::add<double> Adder;  //!< alias
+            typedef extended<double>  Real;        //!< alias
+            typedef ipso::add<double> Adder;       //!< alias
+            typedef arc_ptr<Adder>    AdderPtr;    //!< alias
 
             //! returm comparison as sign_type
             static inline sign_type   Comp(const Real &lhs, const Real &rhs) noexcept

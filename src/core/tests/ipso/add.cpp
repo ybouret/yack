@@ -50,6 +50,12 @@ YACK_UTEST(ipso_add)
     {
 
     }
+
+    YACK_SIZEOF( ipso::add<float>  );
+    YACK_SIZEOF( ipso::add<double> );
+    YACK_SIZEOF( ipso::add<apq>    );
+    YACK_SIZEOF( ipso::add< complex<float> >    );
+
 }
 YACK_UDONE()
 

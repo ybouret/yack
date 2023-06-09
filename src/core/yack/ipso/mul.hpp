@@ -5,6 +5,8 @@
 
 #include "yack/ipso/api.hpp"
 #include "yack/ordered/roster.hpp"
+#include "yack/large-object.hpp"
+#include "yack/counted.hpp"
 
 namespace yack
 {
@@ -35,7 +37,7 @@ namespace yack
         //
         //______________________________________________________________________
         template <typename T>
-        class mul : public roster< typename inside<T>::type, inside_comparator<T> >, public api<T>
+        class mul : public large_object, public counted, public roster< typename inside<T>::type, inside_comparator<T> >, public api<T>
         {
         public:
             //__________________________________________________________________

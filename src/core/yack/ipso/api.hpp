@@ -4,7 +4,6 @@
 #define YACK_IPSO_API_INCLUDED 1
 
 #include "yack/ipso/inside.hpp"
-#include "yack/large-object.hpp"
 #include "yack/type/args.hpp"
 #include "yack/container.hpp"
 #include "yack/system/rtti.hpp"
@@ -20,7 +19,7 @@ namespace yack
         //! common API class
         //
         //__________________________________________________________________
-        class api_ : public large_object
+        class api_
         {
         public:
             static const size_t width = 23;   //!< to display

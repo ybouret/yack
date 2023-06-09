@@ -24,6 +24,14 @@ YACK_UTEST(ipso_mul)
     dcfm << -0.01f << 30.0f<< 0.2f;
     std::cerr << "dcfm=" << dcfm << std::endl;
     std::cerr << dcfm.reduce() << std::endl;
+
+    YACK_SIZEOF(ipso::mul<float>);
+    YACK_SIZEOF(ipso::mul<double>);
+    YACK_SIZEOF(ipso::mul<apq>);
+    YACK_SIZEOF(ipso::mul< complex<float>  >);
+    YACK_SIZEOF(ipso::mul< complex<double> >);
+
+
 }
 YACK_UDONE()
 

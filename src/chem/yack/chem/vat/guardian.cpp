@@ -16,9 +16,15 @@ namespace yack
 
         void Guardian:: restart(const size_t M)
         {
-            const Extended::Real zero(0);
-            adjust(M,zero);
-            ld(zero);
+            Injected &self = *this;
+            while( self.size() < M )
+            {
+                const Extended::AdderPtr ptr = new Extended::Adder();
+                push_back(ptr);
+            }
+            assert(self.size()>=M);
+            for(size_t i=self.size();i>0;--i) self[i]->free();
+
         }
 
         void Guardian:: enforce(const xmlog              &xml,
@@ -26,7 +32,7 @@ namespace yack
                                 const       Act          &act)
         {
             YACK_XMLSUB(xml,"Guardian::enforceAct");
-            writable<Extended::Real> &Me = *this;
+            writable<Extended::AdderPtr> &Me = *this; assert(Me.size()>=C0.size());
             //------------------------------------------------------------------
             //
             //
@@ -105,7 +111,7 @@ namespace yack
                     {
                         const Extended::Real dC = (lxs * (a->xn))/d;
                         const size_t         sj = (**a).indx[TopLevel];
-                        Me[sj] += dC;
+                        Me[sj]->append(dC);
                         C0[sj] += dC;
                     }
                 }
