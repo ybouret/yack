@@ -19,8 +19,11 @@ namespace yack
                               const size_t maximumSpecies) :
         speciesFund( new Species::Bank() ),
         cursorsFund( new Cursor::Bank()  ),
+
         reac( speciesFund, cursorsFund   ),
         prod( speciesFund, cursorsFund   ),
+        side( speciesFund, cursorsFund   ),
+
         inUse( maxClusterSize ),
         valid( speciesFund ),
         wrong( speciesFund ),

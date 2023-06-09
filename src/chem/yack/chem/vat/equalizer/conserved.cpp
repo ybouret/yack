@@ -184,8 +184,6 @@ namespace yack
                 // make vanishing species
                 //--------------------------------------------------------------
                 lim->nullify(Ci,SubLevel);
-                //for(const Species::Node *sn=lim->head;sn;sn=sn->next) Ci[ (***sn).indx[SubLevel] ] = _0;
-
                 displayStatus(xml, eq, Ci, cluster, " USING ", false);
                 if(xml.verbose) xml() << " <-- " << *lim << std::endl;
 
@@ -235,8 +233,7 @@ namespace yack
 
                 assert(gain>=0);
             }
-            //cluster.for_each_species(std::cerr << "Cend=", "\t[", Cend, "]", SubLevel) << std::endl;;
-
+            
             //------------------------------------------------------------------
             //
             // update Corg

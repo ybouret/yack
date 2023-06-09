@@ -64,8 +64,10 @@ namespace yack
             const Extended::Real  _0;
             Species::Fund         speciesFund; //!< shared memory for species
             Cursor::Fund          cursorsFund; //!< shared memory for cursors
+
             Metrics               reac;        //!< metrics for reactants
             Metrics               prod;        //!< metrics for products
+            Equalizing            side;        //!< for reacOnly/prodOnly
 
             Equilibrium::SoloRepo inUse;       //!< used equilibria
             Species::CoopRepo     valid;       //!< valid species concentration
