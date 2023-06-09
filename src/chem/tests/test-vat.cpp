@@ -40,13 +40,16 @@ YACK_UTEST(vat)
 
     vector<Extended::Real> C0(C,transmogrify);
 
-    if(false)
+    if(true)
     {
         Guardian guard;
-        //guard(xml,C,vat);
-
-        std::cerr << "injected=" << guard << std::endl;
-        lib(std::cerr,"[",C,"]") << std::endl;
+        if(vat.size)
+        {
+            guard.restart(C0.size());
+            guard.enforce(xml,C0,*vat.head);
+            std::cerr << "injected=" << guard << std::endl;
+            vat.head->for_each_species(std::cerr, "d[", guard, "]", TopLevel) << std::endl;
+        }
     }
 
     std::cerr << "#maxClusterSize=" << vat.maxClusterSize << std::endl;
