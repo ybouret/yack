@@ -32,20 +32,43 @@ namespace yack
             equalizing.clear();
             for(const Actor *ac=actors.head;ac;ac=ac->next)
             {
-                const Species &sp = **ac;
-                if( ! regular[ sp.indx[SubLevel] ] ) continue;
-                const Extended::Real &c = C0[ sp.indx[level] ];
-                if(c.m>=0)
+                const Species        &sp = **ac; if( ! regular[ sp.indx[SubLevel] ] ) continue;
+                const Extended::Real &c0 = C0[ sp.indx[level] ];
+                if(c0.m>=0)
                 {
-                    regulating.tryDecreaseWith(c,*ac);
+                    regulating.tryDecreaseWith(c0,*ac);
                 }
                 else
                 {
-                    equalizing.tryInsertCursor(-c,*ac);
+                    equalizing.tryInsertCursor(-c0,*ac);
                 }
             }
-
         }
+
+        void Metrics:: computeFrom(const readable<Extended::Real>    &C0,
+                                   const Actors                      &actors,
+                                   const IndexLevel                   level)
+        {
+            regulating.initialize();
+            equalizing.clear();
+            for(const Actor *ac=actors.head;ac;ac=ac->next)
+            {
+                const Species        &sp = **ac;
+                const Extended::Real &c0 = C0[ sp.indx[level] ];
+                if(c0.m>=0)
+                {
+                    regulating.tryDecreaseWith(c0,*ac);
+                }
+                else
+                {
+                    equalizing.tryInsertCursor(-c0,*ac);
+                }
+            }
+        }
+
+
+        
+
 
     }
 

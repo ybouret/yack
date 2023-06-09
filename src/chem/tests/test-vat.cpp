@@ -56,7 +56,10 @@ YACK_UTEST(vat)
     
     Equalizer equalizer(vat.maxClusterSize,vat.maximumSpecies);
     if(vat.size)
+    {
         equalizer.runConserved(xml,C0,*vat.head);
+        equalizer.runUnbounded(xml,C0,*vat.head);
+    }
 
 
 }

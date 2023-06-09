@@ -142,7 +142,7 @@ namespace yack
                 {
                     assert(np.conserved<=0); assert(np.unbounded<=0);
                     assert(nr.extensive>0);  assert(nr.unbounded==nr.extensive); assert(nr.conserved==0);
-                    coerce(prodOnly) << eq;
+                    coerce(reacOnly) << eq;
                     id = "reacOnly";
                     goto END;
                 }

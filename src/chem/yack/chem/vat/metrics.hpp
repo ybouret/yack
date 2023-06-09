@@ -33,15 +33,27 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            //!
+
+            //! compute status of conserved species
             /**
              \param C0       converted concentrations
              \param actors   reac/prod
-             \param category SubLevel isRegular species
+             \param regular  SubLevel isRegular species
+             \param level    level for C0
              */
             void       computeFrom(const readable<Extended::Real>    &C0,
                                    const Actors                      &actors,
                                    const readable<bool>              &regular,
+                                   const IndexLevel                   level);
+
+            //! compute status from all species
+            /**
+             \param C0       converted concentrations
+             \param actors   reac/prod
+             \param level    level for C0
+             */
+            void       computeFrom(const readable<Extended::Real>    &C0,
+                                   const Actors                      &actors,
                                    const IndexLevel                   level);
 
             //! display

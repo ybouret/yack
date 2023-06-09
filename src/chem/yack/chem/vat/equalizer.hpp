@@ -53,9 +53,9 @@ namespace yack
              \param C0      [TopLevel] concentrations
              \param cluster cluster to process
              */
-            void runUbounded(const xmlog              &xml,
-                             writable<Extended::Real> &C0,
-                             const Cluster            &cluster);
+            void runUnbounded(const xmlog              &xml,
+                              writable<Extended::Real> &C0,
+                              const Cluster            &cluster);
 
             //__________________________________________________________________
             //

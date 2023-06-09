@@ -107,7 +107,6 @@ namespace yack
             for(const Equilibrium::Node *node=cluster.standard.head;node;node=node->next)
             {
                 const Equilibrium        &eq = ***node;
-                const size_t              ei = eq.indx[SubLevel];
 
                 //--------------------------------------------------------------
                 //
@@ -167,6 +166,7 @@ namespace yack
                 // compute trial concentrations
                 //
                 //--------------------------------------------------------------
+                const size_t              ei = eq.indx[SubLevel];
                 writable<Extended::Real> &Ci = Ceqz[ei];
                 keto::load(Ci,Corg);
                 eq.move(Ci,SubLevel,xi);
