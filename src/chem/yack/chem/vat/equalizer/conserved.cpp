@@ -183,8 +183,8 @@ namespace yack
                 //--------------------------------------------------------------
                 // make vanishing species
                 //--------------------------------------------------------------
-                for(const Species::Node *sn=lim->head;sn;sn=sn->next)
-                    Ci[ (***sn).indx[SubLevel] ] = _0;
+                lim->nullify(Ci,SubLevel);
+                //for(const Species::Node *sn=lim->head;sn;sn=sn->next) Ci[ (***sn).indx[SubLevel] ] = _0;
 
                 displayStatus(xml, eq, Ci, cluster, " USING ", false);
                 if(xml.verbose) xml() << " <-- " << *lim << std::endl;

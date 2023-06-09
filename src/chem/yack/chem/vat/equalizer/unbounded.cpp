@@ -29,6 +29,32 @@ namespace yack
             Cend.adjust(m,_0);
             cluster.load(Corg,C0);
 
+
+            for(const Equilibrium::Node *en=cluster.reacOnly.head;en;en=en->next)
+            {
+                const Equilibrium &eq = ***en;
+                //--------------------------------------------------------------
+                //
+                // analyze phase space
+                //
+                //--------------------------------------------------------------
+                reac.computeFrom(Corg,eq.reac,SubLevel);
+                std::cerr << eq << std::endl;
+                std::cerr << "reac: " << reac << std::endl;
+                if(reac.equalizing.size)
+                {
+                    const Cursor &cursor = **reac.equalizing.tail;
+                    std::cerr << "need to update with " << cursor << std::endl;
+                    eq.move(Corg,SubLevel,cursor);
+                    cursor.nullify(Corg,SubLevel);
+                    eq.display_compact(std::cerr,Corg,SubLevel);
+                }
+            }
+
+
+
+            return;
+
             valid.clear();
             nomad.clear();
 

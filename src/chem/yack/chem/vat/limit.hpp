@@ -32,6 +32,17 @@ namespace yack
 
             void neg() noexcept;
 
+            template <typename ARRAY> inline
+            void nullify(ARRAY &arr, const IndexLevel level) const
+            {
+                const typename ARRAY::const_type _0(0);
+                for(const Species::Node *sn=head;sn;sn=sn->next)
+                {
+                    arr[ (***sn).indx[level] ] = _0;
+                }
+            }
+
+
             //__________________________________________________________________
             //
             // methods
