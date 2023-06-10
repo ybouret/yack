@@ -12,6 +12,8 @@ namespace yack
             os << '<' << eq.name << '>';
             return os;
         }
+
+        
     }
 
 }

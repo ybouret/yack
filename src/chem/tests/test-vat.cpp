@@ -5,6 +5,7 @@
 
 #include "yack/chem/eqs/lua.hpp"
 #include "yack/chem/vat/normalizer.hpp"
+#include "yack/chem/eqs/extents.hpp"
 
 #include "yack/system/env.hpp"
 
@@ -15,14 +16,17 @@ YACK_UTEST(vat)
 {
     randomized::rand_ ran;
 
-    Weasel::Designer & wsl = Weasel::Designer::instance();
     Library           lib;
     LuaEquilibria     eqs;
 
-    for(int i=1;i<argc;++i)
     {
-        wsl( jive::module::open_data(argv[i]), lib, eqs);
+        Weasel::Designer & wsl = Weasel::Designer::instance();
+        for(int i=1;i<argc;++i)
+        {
+            wsl( jive::module::open_data(argv[i]), lib, eqs);
+        }
     }
+
     std::cerr << "lib=" << lib << std::endl;
     std::cerr << "eqs=" << eqs << std::endl;
 
@@ -50,29 +54,17 @@ YACK_UTEST(vat)
     lib(std::cerr << "C1=","[",C,"]") << std::endl;
     lib(std::cerr << "dC=","[",normalizer.custodian,"]") << std::endl;
 
+    Species::Fund fund = new Species::Bank();
+    Extents       xt(fund);
 
-#if 0
-    if(true)
+    for(const eNode *en=eqs->head;en;en=en->next)
     {
-        Custodian guard(vat.maximumSpecies);
-        if(vat.size)
-        {
-            guard.restart(C0.size());
-            guard.enforce(xml,C0,*vat.head);
-            std::cerr << "injected=" << guard << std::endl;
-            vat.head->for_each_species(std::cerr, "d[", guard, "]", TopLevel) << std::endl;
-        }
+        const Equilibrium &eq = ***en;
+        xt.build(eq,C0,TopLevel);
+        eqs.display(std::cerr, eq);
+        xt.display(std::cerr) << std::endl;
     }
 
-    std::cerr << "#maxClusterSize=" << vat.maxClusterSize << std::endl;
-    
-    Equalizer equalizer(vat.maxClusterSize,vat.maximumSpecies);
-    if(vat.size)
-    {
-        equalizer.runConserved(xml,C0,*vat.head);
-        equalizer.runUnbounded(xml,C0,*vat.head);
-    }
-#endif
 
 }
 YACK_UDONE()

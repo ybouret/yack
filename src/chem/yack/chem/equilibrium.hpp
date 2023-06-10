@@ -51,6 +51,8 @@ namespace yack
 
             YACK_PROTO_OSTREAM(Equilibrium); //!< display
 
+            
+
             //__________________________________________________________________
             //
             // C++

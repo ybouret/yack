@@ -37,13 +37,7 @@ namespace yack
             // adjusting workspace
             //
             //------------------------------------------------------------------
-            {
-                const size_t m = cluster.lib.size;
-                Corg.adjust(m,_0);
-                Ctmp.adjust(m,_0);
-                Cend.adjust(m,_0);
-            }
-
+            Corg.adjust(cluster.lib.size,_0);
             bool modified = false;
             cluster.load(Corg,C0);
             if(xml.verbose) cluster.for_each_species( *xml << "Corg=", "\t[", Corg, "]", SubLevel) << std::endl;;

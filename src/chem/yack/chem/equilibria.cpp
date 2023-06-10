@@ -44,18 +44,24 @@ namespace yack
             }
         }
 
+
+        std::ostream & Equilibria:: display(std::ostream &os, const Equilibrium &eq) const
+        {
+            pad(os << ' ' << eq.name,eq) << " : ";
+            reac.pad(os << eq.reac.name,eq.reac);
+            os << " <=> ";
+            prod.pad(os << eq.prod.name,eq.prod);
+            os << " : ";
+            return os;
+        }
+
         std::ostream & operator<<(std::ostream &os, const Equilibria &eqs)
         {
             os << '{' << std::endl;
             for(const eNode *node=eqs->head;node;node=node->next)
             {
                 const Equilibrium &eq = ***node;
-                eqs.pad(os << ' ' << eq.name,eq) << " : ";
-                eqs.reac.pad(os << eq.reac.name,eq.reac);
-                os << " <=> ";
-                eqs.prod.pad(os << eq.prod.name,eq.prod);
-                os << " : ";
-                os << std::endl;
+                eqs.display(os,eq) << std::endl;
             }
             os << '}';
             return os;

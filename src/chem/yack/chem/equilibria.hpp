@@ -66,6 +66,8 @@ namespace yack
             YACK_PROTO_OSTREAM(Equilibria); //!< display
             void finalize() noexcept;       //!< setup reac/proc gathering for clean display
 
+            std::ostream & display(std::ostream &, const Equilibrium &) const;
+
             //__________________________________________________________________
             //
             // members

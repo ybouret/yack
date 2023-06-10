@@ -16,7 +16,7 @@ namespace yack
             virtual ~Finalizable() noexcept;
 
             void finalize(const char * const clid);
-
+            
             const bool finalized;
 
 

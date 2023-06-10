@@ -4,6 +4,7 @@
 #define YACK_CHEM_EXTENTS_INCLUDED 1
 
 #include "yack/chem/eqs/regulating.hpp"
+#include "yack/chem/eqs/components.hpp"
 
 namespace yack
 {
@@ -18,6 +19,8 @@ namespace yack
             LimitedByBoth
         };
 
+        const char *LimitationText(const Limitation) noexcept;
+
         class Extents
         {
         public:
@@ -26,15 +29,19 @@ namespace yack
 
 
             void reset() noexcept;
-            
+            void build(const Components               &eq,
+                       const readable<Extended::Real> &C0,
+                       const IndexLevel                level);
 
+            std::ostream & display(std::ostream &os) const;
 
-            const Regulating reac;
-            const Regulating prod;
-            const Limitation kind;
+            const Regulating reac; //!< regulating reactant(s)
+            const Regulating prod; //!< regulating product(s)
+            const Limitation kind; //!< depending on counts
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Extents);
+            void updateLimitation() noexcept;
         };
 
     }
