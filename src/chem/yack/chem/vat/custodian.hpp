@@ -11,7 +11,7 @@ namespace yack
     namespace Chemical
     {
         
-        typedef vector<Extended::AdderPtr,memory::dyadic> Injected; //!< base class for Guardian
+        typedef vector<Extended::AddPtr,memory::dyadic> Injected; //!< base class for Guardian
 
 
         //----------------------------------------------------------------------
@@ -69,9 +69,7 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(Custodian);
             Broken          broken;
             Excess          excess;
-            Extended::Adder xadd;
-
-
+            Extended::Add   xadd;
         };
 
     }

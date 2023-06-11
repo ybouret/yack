@@ -11,7 +11,7 @@ namespace yack
                              writable<double>       &target,
                              const readable<double> &source,
                              const readable<double> &extent,
-                             Extended::Adder        &xadd) const
+                             Extended::Add          &xadd) const
         {
             for(const Species::Node *sn=lib.head;sn;sn=sn->next)
             {

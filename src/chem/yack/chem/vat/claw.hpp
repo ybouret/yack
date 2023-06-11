@@ -45,7 +45,7 @@ namespace yack
 
             //! compute excess, must be processed if POSITIVE
             Extended::Real excess(const readable<Extended::Real> &C,
-                                  Extended::Adder                &xadd,
+                                  Extended::Add                  &xadd,
                                   const IndexLevel                level) const;
             //__________________________________________________________________
             //

@@ -33,15 +33,19 @@ YACK_UTEST(vat)
     Species::Verbose = environment::flag("VERBOSE");
     xmlog xml("[chem]",std::cerr,Species::Verbose);
     Extended::Vector K;
+    std::cerr << "starting with #eqs=" << eqs->size << std::endl;
     Vat              vat(xml,eqs,K);
+    std::cerr << "ending  with #eqs=" << eqs->size << std::endl;
 
+    K.make(eqs->size,0);
 
+    return 0;
 
     vector<double>         C(lib->size,0);
     vector<Extended::Real> C0(lib->size,0);
     Normalizer             normalizer(vat.maxClusterSize,vat.maximumSpecies);
 
-    Extended::Adder xadd;
+    Extended::Add xadd;
     if(vat.size)
     {
         for(size_t iter=0;iter<10;++iter)

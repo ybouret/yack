@@ -4,6 +4,7 @@
 #define YACK_CHEM_XTYPES_INCLUDED 1
 
 #include "yack/ipso/add.hpp"
+#include "yack/ipso/mul.hpp"
 #include "yack/data/dinky/core-list.hpp"
 #include "yack/data/dinky/solo-list.hpp"
 #include "yack/proto-ostream.hpp"
@@ -22,9 +23,10 @@ namespace yack {
         //______________________________________________________________________
         struct Extended
         {
-            typedef extended<double>  Real;        //!< alias
-            typedef ipso::add<double> Adder;       //!< alias
-            typedef arc_ptr<Adder>    AdderPtr;    //!< alias
+            typedef extended<double>  Real;    //!< alias
+            typedef ipso::add<double> Add;     //!< alias
+            typedef arc_ptr<Add>      AddPtr;  //!< alias
+            typedef ipso::mul<double> Mul;     //!< alias
 
             //! returm comparison as sign_type
             static inline sign_type   Comp(const Real &lhs, const Real &rhs) noexcept

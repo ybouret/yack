@@ -27,11 +27,15 @@ namespace yack
 
             //! setup
             template <typename NAME> inline
-            explicit ConstEquilibrium(const NAME &id) : Equilibrium(id) {}
+            explicit ConstEquilibrium(const NAME &id, const double K0) :
+            Equilibrium(id),
+            K_(K0) {}
             virtual ~ConstEquilibrium() noexcept; //!< cleanup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(ConstEquilibrium);
+            const Extended::Real K_;
+            virtual Extended::Real getK(const double);
         };
     }
 

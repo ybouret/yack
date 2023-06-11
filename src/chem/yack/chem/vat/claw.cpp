@@ -18,7 +18,7 @@ namespace yack
 
         void ConservationLaw:: finalize()
         {
-            Extended::Adder xadd;
+            Extended::Add xadd;
             xadd.ensure(size);
 
             for(const Actor *a=head;a;a=a->next)
@@ -55,7 +55,7 @@ namespace yack
         
 
         Extended::Real ConservationLaw:: excess(const readable<Extended::Real> &C,
-                                                Extended::Adder                &xadd,
+                                                Extended::Add                  &xadd,
                                                 const IndexLevel               level) const
         {
             xadd.resume(size);

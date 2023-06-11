@@ -63,12 +63,12 @@ YACK_UTEST(lib)
 
     Equilibria   eqs;
     {
-        Equilibrium &water = eqs( new ConstEquilibrium("water") );
+        Equilibrium &water = eqs( new ConstEquilibrium("water",1e-14) );
         water(1,proton);
         water(1,hydroxy);
     }
     {
-        Equilibrium &weak = eqs( new ConstEquilibrium("weak") );
+        Equilibrium &weak = eqs( new ConstEquilibrium("weak",pow(10.0,1e-14)) );
         weak(1,proton);
         weak(-1,AH);
         weak(1,Am);

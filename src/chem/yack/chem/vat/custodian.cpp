@@ -20,7 +20,7 @@ namespace yack
             Injected &self = *this;
             while( self.size() < M )
             {
-                const Extended::AdderPtr ptr = new Extended::Adder();
+                const Extended::AddPtr ptr = new Extended::Add();
                 push_back(ptr);
             }
             assert(self.size()>=M);
@@ -33,7 +33,7 @@ namespace yack
                                 const       Act          &act)
         {
             YACK_XMLSUB(xml,"Guardian::enforceAct");
-            writable<Extended::AdderPtr> &Me = *this; assert(Me.size()>=C0.size());
+            writable<Extended::AddPtr> &Me = *this; assert(Me.size()>=C0.size());
             //------------------------------------------------------------------
             //
             //

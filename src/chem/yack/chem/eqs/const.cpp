@@ -7,6 +7,11 @@ namespace yack
     {
         ConstEquilibrium:: ~ConstEquilibrium() noexcept {}
 
+        Extended::Real ConstEquilibrium::getK(const double)
+        {
+            return K_;
+        }
+
     }
 
 }

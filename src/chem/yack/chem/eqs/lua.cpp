@@ -34,6 +34,11 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(LuaEq);
+            virtual Extended::Real getK(const double t)
+            {
+                Lua::Function<double> &self = *this;
+                return Extended::Real( self(t) );
+            }
         };
 
         Equilibrium & LuaEquilibria:: operator()(const string &name,
@@ -45,7 +50,7 @@ namespace yack
             if( LUA_TFUNCTION == L.type(-1) ) return self( new LuaEq(name,lvm,kstr) );
 
             const double K0 = L.eval<double>(kstr); 
-            return self( new ConstEquilibrium(name) );
+            return self( new ConstEquilibrium(name,K0) );
 
 
         }

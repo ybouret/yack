@@ -121,6 +121,7 @@ namespace yack
             {
                 coerce(mix).swap_with(user_mix);
                 coerce(cof).swap_with(user_cof);
+                assert(mix.size==cof.size);
             }
 
             inline virtual ~MixedEquilibrium() noexcept {}
@@ -129,11 +130,22 @@ namespace yack
             const Equilibrium::CoreRepo mix;
             const iList                 cof;
             const Extended::Vector     &usr;
+            Extended::Mul               xmul;
             const size_t                neqz;
             const size_t                norm;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(MixedEquilibrium);
+            virtual Extended::Real getK(const double)
+            {
+                assert(mix.size>0);
+                xmul.free();
+                for(const Equilibrium::Node *en=mix.head;en;en=en->next)
+                {
+                }
+                return xmul.reduce();
+            }
+
         };
 
         typedef core_repo<MixedEquilibrium> MxList;

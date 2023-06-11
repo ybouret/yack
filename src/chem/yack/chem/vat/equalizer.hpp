@@ -76,7 +76,7 @@ namespace yack
             Extended::Vector      Cend;        //!< auxiliary
             Extended::Vector      xbad;        //!< initial bad values
             Extended::Matrix      Ceqz;        //!< equalized
-            Extended::Adder       xadd;        //!< internal ops
+            Extended::Add         xadd;        //!< internal ops
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Equalizer);

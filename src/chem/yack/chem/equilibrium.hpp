@@ -50,7 +50,7 @@ namespace yack
             }
 
             YACK_PROTO_OSTREAM(Equilibrium); //!< display
-
+            Extended::Real K(const double t);
             
 
             //__________________________________________________________________
@@ -68,6 +68,7 @@ namespace yack
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Equilibrium);
+            virtual Extended::Real getK(const double) = 0;
         };
 
         
