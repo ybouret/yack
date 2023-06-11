@@ -110,10 +110,12 @@ namespace yack
         public:
             inline explicit MixedEquilibrium(const string           &user_uid,
                                              Equilibrium::CoreRepo  &user_mix,
-                                             iList                  &user_cof) :
+                                             iList                  &user_cof,
+                                             const Extended::Vector &user_usr) :
             Equilibrium(user_uid),
             mix(),
             cof(),
+            usr(user_usr),
             neqz(0),
             norm(0)
             {
@@ -126,6 +128,7 @@ namespace yack
 
             const Equilibrium::CoreRepo mix;
             const iList                 cof;
+            const Extended::Vector     &usr;
             const size_t                neqz;
             const size_t                norm;
 
@@ -252,10 +255,10 @@ namespace yack
                 }
 
                 //--------------------------------------------------------------
-                // construct the mixed equilibrium
+                // construct the now VALID mixed equilibrium
                 //--------------------------------------------------------------
                 const string      mixedName = MixedName(mix,cof);
-                MixedEquilibrium &mixed     = eqs( new MixedEquilibrium(mixedName,mix,cof) );
+                MixedEquilibrium &mixed     = eqs( new MixedEquilibrium(mixedName,mix,cof,usr) );
                 for(const Species::Node *sn=lib.head;sn;sn=sn->next)
                 {
                     const Species &sp = ***sn;
