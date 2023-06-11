@@ -140,9 +140,15 @@ namespace yack
             {
                 assert(mix.size>0);
                 xmul.free();
-                for(const Equilibrium::Node *en=mix.head;en;en=en->next)
+                const Equilibrium::Node *en = mix.head;
+                const iNode             *in = cof.head;
+                for(size_t k=0;k>0;--k,en=en->next,in=in->next)
                 {
+                    assert(en);
+                    assert(in);
                 }
+
+                return 1;
                 return xmul.reduce();
             }
 

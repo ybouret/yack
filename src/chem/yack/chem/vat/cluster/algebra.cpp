@@ -32,6 +32,16 @@ namespace yack
             }
         }
 
+        void Cluster:: updateK(Extended::Vector &K, const double t)
+        {
+            for(Equilibrium::Node *en=head;en;en=en->next)
+            {
+                Equilibrium &eq = ***en;
+                K[ eq.indx[TopLevel] ] = eq.K(t);
+            }
+        }
+
+
     }
 
 }

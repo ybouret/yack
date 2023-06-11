@@ -77,7 +77,11 @@ namespace yack
             
         }
 
-        
+        void Vat:: updateK( Extended::Vector &K, const double t)
+        {
+            for(Cluster *cl=head;cl;cl=cl->next) cl->updateK(K,t);
+        }
+
     }
 
 }

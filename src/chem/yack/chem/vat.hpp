@@ -34,6 +34,8 @@ namespace yack
             //! cleanup
             virtual ~Vat() noexcept;
 
+            void updateK( Extended::Vector &K, const double t);
+
             //__________________________________________________________________
             //
             // members

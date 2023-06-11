@@ -126,7 +126,7 @@ namespace yack
                        Extended::Add          &xadd) const;
 
 
-
+            void updateK(Extended::Vector &K, const double t);
 
             bool isConserved(const Species &) const noexcept; //!< helper
             bool isUnbounded(const Species &) const noexcept; //!< helper
