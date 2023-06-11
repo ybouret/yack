@@ -13,8 +13,10 @@ namespace yack
 
         Cluster:: Cluster(Equilibrium &first) :
         Equilibrium::CoreRepo(),
+        last(NULL),
         lib(),
         Nu(),
+        NuT(),
         Qmat(),
         Qrnk(0),
         laws(),
@@ -157,6 +159,9 @@ namespace yack
                 if(size!=rank)
                     throw imported::exception(CLID,"system rank=%u < size=%u", unsigned(rank), unsigned(size));
 
+                coerce(NuT).make(Nu.cols,Nu.rows);
+                coerce(NuT).assign(Nu,transposed);
+
                 //--------------------------------------------------------------
                 //
                 // finding out conservation laws
@@ -170,6 +175,11 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 makeManifold(xml,eqs);
+
+                const Equilibrium::Node *node = head;
+                for(size_t i=Nu.rows;i>0;--i) node=node->next;
+                coerce(last) = node;
+
             }
 
             //------------------------------------------------------------------

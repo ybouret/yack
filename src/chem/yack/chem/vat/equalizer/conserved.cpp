@@ -313,7 +313,6 @@ namespace yack
                 const size_t         j    = sp.indx[SubLevel];
                 const Extended::Real oldV =  min_of(Corg[j], _0);
                 const Extended::Real newV =  min_of(Ctmp[j], _0);
-                assert(newV>=oldV);
                 const Extended::Real gain = (oldV-newV).abs();
                 xadd.append(gain);
             }

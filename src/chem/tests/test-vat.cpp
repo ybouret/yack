@@ -34,17 +34,50 @@ YACK_UTEST(vat)
     xmlog xml("[chem]",std::cerr,Species::Verbose);
     Vat   vat(xml,eqs);
 
-    YACK_SIZEOF(Cluster);
 
 
-    vector<double> C(lib->size,0);
+    vector<double>         C(lib->size,0);
+    vector<Extended::Real> C0(lib->size,0);
+    Normalizer             normalizer(vat.maxClusterSize,vat.maximumSpecies);
+
+    Extended::Adder xadd;
+    if(vat.size)
+    {
+        for(size_t iter=0;iter<10;++iter)
+        {
+            C.ld(0);
+            for(const Cluster *cluster=vat.head;cluster;cluster=cluster->next)
+            {
+                assert(cluster->Nu.rows>0);
+                vector<double> extent(cluster->Nu.rows,0);
+                Library::Conc(extent,ran,0.5);
+                std::cerr << "extent=" << extent << std::endl;
+                cluster->apply(TopLevel,C,C,extent,xadd);
+            }
+            lib(std::cerr << "C  = ","[",C,"]") << std::endl;
+            for(size_t i=C.size();i>0;--i)
+            {
+                C0[i] = Extended::Send(C[i]);
+            }
+            //lib(std::cerr << "C0 = ","[",C0,"]") << std::endl;
+            normalizer(xml,C0,vat);
+            for(size_t i=C.size();i>0;--i)
+            {
+                C[i] = *C0[i];
+            }
+            lib(std::cerr << "C1 = ","[",C,"]") << std::endl;
+        }
+    }
+    return 0;
+
     Library::Conc(C,ran,0.4);
+
+
+
 
     lib(std::cerr << "C0=","[",C,"]") << std::endl;
 
-    vector<Extended::Real> C0(C,transmogrify);
 
-    Normalizer normalizer(vat.maxClusterSize,vat.maximumSpecies);
     normalizer(xml,C0,vat);
 
     for(size_t i=C.size();i>0;--i)

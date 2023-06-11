@@ -4,7 +4,8 @@
 #ifndef YACK_KETO_INCLUDED
 #define YACK_KETO_INCLUDED 1
 
-#include "yack/setup.hpp"
+#include "yack/ipso/adding.hpp"
+#include "yack/container/matrix.hpp"
 
 namespace yack {
 
@@ -30,6 +31,17 @@ namespace yack {
                 for(size_t i=source.size();i>0;--i)
                     target[i] = source[i];
             }
+
+            template <typename TARGET, typename T, typename SOURCE> static inline
+            void mul(TARGET          & target,
+                     const matrix<T> & M,
+                     SOURCE          & source)
+            {
+                assert( target.size() >= M.rows );
+                assert( source.size() >= M.cols );
+                
+            }
+
 
         };
     }
