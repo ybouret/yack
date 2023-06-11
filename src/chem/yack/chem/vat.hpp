@@ -27,8 +27,9 @@ namespace yack
             //__________________________________________________________________
 
             //! setup
-            explicit Vat(const xmlog   &xml,
-                         Equilibria    &eqs);
+            explicit Vat(const xmlog      &xml,
+                         Equilibria       &eqs,
+                         Extended::Vector &usr);
 
             //! cleanup
             virtual ~Vat() noexcept;
@@ -43,7 +44,7 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Vat);
-            void makeClusters(const xmlog &, Equilibria &);
+            void makeClusters(const xmlog &, Equilibria &, Extended::Vector &);
         };
     }
 

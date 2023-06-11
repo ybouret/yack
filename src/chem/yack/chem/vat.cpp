@@ -8,13 +8,14 @@ namespace yack
         {
         }
 
-        Vat:: Vat(const xmlog   &xml,
-                  Equilibria    &eqs) :
+        Vat:: Vat(const xmlog      &xml,
+                  Equilibria       &eqs,
+                  Extended::Vector &usr) :
         Clusters(),
         maxClusterSize(0),
         maximumSpecies(0)
         {
-            makeClusters(xml,eqs);
+            makeClusters(xml,eqs,usr);
             for(const Cluster *cl=head;cl;cl=cl->next)
             {
                 assert(cl->size);

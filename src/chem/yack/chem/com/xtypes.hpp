@@ -7,6 +7,8 @@
 #include "yack/data/dinky/core-list.hpp"
 #include "yack/data/dinky/solo-list.hpp"
 #include "yack/proto-ostream.hpp"
+#include "yack/sequence/vector.hpp"
+#include "yack/container/matrix.hpp"
 
 namespace yack {
 
@@ -41,6 +43,8 @@ namespace yack {
             typedef solo_list<Real>     SoloList; //!< alias
             typedef CoreList::node_type Node;     //!< alias
 
+            typedef vector<Real,memory::dyadic> Vector;
+            typedef matrix<Real>                Matrix;
         };
 
 

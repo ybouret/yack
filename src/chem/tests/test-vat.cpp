@@ -32,7 +32,8 @@ YACK_UTEST(vat)
 
     Species::Verbose = environment::flag("VERBOSE");
     xmlog xml("[chem]",std::cerr,Species::Verbose);
-    Vat   vat(xml,eqs);
+    Extended::Vector K;
+    Vat              vat(xml,eqs,K);
 
 
 

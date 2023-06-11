@@ -23,13 +23,6 @@ namespace yack
         public:
             //__________________________________________________________________
             //
-            // definitions
-            //__________________________________________________________________
-            typedef vector<Extended::Real,memory::dyadic> XVector; //!< alias
-            typedef matrix<Extended::Real>                XMatrix; //!< alias
-
-            //__________________________________________________________________
-            //
             // C++
             //__________________________________________________________________
             explicit Equalizer(const size_t maxClusterSize,
@@ -78,11 +71,11 @@ namespace yack
             Species::CoopRepo     wrong;       //!< wrong species concentration
             Species::CoopRepo     nomad;       //!< unbounded
 
-            XVector               Corg;        //!< Extended C0
-            XVector               Ctmp;        //!< auxiliary
-            XVector               Cend;        //!< auxiliary
-            XVector               xbad;        //!< initial bad values
-            XMatrix               Ceqz;        //!< equalized
+            Extended::Vector      Corg;        //!< Extended C0
+            Extended::Vector      Ctmp;        //!< auxiliary
+            Extended::Vector      Cend;        //!< auxiliary
+            Extended::Vector      xbad;        //!< initial bad values
+            Extended::Matrix      Ceqz;        //!< equalized
             Extended::Adder       xadd;        //!< internal ops
             
         private:

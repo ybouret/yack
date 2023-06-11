@@ -161,7 +161,9 @@ namespace yack
         }
 
 
-        void Cluster:: makeManifold(const xmlog &xml, Equilibria &eqs)
+        void Cluster:: makeManifold(const xmlog      &xml,
+                                    Equilibria       &eqs,
+                                    Extended::Vector &usr)
         {
             const size_t nr = size;
             if(nr<=1) return;
@@ -183,7 +185,6 @@ namespace yack
 
                 woven::qbuilder  work(nr);
                 work(repo,P,rank,false);
-                //std::cerr << repo << std::endl;
             }
 
             //------------------------------------------------------------------

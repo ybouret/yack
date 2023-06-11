@@ -88,8 +88,9 @@ namespace yack
 
 
 
-        void Cluster:: finalize(const xmlog &xml,
-                                Equilibria  &eqs)
+        void Cluster:: finalize(const xmlog      &xml,
+                                Equilibria       &eqs,
+                                Extended::Vector &usr)
         {
             YACK_XMLSUB(xml,"Cluster::finalize");
             assert(0==lib.size);
@@ -134,9 +135,6 @@ namespace yack
                     }
                 }
                 YACK_XMLOG(xml, " (*) " << lib);
-
-
-
             }
 
             if(size)
@@ -174,7 +172,7 @@ namespace yack
                 // build manifold
                 //
                 //--------------------------------------------------------------
-                makeManifold(xml,eqs);
+                makeManifold(xml,eqs,usr);
 
                 const Equilibrium::Node *node = head;
                 for(size_t i=Nu.rows;i>0;--i) node=node->next;

@@ -51,7 +51,7 @@ namespace yack
              - makeManifold()
              - findOutRoles()
              */
-            void finalize(const xmlog &xml, Equilibria &eqs);
+            void finalize(const xmlog &xml, Equilibria &eqs, Extended::Vector &usr);
 
             //! display components
             YACK_PROTO_OSTREAM(Cluster);
@@ -167,7 +167,7 @@ namespace yack
             void discoverLaws(const xmlog &);
             void assembleActs(const xmlog &);
             void findOutRoles(const xmlog &);
-            void makeManifold(const xmlog &, Equilibria &eqs);
+            void makeManifold(const xmlog &, Equilibria &eqs, Extended::Vector &usr);
             void gatherTribes(const xmlog &);
 
             void settleTribes(const xmlog                 &,

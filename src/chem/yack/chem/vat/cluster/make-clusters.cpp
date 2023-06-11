@@ -28,8 +28,9 @@ namespace yack
             source.swap_with(reduced);
         }
 
-        void Vat:: makeClusters(const xmlog &xml,
-                                Equilibria  &eqs)
+        void Vat:: makeClusters(const xmlog      &xml,
+                                Equilibria       &eqs,
+                                Extended::Vector &usr)
         {
             YACK_XMLSUB(xml, "Vat::makeCluster");
 
@@ -64,7 +65,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             for(Cluster *cl=head;cl;cl=cl->next)
-                cl->finalize(xml,eqs);
+                cl->finalize(xml,eqs,usr);
 
             //------------------------------------------------------------------
             //
