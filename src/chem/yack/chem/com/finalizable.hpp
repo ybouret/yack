@@ -9,15 +9,17 @@ namespace yack
 {
     namespace Chemical
     {
+        //! helper class
         class Finalizable
         {
         public:
-            explicit Finalizable() noexcept;
-            virtual ~Finalizable() noexcept;
+            explicit Finalizable() noexcept; //!< setup
+            virtual ~Finalizable() noexcept; //!< cleanup
 
+            //! check doFinalize and update status
             void finalize(const char * const clid);
             
-            const bool finalized;
+            const bool finalized; //!< status flag
 
 
         private:

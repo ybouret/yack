@@ -31,18 +31,7 @@ namespace yack {
                 for(size_t i=source.size();i>0;--i)
                     target[i] = source[i];
             }
-
-            template <typename TARGET, typename T, typename SOURCE> static inline
-            void mul(TARGET          & target,
-                     const matrix<T> & M,
-                     SOURCE          & source)
-            {
-                assert( target.size() >= M.rows );
-                assert( source.size() >= M.cols );
-                
-            }
-
-
+            
         };
     }
 

@@ -154,8 +154,8 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const inside_type _0;
-            const inside_type _1;
+            const inside_type _0; //!< precomputed zero
+            const inside_type _1; //!< precomputed one
         };
 
 

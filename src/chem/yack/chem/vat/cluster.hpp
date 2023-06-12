@@ -123,6 +123,7 @@ namespace yack
                 return os;
             }
 
+            //! target = source + NuT * extent
             void apply(const IndexLevel        level,
                        writable<double>       &target,
                        const readable<double> &source,
@@ -130,7 +131,10 @@ namespace yack
                        Extended::Add          &xadd) const;
 
 
+            //! compute all constants, in order
             void updateK(Extended::Vector &K, const double t);
+
+            //! display eqs+constants
             void displayK(std::ostream &, const Extended::Vector &) const;
 
             bool isConserved(const Species &) const noexcept; //!< helper

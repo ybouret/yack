@@ -45,8 +45,8 @@ namespace yack {
             typedef solo_list<Real>     SoloList; //!< alias
             typedef CoreList::node_type Node;     //!< alias
 
-            typedef vector<Real,memory::dyadic> Vector;
-            typedef matrix<Real>                Matrix;
+            typedef vector<Real,memory::dyadic> Vector; //!< alias
+            typedef matrix<Real>                Matrix; //!< alias
         };
 
 

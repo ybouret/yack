@@ -36,8 +36,8 @@ namespace yack
             //__________________________________________________________________
 
           
-            YACK_PROTO_OSTREAM(Equilibrium); //!< display
-            Extended::Real K(const double t);
+            YACK_PROTO_OSTREAM(Equilibrium);  //!< display
+            Extended::Real K(const double t); //!< compute K at given time
 
             
 

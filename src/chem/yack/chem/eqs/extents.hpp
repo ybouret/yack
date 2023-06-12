@@ -10,31 +10,57 @@ namespace yack
 {
     namespace Chemical
     {
-
+        //______________________________________________________________________
+        //
+        //
+        //! possible limitations
+        //
+        //______________________________________________________________________
         enum Limitation
         {
-            LimitedByNone,
-            LimitedByReac,
-            LimitedByProd,
-            LimitedByBoth
+            LimitedByNone, //!< no limitation
+            LimitedByReac, //!< limited by reactant(s) only
+            LimitedByProd, //!< limited by product(s)  only
+            LimitedByBoth  //!< limited by both
         };
 
+        //! convert Limitation to text
         const char *LimitationText(const Limitation) noexcept;
 
+        //______________________________________________________________________
+        //
+        //
+        //! limiting extents for an equilibrium and a set of concentrations
+        //
+        //______________________________________________________________________
         class Extents
         {
         public:
-            explicit Extents(const Species::Fund &) noexcept;
-            virtual ~Extents() noexcept;
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit Extents(const Species::Fund &) noexcept; //!< setup
+            virtual ~Extents() noexcept;                      //!< cleanup
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            void reset() noexcept; //!< clean all
 
-            void reset() noexcept;
+            //! build current limitation
             void build(const Components               &eq,
                        const readable<Extended::Real> &C0,
                        const IndexLevel                level);
 
+            //! output status
             std::ostream & display(std::ostream &os) const;
 
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
             const Regulating reac; //!< regulating reactant(s)
             const Regulating prod; //!< regulating product(s)
             const Limitation kind; //!< depending on counts
