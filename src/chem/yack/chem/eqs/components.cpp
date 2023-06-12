@@ -165,6 +165,15 @@ namespace yack
             return reacMassAction(xmul,K,C,level) - prodMassAction(xmul,C,level);
         }
 
+        Extended::Real Components:: quotient(Extended::Mul                  &xmul,
+                                             const Extended::Real            K,
+                                             const readable<Extended::Real> &C,
+                                             const IndexLevel                level) const
+        {
+            return prodMassAction(xmul,C,level)/reacMassAction(xmul,K,C,level);
+        }
+
+
     }
 
 }

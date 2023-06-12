@@ -11,11 +11,14 @@ namespace yack
     namespace Chemical
     {
 
-        enum EqSatus
+        enum EqStatus
         {
             Blocked,
             Running
         };
+
+        const char * EqStatusText(const EqStatus status) noexcept;
+
 
         class Aftermath
         {
@@ -28,8 +31,10 @@ namespace yack
             Aftermath(const Aftermath &)               noexcept;
             virtual ~Aftermath()                       noexcept;
 
+            YACK_PROTO_OSTREAM(Aftermath);
+
             const Extended::Real extent;
-            const EqSatus        status;
+            const EqStatus       status;
             const Extended::Real action;
 
             static Aftermath Evaluate(const Equilibrium              &eq,

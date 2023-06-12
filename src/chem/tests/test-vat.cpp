@@ -99,11 +99,15 @@ YACK_UTEST(vat)
 
         for(const eNode *en=eqs->head;en;en=en->next)
         {
-            const Equilibrium &eq = ***en;
+            const Equilibrium   & eq = ***en;
+            const size_t          ei = eq.indx[TopLevel];
+            const Extended::Real  Ki = K[ei];
             eqs.display(std::cerr, eq) ;
-            const Aftermath    am = Aftermath::Evaluate(eq,K[eq.indx[TopLevel]],C1,C0,xt,TopLevel,xmul,xadd,Ctmp);
+            const Aftermath    am = Aftermath::Evaluate(eq,Ki,C1,C0,xt,TopLevel,xmul,xadd,Ctmp);
 
-            std::cerr << am.extent << std::endl;
+            std::cerr << am;
+            if(Running==am.status) std::cerr << " Q=" << *eq.quotient(xmul,Ki,C1,TopLevel);
+            std::cerr << std::endl;
             //xt.display(std::cerr) << std::endl;
         }
     }

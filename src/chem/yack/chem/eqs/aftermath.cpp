@@ -2,6 +2,7 @@
 #include "yack/chem/eqs/aftermath.hpp"
 #include "yack/system/imported.hpp"
 #include "yack/math/keto.hpp"
+#include <iomanip>
 
 namespace yack
 {
@@ -33,6 +34,24 @@ namespace yack
 
         }
 
+        const char * EqStatusText(const EqStatus status) noexcept
+        {
+            switch (status) {
+                case Blocked:
+                    return "BLOCKED";
+
+                case Running:
+                    return "RUNNING";
+            }
+            return "";
+        }
+
+        std::ostream & operator<<(std::ostream &os, const Aftermath &am)
+        {
+            os << EqStatusText(am.status) << " @" << std::setw(15) << *am.extent << " (action=" << am.action << ")";
+            return os;
+        }
+
         bool Aftermath:: InitBoth(Extended::Triplet              &xi,
                                   Extended::Triplet              &ma,
                                   const Equilibrium              &eq,
@@ -45,46 +64,39 @@ namespace yack
         {
             xi.b = xmul._0;
             ma.b = eq.massAction(xmul,K,Cend,level);
-            //std::cerr << eq << " ma@0 = " << ma.b << std::endl;
             switch( __sign::of(ma.b.m) )
             {
 
                     //----------------------------------------------------------
-                case __zero__: // found running at 0
+                case __zero__: // found already running and solved
                     //----------------------------------------------------------
                     return true;
 
                     //----------------------------------------------------------
                 case negative: // move prod
-                    //            to get a positive mass action from reac
+                    //            to get a positive mass action from reac only
                     //----------------------------------------------------------
                     assert(extents.prod>0);
                     xi.a = -extents.prod;
                     eq.make(Ctmp, level, Cend, level, xi.a);
                     extents.prod.nullify(Ctmp,level);
                     ma.a = eq.reacMassAction(xmul,K,Ctmp,level);
-                    //eq.displayCompact(std::cerr << "\t" << eq << " noProd: ",Ctmp,level) << " => ma = " << ma.a <<  " / " << eq.massAction(xmul,K,Ctmp,level) << std::endl;
                     xi.c = xi.b;
                     ma.c = ma.b;
                     break;
 
                     //----------------------------------------------------------
                 case positive: // move reac
-                    //            to get a negative mass action from prod
+                    //            to get a negative mass action from prod only
                     //----------------------------------------------------------
                     assert(extents.reac>0);
                     xi.c =  extents.reac;
                     eq.make(Ctmp, level, Cend, level, xi.c);
                     extents.reac.nullify(Ctmp,level);
                     ma.c = -eq.prodMassAction(xmul,Ctmp,level);
-                    //eq.displayCompact(std::cerr << "\t" << eq << " noReac: ",Ctmp,level) << " => ma = " << ma.c << " / " << eq.massAction(xmul,K,Ctmp,level) << std::endl;
                     xi.a = xi.b;
                     ma.a = ma.b;
             }
-
-            //std::cerr << "\txi: " << xi << std::endl;
-            //std::cerr << "\tma: " << ma << std::endl;
-
 
             assert(xi.c>xi.a);
             assert(ma.c<ma.a);

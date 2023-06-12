@@ -132,6 +132,10 @@ namespace yack
                                       const readable<Extended::Real> &C,
                                       const IndexLevel                level) const;
 
+            Extended::Real quotient(Extended::Mul                  &xmul,
+                                    const Extended::Real            K,
+                                    const readable<Extended::Real> &C,
+                                    const IndexLevel                level) const;
 
             //__________________________________________________________________
             //
