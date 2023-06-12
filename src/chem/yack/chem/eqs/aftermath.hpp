@@ -34,11 +34,29 @@ namespace yack
                                       const readable<Extended::Real> &Corg,
                                       Extents                        &extents,
                                       const IndexLevel                level,
-                                      Extended::Mul                  &xmul);
+                                      Extended::Mul                  &xmul,
+                                      Extended::Add                  &xadd,
+                                      writable<Extended::Real>       &Ctmp);
 
 
         private:
             YACK_DISABLE_ASSIGN(Aftermath);
+            static Extended::Real makeExtent(const Components               &eq,
+                                             const readable<Extended::Real> &Corg,
+                                             const readable<Extended::Real> &Cend,
+                                             const IndexLevel                level,
+                                             Extended::Add                  &xadd);
+
+            static bool InitBoth(Extended::Triplet              &xi,
+                                 Extended::Triplet              &ma,
+                                 const Equilibrium              &eq,
+                                 const Extended::Real           &K,
+                                 writable<Extended::Real>       &Ctmp,
+                                 const readable<Extended::Real> &Cend,
+                                 const Extents                  &extents,
+                                 const IndexLevel                level,
+                                 Extended::Mul                  &xmul);
+
         };
 
     }

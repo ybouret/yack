@@ -45,6 +45,7 @@ YACK_UTEST(vat)
     vector<double>         C(lib->size,0);
     vector<Extended::Real> C0(lib->size,0);
     vector<Extended::Real> C1(lib->size,0);
+    vector<Extended::Real> Ctmp(lib->size,0);
     Normalizer             normalizer(vat.maxClusterSize,vat.maximumSpecies);
 
     Extended::Add xadd;
@@ -97,7 +98,7 @@ YACK_UTEST(vat)
     for(const eNode *en=eqs->head;en;en=en->next)
     {
         const Equilibrium &eq = ***en;
-        const Aftermath    am = Aftermath::Evaluate(eq,K[eq.indx[TopLevel]],C1,C0,xt,TopLevel,xmul);
+        const Aftermath    am = Aftermath::Evaluate(eq,K[eq.indx[TopLevel]],C1,C0,xt,TopLevel,xmul,xadd,Ctmp);
         eqs.display(std::cerr, eq);
         xt.display(std::cerr) << std::endl;
     }
