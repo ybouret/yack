@@ -106,7 +106,7 @@ namespace yack
 
             //! display a compact list of values
             template <typename T>
-            std::ostream & display_compact(std::ostream &os, const readable<T> &field, const IndexLevel level) const
+            std::ostream & displayCompact(std::ostream &os, const readable<T> &field, const IndexLevel level) const
             {
                 os << '{' << ' ';
                 for(const cNode *cn=(*this)->head;cn;cn=cn->next)

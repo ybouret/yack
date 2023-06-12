@@ -20,7 +20,7 @@ namespace yack
         {
             if(xml.verbose)
             {
-                E.display_compact(cluster.pad( *xml << "  |_[" <<status << "] " << '<' << E.name << '>', E) << " : ",C,SubLevel);
+                E.displayCompact(cluster.pad( *xml << "  |_[" <<status << "] " << '<' << E.name << '>', E) << " : ",C,SubLevel);
                 if(newline) xml() << std::endl;
             }
         }
