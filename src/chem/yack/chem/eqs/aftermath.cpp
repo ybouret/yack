@@ -14,16 +14,21 @@ namespace yack
         {
         }
 
-        Aftermath:: Aftermath() noexcept : extent(0), status(Blocked)
+        Aftermath:: Aftermath() noexcept : extent(0), status(Blocked), action(0)
         {
         }
         
-        Aftermath:: Aftermath(const Extended::Real &args) noexcept : extent(args), status(Running)
+        Aftermath:: Aftermath(const Extended::Real args) noexcept : extent(args), status(Running), action(0)
+        {
+        }
+
+        Aftermath:: Aftermath(const Extended::Real args,
+                              const Extended::Real aerr) noexcept : extent(args), status(Running), action(aerr)
         {
         }
 
         Aftermath:: Aftermath(const Aftermath &am) noexcept :
-        extent(am.status), status(am.status)
+        extent(am.status), status(am.status), action(am.action)
         {
 
         }
@@ -40,7 +45,7 @@ namespace yack
         {
             xi.b = xmul._0;
             ma.b = eq.massAction(xmul,K,Cend,level);
-            std::cerr << eq << " ma@0 = " << ma.b << std::endl;
+            //std::cerr << eq << " ma@0 = " << ma.b << std::endl;
             switch( __sign::of(ma.b.m) )
             {
 
@@ -58,7 +63,7 @@ namespace yack
                     eq.make(Ctmp, level, Cend, level, xi.a);
                     extents.prod.nullify(Ctmp,level);
                     ma.a = eq.reacMassAction(xmul,K,Ctmp,level);
-                    eq.displayCompact(std::cerr << "\t" << eq << " noProd: ",Ctmp,level) << " => ma = " << ma.a <<  " / " << eq.massAction(xmul,K,Ctmp,level) << std::endl;
+                    //eq.displayCompact(std::cerr << "\t" << eq << " noProd: ",Ctmp,level) << " => ma = " << ma.a <<  " / " << eq.massAction(xmul,K,Ctmp,level) << std::endl;
                     xi.c = xi.b;
                     ma.c = ma.b;
                     break;
@@ -72,13 +77,13 @@ namespace yack
                     eq.make(Ctmp, level, Cend, level, xi.c);
                     extents.reac.nullify(Ctmp,level);
                     ma.c = -eq.prodMassAction(xmul,Ctmp,level);
-                    eq.displayCompact(std::cerr << "\t" << eq << " noReac: ",Ctmp,level) << " => ma = " << ma.c << " / " << eq.massAction(xmul,K,Ctmp,level) << std::endl;
+                    //eq.displayCompact(std::cerr << "\t" << eq << " noReac: ",Ctmp,level) << " => ma = " << ma.c << " / " << eq.massAction(xmul,K,Ctmp,level) << std::endl;
                     xi.a = xi.b;
                     ma.a = ma.b;
             }
 
-            std::cerr << "\txi: " << xi << std::endl;
-            std::cerr << "\tma: " << ma << std::endl;
+            //std::cerr << "\txi: " << xi << std::endl;
+            //std::cerr << "\tma: " << ma << std::endl;
 
 
             assert(xi.c>xi.a);
@@ -100,9 +105,8 @@ namespace yack
             {
                 const Species &s = ****node;
                 const size_t   j = s.indx[level];
-                const Extended::Real mc0 = -Corg[j];
-                xadd.append(Cend[j]);
-                xadd.append(mc0);
+                const Extended::Real del = Cend[j]-Corg[j];
+                xadd.append(del);
 
             }
             return xadd.reduce()/eq->size;
@@ -118,75 +122,94 @@ namespace yack
                                        Extended::Add                  &xadd,
                                        writable<Extended::Real>       &Ctmp)
         {
-            keto::load(Cend,Corg);
-
-            const Limitation     kind = extents.build(eq,Cend,level);
             const Extended::Real _0   = xmul._0;
             Extended::Triplet    xi;
             Extended::Triplet    ma;
+            keto::load(Cend,Corg);
 
-
-            switch( kind )
+            Extended::Real absXi = 0;       // must decrease
+            bool           check = false;   // but not the first time
+        LOOKUP:
+            switch( extents.build(eq,Cend,level) )
             {
                 case LimitedByNone: throw imported::exception(eq.name(),"empty equilibrium");
 
                 case LimitedByProd:
+                    return Aftermath();
                     break;
 
                 case LimitedByReac:
+                    return Aftermath();
                     break;
 
                 case LimitedByBoth:
                     // check blocked or not
                     if(extents.reac.isBlocking() && extents.prod.isBlocking())
+                    {
                         return Aftermath();
+                    }
 
                     // check if 0 is solution for Cend, otherwise init
                     if(InitBoth(xi,ma,eq,K,Ctmp,Cend,extents,level,xmul))
                     {
                         return Aftermath(xmul._0);
                     }
-
-
-                    Extended::Real width = xi.c - xi.a;
-                    while(true)
-                    {
-                        xi.b = (xi.a+xi.c).half();
-                        eq.make(Ctmp, level, Cend, level, xi.b);
-                        ma.b = eq.massAction(xmul,K,Ctmp,level);
-                        std::cerr << "\txi: " << xi << std::endl;
-                        std::cerr << "\tma: " << ma << std::endl;
-                        std::cerr << "\t w: " << width << std::endl;
-                        switch( __sign::of(ma.b) )
-                        {
-                            case __zero__: keto::load(Cend,Ctmp);
-                                return Aftermath( makeExtent(eq,Corg,Cend,level,xadd) );
-
-                            case negative:
-                                xi.c = xi.b;
-                                ma.c = ma.b;
-                                break;
-
-                            case positive:
-                                xi.a = xi.b;
-                                ma.a = ma.b;
-                                break;
-                        }
-                        const Extended::Real newWidth = xi.c - xi.a;
-                        if(newWidth>=width)
-                        {
-                            break;
-                        }
-                        width = newWidth;
-                    }
-
-
-
-                    break;
+                    break; // => bisection
             }
-            
 
-            return Aftermath();
+            //std::cerr << "---- BISECTION ----" << std::endl;
+            Extended::Real width = xi.c - xi.a;
+            while(true)
+            {
+                xi.b = (xi.a+xi.c).half();
+                eq.make(Ctmp, level, Cend, level, xi.b);
+                ma.b = eq.massAction(xmul,K,Ctmp,level);
+                //std::cerr << "\txi: " << xi << std::endl;
+                //std::cerr << "\tma: " << ma << std::endl;
+                //std::cerr << "\t w: " << width << std::endl;
+                switch( __sign::of(ma.b) )
+                {
+                    case __zero__:
+                        keto::load(Cend,Ctmp);
+                        xi.b = makeExtent(eq,Corg,Cend,level,xadd);
+                        //std::cerr << "EXACT MA=0 @XI=" << xi.b << std::endl;
+                        //eq.displayCompact(std::cerr << "\t" << eq << " exact: ",Cend,level) << " => " << eq.massAction(xmul,K,Cend,level) << std::endl;
+                        return Aftermath( xi.b );
+
+                    case negative:
+                        xi.c = xi.b;
+                        ma.c = ma.b;
+                        break;
+
+                    case positive:
+                        xi.a = xi.b;
+                        ma.a = ma.b;
+                        break;
+                }
+                const Extended::Real newWidth = xi.c - xi.a;
+                if(newWidth>=width)
+                {
+                    break;
+                }
+                width = newWidth;
+            }
+
+            const Extended::Real absTmp = xi.b.abs();
+            keto::load(Cend,Ctmp);
+            if(check && absTmp>=absXi)
+            {
+                //std::cerr << "Saturation" << std::endl;
+                xi.b = makeExtent(eq,Corg,Cend,level,xadd);
+                //eq.displayCompact(std::cerr << "\t" << eq << " approx: ",Cend,level)
+                //<< " => " <<ma.b << std::endl;
+                return Aftermath(xi.b,ma.b);
+            }
+
+            absXi = absTmp;
+            check = true;
+            goto LOOKUP;
+
+
         }
     }
 

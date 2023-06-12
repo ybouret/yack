@@ -35,7 +35,7 @@ YACK_UTEST(vat)
     Extended::Vector K;
     std::cerr << "starting with #eqs=" << eqs->size << std::endl;
     Vat              vat(xml,eqs,K);
-    std::cerr << "ending  with #eqs=" << eqs->size << std::endl;
+    std::cerr << "ending   with #eqs=" << eqs->size << std::endl;
 
     K.make(eqs->size,0);
     vat.updateK(K,0.0);
@@ -49,6 +49,10 @@ YACK_UTEST(vat)
     Normalizer             normalizer(vat.maxClusterSize,vat.maximumSpecies);
 
     Extended::Add xadd;
+    Extended::Mul xmul;
+    Species::Fund fund = new Species::Bank();
+    Extents       xt(fund);
+
     if(true && vat.size)
     {
         for(size_t iter=0;iter<10;++iter)
@@ -76,31 +80,32 @@ YACK_UTEST(vat)
         }
     }
 
-    Library::Conc(C,ran,0.4);
-    lib(std::cerr << "C0=","[",C,"]") << std::endl;
-    for(size_t i=C.size();i>0;--i)
+    for(size_t iter=0;iter<1;++iter)
     {
-        C0[i] = Extended::Send(C[i]);
-    }
-    normalizer(xml,C0,vat);
+        Library::Conc(C,ran,0.4);
+        lib(std::cerr << "C0=","[",C,"]") << std::endl;
+        for(size_t i=C.size();i>0;--i)
+        {
+            C0[i] = Extended::Send(C[i]);
+        }
+        normalizer(xml,C0,vat);
 
-    for(size_t i=C.size();i>0;--i)
-    {
-        C[i] = *C0[i];
-    }
-    lib(std::cerr << "C1=","[",C,"]") << std::endl;
-    lib(std::cerr << "dC=","[",normalizer.custodian,"]") << std::endl;
+        for(size_t i=C.size();i>0;--i)
+        {
+            C[i] = *C0[i];
+        }
+        lib(std::cerr << "C1=","[",C,"]") << std::endl;
+        lib(std::cerr << "dC=","[",normalizer.custodian,"]") << std::endl;
 
-    Species::Fund fund = new Species::Bank();
-    Extents       xt(fund);
-    Extended::Mul xmul;
+        for(const eNode *en=eqs->head;en;en=en->next)
+        {
+            const Equilibrium &eq = ***en;
+            eqs.display(std::cerr, eq) ;
+            const Aftermath    am = Aftermath::Evaluate(eq,K[eq.indx[TopLevel]],C1,C0,xt,TopLevel,xmul,xadd,Ctmp);
 
-    for(const eNode *en=eqs->head;en;en=en->next)
-    {
-        const Equilibrium &eq = ***en;
-        const Aftermath    am = Aftermath::Evaluate(eq,K[eq.indx[TopLevel]],C1,C0,xt,TopLevel,xmul,xadd,Ctmp);
-        eqs.display(std::cerr, eq);
-        xt.display(std::cerr) << std::endl;
+            std::cerr << am.extent << std::endl;
+            //xt.display(std::cerr) << std::endl;
+        }
     }
 
 

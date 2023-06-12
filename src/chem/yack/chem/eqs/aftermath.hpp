@@ -20,13 +20,17 @@ namespace yack
         class Aftermath
         {
         public:
-            explicit Aftermath()                       noexcept;
-            explicit Aftermath(const Extended::Real &) noexcept;
+            explicit Aftermath()                     noexcept;
+            explicit Aftermath(const Extended::Real) noexcept;
+            explicit Aftermath(const Extended::Real,
+                               const Extended::Real) noexcept;
+
             Aftermath(const Aftermath &)               noexcept;
             virtual ~Aftermath()                       noexcept;
 
             const Extended::Real extent;
             const EqSatus        status;
+            const Extended::Real action;
 
             static Aftermath Evaluate(const Equilibrium              &eq,
                                       const Extended::Real           &K,
