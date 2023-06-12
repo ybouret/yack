@@ -1,5 +1,6 @@
 #include "yack/math/extended.hpp"
 #include "yack/system/exception.hpp"
+#include "yack/type/ints.hpp"
 
 #include <cerrno>
 #include <cmath>

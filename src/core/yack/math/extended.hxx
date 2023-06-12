@@ -259,6 +259,49 @@ namespace yack
         return xr;
     }
 
+    template <>
+    real_t extended<real_t>::  exp10() const
+    {
+        static const real_t two = 2;
+        static const real_t ln2 = std::log(two);
+        static const real_t ten = 10;
+        static const real_t ln10 = std::log(ten);
 
+        if(m<=0)
+        {
+            throw libc::exception(EDOM,"extended<real>.exp10(negative)");
+        }
+
+        return (std::log(m) + p * ln2)/ln10;
+
+    }
+
+    template <>
+    extended<real_t> extended<real_t>:: upower(unsigned n) const
+    {
+
+        static const size_t pmin = integral_for<int>::minimum;
+        static const size_t pmax = integral_for<int>::maximum;
+        switch(n)
+        {
+            case 0: return _1();
+            case 1: return *this;
+            default:
+                break;
+        }
+
+        int pp = static_cast<int>(n*p);
+        switch( __sign::of(p) )
+        {
+            case __zero__: break;
+            case positive: if(static_cast<size_t>(p)  > (pmax/n)) throw libc::exception(EDOM,"positive power overflow"); break;
+            case negative: if(static_cast<size_t>(-p) > (pmin/n)) throw libc::exception(EDOM,"negative power overflow"); break;
+        }
+
+        real_t mm = m; for(--n;n>0;--n) mm *= m;
+        extended xr( mm );
+        coerce(xr.p) += pp;
+        return xr;
+    }
 
 }

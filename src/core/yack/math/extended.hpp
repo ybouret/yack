@@ -139,6 +139,14 @@ namespace yack
         //! sqrt
         extended sqrt() const;
 
+        //! 10^exp10
+        T exp10() const;
+
+        //! this ^ n
+        extended upower(unsigned n) const;
+
+        
+
         //__________________________________________________________________
         //
         // comparisons

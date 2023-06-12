@@ -69,18 +69,23 @@ namespace yack
             return false;
         }
 
+        std::ostream & Cluster:: display(std::ostream &os, const Equilibrium &eq) const
+        {
+            pad(os << " <" << eq.name << ">",eq) << " : ";
+            reac.pad(os << eq.reac.name,eq.reac);
+            os << " <=> ";
+            prod.pad(os << eq.prod.name,eq.prod);
+            os << " : ";
+            return os;
+        }
+
         std::ostream & operator<<( std::ostream &os, const Cluster &cl)
         {
             os << '{' << std::endl;
             for(const Equilibrium::Node *node=cl.head;node;node=node->next)
             {
                 const Equilibrium &eq = ***node;
-                cl.pad(os << " <" << eq.name << ">",eq) << " : ";
-                cl.reac.pad(os << eq.reac.name,eq.reac);
-                os << " <=> ";
-                cl.prod.pad(os << eq.prod.name,eq.prod);
-                os << " : ";
-                os << std::endl;
+                cl.display(os,eq) << std::endl;
             }
             os << '}';
             return os;
@@ -208,6 +213,24 @@ namespace yack
         {
             return !isRegular[ sp.indx[SubLevel] ];
         }
+
+
+        void Cluster:: displayK(std::ostream &os, const Extended::Vector &K) const
+        {
+
+            os << '{' << std::endl;
+            for(const Equilibrium::Node *en = head; en; en=en->next)
+            {
+                const Equilibrium &eq = ***en;
+                display(os,eq);
+                assert(eq.indx[TopLevel]<=K.size());
+                const Extended::Real k = K[ eq.indx[TopLevel] ];
+                os << "10^(" << k.exp10() << ")" << std::endl;
+            }
+
+            os << '}' << std::endl;
+        }
+
     }
 
 }

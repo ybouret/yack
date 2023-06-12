@@ -66,6 +66,15 @@ namespace yack
             os << '}';
             return os;
         }
+
+        std::ostream & Equilibria:: displayK(std::ostream &os, Equilibrium &eq) const
+        {
+            display(os,eq);
+            const Extended::Real K = eq.K(0);
+            os << K;
+            return os;
+        }
+
     }
 
 }

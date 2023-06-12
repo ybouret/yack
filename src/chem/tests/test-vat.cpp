@@ -38,6 +38,8 @@ YACK_UTEST(vat)
     std::cerr << "ending  with #eqs=" << eqs->size << std::endl;
 
     K.make(eqs->size,0);
+    vat.updateK(K,0.0);
+    vat.displayK(std::cerr,K);
 
     return 0;
 

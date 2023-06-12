@@ -67,6 +67,7 @@ namespace yack
             void finalize() noexcept;       //!< setup reac/proc gathering for clean display
 
             std::ostream & display(std::ostream &, const Equilibrium &) const;
+            std::ostream & displayK(std::ostream &, Equilibrium &) const;
 
             //__________________________________________________________________
             //

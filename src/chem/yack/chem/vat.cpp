@@ -26,6 +26,11 @@ namespace yack
         }
 
 
+        void Vat:: displayK(std::ostream &os, const Extended::Vector &K) const
+        {
+            for(const Cluster *cl=head;cl;cl=cl->next)
+                cl->displayK(os,K);
+        }
 
 
 

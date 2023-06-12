@@ -23,9 +23,9 @@ namespace yack
         {
         public:
             static const size_t width = 23;   //!< to display
-            virtual ~api_() noexcept;   //!< cleanup
-            void     ldz()  noexcept;   //!< free
-            void     ldz(const size_t); //!< resume(n)
+            virtual ~api_() noexcept;         //!< cleanup
+            void     ldz()  noexcept;         //!< free
+            void     ldz(const size_t);       //!< resume(n)
 
         protected:
             explicit    api_(container &) noexcept; //!< setup
@@ -144,10 +144,18 @@ namespace yack
 
         protected:
             //! setup
-            inline explicit api(container &_) noexcept : api_(_) {}
+            inline explicit api(container &_) noexcept : api_(_), _0(0), _1(1) {}
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(api);
+
+        public:
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const inside_type _0;
+            const inside_type _1;
         };
 
 

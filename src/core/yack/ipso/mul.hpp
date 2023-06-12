@@ -49,10 +49,11 @@ namespace yack
             typedef inside_comparator<type>         incomp_type; //!< alias
             typedef roster<inside_type,incomp_type> proto_class; //!< alias
 
-            using proto_class::insert;
             using proto_class::size;
             using proto_class::lower;
             using proto_class::upper;
+            using api<T>::_0;
+            using api<T>::_1;
 
             //__________________________________________________________________
             //
@@ -68,8 +69,27 @@ namespace yack
             //__________________________________________________________________
 
             //! append using inside_type comparison
-            inline virtual void append(const inside_type &args) { insert(args); }
+            inline virtual void append(const inside_type &args) { this->insert(args); }
 
+            //! power
+            inline void power(const inside_type args, int n)
+            {
+                switch( __sign::of(n) )
+                {
+                    case __zero__:
+                        this->insert(_1);
+                        break;
+
+                    case positive:
+                        this->insert(args,static_cast<unsigned>(n));
+                        return;
+
+                    case negative: {
+                        const inside_type _I = _1/args;
+                        this->insert(_I,static_cast<unsigned>(-n));
+                    } break;
+                }
+            }
 
             //! reduce algorithm
             inline virtual inside_type reduce()
@@ -89,7 +109,7 @@ namespace yack
                 const inside_type rhs = upper();
                 const inside_type res = lhs*rhs;
                 if(size()<=0) return res;
-                insert(res);
+                this->insert(res);
                 goto REDUCE;
             }
 

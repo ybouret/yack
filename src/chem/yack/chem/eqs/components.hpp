@@ -104,6 +104,20 @@ namespace yack
                 }
             }
 
+            //! display a compact list of values
+            template <typename T>
+            std::ostream & display_compact(std::ostream &os, const readable<T> &field, const IndexLevel level) const
+            {
+                os << '{' << ' ';
+                for(const cNode *cn=(*this)->head;cn;cn=cn->next)
+                {
+                    const Species &sp = ****cn;
+                    os << sp << '=' << field[sp.indx[level]] << ' ';
+                }
+                os << '}';
+                return os;
+            }
+
 
             //__________________________________________________________________
             //

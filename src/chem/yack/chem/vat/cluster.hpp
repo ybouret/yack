@@ -53,6 +53,10 @@ namespace yack
              */
             void finalize(const xmlog &xml, Equilibria &eqs, Extended::Vector &usr);
 
+
+            //! display formatted components
+            std::ostream &  display(std::ostream &, const Equilibrium &eq) const;
+
             //! display components
             YACK_PROTO_OSTREAM(Cluster);
 
@@ -127,6 +131,7 @@ namespace yack
 
 
             void updateK(Extended::Vector &K, const double t);
+            void displayK(std::ostream &, const Extended::Vector &) const;
 
             bool isConserved(const Species &) const noexcept; //!< helper
             bool isUnbounded(const Species &) const noexcept; //!< helper

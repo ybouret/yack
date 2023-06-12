@@ -35,6 +35,7 @@ namespace yack
             virtual ~Vat() noexcept;
 
             void updateK( Extended::Vector &K, const double t);
+            void displayK(std::ostream &, const Extended::Vector &) const;
 
             //__________________________________________________________________
             //

@@ -60,9 +60,7 @@ namespace yack
 
         //! low-level access
         inline const base_list * operator->() const noexcept { return &my; }
-
-        //! low-level access
-        inline const base_list & operator*() const noexcept { return my; }
+        
 
         //! pull 'lower' value
         inline mutable_type lower() {

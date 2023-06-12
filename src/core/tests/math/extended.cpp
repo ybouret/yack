@@ -76,6 +76,17 @@ YACK_UTEST(math_extended)
         std::cerr << "sqrt(" << *xx << ") = " << *xs << std::endl;
     }
 
+    std::cerr << std::endl << "power" << std::endl;
+    for(size_t i=1;i<=xr.size();++i)
+    {
+        for(unsigned n=0;n<=4;++n)
+        {
+            const extended<float> xx = xr[i];
+            const extended<float> xp = xx.upower(n);
+            std::cerr << "(" << *xx << ")^" << n << " = " << *xp << std::endl;
+        }
+    }
+
 
 }
 YACK_UDONE()

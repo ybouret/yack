@@ -142,10 +142,16 @@ namespace yack
                 xmul.free();
                 const Equilibrium::Node *en = mix.head;
                 const iNode             *in = cof.head;
-                for(size_t k=0;k>0;--k,en=en->next,in=in->next)
+                for(size_t i=0;i>0;--i,en=en->next,in=in->next)
                 {
                     assert(en);
                     assert(in);
+                    const Equilibrium   &eq = ***en;
+                    const size_t         ei = eq.indx[TopLevel];
+                    if(ei<usr.size()) throw imported::exception(name(),"top-level constants not properly allocated");
+                    const int            cf = **in;  assert(cf!=0);
+                    const Extended::Real k  = usr[ eq.indx[TopLevel] ];
+
                 }
 
                 return 1;
