@@ -30,10 +30,11 @@ namespace yack
 
             static Aftermath Evaluate(const Equilibrium              &eq,
                                       const Extended::Real           &K,
-                                      const writable<Extended::Real> &Cend,
+                                      writable<Extended::Real>       &Cend,
                                       const readable<Extended::Real> &Corg,
                                       Extents                        &extents,
-                                      const IndexLevel                level);
+                                      const IndexLevel                level,
+                                      Extended::Mul                  &xmul);
 
 
         private:

@@ -131,6 +131,40 @@ namespace yack
             return false;
 
         }
+
+
+        Extended::Real Components:: reacMassAction(Extended::Mul                  &xmul,
+                                               const Extended::Real            K,
+                                               const readable<Extended::Real> &C,
+                                               const IndexLevel                level) const
+        {
+            xmul.free();
+            xmul.insert(K);
+            reac.massAction(xmul,C,level);
+            return xmul.reduce();
+
+        }
+
+
+        Extended::Real Components:: prodMassAction(Extended::Mul                  &xmul,
+                                                   const readable<Extended::Real> &C,
+                                                   const IndexLevel                level) const
+        {
+            xmul.free();
+            xmul.insert(xmul._1);
+            prod.massAction(xmul,C,level);
+            return xmul.reduce();
+        }
+
+        Extended::Real Components:: massAction(Extended::Mul                  &xmul,
+                                               const Extended::Real            K,
+                                               const readable<Extended::Real> &C,
+                                               const IndexLevel                level) const
+        {
+
+            return reacMassAction(xmul,K,C,level) - prodMassAction(xmul,C,level);
+        }
+
     }
 
 }

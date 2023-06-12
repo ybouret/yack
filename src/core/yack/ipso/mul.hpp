@@ -71,6 +71,12 @@ namespace yack
             //! append using inside_type comparison
             inline virtual void append(const inside_type &args) { this->insert(args); }
 
+            //! unsigned power function
+            inline void upower(const inside_type args, int n)
+            {
+                if(n) this->insert(args,n); else this->insert(_1);
+            }
+
             //! power function, using multiple inserts
             inline void power(const inside_type args, int n)
             {

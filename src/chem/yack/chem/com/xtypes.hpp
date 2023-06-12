@@ -10,6 +10,7 @@
 #include "yack/proto-ostream.hpp"
 #include "yack/sequence/vector.hpp"
 #include "yack/container/matrix.hpp"
+#include "yack/math/triplet.hpp"
 
 namespace yack {
 
@@ -47,6 +48,7 @@ namespace yack {
 
             typedef vector<Real,memory::dyadic> Vector; //!< alias
             typedef matrix<Real>                Matrix; //!< alias
+            typedef math::triplet<Real>         Triplet; //!< alias
         };
 
 

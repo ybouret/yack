@@ -54,6 +54,16 @@ namespace yack
             }
         }
 
+        void Actors:: massAction(Extended::Mul                  &xmul,
+                                 const readable<Extended::Real> &C,
+                                 const IndexLevel                level) const
+        {
+            for(const Actor *ac = head; ac; ac=ac->next)
+            {
+                ac->massAction(xmul,C,level);
+            }
+        }
+
     }
 
 }

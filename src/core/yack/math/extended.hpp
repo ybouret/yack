@@ -142,6 +142,10 @@ namespace yack
         //! 10^exp10
         T exp10() const;
 
+        //! this/2
+        extended half() const;
+
+
         //! this ^ n
         extended upower(unsigned n) const;
 

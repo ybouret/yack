@@ -44,6 +44,9 @@ namespace yack
             YACK_PROTO_OSTREAM(Actors); //!< display
             void makeName();            //!< create name from list
 
+            void massAction(Extended::Mul                  &xmul,
+                            const readable<Extended::Real> &C,
+                            const IndexLevel                level) const;
             
         private:
             YACK_DISABLE_ASSIGN(Actors);

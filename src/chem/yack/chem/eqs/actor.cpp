@@ -69,6 +69,15 @@ namespace yack
             return '+' + displayFirst();
         }
 
+        void Actor:: massAction(Extended::Mul                  &xmul,
+                                const readable<Extended::Real> &C,
+                                const IndexLevel                level) const
+        {
+            assert(nu>0);
+            xmul.insert( C[ sp.indx[level] ], nu);
+        }
+
+
     }
 
 }

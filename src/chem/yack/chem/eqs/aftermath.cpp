@@ -1,9 +1,12 @@
 
 #include "yack/chem/eqs/aftermath.hpp"
 #include "yack/system/imported.hpp"
+#include "yack/math/keto.hpp"
 
 namespace yack
 {
+    using namespace math;
+
     namespace Chemical
     {
 
@@ -27,15 +30,19 @@ namespace yack
 
         Aftermath Aftermath:: Evaluate(const Equilibrium              &eq,
                                        const Extended::Real           &K,
-                                       const writable<Extended::Real> &Cend,
+                                       writable<Extended::Real>       &Cend,
                                        const readable<Extended::Real> &Corg,
                                        Extents                        &extents,
-                                       const IndexLevel                level)
+                                       const IndexLevel                level,
+                                       Extended::Mul                  &xmul)
         {
 
-            const Limitation kind = extents.build(eq,Corg,level);
-            Extended::Real lo = 0;
-            Extended::Real hi = 0;
+            const Limitation  kind = extents.build(eq,Corg,level);
+            Extended::Triplet xi;
+            Extended::Triplet ma;
+
+            keto::load(Cend,Corg);
+
             switch( kind )
             {
                 case LimitedByNone: throw imported::exception(eq.name(),"empty equilibrium");
@@ -49,12 +56,28 @@ namespace yack
                 case LimitedByBoth:
                     if(extents.reac.isBlocking() && extents.prod.isBlocking())
                         return Aftermath();
-                    hi =  extents.reac;
-                    lo = -extents.prod;
-                    std::cerr << "lo=" << lo << " = " << *lo << std::endl;
-                    std::cerr << "hi=" << hi << " = " << *hi << std::endl;
+                    xi.a = -extents.prod;
+                    eq.make(Cend, level, Corg, level, xi.a);
+                    extents.prod.nullify(Cend,level);
+                    ma.a = eq.reacMassAction(xmul,K,Cend,level);
+                    eq.displayCompact(std::cerr << "\t" << eq << " noProd: ",Cend,level) << " => ma = " << ma.a <<  " / " << eq.massAction(xmul,K,Cend,level) << std::endl;
+
+                    xi.c =  extents.reac;
+                    eq.make(Cend, level, Corg, level, xi.c);
+                    extents.reac.nullify(Cend,level);
+                    ma.c = -eq.prodMassAction(xmul,Cend,level);
+                    eq.displayCompact(std::cerr << "\t" << eq << " noReac: ",Cend,level) << " => ma = " << ma.c << " / " << eq.massAction(xmul,K,Cend,level) << std::endl;
+
+                    assert(xi.c>xi.a);
+                    assert(ma.c<ma.a);
+
                     break;
             }
+
+            
+
+
+
 
 
 

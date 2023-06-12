@@ -77,6 +77,10 @@ YACK_UTEST(vat)
 
     Library::Conc(C,ran,0.4);
     lib(std::cerr << "C0=","[",C,"]") << std::endl;
+    for(size_t i=C.size();i>0;--i)
+    {
+        C0[i] = Extended::Send(C[i]);
+    }
     normalizer(xml,C0,vat);
 
     for(size_t i=C.size();i>0;--i)
@@ -88,12 +92,12 @@ YACK_UTEST(vat)
 
     Species::Fund fund = new Species::Bank();
     Extents       xt(fund);
+    Extended::Mul xmul;
 
     for(const eNode *en=eqs->head;en;en=en->next)
     {
         const Equilibrium &eq = ***en;
-        const Aftermath    am = Aftermath::Evaluate(eq,K[eq.indx[TopLevel]],C1,C0,xt,TopLevel);
-        //xt.build(eq,C0,TopLevel);
+        const Aftermath    am = Aftermath::Evaluate(eq,K[eq.indx[TopLevel]],C1,C0,xt,TopLevel,xmul);
         eqs.display(std::cerr, eq);
         xt.display(std::cerr) << std::endl;
     }

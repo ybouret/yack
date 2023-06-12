@@ -87,6 +87,16 @@ YACK_UTEST(math_extended)
         }
     }
 
+    std::cerr << std::endl << "half" << std::endl;
+    for(size_t i=1;i<=xr.size();++i)
+    {
+        for(size_t j=i;j<=xr.size();++j)
+        {
+            const extended<float> sum = xr[i] + xr[j];
+            std::cerr << "(" << xr[i] << "+" << xr[j] << ")/2 = " << sum << "/2" << " = " << sum.half() << std::endl;
+        }
+    }
+
 
 }
 YACK_UDONE()

@@ -304,4 +304,18 @@ namespace yack
         return xr;
     }
 
+
+    template <>
+    extended<real_t> extended<real_t>:: half() const
+    {
+        if( std::abs(m) <= 0 )
+            return extended<real_t>();
+        else
+        {
+            extended xr(*this);
+            --coerce(xr.p);
+            return xr;
+        }
+    }
+
 }

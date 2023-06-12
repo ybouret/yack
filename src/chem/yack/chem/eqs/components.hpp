@@ -118,6 +118,20 @@ namespace yack
                 return os;
             }
 
+            Extended::Real reacMassAction(Extended::Mul                  &xmul,
+                                          const Extended::Real            K,
+                                          const readable<Extended::Real> &C,
+                                          const IndexLevel                level) const;
+
+            Extended::Real prodMassAction(Extended::Mul                  &xmul,
+                                          const readable<Extended::Real> &C,
+                                          const IndexLevel                level) const;
+
+            Extended::Real massAction(Extended::Mul                  &xmul,
+                                      const Extended::Real            K,
+                                      const readable<Extended::Real> &C,
+                                      const IndexLevel                level) const;
+
 
             //__________________________________________________________________
             //
