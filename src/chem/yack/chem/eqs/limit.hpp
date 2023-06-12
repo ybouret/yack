@@ -47,13 +47,14 @@ namespace yack
                 }
             }
 
-
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
             virtual void initialize() noexcept; //!< set to 0 and empty
             YACK_PROTO_OSTREAM(Limit);          //!< display
+
+
         };
 
     }

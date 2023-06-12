@@ -5,7 +5,7 @@
 
 #include "yack/chem/eqs/lua.hpp"
 #include "yack/chem/vat/normalizer.hpp"
-#include "yack/chem/eqs/extents.hpp"
+#include "yack/chem/eqs/aftermath.hpp"
 
 #include "yack/system/env.hpp"
 
@@ -41,14 +41,14 @@ YACK_UTEST(vat)
     vat.updateK(K,0.0);
     vat.displayK(std::cerr,K);
 
-    return 0;
 
     vector<double>         C(lib->size,0);
     vector<Extended::Real> C0(lib->size,0);
+    vector<Extended::Real> C1(lib->size,0);
     Normalizer             normalizer(vat.maxClusterSize,vat.maximumSpecies);
 
     Extended::Add xadd;
-    if(vat.size)
+    if(true && vat.size)
     {
         for(size_t iter=0;iter<10;++iter)
         {
@@ -66,7 +66,6 @@ YACK_UTEST(vat)
             {
                 C0[i] = Extended::Send(C[i]);
             }
-            //lib(std::cerr << "C0 = ","[",C0,"]") << std::endl;
             normalizer(xml,C0,vat);
             for(size_t i=C.size();i>0;--i)
             {
@@ -75,16 +74,9 @@ YACK_UTEST(vat)
             lib(std::cerr << "C1 = ","[",C,"]") << std::endl;
         }
     }
-    return 0;
 
     Library::Conc(C,ran,0.4);
-
-
-
-
     lib(std::cerr << "C0=","[",C,"]") << std::endl;
-
-
     normalizer(xml,C0,vat);
 
     for(size_t i=C.size();i>0;--i)
@@ -100,7 +92,8 @@ YACK_UTEST(vat)
     for(const eNode *en=eqs->head;en;en=en->next)
     {
         const Equilibrium &eq = ***en;
-        xt.build(eq,C0,TopLevel);
+        const Aftermath    am = Aftermath::Evaluate(eq,K[eq.indx[TopLevel]],C1,C0,xt,TopLevel);
+        //xt.build(eq,C0,TopLevel);
         eqs.display(std::cerr, eq);
         xt.display(std::cerr) << std::endl;
     }

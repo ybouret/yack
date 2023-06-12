@@ -53,9 +53,9 @@ namespace yack
             }
         }
 
-        void Extents:: build(const Components               &eq,
-                             const readable<Extended::Real> &C0,
-                             const IndexLevel                level)
+        Limitation Extents:: build(const Components               &eq,
+                                   const readable<Extended::Real> &C0,
+                                   const IndexLevel                level)
         {
             reset();
             try
@@ -69,6 +69,7 @@ namespace yack
                 reset();
                 throw;
             }
+            return kind;
         }
 
         void Extents:: updateLimitation() noexcept

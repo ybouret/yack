@@ -50,9 +50,9 @@ namespace yack
             void reset() noexcept; //!< clean all
 
             //! build current limitation
-            void build(const Components               &eq,
-                       const readable<Extended::Real> &C0,
-                       const IndexLevel                level);
+            Limitation build(const Components               &eq,
+                             const readable<Extended::Real> &C0,
+                             const IndexLevel                level);
 
             //! output status
             std::ostream & display(std::ostream &os) const;
@@ -64,7 +64,7 @@ namespace yack
             const Regulating reac; //!< regulating reactant(s)
             const Regulating prod; //!< regulating product(s)
             const Limitation kind; //!< depending on counts
-
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Extents);
             void updateLimitation() noexcept;

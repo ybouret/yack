@@ -15,6 +15,11 @@ namespace yack
         {
         }
 
+        bool Regulating:: isBlocking() const noexcept
+        {
+            return m<=0;
+        }
+
       
 
         void Regulating:: tryDecreaseWith(const Extended::Real &c, const Actor &a)
