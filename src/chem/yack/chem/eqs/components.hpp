@@ -118,20 +118,24 @@ namespace yack
                 return os;
             }
 
+            //! mass action for reactants
             Extended::Real reacMassAction(Extended::Mul                  &xmul,
                                           const Extended::Real            K,
                                           const readable<Extended::Real> &C,
                                           const IndexLevel                level) const;
 
+            //! mass action for products
             Extended::Real prodMassAction(Extended::Mul                  &xmul,
                                           const readable<Extended::Real> &C,
                                           const IndexLevel                level) const;
 
+            //! regularized mass action
             Extended::Real massAction(Extended::Mul                  &xmul,
                                       const Extended::Real            K,
                                       const readable<Extended::Real> &C,
                                       const IndexLevel                level) const;
 
+            //! Q/K
             Extended::Real quotient(Extended::Mul                  &xmul,
                                     const Extended::Real            K,
                                     const readable<Extended::Real> &C,

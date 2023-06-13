@@ -20,7 +20,18 @@ namespace yack
             return res;
         }
 
-        
+
+        const char * Equilibrium:: StatusText(const Status status) noexcept
+        {
+            switch (status) {
+                case Blocked:
+                    return "BLOCKED";
+
+                case Running:
+                    return "RUNNING";
+            }
+            return "";
+        }
 
 
     }

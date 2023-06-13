@@ -38,6 +38,7 @@ namespace yack
             string          displayFirst()               const; //!< format
             string          displayExtra()               const; //!< format
 
+            //! C[sp.indx[level]]^nu
             void massAction(Extended::Mul                  &xmul,
                             const readable<Extended::Real> &C,
                             const IndexLevel                level) const;

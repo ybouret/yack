@@ -15,16 +15,16 @@ namespace yack
         {
         }
 
-        Aftermath:: Aftermath() noexcept : extent(0), status(Blocked), action(0)
+        Aftermath:: Aftermath() noexcept : extent(0), status(Equilibrium::Blocked), action(0)
         {
         }
         
-        Aftermath:: Aftermath(const Extended::Real args) noexcept : extent(args), status(Running), action(0)
+        Aftermath:: Aftermath(const Extended::Real args) noexcept : extent(args), status(Equilibrium::Running), action(0)
         {
         }
 
         Aftermath:: Aftermath(const Extended::Real args,
-                              const Extended::Real aerr) noexcept : extent(args), status(Running), action(aerr)
+                              const Extended::Real aerr) noexcept : extent(args), status(Equilibrium::Running), action(aerr)
         {
         }
 
@@ -34,33 +34,22 @@ namespace yack
 
         }
 
-        const char * EqStatusText(const EqStatus status) noexcept
-        {
-            switch (status) {
-                case Blocked:
-                    return "BLOCKED";
-
-                case Running:
-                    return "RUNNING";
-            }
-            return "";
-        }
 
         std::ostream & operator<<(std::ostream &os, const Aftermath &am)
         {
-            os << EqStatusText(am.status) << " @" << std::setw(15) << *am.extent << " (action=" << am.action << ")";
+            os << Equilibrium::StatusText(am.status) << " @" << std::setw(15) << *am.extent << " (action=" << am.action << ")";
             return os;
         }
 
-        bool Aftermath:: InitBoth(Extended::Triplet              &xi,
-                                  Extended::Triplet              &ma,
-                                  const Equilibrium              &eq,
-                                  const Extended::Real           &K,
-                                  writable<Extended::Real>       &Ctmp,
-                                  const readable<Extended::Real> &Cend,
-                                  const Extents                  &extents,
-                                  const IndexLevel                level,
-                                  Extended::Mul                  &xmul)
+        bool Aftermath:: QueryLimitedByBoth(Extended::Triplet              &xi,
+                                            Extended::Triplet              &ma,
+                                            const Equilibrium              &eq,
+                                            const Extended::Real           &K,
+                                            writable<Extended::Real>       &Ctmp,
+                                            const readable<Extended::Real> &Cend,
+                                            const Extents                  &extents,
+                                            const IndexLevel                level,
+                                            Extended::Mul                  &xmul)
         {
             xi.b = xmul._0;
             ma.b = eq.massAction(xmul,K,Cend,level);
@@ -162,7 +151,7 @@ namespace yack
                     }
 
                     // check if 0 is solution for Cend, otherwise init
-                    if(InitBoth(xi,ma,eq,K,Ctmp,Cend,extents,level,xmul))
+                    if( QueryLimitedByBoth(xi,ma,eq,K,Ctmp,Cend,extents,level,xmul))
                     {
                         return Aftermath(xmul._0);
                     }

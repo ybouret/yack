@@ -106,7 +106,7 @@ YACK_UTEST(vat)
             const Aftermath    am = Aftermath::Evaluate(eq,Ki,C1,C0,xt,TopLevel,xmul,xadd,Ctmp);
 
             std::cerr << am;
-            if(Running==am.status) std::cerr << " Q=" << *eq.quotient(xmul,Ki,C1,TopLevel);
+            if(Equilibrium::Running==am.status) std::cerr << " Q=" << *eq.quotient(xmul,Ki,C1,TopLevel);
             std::cerr << std::endl;
             //xt.display(std::cerr) << std::endl;
         }

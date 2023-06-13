@@ -44,6 +44,7 @@ namespace yack
             YACK_PROTO_OSTREAM(Actors); //!< display
             void makeName();            //!< create name from list
 
+            //! Prod C_i^nu_i
             void massAction(Extended::Mul                  &xmul,
                             const readable<Extended::Real> &C,
                             const IndexLevel                level) const;

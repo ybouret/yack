@@ -15,7 +15,7 @@ namespace yack
         //______________________________________________________________________
         //
         //
-        //! Equilibrium interfce
+        //! Equilibrium interface
         //
         //______________________________________________________________________
         class Equilibrium : public spot_object, public counted, public Entity, public Components
@@ -29,7 +29,17 @@ namespace yack
             typedef core_repo<Equilibrium>      CoreRepo; //!< alias
             typedef CoreRepo::node_type         Node;     //!< alias
             typedef solo_repo<Equilibrium>      SoloRepo; //!< alias
-            
+
+            //! status
+            enum Status
+            {
+                Blocked, //!< missing components
+                Running  //!< enough components are present
+            };
+
+            //! named status
+            static const char *StatusText(const Status status) noexcept;
+
             //__________________________________________________________________
             //
             // methods
