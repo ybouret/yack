@@ -11,6 +11,8 @@ namespace yack
         Components:: Components() noexcept :
         reac(),
         prod(),
+        d_nu(0),
+        nmax(0),
         cdb()
         {
         }
@@ -56,6 +58,16 @@ namespace yack
             }
             assert(A);
             A->makeName();
+            int &sum = coerce(d_nu);
+            int &nmx = coerce(nmax);
+            sum  = 0;
+            nmx  = 0;
+            for(const cNode *node= (*this)->head;node;node=node->next)
+            {
+                const Component &cc = ***node;
+                sum += cc.nu;
+                nmx  = max_of(nmx,cc.nu);
+            }
         }
 
         std::ostream & Components:: display(std::ostream &os) const

@@ -24,6 +24,8 @@ void check1()
 
 YACK_UTEST(math_extended)
 {
+    randomized::rand_ ran;
+
     vector< extended<float> > xr;
     for(int i=1;i<argc;++i)
     {
@@ -95,6 +97,19 @@ YACK_UTEST(math_extended)
             const extended<float> sum = xr[i] + xr[j];
             std::cerr << "(" << xr[i] << "+" << xr[j] << ")/2 = " << sum << "/2" << " = " << sum.half() << std::endl;
         }
+    }
+
+    std::cerr << std::endl << "pow" << std::endl;
+    {
+        for(size_t iter=0;iter<10;++iter)
+        {
+            const float     x = 10 * ran.to<float>();
+            extended<float> X = x;
+            const float     p = 3  * ran.symm<float>();
+            std::cerr << std::setw(15) << x << "^(" << std::setw(15) << p << ")=" << std::setw(15) << *X.pow(p) << "/" << std::pow(x,p) << std::endl;
+        }
+
+
     }
 
 

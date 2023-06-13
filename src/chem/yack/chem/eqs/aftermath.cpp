@@ -94,6 +94,53 @@ namespace yack
         }
 
 
+        bool Aftermath:: QueryLimitedByProd(Extended::Triplet              &xi,
+                                            Extended::Triplet              &ma,
+                                            const Equilibrium              &eq,
+                                            const Extended::Real           &K,
+                                            writable<Extended::Real>       &Ctmp,
+                                            const readable<Extended::Real> &Cend,
+                                            const Extents                  &extents,
+                                            const IndexLevel                level,
+                                            Extended::Mul                  &xmul)
+        {
+            xi.b = xmul._0;
+            ma.b = eq.massAction(xmul,K,Cend,level);
+            std::cerr << "massAction(0)=" << ma.b << std::endl;
+            switch( __sign::of(ma.b.m) )
+            {
+                case __zero__: return true;
+
+                    //----------------------------------------------------------
+                case negative: // move prod
+                    //            to get a positive mass action = K
+                    //----------------------------------------------------------
+                    assert(extents.prod>0);
+                    xi.a = -extents.prod;
+                    eq.make(Ctmp, level, Cend, level, xi.a);
+                    extents.prod.nullify(Ctmp,level);
+                    ma.a = K;
+                    xi.c = xi.b;
+                    ma.c = ma.b;
+                    std::cerr << "xi=" << xi << std::endl;
+                    std::cerr << "ma=" << ma << std::endl;
+
+                    break;
+
+                case positive:
+                    xi.a = xi.b;
+                    ma.a = ma.b;
+                    exit(0);
+                    break;
+            }
+
+
+            return false;
+        }
+
+
+
+
         Extended::Real Aftermath:: makeExtent(const Components               &eq,
                                               const readable<Extended::Real> &Corg,
                                               const readable<Extended::Real> &Cend,
@@ -102,6 +149,7 @@ namespace yack
         {
             xadd.free();
             assert(eq->size>0);
+            const Extended::Real den = eq->size;
             for(const cNode *node=eq->head;node;node=node->next)
             {
                 const Species &s = ****node;
@@ -110,7 +158,7 @@ namespace yack
                 xadd.append(del);
 
             }
-            return xadd.reduce()/eq->size;
+            return xadd.reduce()/den;
         }
 
         Aftermath Aftermath:: Evaluate(const Equilibrium              &eq,
@@ -123,42 +171,82 @@ namespace yack
                                        Extended::Add                  &xadd,
                                        writable<Extended::Real>       &Ctmp)
         {
-            const Extended::Real _0   = xmul._0;
+            const Extended::Real _0 = xmul._0;
             Extended::Triplet    xi;
             Extended::Triplet    ma;
-            keto::load(Cend,Corg);
 
+            //------------------------------------------------------------------
+            //
+            // initialize
+            //
+            //------------------------------------------------------------------
+            keto::load(Cend,Corg);          // Cend is to be found
             Extended::Real absXi = 0;       // must decrease
             bool           check = false;   // but not the first time
         LOOKUP:
             switch( extents.build(eq,Cend,level) )
             {
+                    //----------------------------------------------------------
+                    //
+                    // sanity check
+                    //
+                    //----------------------------------------------------------
                 case LimitedByNone: throw imported::exception(eq.name(),"empty equilibrium");
 
+                    //----------------------------------------------------------
+                    //
+                    // limited by product(s) only
+                    //
+                    //----------------------------------------------------------
                 case LimitedByProd:
-                    return Aftermath();
-                    break;
+                    extents.display(std::cerr);
+                    if( QueryLimitedByProd(xi,ma,eq,K,Ctmp,Cend,extents,level,xmul))
+                    {
+                        return Aftermath(_0);
+                    }
+                    break; // => bisection
 
+                    //----------------------------------------------------------
+                    //
+                    // limited by reactant(s) only
+                    //
+                    //----------------------------------------------------------
                 case LimitedByReac:
                     return Aftermath();
                     break;
 
+                    //----------------------------------------------------------
+                    //
+                    // limited by reactant(s) and product(s)
+                    //
+                    //----------------------------------------------------------
                 case LimitedByBoth:
+                    //----------------------------------------------------------
                     // check blocked or not
+                    //----------------------------------------------------------
                     if(extents.reac.isBlocking() && extents.prod.isBlocking())
                     {
                         return Aftermath();
                     }
 
-                    // check if 0 is solution for Cend, otherwise init
+                    //----------------------------------------------------------
+                    // check if xi=0 is solution for Cend, otherwise init
+                    //----------------------------------------------------------
                     if( QueryLimitedByBoth(xi,ma,eq,K,Ctmp,Cend,extents,level,xmul))
                     {
-                        return Aftermath(xmul._0);
+                        return Aftermath(_0);
                     }
                     break; // => bisection
             }
 
-            //std::cerr << "---- BISECTION ----" << std::endl;
+            //------------------------------------------------------------------
+            //
+            // bisection from current setup
+            //
+            //------------------------------------------------------------------
+            assert(xi.a<xi.c);
+            assert(ma.a>0);
+            assert(ma.c<0);
             Extended::Real width = xi.c - xi.a;
             while(true)
             {
@@ -173,8 +261,6 @@ namespace yack
                     case __zero__:
                         keto::load(Cend,Ctmp);
                         xi.b = makeExtent(eq,Corg,Cend,level,xadd);
-                        //std::cerr << "EXACT MA=0 @XI=" << xi.b << std::endl;
-                        //eq.displayCompact(std::cerr << "\t" << eq << " exact: ",Cend,level) << " => " << eq.massAction(xmul,K,Cend,level) << std::endl;
                         return Aftermath( xi.b );
 
                     case negative:

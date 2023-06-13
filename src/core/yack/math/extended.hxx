@@ -318,4 +318,28 @@ namespace yack
         }
     }
 
+    template <>
+    extended<real_t> extended<real_t>:: pow(const real_t alpha) const
+    {
+        static const real_t two = 2;
+
+        switch(__sign::of(m))
+        {
+            case negative: throw libc::exception(EDOM,"pow of negative number");
+            case __zero__: return extended();
+            case positive:
+                break;
+        }
+        const real_t ap = alpha * p;
+        const int    ip = static_cast<int>(std::floor(ap));
+        const real_t fp = ap-ip;
+        const real_t mm = std::pow(m,alpha) * std::pow(two,fp);
+        //std::cerr << "p=" << p << ", alpha=" << alpha << ", ap=" << ap << ", ip=" << ip << ", fp=" << fp << std::endl;
+        //std::cerr << "mm=" << mm << std::endl;
+        extended xr(mm);
+        coerce(xr.p) += ip;
+        return xr;
+    }
+
+
 }

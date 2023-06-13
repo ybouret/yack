@@ -149,7 +149,8 @@ namespace yack
         //! this ^ n
         extended upower(unsigned n) const;
 
-        
+        //! this ^ alpha
+        extended pow(const T alpha) const;
 
         //__________________________________________________________________
         //

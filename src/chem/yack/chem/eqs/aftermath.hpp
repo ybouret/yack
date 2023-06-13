@@ -88,7 +88,15 @@ namespace yack
                                            const IndexLevel                level,
                                            Extended::Mul                  &xmul);
 
-
+            static bool QueryLimitedByProd(Extended::Triplet              &xi,
+                                           Extended::Triplet              &ma,
+                                           const Equilibrium              &eq,
+                                           const Extended::Real           &K,
+                                           writable<Extended::Real>       &Ctmp,
+                                           const readable<Extended::Real> &Cend,
+                                           const Extents                  &extents,
+                                           const IndexLevel                level,
+                                           Extended::Mul                  &xmul);
 
         };
 

@@ -147,6 +147,9 @@ namespace yack
             //__________________________________________________________________
             const Actors reac; //!< reactants list
             const Actors prod; //!< products  list
+            const int    d_nu; //!< sum(nu_i)
+            const int    nmax; //!< max(|nu_i|)
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Components);
             ComponentsDB cdb;
