@@ -148,7 +148,7 @@ namespace yack
             const Actors reac; //!< reactants list
             const Actors prod; //!< products  list
             const int    d_nu; //!< sum(nu_i)
-            const int    nmax; //!< max(|nu_i|)
+            const double sexp; //!< scaling exponent: 1.0/d_nu
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Components);

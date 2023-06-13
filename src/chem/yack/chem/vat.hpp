@@ -40,6 +40,10 @@ namespace yack
             //! display equilibria+constant per cluster
             void displayK(std::ostream &, const Extended::Vector &) const;
 
+            //! display equilibria+scaling per cluster
+            void displayS(std::ostream &, const Extended::Vector &) const;
+
+
             //__________________________________________________________________
             //
             // members

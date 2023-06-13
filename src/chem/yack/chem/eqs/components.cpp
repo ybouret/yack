@@ -12,7 +12,7 @@ namespace yack
         reac(),
         prod(),
         d_nu(0),
-        nmax(0),
+        sexp(0),
         cdb()
         {
         }
@@ -58,15 +58,22 @@ namespace yack
             }
             assert(A);
             A->makeName();
-            int &sum = coerce(d_nu);
-            int &nmx = coerce(nmax);
-            sum  = 0;
-            nmx  = 0;
-            for(const cNode *node= (*this)->head;node;node=node->next)
             {
-                const Component &cc = ***node;
-                sum += cc.nu;
-                nmx  = max_of(nmx,cc.nu);
+                int &sum = coerce(d_nu);
+                sum  = 0;
+                for(const cNode *node= (*this)->head;node;node=node->next)
+                {
+                    const Component &cc = ***node;
+                    sum += cc.nu;
+                }
+            }
+            if(d_nu!=0)
+            {
+                coerce(sexp) = 1.0/d_nu;
+            }
+            else
+            {
+                coerce(sexp) = 0.0;
             }
         }
 

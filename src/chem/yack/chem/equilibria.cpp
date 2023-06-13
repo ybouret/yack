@@ -66,7 +66,19 @@ namespace yack
             os << '}';
             return os;
         }
-        
+
+        void Equilibria:: computeScaling(Extended::Vector       &S,
+                                         const Extended::Vector &K) const
+        {
+            assert(S.size()==K.size());
+            for(const eNode *node=(*this)->head;node;node=node->next)
+            {
+                const Equilibrium   &eq = ***node;
+                const size_t         ei = eq.indx[TopLevel];
+                const Extended::Real k  = K[ei]; assert(k>0);
+                S[ei] = k.pow(eq.sexp);
+            }
+        }
 
     }
 

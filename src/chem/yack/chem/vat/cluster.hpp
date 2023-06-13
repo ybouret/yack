@@ -137,6 +137,9 @@ namespace yack
             //! display eqs+constants
             void displayK(std::ostream &, const Extended::Vector &) const;
 
+            //! display eqs+scaling
+            void displayS(std::ostream &, const Extended::Vector &) const;
+
             bool isConserved(const Species &) const noexcept; //!< helper
             bool isUnbounded(const Species &) const noexcept; //!< helper
 

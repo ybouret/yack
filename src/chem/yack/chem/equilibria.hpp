@@ -69,6 +69,8 @@ namespace yack
             //! formated display
             std::ostream & display(std::ostream &, const Equilibrium &) const;
 
+            void computeScaling(Extended::Vector       &S,
+                                const Extended::Vector &K) const;
 
             //__________________________________________________________________
             //

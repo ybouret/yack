@@ -107,7 +107,10 @@ YACK_UTEST(math_extended)
             extended<float> X = x;
             const float     p = 3  * ran.symm<float>();
             std::cerr << std::setw(15) << x << "^(" << std::setw(15) << p << ")=" << std::setw(15) << *X.pow(p) << "/" << std::pow(x,p) << std::endl;
+
+            std::cerr << std::setw(15) << x << "^0 = " << *X.pow(0) << std::endl;
         }
+
 
 
     }

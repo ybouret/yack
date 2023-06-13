@@ -44,7 +44,7 @@ namespace yack
         bool Aftermath:: QueryLimitedByBoth(Extended::Triplet              &xi,
                                             Extended::Triplet              &ma,
                                             const Equilibrium              &eq,
-                                            const Extended::Real           &K,
+                                            const Extended::Real            K,
                                             writable<Extended::Real>       &Ctmp,
                                             const readable<Extended::Real> &Cend,
                                             const Extents                  &extents,
@@ -97,7 +97,8 @@ namespace yack
         bool Aftermath:: QueryLimitedByProd(Extended::Triplet              &xi,
                                             Extended::Triplet              &ma,
                                             const Equilibrium              &eq,
-                                            const Extended::Real           &K,
+                                            const Extended::Real            K,
+                                            const Extended::Real            S,
                                             writable<Extended::Real>       &Ctmp,
                                             const readable<Extended::Real> &Cend,
                                             const Extents                  &extents,
@@ -124,13 +125,17 @@ namespace yack
                     ma.c = ma.b;
                     std::cerr << "xi=" << xi << std::endl;
                     std::cerr << "ma=" << ma << std::endl;
-
                     break;
 
-                case positive:
+                case positive: // increase concentrations with scaling
                     xi.a = xi.b;
                     ma.a = ma.b;
-                    exit(0);
+                    xi.c = S;
+                FWD:
+                    eq.make(Ctmp,level,Cend,level,xi.c);
+                    ma.c = eq.massAction(xmul,K,Ctmp,level);
+                    if(ma.c.m>=0) { xi.c += S; goto FWD; }
+                    std::cerr << "found xi=" << xi << ", ma=" << ma << std::endl;
                     break;
             }
 
@@ -163,6 +168,7 @@ namespace yack
 
         Aftermath Aftermath:: Evaluate(const Equilibrium              &eq,
                                        const Extended::Real           &K,
+                                       const Extended::Real           &S,
                                        writable<Extended::Real>       &Cend,
                                        const readable<Extended::Real> &Corg,
                                        Extents                        &extents,
@@ -200,7 +206,7 @@ namespace yack
                     //----------------------------------------------------------
                 case LimitedByProd:
                     extents.display(std::cerr);
-                    if( QueryLimitedByProd(xi,ma,eq,K,Ctmp,Cend,extents,level,xmul))
+                    if( QueryLimitedByProd(xi,ma,eq,K,S,Ctmp,Cend,extents,level,xmul))
                     {
                         return Aftermath(_0);
                     }

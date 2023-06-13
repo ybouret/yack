@@ -225,7 +225,23 @@ namespace yack
                 display(os,eq);
                 assert(eq.indx[TopLevel]<=K.size());
                 const Extended::Real k = K[ eq.indx[TopLevel] ];
-                os << "10^(" << k.exp10() << ")" << std::endl;
+                os << "K = 10^(" << k.exp10() << ")" << std::endl;
+            }
+
+            os << '}' << std::endl;
+        }
+
+        void Cluster:: displayS(std::ostream &os, const Extended::Vector &S) const
+        {
+
+            os << '{' << std::endl;
+            for(const Equilibrium::Node *en = head; en; en=en->next)
+            {
+                const Equilibrium &eq = ***en;
+                display(os,eq);
+                assert(eq.indx[TopLevel]<=S.size());
+                const Extended::Real s = S[ eq.indx[TopLevel] ];
+                os << "S = 10^(" << s.exp10() << ") M" << std::endl;
             }
 
             os << '}' << std::endl;
