@@ -35,7 +35,7 @@ namespace yack
             virtual ~Vat() noexcept;
 
             //! update all constants, in order
-            void updateK( Extended::Vector &K, const double t);
+            void updateK(Extended::Vector &, const double t);
 
             //! display equilibria+constant per cluster
             void displayK(std::ostream &, const Extended::Vector &) const;
