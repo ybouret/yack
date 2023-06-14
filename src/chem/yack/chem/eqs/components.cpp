@@ -170,7 +170,7 @@ namespace yack
                                                    const IndexLevel                level) const
         {
             xmul.free();
-            xmul.insert(xmul._1);
+            xmul.insert(xmul.positive1);
             prod.massAction(xmul,C,level);
             return xmul.reduce();
         }
@@ -190,6 +190,18 @@ namespace yack
                                              const IndexLevel                level) const
         {
             return prodMassAction(xmul,C,level)/reacMassAction(xmul,K,C,level);
+        }
+
+
+        void Components:: gradAction(writable<Extended::Real>       &out,
+                                     const IndexLevel                outLevel,
+                                     const Extended::Real           &K,
+                                     const readable<Extended::Real> &inp,
+                                     const IndexLevel                inpLevel,
+                                     Extended::Mul                  &xmul) const
+        {
+            reac.gradAction(out, outLevel, K,              inp, inpLevel, xmul);
+            prod.gradAction(out, outLevel, xmul.negative1, inp, inpLevel, xmul);
         }
 
 

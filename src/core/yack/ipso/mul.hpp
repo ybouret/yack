@@ -52,7 +52,7 @@ namespace yack
             using proto_class::size;
             using proto_class::lower;
             using proto_class::upper;
-            using api<T>::_1;
+            using api<T>::positive1;
 
             //__________________________________________________________________
             //
@@ -73,7 +73,7 @@ namespace yack
             //! unsigned power function
             inline void upower(const inside_type args, int n)
             {
-                if(n) this->insert(args,n); else this->insert(_1);
+                if(n) this->insert(args,n); else this->insert(positive1);
             }
 
             //! power function, using multiple inserts
@@ -82,7 +82,7 @@ namespace yack
                 switch( __sign::of(n) )
                 {
                     case __zero__:
-                        this->insert(_1);
+                        this->insert(positive1);
                         break;
 
                     case positive:
@@ -90,7 +90,7 @@ namespace yack
                         return;
 
                     case negative: {
-                        const inside_type _I = _1/args;
+                        const inside_type _I = positive1/args;
                         this->insert(_I,static_cast<unsigned>(-n));
                     } break;
                 }

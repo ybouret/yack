@@ -144,13 +144,14 @@ namespace yack
 
         protected:
             //! setup
-            inline explicit api(container &_) noexcept : api_(_), _1(1) {}
+            inline explicit api(container &_) noexcept : api_(_), positive1(1), negative1(-positive1) {}
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(api);
 
         public:
-            const inside_type _1; //!< precomputed 1
+            const inside_type positive1; //!< precomputed  1
+            const inside_type negative1; //!< precomputed -1
         };
 
 

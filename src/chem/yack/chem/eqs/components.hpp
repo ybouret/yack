@@ -149,6 +149,14 @@ namespace yack
                                       const readable<Extended::Real> &C,
                                       const IndexLevel                level) const;
 
+            //! gradient of mass action
+            void gradAction(writable<Extended::Real>       &out,
+                            const IndexLevel                outLevel,
+                            const Extended::Real           &K,
+                            const readable<Extended::Real> &inp,
+                            const IndexLevel                inpLevel,
+                            Extended::Mul                  &xmul) const;
+
             //! Q/K
             Extended::Real quotient(Extended::Mul                  &xmul,
                                     const Extended::Real            K,

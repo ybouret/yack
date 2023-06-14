@@ -49,6 +49,7 @@ namespace yack
             //__________________________________________________________________
             const unsigned       nu;   //!< coefficient>0
             const Extended::Real xn;   //!< nu as extended real
+            const unsigned       nm;   //!< nu-1
             
         private:
             const Species &sp;

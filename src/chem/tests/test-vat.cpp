@@ -49,6 +49,8 @@ YACK_UTEST(vat)
     vector<Extended::Real> C0(lib->size,0);
     vector<Extended::Real> C1(lib->size,0);
     vector<Extended::Real> Ctmp(lib->size,0);
+    vector<Extended::Real> phi(lib->size,0);
+
     Normalizer             normalizer(vat.maxClusterSize,vat.maximumSpecies);
 
     Extended::Add xadd;
@@ -112,7 +114,11 @@ YACK_UTEST(vat)
             std::cerr << am;
             if(Equilibrium::Running==am.status) std::cerr << " Q=" << *eq.quotient(xmul,Ki,C1,TopLevel);
             std::cerr << std::endl;
-            
+            phi.ld(0);
+            eq.gradAction(phi,TopLevel,Ki,C1,TopLevel,xmul);
+            std::cerr << "\tCeq=" << C1  << std::endl;
+            std::cerr << "\tphi=" << phi << std::endl;
+
         }
     }
 
