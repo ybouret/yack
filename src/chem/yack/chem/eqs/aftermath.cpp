@@ -37,7 +37,7 @@ namespace yack
 
         std::ostream & operator<<(std::ostream &os, const Aftermath &am)
         {
-            os << Equilibrium::StatusText(am.status) << " @" << std::setw(15) << *am.extent << " (action=" << am.action << ")";
+            os << Equilibrium::StatusText(am.status) << " @" << std::setw(15) << *am.extent << " (action=" << *am.action << ")";
             return os;
         }
 
@@ -150,13 +150,11 @@ namespace yack
                             ma.c = eq.massAction(xmul,K,Ctmp,level);
                             switch( __sign::of(ma.c.m) )
                             {
-                                case __zero__:
+                                case __zero__: keto::load(Cend,Ctmp); return  Aftermath(makeExtent(eq,Corg,Cend,level,xadd));
                                 case positive: xi.c += S; goto FWD;
-                                case negative:
-                                    break;
+                                case negative: break;
                             }
                             assert(ma.c<0);
-                            std::cerr << "found xi=" << xi << ", ma=" << ma << std::endl;
                             break;
                     }
                     assert(xi.a<xi.c);

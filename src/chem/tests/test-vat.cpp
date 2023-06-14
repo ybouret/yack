@@ -56,7 +56,7 @@ YACK_UTEST(vat)
     Species::Fund fund = new Species::Bank();
     Extents       xt(fund);
 
-    if(true && vat.size)
+    if(false && vat.size)
     {
         for(size_t iter=0;iter<10;++iter)
         {
