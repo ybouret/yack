@@ -73,7 +73,7 @@ namespace yack
                                        Extended::Add                  &xadd,
                                        writable<Extended::Real>       &Ctmp)
         {
-            const Extended::Real _0 = xmul._0;
+            const Extended::Real _0 =  0;
             const Extended::Real m1 = -1;
             Extended::Triplet    xi;
             Extended::Triplet    ma;
@@ -174,8 +174,7 @@ namespace yack
                     //----------------------------------------------------------
                     xi.b = _0;
                     ma.b = eq.massAction(xmul,K,Cend,level);
-                    std::cerr << "massAction : " << *ma.b << std::endl;
-
+                    
                     switch( __sign::of(ma.b.m) )
                     {
                         case __zero__:
@@ -197,7 +196,22 @@ namespace yack
                             break;
 
                         case negative:
-                            exit(0);
+                            //--------------------------------------------------
+                            // make reac up to positive mass action
+                            //--------------------------------------------------
+                            xi.c = xi.b;
+                            ma.c = ma.b;
+                            xi.a = -S;
+                        REV:
+                            eq.make(Ctmp,level,Cend,level,xi.a);
+                            ma.a = eq.massAction(xmul,K,Ctmp,level);
+                            switch( __sign::of(ma.a.m) )
+                            {
+                                case __zero__: keto::load(Cend,Ctmp); return  Aftermath(makeExtent(eq,Corg,Cend,level,xadd));
+                                case negative: xi.a -= S; goto REV;
+                                case positive: break;
+                            }
+                            assert(ma.a>0);
                             break;
                     }
 

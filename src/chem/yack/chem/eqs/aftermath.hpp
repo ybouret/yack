@@ -45,6 +45,7 @@ namespace yack
             /**
              \param eq      current equilibrium
              \param K       current constant
+             \param S       current scaling concentration
              \param Cend    computed solution
              \param Corg    original concentrations
              \param extents evaluates limiting species

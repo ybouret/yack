@@ -52,7 +52,6 @@ namespace yack
             using proto_class::size;
             using proto_class::lower;
             using proto_class::upper;
-            using api<T>::_0;
             using api<T>::_1;
 
             //__________________________________________________________________

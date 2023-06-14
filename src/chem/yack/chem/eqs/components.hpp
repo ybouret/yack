@@ -118,6 +118,7 @@ namespace yack
                 return os;
             }
 
+            //! display list of variables (for Julia,...)
             template <typename T>
             void displayVar(std::ostream &os, const readable<T> &field, const IndexLevel level) const
             {

@@ -69,6 +69,7 @@ namespace yack
             //! formated display
             std::ostream & display(std::ostream &, const Equilibrium &) const;
 
+            //! compute scaling factor for [reac|prod]Only equilibria, TopLevel
             void computeScaling(Extended::Vector       &S,
                                 const Extended::Vector &K) const;
 
