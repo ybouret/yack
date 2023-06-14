@@ -162,22 +162,12 @@ namespace yack
         inline friend bool operator> (const extended lhs, const extended rhs) { return positive == scompare(lhs,rhs); } //!< test
         inline friend bool operator<=(const extended lhs, const extended rhs)
         {
-            switch(scompare(lhs,rhs))
-            {
-                case negative:
-                case __zero__: return true;
-                case positive: return false;
-            }
+            return positive == scompare(lhs,rhs) ? false : true;
         } //!< test
 
         inline friend bool operator>=(const extended lhs, const extended rhs)
         {
-            switch(scompare(lhs,rhs))
-            {
-                case positive:
-                case __zero__: return true;
-                case negative: return false;
-            }
+            return negative == scompare(lhs,rhs) ? false : true;
         } //!< test
         
         //__________________________________________________________________

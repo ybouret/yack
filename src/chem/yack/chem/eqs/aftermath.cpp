@@ -75,8 +75,8 @@ namespace yack
         {
             const Extended::Real _0 =  0;
             const Extended::Real m1 = -1;
-            Extended::Triplet    xi;
-            Extended::Triplet    ma;
+            Extended::Triplet    xi = { _0, _0, _0 };
+            Extended::Triplet    ma = { _0, _0, _0 };
 
             //------------------------------------------------------------------
             //

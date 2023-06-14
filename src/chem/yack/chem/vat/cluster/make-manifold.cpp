@@ -12,6 +12,13 @@ namespace yack
 
         namespace
         {
+            //------------------------------------------------------------------
+            //
+            //
+            //! array of integer coefficients
+            //
+            //
+            //------------------------------------------------------------------
             class icoeff : public object, public cxx_array<int>
             {
             public:
@@ -28,13 +35,18 @@ namespace yack
                     }
                 }
 
-                
-
                 icoeff *next, *prev;
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(icoeff);
             };
 
+            //------------------------------------------------------------------
+            //
+            //
+            //! list of uniq arrays of coefficientds
+            //
+            //
+            //------------------------------------------------------------------
             class icoeffs : public cxx_list_of<icoeff>
             {
             public:
@@ -104,7 +116,13 @@ namespace yack
             return id;
         }
 
-
+        //------------------------------------------------------------------
+        //
+        //
+        //! Mix of Equilibria
+        //
+        //
+        //------------------------------------------------------------------
         class MixedEquilibrium : public Equilibrium
         {
         public:
@@ -116,6 +134,7 @@ namespace yack
             mix(),
             cof(),
             usr(user_usr),
+            xmul(),
             neqz(0),
             norm(0)
             {
@@ -131,8 +150,8 @@ namespace yack
             const iList                 cof;
             const Extended::Vector     &usr;
             Extended::Mul               xmul;
-            const size_t                neqz;
-            const size_t                norm;
+            const size_t                neqz; //!< card(nu!=0)
+            const size_t                norm; //!< sum(|nu|)
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(MixedEquilibrium);
@@ -142,6 +161,7 @@ namespace yack
                 xmul.free();
                 const Equilibrium::Node *en = mix.head;
                 const iNode             *in = cof.head;
+
                 for(size_t i=mix.size;i>0;--i,en=en->next,in=in->next)
                 {
                     assert(en);

@@ -227,7 +227,7 @@ namespace yack
                 {
                     if(tribe->is_subset_of(inUse))
                     {
-                        const Extended::Real g   = gainOf(*tribe,cluster);
+                        const Extended::Real g   = gainOf(*tribe);
                         if(g>gain)
                         {
                             gain = g;
@@ -250,12 +250,11 @@ namespace yack
         }
 
 
-        Extended::Real Equalizer:: gainOf(const Tribe   &tribe,
-                                          const Cluster &cluster)
+        Extended::Real Equalizer:: gainOf(const Tribe   &tribe )
         {
             assert(Corg.size()==Cend.size());
             assert(Corg.size()==Ctmp.size());
-            assert(cluster.lib.size == Corg.size());
+            //assert(cluster.lib.size == Corg.size());
 
 
             //------------------------------------------------------------------

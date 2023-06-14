@@ -74,7 +74,6 @@ namespace yack
             Extended::Vector      Corg;        //!< Extended C0
             Extended::Vector      Ctmp;        //!< auxiliary
             Extended::Vector      Cend;        //!< auxiliary
-            Extended::Vector      xbad;        //!< initial bad values
             Extended::Matrix      Ceqz;        //!< equalized
             Extended::Add         xadd;        //!< internal ops
             
@@ -84,7 +83,7 @@ namespace yack
 
 
             //! compute Ctmp and its gain
-            Extended::Real gainOf(const Tribe &, const Cluster &);
+            Extended::Real gainOf(const Tribe &);
 
         };
 

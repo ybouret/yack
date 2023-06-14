@@ -17,6 +17,8 @@ namespace yack
 
         Equalizer:: Equalizer(const size_t maxClusterSize,
                               const size_t maximumSpecies) :
+        _0(),
+        
         speciesFund( new Species::Bank() ),
         cursorsFund( new Cursor::Bank()  ),
 
