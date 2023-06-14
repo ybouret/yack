@@ -157,6 +157,11 @@ namespace yack
                             const IndexLevel                inpLevel,
                             Extended::Mul                  &xmul) const;
 
+            //! <nu|phi>
+            Extended::Real dot(const readable<Extended::Real> & phi,
+                               const IndexLevel                 phiLevel,
+                               Extended::Add                  & xadd) const;
+
             //! Q/K
             Extended::Real quotient(Extended::Mul                  &xmul,
                                     const Extended::Real            K,

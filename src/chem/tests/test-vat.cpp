@@ -108,7 +108,7 @@ YACK_UTEST(vat)
             const size_t          ei = eq.indx[TopLevel];
             const Extended::Real  Ki = K[ei];
             const Extended::Real  Si = S[ei];
-            eqs.display(std::cerr, eq) ;
+            eqs.display(std::cerr,eq) ;
             const Aftermath    am = Aftermath::Evaluate(eq,Ki,Si,C1,C0,xt,TopLevel,xmul,xadd,Ctmp);
 
             std::cerr << am;
@@ -118,7 +118,10 @@ YACK_UTEST(vat)
             eq.gradAction(phi,TopLevel,Ki,C1,TopLevel,xmul);
             std::cerr << "\tCeq=" << C1  << std::endl;
             std::cerr << "\tphi=" << phi << std::endl;
-
+            const Extended::Real ma0 = eq.massAction(xmul, Ki, C0, TopLevel);
+            const Extended::Real sig = eq.dot(phi,TopLevel,xadd);
+            std::cerr << "\tma0=" << ma0 <<  " = " << *ma0 << std::endl;
+            std::cerr << "\tsig=" << sig <<  " = " << *sig << std::endl;
         }
     }
 

@@ -205,6 +205,22 @@ namespace yack
         }
 
 
+        Extended::Real Components:: dot(const readable<Extended::Real> & phi,
+                                        const IndexLevel                 phiLevel,
+                                        Extended::Add                  & xadd) const
+        {
+            xadd.resume((*this)->size);
+
+            for(const cNode *node=(*this)->head;node;node=node->next)
+            {
+                const Component     &cc = ***node;
+                const Species       &sp = *cc;
+                const Extended::Real pr = phi[ sp.indx[phiLevel] ] * cc.xn;
+                xadd.append(pr);
+            }
+
+            return xadd.reduce();
+        }
     }
 
 }

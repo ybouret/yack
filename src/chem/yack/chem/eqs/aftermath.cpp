@@ -15,21 +15,32 @@ namespace yack
         {
         }
 
-        Aftermath:: Aftermath() noexcept : extent(0), status(Equilibrium::Blocked), action(0)
+        Aftermath:: Aftermath() noexcept :
+        extent(0),
+        status(Equilibrium::Blocked),
+        action(0)
         {
         }
         
-        Aftermath:: Aftermath(const Extended::Real args) noexcept : extent(args), status(Equilibrium::Running), action(0)
+        Aftermath:: Aftermath(const Extended::Real args) noexcept :
+        extent(args),
+        status(Equilibrium::Running),
+        action(0)
         {
         }
 
         Aftermath:: Aftermath(const Extended::Real args,
-                              const Extended::Real aerr) noexcept : extent(args), status(Equilibrium::Running), action(aerr)
+                              const Extended::Real aerr) noexcept :
+        extent(args),
+        status(Equilibrium::Running),
+        action(aerr)
         {
         }
 
         Aftermath:: Aftermath(const Aftermath &am) noexcept :
-        extent(am.status), status(am.status), action(am.action)
+        extent(am.status),
+        status(am.status),
+        action(am.action)
         {
 
         }
@@ -90,12 +101,12 @@ namespace yack
                 Cend[i] = Ctmp[i] = Corg[i];
             }
             Extended::Real absXi = 0;       // must decrease
-            bool           check = false;   // true but not the first cycle
+            bool           moved = false;   // true but not the first cycle
 
             //------------------------------------------------------------------
             //
             //
-            // Lookup status
+            // Lookup status.
             //
             //
             //------------------------------------------------------------------
@@ -124,7 +135,7 @@ namespace yack
                             //--------------------------------------------------
                             // exact numerical solution
                             //--------------------------------------------------
-                            return check ? Aftermath(makeExtent(eq,Corg,Cend,level,xadd)) : Aftermath(_0);
+                            return moved ? Aftermath(makeExtent(eq,Corg,Cend,level,xadd)) : Aftermath(_0);
 
                         case negative:
                             //--------------------------------------------------
@@ -184,7 +195,7 @@ namespace yack
                             //--------------------------------------------------
                             // exact numerical solution
                             //--------------------------------------------------
-                            return check ? Aftermath(makeExtent(eq,Corg,Cend,level,xadd)) : Aftermath(_0);
+                            return moved ? Aftermath(makeExtent(eq,Corg,Cend,level,xadd)) : Aftermath(_0);
 
                         case positive:
                             //--------------------------------------------------
@@ -242,7 +253,7 @@ namespace yack
                     //----------------------------------------------------------
                     if(extents.reac.isBlocking() && extents.prod.isBlocking())
                     {
-                        assert(!check);
+                        assert(!moved);
                         return Aftermath();
                     }
 
@@ -259,7 +270,7 @@ namespace yack
                             //--------------------------------------------------
                             // found exact solution
                             //--------------------------------------------------
-                            return check ? Aftermath(makeExtent(eq,Corg,Cend,level,xadd)) : Aftermath(_0);
+                            return moved ? Aftermath(makeExtent(eq,Corg,Cend,level,xadd)) : Aftermath(_0);
 
                         case negative:
                             //--------------------------------------------------
@@ -342,7 +353,7 @@ namespace yack
 
             const Extended::Real absTmp = xi.b.abs();
             keto::load(Cend,Ctmp);
-            if(check && absTmp>=absXi)
+            if(moved && absTmp>=absXi)
             {
                 // numerical zero
                 xi.b = makeExtent(eq,Corg,Cend,level,xadd);
@@ -350,10 +361,8 @@ namespace yack
             }
 
             absXi = absTmp;
-            check = true;
+            moved = true;
             goto LOOKUP;
-
-
         }
     }
 
