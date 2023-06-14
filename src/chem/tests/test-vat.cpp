@@ -112,7 +112,10 @@ YACK_UTEST(vat)
             std::cerr << am;
             if(Equilibrium::Running==am.status) std::cerr << " Q=" << *eq.quotient(xmul,Ki,C1,TopLevel);
             std::cerr << std::endl;
-            //xt.display(std::cerr) << std::endl;
+            if(Equilibrium::Running==am.status)
+            {
+                eq.displayVar(std::cerr,C1,TopLevel);
+            }
         }
     }
 

@@ -118,6 +118,19 @@ namespace yack
                 return os;
             }
 
+            template <typename T>
+            void displayVar(std::ostream &os, const readable<T> &field, const IndexLevel level) const
+            {
+                for(const cNode *cn=(*this)->head;cn;cn=cn->next)
+                {
+                    const Species &sp = ****cn;
+                    os << ' ' << sp.name << '=' << field[sp.indx[level]] << std::endl;
+                }
+            }
+
+
+
+
             //! mass action for reactants
             Extended::Real reacMassAction(Extended::Mul                  &xmul,
                                           const Extended::Real            K,

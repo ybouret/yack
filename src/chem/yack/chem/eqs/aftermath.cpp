@@ -41,107 +41,10 @@ namespace yack
             return os;
         }
 
-        bool Aftermath:: QueryLimitedByBoth(Extended::Triplet              &xi,
-                                            Extended::Triplet              &ma,
-                                            const Equilibrium              &eq,
-                                            const Extended::Real            K,
-                                            writable<Extended::Real>       &Ctmp,
-                                            const readable<Extended::Real> &Cend,
-                                            const Extents                  &extents,
-                                            const IndexLevel                level,
-                                            Extended::Mul                  &xmul)
-        {
-            xi.b = xmul._0;
-            ma.b = eq.massAction(xmul,K,Cend,level);
-            switch( __sign::of(ma.b.m) )
-            {
-
-                    //----------------------------------------------------------
-                case __zero__: // found already running and solved
-                    //----------------------------------------------------------
-                    return true;
-
-                    //----------------------------------------------------------
-                case negative: // move prod
-                    //            to get a positive mass action from reac only
-                    //----------------------------------------------------------
-                    assert(extents.prod>0);
-                    xi.a = -extents.prod;
-                    eq.make(Ctmp, level, Cend, level, xi.a);
-                    extents.prod.nullify(Ctmp,level);
-                    ma.a = eq.reacMassAction(xmul,K,Ctmp,level);
-                    xi.c = xi.b;
-                    ma.c = ma.b;
-                    break;
-
-                    //----------------------------------------------------------
-                case positive: // move reac
-                    //            to get a negative mass action from prod only
-                    //----------------------------------------------------------
-                    assert(extents.reac>0);
-                    xi.c =  extents.reac;
-                    eq.make(Ctmp, level, Cend, level, xi.c);
-                    extents.reac.nullify(Ctmp,level);
-                    ma.c = -eq.prodMassAction(xmul,Ctmp,level);
-                    xi.a = xi.b;
-                    ma.a = ma.b;
-            }
-
-            assert(xi.c>xi.a);
-            assert(ma.c<ma.a);
-
-            return false;
-        }
 
 
-        bool Aftermath:: QueryLimitedByProd(Extended::Triplet              &xi,
-                                            Extended::Triplet              &ma,
-                                            const Equilibrium              &eq,
-                                            const Extended::Real            K,
-                                            const Extended::Real            S,
-                                            writable<Extended::Real>       &Ctmp,
-                                            const readable<Extended::Real> &Cend,
-                                            const Extents                  &extents,
-                                            const IndexLevel                level,
-                                            Extended::Mul                  &xmul)
-        {
-            xi.b = xmul._0;
-            ma.b = eq.massAction(xmul,K,Cend,level);
-            std::cerr << "massAction(0)=" << ma.b << std::endl;
-            switch( __sign::of(ma.b.m) )
-            {
-                case __zero__: return true;
 
-                    //----------------------------------------------------------
-                case negative: // move prod
-                    //            to get a positive mass action = K
-                    //----------------------------------------------------------
-                    assert(extents.prod>0);
-                    xi.a = -extents.prod;
-                    eq.make(Ctmp, level, Cend, level, xi.a);
-                    extents.prod.nullify(Ctmp,level);
-                    ma.a = K;
-                    xi.c = xi.b;
-                    ma.c = ma.b;
-                    std::cerr << "xi=" << xi << std::endl;
-                    std::cerr << "ma=" << ma << std::endl;
-                    break;
-
-                case positive: // increase concentrations with scaling
-                    xi.a = xi.b;
-                    ma.a = ma.b;
-                    xi.c = S;
-                FWD:
-                    eq.make(Ctmp,level,Cend,level,xi.c);
-                    ma.c = eq.massAction(xmul,K,Ctmp,level);
-                    if(ma.c.m>=0) { xi.c += S; goto FWD; }
-                    std::cerr << "found xi=" << xi << ", ma=" << ma << std::endl;
-                    break;
-            }
-
-
-            return false;
-        }
+        
 
 
 
@@ -183,12 +86,23 @@ namespace yack
 
             //------------------------------------------------------------------
             //
+            //
             // initialize
+            //
             //
             //------------------------------------------------------------------
             keto::load(Cend,Corg);          // Cend is to be found
             Extended::Real absXi = 0;       // must decrease
-            bool           check = false;   // but not the first time
+            bool           check = false;   // true but not the first cycle
+
+
+            //------------------------------------------------------------------
+            //
+            //
+            // Lookup status
+            //
+            //
+            //------------------------------------------------------------------
         LOOKUP:
             switch( extents.build(eq,Cend,level) )
             {
@@ -201,16 +115,61 @@ namespace yack
 
                     //----------------------------------------------------------
                     //
-                    // limited by product(s) only
+                    // ENTER: limited by product(s) only
                     //
                     //----------------------------------------------------------
                 case LimitedByProd:
-                    extents.display(std::cerr);
-                    if( QueryLimitedByProd(xi,ma,eq,K,S,Ctmp,Cend,extents,level,xmul))
+                    xi.b = xmul._0;
+                    ma.b = eq.massAction(xmul,K,Cend,level);
+                    switch( __sign::of(ma.b.m) )
                     {
-                        return Aftermath(_0);
+                        case __zero__:
+                            return check ? Aftermath(makeExtent(eq,Corg,Cend,level,xadd)) : Aftermath(_0);
+
+                            //----------------------------------------------------------
+                        case negative: // move prod
+                            //            to get a positive mass action = K
+                            //----------------------------------------------------------
+                            assert(extents.prod>0);
+                            xi.a = -extents.prod;
+                            eq.make(Ctmp, level, Cend, level, xi.a);
+                            extents.prod.nullify(Ctmp,level);
+                            ma.a = K;
+                            xi.c = xi.b;
+                            ma.c = ma.b;
+                            std::cerr << "xi=" << xi << std::endl;
+                            std::cerr << "ma=" << ma << std::endl;
+                            break;
+
+                        case positive: // increase concentrations with scaling
+                            xi.a = xi.b;
+                            ma.a = ma.b;
+                            xi.c = S;
+                        FWD:
+                            eq.make(Ctmp,level,Cend,level,xi.c);
+                            ma.c = eq.massAction(xmul,K,Ctmp,level);
+                            switch( __sign::of(ma.c.m) )
+                            {
+                                case __zero__:
+                                case positive: xi.c += S; goto FWD;
+                                case negative:
+                                    break;
+                            }
+                            assert(ma.c<0);
+                            std::cerr << "found xi=" << xi << ", ma=" << ma << std::endl;
+                            break;
                     }
-                    break; // => bisection
+                    assert(xi.a<xi.c);
+                    assert(ma.a>0);
+                    assert(ma.c<0);
+                    //----------------------------------------------------------
+                    //
+                    // LEAVE: limited by product(s) only
+                    //
+                    //----------------------------------------------------------
+                    break;
+
+
 
                     //----------------------------------------------------------
                     //
@@ -223,7 +182,7 @@ namespace yack
 
                     //----------------------------------------------------------
                     //
-                    // limited by reactant(s) and product(s)
+                    // ENTER: limited by reactant(s) and product(s)
                     //
                     //----------------------------------------------------------
                 case LimitedByBoth:
@@ -232,22 +191,66 @@ namespace yack
                     //----------------------------------------------------------
                     if(extents.reac.isBlocking() && extents.prod.isBlocking())
                     {
+                        assert(!check);
                         return Aftermath();
                     }
 
                     //----------------------------------------------------------
                     // check if xi=0 is solution for Cend, otherwise init
                     //----------------------------------------------------------
-                    if( QueryLimitedByBoth(xi,ma,eq,K,Ctmp,Cend,extents,level,xmul))
+                    xi.b = _0;
+                    ma.b = eq.massAction(xmul,K,Cend,level);
+                    switch( __sign::of(ma.b.m) )
                     {
-                        return Aftermath(_0);
+
+                            //----------------------------------------------------------
+                        case __zero__: // found already running and solved
+                            //----------------------------------------------------------
+                            return check ? Aftermath(makeExtent(eq,Corg,Cend,level,xadd)) : Aftermath(_0);
+
+                            //----------------------------------------------------------
+                        case negative: // move prod
+                            //            to get a positive mass action from reac only
+                            //----------------------------------------------------------
+                            assert(extents.prod>0);
+                            xi.a = -extents.prod;
+                            eq.make(Ctmp, level, Cend, level, xi.a);
+                            extents.prod.nullify(Ctmp,level);
+                            ma.a = eq.reacMassAction(xmul,K,Ctmp,level); assert(ma.a>0);
+                            xi.c = xi.b;
+                            ma.c = ma.b;
+                            break;
+
+                            //----------------------------------------------------------
+                        case positive: // move reac
+                            //            to get a negative mass action from prod only
+                            //----------------------------------------------------------
+                            assert(extents.reac>0);
+                            xi.c =  extents.reac;
+                            eq.make(Ctmp, level, Cend, level, xi.c);
+                            extents.reac.nullify(Ctmp,level);
+                            ma.c = -eq.prodMassAction(xmul,Ctmp,level);
+                            xi.a = xi.b;
+                            ma.a = ma.b;
                     }
-                    break; // => bisection
+
+                    assert(xi.a<xi.c);
+                    assert(ma.a>0);
+                    assert(ma.c<0);
+                    //----------------------------------------------------------
+                    //
+                    // LEAVE: limited by reactant(s) and product(s)
+                    //
+                    //----------------------------------------------------------
+                    break;
+
             }
 
             //------------------------------------------------------------------
             //
+            //
             // bisection from current setup
+            //
             //
             //------------------------------------------------------------------
             assert(xi.a<xi.c);
@@ -259,9 +262,6 @@ namespace yack
                 xi.b = (xi.a+xi.c).half();
                 eq.make(Ctmp, level, Cend, level, xi.b);
                 ma.b = eq.massAction(xmul,K,Ctmp,level);
-                //std::cerr << "\txi: " << xi << std::endl;
-                //std::cerr << "\tma: " << ma << std::endl;
-                //std::cerr << "\t w: " << width << std::endl;
                 switch( __sign::of(ma.b) )
                 {
                     case __zero__:
@@ -291,10 +291,8 @@ namespace yack
             keto::load(Cend,Ctmp);
             if(check && absTmp>=absXi)
             {
-                //std::cerr << "Saturation" << std::endl;
+                // numerical zero
                 xi.b = makeExtent(eq,Corg,Cend,level,xadd);
-                //eq.displayCompact(std::cerr << "\t" << eq << " approx: ",Cend,level)
-                //<< " => " <<ma.b << std::endl;
                 return Aftermath(xi.b,ma.b);
             }
 
