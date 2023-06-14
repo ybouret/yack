@@ -75,8 +75,16 @@ namespace yack
             {
                 const Equilibrium   &eq = ***node;
                 const size_t         ei = eq.indx[TopLevel];
-                const Extended::Real k  = K[ei]; assert(k>0);
-                S[ei] = k.pow(eq.sexp);
+
+                if(eq->size && (0==eq.reac.size||0==eq.prod.size) )
+                {
+                    const Extended::Real k  = K[ei]; assert(k>0);
+                    S[ei] = k.pow(eq.sexp);
+                }
+                else
+                {
+                    S[ei] = 1;
+                }
             }
         }
 
