@@ -85,7 +85,10 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            keto::load(Cend,Corg);          // Cend is to be found
+            for(size_t i=Corg.size();i>0;--i)
+            {
+                Cend[i] = Ctmp[i] = Corg[i];
+            }
             Extended::Real absXi = 0;       // must decrease
             bool           check = false;   // true but not the first cycle
 
