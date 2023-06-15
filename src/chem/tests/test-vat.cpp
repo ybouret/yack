@@ -32,19 +32,13 @@ YACK_UTEST(vat)
 
     Species::Verbose = environment::flag("VERBOSE");
     xmlog xml("[chem]",std::cerr,Species::Verbose);
-    Extended::Vector K,S;
-    std::cerr << "starting with #eqs=" << eqs->size << std::endl;
-    Vat              vat(xml,eqs,K);
-    std::cerr << "ending   with #eqs=" << eqs->size << std::endl;
+    Vat vat(xml,eqs);
+    vat.updateK(eqs,0.0);
+    vat.displayK(std::cerr);
+    vat.displayS(std::cerr);
 
-    K.make(eqs->size,0);
-    S.make(eqs->size,0);
-    vat.updateK(K,0.0);
-    vat.displayK(std::cerr,K);
-    eqs.computeScaling(S,K);
-    vat.displayS(std::cerr,S);
+    return 0;
 
-    
     vector<double>         C(lib->size,0);
     vector<Extended::Real> C0(lib->size,0);
     vector<Extended::Real> C1(lib->size,0);
@@ -106,8 +100,8 @@ YACK_UTEST(vat)
         {
             const Equilibrium   & eq = ***en;
             const size_t          ei = eq.indx[TopLevel];
-            const Extended::Real  Ki = K[ei];
-            const Extended::Real  Si = S[ei];
+            const Extended::Real  Ki = vat.K[ei];
+            const Extended::Real  Si = vat.S[ei];
             eqs.display(std::cerr,eq) ;
             const Aftermath    am = Aftermath::Evaluate(eq,Ki,Si,C1,C0,xt,TopLevel,xmul,xadd,Ctmp);
 

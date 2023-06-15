@@ -28,26 +28,27 @@ namespace yack
 
             //! setup
             explicit Vat(const xmlog      &xml,
-                         Equilibria       &eqs,
-                         Extended::Vector &usr);
+                         Equilibria       &eqs);
 
             //! cleanup
             virtual ~Vat() noexcept;
 
             //! update all constants, in order
-            void updateK(Extended::Vector &, const double t);
+            void updateK(const Equilibria &eqs, const double t);
 
             //! display equilibria+constant per cluster
-            void displayK(std::ostream &, const Extended::Vector &) const;
+            void displayK(std::ostream &) const;
 
             //! display equilibria+scaling per cluster
-            void displayS(std::ostream &, const Extended::Vector &) const;
+            void displayS(std::ostream &) const;
 
 
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
+            const Extended::Vector    K; //!< constants
+            const Extended::Vector    S; //!< scaling factor for one way only equilibria
             const size_t maxClusterSize; //!< maximum number of equilibria in a cluster
             const size_t maximumSpecies; //!< maximum number of active species in a cluster
 

@@ -33,7 +33,7 @@ namespace yack
                                 Extended::Vector &usr)
         {
             YACK_XMLSUB(xml, "Vat::makeCluster");
-
+            const size_t ini = eqs->size;
             //------------------------------------------------------------------
             //
             // make all clusters by connectivity
@@ -73,13 +73,16 @@ namespace yack
             //
             //------------------------------------------------------------------
             eqs.finalize();
-
-            
+            const size_t end = eqs->size;
+            YACK_XMLOG(xml, "#eqs: " << ini << " --> " << end);
+            coerce(K).make(end,0);
+            coerce(S).make(end,0);            
         }
 
-        void Vat:: updateK( Extended::Vector &K, const double t)
+        void Vat:: updateK(const Equilibria &eqs, const double t)
         {
-            for(Cluster *cl=head;cl;cl=cl->next) cl->updateK(K,t);
+            for(Cluster *cl=head;cl;cl=cl->next) cl->updateK(coerce(K),t);
+            eqs.computeScaling(coerce(S),K);
         }
 
     }

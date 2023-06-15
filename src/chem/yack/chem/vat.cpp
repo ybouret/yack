@@ -9,13 +9,12 @@ namespace yack
         }
 
         Vat:: Vat(const xmlog      &xml,
-                  Equilibria       &eqs,
-                  Extended::Vector &usr) :
+                  Equilibria       &eqs) :
         Clusters(),
         maxClusterSize(0),
         maximumSpecies(0)
         {
-            makeClusters(xml,eqs,usr);
+            makeClusters(xml,eqs,coerce(K));
             for(const Cluster *cl=head;cl;cl=cl->next)
             {
                 assert(cl->size);
@@ -26,16 +25,16 @@ namespace yack
         }
 
 
-        void Vat:: displayK(std::ostream &os, const Extended::Vector &K) const
+        void Vat:: displayK(std::ostream &os) const
         {
             for(const Cluster *cl=head;cl;cl=cl->next)
                 cl->displayK(os,K);
         }
 
-        void Vat:: displayS(std::ostream &os, const Extended::Vector &K) const
+        void Vat:: displayS(std::ostream &os) const
         {
             for(const Cluster *cl=head;cl;cl=cl->next)
-                cl->displayS(os,K);
+                cl->displayS(os,S);
         }
 
 
