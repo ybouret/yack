@@ -6,6 +6,7 @@
 #include "yack/chem/vat/cluster.hpp"
 #include "yack/chem/library.hpp"
 #include "yack/chem/equilibria.hpp"
+
 namespace yack
 {
     namespace Chemical
@@ -27,6 +28,11 @@ namespace yack
             //__________________________________________________________________
 
             //! setup
+            /**
+             - copy equilibria
+             - make clusters from dependents equilibria
+             - make manifolds
+             */
             explicit Vat(const xmlog      &xml,
                          const Equilibria &eqs);
 
