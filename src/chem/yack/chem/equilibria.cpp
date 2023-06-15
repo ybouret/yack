@@ -10,10 +10,20 @@ namespace yack
         Equilibria:: ~Equilibria() noexcept {}
 
         Equilibria::  Equilibria() noexcept :
+        Gathering(),
         reac(),
         prod(),
         edb()
         {}
+
+        Equilibria:: Equilibria(const Equilibria &other) :
+        Gathering(other),
+        reac(other.reac),
+        prod(other.prod),
+        edb(other.edb)
+        {
+        }
+        
 
         const eList *  Equilibria::  operator->() const noexcept
         {

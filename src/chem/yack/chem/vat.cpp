@@ -11,6 +11,8 @@ namespace yack
         Vat:: Vat(const xmlog      &xml,
                   Equilibria       &eqs) :
         Clusters(),
+        K(),
+        S(),
         maxClusterSize(0),
         maximumSpecies(0)
         {

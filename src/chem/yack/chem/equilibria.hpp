@@ -35,6 +35,7 @@ namespace yack
             //__________________________________________________________________
             explicit Equilibria() noexcept; //!< setup
             virtual ~Equilibria() noexcept; //!< cleanup
+            Equilibria(const Equilibria &); //!< copy
 
             //__________________________________________________________________
             //
@@ -81,7 +82,7 @@ namespace yack
             Gathering prod; //!< for all products
 
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(Equilibria);
+            YACK_DISABLE_ASSIGN(Equilibria);
             EqsDB edb;
 
             void add(Equilibrium *eq);
