@@ -9,14 +9,15 @@ namespace yack
         }
 
         Vat:: Vat(const xmlog      &xml,
-                  Equilibria       &eqs) :
+                  const Equilibria &eqs) :
+        Equilibria(eqs),
         Clusters(),
         K(),
         S(),
         maxClusterSize(0),
         maximumSpecies(0)
         {
-            makeClusters(xml,eqs,coerce(K));
+            makeClusters(xml,*this,coerce(K));
             for(const Cluster *cl=head;cl;cl=cl->next)
             {
                 assert(cl->size);

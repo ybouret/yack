@@ -18,7 +18,7 @@ namespace yack
         //! Vat of equilibria
         //
         //______________________________________________________________________
-        class Vat : public Clusters
+        class Vat : public Equilibria, public Clusters
         {
         public:
             //__________________________________________________________________
@@ -28,13 +28,13 @@ namespace yack
 
             //! setup
             explicit Vat(const xmlog      &xml,
-                         Equilibria       &eqs);
+                         const Equilibria &eqs);
 
             //! cleanup
             virtual ~Vat() noexcept;
 
             //! update all constants, in order
-            void updateK(const Equilibria &eqs, const double t);
+            void updateK(const double t);
 
             //! display equilibria+constant per cluster
             void displayK(std::ostream &) const;

@@ -79,10 +79,11 @@ namespace yack
             coerce(S).make(end,0);            
         }
 
-        void Vat:: updateK(const Equilibria &eqs, const double t)
+        void Vat:: updateK(const double t)
         {
-            for(Cluster *cl=head;cl;cl=cl->next) cl->updateK(coerce(K),t);
-            eqs.computeScaling(coerce(S),K);
+            for(Cluster *cl=head;cl;cl=cl->next)
+                cl->updateK(coerce(K),t);
+            computeScaling(coerce(S),K);
         }
 
     }

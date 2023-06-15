@@ -33,12 +33,11 @@ YACK_UTEST(vat)
     Species::Verbose = environment::flag("VERBOSE");
     xmlog xml("[chem]",std::cerr,Species::Verbose);
     Vat vat(xml,eqs);
-    vat.updateK(eqs,0.0);
+    vat.updateK(0.0);
     vat.displayK(std::cerr);
     vat.displayS(std::cerr);
 
-    return 0;
-
+    
     vector<double>         C(lib->size,0);
     vector<Extended::Real> C0(lib->size,0);
     vector<Extended::Real> C1(lib->size,0);
@@ -96,7 +95,7 @@ YACK_UTEST(vat)
         lib(std::cerr << "C1=","[",C,"]") << std::endl;
         lib(std::cerr << "dC=","[",normalizer.custodian,"]") << std::endl;
 
-        for(const eNode *en=eqs->head;en;en=en->next)
+        for(const eNode *en=vat->head;en;en=en->next)
         {
             const Equilibrium   & eq = ***en;
             const size_t          ei = eq.indx[TopLevel];
