@@ -374,6 +374,42 @@ and we know exactly the function in the direction $\vec{\nu}_i$.
 \end{equation}
 
 \begin{equation}
+\left\lbrace
+\begin{array}{rcl}
+\Gamma_i(\vec{C} + \xi \vec{\nu}_i) & = &
+ [1-\omega_i(\xi)]\left(\Gamma_i+\sigma_i \xi\right) + 
+ \omega_i(\xi) \sigma_i^\star (\xi-\xi_i^\star)\\
+ \omega_i(0) & = & 0\\
+ \omega_i(\xi_i^\star) & = & 1 \\
+ \end{array}
+ \right.
+\end{equation}
+
+\begin{equation}
+\left\lbrace
+\begin{array}{rcl}
+\Gamma_i'(\xi) &=& \omega'_i(\xi) \left[ \sigma_i^\star (\xi-\xi_i^\star) -\left(\Gamma_i+\sigma_i \xi\right)\right]
++ [1-\omega_i(\xi)] \sigma_i + \omega_i(x)  \sigma_i^\star\\
+\Gamma_i'(0) & = & \sigma_i = -\omega'_i(0) \left[ \Gamma_i + \sigma_i \xi_i^\star\right] \\
+\Gamma_i'(\xi_i^\star) & = & \sigma_i^\star = -\omega'_i(\xi_i^\star) \left[ \Gamma_i + \sigma_i \xi_i^\star\right]\\
+\end{array}
+\right.
+\end{equation}
+
+\begin{equation}
+\left\lbrace
+\begin{array}{rcl}
+\omega_i(0) & = & 0\\
+\omega_i(\xi_i^\star) & = & 1 \\
+\omega'_i(0) & = &  0\\
+\omega'_i(\xi_i^\star)& = &  0\\
+\end{array}
+\right.
+\end{equation}
+
+\end{document}
+
+\begin{equation}
 \Gamma_i(\vec{C} + \delta\vec{C}) = 
 \Gamma_i\left(\vec{C} + 
 \left[ \dfrac{\langle\delta\vec{C}\vert\vec{\nu}_i\rangle}{\vec{\nu}_i^2} \vec{\nu}_i \right]
@@ -381,58 +417,6 @@ and we know exactly the function in the direction $\vec{\nu}_i$.
  \left[ \delta\vec{C} - \dfrac{\langle\delta\vec{C}\vert\vec{\nu}_i\rangle}{\vec{\nu}_i^2} \vec{\nu}_i \right]\right)
 \end{equation}
 
-\end{document}
-
-\begin{equation}
-\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) = 
-\underbrace{\left[ \Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) - (\xi_i - \xi_i^\star)
-\langle \vec{\Psi}_i^\star \vert \vec{\nu}_i \rangle \right]}_{g_i(\xi_i)}
-+  (\xi_i - \xi_i^\star) \langle \vec{\Psi}_i^\star \vert \vec{\nu}_i\rangle
-\end{equation}
-
-\begin{equation}
-\left\lbrace
-\begin{array}{lcl}
-g_i(\xi_i^\star)  & = & 0 \\
-g'_i(\xi_i^\star) & = & 0 \\
-g_i(0) & = & \Gamma_i + \xi_i^\star \langle \vec{\Psi}_i^\star \vert \vec{\nu}_i \rangle \\
-g'_i(0) & = & \langle \vec{\Psi}_i - \vec{\Psi}_i^\star \vert \vec{\nu}_i \rangle\\
-\end{array}
-\right.
-\end{equation}
-
-\begin{equation}
-	\vec{\chi}_i = 
-	\begin{bmatrix}
-	\xi_1\\
-	\vdots\\
-	0\\
-	\vdots\\
-	\xi_N\\
-	\end{bmatrix}
-\end{equation}
- 
-\begin{equation}
-\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) \simeq g_i(\xi_i) 
-+ (\xi_i - \xi_i^\star) \langle \vec{\Psi}_i^\star \vert \vec{\nu}_i\rangle
-+ \langle \vec{\Psi}_i \vert \bm{\nu}^t \vert \vec{\chi}_i \rangle
-+ \frac{1}{2} \langle \vec{\chi}_i \vert \bm{\nu}\bm{H}_i\bm{\nu}^t \vert \vec{\chi}_i \rangle
-\end{equation}
- 
-\begin{equation}
-(1-\alpha_i^2) \Gamma_i   \simeq g_i(\xi_i) 
-+ (\xi_i - \xi_i^\star) \langle \vec{\Psi}_i^\star \vert \vec{\nu}_i\rangle
-+ \langle \vec{\Psi}_i \vert \bm{\nu}^t \vert \vec{\chi}_i \rangle
-+ \frac{1}{2} \langle \vec{\chi}_i \vert \bm{\nu}\bm{H}_i\bm{\nu}^t \vert \vec{\chi}_i \rangle
-\end{equation} 
- 
-\begin{equation}
-\langle \vec{\Omega}_i \vert \vec{\xi} \rangle = \xi_i^\star + \dfrac{1}{\langle \vec{\Psi}_i^\star \vert \vec{\nu}_i\rangle}
-\left[
- (1-\alpha_i^2) \Gamma_i - g_i(\xi_i) + \frac{1}{2} \langle \vec{\chi}_i \vert \bm{\nu}\bm{H}_i\bm{\nu}^t \vert \vec{\chi}_i \rangle
-\right]
-\end{equation} 
- 
 \end{document}
 
 

@@ -115,6 +115,10 @@ YACK_UTEST(vat)
             const Extended::Real sig = eq.dot(phi,TopLevel,xadd);
             std::cerr << "\tma0=" << ma0 <<  " = " << *ma0 << std::endl;
             std::cerr << "\tsig=" << sig <<  " = " << *sig << std::endl;
+            phi.ld(0);
+            eq.gradAction(phi,TopLevel,Ki,C0,TopLevel,xmul);
+            std::cerr << "\tphi0=" << phi << std::endl;
+
         }
     }
 
