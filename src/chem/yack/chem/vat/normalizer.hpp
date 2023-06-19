@@ -51,7 +51,7 @@ namespace yack
 
             //! process a list of clusters
             /**
-             - restart custodiam
+             - restart custodian
              - process all clusters
              */
             void operator()(const xmlog              &xml,

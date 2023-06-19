@@ -200,6 +200,7 @@ namespace yack
                                      const IndexLevel                inpLevel,
                                      Extended::Mul                  &xmul) const
         {
+            out.ld(0);
             reac.gradAction(out, outLevel, K,              inp, inpLevel, xmul);
             prod.gradAction(out, outLevel, xmul.negative1, inp, inpLevel, xmul);
         }

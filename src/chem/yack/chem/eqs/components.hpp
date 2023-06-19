@@ -162,6 +162,7 @@ namespace yack
                                const IndexLevel                 phiLevel,
                                Extended::Add                  & xadd) const;
 
+            
             //! Q/K
             Extended::Real quotient(Extended::Mul                  &xmul,
                                     const Extended::Real            K,

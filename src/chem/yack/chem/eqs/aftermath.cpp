@@ -45,6 +45,14 @@ namespace yack
 
         }
 
+        Aftermath & Aftermath:: operator=(const Aftermath &am) noexcept
+        {
+            coerce(extent) = am.extent;
+            coerce(status) = am.status;
+            coerce(action) = am.action;
+            return *this;
+        }
+
 
         std::ostream & operator<<(std::ostream &os, const Aftermath &am)
         {
@@ -96,6 +104,9 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
+            assert(Cend.size()>=Corg.size());
+            assert(Ctmp.size()>=Corg.size());
+
             for(size_t i=Corg.size();i>0;--i)
             {
                 Cend[i] = Ctmp[i] = Corg[i];
@@ -162,7 +173,7 @@ namespace yack
                             ma.c = eq.massAction(xmul,K,Ctmp,level);
                             switch( __sign::of(ma.c.m) )
                             {
-                                case __zero__: keto::load(Cend,Ctmp); return  Aftermath(makeExtent(eq,Corg,Cend,level,xadd));
+                                case __zero__: keto::save(Cend,Ctmp); return  Aftermath(makeExtent(eq,Corg,Cend,level,xadd));
                                 case positive: xi.c += S; goto FWD;
                                 case negative: break;
                             }
@@ -221,7 +232,7 @@ namespace yack
                             ma.a = eq.massAction(xmul,K,Ctmp,level);
                             switch( __sign::of(ma.a.m) )
                             {
-                                case __zero__: keto::load(Cend,Ctmp); return  Aftermath(makeExtent(eq,Corg,Cend,level,xadd));
+                                case __zero__: keto::save(Cend,Ctmp); return  Aftermath(makeExtent(eq,Corg,Cend,level,xadd));
                                 case negative: xi.a -= S; goto REV;
                                 case positive: break;
                             }
@@ -329,7 +340,7 @@ namespace yack
                 switch( __sign::of(ma.b) )
                 {
                     case __zero__:
-                        keto::load(Cend,Ctmp);
+                        keto::save(Cend,Ctmp);
                         xi.b = makeExtent(eq,Corg,Cend,level,xadd);
                         return Aftermath( xi.b );
 
@@ -352,7 +363,7 @@ namespace yack
             }
 
             const Extended::Real absTmp = xi.b.abs();
-            keto::load(Cend,Ctmp);
+            keto::save(Cend,Ctmp);
             if(moved && absTmp>=absXi)
             {
                 // numerical zero

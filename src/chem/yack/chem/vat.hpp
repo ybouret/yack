@@ -19,7 +19,7 @@ namespace yack
         //! Vat of equilibria
         //
         //______________________________________________________________________
-        class Vat : public Equilibria, public Clusters
+        class Vat :  public Equilibria, public Clusters
         {
         public:
             //__________________________________________________________________

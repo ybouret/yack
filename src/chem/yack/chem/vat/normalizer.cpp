@@ -34,8 +34,10 @@ namespace yack
                                      const list_of<Cluster>   &clusters)
         {
             custodian.restart(C0.size());
+
             for(const Cluster *cluster=clusters.head;cluster;cluster=cluster->next)
                 process(xml,C0,*cluster);
+
             if(xml.verbose)
             {
                 for(const Cluster *cluster=clusters.head;cluster;cluster=cluster->next)

@@ -29,9 +29,9 @@ namespace yack
             explicit Aftermath(const Extended::Real xi) noexcept; //!< xi,running,0
             explicit Aftermath(const Extended::Real xi,
                                const Extended::Real ma) noexcept; //!< xi, running, max
-            Aftermath(const Aftermath &)               noexcept; //!< copy
-            virtual ~Aftermath()                       noexcept; //!< cleanup
-
+            Aftermath(const Aftermath &)                noexcept; //!< copy
+            virtual ~Aftermath()                        noexcept; //!< cleanup
+            Aftermath & operator=(const Aftermath &)    noexcept; //!< assign
 
 
 
@@ -73,7 +73,6 @@ namespace yack
             const Extended::Real      action; //!< action at Cend
 
         private:
-            YACK_DISABLE_ASSIGN(Aftermath);
             static Extended::Real makeExtent(const Components               &eq,
                                              const readable<Extended::Real> &Corg,
                                              const readable<Extended::Real> &Cend,

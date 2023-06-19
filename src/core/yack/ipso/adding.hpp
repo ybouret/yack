@@ -102,7 +102,7 @@ namespace yack
                     goto REDUCE;
                 }
 
-                //! load simple product
+                //! load simple product of integer type
                 template <typename LHS, typename RHS>
                 void prod(typename type_traits<LHS>::parameter_type lhs,
                           typename type_traits<RHS>::parameter_type rhs)
@@ -113,7 +113,7 @@ namespace yack
                     push(p);
                 }
 
-                //! load dot product
+                //! load dot product of integer arrays
                 template <typename LHS, typename RHS> inline
                 proto &dot( LHS &lhs, RHS &rhs )
                 {
@@ -122,17 +122,13 @@ namespace yack
                     this->resume(n);
                     for(size_t i=n;i>0;--i)
                     {
-                        const inside_type l = inside<T>::send( lhs[i] );
-                        const inside_type r = inside<T>::send( rhs[i] );
+                        const inside_type l = lhs[i];
+                        const inside_type r = rhs[i];
                         const inside_type p = l*r;
                         push(p);
                     }
                     return *this;
                 }
-
-                
-
-
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(proto);

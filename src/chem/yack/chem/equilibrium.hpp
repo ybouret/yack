@@ -6,6 +6,7 @@
 #include "yack/chem/eqs/components.hpp"
 #include "yack/data/dinky/core-repo.hpp"
 #include "yack/data/dinky/solo-repo.hpp"
+#include "yack/data/dinky/coop-repo.hpp"
 
 namespace yack
 {
@@ -29,6 +30,9 @@ namespace yack
             typedef core_repo<Equilibrium>      CoreRepo; //!< alias
             typedef CoreRepo::node_type         Node;     //!< alias
             typedef solo_repo<Equilibrium>      SoloRepo; //!< alias
+            typedef coop_repo<Equilibrium>      CoopRepo; //!< alias
+            typedef CoopRepo::zpool_type        Bank;     //!< alias
+            typedef CoopRepo::proxy_type        Fund;     //!< alias
 
             //! status
             enum Status

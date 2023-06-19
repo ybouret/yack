@@ -5,7 +5,7 @@
 
 #include "yack/chem/eqs/lua.hpp"
 #include "yack/chem/vat/normalizer.hpp"
-#include "yack/chem/eqs/aftermath.hpp"
+#include "yack/chem/vat/solver.hpp"
 
 #include "yack/system/env.hpp"
 
@@ -78,6 +78,8 @@ YACK_UTEST(vat)
         }
     }
 
+    Solver solver(vat.maxClusterSize,vat.maximumSpecies);
+
     for(size_t iter=0;iter<1;++iter)
     {
         Library::Conc(C,ran,0.4);
@@ -95,34 +97,45 @@ YACK_UTEST(vat)
         lib(std::cerr << "C1=","[",C,"]") << std::endl;
         lib(std::cerr << "dC=","[",normalizer.custodian,"]") << std::endl;
 
-        for(const eNode *en=vat->head;en;en=en->next)
+        for(const Cluster *cluster=vat.head;cluster;cluster=cluster->next)
         {
-            const Equilibrium   & eq = ***en;
-            const size_t          ei = eq.indx[TopLevel];
-            const Extended::Real  Ki = vat.K[ei];
-            const Extended::Real  Si = vat.S[ei];
-            eqs.display(std::cerr,eq) ;
-            const Aftermath    am = Aftermath::Evaluate(eq,Ki,Si,C1,C0,xt,TopLevel,xmul,xadd,Ctmp);
+            solver.run(xml,C0,*cluster,vat.K,vat.S);
+        }
 
-            std::cerr << am;
-            if(Equilibrium::Running==am.status) std::cerr << " Q=" << *eq.quotient(xmul,Ki,C1,TopLevel);
-            std::cerr << std::endl;
-            phi.ld(0);
-            eq.gradAction(phi,TopLevel,Ki,C1,TopLevel,xmul);
-            std::cerr << "\tCeq=" << C1  << std::endl;
-            std::cerr << "\tphi=" << phi << std::endl;
-            const Extended::Real ma0 = eq.massAction(xmul, Ki, C0, TopLevel);
-            const Extended::Real sig = eq.dot(phi,TopLevel,xadd);
-            std::cerr << "\tma0=" << ma0 <<  " = " << *ma0 << std::endl;
-            std::cerr << "\tsig=" << sig <<  " = " << *sig << std::endl;
-            phi.ld(0);
-            eq.gradAction(phi,TopLevel,Ki,C0,TopLevel,xmul);
-            std::cerr << "\tphi0=" << phi << std::endl;
-
+        if(false)
+        {
+            for(const eNode *en=vat->head;en;en=en->next)
+            {
+                const Equilibrium   & eq = ***en;
+                const size_t          ei = eq.indx[TopLevel];
+                const Extended::Real  Ki = vat.K[ei];
+                const Extended::Real  Si = vat.S[ei];
+                eqs.display(std::cerr,eq) ;
+                const Aftermath    am = Aftermath::Evaluate(eq,Ki,Si,C1,C0,xt,TopLevel,xmul,xadd,Ctmp);
+                
+                std::cerr << am;
+                if(Equilibrium::Running==am.status) std::cerr << " Q=" << *eq.quotient(xmul,Ki,C1,TopLevel);
+                std::cerr << std::endl;
+                phi.ld(0);
+                eq.gradAction(phi,TopLevel,Ki,C1,TopLevel,xmul);
+                std::cerr << "\tCeq=" << C1  << std::endl;
+                std::cerr << "\tphi=" << phi << std::endl;
+                const Extended::Real ma0 = eq.massAction(xmul, Ki, C0, TopLevel);
+                const Extended::Real sig = eq.dot(phi,TopLevel,xadd);
+                std::cerr << "\tma0=" << ma0 <<  " = " << *ma0 << std::endl;
+                std::cerr << "\tsig=" << sig <<  " = " << *sig << std::endl;
+                const Extended::Real  rhs = xadd.dot(phi,C1).reduce();
+                std::cerr << "\trhs =" << rhs << std::endl;
+                
+                phi.ld(0);
+                eq.gradAction(phi,TopLevel,Ki,C0,TopLevel,xmul);
+                std::cerr << "\tphi0=" << phi << std::endl;
+                
+            }
         }
     }
 
-
+    YACK_SIZEOF(Vat);
 }
 YACK_UDONE()
 
