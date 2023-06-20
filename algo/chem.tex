@@ -391,6 +391,24 @@ Let's start from a trial concentration $\vec{S}$ and let's compute the best effo
 
 This expression removes the components of $\delta\vec{C}$ along $\vec{\nu}_i$: the best effort along $\vec{\nu}_i$ is always $\vec{C}_i^\star$.
  
+\begin{equation}
+	 \dfrac{\langle \vec{\Psi}_i^\star \vert \delta\vec{C} \rangle}{\langle \vec{\Psi}_i^\star \vert \vec{\nu}_i \rangle
+} \vec{\nu}_i = \underbrace{\dfrac{\vec{\nu}_i \otimes \vec{\Psi}_i^\star}{\langle \vec{\Psi}_i^\star \vert \vec{\nu}_i \rangle}}_{\bm{W}_i} \delta\vec{C}
+\end{equation} 
+ 
+\begin{equation}
+ \mathbb{E}(\vec{S}) =\dfrac{1}{n} \sum_{i=1}^n \vec{S}_i = \mathbb{E}(\vec{C}^\star) + \delta\vec{C} - \mathbb{E}(\bm{W}) \delta\vec{C}
+\end{equation} 
+ 
+ \begin{equation}
+ 	\vec{S}_i - \mathbb{E}(\vec{S}) = \left[\vec{C}_i^\star - \mathbb{E}(\vec{C}^\star)\right] + \left[\mathbb{E}(\bm{W}) - \bm{W}_i\right] \delta\vec{C}
+ \end{equation}
+ 
+  
+\begin{equation}
+	\dfrac{1}{2}\vec\nabla (\vec{S}_i - \mathbb{E}(\vec{S}))^2 = \left[\mathbb{E}(\bm{W}) - \bm{W}_i\right]^t(\vec{S}_i - \mathbb{E}(\vec{S}))
+\end{equation}
+ 
 \end{document}
 
 
