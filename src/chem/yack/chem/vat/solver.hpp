@@ -31,6 +31,7 @@ namespace yack
             Equilibrium::CoopRepo running;
             Equilibrium::CoopRepo blocked;
             Extents               extents;
+            Extended::Vector      Xi;
             Extended::Vector      Corg;
             Extended::Vector      Ctmp;
             Extended::Matrix      Ceq;

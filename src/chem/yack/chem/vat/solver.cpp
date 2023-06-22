@@ -1,4 +1,5 @@
 #include "yack/chem/vat/solver.hpp"
+#include "yack/data/list/sort.hpp"
 #include <iomanip>
 
 namespace yack
@@ -13,6 +14,7 @@ namespace yack
         running( eqsFund ),
         blocked( eqsFund ),
         extents( spcFund ),
+        Xi(maxClusterSize,as_capacity),
         Corg(maximumSpecies,as_capacity),
         Ctmp(maximumSpecies,as_capacity),
         Ceq(maxClusterSize,maximumSpecies),
@@ -29,18 +31,37 @@ namespace yack
             
         }
 
+
+
+
         void  Solver:: run(const xmlog                    &xml,
                            writable<Extended::Real>       &C0,
                            const Cluster                  &cluster,
                            const readable<Extended::Real> &K,
                            const readable<Extended::Real> &S)
         {
+
+
+            struct OrderRunning
+            {
+                const readable<Extended::Real> &Xi;
+                int operator()(const Equilibrium::Node *lhs,
+                               const Equilibrium::Node *rhs) const
+                {
+                    const size_t li = (***lhs).indx[SubLevel];
+                    const size_t ri = (***rhs).indx[SubLevel];
+                    return comparison::decreasing_abs(Xi[li],Xi[ri]);
+                }
+            };
+
             YACK_XMLSUB(xml, "Solver::run");
             const size_t          m = cluster.lib.size;
             const size_t          n = cluster.size;
-            const Extended::Real xr0;
-            const Aftermath      am0;
+            const Extended::Real  xr0;
+            const Aftermath       am0;
+            OrderRunning          orderRunning = { Xi };
 
+            Xi.adjust(m,xr0);
             Corg.adjust(m,xr0);
             Ctmp.adjust(m,xr0);
             ams.adjust(n,am0);
@@ -69,13 +90,18 @@ namespace yack
                 if(xml.verbose) cluster.pad(*xml << eq.name,eq) << " : " << Equilibrium::StatusText(am.status);
                 switch(am.status)
                 {
-                    case Equilibrium::Blocked: blocked << eq;
+                    case Equilibrium::Blocked:
+                        blocked << eq;
                         if(xml.verbose) xml() << std::endl;
                         continue;
-                    case Equilibrium::Running: running << eq; break;
+
+                    case Equilibrium::Running:
+                        running << eq;
+                        break;
                 }
 
                 writable<Extended::Real> &phi = Phi[ei];
+                Xi[ei]                        = am.extent;
 
                 eq.gradAction(phi,SubLevel,Ki,Ci,SubLevel,xmul);
                 
@@ -86,6 +112,19 @@ namespace yack
                     xml() << std::endl;
                 }
             }
+
+            merge_list_of<Equilibrium::Node>::sort(running,orderRunning);
+            if(xml.verbose)
+            {
+                YACK_XMLOG(xml, "#running= " << running.size);
+                for(const Equilibrium::Node *en=running.head;en;en=en->next)
+                {
+                    const Equilibrium        &eq = ***en;
+                    const size_t              ei = eq.indx[SubLevel];
+                    cluster.pad(*xml << eq.name,eq) << " @" << std::setw(15) << *Xi[ei] << std::endl;
+                }
+            }
+
         }
     }
 
