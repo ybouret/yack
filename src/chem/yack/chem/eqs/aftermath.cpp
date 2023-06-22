@@ -72,11 +72,11 @@ namespace yack
             const Extended::Real den = eq->size;
             for(const cNode *node=eq->head;node;node=node->next)
             {
-                const Species &s = ****node;
-                const size_t   j = s.indx[level];
-                const Extended::Real del = Cend[j]-Corg[j];
+                const Component &cc = ***node;
+                const Species   &sp = *cc;
+                const size_t     sj = sp.indx[level];
+                const Extended::Real del = (Cend[sj]-Corg[sj])/cc.xn;
                 xadd.append(del);
-
             }
             return xadd.reduce()/den;
         }
@@ -144,13 +144,13 @@ namespace yack
                     {
                         case __zero__:
                             //--------------------------------------------------
-                            // exact numerical solution
+                            // Cend is exact numerical solution
                             //--------------------------------------------------
                             return moved ? Aftermath(makeExtent(eq,Corg,Cend,level,xadd)) : Aftermath(_0);
 
                         case negative:
                             //--------------------------------------------------
-                            // move prod    to get a positive mass action = K
+                            // move prod to get a positive mass action = K
                             //--------------------------------------------------
                             assert(extents.prod>0);
                             xi.a = -extents.prod;
@@ -165,6 +165,7 @@ namespace yack
                             //--------------------------------------------------
                             // increase concentrations with scaling
                             //--------------------------------------------------
+                            assert(S>0);
                             xi.a = xi.b;
                             ma.a = ma.b;
                             xi.c = S;
@@ -173,7 +174,9 @@ namespace yack
                             ma.c = eq.massAction(xmul,K,Ctmp,level);
                             switch( __sign::of(ma.c.m) )
                             {
-                                case __zero__: keto::save(Cend,Ctmp); return  Aftermath(makeExtent(eq,Corg,Cend,level,xadd));
+                                case __zero__:
+                                    keto::save(Cend,Ctmp);
+                                    return Aftermath(makeExtent(eq,Corg,Cend,level,xadd));
                                 case positive: xi.c += S; goto FWD;
                                 case negative: break;
                             }
@@ -204,7 +207,7 @@ namespace yack
                     {
                         case __zero__:
                             //--------------------------------------------------
-                            // exact numerical solution
+                            // Cend is exact numerical solution
                             //--------------------------------------------------
                             return moved ? Aftermath(makeExtent(eq,Corg,Cend,level,xadd)) : Aftermath(_0);
 
@@ -232,7 +235,9 @@ namespace yack
                             ma.a = eq.massAction(xmul,K,Ctmp,level);
                             switch( __sign::of(ma.a.m) )
                             {
-                                case __zero__: keto::save(Cend,Ctmp); return  Aftermath(makeExtent(eq,Corg,Cend,level,xadd));
+                                case __zero__:
+                                    keto::save(Cend,Ctmp);
+                                    return  Aftermath(makeExtent(eq,Corg,Cend,level,xadd));
                                 case negative: xi.a -= S; goto REV;
                                 case positive: break;
                             }

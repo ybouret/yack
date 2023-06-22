@@ -15,6 +15,7 @@ namespace yack
         blocked( eqsFund ),
         extents( spcFund ),
         Xi(maxClusterSize,as_capacity),
+        Xa(maxClusterSize,as_capacity),
         Corg(maximumSpecies,as_capacity),
         Ctmp(maximumSpecies,as_capacity),
         Ceq(maxClusterSize,maximumSpecies),
@@ -44,13 +45,13 @@ namespace yack
 
             struct OrderRunning
             {
-                const readable<Extended::Real> &Xi;
+                const readable<Extended::Real> &Xa;
                 int operator()(const Equilibrium::Node *lhs,
                                const Equilibrium::Node *rhs) const
                 {
                     const size_t li = (***lhs).indx[SubLevel];
                     const size_t ri = (***rhs).indx[SubLevel];
-                    return comparison::decreasing_abs(Xi[li],Xi[ri]);
+                    return comparison::decreasing(Xa[li],Xa[ri]);
                 }
             };
 
@@ -59,9 +60,10 @@ namespace yack
             const size_t          n = cluster.size;
             const Extended::Real  xr0;
             const Aftermath       am0;
-            OrderRunning          orderRunning = { Xi };
+            OrderRunning          orderRunning = { Xa };
 
-            Xi.adjust(m,xr0);
+            Xi.adjust(n,xr0);
+            Xa.adjust(n,xr0);
             Corg.adjust(m,xr0);
             Ctmp.adjust(m,xr0);
             ams.adjust(n,am0);
@@ -92,6 +94,7 @@ namespace yack
                 {
                     case Equilibrium::Blocked:
                         blocked << eq;
+                        Xi[ei] = Xa[ei]  = xr0;
                         if(xml.verbose) xml() << std::endl;
                         continue;
 
@@ -101,7 +104,7 @@ namespace yack
                 }
 
                 writable<Extended::Real> &phi = Phi[ei];
-                Xi[ei]                        = am.extent;
+                Xa[ei] = (Xi[ei] = am.extent).abs();
 
                 eq.gradAction(phi,SubLevel,Ki,Ci,SubLevel,xmul);
                 
@@ -109,6 +112,7 @@ namespace yack
                 {
                     xml() << " @" << std::setw(15) << *am.extent;
                     eq.displayCompact(xml() <<  " -> ",Ci,SubLevel);
+                    xml() << ", q=" << *eq.quotient(xmul, Ki, Ci, SubLevel);
                     xml() << std::endl;
                 }
             }
@@ -121,7 +125,7 @@ namespace yack
                 {
                     const Equilibrium        &eq = ***en;
                     const size_t              ei = eq.indx[SubLevel];
-                    cluster.pad(*xml << eq.name,eq) << " @" << std::setw(15) << *Xi[ei] << std::endl;
+                    cluster.pad(*xml << eq.name,eq) << " @" << std::setw(15) << *Xi[ei] << " = " << Xi[ei] << std::endl;
                 }
             }
 
