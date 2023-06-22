@@ -17,6 +17,7 @@ namespace yack
         lib(),
         Nu(),
         NuT(),
+        Nu0(),
         Qmat(),
         Qrnk(0),
         laws(),
@@ -183,6 +184,17 @@ namespace yack
                 for(size_t i=Nu.rows;i>0;--i) node=node->next;
                 coerce(last) = node;
 
+                //--------------------------------------------------------------
+                //
+                // build full topology
+                //
+                //--------------------------------------------------------------
+                coerce(Nu0).make(size,lib.size);
+                for(const Equilibrium::Node *en=head;en;en=en->next)
+                {
+                    const Equilibrium &eq = ***en;
+                    eq.fill( coerce(Nu0)[ eq.indx[SubLevel] ], SubLevel);
+                }
             }
 
             //------------------------------------------------------------------

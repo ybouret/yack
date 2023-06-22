@@ -150,7 +150,8 @@ namespace yack
             const Equilibrium::Node * const last;     //!< first replica
             const Species::CoreRepo         lib;      //!< employed species
             const matrix<int>               Nu;       //!< main topology
-            const matrix<int>               NuT;      //!< transposed(Nu)
+            const matrix<int>               NuT;      //!< transpose(Nu)
+            const matrix<int>               Nu0;      //!< full topology
             const matrix<unsigned>          Qmat;     //!< matrix of constraints
             const size_t                    Qrnk;     //!< rank(Qm)
             const ConservationLaws          laws;     //!< effective laws

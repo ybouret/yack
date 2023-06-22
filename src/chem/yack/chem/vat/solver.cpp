@@ -125,7 +125,7 @@ namespace yack
                 {
                     const Equilibrium        &eq = ***en;
                     const size_t              ei = eq.indx[SubLevel];
-                    cluster.pad(*xml << eq.name,eq) << " @" << std::setw(15) << *Xi[ei] << " = " << Xi[ei] << std::endl;
+                    cluster.pad(*xml << eq.name,eq) << " @" << std::setw(15) << *Xi[ei] << ", nu=" <<cluster.Nu0[ei]<<std::endl;
                 }
             }
 
