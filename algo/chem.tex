@@ -444,7 +444,23 @@ The second term take into account only the $j-th$ equilibria contributing to the
 \begin{equation}
 \xi_i^\star - \dfrac{\langle \vec{\Psi}_i^\star \vert \delta\vec{C} \rangle}{\langle \vec{\Psi}_i^\star \vert \vec{\nu}_i \rangle}
 = \xi_i^\star - \langle\vec{\Omega}_i \vert \vec{\xi}\rangle,
-\;\; \bm{\Omega}_{ik} = 
+\;\; \bm{\Omega}_{ik} = \dfrac{\langle \vec{\Psi}_i^\star \vert \vec{\nu}_k \rangle}{\langle \vec{\Psi}_i^\star \vert \vec{\nu}_i \rangle}
+\end{equation}
+
+\begin{equation}
+	f_i(\vec{\xi}) =  \xi_i^\star - \langle\vec{\Omega}_i \vert \vec{\xi}\rangle - 
+	\dfrac{1}{\sum w_k}
+	\sum_j w_j
+	\dfrac{\langle\vec{\nu}_j\vert\vec{\nu}_i\rangle}{\nu_i^2}
+	\left[\xi_j^\star - \langle\vec{\Omega}_j \vert \vec{\xi}\rangle \right]
+\end{equation}
+
+\begin{equation}
+	f_i(\vec{\xi}) = 
+	\left( \langle \vec{\delta}_i \vert 
+	+\dfrac{1}{\sum w_k}\langle  w_j
+	\dfrac{\langle\vec{\nu}_j\vert\vec{\nu}_i\rangle}{\nu_i^2} \vert \right) 
+	\vert \vec{\xi}^\star - \bm{\Omega} \vec{\xi} \rangle
 \end{equation}
 
 \end{document}
