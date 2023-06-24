@@ -418,24 +418,36 @@ Let's start from a trial concentration $\vec{S}$ and let's compute the best effo
 }\right] \vec{\nu}_j
 \end{equation} 
 
+%\end{document}
+
 \begin{equation}
-\left\lbrace
-\begin{array}{rcl}
-	f_i(\delta\vec{C}) &=& \dfrac{1}{\nu_i^2} \langle \vec{S}_i - \mathbb{E}(\vec{S}) \vert \vec{\nu}_i \rangle\\
-	 & = &
-	 \displaystyle \xi_i^\star - \dfrac{\langle \vec{\Psi}_i^\star \vert \delta\vec{C} \rangle}{\langle \vec{\Psi}_i^\star \vert \vec{\nu}_i \rangle
-}
--
-\dfrac{1}{\sum w_k}\sum_j w_j\left[ \xi_j^\star - \dfrac{\langle \vec{\Psi}_j^\star \vert \delta\vec{C} \rangle}{\langle \vec{\Psi}_j^\star \vert \vec{\nu}_j \rangle
-}\right] \dfrac{\langle\vec{\nu}_j\vert\vec{\nu}_i\rangle}{\nu_i^2}\\
-\end{array}
-\right.
+	\vec{\nabla} \dfrac{1}{2} \left[\vec{S}_i - \mathbb{E}(\vec{S})\right]^2
+\end{equation}
+
+\begin{equation}
+	\bm{J}_i = \partial_{\vec{X}} \left(\dfrac{\langle \vec{\Psi}_i^\star \vert  \vec{X} \rangle}{\langle \vec{\Psi}_i^\star \vert \vec{\nu}_i \rangle
+}\vec{\nu}_i\right) = 
+\dfrac{1}{\langle \vec{\Psi}_i^\star \vert \vec{\nu}_i \rangle} 
+\vert \vec{\nu}_i \rangle \langle \vec{\Psi}_i^\star 
+\end{equation}
+
+\begin{equation}
+	\partial_{\delta\vec{C}} (\vec{S}_i - \mathbb{E}(\vec{S}))= - \bm{J}_i + \dfrac{1}{\sum w_k}\sum_j w_j \bm{J}_j
+\end{equation}
+
+\begin{equation}
+	\vec{\nabla} \dfrac{1}{2} \left[\vec{S}_i - \mathbb{E}(\vec{S})\right]^2 = 
+	\left(-\bm{J}_i^t + \mathbb{E}(\bm{J}^t) \right) \left[\vec{S}_i - \mathbb{E}(\vec{S})\right]
 \end{equation} 
 
 \begin{equation}
-	f_i(\vec{0}) = \xi_i^\star - \dfrac{1}{\sum w_k}\sum_j w_j  \xi_j^\star \dfrac{\langle\vec{\nu}_j\vert\vec{\nu}_i\rangle}{\nu_i^2}
+	L^2 = \dfrac{1}{2\sum w_k}\sum_j w_j \left[\vec{S}_i - \mathbb{E}(\vec{S})\right]^2
 \end{equation}
-The second term take into account only the $j-th$ equilibria contributing to the $i-th$ equilibria.
+
+The decreasing direction for $L^2$ is:
+\begin{equation}
+	-\partial_{\delta\vec{C}} = 
+\end{equation}
 
 \begin{equation}
 \delta\vec{C} = \sum_k \xi_k \vec{\nu}_k
@@ -445,22 +457,7 @@ The second term take into account only the $j-th$ equilibria contributing to the
 \xi_i^\star - \dfrac{\langle \vec{\Psi}_i^\star \vert \delta\vec{C} \rangle}{\langle \vec{\Psi}_i^\star \vert \vec{\nu}_i \rangle}
 = \xi_i^\star - \langle\vec{\Omega}_i \vert \vec{\xi}\rangle,
 \;\; \bm{\Omega}_{ik} = \dfrac{\langle \vec{\Psi}_i^\star \vert \vec{\nu}_k \rangle}{\langle \vec{\Psi}_i^\star \vert \vec{\nu}_i \rangle}
-\end{equation}
-
-\begin{equation}
-	f_i(\vec{\xi}) =  \xi_i^\star - \langle\vec{\Omega}_i \vert \vec{\xi}\rangle - 
-	\dfrac{1}{\sum w_k}
-	\sum_j w_j
-	\dfrac{\langle\vec{\nu}_j\vert\vec{\nu}_i\rangle}{\nu_i^2}
-	\left[\xi_j^\star - \langle\vec{\Omega}_j \vert \vec{\xi}\rangle \right]
-\end{equation}
-
-\begin{equation}
-	f_i(\vec{\xi}) = 
-	\left( \langle \vec{\delta}_i \vert 
-	+\dfrac{1}{\sum w_k}\langle  w_j
-	\dfrac{\langle\vec{\nu}_j\vert\vec{\nu}_i\rangle}{\nu_i^2} \vert \right) 
-	\vert \vec{\xi}^\star - \bm{\Omega} \vec{\xi} \rangle
+,\;\;\bm{\Omega}_{ii} = 1
 \end{equation}
 
 \end{document}

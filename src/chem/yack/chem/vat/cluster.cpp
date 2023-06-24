@@ -13,6 +13,7 @@ namespace yack
 
         Cluster:: Cluster(Equilibrium &first) :
         Equilibrium::CoreRepo(),
+        rank(0),
         last(NULL),
         lib(),
         Nu(),
@@ -159,12 +160,14 @@ namespace yack
                 }
                 YACK_XMLOG(xml, " Nu = " << Nu);
 
-                const size_t rank = apex::flak::rank(Nu);
+                coerce(rank) = apex::flak::rank(Nu);
                 if(size!=rank)
                     throw imported::exception(CLID,"system rank=%u < size=%u", unsigned(rank), unsigned(size));
 
+                assert(rank==Nu.rows);
                 coerce(NuT).make(Nu.cols,Nu.rows);
                 coerce(NuT).assign(Nu,transposed);
+
 
                 //--------------------------------------------------------------
                 //
@@ -181,7 +184,7 @@ namespace yack
                 makeManifold(xml,eqs,usr);
 
                 const Equilibrium::Node *node = head;
-                for(size_t i=Nu.rows;i>0;--i) node=node->next;
+                for(size_t i=rank;i>0;--i) node=node->next;
                 coerce(last) = node;
 
                 //--------------------------------------------------------------

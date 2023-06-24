@@ -147,6 +147,7 @@ namespace yack
             //
             // members
             //__________________________________________________________________
+            const size_t                    rank;     //!< original rank
             const Equilibrium::Node * const last;     //!< first replica
             const Species::CoreRepo         lib;      //!< employed species
             const matrix<int>               Nu;       //!< main topology
