@@ -56,11 +56,8 @@ namespace {
 
                         a(y,x);
 
-                        const T rms = *(SVD.add.mod2(b,y).reduce()/r);
-                        std::cerr << "\trms=" << rms << std::endl;
-
-                        //const T rms = sqrt(tao::v1::mod2<T>::of(b,y)/r);
-                        //std::cerr << "\trms=" << rms << std::endl;
+                        const T rms = *((SVD.add.mod2(b,y).reduce()/r).sqrt());
+                        std::cerr << "\trms=" << rms << " / " << numeric<T>::ftol << std::endl;
                         //YACK_CHECK(rms<=numeric<T>::ftol);
                     }
                 }
