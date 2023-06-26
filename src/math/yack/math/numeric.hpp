@@ -3,6 +3,7 @@
 #ifndef YACK_MATH_NUMERIC_INCLUDED
 #define YACK_MATH_NUMERIC_INCLUDED 1
 
+#include "yack/math/extended.hpp"
 #include "yack/type/utils.hpp"
 #include <cmath>
 
@@ -40,11 +41,16 @@ namespace yack
 
 
 #if !defined(_MSC_VER)
+
+#define YACK_MATH_NUMERIC_(TYPE,VALUE) \
+template <> const TYPE           numeric<TYPE>             :: VALUE; \
+template <> const extended<TYPE> numeric< extended<TYPE> > :: VALUE
+
         //! declaring constants is necessary
-#define YACK_MATH_NUMERIC(VALUE)                           \
-template <> const float       numeric<float>      ::VALUE; \
-template <> const double      numeric<double>     ::VALUE; \
-template <> const long double numeric<long double>::VALUE
+#define YACK_MATH_NUMERIC(VALUE)      \
+YACK_MATH_NUMERIC_(float,VALUE);      \
+YACK_MATH_NUMERIC_(double,VALUE);     \
+YACK_MATH_NUMERIC_(long double,VALUE)
 
         YACK_MATH_NUMERIC(epsilon);     //!< epsilon
         YACK_MATH_NUMERIC(minimum);     //!< minimum

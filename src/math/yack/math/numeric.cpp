@@ -14,6 +14,13 @@ template <> const TYPE numeric<float>       :: NAME = FLT_##VALUE;\
 template <> const TYPE numeric<double>      :: NAME = DBL_##VALUE;\
 template <> const TYPE numeric<long double> :: NAME = LDBL_##VALUE
 
+#define YACK_XNUMERIC_(TYPE,NAME) template <> const extended<TYPE> numeric< extended<TYPE> > :: NAME( numeric<TYPE>::NAME )
+
+#define YACK_XNUMERIC(NAME)     \
+YACK_XNUMERIC_(float,NAME);     \
+YACK_XNUMERIC_(double,NAME);    \
+YACK_XNUMERIC_(long double,NAME)
+
 namespace yack
 {
     namespace math
@@ -74,6 +81,12 @@ namespace yack
         template <> const float        numeric<float>::       sqrt_eps = _sqrt_eps<float>();
         template <> const double       numeric<double>::      sqrt_eps = _sqrt_eps<double>();
         template <> const long double  numeric<long double>:: sqrt_eps = _sqrt_eps<long double>();
+
+
+        YACK_XNUMERIC(epsilon);
+        YACK_XNUMERIC(ftol);
+        YACK_XNUMERIC(pi);
+        YACK_XNUMERIC(two_pi);
 
     }
 

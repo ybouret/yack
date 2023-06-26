@@ -37,8 +37,8 @@ namespace yack
                 //
                 //! nullity for a range of given values
                 /**
-                 - find max(|values|)
-                 - if(ftol<=0) then ftol = card(values) * epsilon * vmax
+                 - find vmax = max(|values|)
+                 - if(ftol<=0) then ftol = card(values) * epsilon 
                  - set to zero and return number of variables below threshold
                  */
                 //______________________________________________________________
@@ -58,7 +58,7 @@ namespace yack
                     }
 
                     // adjust ftol
-                    //if(ftol<=0) ftol      = n * numeric<T>::epsilon;
+                    if(ftol<=0) ftol      = n * numeric<T>::epsilon;
                     const_type  threshold = a*ftol;
 
                     // second pass: cut values below threshold
