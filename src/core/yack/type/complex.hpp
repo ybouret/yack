@@ -3,7 +3,7 @@
 #ifndef YACK_COMPLEX_INCLUDED
 #define YACK_COMPLEX_INCLUDED 1
 
-#include "yack/type/scalar.hpp"
+#include "yack/math/hypothenuse.hpp"
 #include "yack/type/utils.hpp"
 #include <iostream>
 #include <cmath>
@@ -25,7 +25,7 @@ namespace yack
         //
         // types and definitions
         //______________________________________________________________________
-        typedef T real_t; //!< base type
+        typedef T type; //!< base type
 
         //______________________________________________________________________
         //
@@ -160,13 +160,13 @@ namespace yack
         //
         //! mod2
         //______________________________________________________________________
-        inline real_t mod2() const noexcept { return squared(re) + squared(im); }
+        inline type mod2() const noexcept { return squared(re) + squared(im); }
        
         //______________________________________________________________________
         //
         //! mod2
         //______________________________________________________________________
-        inline real_t abs() const noexcept { return sqrt(mod2()); }
+        inline type abs() const noexcept { return math::hypothenuse(im,re); }
 
         
         //______________________________________________________________________
@@ -240,7 +240,7 @@ namespace yack
     template <typename T>
     struct scalar_for< complex<T> >
     {
-        typedef typename complex<T>::real_t type; //!< effective type
+        typedef typename complex<T>::type type; //!< effective type
     };
 
 }

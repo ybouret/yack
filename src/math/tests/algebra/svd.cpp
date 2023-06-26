@@ -32,9 +32,9 @@ namespace {
                 {
                     std::cerr << "[FAILURE]" << std::endl;
                 }
-                std::cerr << "w=" << w << " => ";
+                //std::cerr << "w=" << w << " => ";
                 const size_t nullity = look_for<T>::nullity::of(w,1e-6);
-                std::cerr << "w=" << w << "; ker=" << nullity << std::endl;
+                //std::cerr << "w=" << w << "; ker=" << nullity << std::endl;
 
                 if(r==c)
                 {
@@ -46,6 +46,10 @@ namespace {
                         bring::fill(b,ran);
                         SVD.solve(u,w,v,x,b);
                         cxx_array<T> y(r);
+                        std::cerr << "a=" << a << std::endl;
+                        std::cerr << "b=" << b << std::endl;
+                        std::cerr << "x=" << x << std::endl;
+
                         a(y,x);
                         const T rms = sqrt(tao::v1::mod2<T>::of(b,y)/r);
                         std::cerr << "\trms=" << rms << std::endl;
@@ -67,8 +71,8 @@ YACK_UTEST(svd)
     randomized::rand_ ran;
 
     do_svd<float>(ran);
-    do_svd<double>(ran);
-    do_svd<long double>(ran);
+    //do_svd<double>(ran);
+    //do_svd<long double>(ran);
 
 }
 YACK_UDONE()

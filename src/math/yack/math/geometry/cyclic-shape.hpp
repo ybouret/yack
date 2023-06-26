@@ -82,15 +82,15 @@ namespace yack
                 const vertex AB = B-A;
                 const vertex BC = C-B;
                 const vertex AC = C-A;
-                const T      a  = hypothenuse(AB);
-                const T      b  = hypothenuse(BC);
-                const T      c  = hypothenuse(AC);
+                const T      a  = hypothenuse(AB.x,AB.y);
+                const T      b  = hypothenuse(BC.x,BC.y);
+                const T      c  = hypothenuse(AC.x,AC.y);
                 const T      s  = half * (a+b+c);
                 const T      area = std::sqrt( s * (s-a) * (s-b) * (s-c) );
 
                 kappa = four * area /a/b/c;
                 speed = half * AC;
-                t     =  speed / hypothenuse(speed);
+                t     =  speed / hypothenuse(speed.x,speed.y);
                 n.x   =  t.y;
                 n.y   = -t.x;
                 accel = BC-AB;

@@ -67,31 +67,7 @@ template <> const long double numeric<long double>::VALUE
             static T fac = T(0.5) * numeric<T>::epsilon;
             return ( std::abs(X-Y) <= fac * ( std::abs(X) + std::abs(Y) ) );
         }
-
-        //! precise hypothenuse
-        template <typename T>
-        inline T hypothenuse(const T a, const T b) noexcept
-        {
-            static const T one(1);
-            const T        absa=std::abs(a);
-            const T        absb=std::abs(b);
-            if(absa>absb)
-            {
-                return absa*std::sqrt(one+squared(absb/absa));
-            }
-            else
-            {
-                return (absb <= 0 ? 0 : absb*std::sqrt(one+squared(absa/absb)));
-            }
-        }
-
-        //! hypothenuse of v2d/complex
-        template <typename VERTEX>
-        inline typename VERTEX::type hypothenuse(const VERTEX &v) noexcept
-        {
-            return hypothenuse(v.x,v.y);
-        }
-
+        
 
         //! return the signed value of a w.r.t the sign of b
         template <typename T, typename U>

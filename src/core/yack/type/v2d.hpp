@@ -5,6 +5,7 @@
 #define YACK_TYPE_V2D_INCLUDED 1
 
 #include "yack/type/args.hpp"
+#include "yack/math/hypothenuse.hpp"
 #include "yack/comparison.hpp"
 #include <iostream>
 
@@ -181,7 +182,13 @@ namespace yack
         {
             return squared(x) + squared(y);
         }
-        
+
+        //! norm
+        inline mutable_type norm() const noexcept
+        {
+            return math::hypothenuse(x,y);
+        }
+
         //! norm1
         inline mutable_type norm1() const noexcept
         {

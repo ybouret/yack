@@ -19,6 +19,12 @@ namespace yack
             return x.abs();
         }
 
+        template <>
+        extended<float> sqrt_of< extended<float> >(const  extended<float> &x)
+        {
+            return x.sqrt();
+        }
+
         // xdouble
         template <>
         extended<double> mod2_of<extended<double> >(const extended<double> &x)
@@ -30,6 +36,13 @@ namespace yack
         extended<double> abs_of<extended<double> >(const extended<double> &x)
         {
             return x.abs();
+        }
+
+
+        template <>
+        extended<double> sqrt_of<extended<double> >(const extended<double> &x)
+        {
+            return x.sqrt();
         }
 
         // xldbl
@@ -45,6 +58,11 @@ namespace yack
             return x.abs();
         }
 
+        template <>
+        extended<long double> sqrt_of<extended<long double> >(const extended<long double>  &x)
+        {
+            return x.sqrt();
+        }
 
     }
 

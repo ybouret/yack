@@ -1,16 +1,37 @@
-#include "yack/math/api.hpp"
 #include "yack/utest/run.hpp"
-
 #include "yack/type/complex.hpp"
 #include <typeinfo>
+#include "../main.hpp"
 
 using namespace yack;
 
 #define SHOW_TYPEINFO(TYPE) std::cerr << std::setw(20) << #TYPE << " : " << typeid(TYPE).name() << std::endl;
 
+namespace
+{
+    template <typename T> static inline
+    void test_hypoth(randomized::bits &ran)
+    {
+        const T lo(-5);
+        const T hi(5);
+        const T del = hi-lo;
+        {
+            const T a = lo + del * bring::get<T>(ran);
+            const T b = lo + del * bring::get<T>(ran);
+            const T l = math::hypothenuse(a,b);
+            std::cerr << "(";
+            std::cerr << "(" << a << ")^2";
+            std::cerr << "+";
+            std::cerr << "(" << b << ")^2";
+            std::cerr << ")^(0.5)=" << l << std::endl;
+
+        }
+    }
+}
+
 YACK_UTEST(math_api)
 {
-
+    randomized::rand_ ran;
     std::cerr << "---- unsigned ----" << std::endl;
     SHOW_TYPEINFO(uint8_t);
     SHOW_TYPEINFO(uint16_t);
@@ -44,10 +65,25 @@ YACK_UTEST(math_api)
 
 
     {
-        const complex<float> cplx(2,2);
+        std::cerr << "on complex" << std::endl;
+        const complex<float> cplx(3,2);
         std::cerr << math::mod2_of(cplx) << std::endl;
         std::cerr << math::abs_of(cplx)  << std::endl;
     }
+
+    {
+        test_hypoth<float>(ran);
+        test_hypoth< extended<float> >(ran);
+
+        
+        test_hypoth<double>(ran);
+        test_hypoth< extended<double> >(ran);
+
+        test_hypoth<long double>(ran);
+        test_hypoth< extended<long double> >(ran);
+
+    }
+
 }
 YACK_UDONE()
 

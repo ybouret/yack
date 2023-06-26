@@ -8,6 +8,7 @@
 #include "yack/memory/allocator/dyadic.hpp"
 #include "yack/spot-object.hpp"
 #include "yack/math/numeric.hpp"
+#include "yack/math/hypothenuse.hpp"
 #include "yack/sort/heap.hpp"
 #include "yack/math/algebra/crout.hpp"
 #include "yack/ios/ocstream.hpp"
@@ -339,10 +340,10 @@ namespace yack
             static inline
             T max_norm_of(const vertices &p) noexcept
             {
-                T res = hypothenuse(p[1]);
+                T res = hypothenuse(p[1].x,p[1].y);
                 for(size_t i=p.size();i>1;--i)
                 {
-                    const T tmp = hypothenuse(p[i]);
+                    const T tmp = hypothenuse(p[i].x,p[i].y);
                     if(tmp>res) res = tmp;
                 }
                 return res;
@@ -375,7 +376,7 @@ namespace yack
             double approx_curv(const size_t i) noexcept
             {
                 const vertex &s   = speed[i];
-                const T       sn  = hypothenuse(s);
+                const T       sn  = hypothenuse(s.x,s.y);
                 coerce(tvec[i])   = s/sn;
                 coerce(nvec[i].x) =  tvec[i].y;
                 coerce(nvec[i].y) = -tvec[i].x;

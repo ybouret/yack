@@ -23,7 +23,8 @@ namespace yack
         {
             return x*x;
         }
-        
+
+        // abs
         template <>
         float abs_of<float>(const float &x)
         {
@@ -42,7 +43,11 @@ namespace yack
             return fabsl(x);
         }
         
-        
+        //sqrt
+        template <> float       sqrt_of<float>(const float             &f) { return sqrtf(f); }
+        template <> double      sqrt_of<double>(const double           &f) { return sqrt(f);  }
+        template <> long double sqrt_of<long double>(const long double &f) { return sqrtl(f); }
+
     }
     
     

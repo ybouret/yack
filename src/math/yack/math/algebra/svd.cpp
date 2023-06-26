@@ -2,6 +2,8 @@
 #include "yack/math/algebra/svd.hpp"
 #include "yack/system/exception.hpp"
 #include "yack/math/numeric.hpp"
+#include "yack/math/hypothenuse.hpp"
+
 //#include <cerrno>
 #include <cmath>
 
