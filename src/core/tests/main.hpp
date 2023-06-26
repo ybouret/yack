@@ -78,38 +78,38 @@ namespace yack
     template <>
     inline float bring:: get<float>(randomized::bits &ran)
     {
-        return ran.to<float>();
+        return ran.symm<float>();
     }
     
     template <>
     inline double bring:: get<double>(randomized::bits &ran)
     {
-        return ran.to<double>();
+        return ran.symm<double>();
     }
     
     template <>
     inline long double bring:: get<long double>(randomized::bits &ran)
     {
-        return ran.to<long double>();
+        return ran.symm<long double>();
     }
 
     // extended floating point
     template <>
     inline extended<float> bring:: get< extended<float> >(randomized::bits &ran)
     {
-        return ran.to<float>();
+        return get<float>(ran);
     }
 
     template <>
     inline extended<double> bring:: get< extended<double> >(randomized::bits &ran)
     {
-        return ran.to<double>();
+        return get<double>(ran);
     }
 
     template <>
     inline extended<long double> bring:: get< extended<long double> >(randomized::bits &ran)
     {
-        return ran.to<long double>();
+        return get<long double>(ran);
     }
 
     // complexes

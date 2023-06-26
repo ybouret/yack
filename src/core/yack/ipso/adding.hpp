@@ -130,6 +130,7 @@ namespace yack
                     return *this;
                 }
 
+                //! load |lhs|^
                 template <typename LHS> inline
                 proto &mod2(LHS &lhs)
                 {
@@ -144,6 +145,7 @@ namespace yack
                     return *this;
                 }
 
+                //! load |lhs-rhs|^2
                 template <typename LHS, typename RHS> inline
                 proto &mod2(LHS &lhs, RHS &rhs)
                 {

@@ -15,8 +15,8 @@ namespace yack
         zero(0),
         one(1),
         two(2),
-        rv1(),
-        add()
+        add(),
+        rv1()
         {
         }
 
@@ -34,7 +34,7 @@ namespace yack
 
 
             rv1.adjust(n,zero);
-            size_t k;
+            //size_t k;
             xtype  c,f,h,s,x,y,z;
             size_t l = 0;
             xtype g=zero,scale=zero,anorm=zero;
@@ -48,14 +48,14 @@ namespace yack
                 add.free();
                 if (i <= m)
                 {
-                    for(k=i;k<=m;k++)
+                    for(size_t k=i;k<=m;k++)
                         add.push(a[k][i].abs());
                     scale=add.reduce();
 
                     if(scale>0)
                     {
                         add.free();
-                        for(k=i;k<=m;k++)
+                        for(size_t k=i;k<=m;k++)
                         {
                             a[k][i] /= scale;
                             add.push( squared(a[k][i]) );
@@ -68,14 +68,14 @@ namespace yack
                         for(size_t j=l;j<=n;j++)
                         {
                             add.free();
-                            for(k=i;k<=m;k++)
+                            for(size_t k=i;k<=m;k++)
                                 add.push( a[k][i]*a[k][j] );
                             s = add.reduce();
                             f = s/h;
-                            for(k=i;k<=m;k++)
+                            for(size_t k=i;k<=m;k++)
                                 a[k][j] += f*a[k][i];
                         }
-                        for (k=i;k<=m;k++) a[k][i] *= scale;
+                        for(size_t k=i;k<=m;k++) a[k][i] *= scale;
                     }
                 }
 
@@ -84,14 +84,14 @@ namespace yack
                 if (i <= m && i != n)
                 {
                     add.free();
-                    for(k=l;k<=n;k++)
+                    for(size_t k=l;k<=n;k++)
                         add.push(a[i][k].abs());
                     scale = add.reduce();
 
                     if(scale>0)
                     {
                         add.free();
-                        for(k=l;k<=n;k++)
+                        for(size_t k=l;k<=n;k++)
                         {
                             a[i][k] /= scale;
                             add.push( squared(a[i][k]));
@@ -101,18 +101,18 @@ namespace yack
                         g = -sgn(sqrt_of(s),f);
                         h=f*g-s;
                         a[i][l]=f-g;
-                        for(k=l;k<=n;k++)
+                        for(size_t k=l;k<=n;k++)
                             rv1[k]=a[i][k]/h;
                         for(size_t j=l;j<=m;j++)
                         {
                             add.free();
-                            for(k=l;k<=n;k++)
+                            for(size_t k=l;k<=n;k++)
                                 add.push(a[j][k]*a[i][k]);
                             s = add.reduce();
-                            for(k=l;k<=n;k++)
+                            for(size_t k=l;k<=n;k++)
                                 a[j][k] += s*rv1[k];
                         }
-                        for (k=l;k<=n;k++)
+                        for(size_t k=l;k<=n;k++)
                             a[i][k] *= scale;
                     }
                 }
@@ -132,11 +132,11 @@ namespace yack
                         for(size_t j=l;j<=n;j++)
                         {
                             add.free();
-                            for(k=l;k<=n;k++)
+                            for(size_t k=l;k<=n;k++)
                                 add.push(a[i][k]*v[k][j]);
                             s = add.reduce();
 
-                            for (k=l;k<=n;k++)
+                            for (size_t k=l;k<=n;k++)
                                 v[k][j] += s*v[k][i];
                         }
                     }
@@ -161,11 +161,11 @@ namespace yack
                     for(size_t j=l;j<=n;j++)
                     {
                         add.free();
-                        for(k=l;k<=m;k++)
+                        for(size_t k=l;k<=m;k++)
                             add.push(a[k][i]*a[k][j]);
                         s = add.reduce();
                         f = (s/a[i][i])*g;
-                        for (k=i;k<=m;k++) a[k][j] += f*a[k][i];
+                        for(size_t k=i;k<=m;k++) a[k][j] += f*a[k][i];
                     }
                     for(size_t j=i;j<=m;j++) a[j][i] *= g;
                 }
@@ -174,7 +174,7 @@ namespace yack
                 a[i][i] += one;
             }
 
-            for (k=n;k>0;--k)
+            for(size_t k=n;k>0;--k)
             {
                 /* Diagonalization of the bidiagonal form. */
                 unsigned its=0;

@@ -42,7 +42,8 @@ namespace yack
 
 #if !defined(_MSC_VER)
 
-#define YACK_MATH_NUMERIC_(TYPE,VALUE) \
+        //! helper to declare constants
+#define YACK_MATH_NUMERIC_(TYPE,VALUE)                               \
 template <> const TYPE           numeric<TYPE>             :: VALUE; \
 template <> const extended<TYPE> numeric< extended<TYPE> > :: VALUE
 

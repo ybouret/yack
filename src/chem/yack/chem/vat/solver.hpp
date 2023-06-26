@@ -12,34 +12,57 @@ namespace yack
 
         typedef vector<Aftermath,memory::dyadic> Aftermaths;
 
+        //______________________________________________________________________
+        //
+        //
+        //! Solving coupled equilibria
+        //
+        //______________________________________________________________________
         class Solver
         {
         public:
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+
+            //! setup
             explicit Solver(const size_t maxClusterSize,
                             const size_t maximumSpecies);
+
+            //! cleanup
             virtual ~Solver() noexcept;
 
-            //! solve top-level
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
+            //! solve top-level concentration/constants/scaling
             void  run(const xmlog                    &xml,
                       writable<Extended::Real>       &C0,
                       const Cluster                  &cluster,
                       const readable<Extended::Real> &K,
                       const readable<Extended::Real> &S);
 
-            Equilibrium::Fund     eqsFund;
-            Species::Fund         spcFund;
-            Equilibrium::CoopRepo running;
-            Equilibrium::CoopRepo blocked;
-            Extents               extents;
-            Extended::Vector      Xi;
-            Extended::Vector      Xa;
-            Extended::Vector      Corg;
-            Extended::Vector      Ctmp;
-            Extended::Matrix      Ceq;
-            Extended::Matrix      Phi;
-            Aftermaths            ams;
-            Extended::Add         xadd;
-            Extended::Mul         xmul;
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            Equilibrium::Fund     eqsFund; //!< I/O for equilibria
+            Species::Fund         spcFund; //!< I/O for species
+            Equilibrium::CoopRepo running; //!< running equilibria
+            Equilibrium::CoopRepo blocked; //!< blocked equilibria
+            Extents               extents; //!< scanning extents
+            Extended::Vector      Xi;      //!< running individual Xi, SubLevel
+            Extended::Vector      Xa;      //!< |Xi|, SubLevel
+            Extended::Vector      Corg;    //!< starting point, SubLevel
+            Extended::Vector      Ctmp;    //!< trial point, SubLevel
+            Extended::Matrix      Ceq;     //!< individual solutions, SubLevel
+            Extended::Matrix      Phi;     //!< individual gradients, SubLevel
+            Aftermaths            ams;     //!< aftermaths, SubLevel
+            Extended::Add         xadd;    //!< helper
+            Extended::Mul         xmul;    //!< helper
 
 
         private:

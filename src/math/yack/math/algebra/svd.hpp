@@ -28,9 +28,9 @@ namespace yack
             // types and definitions
             //__________________________________________________________________
             static const size_t MAX_ITS = 1024; //!< maximum iterations
-            typedef T                type;
-            typedef extended<type>   xtype;
-            typedef ipso::add<xtype> add_type;
+            typedef T                type;      //!< floating point
+            typedef extended<type>   xtype;     //!< extended
+            typedef ipso::add<xtype> add_type;  //!< alias
 
             //__________________________________________________________________
             //
@@ -61,18 +61,18 @@ namespace yack
                        writable<xtype>        &x,
                        const readable<xtype>  &b);
 
-            
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const xtype zero; //!< 0
+            const xtype one;  //!< 1
+            const xtype two;  //!< 2
+            add_type    add;  //!< helper
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(svd);
-            const xtype zero;
-            const xtype one;
-            const xtype two;
             vector<xtype,memory::dyadic> rv1;   //!< a.cols=n
-        public:
-            add_type                     add;
-
-
         };
 
     }
