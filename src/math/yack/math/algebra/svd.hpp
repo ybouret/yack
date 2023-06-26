@@ -61,9 +61,8 @@ namespace yack
                        writable<xtype>        &x,
                        const readable<xtype>  &b);
 
-
-
             
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(svd);
             const xtype zero;
@@ -71,7 +70,9 @@ namespace yack
             const xtype two;
             vector<xtype,memory::dyadic> rv1;   //!< a.cols=n
         public:
-            add_type                     add;  
+            add_type                     add;
+
+
         };
 
     }

@@ -133,7 +133,6 @@ namespace yack
                         {
                             add.free();
                             for(k=l;k<=n;k++)
-                                //s += a[i][k]*v[k][j];
                                 add.push(a[i][k]*v[k][j]);
                             s = add.reduce();
 
@@ -155,20 +154,23 @@ namespace yack
                 l=i+1;
                 g=w[i];
                 for(size_t j=l;j<=n;j++)
-                    a[i][j]=0.0;
+                    a[i][j]=zero;
                 if(abs_of(g)>0)
                 {
                     g=one/g;
                     for(size_t j=l;j<=n;j++)
                     {
-                        for (s=0,k=l;k<=m;k++) s += a[k][i]*a[k][j];
-                        f=(s/a[i][i])*g;
+                        add.free();
+                        for(k=l;k<=m;k++)
+                            add.push(a[k][i]*a[k][j]);
+                        s = add.reduce();
+                        f = (s/a[i][i])*g;
                         for (k=i;k<=m;k++) a[k][j] += f*a[k][i];
                     }
                     for(size_t j=i;j<=m;j++) a[j][i] *= g;
                 }
                 else
-                    for(size_t j=i;j<=m;j++) a[j][i]=0.0;
+                    for(size_t j=i;j<=m;j++) a[j][i]=zero;
                 a[i][i] += one;
             }
 
@@ -195,8 +197,8 @@ namespace yack
                     }
                     if (flag)
                     {
-                        c=0; /* Cancellation of rv1[l], if l > 1. */
-                        s=1;
+                        c=zero; /* Cancellation of rv1[l], if l > 1. */
+                        s=one;
                         for(size_t i=l;i<=k;i++) {
                             f=s*rv1[i];
                             rv1[i]=c*rv1[i];
@@ -210,8 +212,8 @@ namespace yack
                             for(size_t j=1;j<=m;j++) {
                                 y=a[j][nm];
                                 z=a[j][i];
-                                a[j][nm]=y*c+z*s;
-                                a[j][i]=z*c-y*s;
+                                a[j][nm] = y*c+z*s;
+                                a[j][i]  = z*c-y*s;
                             }
                         }
                     }

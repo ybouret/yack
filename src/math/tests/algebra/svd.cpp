@@ -79,8 +79,8 @@ YACK_UTEST(svd)
     randomized::rand_ ran;
 
     do_svd<float>(ran);
-    //do_svd<double>(ran);
-    //do_svd<long double>(ran);
+    do_svd<double>(ran);
+    do_svd<long double>(ran);
 
 }
 YACK_UDONE()
