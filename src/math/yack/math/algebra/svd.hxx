@@ -124,26 +124,32 @@ namespace yack
                 /* Accumulation of right-hand transformations. */
                 if (i<n)
                 {
-                    if(abs_of(g)>0)
+                    if(g.abs()>zero)
                     {
-                        for(size_t j=l;j<=n;j++) /* double division to avoid possible underflow. */
+                        for(size_t j=l;j<=n;j++)
                             v[j][i]=(a[i][j]/a[i][l])/g;
+
                         for(size_t j=l;j<=n;j++)
                         {
-                            for (s=0.0,k=l;k<=n;k++)
-                                s += a[i][k]*v[k][j];
+                            add.free();
+                            for(k=l;k<=n;k++)
+                                //s += a[i][k]*v[k][j];
+                                add.push(a[i][k]*v[k][j]);
+                            s = add.reduce();
+
                             for (k=l;k<=n;k++)
                                 v[k][j] += s*v[k][i];
                         }
                     }
                     for(size_t j=l;j<=n;j++)
-                        v[i][j]=v[j][i]=0.0;
+                        v[i][j]=v[j][i]=zero;
                 }
-                v[i][i]=1.0;
+                v[i][i]=one;
                 g=rv1[i];
                 l=i;
             }
-            for(size_t i=min_of(m,n);i>=1;i--)
+
+            for(size_t i=min_of(m,n);i>0;--i)
             {
                 /* Accumulation of left-hand transformations. */
                 l=i+1;
@@ -165,7 +171,8 @@ namespace yack
                     for(size_t j=i;j<=m;j++) a[j][i]=0.0;
                 a[i][i] += one;
             }
-            for (k=n;k>=1;k--)
+
+            for (k=n;k>0;--k)
             {
                 /* Diagonalization of the bidiagonal form. */
                 unsigned its=0;
