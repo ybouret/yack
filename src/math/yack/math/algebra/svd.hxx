@@ -34,7 +34,6 @@ namespace yack
 
 
             rv1.adjust(n,zero);
-            //size_t k;
             xtype  c,f,h,s,x,y,z;
             size_t l = 0;
             xtype g=zero,scale=zero,anorm=zero;
@@ -277,7 +276,7 @@ namespace yack
                             a[jj][i]=z*c-y*s;
                         }
                     }
-                    rv1[l]=0.0;
+                    rv1[l]=zero;
                     rv1[k]=f;
                     w[k]=x;
                 }
@@ -308,7 +307,7 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // calculate (1/w) * u' * b
+            // compute (1/w) * u' * b
             //
             //------------------------------------------------------------------
             for(size_t j=n;j>0;--j)
