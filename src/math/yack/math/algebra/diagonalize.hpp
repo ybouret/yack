@@ -2,7 +2,6 @@
 #ifndef YACK_MATH_DIAGONALIZE_INCLUDED
 #define YACK_MATH_DIAGONALIZE_INCLUDED 1
 
-#include "yack/math/algebra/svd.hpp"
 #include "yack/math/numeric.hpp"
 #include "yack/math/look-for.hpp"
 #include "yack/math/tao/v1.hpp"
@@ -12,6 +11,7 @@
 #include "yack/sequence/vector.hpp"
 #include "yack/exception.hpp"
 #include "yack/sort/indexing.hpp"
+#include "yack/container/matrix.hpp"
 #include <cmath>
 
 namespace yack
@@ -67,7 +67,8 @@ namespace yack
                 const T R = std::fabs(rhs);
                 return comparison::increasing(L,R);
             }
-            
+
+#if 0
             //! find the eigenvectors from initial eigenvalues
             /**
              TODO: need to be written again ?
@@ -178,7 +179,7 @@ namespace yack
                 }
                 return true;
             }
-            
+#endif
         };
         
     }

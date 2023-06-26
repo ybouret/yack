@@ -4,7 +4,6 @@
 #include "yack/math/numeric.hpp"
 #include "yack/math/hypothenuse.hpp"
 
-//#include <cerrno>
 #include <cmath>
 
 

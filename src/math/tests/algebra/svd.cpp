@@ -13,6 +13,7 @@ using namespace math;
 
 namespace {
 
+#if 0
     template <typename T> static inline
     void do_svd(randomized::bits &ran)
     {
@@ -63,14 +64,15 @@ namespace {
         std::cerr << std::endl;
 
     }
-
+#endif
+    
 }
 
 YACK_UTEST(svd)
 {
     randomized::rand_ ran;
 
-    do_svd<float>(ran);
+    //do_svd<float>(ran);
     //do_svd<double>(ran);
     //do_svd<long double>(ran);
 

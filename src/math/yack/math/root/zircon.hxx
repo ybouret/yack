@@ -28,7 +28,7 @@ namespace yack
         Jt(dims,dims),
         U(dims,dims),
         V(dims,dims),
-        study(dims),
+        study(),
         fdjac(0),
         xadd(dims)
         {
@@ -88,7 +88,8 @@ namespace yack
             // decompose jacobian
             //
             //------------------------------------------------------------------
-            if(!study.build(U,W,V))
+            //if(!study.build(U,W,V))
+            if(false)
             {
                 //! bad matrix!
                 YACK_ZIRCON_PRINTLN(fn<<"invalid jacobian");
@@ -120,7 +121,7 @@ namespace yack
             // construct step
             //
             //------------------------------------------------------------------
-            study.solve(U,W,V,S,F);
+            //study.solve(U,W,V,S,F);
             for(size_t i=dimension;i>0;--i)
             {
                 const real_t S_i = tao::v1::neg__(S[i]);

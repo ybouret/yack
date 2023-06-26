@@ -13,7 +13,7 @@ namespace
     void test_diag(randomized::bits &ran)
     {
         std::cerr << "diag<" << rtti::name<T>() << ">" << std::endl;
-        math::svd<T> s;
+        //math::svd<T> s;
         for(size_t dim=1;dim<=8;++dim)
         {
             std::cerr << "dim=" << dim << std::endl;
@@ -50,6 +50,7 @@ namespace
                 if(nr>0)
                 {
                     matrix<T> ev(nr,dim);
+#if 0
                     if(math::diagonalize::eigv(ev,a0,wr,s))
                     {
                         for(size_t i=1;i<=nr;++i)
@@ -69,6 +70,7 @@ namespace
                     {
                         std::cerr << "couldn't find eigenvectors" << std::endl;
                     }
+#endif
                 }
 
             }

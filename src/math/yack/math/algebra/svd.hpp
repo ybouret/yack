@@ -4,9 +4,9 @@
 #ifndef YACK_MATH_SVD_INCLUDED
 #define YACK_MATH_SVD_INCLUDED 1
 
-#include "yack/sequence/arrays.hpp"
 #include "yack/container/matrix.hpp"
-#include "yack/cameo/add.hpp"
+#include "yack/sequence/vector.hpp"
+#include "yack/ipso/add.hpp"
 
 namespace yack
 {
@@ -20,24 +20,26 @@ namespace yack
         //
         //______________________________________________________________________
         template <typename T>
-        class svd : public arrays_of<T>
+        class svd
         {
         public:
             //__________________________________________________________________
             //
             // types and definitions
             //__________________________________________________________________
-            typedef arrays_of<T>                  tableaux;   //!< alias
-            typedef typename tableaux::array_type array_type; //!< alias
             static const size_t MAX_ITS = 1024; //!< maximum iterations
+            typedef T                type;
+            typedef extended<type>   xtype;
+            typedef ipso::add<xtype> add_type;
 
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            explicit svd(const size_t dims=0); //!< setup
-            virtual ~svd() noexcept;            //!< cleanup
+            explicit svd();           //!< setup
+            virtual ~svd() noexcept;  //!< cleanup
 
+#if 0
             //__________________________________________________________________
             //
             // method
@@ -52,15 +54,23 @@ namespace yack
              - The matrix v (not the transpose v') is output as v[1..n][1..n].
              */
             bool build(matrix<T> &a, writable<T> &w, matrix<T> &v);
-
-            //! singular value solve u.w.v' x = b
-            void solve(const matrix<T> &u, const readable<T> &w, const matrix<T> &v, writable<T> &x, const readable<T> &b);
+#endif
+            
+            //! singular value solve (u.w.v') x = b
+            void solve(const  matrix<xtype>   &u,
+                       const  readable<xtype> &w,
+                       const  matrix<xtype>   &v,
+                       writable<xtype>        &x,
+                       const readable<xtype>  &b);
             
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(svd);
-            array_type      &rv1; //!< a.cols=n
-            cameo::add<T>    add; //!< for summations
+            const xtype zero;
+            const xtype one;
+            const xtype two;
+            vector<xtype,memory::dyadic> rv1;   //!< a.cols=n
+            add_type                     add;  
         };
 
     }
