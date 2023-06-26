@@ -130,6 +130,37 @@ namespace yack
                     return *this;
                 }
 
+                template <typename LHS> inline
+                proto &mod2(LHS &lhs)
+                {
+                    const size_t n = lhs.size();
+                    this->resume(n);
+                    for(size_t i=n;i>0;--i)
+                    {
+                        const inside_type l = lhs[i];
+                        const inside_type l2 = l*l;
+                        push(l2);
+                    }
+                    return *this;
+                }
+
+                template <typename LHS, typename RHS> inline
+                proto &mod2(LHS &lhs, RHS &rhs)
+                {
+                    const size_t n = lhs.size();
+                    this->resume(n);
+                    for(size_t i=n;i>0;--i)
+                    {
+                        const inside_type l = lhs[i];
+                        const inside_type r = rhs[i];
+                        const inside_type d = l-r;
+                        const inside_type d2 = d*d;
+                        push(d2);
+                    }
+                    return *this;
+                }
+
+
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(proto);
             };

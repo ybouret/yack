@@ -3,6 +3,7 @@
 #include "yack/system/exception.hpp"
 #include "yack/math/numeric.hpp"
 #include "yack/math/hypothenuse.hpp"
+#include "yack/math/sgn.hpp"
 
 #include <cmath>
 

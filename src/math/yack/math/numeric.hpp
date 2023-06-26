@@ -69,13 +69,6 @@ template <> const long double numeric<long double>::VALUE
         }
         
 
-        //! return the signed value of a w.r.t the sign of b
-        template <typename T, typename U>
-        inline T __sgn(T a, U b) noexcept
-        {
-            return (b >= 0) ? std::abs(a) : -std::abs(a);
-        }
-
         //! identity operator
         template <typename T>
         inline T __id(const T &f) { return f; }

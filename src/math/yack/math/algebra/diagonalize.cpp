@@ -1,4 +1,5 @@
 #include "yack/math/algebra/diagonalize.hpp"
+#include "yack/math/sgn.hpp"
 #include <cmath>
 
 

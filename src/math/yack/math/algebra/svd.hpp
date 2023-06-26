@@ -39,7 +39,6 @@ namespace yack
             explicit svd();           //!< setup
             virtual ~svd() noexcept;  //!< cleanup
 
-#if 0
             //__________________________________________________________________
             //
             // method
@@ -53,16 +52,17 @@ namespace yack
              - The diagonal matrix of singular values w is output as a vector w[1..n].
              - The matrix v (not the transpose v') is output as v[1..n][1..n].
              */
-            bool build(matrix<T> &a, writable<T> &w, matrix<T> &v);
-#endif
-            
+            bool build(matrix<xtype> &a, writable<xtype> &w, matrix<xtype> &v);
+
             //! singular value solve (u.w.v') x = b
             void solve(const  matrix<xtype>   &u,
                        const  readable<xtype> &w,
                        const  matrix<xtype>   &v,
                        writable<xtype>        &x,
                        const readable<xtype>  &b);
-            
+
+
+
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(svd);
@@ -70,6 +70,7 @@ namespace yack
             const xtype one;
             const xtype two;
             vector<xtype,memory::dyadic> rv1;   //!< a.cols=n
+        public:
             add_type                     add;  
         };
 

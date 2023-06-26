@@ -4,6 +4,7 @@
 #define YACK_MATH_LOOK_FOR_INCLUDED 1
 
 #include "yack/math/numeric.hpp"
+#include "yack/math/api.hpp"
 #include "yack/type/args.hpp"
 
 namespace yack
@@ -52,12 +53,12 @@ namespace yack
                     for(ITERATOR it=curr;it!=last;++it,++n)
                     {
                         const_type x = *it;
-                        const_type t = std::abs(x);
+                        const_type t =  abs_of(x);
                         if(t>a)    a = t;
                     }
 
                     // adjust ftol
-                    if(ftol<=0) ftol      = n * numeric<T>::epsilon;
+                    //if(ftol<=0) ftol      = n * numeric<T>::epsilon;
                     const_type  threshold = a*ftol;
 
                     // second pass: cut values below threshold
@@ -65,7 +66,7 @@ namespace yack
                     for(ITERATOR it=curr;it!=last;++it)
                     {
                         mutable_type &x = *it;
-                        if(std::abs(x)<=threshold) {
+                        if(abs_of(x)<=threshold) {
                             x=0;
                             ++ker;
                         }

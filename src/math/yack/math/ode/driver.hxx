@@ -34,7 +34,7 @@ namespace yack
                 nbad=0;
 
                 real_t x = x1;
-                real_t h = __sgn(h1,x2-x1);
+                real_t h = sgn(h1,x2-x1);
                 for(size_t i=n;i>0;--i) y[i] = ystart[i];
 
                 while(true)

@@ -198,7 +198,7 @@ namespace yack
                             x += t;
                             if (q >= 0)
                             {
-                                z=p+__sgn(z,p);
+                                z=p+sgn(z,p);
                                 wr[ir+1]=wr[ir]=x+z;
                                 if( std::abs(z)>0 )
                                     wr[ir]=x-w/z;
@@ -275,7 +275,7 @@ namespace yack
                                         r /= x;
                                     }
                                 }
-                                if( std::abs(s=__sgn(sqrt(p*p+q*q+r*r),p)) > 0 )
+                                if( std::abs(s=sgn(sqrt(p*p+q*q+r*r),p)) > 0 )
                                 {
                                     if (k == m)
                                     {
