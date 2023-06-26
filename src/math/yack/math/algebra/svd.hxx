@@ -58,7 +58,6 @@ namespace yack
                         for(k=i;k<=m;k++)
                         {
                             a[k][i] /= scale;
-                            //s += a[k][i]*a[k][i];
                             add.push( squared(a[k][i]) );
                         }
                         s = add.reduce();
@@ -68,9 +67,11 @@ namespace yack
                         a[i][i]=f-g;
                         for(size_t j=l;j<=n;j++)
                         {
-                            for(s=0.0,k=i;k<=m;k++)
-                                s += a[k][i]*a[k][j];
-                            f=s/h;
+                            add.free();
+                            for(k=i;k<=m;k++)
+                                add.push( a[k][i]*a[k][j] );
+                            s = add.reduce();
+                            f = s/h;
                             for(k=i;k<=m;k++)
                                 a[k][j] += f*a[k][i];
                         }
@@ -89,20 +90,25 @@ namespace yack
 
                     if(scale>0)
                     {
+                        add.free();
                         for(k=l;k<=n;k++)
                         {
                             a[i][k] /= scale;
-                            s += a[i][k]*a[i][k];
+                            add.push( squared(a[i][k]));
                         }
-                        f=a[i][l];
+                        s = add.reduce();
+                        f = a[i][l];
                         g = -sgn(sqrt_of(s),f);
                         h=f*g-s;
                         a[i][l]=f-g;
                         for(k=l;k<=n;k++)
                             rv1[k]=a[i][k]/h;
-                        for(size_t j=l;j<=m;j++) {
-                            for (s=0.0,k=l;k<=n;k++)
-                                s += a[j][k]*a[i][k];
+                        for(size_t j=l;j<=m;j++)
+                        {
+                            add.free();
+                            for(k=l;k<=n;k++)
+                                add.push(a[j][k]*a[i][k]);
+                            s = add.reduce();
                             for(k=l;k<=n;k++)
                                 a[j][k] += s*rv1[k];
                         }
