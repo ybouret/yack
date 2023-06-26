@@ -129,6 +129,18 @@ namespace yack
                 }
             }
 
+            const size_t nrun = running.size;
+            matrix<Extended::Real> Omega(nrun,nrun);
+            for(const Equilibrium::Node *lhs=running.head;lhs;lhs=lhs->next)
+            {
+                const Equilibrium        &le = ***lhs;
+                const size_t              li = le.indx[SubLevel];
+                for(const Equilibrium::Node *rhs=running.head;rhs;rhs=rhs->next)
+                {
+                    const Equilibrium &re = ***rhs;
+                    const size_t       ri = re.indx[SubLevel];
+                }
+            }
         }
     }
 

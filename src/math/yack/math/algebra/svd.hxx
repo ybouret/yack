@@ -194,7 +194,8 @@ namespace yack
                         }
                         if( (abs_of(w[nm])+anorm) == anorm) break;
                     }
-                    if (flag)
+
+                    if(flag)
                     {
                         c=zero; /* Cancellation of rv1[l], if l > 1. */
                         s=one;
@@ -218,7 +219,7 @@ namespace yack
                     }
                     z=w[k];
                     if (l == k) { /* Convergence. */
-                        if(z<0) { /* Singular value is made nonnegative. */
+                        if(z<zero) { /* Singular value is made nonnegative. */
                             w[k] = -z;
                             for(size_t j=1;j<=n;j++) v[j][k] = -v[j][k];
                         }
