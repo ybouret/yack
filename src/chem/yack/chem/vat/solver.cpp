@@ -40,15 +40,8 @@ namespace yack
         }
 
 
-
-
-        void  Solver:: run(const xmlog                    &xml,
-                           writable<Extended::Real>       &C0,
-                           const Cluster                  &cluster,
-                           const readable<Extended::Real> &K,
-                           const readable<Extended::Real> &S)
+        namespace
         {
-
 
             struct OrderRunning
             {
@@ -61,6 +54,16 @@ namespace yack
                     return comparison::decreasing(Xa[li],Xa[ri]);
                 }
             };
+        }
+
+        void  Solver:: run(const xmlog                    &xml,
+                           writable<Extended::Real>       &C0,
+                           const Cluster                  &cluster,
+                           const readable<Extended::Real> &K,
+                           const readable<Extended::Real> &S)
+        {
+
+
 
             YACK_XMLSUB(xml, "Solver::run");
             const size_t          m = cluster.lib.size;
