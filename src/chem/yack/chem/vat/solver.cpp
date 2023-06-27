@@ -133,7 +133,7 @@ namespace yack
             }
 
 
-            merge_list_of<Equilibrium::Node>::sort<Equilibrium::CoopRepo,OrderRunning>(running,orderRunning);
+            merge_list_of<Equilibrium::Node>::sort(running,orderRunning);
 
             if(xml.verbose)
             {
