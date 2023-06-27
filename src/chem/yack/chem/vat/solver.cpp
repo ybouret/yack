@@ -100,6 +100,7 @@ namespace yack
 
                     case Equilibrium::Running:
                         running << eq;
+                        coerce(eq.indx[AuxLevel]) = running.size;
                         break;
                 }
 
@@ -107,7 +108,7 @@ namespace yack
                 Xa[ei] = (Xi[ei] = am.extent).abs();
 
                 eq.gradAction(phi,SubLevel,Ki,Ci,SubLevel,xmul);
-                
+
                 if(xml.verbose)
                 {
                     xml() << " @" << std::setw(15) << *am.extent;
@@ -117,10 +118,11 @@ namespace yack
                 }
             }
 
+
             merge_list_of<Equilibrium::Node>::sort(running,orderRunning);
             if(xml.verbose)
             {
-                YACK_XMLOG(xml, "#running= " << running.size);
+                YACK_XMLOG(xml, "#running= " << running.size << " / rank=" << cluster.rank);
                 for(const Equilibrium::Node *en=running.head;en;en=en->next)
                 {
                     const Equilibrium        &eq = ***en;
@@ -132,25 +134,25 @@ namespace yack
             //
             const size_t nrun = running.size;
             matrix<Extended::Real> Omega(nrun,nrun);
+
+            for(const Equilibrium::Node *lhs=running.head;lhs;lhs=lhs->next)
             {
-                size_t aux = 0;
-                for(const Equilibrium::Node *lhs=running.head;lhs;lhs=lhs->next)
+                const Equilibrium              &le  = ***lhs;
+                const size_t                    i   = le.indx[AuxLevel];
+                const readable<Extended::Real> &phi = Phi[le.indx[SubLevel]];
+                writable<Extended::Real>       &omi = Omega[i];
+                omi[i] = 1;
+                const Extended::Real den = le.dot(phi,SubLevel,xadd);
+                std::cerr << "den=" << den << std::endl;
+                for(const Equilibrium::Node *rhs=running.head;rhs;rhs=rhs->next)
                 {
-                    const Equilibrium        &le = ***lhs;
-                    const size_t              li = le.indx[SubLevel];
-                    coerce(le.indx[AuxLevel]) = ++aux;
-                    Omega[li][li] = 1;
-                    for(const Equilibrium::Node *rhs=running.head;rhs;rhs=rhs->next)
-                    {
-                        const Equilibrium &re = ***rhs;
-                        const size_t       ri = re.indx[SubLevel];
-                        if(li==ri)
-                            continue;
-                        
-                    }
+                    const Equilibrium &re = ***rhs;
+                    const size_t       j  = re.indx[AuxLevel]; if(i==j) continue;
+                    omi[j] = re.dot(phi,SubLevel,xadd) / den;
                 }
             }
-            cluster.for_each_equilibrium(std::cerr, "Omega_", Omega, "", AuxLevel);
+
+            std::cerr << "Omega=" << Omega << std::endl;
             //std::cerr << "Omega=" << std::endl;
         }
     }
