@@ -130,7 +130,8 @@ namespace yack
             }
 
 
-            merge_list_of<Equilibrium::Node>::sort(running,orderRunning);
+            merge_list_of<Equilibrium::Node>::sort<Equilibrium::CoopRepo,OrderRunning>(running,orderRunning);
+
             if(xml.verbose)
             {
                 YACK_XMLOG(xml, "#running= " << running.size << " / rank=" << cluster.rank);
@@ -211,7 +212,7 @@ namespace yack
             }
             cluster.for_each_species(std::cerr << "dC=", "\td_[",dC, "]",SubLevel) << std::endl;
             cluster.for_each_species(std::cerr << "CC=", "\t  [",Ctmp, "]",SubLevel) << std::endl;
-            
+
 
             goto CYCLE;
 
