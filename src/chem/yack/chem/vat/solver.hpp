@@ -59,6 +59,7 @@ namespace yack
             Extended::Vector      Xa;      //!< |Xi|, SubLevel
             Extended::Vector      Corg;    //!< starting point, SubLevel
             Extended::Vector      Ctmp;    //!< trial point, SubLevel
+            Extended::Vector      dC;      //!< delta C
             Extended::Matrix      Ceq;     //!< individual solutions, SubLevel
             Extended::Matrix      Phi;     //!< individual gradients, SubLevel
             Aftermaths            ams;     //!< aftermaths, SubLevel

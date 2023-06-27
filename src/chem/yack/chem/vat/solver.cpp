@@ -2,6 +2,7 @@
 #include "yack/data/list/sort.hpp"
 #include "yack/apex/flak.hpp"
 #include "yack/math/keto.hpp"
+#include "yack/math/algebra/svd.hpp"
 #include <iomanip>
 
 namespace yack
@@ -23,6 +24,7 @@ namespace yack
         Xa(maxClusterSize,as_capacity),
         Corg(maximumSpecies,as_capacity),
         Ctmp(maximumSpecies,as_capacity),
+        dC(maximumSpecies,as_capacity),
         Ceq(maxClusterSize,maximumSpecies),
         Phi(Ceq),
         ams(maxClusterSize,as_capacity),
@@ -71,6 +73,7 @@ namespace yack
             Xa.adjust(n,xr0);
             Corg.adjust(m,xr0);
             Ctmp.adjust(m,xr0);
+            dC.adjust(m,xr0);
             ams.adjust(n,am0);
 
             // transfer C
@@ -81,7 +84,10 @@ namespace yack
                 Corg[ sj ] = C0[ sp.indx[TopLevel] ];
             }
 
-
+            unsigned cycle = 0;
+        CYCLE:
+            ++cycle;
+            YACK_XMLOG(xml, "-------- cycle=" << cycle << " --------");
             running.clear();
             blocked.clear();
             for(const Equilibrium::Node *en=cluster.head;en;en=en->next)
@@ -160,7 +166,7 @@ namespace yack
                 const Extended::Real            den = I.dot(phi,SubLevel,xadd);
                 omi[i] = 1;
                 XStar[i] = Xi[ ii ];
-                std::cerr << "den=" << den << std::endl;
+                //std::cerr << "den=" << den << std::endl;
                 for(const Equilibrium::Node *rhs=founder.head;rhs;rhs=rhs->next)
                 {
                     const Equilibrium &J = ***rhs;
@@ -174,27 +180,42 @@ namespace yack
             std::cerr << "Omega=" << Omega << std::endl;
             std::cerr << "XStar=" << XStar << std::endl;
 
-#if 0
-            matrix<Extended::Real> Omega(nrun,nrun);
-            for(const Equilibrium::Node *lhs=running.head;lhs;lhs=lhs->next)
-            {
-                const Equilibrium              &le  = ***lhs;
-                const size_t                    i   = le.indx[AuxLevel];
-                const readable<Extended::Real> &phi = Phi[le.indx[SubLevel]];
-                writable<Extended::Real>       &omi = Omega[i];
-                omi[i] = 1;
-                const Extended::Real den = le.dot(phi,SubLevel,xadd);
-                std::cerr << "den=" << den << std::endl;
-                for(const Equilibrium::Node *rhs=running.head;rhs;rhs=rhs->next)
-                {
-                    const Equilibrium &re = ***rhs;
-                    const size_t       j  = re.indx[AuxLevel]; if(i==j) continue;
-                    omi[j] = re.dot(phi,SubLevel,xadd) / den;
-                }
-            }
+            matrix<Extended::Real> V(nf,nf);
+            vector<Extended::Real> w(nf,0);
+            svd<double> SVD(nf);
 
-            std::cerr << "Omega=" << Omega << std::endl;
-#endif
+            if( !SVD.build(Omega,w,V) )
+            {
+                std::cerr << "No SVD" << std::endl;
+                exit(0);
+            }
+            std::cerr << "w=" << w << std::endl;
+            vector<Extended::Real> XX(nf,0);
+            SVD.solve(Omega,w,V,XX,XStar);
+            std::cerr << "XX = " << XX << std::endl;
+
+            for(size_t j=m;j>0;--j)
+            {
+                xadd.free();
+                xadd.push(Corg[j]);
+                for(const Equilibrium::Node *node=founder.head;node;node=node->next)
+                {
+                    const Equilibrium   &eq = ***node;
+                    const Extended::Real xi = XX[eq.indx[AuxLevel]];
+                    const Extended::Real dc = cluster.Nu0[ eq.indx[SubLevel] ][j] * xi;
+                    xadd.push(dc);
+                }
+                Ctmp[j] = xadd.reduce();
+                dC[j]   = Ctmp[j] - Corg[j];
+                Corg[j] = Ctmp[j];
+            }
+            cluster.for_each_species(std::cerr << "dC=", "\td_[",dC, "]",SubLevel) << std::endl;
+            cluster.for_each_species(std::cerr << "CC=", "\t  [",Ctmp, "]",SubLevel) << std::endl;
+            
+
+            goto CYCLE;
+
+
         }
 
         static inline

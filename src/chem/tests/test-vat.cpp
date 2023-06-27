@@ -94,6 +94,7 @@ YACK_UTEST(vat)
         {
             C[i] = *C0[i];
         }
+        
         lib(std::cerr << "C1=","[",C,"]") << std::endl;
         lib(std::cerr << "dC=","[",normalizer.custodian,"]") << std::endl;
 
