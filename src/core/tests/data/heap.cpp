@@ -104,7 +104,20 @@ YACK_UTEST(data_heap)
     perform(dih1,ran);
     perform(dih2,ran);
 
+    {
+        heap< string, scompare, run_time_buffer<string,memory::pooled> > H;
+        for(size_t i=10;i>0;--i)
+        {
+            const string s  = bring::get<string>(ran);
+            H.push(s);
+            std::cerr << H << std::endl;
+        }
+        while( H.size() )
+        {
+            std::cerr << "-> " << H.pull() << std::endl;
+        }
 
+    }
 
 
 
