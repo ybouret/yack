@@ -53,6 +53,7 @@ namespace yack
             Species::Fund         spcFund; //!< I/O for species
             Equilibrium::CoopRepo running; //!< running equilibria
             Equilibrium::CoopRepo blocked; //!< blocked equilibria
+            Equilibrium::CoopRepo founder; //!< basis for running equilibria
             Extents               extents; //!< scanning extents
             Extended::Vector      Xi;      //!< running individual Xi, SubLevel
             Extended::Vector      Xa;      //!< |Xi|, SubLevel
@@ -67,6 +68,7 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Solver);
+            void buildFounder(const xmlog &xml, const Cluster &cluster);
         };
 
     }

@@ -1,9 +1,13 @@
 #include "yack/chem/vat/solver.hpp"
 #include "yack/data/list/sort.hpp"
+#include "yack/apex/flak.hpp"
+#include "yack/math/keto.hpp"
 #include <iomanip>
 
 namespace yack
 {
+    using namespace math;
+
     namespace Chemical
     {
 
@@ -13,6 +17,7 @@ namespace yack
         spcFund( new Species::Bank()     ),
         running( eqsFund ),
         blocked( eqsFund ),
+        founder( eqsFund ),
         extents( spcFund ),
         Xi(maxClusterSize,as_capacity),
         Xa(maxClusterSize,as_capacity),
@@ -131,10 +136,46 @@ namespace yack
                 }
             }
 
-            //
-            const size_t nrun = running.size;
-            matrix<Extended::Real> Omega(nrun,nrun);
 
+            const size_t nrun = running.size;
+            if(nrun<=0)
+            {
+                // all blocked: Ok!
+                return;
+            }
+
+            buildFounder(xml,cluster);
+
+            const size_t nf = founder.size;
+            matrix<Extended::Real> Omega(nf,nf);
+            vector<Extended::Real> XStar(nf,0);
+
+            for(const Equilibrium::Node *lhs=founder.head;lhs;lhs=lhs->next)
+            {
+                const Equilibrium              &I   = ***lhs;
+                const size_t                    i   = I.indx[AuxLevel];
+                const size_t                    ii  = I.indx[SubLevel];
+                const readable<Extended::Real> &phi = Phi[ii];
+                writable<Extended::Real>       &omi = Omega[i];
+                const Extended::Real            den = I.dot(phi,SubLevel,xadd);
+                omi[i] = 1;
+                XStar[i] = Xi[ ii ];
+                std::cerr << "den=" << den << std::endl;
+                for(const Equilibrium::Node *rhs=founder.head;rhs;rhs=rhs->next)
+                {
+                    const Equilibrium &J = ***rhs;
+                    const size_t       j = J.indx[AuxLevel];
+                    if(i==j) continue;
+                    omi[j] = J.dot(phi,SubLevel,xadd) / den;
+                }
+
+            }
+
+            std::cerr << "Omega=" << Omega << std::endl;
+            std::cerr << "XStar=" << XStar << std::endl;
+
+#if 0
+            matrix<Extended::Real> Omega(nrun,nrun);
             for(const Equilibrium::Node *lhs=running.head;lhs;lhs=lhs->next)
             {
                 const Equilibrium              &le  = ***lhs;
@@ -153,7 +194,61 @@ namespace yack
             }
 
             std::cerr << "Omega=" << Omega << std::endl;
-            //std::cerr << "Omega=" << std::endl;
+#endif
+        }
+
+        static inline
+        size_t founderToMatrix(matrix<apq>                 &qfam,
+                             const Equilibrium::CoopRepo &founder,
+                               const matrix<int>           &Nu0)
+        {
+            size_t i=0;
+            for(const Equilibrium::Node *node=founder.head;node;node=node->next)
+            {
+                const Equilibrium &eq = ***node;
+                keto::load(qfam[++i],Nu0[ eq.indx[SubLevel]]);
+            }
+            return i;
+        }
+
+        void Solver:: buildFounder(const xmlog &xml, const Cluster &cluster)
+        {
+            assert(running.size>0);
+            YACK_XMLSUB(xml,"selecting founder");
+            founder.clear();
+            const size_t rmax = min_of(running.size,cluster.rank);
+            matrix<apq>  qfam(rmax,cluster.lib.size);
+
+            const Equilibrium::Node *en = running.head;
+            while(true)
+            {
+                const size_t       i  = founderToMatrix(qfam,founder,cluster.Nu0);
+                const size_t       r  = i+1;
+                const Equilibrium &eq = ***en;
+                keto::load(qfam[r],cluster.Nu0[eq.indx[SubLevel]]);
+                if(apex::flak::rank_of(qfam) == r)
+                {
+                    founder << eq; assert(founder.size == r);
+                    if(xml.verbose)
+                    {
+                        cluster.pad(*xml << " (+) " << eq.name,eq) << " @" << std::setw(15) << *Xi[eq.indx[SubLevel]] << std::endl;
+                    }
+                    if(r>=rmax)
+                        break;
+
+                }
+                if(NULL==(en = en->next)) break;
+            }
+
+            {
+                size_t i=0;
+                for(const Equilibrium::Node *node=founder.head;node;node=node->next)
+                {
+                    coerce( (***node).indx[AuxLevel] ) = ++i;
+                }
+            }
+
+
         }
     }
 

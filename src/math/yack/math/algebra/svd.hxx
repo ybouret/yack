@@ -11,12 +11,12 @@ namespace yack
         }
 
         template <>
-        svd<real_t>:: svd() :
+        svd<real_t>:: svd(const size_t n) :
         zero(0),
         one(1),
         two(2),
-        add(),
-        rv1()
+        add(n),
+        rv1(n,as_capacity)
         {
         }
 

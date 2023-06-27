@@ -36,8 +36,8 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit svd();           //!< setup
-            virtual ~svd() noexcept;  //!< cleanup
+            explicit svd(const size_t n=0); //!< setup with capacity
+            virtual ~svd() noexcept;      //!< cleanup
 
             //__________________________________________________________________
             //
