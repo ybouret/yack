@@ -19,7 +19,7 @@ namespace yack
         {
             TopLevel = 0,  //!< top level (Library/Equilibria)
             SubLevel = 1,  //!< sub level (Subset/Cluster)
-            AuxLevel = 2   //!< aux level (withing Cluster)
+            AuxLevel = 2   //!< aux level (within  Cluster)
         };
 
         //______________________________________________________________________

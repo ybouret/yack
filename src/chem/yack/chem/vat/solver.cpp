@@ -129,18 +129,29 @@ namespace yack
                 }
             }
 
+            //
             const size_t nrun = running.size;
             matrix<Extended::Real> Omega(nrun,nrun);
-            for(const Equilibrium::Node *lhs=running.head;lhs;lhs=lhs->next)
             {
-                const Equilibrium        &le = ***lhs;
-                const size_t              li = le.indx[SubLevel];
-                for(const Equilibrium::Node *rhs=running.head;rhs;rhs=rhs->next)
+                size_t aux = 0;
+                for(const Equilibrium::Node *lhs=running.head;lhs;lhs=lhs->next)
                 {
-                    const Equilibrium &re = ***rhs;
-                    const size_t       ri = re.indx[SubLevel];
+                    const Equilibrium        &le = ***lhs;
+                    const size_t              li = le.indx[SubLevel];
+                    coerce(le.indx[AuxLevel]) = ++aux;
+                    Omega[li][li] = 1;
+                    for(const Equilibrium::Node *rhs=running.head;rhs;rhs=rhs->next)
+                    {
+                        const Equilibrium &re = ***rhs;
+                        const size_t       ri = re.indx[SubLevel];
+                        if(li==ri)
+                            continue;
+                        
+                    }
                 }
             }
+            cluster.for_each_equilibrium(std::cerr, "Omega_", Omega, "", AuxLevel);
+            //std::cerr << "Omega=" << std::endl;
         }
     }
 
