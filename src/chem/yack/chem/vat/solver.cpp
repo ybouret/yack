@@ -20,6 +20,7 @@ namespace yack
         blocked( eqsFund ),
         founder( eqsFund ),
         extents( spcFund ),
+        limits( maxClusterSize ),
         Xi(maxClusterSize,as_capacity),
         Xa(maxClusterSize,as_capacity),
         Corg(maximumSpecies,as_capacity),
@@ -62,9 +63,6 @@ namespace yack
                            const readable<Extended::Real> &K,
                            const readable<Extended::Real> &S)
         {
-
-
-
             YACK_XMLSUB(xml, "Solver::run");
             const size_t          m = cluster.lib.size;
             const size_t          n = cluster.size;
@@ -78,6 +76,8 @@ namespace yack
             Ctmp.adjust(m,xr0);
             dC.adjust(m,xr0);
             ams.adjust(n,am0);
+            limits.adjust<Species::Fund>(n,spcFund);
+            
 
             // transfer C
             for(const Species::Node *sn=cluster.lib.head;sn;sn=sn->next)

@@ -4,13 +4,16 @@
 
 #include "yack/chem/eqs/aftermath.hpp"
 #include "yack/chem/vat/cluster.hpp"
+#include "yack/sequence/cxx-series.hpp"
 
 namespace yack
 {
     namespace Chemical
     {
 
-        typedef vector<Aftermath,memory::dyadic> Aftermaths;
+        typedef vector<Aftermath,memory::dyadic>    Aftermaths;
+        typedef cxx_series<Extents,memory::dyadic>  Limits;
+
 
         //______________________________________________________________________
         //
@@ -55,6 +58,7 @@ namespace yack
             Equilibrium::CoopRepo blocked; //!< blocked equilibria
             Equilibrium::CoopRepo founder; //!< basis for running equilibria
             Extents               extents; //!< scanning extents
+            Limits                limits;
             Extended::Vector      Xi;      //!< running individual Xi, SubLevel
             Extended::Vector      Xa;      //!< |Xi|, SubLevel
             Extended::Vector      Corg;    //!< starting point, SubLevel

@@ -156,23 +156,27 @@ namespace yack
 
         //! two arguments setup
         template <typename U, typename V> inline
-        void add(typename type_traits<U>::parameter_type u,
-                 typename type_traits<V>::parameter_type v)
+        type & add(typename type_traits<U>::parameter_type u,
+                   typename type_traits<V>::parameter_type v)
         {
             assert(count<total);
-            new (basis+count) T(u,v);
+            mutable_type *target = basis+count;
+            new (target) T(u,v);
             ++coerce(count);
+            return *target;
         }
 
         //! three arguments setup
         template <typename U, typename V, typename W> inline
-        void add(typename type_traits<U>::parameter_type u,
-                 typename type_traits<V>::parameter_type v,
-                 typename type_traits<W>::parameter_type w)
+        type & add(typename type_traits<U>::parameter_type u,
+                   typename type_traits<V>::parameter_type v,
+                   typename type_traits<W>::parameter_type w)
         {
             assert(count<total);
-            new (basis+count) T(u,v,w);
+            mutable_type *target = basis+count;
+            new (target) T(u,v,w);
             ++coerce(count);
+            return *target;
         }
 
         //! pop/clean last item
@@ -204,6 +208,18 @@ namespace yack
         inline type       &back()  noexcept       { assert(size()>0); return entry[count]; } //!< last item
         inline const_type &back()  const noexcept { assert(size()>0); return entry[count]; } //!< last item, const
 
+        //! one argument setup, push_back
+        template <typename U> inline
+        void adjust(const size_t n, typename type_traits<U>::parameter_type u)
+        {
+            assert(n<=total);
+            while(count>n) pop_back();
+            while(count<n) {
+                new (basis+count) T(u);
+                ++coerce(count);
+            }
+        }
+
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(cxx_series);
         const size_t      bytes; //!< allocated bytes
@@ -218,10 +234,11 @@ namespace yack
             static memory::allocator &mem = ALLOCATOR::instance();
             return mem.allocate<mutable_type>(coerce(items),coerce(bytes));
         }
+
         virtual const_type *cxx() const noexcept { return entry; }
         virtual const_type *mem() const noexcept { return basis; }
 
-        void lift() noexcept
+        inline void lift() noexcept
         {
             assert(count<total);
             const void  *source = basis;
@@ -230,7 +247,7 @@ namespace yack
             out_of_reach::move(target,source,length);
         }
 
-        void fall()
+        inline void fall() noexcept
         {
             assert(count<total);
             const void  *source = basis+1;

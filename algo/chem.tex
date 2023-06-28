@@ -405,6 +405,52 @@ which garanties that $\Gamma_i(\vec{S}_i)\simeq 0$.
 
 
 \begin{equation}
+	\vec{S}_i - \vec{S}_j = 
+	\left( \xi_i^\star - \dfrac{\langle \vec{\Psi}_i^\star \vert \delta\vec{C} \rangle}{\langle \vec{\Psi}_i^\star \vert \vec{\nu}_i \rangle} \right) \vec{\nu}_i 
+	- \left(\xi_j^\star - \dfrac{\langle \vec{\Psi}_j^\star \vert \delta\vec{C} \rangle}{\langle \vec{\Psi}_j^\star \vert \vec{\nu}_j \rangle} \right) \vec{\nu}_j 
+\end{equation}
+
+\begin{equation}
+	f = \dfrac{1}{2} \left[ \vec{S}_i - \vec{S}_j\right]^2 \implies \vec{\nabla} f = \partial_{\delta\vec{C}} \left[ \vec{S}_i - \vec{S}_j\right]^t \left[ \vec{S}_i - \vec{S}_j\right]
+\end{equation}
+
+\begin{equation}
+	\partial_{\delta\vec{C}} \left(\dfrac{\langle \vec{\Psi}_i^\star \vert \delta\vec{C} \rangle}{\langle \vec{\Psi}_i^\star \vert \vec{\nu}_i \rangle}  \vec{\nu}_i \right)
+	= \dfrac{1}{\langle \vec{\Psi}_i^\star \vert \vec{\nu}_i \rangle} \vert\vec{\nu}_i\rangle \langle\vec{\Psi}_i^\star \vert
+\end{equation}
+
+The descending extent direction is
+\begin{equation}
+	\vec{\beta} = - 
+	\begin{bmatrix}
+	\langle\vec{\nu}_i\vert\\
+	\langle\vec{\nu}_j\vert\\
+	\end{bmatrix}
+	\vec{\nabla} f_0 =
+	\left[
+	 \dfrac{1}{\langle \vec{\Psi}_i^\star \vert \vec{\nu}_i \rangle}  \vert\vec{\Psi}_i^\star \rangle \langle\vec{\nu}_i\vert
+	-
+	\dfrac{1}{\langle \vec{\Psi}_j^\star \vert \vec{\nu}_j \rangle}  \vert\vec{\Psi}_j^\star \rangle \langle\vec{\nu}_j\vert
+	 \right] \left[ \xi_i^\star \vec{\nu}_i - \xi_j^\star \vec{\nu}_j \right]
+\end{equation}
+
+\begin{equation}
+	\vec{\beta} = 
+	\begin{bmatrix}
+	1 & \dfrac{\langle \vec{\Psi}_i^\star \vert \vec{\nu}_j\rangle }{\langle \vec{\Psi}_i^\star \vert \vec{\nu}_i\rangle}\\
+	\dfrac{\langle \vec{\Psi}_j^\star \vert \vec{\nu}_i\rangle }{\langle \vec{\Psi}_i^\star \vert \vec{\nu}_i\rangle} & 1 \\
+	\end{bmatrix}^t
+	\begin{bmatrix}
+	\vec{\nu}_i^2 & -\vec{\nu}_i \cdot \vec{\nu}_j\\
+	-\vec{\nu}_i \cdot \vec{\nu}_j & \vec{\nu}_j^2\\
+	\end{bmatrix}
+	\vec{\xi}_\star
+\end{equation}
+
+
+\end{document}
+
+\begin{equation}
 \mathbb{E}(\vec{S}) = \dfrac{1}{\sum w_k} \sum_j w_j \vec{S}_j = \vec{C}+\delta\vec{C} + \dfrac{1}{\sum w_k}\sum_j w_j\left( \xi_j^\star - \dfrac{\langle \vec{\Psi}_j^\star \vert \delta\vec{C} \rangle}{\langle \vec{\Psi}_j^\star \vert \vec{\nu}_j \rangle}\right) \vec{\nu}_j
 \end{equation}
 
