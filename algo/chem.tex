@@ -415,7 +415,7 @@ which garanties that $\Gamma_i(\vec{S}_i)\simeq 0$.
 \end{equation}
 
 \begin{equation}
-	\partial_{\delta\vec{C}} \left(\dfrac{\langle \vec{\Psi}_i^\star \vert \delta\vec{C} \rangle}{\langle \vec{\Psi}_i^\star \vert \vec{\nu}_i \rangle}  \vec{\nu}_i \right)
+	\bm{J}_i = \partial_{\delta\vec{C}} \left(\dfrac{\langle \vec{\Psi}_i^\star \vert \delta\vec{C} \rangle}{\langle \vec{\Psi}_i^\star \vert \vec{\nu}_i \rangle}  \vec{\nu}_i \right)
 	= \dfrac{1}{\langle \vec{\Psi}_i^\star \vert \vec{\nu}_i \rangle} \vert\vec{\nu}_i\rangle \langle\vec{\Psi}_i^\star \vert
 \end{equation}
 
@@ -448,18 +448,26 @@ The descending extent direction is
 \end{equation}
 
 
-\end{document}
-
+Let us define:
 \begin{equation}
-\mathbb{E}(\vec{S}) = \dfrac{1}{\sum w_k} \sum_j w_j \vec{S}_j = \vec{C}+\delta\vec{C} + \dfrac{1}{\sum w_k}\sum_j w_j\left( \xi_j^\star - \dfrac{\langle \vec{\Psi}_j^\star \vert \delta\vec{C} \rangle}{\langle \vec{\Psi}_j^\star \vert \vec{\nu}_j \rangle}\right) \vec{\nu}_j
+	\mathbb{E}(\vec{S}) = \dfrac{1}{n} \sum_j \vec{S}_j = \vec{C} + \delta\vec{C} + \dfrac{1}{n} \sum_j \left(\xi_j^\star - \dfrac{\langle \vec{\Psi}_j^\star \vert \delta\vec{C} \rangle}{\langle \vec{\Psi}_j^\star \vert \vec{\nu}_j \rangle} \right)\vec{\nu}_j
 \end{equation}
 
 \begin{equation}
-	\vec{S}_i - \mathbb{E}(\vec{S}) = \left( \xi_i^\star - \dfrac{\langle \vec{\Psi}_i^\star \vert \delta\vec{C} \rangle}{\langle \vec{\Psi}_i^\star \vert \vec{\nu}_i \rangle}\right) \vec{\nu}_i - \dfrac{1}{\sum w_k}\sum_j w_j\left( \xi_j^\star - \dfrac{\langle \vec{\Psi}_j^\star \vert \delta\vec{C} \rangle}{\langle \vec{\Psi}_j^\star \vert \vec{\nu}_j \rangle}\right) \vec{\nu}_j
+	\vec{S}_i - \mathbb{E}(\vec{S}) =  \left(\xi_i^\star - \dfrac{\langle \vec{\Psi}_i^\star \vert \delta\vec{C} \rangle}{\langle \vec{\Psi}_i^\star \vert \vec{\nu}_i \rangle} \right)\vec{\nu}_i - \dfrac{1}{n} \sum_j \left(\xi_j^\star - \dfrac{\langle \vec{\Psi}_j^\star \vert \delta\vec{C} \rangle}{\langle \vec{\Psi}_j^\star \vert \vec{\nu}_j \rangle} \right)\vec{\nu}_j
 \end{equation}
 
+\begin{equation}
+	f_i = \dfrac{1}{2} \left[ \vec{S}_i - \mathbb{E}(\vec{S}) \right]^2
+	\implies
+	\vec{\nabla}f_i = \left[ -\bm{J}_i + \mathbb{E}(\bm{J}) \right]^t \left[ \vec{S}_i - \mathbb{E}(\vec{S}) \right]
+\end{equation}
+
+\begin{equation}
+	\vec{\beta}_i = - \vec{\nabla}f_{i0} = \left[ \bm{J}_i - \mathbb{E}(\bm{J}) \right]^t \left[ \xi_i^\star \vec{\nu}_i - \dfrac{1}{n} \sum_j \xi_j^\star \vec{\nu}_j\right]
+\end{equation}
 
 \end{document}
-
+ 	
 
  
